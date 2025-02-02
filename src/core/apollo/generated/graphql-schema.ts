@@ -820,6 +820,7 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
+  AccountAdmin = 'ACCOUNT_ADMIN',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
@@ -2192,6 +2193,7 @@ export type CredentialMetadataOutput = {
 };
 
 export enum CredentialType {
+  AccountAdmin = 'ACCOUNT_ADMIN',
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
@@ -3539,6 +3541,8 @@ export type MeQueryResults = {
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
+  /** The number of invitations the current authenticated user can act on. */
+  communityInvitationsCount: Scalars['Float'];
   /** The query id */
   id: Scalars['String'];
   /** The Spaces I am contributing to */
@@ -3559,7 +3563,15 @@ export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type MeQueryResultsCommunityInvitationsCountArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type MeQueryResultsMySpacesArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']>;
 };
 
@@ -3815,7 +3827,7 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
-  /** Invite an existing Contriburor to join the specified RoleSet in the Entry Role. */
+  /** Invite an existing Contributor to join the specified RoleSet in the Entry Role. */
   inviteContributorsEntryRoleOnRoleSet: Array<Invitation>;
   /** Invite a User to join the platform and the specified RoleSet as a member. */
   inviteUserToPlatformAndRoleSet: PlatformInvitation;
@@ -5675,6 +5687,7 @@ export enum RoleSetContributorType {
 }
 
 export enum RoleSetRoleImplicit {
+  AccountAdmin = 'ACCOUNT_ADMIN',
   SubspaceAdmin = 'SUBSPACE_ADMIN',
 }
 
@@ -28326,13 +28339,12 @@ export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never
 
 export type PendingInvitationsCountQuery = {
   __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    communityInvitations: Array<{ __typename?: 'CommunityInvitationResult'; id: string }>;
-  };
+  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
 };
 
-export type DashboardWithMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+export type DashboardWithMembershipsQueryVariables = Exact<{
+  limit: Scalars['Float'];
+}>;
 
 export type DashboardWithMembershipsQuery = {
   __typename?: 'Query';
@@ -29637,7 +29649,9 @@ export type LatestContributionsSpacesFlatQuery = {
   };
 };
 
-export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+export type MyMembershipsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
 
 export type MyMembershipsQuery = {
   __typename?: 'Query';

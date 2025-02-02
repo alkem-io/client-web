@@ -22797,9 +22797,7 @@ export function refetchCampaignBlockCredentialsQuery(variables?: SchemaTypes.Cam
 export const PendingInvitationsCountDocument = gql`
   query PendingInvitationsCount {
     me {
-      communityInvitations(states: ["invited"]) {
-        id
-      }
+      communityInvitationsCount(states: ["invited"])
     }
   }
 `;
@@ -22856,9 +22854,9 @@ export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.Pend
 }
 
 export const DashboardWithMembershipsDocument = gql`
-  query DashboardWithMemberships {
+  query DashboardWithMemberships($limit: Float!) {
     me {
-      spaceMembershipsHierarchical {
+      spaceMembershipsHierarchical(limit: $limit) {
         id
         space {
           ...DashboardSpaceMembership
@@ -22887,11 +22885,12 @@ export const DashboardWithMembershipsDocument = gql`
  * @example
  * const { data, loading, error } = useDashboardWithMembershipsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */
 export function useDashboardWithMembershipsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.DashboardWithMembershipsQuery,
     SchemaTypes.DashboardWithMembershipsQueryVariables
   >
@@ -22922,7 +22921,7 @@ export type DashboardWithMembershipsQueryResult = Apollo.QueryResult<
   SchemaTypes.DashboardWithMembershipsQuery,
   SchemaTypes.DashboardWithMembershipsQueryVariables
 >;
-export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.DashboardWithMembershipsQueryVariables) {
+export function refetchDashboardWithMembershipsQuery(variables: SchemaTypes.DashboardWithMembershipsQueryVariables) {
   return { query: DashboardWithMembershipsDocument, variables: variables };
 }
 
@@ -23522,9 +23521,9 @@ export function refetchLatestContributionsSpacesFlatQuery(
 }
 
 export const MyMembershipsDocument = gql`
-  query MyMemberships {
+  query MyMemberships($limit: Float) {
     me {
-      spaceMembershipsHierarchical {
+      spaceMembershipsHierarchical(limit: $limit) {
         id
         space {
           ...SpaceMembership
@@ -23559,6 +23558,7 @@ export const MyMembershipsDocument = gql`
  * @example
  * const { data, loading, error } = useMyMembershipsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */

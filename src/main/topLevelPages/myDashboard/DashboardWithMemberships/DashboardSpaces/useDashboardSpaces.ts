@@ -12,7 +12,11 @@ export const useDashboardSpaces = () => {
   const [selectedSpaceName, setSelectedSpaceName] = useState('');
   const [selectedSpaceIdx, setSelectedSpaceIdx] = useState<number | null>(null);
 
-  const { data, loading } = useDashboardWithMembershipsQuery();
+  const { data, loading } = useDashboardWithMembershipsQuery({
+    variables: {
+      limit: 5,
+    },
+  });
 
   const theme = useTheme();
 
