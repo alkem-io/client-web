@@ -85,7 +85,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { spaceId } = useUrlResolver();
 
   const { isAuthenticated } = useUserContext();
-  // TODO: remove usage of nameID for this
   const {
     data,
     loading,
