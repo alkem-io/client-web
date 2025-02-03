@@ -1,10 +1,11 @@
-import { Tabs } from '@mui/material';
-import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
-import NavigationTab from '@/core/ui/tabs/NavigationTab';
-import { PostDialogSection } from './PostDialogSection';
-import { styled } from '@mui/styles';
 import { gutters } from '@/core/ui/grid/utils';
+import NavigationTab from '@/core/ui/tabs/NavigationTab';
+import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
+import { styled, Tabs } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { PostDialogSection } from './PostDialogSection';
+import usePost from '../graphql/usePost';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
   marginTop: theme.spacing(-0.4),
@@ -15,7 +16,10 @@ const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
 
 const PostTabs = ({ currentTab }: { currentTab: PostDialogSection }) => {
   const { t } = useTranslation();
-  const { permissions } = usePost();  //!!
+  const {postId } = useUrlResolver();
+  const { permissions } = usePost({
+    postId
+  });
 
   return (
     <DialogHeaderTabs value={currentTab} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>

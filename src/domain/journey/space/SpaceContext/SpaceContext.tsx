@@ -1,6 +1,5 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useSpaceHostQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -10,6 +9,7 @@ import {
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -82,7 +82,7 @@ interface SpaceProviderProps {}
 const NO_PRIVILEGES = [];
 
 const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
-  const { spaceNameId = '' } = useUrlParams();
+  const { spaceId } = useUrlResolver();
 
   const { isAuthenticated } = useUserContext();
   // TODO: remove usage of nameID for this
@@ -91,13 +91,12 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     loading,
     refetch: refetchSpace,
   } = useSpaceHostQuery({
-    variables: { spaceNameId },
+    variables: { spaceId: spaceId! },
     errorPolicy: 'all',
-    skip: !spaceNameId,
+    skip: !spaceId,
   });
 
-  const space = data?.lookupByName.space;
-  const spaceId = space?.id || '';
+  const space = data?.lookup.space;
   const visibility = space?.visibility || SpaceVisibility.Active;
 
   const communityId = space?.community?.id ?? '';

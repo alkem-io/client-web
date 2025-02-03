@@ -1,7 +1,8 @@
+import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { useTranslation } from 'react-i18next';
 import NegativeButton from '../button/NegativeButton';
-import { DialogActions, DialogContent, DialogTitle } from '../dialog/deprecated';
+import { DialogActions, DialogTitle } from '../dialog/deprecated';
 
 type RelationRemoveModalProps = {
   show: boolean;
