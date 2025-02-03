@@ -9,6 +9,7 @@ import {
   SpacePrivacyMode,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import { useUserContext } from '@/domain/community/user';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -83,6 +84,8 @@ const NO_PRIVILEGES = [];
 const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { spaceNameId = '' } = useUrlParams();
 
+  const { isAuthenticated } = useUserContext();
+
   const {
     data,
     loading,
@@ -139,9 +142,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canCreateSubspaces: canCreateSubspaces,
       canCreateTemplates,
       canCreate,
-      communityReadAccess:
-        communityPrivileges.includes(AuthorizationPrivilege.Read) &&
-        communityPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+      communityReadAccess: isAuthenticated && communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
