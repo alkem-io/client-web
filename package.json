@@ -88,7 +88,6 @@
     "@mui/icons-material": "^5.15.10",
     "@mui/lab": "^5.0.0-alpha.56",
     "@mui/material": "5.13.x",
-    "@mui/styles": "^5.2.0",
     "@mui/x-data-grid": "^5.0.1",
     "@mui/x-date-pickers": "^5.0.16",
     "@ory/kratos-client": "^0.10.1",
