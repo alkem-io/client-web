@@ -13,7 +13,7 @@ const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
   const { user } = useUserContext();
 
-  useUserScope(user);
+  useUserScope(user); // @bobbykolev, @ccanos, we don't need to pass `user` as an argument here, we can get it inside `useUserScope`. What do you think, guys?
 
   const { services } = useServerMetadata();
 

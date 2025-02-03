@@ -55,7 +55,7 @@ const EntityDashboardLeadsSection = ({
           });
         },
       })),
-    [leadOrganizations, user?.user]
+    [leadOrganizations, user?.user] // @ccanos Do we need `user?.user` here?
   );
 
   const leadUsersMapped = useMemo(() => {

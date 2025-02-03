@@ -131,7 +131,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       allAccountSpaces: account?.spaces ?? [],
       availableSpaces: account?.spaces?.filter(hasCommunityPrivilege) ?? [],
     };
-  }, [data, user, targetAccount]);
+  }, [data, user, targetAccount]); // @bobbykolev, do we need `user` here a an array dependency?
 
   const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
   // For all the available spaces get their subspaces (and their subspaces)

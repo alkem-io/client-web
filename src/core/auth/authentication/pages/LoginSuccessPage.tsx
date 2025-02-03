@@ -15,7 +15,7 @@ export const LoginSuccessPage = () => {
   useEffect(() => {
     if (!loading) {
       if (returnUrl) {
-        window.location.replace(returnUrl);
+        window.location.replace(returnUrl); // @ccanos Why are we using window location replace here instead of RRD?
         return () => {
           sessionStorage.removeItem(STORAGE_KEY_RETURN_URL);
         };
