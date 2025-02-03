@@ -952,6 +952,7 @@ export enum AuthorizationPrivilege {
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
+  PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
   ReadUsers = 'READ_USERS',
@@ -962,7 +963,8 @@ export enum AuthorizationPrivilege {
   RolesetEntryRoleInvite = 'ROLESET_ENTRY_ROLE_INVITE',
   RolesetEntryRoleInviteAccept = 'ROLESET_ENTRY_ROLE_INVITE_ACCEPT',
   RolesetEntryRoleJoin = 'ROLESET_ENTRY_ROLE_JOIN',
-  TransferResource = 'TRANSFER_RESOURCE',
+  TransferResourceAccept = 'TRANSFER_RESOURCE_ACCEPT',
+  TransferResourceOffer = 'TRANSFER_RESOURCE_OFFER',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
@@ -3927,6 +3929,8 @@ export type Mutation = {
   updateOrganizationPlatformSettings: Organization;
   /** Updates one of the Setting on an Organization */
   updateOrganizationSettings: Organization;
+  /** Updates one of the Setting on the Platform */
+  updatePlatformSettings: PlatformSettings;
   /** Updates the specified Post. */
   updatePost: Post;
   /** Updates one of the Preferences on a Space */
@@ -3959,6 +3963,8 @@ export type Mutation = {
   updateUserSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
+  /** Updates one of the Setting on an Organization */
+  updateVirtualContributorSettings: VirtualContributor;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -4497,6 +4503,10 @@ export type MutationUpdateOrganizationSettingsArgs = {
   settingsData: UpdateOrganizationSettingsInput;
 };
 
+export type MutationUpdatePlatformSettingsArgs = {
+  settingsData: UpdatePlatformSettingsInput;
+};
+
 export type MutationUpdatePostArgs = {
   postData: UpdatePostInput;
 };
@@ -4559,6 +4569,10 @@ export type MutationUpdateUserSettingsArgs = {
 
 export type MutationUpdateVirtualContributorArgs = {
   virtualContributorData: UpdateVirtualContributorInput;
+};
+
+export type MutationUpdateVirtualContributorSettingsArgs = {
+  settingsData: UpdateVirtualContributorSettingsInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -4823,6 +4837,8 @@ export type Platform = {
   metadata: Metadata;
   /** The RoleSet for this Platform. */
   roleSet: RoleSet;
+  /** The settings of the Platform. */
+  settings: PlatformSettings;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
   storageAggregator: StorageAggregator;
   /** The TemplatesManager in use by the Platform */
@@ -4854,6 +4870,12 @@ export enum PlatformFeatureFlagName {
   Subscriptions = 'SUBSCRIPTIONS',
   Whiteboards = 'WHITEBOARDS',
 }
+
+export type PlatformIntegrationSettings = {
+  __typename?: 'PlatformIntegrationSettings';
+  /** The list of allowed URLs for iFrames within Markdown content. */
+  iframeAllowedUrls: Array<Scalars['String']>;
+};
 
 export type PlatformInvitation = {
   __typename?: 'PlatformInvitation';
@@ -4934,6 +4956,12 @@ export type PlatformLocations = {
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
   tips: Scalars['String'];
+};
+
+export type PlatformSettings = {
+  __typename?: 'PlatformSettings';
+  /** The integration settings for this Platform */
+  integration: PlatformIntegrationSettings;
 };
 
 export type Post = {
@@ -5172,7 +5200,7 @@ export type Query = {
   usersWithAuthorizationCredential: Array<User>;
   /** A particular VirtualContributor */
   virtualContributor: VirtualContributor;
-  /** The VirtualContributors on this platform */
+  /** The VirtualContributors on this platform; only accessible to platform admins */
   virtualContributors: Array<VirtualContributor>;
 };
 
@@ -6047,9 +6075,9 @@ export type SpaceFilterInput = {
 };
 
 export enum SpaceLevel {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
+  L0 = 'L0',
+  L1 = 'L1',
+  L2 = 'L2',
 }
 
 export type SpacePendingMembershipInfo = {
@@ -6870,6 +6898,15 @@ export type UpdateOrganizationSettingsPrivacyInput = {
   contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
+export type UpdatePlatformSettingsInput = {
+  integration?: InputMaybe<UpdatePlatformSettingsIntegrationInput>;
+};
+
+export type UpdatePlatformSettingsIntegrationInput = {
+  /** Update the list of allowed URLs for iFrames within Markdown content. */
+  iframeAllowedUrls: Array<Scalars['String']>;
+};
+
 export type UpdatePostInput = {
   ID: Scalars['UUID'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -7071,6 +7108,22 @@ export type UpdateVirtualContributorInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Visibility of the VC in searches. */
   searchVisibility?: InputMaybe<SearchVisibility>;
+};
+
+export type UpdateVirtualContributorSettingsEntityInput = {
+  privacy?: InputMaybe<UpdateVirtualContributorSettingsPrivacyInput>;
+};
+
+export type UpdateVirtualContributorSettingsInput = {
+  /** Update the settings for the VirtualContributor. */
+  settings: UpdateVirtualContributorSettingsEntityInput;
+  /** The identifier for the VirtualCOntributor whose settings are to be updated. */
+  virtualContributorID: Scalars['UUID'];
+};
+
+export type UpdateVirtualContributorSettingsPrivacyInput = {
+  /** Enable the content of knowledge bases to be accessed or not. */
+  knowledgeBaseContentVisible: Scalars['Boolean'];
 };
 
 export type UpdateVisualInput = {
@@ -7282,10 +7335,24 @@ export type VirtualContributor = Contributor & {
   provider: Contributor;
   /** Visibility of the VC in searches. */
   searchVisibility: SearchVisibility;
+  /** The settings of this Virtual Contributor. */
+  settings: VirtualContributorSettings;
   /** The status of the virtual contributor */
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type VirtualContributorSettings = {
+  __typename?: 'VirtualContributorSettings';
+  /** The privacy settings for this VirtualContributor */
+  privacy: VirtualContributorSettingsPrivacy;
+};
+
+export type VirtualContributorSettingsPrivacy = {
+  __typename?: 'VirtualContributorSettingsPrivacy';
+  /** Are the contents of the knowledge base publicly visible. */
+  knowledgeBaseContentVisible: Scalars['Boolean'];
 };
 
 export enum VirtualContributorStatus {
@@ -18379,6 +18446,10 @@ export type VirtualContributorQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          settings: {
+            __typename?: 'VirtualContributorSettings';
+            privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
+          };
           provider:
             | {
                 __typename?: 'Organization';
@@ -18601,6 +18672,46 @@ export type UpdateVirtualContributorMutation = {
     listedInStore: boolean;
     status: VirtualContributorStatus;
     searchVisibility: SearchVisibility;
+    settings: {
+      __typename?: 'VirtualContributorSettings';
+      privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagline?: string | undefined;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type UpdateVirtualContributorSettingsMutationVariables = Exact<{
+  settingsData: UpdateVirtualContributorSettingsInput;
+}>;
+
+export type UpdateVirtualContributorSettingsMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributorSettings: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    listedInStore: boolean;
+    status: VirtualContributorStatus;
+    searchVisibility: SearchVisibility;
+    settings: {
+      __typename?: 'VirtualContributorSettings';
+      privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18643,8 +18754,32 @@ export type VirtualContributorKnowledgeBaseQuery = {
       | {
           __typename?: 'KnowledgeBase';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+        }
+      | undefined;
+  };
+};
+
+export type VirtualContributorKnowledgePrivilegesQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+export type VirtualContributorKnowledgePrivilegesQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
@@ -19891,26 +20026,15 @@ export type JourneyBreadcrumbsSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
+    level: SpaceLevel;
     subspace?: {
       __typename?: 'Space';
       id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
+      level: SpaceLevel;
       subspace?: {
         __typename?: 'Space';
         id: string;
+        level: SpaceLevel;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -19919,16 +20043,35 @@ export type JourneyBreadcrumbsSpaceQuery = {
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
 };
 
-export type JourneyBreadcrumbsProfileFragment = {
-  __typename?: 'Profile';
+export type JourneyBreadcrumbsSpaceFragment = {
+  __typename?: 'Space';
   id: string;
-  url: string;
-  displayName: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  level: SpaceLevel;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
 };
 
 export type SubspaceProviderQueryVariables = Exact<{
@@ -23028,6 +23171,10 @@ export type ConfigurationQuery = {
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
+    };
+    settings: {
+      __typename?: 'PlatformSettings';
+      integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
     };
   };
 };

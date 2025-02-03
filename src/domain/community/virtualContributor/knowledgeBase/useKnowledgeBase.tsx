@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import useCallouts, { TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { OrderUpdate } from '@/domain/collaboration/useCalloutsOnCollaboration';
 import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorMutation,
   useVirtualContributorKnowledgeBaseQuery,
+  useVirtualContributorKnowledgePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 
@@ -19,6 +20,7 @@ interface useKnowledgeBaseProvided {
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
   loading: boolean;
+  calloutsSetLoading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
@@ -26,6 +28,8 @@ interface useKnowledgeBaseProvided {
   updateDescription: (values: { description: string }) => Promise<void>;
   ingestKnowledge: () => Promise<unknown>;
   ingestLoading: boolean;
+  hasReadAccess: boolean;
+  loadingPrivileges: boolean;
 }
 
 /**
@@ -39,11 +43,22 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
   const notify = useNotification();
   const { t } = useTranslation();
 
-  const { data: knowledgeBaseData, loading: knowledgeBaseLoading } = useVirtualContributorKnowledgeBaseQuery({
+  // we need to first check the privileges before fetching the knowledge base details
+  const { data: knowledgeBasePrivileges, loading: loadingPrivileges } = useVirtualContributorKnowledgePrivilegesQuery({
     variables: {
       id: id!,
     },
     skip: !id,
+  });
+
+  const privileges = knowledgeBasePrivileges?.virtualContributor?.knowledgeBase?.authorization?.myPrivileges ?? [];
+  const hasReadAccess = privileges.includes(AuthorizationPrivilege.Read);
+
+  const { data: knowledgeBaseData, loading: knowledgeBaseLoading } = useVirtualContributorKnowledgeBaseQuery({
+    variables: {
+      id: id!,
+    },
+    skip: !id || !hasReadAccess,
   });
   const knowledgeBase = knowledgeBaseData?.virtualContributor?.knowledgeBase;
   const calloutsSetId = knowledgeBase?.calloutsSet?.id ?? '';
@@ -99,7 +114,9 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     calloutsSetId,
     canCreateCallout,
     canReadCalloutsSet,
-    loading: knowledgeBaseLoading || calloutsSetLoading,
+    loading: knowledgeBaseLoading,
+    loadingPrivileges,
+    calloutsSetLoading,
     refetchCallouts,
     refetchCallout,
     onCalloutsSortOrderUpdate,
@@ -107,6 +124,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     updateDescription,
     ingestKnowledge,
     ingestLoading,
+    hasReadAccess,
   };
 };
 
