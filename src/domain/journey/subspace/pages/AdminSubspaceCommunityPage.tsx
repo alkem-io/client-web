@@ -26,6 +26,7 @@ import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportT
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import CarlosRoleSetTest from './SubspaceProfile/CarlosRoleSetTest';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -220,6 +221,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             </PageContentBlock>
           </PageContentColumn>
         }
+        <PageContentColumn columns={6}>
+          <PageContentBlock>
+            <CarlosRoleSetTest />
+          </PageContentBlock>
+        </PageContentColumn>
       </PageContent>
     </SubspaceSettingsLayout>
   );
