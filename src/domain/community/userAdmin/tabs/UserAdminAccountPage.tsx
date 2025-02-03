@@ -20,6 +20,7 @@ export const UserAdminAccountPage = () => {
     },
     skip: !userData?.lookup.user?.account?.id,
   });
+  console.log('<UserAdminAccountPage /> ACCOUNT_DATA >>>', accountData);
 
   return (
     <UserAdminLayout currentTab={SettingsSection.Account}>

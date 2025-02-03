@@ -11,6 +11,7 @@ import {
   useAllSpaceSubspacesLazyQuery,
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
+  useRoleSetRoleAssignmentQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -19,6 +20,7 @@ import {
   CreateCalloutInput,
   CreateVirtualContributorOnAccountMutationVariables,
   LicensingCredentialBasedPlanType,
+  RoleSetContributorType,
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -74,6 +76,12 @@ export type SelectableSpace = {
   subspaces?: SelectableSpace[];
 };
 
+const contributorTypes = [
+  RoleSetContributorType.User,
+  RoleSetContributorType.Organization,
+  RoleSetContributorType.Virtual,
+];
+
 const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const { t } = useTranslation();
   const { user } = useUserContext();
@@ -82,6 +90,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>(steps.initial);
+  const [selectedRoleSetId, setSelectedRoleSetId] = useState<string>();
 
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
   const [accountName, setAccountName] = useState<string>();
@@ -90,6 +99,18 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [createdVc, setCreatedVc] = useState<{ id: string; profile: { url: string } } | undefined>(undefined);
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
+
+  // @@@ WIP ~ #7539
+  const { refetch: refetchRoleSetData } = useRoleSetRoleAssignmentQuery({
+    variables: {
+      roleSetId: selectedRoleSetId!, // `skip: !selectedRoleSetId` ensures selectedRoleSetId's presence.
+      roles: [RoleName.Member, RoleName.Lead],
+      includeUsers: contributorTypes.includes(RoleSetContributorType.User),
+      includeOrganizations: contributorTypes.includes(RoleSetContributorType.Organization),
+      includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
+    },
+    skip: !selectedRoleSetId,
+  });
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -461,6 +482,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   // ###STEP 'chooseCommunityStep' - Choose Community
   const onChooseCommunity = async (selectedSpace: SelectableKnowledgeSpace) => {
+    setSelectedRoleSetId(selectedSpace?.roleSetId);
+
     let spaceId: string | undefined = selectedSpace?.id;
     if (!createdVc) {
       return;
@@ -478,6 +501,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     if (addToCommunity) {
       addVCCreationCache(createdVc.id);
       await navigateToTryYourVC(undefined, spaceId);
+
+      refetchRoleSetData(); // Re-fetch in order to display community VC dynamically
     } else {
       notifyErrorOnAddToCommunity();
       handleCloseWizard();

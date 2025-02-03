@@ -104,6 +104,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const collaborationId = space?.collaboration?.id ?? '';
   const calloutsSetId = space?.collaboration?.calloutsSet?.id ?? '';
   const roleSetId = space?.community?.roleSet?.id ?? '';
+  console.log('@@@ roleSetId >>>', roleSetId);
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;

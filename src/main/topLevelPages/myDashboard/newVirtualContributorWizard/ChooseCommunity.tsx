@@ -32,6 +32,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
     setConfirmDialogOpen(false);
   };
 
+  // @@@ WIP ~ #7539
   const listItems = useMemo(() => {
     const result: SelectableKnowledgeSpace[] = [];
     const addSelectableSpace = (space: SelectableSpace) => {

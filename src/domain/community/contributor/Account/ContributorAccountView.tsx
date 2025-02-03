@@ -2,12 +2,15 @@ import {
   useDeleteInnovationHubMutation,
   useDeleteInnovationPackMutation,
   useDeleteSpaceMutation,
+  useRoleSetRoleAssignmentQuery,
   useDeleteVirtualContributorOnAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   LicenseEntitlement,
   LicenseEntitlementType,
+  RoleName,
+  RoleSetContributorType,
   SpaceLevel,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -46,6 +49,11 @@ const enum Entities {
   InnovationHub = 'InnovationHub',
 }
 
+const contributorTypes = [
+  RoleSetContributorType.User,
+  RoleSetContributorType.Virtual,
+  RoleSetContributorType.Organization,
+];
 const SHORT_NON_SPACE_DESCRIPTION = 'components.deleteEntity.confirmDialog.descriptionShort';
 
 interface AccountProfile {
@@ -148,12 +156,13 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      virtualContributors: account?.virtualContributors ?? [],
+      virtualContributors: account?.virtualContributors ?? [], // @@@ WIP ~ #7539
       innovationPacks: account?.innovationPacks ?? [],
       innovationHubs: account?.innovationHubs ?? [],
     }),
     [account]
   );
+  console.log('@@@ ACCOUNT.VCs >>>', virtualContributors);
 
   const privileges = account?.authorization?.myPrivileges ?? [];
 
@@ -232,6 +241,20 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     refetchQueries: ['AccountInformation'],
   });
 
+  // @@@ WIP ~ #7539 - ЗА ДА РИФЕЧНА COMMUNITY VC-ТАТА ДИНАМИЧНО ТРЯБВА ДА ЗНАМ КЪМ КОЙ SPACE Е ДАДЕНОТО VC, ЗАЩОТО
+  // ROLE–SET_ID-ТО СЕ ВЗИМА ОТ СПЕЙСА, А НЯМАМ ДОСТЪП ДО СПЕЙСА ОТ ТУК!!!!!!!!!!!!
+  const { refetch: refetchRoleSetData } = useRoleSetRoleAssignmentQuery({
+    variables: {
+      roleSetId: 'ROLE_SET_ID', // @@@ TEST
+      roles: [RoleName.Member, RoleName.Lead],
+      includeUsers: contributorTypes.includes(RoleSetContributorType.User),
+      includeOrganizations: contributorTypes.includes(RoleSetContributorType.Organization),
+      includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
+    },
+    // skip: !roleSetId,
+  });
+
+  // @@@ WIP ~ #7539
   const deleteVC = () => {
     if (!selectedId) {
       return;
@@ -242,6 +265,9 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         virtualContributorData: {
           ID: selectedId,
         },
+      },
+      onCompleted: () => {
+        refetchRoleSetData(); // @@@ WIP ~ #7539
       },
     });
   };
@@ -317,7 +343,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       case Entities.Space:
         return deleteSpace();
       case Entities.VirtualContributor:
-        return deleteVC();
+        return deleteVC(); // @@@ WIP ~ #7539 - Този метод трие VC
       case Entities.InnovationPack:
         return deletePack();
       case Entities.InnovationHub:
@@ -555,7 +581,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             entity={getEntityName(entity)}
             open={deleteDialogOpen}
             onClose={clearDeleteState}
-            onDelete={deleteEntity}
+            onDelete={deleteEntity} // @@@ WIP ~ #7539 - Този метод трие VC
             description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
           />
         )}

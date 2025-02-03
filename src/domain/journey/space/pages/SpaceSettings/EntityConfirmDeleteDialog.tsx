@@ -31,6 +31,7 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
     setChecked(false);
     onClose();
   };
+
   const [handleDelete, loading] = useLoadingState(async () => {
     await onDelete();
     setChecked(false);
@@ -38,19 +39,14 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogHeader
-        onClose={handleClose}
-        title={t('components.deleteEntity.confirmDialog.title', { entity: entity })}
-      />
+      <DialogHeader onClose={handleClose} title={t('components.deleteEntity.confirmDialog.title', { entity })} />
       <DialogContent>
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
-            <Caption>
-              {t(description ?? 'components.deleteEntity.confirmDialog.description', { entity: entity })}{' '}
-            </Caption>
+            <Caption>{t(description ?? 'components.deleteEntity.confirmDialog.description', { entity })} </Caption>
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} />}
-              label={<Caption>{t('components.deleteEntity.confirmDialog.checkbox', { entity: entity })}</Caption>}
+              label={<Caption>{t('components.deleteEntity.confirmDialog.checkbox', { entity })}</Caption>}
             />
             <Actions justifyContent="flex-end" paddingTop={gutters()}>
               <Button onClick={handleClose}>{t('buttons.cancel')}</Button>

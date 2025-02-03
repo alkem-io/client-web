@@ -117,6 +117,7 @@ const useRoleSetAdmin = ({
     }
   }
 
+  // @@@ WIP ~ #7539 - Трябва да рифечваш това тук, за да се показуват ВиСи-тата в "http://localhost:3000/spacejoin/community"
   const {
     data: roleSetData,
     loading: loadingRoleSetData,
@@ -130,7 +131,6 @@ const useRoleSetAdmin = ({
       includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
     },
     skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
-    fetchPolicy: 'network-only',
   });
 
   const data = useMemo(() => {
