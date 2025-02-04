@@ -6,12 +6,7 @@ import {
   useUserProviderQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
-import {
-  AuthorizationPrivilege,
-  LicenseEntitlementType,
-  PlatformRole,
-  User,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicenseEntitlementType, RoleName, User } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
@@ -22,7 +17,7 @@ export interface UserContextValue {
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
   isAuthenticated: boolean;
-  platformRoles: PlatformRole[];
+  platformRoles: RoleName[];
   accountPrivileges: AuthorizationPrivilege[];
   accountEntitlements: LicenseEntitlementType[];
 }
@@ -46,7 +41,8 @@ const UserProvider: FC = ({ children }) => {
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
     usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated || !meData?.me?.user });
-  const platformLevelAuthorization = platformLevelAuthorizationData?.platform.authorization;
+  const myPrivileges = platformLevelAuthorizationData?.platform.authorization;
+  const myRoles = platformLevelAuthorizationData?.platform.roleSet.myRoles;
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
     refetchQueries: [refetchUserProviderQuery()],
@@ -70,8 +66,8 @@ const UserProvider: FC = ({ children }) => {
   const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
   const userMetadata = useMemo(
-    () => (meData?.me ? toUserMetadata(meData.me.user as User, platformLevelAuthorization) : undefined),
-    [meData, platformLevelAuthorization]
+    () => (meData?.me ? toUserMetadata(meData.me.user as User, myPrivileges, myRoles) : undefined),
+    [meData, myPrivileges, myRoles]
   );
 
   const providedValue = useMemo<UserContextValue>(
@@ -82,7 +78,7 @@ const UserProvider: FC = ({ children }) => {
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
-      platformRoles: platformLevelAuthorizationData?.platform.myRoles ?? [],
+      platformRoles: platformLevelAuthorizationData?.platform.roleSet.myRoles ?? [],
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
       accountEntitlements: meData?.me.user?.account?.license?.availableEntitlements ?? [],
     }),

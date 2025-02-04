@@ -42,10 +42,10 @@ fragment JourneyCommunity on Community {
   id
   roleSet {
     leadUsers: usersInRole(role: LEAD) {
-      ...CommunityMemberUser
+      ...RoleSetMemberUser
     }
     leadOrganizations: organizationsInRole(role: LEAD) {
-      ...CommunityMemberOrganization
+      ...RoleSetMemberOrganization
     }
     authorization {
       id

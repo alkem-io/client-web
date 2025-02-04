@@ -1,68 +1,77 @@
-query VirtualContributor($id: UUID_NAMEID!) {
-  virtualContributor(ID: $id) {
-    id
-    nameID
-    authorization {
+query VirtualContributor($id: UUID!) {
+  lookup {
+    virtualContributor(ID: $id) {
       id
-      myPrivileges
-    }
-    provider {
-      id
+      nameID
+      authorization {
+        id
+        myPrivileges
+      }
+      settings {
+        privacy {
+          knowledgeBaseContentVisible
+        }
+      }
+      provider {
+        id
+        profile {
+          id
+          displayName
+          url
+          location {
+            country
+            city
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      searchVisibility
+      listedInStore
+      status
+      aiPersona {
+        id
+        bodyOfKnowledgeID
+        bodyOfKnowledgeType
+        bodyOfKnowledge
+      }
       profile {
         id
         displayName
-        url
-        location {
-          country
-          city
+        description
+        tagline
+        tagsets {
+          ...TagsetDetails
         }
+        url
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
-        tagsets {
-          id
-          tags
-        }
-      }
-    }
-    searchVisibility
-    listedInStore
-    status
-    aiPersona {
-      id
-      bodyOfKnowledgeID
-      bodyOfKnowledgeType
-      bodyOfKnowledge
-    }
-    profile {
-      id
-      displayName
-      description
-      tagline
-      tagsets {
-        ...TagsetDetails
-      }
-      url
-      avatar: visual(type: AVATAR) {
-        ...VisualFull
       }
     }
   }
 }
 
-query VirtualContributorProfile($id: UUID_NAMEID!) {
-  virtualContributor(ID: $id) {
-    id
-    profile {
+query VirtualContributorProfile($id: UUID!) {
+  lookup {
+    virtualContributor(ID: $id) {
       id
-      displayName
-      tagline
-      tagsets {
-        ...TagsetDetails
-      }
-      url
-      avatar: visual(type: AVATAR) {
-        ...VisualFull
+      profile {
+        id
+        displayName
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
       }
     }
   }
@@ -96,6 +105,34 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
     listedInStore
     status
     searchVisibility
+    settings {
+      privacy {
+        knowledgeBaseContentVisible
+      }
+    }
+    profile {
+      id
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      displayName
+      description
+    }
+  }
+}
+
+mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributorSettingsInput!) {
+  updateVirtualContributorSettings(settingsData: $settingsData) {
+    id
+    listedInStore
+    status
+    searchVisibility
+    settings {
+      privacy {
+        knowledgeBaseContentVisible
+      }
+    }
     profile {
       id
       tagline

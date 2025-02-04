@@ -1,4 +1,4 @@
-import { CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface InvitationItem extends Identifiable {
@@ -16,6 +16,6 @@ export interface InvitationItem extends Identifiable {
     welcomeMessage?: string;
     createdDate: Date | string;
     state?: string;
-    contributorType?: CommunityContributorType;
+    contributorType?: RoleSetContributorType;
   };
 }

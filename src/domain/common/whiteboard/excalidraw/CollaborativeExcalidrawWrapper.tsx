@@ -28,6 +28,7 @@ import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '@/core/ui/loading/Loading';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
@@ -73,7 +74,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 }));
 
 export interface WhiteboardWhiteboardEntities {
-  whiteboard: Identifiable | undefined;
+  whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
   filesManager: WhiteboardFilesManager;
   lastSavedDate: Date | undefined;
 }
@@ -165,6 +166,12 @@ const CollaborativeExcalidrawWrapper = ({
       if (isOnline) {
         setupReconnectTimeout();
       }
+      // event if it's duplicated by the httpLink and Portal handlers, let's log this closeConnection one
+      // with additional info here #7492
+      logError('WB Connection Closed', {
+        category: TagCategoryValues.WHITEBOARD,
+        label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Online: ${isOnline}`,
+      });
     },
     onInitialize: collabApi => {
       combinedCollabApiRef.current = collabApi;

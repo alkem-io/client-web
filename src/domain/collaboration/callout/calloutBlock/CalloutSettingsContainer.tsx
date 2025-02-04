@@ -35,7 +35,7 @@ import {
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -117,8 +117,9 @@ export interface CalloutSettingsContainerProps
   };
   expanded?: boolean;
   onExpand?: () => void;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
   disableRichMedia?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutSettingsContainer = ({
@@ -138,9 +139,11 @@ const CalloutSettingsContainer = ({
   journeyTypeName,
   children,
   disableRichMedia,
+  disablePostResponses,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
 
+  // SpaceNameId is needed to save callout as template in this space
   const { spaceNameId } = useUrlParams();
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
@@ -445,6 +448,7 @@ const CalloutSettingsContainer = ({
           canChangeCalloutLocation
           journeyTypeName={journeyTypeName}
           disableRichMedia={disableRichMedia}
+          disablePostResponses={disablePostResponses && callout.type === CalloutType.Post}
         />
       )}
       <ConfirmationDialog

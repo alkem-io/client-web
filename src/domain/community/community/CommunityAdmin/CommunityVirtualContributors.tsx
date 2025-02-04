@@ -20,7 +20,7 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
-import { InviteContributorsData } from '@/domain/community/invitations/useInviteUsers';
+import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
 
 type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
@@ -58,7 +58,7 @@ type CommunityVirtualContributorsProps = {
   fetchAvailableVirtualContributors: (filter?: string) => Promise<Entity[] | undefined>;
   onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
-  inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
+  inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
   spaceDisplayName?: string;
 };
 

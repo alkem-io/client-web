@@ -1,0 +1,43 @@
+mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
+  eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
+    id
+    nextEvents
+    state
+  }
+}
+
+mutation InviteContributorsEntryRoleOnRoleSet($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
+  inviteContributorsEntryRoleOnRoleSet(invitationData: {
+    invitedContributors: $contributorIds
+    roleSetID: $roleSetId
+    welcomeMessage: $message
+    extraRole: $extraRole
+  }) {
+    id
+  }
+}
+
+mutation InviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
+  inviteUserToPlatformAndRoleSet(invitationData: {
+    email: $email
+    roleSetID: $roleSetId
+    welcomeMessage: $message
+    roleSetExtraRole: $extraRole
+  }) {
+    ... on PlatformInvitation {
+      id
+    }
+  }
+}
+
+mutation DeleteInvitation($invitationId: UUID!) {
+  deleteInvitation(deleteData: { ID: $invitationId }) {
+    id
+  }
+}
+
+mutation DeletePlatformInvitation($invitationId: UUID!) {
+  deletePlatformInvitation(deleteData: { ID: $invitationId }) {
+    id
+  }
+}

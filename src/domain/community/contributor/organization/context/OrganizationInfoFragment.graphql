@@ -7,6 +7,9 @@ fragment OrganizationInfo on Organization {
     id
     myPrivileges
   }
+  roleSet {
+    id
+  }
   verification {
     id
     status
@@ -38,31 +41,5 @@ fragment OrganizationInfo on Organization {
     id
     name
     value
-  }
-  associates @include(if: $includeAssociates) {
-    id
-    nameID
-    isContactable
-    profile {
-      id
-      displayName
-      location {
-        country
-        city
-      }
-      visual(type: AVATAR) {
-        ...VisualUri
-        alternativeText
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  admins @include(if: $includeAssociates) {
-    id
-  }
-  owners @include(if: $includeAssociates) {
-    id
   }
 }

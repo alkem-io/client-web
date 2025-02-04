@@ -107,7 +107,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   const roleOptions = useMemo(() => {
     const options: Partial<SelectOption<ActivityFeedRoles | typeof ROLE_OPTION_ALL>>[] = SELECTABLE_ROLES.map(role => ({
       value: role,
-      label: t(`common.enums.communityRole.${role}` as const),
+      label: t(`common.roles.${role}` as const),
     }));
 
     options.unshift({

@@ -16,11 +16,11 @@ import { gutters } from '@/core/ui/grid/utils';
 import { MembershipProps } from './MyMembershipsDialog.model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
-import { SpaceLevel, CommunityRoleType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
 
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 
-const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
+const VISIBLE_COMMUNITY_ROLES = [RoleName.Admin, RoleName.Lead];
 
 export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProps }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -34,9 +34,9 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   const paddingLeftMap = {
-    [SpaceLevel.Space]: 0,
-    [SpaceLevel.Challenge]: 5,
-    [SpaceLevel.Opportunity]: 10,
+    [SpaceLevel.L0]: 0,
+    [SpaceLevel.L1]: 5,
+    [SpaceLevel.L2]: 10,
   };
   const {
     childMemberships,
@@ -49,7 +49,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
   const avatar = cardBanner?.uri;
   const roles = community?.roleSet?.myRoles;
   const paddingLeft = paddingLeftMap[level] ?? 0;
-  const verticalOffset = level === SpaceLevel.Space ? 1 : 0.5;
+  const verticalOffset = level === SpaceLevel.L0 ? 1 : 0.5;
   const communityRoles = roles?.filter(role => VISIBLE_COMMUNITY_ROLES.includes(role)).sort();
 
   return (
@@ -82,7 +82,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
 
             {isMobile && (
               <Caption color="primary">
-                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
               </Caption>
             )}
           </BadgeCardView>
@@ -90,7 +90,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
           <Gutters flexDirection="row" disableGap padding={0}>
             {!isMobile && (
               <Caption color="primary" display="flex" alignItems="center">
-                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
               </Caption>
             )}
 

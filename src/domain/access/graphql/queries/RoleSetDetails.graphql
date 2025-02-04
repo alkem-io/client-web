@@ -1,0 +1,54 @@
+query RoleSetAuthorization(
+  $roleSetId: UUID!
+) {
+  platform {
+    authorization {
+      myPrivileges
+    }
+  }
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      roleNames
+    }
+  }
+}
+
+query RoleSetRoleAssignment(
+  $roleSetId: UUID!
+  $roles: [RoleName!]!
+  $includeUsers: Boolean = true,
+  $includeOrganizations: Boolean = true,
+  $includeVirtualContributors: Boolean = true,
+) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      usersInRoles(roles: $roles) @include(if: $includeUsers) {
+        role
+        users {
+          ...RoleSetMemberUser
+        }
+      }
+      organizationsInRoles(roles: $roles) @include(if: $includeOrganizations){
+        role
+        organizations {
+          ...RoleSetMemberOrganization
+        }
+      }
+      virtualContributorsInRoles(roles: $roles) @include(if: $includeVirtualContributors){
+        role
+        virtualContributors {
+          ...RoleSetMemberVirtualContributor
+        }
+      }
+      roleDefinitions(roles: $roles) {
+        ...RoleDefinitionPolicy
+      }
+    }
+  }
+}

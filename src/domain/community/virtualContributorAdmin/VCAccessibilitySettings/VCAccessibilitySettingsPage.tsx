@@ -1,8 +1,8 @@
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
   useRefreshBodyOfKnowledgeMutation,
+  useUpdateVirtualContributorSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -18,6 +18,9 @@ import { AiPersonaBodyOfKnowledgeType, SearchVisibility } from '@/core/apollo/ge
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Box, Tooltip } from '@mui/material';
 
 type VCAccessibilityProps = {
   listedInStore?: boolean;
@@ -26,18 +29,15 @@ type VCAccessibilityProps = {
 
 const VCAccessibilitySettingsPage = () => {
   const { t } = useTranslation();
-
-  const { vcNameId = '' } = useUrlParams();
-
   const notify = useNotification();
 
+  const { vcId } = useUrlResolver();
   const { data } = useVirtualContributorQuery({
-    variables: {
-      id: vcNameId,
-    },
+    variables: { id: vcId! },
+    skip: !vcId,
   });
 
-  const vc = data?.virtualContributor;
+  const vc = data?.lookup.virtualContributor;
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
   const handleUpdate = (props: VCAccessibilityProps) => {
@@ -46,6 +46,25 @@ const VCAccessibilitySettingsPage = () => {
         virtualContributorData: {
           ID: vc?.id ?? '',
           ...props,
+        },
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
+      },
+    });
+  };
+
+  const [updateSettings, { loading: loadingSettings }] = useUpdateVirtualContributorSettingsMutation();
+  const handleUpdateSettings = (isVisible: boolean) => {
+    updateSettings({
+      variables: {
+        settingsData: {
+          virtualContributorID: vc?.id ?? '',
+          settings: {
+            privacy: {
+              knowledgeBaseContentVisible: isVisible,
+            },
+          },
         },
       },
       onCompleted: () => {
@@ -139,6 +158,32 @@ const VCAccessibilitySettingsPage = () => {
             <PageContentColumn columns={12}>
               <PageContentBlock>
                 <BlockTitle>{t('pages.virtualContributorProfile.settings.ingestion.title')}</BlockTitle>
+                <Tooltip
+                  title={
+                    <>
+                      <Box>
+                        {t('pages.virtualContributorProfile.settings.privacy.tooltip1', {
+                          vcName: vc?.profile?.displayName,
+                        })}
+                      </Box>
+                      <Box>{t('pages.virtualContributorProfile.settings.privacy.tooltip2')}</Box>
+                    </>
+                  }
+                  placement="top-start"
+                >
+                  <Gutters disablePadding>
+                    <SwitchSettingsGroup
+                      options={{
+                        listedInStore: {
+                          checked: !vc?.settings.privacy.knowledgeBaseContentVisible,
+                          disabled: loadingSettings,
+                          label: t('pages.virtualContributorProfile.settings.privacy.description'),
+                        },
+                      }}
+                      onChange={(_, newValue) => handleUpdateSettings(!newValue)}
+                    />
+                  </Gutters>
+                </Tooltip>
                 <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
                 <Actions>
                   <LoadingButton variant="contained" loading={updateLoading} onClick={refreshIngestion}>

@@ -9,7 +9,6 @@ import {
   SpacePrivacyMode,
   UserRolesSearchCardsQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -25,14 +24,15 @@ import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyC
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { ComponentType } from 'react';
+import { SvgIconProps } from '@mui/material';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
   const profile = user.profile;
   const avatarUri = profile.visual?.uri;
   const { country, city } = profile.location ?? {};
-  const url = buildUserProfileUrl(user.nameID);
   const tags = profile.tagsets?.[0]?.tags ?? [];
 
   return (
@@ -44,7 +44,7 @@ const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchRe
       city={city}
       country={country}
       tags={tags}
-      userUri={url}
+      userUri={user.profile.url}
       matchedTerms={data.terms}
       isContactable={user.isContactable}
     />
@@ -59,7 +59,7 @@ const _hydrateOrganizationCard = (
   const profile = data.organization.profile;
   const avatarUri = profile.visual?.uri;
   const { country, city } = profile.location ?? {};
-  const url = buildOrganizationUrl(organization.nameID);
+  const url = organization.profile.url;
   const tags = profile.tagsets?.[0]?.tags ?? [];
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);
@@ -104,7 +104,7 @@ const hydrateSpaceCard = (
       return null;
     }
 
-    const parentIcon = data.parentSpace.level === SpaceLevel.Space ? SpaceIcon : SubspaceIcon;
+    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceIcon : SubspaceIcon;
 
     return (
       <CardParentJourneySegment
@@ -135,17 +135,22 @@ const hydrateSpaceCard = (
   );
 };
 
-const getContributionParentInformation = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
-  const info = {
+interface ContributionParentInformation {
+  displayName: string;
+  locked: boolean;
+  url: string;
+  icon: ComponentType<SvgIconProps>;
+}
+
+const getContributionParentInformation = (
+  data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
+): ContributionParentInformation => {
+  return {
     displayName: data.space.profile.displayName,
     locked: data.space?.settings.privacy?.mode === SpacePrivacyMode.Private,
     url: data.space.profile.url,
-    icon: SpaceIcon,
+    icon: spaceLevelIcon[data.space.level] ?? SpaceIcon,
   };
-
-  info.icon = spaceIconByLevel[data.space.level];
-
-  return info;
 };
 
 const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {

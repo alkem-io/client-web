@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import PageContent from '@/core/ui/content/PageContent';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
@@ -10,11 +9,17 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import CommunityContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
+import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
 import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
-import { AuthorizationPrivilege, CalloutGroupName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutGroupName,
+  RoleName,
+  RoleSetContributorType,
+  SearchVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
@@ -25,16 +30,16 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 const SpaceCommunityPage = () => {
-  const { spaceNameId } = useUrlParams();
   const { isAuthenticated } = useUserContext();
   const { collaborationId, journeyPath } = useRouteResolver();
-  const { communityId } = useSpace();
+  const { spaceId, loading: loadingSpace, communityId } = useSpace();
 
   const { t } = useTranslation();
 
-  if (!spaceNameId) {
+  if (!spaceId && !loadingSpace) {
     throw new TypeError('Must be within a Space');
   }
 
@@ -47,11 +52,35 @@ const SpaceCommunityPage = () => {
   };
 
   const { data, loading } = useSpaceCommunityPageQuery({
-    variables: { spaceNameId, includeCommunity: isAuthenticated },
+    variables: {
+      spaceId,
+      includeCommunity: isAuthenticated,
+    },
+    skip: !spaceId,
   });
 
-  const leadUsers = data?.space.community?.roleSet?.leadUsers;
-  const calloutsSetId = data?.space.collaboration?.calloutsSet?.id;
+  const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetAdmin({
+    roleSetId: data?.lookup.space?.community?.roleSet.id,
+    relevantRoles: [RoleName.Member, RoleName.Lead],
+    contributorTypes: [
+      RoleSetContributorType.User,
+      RoleSetContributorType.Organization,
+      RoleSetContributorType.Virtual,
+    ],
+  });
+  const memberUsers = usersByRole[RoleName.Member];
+  const leadUsers = usersByRole[RoleName.Lead];
+  const memberOrganizations = organizationsByRole[RoleName.Member];
+  const memberVirtualContributors = virtualContributorsByRole[RoleName.Member];
+  const { memberUsers: memberUserCards, memberOrganizations: memberOrganizationCards } = useCommunityMembersAsCardProps(
+    { memberUsers, memberOrganizations },
+    {
+      memberUsersLimit: 0,
+      memberOrganizationsLimit: 0,
+    }
+  );
+
+  const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -65,26 +94,24 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(() => data?.space.provider && [data.space.provider], [data?.space.provider]);
+  const hostOrganizations = useMemo(
+    () => data?.lookup.space?.provider && [data.lookup.space.provider],
+    [data?.lookup.space?.provider]
+  );
 
-  const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community?.roleSet, {
-    memberUsersLimit: 0,
-    memberOrganizationsLimit: 0,
-  });
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.lookup.space?.community?.id);
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.space.community?.id);
-
-  const hasReadPrivilege = data?.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  const hasReadPrivilege = data?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
-      data?.space.community?.roleSet?.memberVirtualContributors?.filter(
-        vc => vc?.searchVisibility !== SearchVisibility.Hidden
-      ) ?? [];
+      memberVirtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
   }
 
-  const hasInvitePrivilege = data?.space.community?.roleSet.authorization?.myPrivileges?.some(privilege =>
-    [AuthorizationPrivilege.CommunityInvite, AuthorizationPrivilege.CommunityAddMemberVcFromAccount].includes(privilege)
+  const hasInvitePrivilege = myPrivileges?.some(privilege =>
+    [AuthorizationPrivilege.RolesetEntryRoleInvite, AuthorizationPrivilege.CommunityAssignVcFromAccount].includes(
+      privilege
+    )
   );
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
@@ -118,15 +145,14 @@ const SpaceCommunityPage = () => {
                   showInviteOption={hasInvitePrivilege}
                 />
               )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.profile.url} />
             </InfoColumn>
             <ContentColumn>
-              <CommunityContributorsBlockWide
-                users={memberUsers}
+              <RoleSetContributorsBlockWide
+                users={memberUserCards}
                 showUsers={isAuthenticated}
-                organizations={memberOrganizations}
+                organizations={memberOrganizationCards}
               />
-
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}

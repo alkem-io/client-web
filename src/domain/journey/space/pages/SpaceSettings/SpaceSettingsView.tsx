@@ -289,12 +289,18 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
               options={{
                 [SpacePrivacyMode.Public]: {
                   label: (
-                    <Trans i18nKey="pages.admin.space.settings.visibility.public" components={{ b: <strong /> }} />
+                    <Trans
+                      i18nKey={`pages.admin.space.settings.visibility.${isSubspace ? 'publicSubspace' : 'public'}`}
+                      components={{ b: <strong /> }}
+                    />
                   ),
                 },
                 [SpacePrivacyMode.Private]: {
                   label: (
-                    <Trans i18nKey="pages.admin.space.settings.visibility.private" components={{ b: <strong /> }} />
+                    <Trans
+                      i18nKey={`pages.admin.space.settings.visibility.${isSubspace ? 'privateSubspace' : 'private'}`}
+                      components={{ b: <strong /> }}
+                    />
                   ),
                 },
               }}

@@ -10,7 +10,7 @@ import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { CommunityContributorType, CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 
 export interface EntityDetailsContainerEntities {
@@ -66,7 +66,7 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
       const space = spaceData.lookup.space;
       return {
         displayName: space.profile.displayName!,
-        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }) as JourneyTypeName,
+        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }),
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,
@@ -79,26 +79,26 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
 
   const handleLeaveCommunity = useCallback(async () => {
     switch (contributorType) {
-      case CommunityContributorType.User: {
+      case RoleSetContributorType.User: {
         if (details?.roleSetId && userId) {
           await userLeaveCommunity({
             variables: {
               contributorId: userId,
               roleSetId: details.roleSetId,
-              role: CommunityRoleType.Member,
+              role: RoleName.Member,
             },
             awaitRefetchQueries: true,
           });
         }
         break;
       }
-      case CommunityContributorType.Virtual: {
+      case RoleSetContributorType.Virtual: {
         if (details?.roleSetId && contributorId) {
           await vcLeaveCommunity({
             variables: {
               contributorId: contributorId,
               roleSetId: details.roleSetId,
-              role: CommunityRoleType.Member,
+              role: RoleName.Member,
             },
           });
         }

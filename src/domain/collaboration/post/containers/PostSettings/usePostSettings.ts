@@ -48,12 +48,12 @@ export interface PostSettingsContainerState {
 }
 
 export interface PostSettingsContainerProps {
-  postNameId: string | undefined;
+  postId: string | undefined;
   calloutId: string | undefined;
 }
 
 const usePostSettings = ({
-  postNameId,
+  postId,
   calloutId,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
@@ -64,26 +64,25 @@ const usePostSettings = ({
 
   const { data, loading, error } = usePostSettingsQuery({
     variables: {
-      postNameId: postNameId!,
+      postId: postId!,
       calloutId: calloutId!,
     },
-    skip: !calloutId || !postNameId,
+    skip: !calloutId || !postId,
   });
 
   const parentCallout = data?.lookup.callout;
 
-  const parentCalloutPostNames = compact(
-    parentCallout?.postNames?.map(contribution => contribution.post?.profile.displayName)
-  );
+  const parentCalloutPostNames = compact(parentCallout?.postNames?.map(post => post.post?.profile.displayName));
 
-  const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId);
+  const post = data?.lookup.post;
+  const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.id === postId);
 
   const [updatePost, { loading: updating, error: updateError }] = useUpdatePostMutation({
     onCompleted: () => notify('Post updated successfully', 'success'),
   });
 
   const handleUpdate = async (newPost: PostUpdateData) => {
-    if (postContribution?.post) {
+    if (post) {
       await updatePost({
         variables: {
           input: {
@@ -99,7 +98,7 @@ const usePostSettings = ({
               })),
               tagsets: [
                 {
-                  ID: postContribution.post.profile.tagset?.id ?? '',
+                  ID: post.profile.tagset?.id ?? '',
                   tags: newPost.tags,
                 },
               ],
@@ -126,9 +125,9 @@ const usePostSettings = ({
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {
     setPush(push);
-    if (postContribution?.post) {
+    if (post) {
       addReference({
-        profileId: postContribution.post.profile.id,
+        profileId: post.profile.id,
         name: newReferenceName(t, referencesLength),
       });
     }
@@ -143,7 +142,7 @@ const usePostSettings = ({
 
   return {
     contributionId: postContribution?.id,
-    post: postContribution?.post,
+    post,
     postsNames: parentCalloutPostNames,
     parentCallout,
     loading,

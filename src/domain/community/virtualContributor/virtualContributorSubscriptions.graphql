@@ -1,4 +1,4 @@
-subscription virtualContributorUpdates($virtualContributorID: UUID_NAMEID!) {
+subscription virtualContributorUpdates($virtualContributorID: UUID!) {
   virtualContributorUpdated(virtualContributorID: $virtualContributorID) {
     virtualContributor {
       id

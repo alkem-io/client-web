@@ -56,11 +56,11 @@ interface Provided {
 
 export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
   switch (level) {
-    case SpaceLevel.Challenge:
+    case SpaceLevel.L1:
       return SubspaceIcon;
-    case SpaceLevel.Opportunity:
+    case SpaceLevel.L2:
       return OpportunityIcon;
-    case SpaceLevel.Space:
+    case SpaceLevel.L0:
     default:
       return SpaceIcon;
   }
@@ -119,7 +119,7 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: storageAggregator.parentEntity.displayName,
-      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level ?? SpaceLevel.Space),
+      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level ?? SpaceLevel.L0),
       url: storageAggregator.parentEntity.url,
       size: 0,
       collapsible: true,

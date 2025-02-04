@@ -1,7 +1,0 @@
-fragment GroupDetails on UserGroup {
-  id
-  profile {
-    id
-    displayName
-  }
-}

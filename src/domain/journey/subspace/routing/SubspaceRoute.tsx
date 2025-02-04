@@ -5,7 +5,7 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceProvider from '../context/SubspaceProvider';
 import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
-import { routes } from '../routes/challengeRoutes';
+import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
@@ -39,7 +39,6 @@ const SubspaceRoute = () => {
         />
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
         <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
         <Route
           path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}

@@ -16,22 +16,7 @@ query JourneyRouteResolver(
   }
 }
 
-query SpaceKeyEntitiesIDs($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      community {
-        id
-      }
-      collaboration {
-        id
-        calloutsSet {
-          id
-        }
-      }
-    }
-  }
-}
+
 
 query CalloutId($calloutNameId: UUID_NAMEID!, $collaborationId: UUID!) {
   lookup {

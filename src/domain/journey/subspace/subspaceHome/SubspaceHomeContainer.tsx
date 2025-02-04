@@ -3,11 +3,18 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
-import { AuthorizationPrivilege, SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  RoleName,
+  RoleSetContributorType,
+  SubspacePageSpaceFragment,
+} from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 interface SubspaceHomeContainerProvided {
   innovationFlow: UseInnovationFlowStatesProvided;
@@ -16,6 +23,10 @@ interface SubspaceHomeContainerProvided {
   spaceReadAccess: SpaceReadAccess;
   communityReadAccess: boolean;
   communityId: string | undefined;
+  roleSet: {
+    leadUsers: ContributorViewProps[];
+    leadOrganizations: ContributorViewProps[];
+  };
 }
 
 interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
@@ -46,6 +57,12 @@ const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerPro
   const community = data?.lookup.space?.community;
   const communityReadAccess = (community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
+  const { organizations, users } = useRoleSetAdmin({
+    roleSetId: community?.roleSet.id,
+    relevantRoles: [RoleName.Lead],
+    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+  });
+
   return (
     <>
       {children({
@@ -55,6 +72,10 @@ const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerPro
         spaceReadAccess,
         communityReadAccess,
         communityId: community?.id,
+        roleSet: {
+          leadUsers: users,
+          leadOrganizations: organizations,
+        },
       })}
     </>
   );

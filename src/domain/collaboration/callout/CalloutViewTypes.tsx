@@ -1,6 +1,6 @@
 import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 
 export interface CalloutSortEvents {
   onMoveUp: (calloutId: string) => void;
@@ -25,7 +25,7 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
   contributionsCount: number;
   loading?: boolean;
   canCreate?: boolean;
@@ -35,4 +35,5 @@ export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<Callo
   onCalloutUpdate?: () => void;
   disableMarginal?: boolean;
   disableRichMedia?: boolean;
+  disablePostResponses?: boolean;
 }

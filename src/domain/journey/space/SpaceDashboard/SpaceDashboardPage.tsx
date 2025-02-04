@@ -78,7 +78,7 @@ const SpaceDashboardPage = ({
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}
-              spaceLevel={SpaceLevel.Space}
+              spaceLevel={SpaceLevel.L0}
               displayName={entities.space?.profile.displayName}
               tagline={entities.space?.profile.tagline}
               references={entities.references}

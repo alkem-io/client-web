@@ -10,7 +10,7 @@ type UserChipProps = {
 export const UserChip = ({ userId, ...props }: UserChipProps) => {
   const { data, loading } = useUserSelectorUserDetailsQuery({ variables: { id: userId } });
 
-  const user = data?.user;
+  const user = data?.lookup.user;
 
   return (
     <ProfileChip

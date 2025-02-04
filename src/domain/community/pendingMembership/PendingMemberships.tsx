@@ -85,7 +85,7 @@ export const InvitationHydrator = ({
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
       visualType:
-        invitation.spacePendingMembershipInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+        invitation.spacePendingMembershipInfo.level === SpaceLevel.L0 && visualType === VisualType.Avatar
           ? VisualType.Card
           : visualType, // Spaces don't have avatars
     },
@@ -99,7 +99,7 @@ export const InvitationHydrator = ({
     },
   });
 
-  const createdBy = userData?.user;
+  const createdBy = userData?.lookup.user;
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
     if (!invitation) {
@@ -142,7 +142,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
       spaceId: application.spacePendingMembershipInfo.id,
       fetchDetails: true,
       visualType:
-        application.spacePendingMembershipInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+        application.spacePendingMembershipInfo.level === SpaceLevel.L0 && visualType === VisualType.Avatar
           ? VisualType.Card
           : visualType, // Spaces don't have avatars
     },

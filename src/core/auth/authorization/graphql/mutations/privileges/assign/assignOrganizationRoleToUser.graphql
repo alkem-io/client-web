@@ -1,9 +1,0 @@
-mutation assignOrganizationRoleToUser($input: AssignOrganizationRoleToUserInput!) {
-  assignOrganizationRoleToUser(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

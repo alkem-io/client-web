@@ -1,12 +1,7 @@
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import {
-  useInnovationPackProfilePageQuery,
-  useInnovationPackResolveIdQuery,
-  useTemplateUrlResolverQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useInnovationPackProfilePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -22,24 +17,11 @@ import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponen
 import {} from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 const InnovationPackProfilePage = () => {
   const { t } = useTranslation();
-  const { templateNameId, innovationPackNameId } = useUrlParams();
-
-  if (!innovationPackNameId) {
-    throw new Error('Must be within Template Pack');
-  }
-
-  const { data: innovationPackResolverData, loading: resolvingInnovationPack } = useInnovationPackResolveIdQuery({
-    variables: { innovationPackNameId },
-    skip: !innovationPackNameId,
-  });
-
-  const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
-  if (innovationPackNameId && !resolvingInnovationPack && !innovationPackId) {
-    throw new Error('Template pack not found.');
-  }
+  const { templateId, innovationPackId, loading: resolving } = useUrlResolver();
 
   const { data, loading: loadingInnovationPack } = useInnovationPackProfilePageQuery({
     variables: {
@@ -53,13 +35,7 @@ const InnovationPackProfilePage = () => {
   const canUpdate = innovationPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const templatesSetId = innovationPack?.templatesSet?.id;
 
-  const { data: templateResolverData, loading: resolvingTemplate } = useTemplateUrlResolverQuery({
-    variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
-    skip: !templatesSetId || !templateNameId,
-  });
-  const selectedTemplateId = templateResolverData?.lookupByName.template?.id;
-
-  const loading = resolvingInnovationPack || resolvingTemplate || loadingInnovationPack;
+  const loading = resolving || loadingInnovationPack;
 
   return (
     <>
@@ -99,7 +75,7 @@ const InnovationPackProfilePage = () => {
             </PageContentBlock>
             {loading && <Loading />}
             {!loading && templatesSetId && (
-              <TemplatesAdmin templatesSetId={templatesSetId} templateId={selectedTemplateId} baseUrl={baseUrl} />
+              <TemplatesAdmin templatesSetId={templatesSetId} templateId={templateId} baseUrl={baseUrl} />
             )}
           </PageContentColumn>
         </PageContent>

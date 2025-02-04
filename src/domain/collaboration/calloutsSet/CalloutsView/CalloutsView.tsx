@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useCalloutEdit } from '../../callout/edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
 import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
@@ -32,7 +32,7 @@ const CalloutsViewSkeleton = () => (
 
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
@@ -41,6 +41,7 @@ export interface CalloutsViewProps {
     | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
   disableMarginal?: boolean;
   disableRichMedia?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutsView = ({
@@ -52,6 +53,7 @@ const CalloutsView = ({
   blockProps,
   disableMarginal,
   disableRichMedia,
+  disablePostResponses,
 }: CalloutsViewProps) => {
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
@@ -138,6 +140,7 @@ const CalloutsView = ({
                         onExpand={() => handleExpand(calloutDetails)}
                         disableMarginal={disableMarginal}
                         disableRichMedia={disableRichMedia}
+                        disablePostResponses={disablePostResponses}
                         {...sortEvents}
                         {...sortProps}
                       />

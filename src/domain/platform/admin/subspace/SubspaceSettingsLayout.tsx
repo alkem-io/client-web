@@ -52,7 +52,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       },
     ];
 
-    if (spaceLevel === SpaceLevel.Challenge) {
+    if (spaceLevel === SpaceLevel.L1) {
       tabs.push({
         section: SettingsSection.Subsubspaces,
         route: 'opportunities',

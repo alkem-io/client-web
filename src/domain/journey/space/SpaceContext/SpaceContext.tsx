@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { useSpaceProviderQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -10,6 +9,7 @@ import {
   SpacePrivacyMode,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import { useUserContext } from '@/domain/community/user';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -83,11 +83,10 @@ const NO_PRIVILEGES = [];
 
 const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { spaceNameId = '' } = useUrlParams();
-  // todo: still needed?
-  const { error: configError } = useConfig();
+
+  const { isAuthenticated } = useUserContext();
 
   const {
-    error: spaceError,
     data,
     loading,
     refetch: refetchSpace,
@@ -106,7 +105,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const calloutsSetId = space?.collaboration?.calloutsSet?.id ?? '';
   const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
-  const error = configError || spaceError;
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -144,7 +142,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canCreateSubspaces: canCreateSubspaces,
       canCreateTemplates,
       canCreate,
-      communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
+      communityReadAccess: isAuthenticated && communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
@@ -187,7 +185,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         permissions,
         isPrivate,
         loading,
-        error,
         refetchSpace,
         profile,
         context: space?.context,

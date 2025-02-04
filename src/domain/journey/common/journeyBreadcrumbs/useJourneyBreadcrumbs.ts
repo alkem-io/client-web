@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { compact } from 'lodash';
 
 export interface BreadcrumbsItem {
   displayName: string;
   uri: string;
+  level: SpaceLevel;
   avatar?: {
     uri?: string;
   };
@@ -31,20 +33,21 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
     skip: !journeyPath || journeyPath.length === 0 || loading,
   });
 
-  const journeyProfiles = [data?.space.profile, data?.space.subspace?.profile, data?.space.subspace?.subspace?.profile];
+  const pathSpaces = compact([data?.space, data?.space.subspace, data?.space.subspace?.subspace]);
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
     if (isLoadingBreadcrumbs) {
       return [];
     }
 
-    return journeyProfiles.slice(0, currentJourneyIndex + 1).map(profile => {
-      const displayName = profile?.displayName!;
-      const journeyUri = profile?.url!;
+    return pathSpaces.slice(0, currentJourneyIndex + 1).map(space => {
+      const profile = space.profile;
+      const displayName = profile.displayName!;
+      const journeyUri = profile.url!;
       return {
         displayName,
         uri: journeyUri,
-        // journeyTypeName: JOURNEY_NESTING[journey],
+        level: space.level,
         avatar: profile?.avatar,
       };
     });

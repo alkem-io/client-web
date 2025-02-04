@@ -3,82 +3,96 @@ import AdminLayout from '../layout/toplevel/AdminLayout';
 import { Box, Tab } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '../layout/toplevel/constants';
-import { AuthorizationCredential, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import PlatformRoleAssignementPage from './PlatformRoleAssignementPage';
 import { gutters } from '@/core/ui/grid/utils';
+import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
+import Loading from '@/core/ui/loading/Loading';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import { useTranslation } from 'react-i18next';
+import { useUserContext } from '@/domain/community/user';
+import EditMemberUsers from '../components/Community/EditMembersUsers';
+import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 
 interface AdminAuthorizationPageProps {
-  credential?: AuthorizationCredential;
+  selectedRole?: RoleName;
 }
 
-const tabs = [
-  {
-    title: 'Global admins',
-    authorizationCredential: AuthorizationCredential.GlobalAdmin,
-    platformRole: PlatformRole.GlobalAdmin,
-  },
-  {
-    title: 'Support',
-    authorizationCredential: AuthorizationCredential.GlobalSupport,
-    platformRole: PlatformRole.Support,
-  },
-  {
-    title: 'License Manager',
-    authorizationCredential: AuthorizationCredential.GlobalLicenseManager,
-    platformRole: PlatformRole.LicenseManager,
-  },
-  {
-    title: 'Community Reader',
-    authorizationCredential: AuthorizationCredential.GlobalCommunityRead,
-    platformRole: PlatformRole.CommunityReader,
-  },
-  {
-    title: 'Spaces Reader',
-    authorizationCredential: AuthorizationCredential.GlobalSpacesReader,
-    platformRole: PlatformRole.SpacesReader,
-  },
-  {
-    title: 'Beta Testers',
-    authorizationCredential: AuthorizationCredential.BetaTester,
-    platformRole: PlatformRole.BetaTester,
-  },
-  {
-    title: 'VC Campaign',
-    authorizationCredential: AuthorizationCredential.VcCampaign,
-    platformRole: PlatformRole.VcCampaign,
-  },
-];
+const MANAGED_ROLES = RELEVANT_ROLES.Platform;
 
-const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => {
-  const selectedTab: AuthorizationCredential | '_none' = credential ?? '_none';
+const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) => {
+  const { t } = useTranslation();
+  const { user: userMetadata } = useUserContext();
+  const [searchTerm, setSearchTerm] = React.useState<string>('');
+  const currentUser = userMetadata?.user;
+
+  const { data, loading: loadingPlatformRoleSet } = usePlatformRoleSetQuery();
+  const roleSetId = data?.platform.roleSet.id;
+
+  const {
+    usersByRole,
+    assignPlatformRoleToUser,
+    removePlatformRoleFromUser,
+    loading: loadingRoleSet,
+    updating,
+  } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: MANAGED_ROLES,
+    contributorTypes: [RoleSetContributorType.User],
+  });
+
+  const availableUsersForRole = useRoleSetAvailableUsers({
+    roleSetId: roleSetId,
+    skip: !selectedRole,
+    mode: 'platform',
+    filter: searchTerm,
+    usersAlreadyInRole: selectedRole && usersByRole?.[selectedRole] ? usersByRole[selectedRole] : [],
+  });
+
+  const { users: availableMembers = [], fetchMore, hasMore } = availableUsersForRole!;
+
+  const loading = loadingPlatformRoleSet || loadingRoleSet;
 
   return (
     <AdminLayout currentTab={AdminSection.Authorization}>
-      <TabContext value={selectedTab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
-            {tabs.map(tab => (
-              <Tab
-                key={tab.authorizationCredential}
-                value={tab.authorizationCredential}
-                component={RouterLink}
-                to={`/admin/authorization/roles/${tab.authorizationCredential}`}
-                label={tab.title}
-              />
-            ))}
-          </TabList>
-        </Box>
-        <TabPanel value="_none" />
-        {tabs.map(tab => (
-          <TabPanel key={tab.authorizationCredential} value={tab.authorizationCredential}>
-            <PlatformRoleAssignementPage
-              role={tab.platformRole}
-              authorizationCredential={tab.authorizationCredential}
-            />
-          </TabPanel>
-        ))}
-      </TabContext>
+      {loading && <Loading />}
+      {!loading && roleSetId && (
+        <TabContext value={selectedRole ?? '_none'}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
+              {MANAGED_ROLES.map(tab => (
+                <Tab
+                  key={tab}
+                  value={tab}
+                  component={RouterLink}
+                  to={`/admin/authorization/roles/${tab}`}
+                  label={t(`common.roles.${tab}`)}
+                />
+              ))}
+            </TabList>
+          </Box>
+          <TabPanel value="_none" />
+          {MANAGED_ROLES.map(role => (
+            <TabPanel key={role} value={role}>
+              {role === selectedRole && (
+                <EditMemberUsers
+                  members={usersByRole[role] ?? []}
+                  availableMembers={availableMembers}
+                  executorId={currentUser?.id}
+                  onAdd={userId => assignPlatformRoleToUser(userId, role)}
+                  onRemove={userId => removePlatformRoleFromUser(userId, role)}
+                  updating={updating}
+                  loadingMembers={loading}
+                  loadingAvailableMembers={loading}
+                  onSearchTermChange={setSearchTerm}
+                  hasMore={hasMore}
+                  fetchMore={fetchMore}
+                />
+              )}
+            </TabPanel>
+          ))}
+        </TabContext>
+      )}
     </AdminLayout>
   );
 };

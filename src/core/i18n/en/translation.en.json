@@ -386,12 +386,6 @@
       "not-verified": ""
     },
     "enums": {
-      "communityRole": {
-        "ADMIN": "$t(common.admin)",
-        "LEAD": "$t(common.lead)",
-        "HOST": "$t(common.host)",
-        "MEMBER": "$t(common.member)"
-      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -409,103 +403,6 @@
         "ACCOUNT": "Account",
         "HIDDEN": "Hidden",
         "PUBLIC": "Public"
-      },
-      "authorization-credentials": {
-        "GLOBAL_ADMIN": {
-          "name": "Global Admin",
-          "order": 0,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Spaces",
-          "order": 1,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Global Community Admin",
-          "order": 2,
-          "hidden": false
-        },
-        "GLOBAL_REGISTERED": {
-          "name": "Registered",
-          "order": 999,
-          "hidden": true
-        },
-        "HUB_ADMIN": {
-          "name": "Space Admin",
-          "order": 3,
-          "hidden": false
-        },
-        "HUB_HOST": {
-          "name": "Space Host",
-          "order": 4,
-          "hidden": true
-        },
-        "HUB_MEMBER": {
-          "name": "Space Member",
-          "order": 5,
-          "hidden": true
-        },
-        "subspace_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 6,
-          "hidden": false
-        },
-        "subspace_LEAD": {
-          "name": "Subspace Lead",
-          "order": 7,
-          "hidden": true
-        },
-        "subspace_MEMBER": {
-          "name": "Subspace Member",
-          "order": 8,
-          "hidden": true
-        },
-        "OPPORTUNITY_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 9,
-          "hidden": true
-        },
-        "OPPORTUNITY_MEMBER": {
-          "name": "Subspace Member",
-          "order": 10,
-          "hidden": true
-        },
-        "OPPORTUNITY_LEAD": {
-          "name": "Subspace Lead",
-          "order": 11,
-          "hidden": true
-        },
-        "ORGANIZATION_OWNER": {
-          "name": "Organization Owner",
-          "order": 12,
-          "hidden": false
-        },
-        "ORGANIZATION_ADMIN": {
-          "name": "Organization Admin",
-          "order": 13,
-          "hidden": false
-        },
-        "ORGANIZATION_ASSOCIATE": {
-          "name": "Organization Associate",
-          "order": 14,
-          "hidden": true
-        },
-        "USER_SELF_MANAGEMENT": {
-          "name": "User Self Management",
-          "order": 15,
-          "hidden": true
-        },
-        "USER_GROUP_MEMBER": {
-          "name": "User Group Member",
-          "order": 16,
-          "hidden": true
-        },
-        "INNOVATION_PACK_PROVIDER": {
-          "name": "Template Pack Provider",
-          "order": 17,
-          "hidden": true
-        }
       },
       "edit-mode": {
         "new": "New",
@@ -550,6 +447,21 @@
       "users-contributing": "users that are contributing",
       "all-contributing-users": "all contributing users"
     },
+    "roles": {
+      "ADMIN": "$t(common.admin)",
+      "LEAD": "$t(common.lead)",
+      "HOST": "$t(common.host)",
+      "MEMBER": "$t(common.member)",
+      "ASSOCIATE": "Associate",
+      "OWNER": "Owner",
+      "GLOBAL_ADMIN": "Global Admin",
+      "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_LICENSE_MANAGER": "License Manager",
+      "GLOBAL_COMMUNITY_READER": "Community Manager",
+      "GLOBAL_SPACES_READER": "Spaces Reader",
+      "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_VC_CAMPAIGN": "VC Early Access"
+    },
     "time": {
       "short": {
         "timeAgo": "{{time}}",
@@ -581,13 +493,6 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    },
-    "roles": {
-      "GLOBAL_ADMIN": "Global Admin",
-      "SUPPORT": "Support Admin",
-      "LICENSE_MANAGER": "License Manager",
-      "BETA_TESTER": "Beta Tester",
-      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {
@@ -972,7 +877,7 @@
       "findByUrl": {
         "title": "Subspace URL",
         "description": "Enter the URL of the Subspace you want to copy as a template.",
-        "use": "Use this space",
+        "use": "Use this Subspace",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
@@ -2116,7 +2021,9 @@
           "visibility": {
             "title": "Visibility",
             "public": "<b>Public:</b> This space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
+            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible.",
+            "publicSubspace": "<b>Public:</b> This Subspace and all its contents are visible to everyone who has access to the Space it belongs to. If the Space itself is public, this Subspace and its contents will be visible to all users, including those outside the Space.",
+            "privateSubspace": "<b>Private:</b> This Subspace is visible to all members of the Space, but its contents are restricted and can only be accessed by members of the Subspace. No application required: All Space members can directly join, without you having to review their application."
           },
           "license-features": {
             "title": "Space Features",
@@ -2128,7 +2035,7 @@
           },
           "membership": {
             "title": "Membership",
-            "open": "<b>No Application required:</b> All Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
+            "open": "<b>No Application required:</b> All Space members can directly join, without you having to review their application.",
             "applications": "<b>Application required:</b> If people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
@@ -2795,9 +2702,21 @@
           }
         },
         "ingestion": {
-          "title": "Update Knowledge",
+          "title": "Body of Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Private Virtual Contributor Knowledge",
+          "tooltip1": "Public: When users visit {{vcName}}'s profile, they can see the content of its body of knowledge.",
+          "tooltip2": "Private: Only the account admins can see the content of the body of knowledge."
+        }
+      },
+      "knowledgeBase": {
+        "noAccess": {
+          "title": "Private Virtual Contributor Knowledge",
+          "description": "You don't have access to the knowledge base of this Virtual Contributor. Please contact the owner of the Virtual Contributor for more information."
         }
       }
     },
@@ -3212,7 +3131,7 @@
       },
       "comingSoon": {
         "title": "🚀 Coming soon!",
-        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+        "subTitle": "Looking for a different AI service? Let us know!",
         "input": {
           "label": "AI Service",
           "placeholder": "E.g. the AI that xx created to xx"
@@ -3241,7 +3160,7 @@
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",

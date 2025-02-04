@@ -1,25 +1,19 @@
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { ChallengeRoute } from '@/domain/journey/settings/routes/ChallengeRoute';
-import { useSubspaceCommunityAndRoleSetIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { OpportunityRoute } from '@/domain/journey/settings/routes/OpportunityRoute';
 import { OpportunityProvider } from '@/domain/journey/opportunity/context/OpportunityProvider';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SubspaceSettingsRoute = () => {
-  const { spaceLevel, parentSpaceId } = useRouteResolver();
-
-  const { data } = useSubspaceCommunityAndRoleSetIdQuery({
-    variables: { spaceId: parentSpaceId! },
-    skip: !parentSpaceId || spaceLevel !== SpaceLevel.Opportunity,
-  });
+  const { spaceLevel } = useRouteResolver();
 
   switch (spaceLevel) {
-    case SpaceLevel.Challenge:
+    case SpaceLevel.L1:
       return <ChallengeRoute />;
-    case SpaceLevel.Opportunity:
+    case SpaceLevel.L2:
       return (
         <OpportunityProvider>
-          <OpportunityRoute parentCommunityId={data?.lookup.space?.community.id} />
+          <OpportunityRoute />
         </OpportunityProvider>
       );
   }

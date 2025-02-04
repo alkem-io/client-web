@@ -1,5 +1,5 @@
 import nameof from '@/core/utils/nameOf';
-import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export default interface UrlParams extends Record<string, string | undefined> {
   spaceNameId?: string;
@@ -11,7 +11,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   applicationId?: string;
   userNameId?: string;
   vcNameId?: string;
-  role?: AuthorizationCredential;
+  role?: RoleName;
   discussionNameId?: string;
   calloutNameId?: string;
   postNameId?: string;

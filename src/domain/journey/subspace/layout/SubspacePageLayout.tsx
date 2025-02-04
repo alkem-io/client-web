@@ -35,7 +35,7 @@ import { UrlBaseProvider } from '@/core/ui/link/UrlBase';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { theme } from '@/core/ui/themes/default/Theme';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '@/domain/community/application/containers/ApplicationButtonContainer';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
@@ -151,11 +151,11 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-  let spaceLevel = SpaceLevel.Space;
+  let spaceLevel = SpaceLevel.L0;
   if (journeyPath.length === 2) {
-    spaceLevel = SpaceLevel.Challenge;
+    spaceLevel = SpaceLevel.L1;
   } else if (journeyPath.length === 3) {
-    spaceLevel = SpaceLevel.Opportunity;
+    spaceLevel = SpaceLevel.L2;
   }
 
   return (
