@@ -210,7 +210,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const privileges = account?.authorization?.myPrivileges ?? [];
 
-  const canCreateWingbackAccount = privileges.includes(AuthorizationPrivilege.TransferResource);
+  const canCreateWingbackAccount = privileges.includes(AuthorizationPrivilege.TransferResourceAccept);
   const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace);
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);

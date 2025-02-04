@@ -2109,6 +2109,7 @@ export type LookupQueryResultsFieldPolicy = {
 export type MeQueryResultsKeySpecifier = (
   | 'communityApplications'
   | 'communityInvitations'
+  | 'communityInvitationsCount'
   | 'id'
   | 'mySpaces'
   | 'spaceMembershipsFlat'
@@ -2119,6 +2120,7 @@ export type MeQueryResultsKeySpecifier = (
 export type MeQueryResultsFieldPolicy = {
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2176,7 +2178,6 @@ export type MutationKeySpecifier = (
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
   | 'aiServerDeleteAiPersonaService'
-  | 'aiServerPersonaServiceIngest'
   | 'aiServerUpdateAiPersonaService'
   | 'applyForEntryRoleOnRoleSet'
   | 'askChatGuidanceQuestion'
@@ -2348,7 +2349,6 @@ export type MutationFieldPolicy = {
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerPersonaServiceIngest?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
