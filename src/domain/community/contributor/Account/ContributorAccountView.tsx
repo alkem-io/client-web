@@ -1,9 +1,20 @@
-import {
-  useDeleteInnovationHubMutation,
-  useDeleteInnovationPackMutation,
-  useDeleteSpaceMutation,
-  useDeleteVirtualContributorOnAccountMutation,
-} from '@/core/apollo/generated/apollo-hooks';
+import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import JourneyCardHorizontal, {
+  JourneyCardHorizontalSkeleton,
+} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import InnovationHubCardHorizontal, {
+  InnovationHubCardHorizontalSkeleton,
+} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import { Actions } from '@/core/ui/actions/Actions';
+import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
+import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
   LicenseEntitlement,
@@ -11,34 +22,28 @@ import {
   SpaceLevel,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { Actions } from '@/core/ui/actions/Actions';
-import CreationButton from '@/core/ui/button/CreationButton';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import Gutters from '@/core/ui/grid/Gutters';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { BlockTitle, Caption } from '@/core/ui/typography';
+import { DeleteOutline } from '@mui/icons-material';
+import {
+  useCreateWingbackAccountMutation,
+  useDeleteInnovationHubMutation,
+  useDeleteInnovationPackMutation,
+  useDeleteSpaceMutation,
+  useDeleteVirtualContributorOnAccountMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import CreationButton from '@/core/ui/button/CreationButton';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import InnovationHubCardHorizontal, {
-  InnovationHubCardHorizontalSkeleton,
-} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import JourneyCardHorizontal, {
-  JourneyCardHorizontalSkeleton,
-} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
+import AddIcon from '@mui/icons-material/Add';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { IconButton } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
-import { DeleteOutline } from '@mui/icons-material';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 const enum Entities {
   Space = 'Space',
@@ -123,6 +128,23 @@ export interface ContributorAccountViewProps {
   account?: AccountTabResourcesProps;
 }
 
+const StyledCreationButton = ({ disabled, onClick }: { disabled: boolean; onClick: () => void }) => {
+  const { t } = useTranslation();
+
+  return (
+    <IconButton
+      aria-label={t('common.add')}
+      aria-disabled={disabled}
+      aria-haspopup="true"
+      size="small"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <RoundedIcon component={AddIcon} size="medium" iconSize="small" disabled={disabled} aria-disabled={disabled} />
+    </IconButton>
+  );
+};
+
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -159,12 +181,15 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const privileges = account?.authorization?.myPrivileges ?? [];
 
+  const canCreateWingbackAccount = privileges.includes(AuthorizationPrivilege.TransferResourceAccept);
   const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace);
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
   const canCreateVirtualContributor = privileges.includes(AuthorizationPrivilege.CreateVirtualContributor);
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
+
+  const enableWingbackAccountCreation = !loading && !externalSubscriptionID;
 
   // Temporarily we're ordering the priority in this way: Display usage/limit from FREE / PLUS / PREMIUM
   const { limit: hostedSpaceLimit = 0, usage: hostedSpaceUsage = 0 } =
@@ -322,6 +347,29 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     }
   };
 
+  // Wingback account creation
+  const [createWingbackAccount, { loading: isWingbackCreating }] = useCreateWingbackAccountMutation({
+    onCompleted: () => {
+      notify(t('pages.admin.generic.sections.account.externalSubAdded'), 'success');
+    },
+    onError: () => {
+      notify(t('pages.admin.generic.sections.account.externalSubErrored'), 'error');
+    },
+    refetchQueries: ['AccountInformation'],
+  });
+
+  const onCreateWingbackAccountClick = () => {
+    if (!account?.id) {
+      return;
+    }
+
+    createWingbackAccount({
+      variables: {
+        accountID: account.id,
+      },
+    });
+  };
+
   const getEntityName = (entity: Entities | undefined) => {
     switch (entity) {
       case Entities.VirtualContributor:
@@ -385,179 +433,220 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     );
 
   return (
-    <PageContentColumn columns={12}>
-      <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap row justifyContent="space-between">
-          <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
-          <TextWithTooltip
-            text={`${hostedSpaceUsage}/${hostedSpaceLimit}`}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.virtualContributors'),
-              usage: hostedSpaceUsage,
-              limit: hostedSpaceLimit,
-            })}
-          />
-        </Gutters>
-
-        <Gutters disablePadding disableGap justifyContent="space-between" height="100%">
-          {loading && <JourneyCardHorizontalSkeleton />}
-          <Gutters disablePadding>
-            {!loading &&
-              account?.spaces.map(space => (
-                <JourneyCardHorizontal
-                  key={space.id}
-                  journey={{ profile: space.profile, level: space.level, community: {} }}
-                  size="medium"
-                  deepness={0}
-                  seamless
-                  sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
-                  actions={getSpaceActions(space.id)}
-                  disableHoverState
-                />
-              ))}
-          </Gutters>
-        </Gutters>
-        <Actions justifyContent="end">
-          {canCreateSpace && (
-            <>
-              <CreationButton
-                disabled={!isEntitledToCreateSpace}
-                onClick={() => setCreateSpaceDialogOpen(true)}
-                disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
-              />
-              {createSpaceDialogOpen && (
-                <CreateSpaceDialog
-                  redirectOnComplete={false}
-                  onClose={() => setCreateSpaceDialogOpen(false)}
-                  account={{ id: account?.id, name: accountHostName }}
-                />
-              )}
-            </>
-          )}
-        </Actions>
-      </PageContentBlock>
-      <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap row justifyContent="space-between">
-          <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
-          <TextWithTooltip
-            text={`${vcUsage}/${vcLimit}`}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.virtualContributors'),
-              usage: vcUsage,
-              limit: vcLimit,
-            })}
-          />
-        </Gutters>
-        <Gutters disablePadding justifyContent="space-between" height="100%">
-          {loading && <JourneyCardHorizontalSkeleton />}
-          <Gutters disablePadding>
-            {!loading &&
-              virtualContributors?.map(vc => (
-                <ContributorCardHorizontal
-                  key={vc.id}
-                  profile={vc.profile}
-                  seamless
-                  withUnifiedTitle
-                  menuActions={getVCActions(vc.id)}
-                />
-              ))}
-          </Gutters>
-          <Actions justifyContent="end">
-            {canCreateVirtualContributor && (
-              <CreationButton
-                disabled={!isEntitledToCreateVC}
-                onClick={() => startWizard(account, accountHostName)}
-                disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
-              />
-            )}
-          </Actions>
-          <VirtualContributorWizard />
-        </Gutters>
-      </PageContentBlock>
-      <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap row justifyContent="space-between">
-          <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-          <TextWithTooltip
-            text={`${innovationPackUsage}/${innovationPackLimit}`}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.innovationPacks'),
-              usage: innovationPackUsage,
-              limit: innovationPackLimit,
-            })}
-          />
-        </Gutters>
-        <Gutters disablePadding justifyContent="space-between" height="100%">
-          {loading && <InnovationPackCardHorizontalSkeleton />}
-          {!loading &&
-            innovationPacks?.map(pack => (
-              <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack.id)} />
-            ))}
-          <Actions justifyContent="end">
-            {canCreateInnovationPack && account?.id && (
-              <>
-                <CreationButton
-                  disabled={!isEntitledToCreateInnovationPack}
-                  onClick={() => setCreateInnovationPackDialogOpen(true)}
-                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
-                />
-                <CreateInnovationPackDialog
-                  accountId={account?.id}
-                  open={createInnovationPackDialogOpen}
-                  onClose={() => setCreateInnovationPackDialogOpen(false)}
-                />
-              </>
-            )}
-          </Actions>
-        </Gutters>
-      </PageContentBlock>
-      <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap row justifyContent="space-between">
-          <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-          <TextWithTooltip
-            text={`${innovationHubUsage}/${innovationHubLimit}`}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.customHomepages'),
-              usage: innovationHubUsage,
-              limit: innovationHubLimit,
-            })}
-          />
-        </Gutters>
-        <Gutters disablePadding justifyContent="space-between" height="100%">
-          {loading && <InnovationHubCardHorizontalSkeleton />}
-          {!loading &&
-            innovationHubs?.map(hub => (
-              <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub.id)} />
-            ))}
-          <Actions justifyContent="end">
-            {canCreateInnovationHub && account?.id && (
-              <>
-                <CreationButton
-                  disabled={!isEntitledToCreateInnovationHub}
-                  onClick={() => setCreateInnovationHubDialogOpen(true)}
-                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
-                />
-                <CreateInnovationHubDialog
-                  accountId={account.id}
-                  accountHostName={accountHostName}
-                  open={createInnovationHubDialogOpen}
-                  onClose={() => setCreateInnovationHubDialogOpen(false)}
-                />
-              </>
-            )}
-          </Actions>
-        </Gutters>
-        {deleteDialogOpen && (
-          <EntityConfirmDeleteDialog
-            entity={getEntityName(entity)}
-            open={deleteDialogOpen}
-            onClose={clearDeleteState}
-            onDelete={deleteEntity}
-            description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
+    <>
+      <PageContentColumn columns={12} justifyContent="end">
+        {canCreateWingbackAccount && (
+          <CreationButton
+            buttonComponent={
+              <LoadingButton
+                variant="contained"
+                disabled={!enableWingbackAccountCreation}
+                loading={isWingbackCreating}
+                sx={{ textTransform: 'none', flexShrink: 1 }}
+                onClick={onCreateWingbackAccountClick}
+              >
+                <Caption noWrap>{t('pages.admin.generic.sections.account.addExternalSub')}</Caption>
+              </LoadingButton>
+            }
+            disabled={!enableWingbackAccountCreation}
+            disabledTooltip={t('pages.admin.generic.sections.account.externalSubExists')}
           />
         )}
-      </PageContentBlock>
-      {externalSubscriptionID && <Caption>Wingback id: {externalSubscriptionID}</Caption>}
-    </PageContentColumn>
+      </PageContentColumn>
+      <PageContentColumn columns={12}>
+        <PageContentBlock halfWidth>
+          <Gutters disablePadding disableGap row justifyContent="space-between">
+            <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
+            <TextWithTooltip
+              text={`${hostedSpaceUsage}/${hostedSpaceLimit}`}
+              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                type: t('pages.admin.generic.sections.account.virtualContributors'),
+                usage: hostedSpaceUsage,
+                limit: hostedSpaceLimit,
+              })}
+            />
+          </Gutters>
+
+          <Gutters disablePadding disableGap justifyContent="space-between" height="100%">
+            {loading && <JourneyCardHorizontalSkeleton />}
+            <Gutters disablePadding>
+              {!loading &&
+                account?.spaces.map(space => (
+                  <JourneyCardHorizontal
+                    key={space.id}
+                    journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
+                    size="medium"
+                    deepness={0}
+                    seamless
+                    sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
+                    actions={getSpaceActions(space.id)}
+                    disableHoverState
+                  />
+                ))}
+            </Gutters>
+          </Gutters>
+          <Actions justifyContent="end">
+            {canCreateSpace && (
+              <>
+                <CreationButton
+                  buttonComponent={
+                    <StyledCreationButton
+                      disabled={!isEntitledToCreateSpace}
+                      onClick={() => setCreateSpaceDialogOpen(true)}
+                    />
+                  }
+                  disabled={!isEntitledToCreateSpace}
+                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                />
+                {createSpaceDialogOpen && (
+                  <CreateSpaceDialog
+                    redirectOnComplete={false}
+                    onClose={() => setCreateSpaceDialogOpen(false)}
+                    account={{ id: account?.id, name: accountHostName }}
+                  />
+                )}
+              </>
+            )}
+          </Actions>
+        </PageContentBlock>
+        <PageContentBlock halfWidth>
+          <Gutters disablePadding disableGap row justifyContent="space-between">
+            <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
+            <TextWithTooltip
+              text={`${vcUsage}/${vcLimit}`}
+              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                type: t('pages.admin.generic.sections.account.virtualContributors'),
+                usage: vcUsage,
+                limit: vcLimit,
+              })}
+            />
+          </Gutters>
+          <Gutters disablePadding justifyContent="space-between" height="100%">
+            {loading && <JourneyCardHorizontalSkeleton />}
+            <Gutters disablePadding>
+              {!loading &&
+                virtualContributors?.map(vc => (
+                  <ContributorCardHorizontal
+                    key={vc.id}
+                    profile={vc.profile}
+                    seamless
+                    withUnifiedTitle
+                    menuActions={getVCActions(vc.id)}
+                  />
+                ))}
+            </Gutters>
+            <Actions justifyContent="end">
+              {canCreateVirtualContributor && (
+                <CreationButton
+                  buttonComponent={
+                    <StyledCreationButton
+                      disabled={!isEntitledToCreateVC}
+                      onClick={() => startWizard(account, accountHostName)}
+                    />
+                  }
+                  disabled={!isEntitledToCreateVC}
+                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                />
+              )}
+            </Actions>
+            <VirtualContributorWizard />
+          </Gutters>
+        </PageContentBlock>
+        <PageContentBlock halfWidth>
+          <Gutters disablePadding disableGap row justifyContent="space-between">
+            <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
+            <TextWithTooltip
+              text={`${innovationPackUsage}/${innovationPackLimit}`}
+              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                type: t('pages.admin.generic.sections.account.innovationPacks'),
+                usage: innovationPackUsage,
+                limit: innovationPackLimit,
+              })}
+            />
+          </Gutters>
+          <Gutters disablePadding justifyContent="space-between" height="100%">
+            {loading && <InnovationPackCardHorizontalSkeleton />}
+            {!loading &&
+              innovationPacks?.map(pack => (
+                <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack.id)} />
+              ))}
+            <Actions justifyContent="end">
+              {canCreateInnovationPack && account?.id && (
+                <>
+                  <CreationButton
+                    buttonComponent={
+                      <StyledCreationButton
+                        disabled={!isEntitledToCreateInnovationPack}
+                        onClick={() => setCreateInnovationPackDialogOpen(true)}
+                      />
+                    }
+                    disabled={!isEntitledToCreateInnovationPack}
+                    disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                  />
+                  <CreateInnovationPackDialog
+                    accountId={account?.id}
+                    open={createInnovationPackDialogOpen}
+                    onClose={() => setCreateInnovationPackDialogOpen(false)}
+                  />
+                </>
+              )}
+            </Actions>
+          </Gutters>
+        </PageContentBlock>
+        <PageContentBlock halfWidth>
+          <Gutters disablePadding disableGap row justifyContent="space-between">
+            <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
+            <TextWithTooltip
+              text={`${innovationHubUsage}/${innovationHubLimit}`}
+              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                type: t('pages.admin.generic.sections.account.customHomepages'),
+                usage: innovationHubUsage,
+                limit: innovationHubLimit,
+              })}
+            />
+          </Gutters>
+          <Gutters disablePadding justifyContent="space-between" height="100%">
+            {loading && <InnovationHubCardHorizontalSkeleton />}
+            {!loading &&
+              innovationHubs?.map(hub => (
+                <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub.id)} />
+              ))}
+            <Actions justifyContent="end">
+              {canCreateInnovationHub && account?.id && (
+                <>
+                  <CreationButton
+                    buttonComponent={
+                      <StyledCreationButton
+                        disabled={!isEntitledToCreateInnovationHub}
+                        onClick={() => setCreateInnovationHubDialogOpen(true)}
+                      />
+                    }
+                    disabled={!isEntitledToCreateInnovationHub}
+                    disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                  />
+                  <CreateInnovationHubDialog
+                    accountId={account.id}
+                    accountHostName={accountHostName}
+                    open={createInnovationHubDialogOpen}
+                    onClose={() => setCreateInnovationHubDialogOpen(false)}
+                  />
+                </>
+              )}
+            </Actions>
+          </Gutters>
+          {deleteDialogOpen && (
+            <EntityConfirmDeleteDialog
+              entity={getEntityName(entity)}
+              open={deleteDialogOpen}
+              onClose={clearDeleteState}
+              onDelete={deleteEntity}
+              description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
+            />
+          )}
+        </PageContentBlock>
+        {externalSubscriptionID && <Caption>Wingback id: {externalSubscriptionID}</Caption>}
+      </PageContentColumn>
+    </>
   );
 };
 

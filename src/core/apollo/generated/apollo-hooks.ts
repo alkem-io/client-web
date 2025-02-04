@@ -11066,6 +11066,52 @@ export function refetchAllOrganizationsQuery(variables: SchemaTypes.AllOrganizat
   return { query: AllOrganizationsDocument, variables: variables };
 }
 
+export const CreateWingbackAccountDocument = gql`
+  mutation createWingbackAccount($accountID: UUID!) {
+    createWingbackAccount(accountID: $accountID)
+  }
+`;
+export type CreateWingbackAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWingbackAccountMutation,
+  SchemaTypes.CreateWingbackAccountMutationVariables
+>;
+
+/**
+ * __useCreateWingbackAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateWingbackAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWingbackAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWingbackAccountMutation, { data, loading, error }] = useCreateWingbackAccountMutation({
+ *   variables: {
+ *      accountID: // value for 'accountID'
+ *   },
+ * });
+ */
+export function useCreateWingbackAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWingbackAccountMutation,
+    SchemaTypes.CreateWingbackAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateWingbackAccountMutation,
+    SchemaTypes.CreateWingbackAccountMutationVariables
+  >(CreateWingbackAccountDocument, options);
+}
+
+export type CreateWingbackAccountMutationHookResult = ReturnType<typeof useCreateWingbackAccountMutation>;
+export type CreateWingbackAccountMutationResult = Apollo.MutationResult<SchemaTypes.CreateWingbackAccountMutation>;
+export type CreateWingbackAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWingbackAccountMutation,
+  SchemaTypes.CreateWingbackAccountMutationVariables
+>;
 export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations(
     $first: Int!

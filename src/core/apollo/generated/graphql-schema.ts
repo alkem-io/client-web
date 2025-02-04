@@ -16424,6 +16424,12 @@ export type AllOrganizationsQuery = {
   };
 };
 
+export type CreateWingbackAccountMutationVariables = Exact<{
+  accountID: Scalars['UUID'];
+}>;
+
+export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
+
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;

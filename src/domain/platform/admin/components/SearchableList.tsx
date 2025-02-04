@@ -96,7 +96,7 @@ export const SearchableList = <
           <JourneyCardHorizontal
             key={item.id}
             size="medium"
-            journey={{ profile: item.profile, level: item.level, community: {} }}
+            journey={{ profile: item.profile, spaceLevel: item.level, community: {} }}
             deepness={0}
             seamless
             sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}

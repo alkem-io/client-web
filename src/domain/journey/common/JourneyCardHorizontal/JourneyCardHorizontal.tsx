@@ -50,7 +50,7 @@ export interface JourneyCardHorizontalProps {
         myRoles?: RoleName[];
       };
     };
-    level: SpaceLevel;
+    spaceLevel: SpaceLevel;
   };
   deepness?: number;
   seamless?: boolean;
@@ -70,14 +70,14 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 
 const JourneyCardHorizontal = ({
   journey,
-  deepness = !journey.level || journey.level === SpaceLevel.L1 ? 0 : 1,
+  deepness = !journey.spaceLevel || journey.spaceLevel === SpaceLevel.L1 ? 0 : 1,
   seamless,
   sx,
   actions,
   size,
   disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
-  const Icon = journey.level ? spaceIconByLevel[journey.level] : undefined;
+  const Icon = journey.spaceLevel ? spaceIconByLevel[journey.spaceLevel] : undefined;
 
   const { t } = useTranslation();
 
