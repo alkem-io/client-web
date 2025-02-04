@@ -281,7 +281,7 @@ const useUrlResolver = ({
   const calloutId = calloutData?.lookup.calloutsSet?.callouts?.[0].id;
   loading = loading || calloutDataLoading;
   if (throwIfNotFound && calloutNameId && calloutsSetId && !calloutDataLoading && !calloutId) {
-    throw new NotFoundError(`Callout '${calloutNameId}' not found in VC '${vcNameId}'`);
+    throw new NotFoundError(`Callout '${calloutNameId}' not found in calloutSet '${calloutsSetId}'`);
   }
 
   // Callout for posts and a post open
@@ -289,8 +289,9 @@ const useUrlResolver = ({
     variables: { calloutId: calloutId!, postNameId: postNameId! },
     skip: !calloutId || !postNameId,
   });
-  const contributionId = calloutPostData?.lookup.callout?.contributions[0]?.id;
-  const postId = calloutPostData?.lookup.callout?.contributions[0]?.post?.id;
+  const contribution = calloutPostData?.lookup.callout?.contributions.find(contribution => contribution.post);
+  const contributionId = contribution?.id;
+  const postId = contribution?.post?.id;
   loading = loading || calloutPostLoading;
   if (throwIfNotFound && calloutId && postNameId && !calloutPostLoading && !postId) {
     throw new NotFoundError(`Post '${postNameId}' in callout '${calloutNameId}' ${calloutId} not found`);
