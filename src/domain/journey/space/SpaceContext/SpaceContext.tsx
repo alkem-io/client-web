@@ -26,7 +26,6 @@ export interface SpacePermissions {
 
 interface SpaceContextProps {
   spaceId: string;
-  spaceNameId: string;
   communityId: string;
   collaborationId: string;
   calloutsSetId: string;
@@ -34,12 +33,12 @@ interface SpaceContextProps {
   isPrivate?: boolean;
   loading: boolean;
   permissions: SpacePermissions;
-  error?: ApolloError;
-  refetchSpace: () => void;
+  profile: {
+    displayName: string;
+    url: string;
+  }
   // TODO Some components just randomly access SpaceContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
-  context?: SpaceInfoFragment['context'];
-  profile: SpaceInfoFragment['profile'];
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
@@ -48,11 +47,14 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   loading: false,
   isPrivate: undefined,
   spaceId: '',
-  spaceNameId: '',
   communityId: '',
   collaborationId: '',
   calloutsSetId: '',
   roleSetId: '',
+  profile: {
+    displayName: '',
+    url: '',
+  },
   permissions: {
     canRead: false,
     viewerCanUpdate: false,
@@ -65,15 +67,8 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canReadCollaboration: false,
     contextPrivileges: [],
   },
-  profile: {
-    id: '',
-    displayName: '',
-    visuals: [],
-    tagline: '',
-    url: '',
-  },
+
   visibility: SpaceVisibility.Active,
-  refetchSpace: () => {},
   myMembershipStatus: undefined,
 });
 
@@ -88,7 +83,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const {
     data,
     loading,
-    refetch: refetchSpace,
   } = useSpaceHostQuery({
     variables: { spaceId: spaceId! },
     errorPolicy: 'all',
@@ -175,7 +169,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     <SpaceContext.Provider
       value={{
         spaceId,
-        spaceNameId: spaceId,
         communityId,
         collaborationId,
         calloutsSetId,
@@ -183,9 +176,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         permissions,
         isPrivate,
         loading,
-        refetchSpace,
-        profile,
-        context: space?.context,
         visibility,
         myMembershipStatus: space?.community?.roleSet?.myMembershipStatus,
       }}

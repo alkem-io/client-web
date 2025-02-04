@@ -1,5 +1,7 @@
 import * as Apollo from '@apollo/client';
 import {
+  useUrlResolverQuery,
+/*
   useCalloutUrlResolverQuery,
   useInnovationHubUrlResolverQuery,
   useInnovationPackUrlResolverQuery,
@@ -10,23 +12,22 @@ import {
   useSubspaceUrlResolverQuery,
   useTemplatesSetUrlResolverQuery,
   useTemplateUrlResolverQuery,
-  useUrlResolverLazyQuery,
-  useUrlResolverQuery,
   useUserUrlResolverQuery,
   useVirtualContributorKeyEntitiesIDsQuery,
   useVirtualContributorUrlResolverQuery,
+  */
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import UrlParams from '../routing/urlParams';
-import { useEffect, useMemo } from 'react';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { compact, uniq } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { useMemo } from 'react';
 
 type UseUrlResolverProvided = {
   spaceId: string | undefined;
-  subspaceIds: [string, string] | [string, string, string] | undefined; // level0, level1, level2
+  subspaceIds: string[] | undefined; // level0, level1, level2
   subspaceId: string | undefined;
   spaceLevel: SpaceLevel | undefined;
   organizationId: string | undefined;
@@ -39,6 +40,7 @@ type UseUrlResolverProvided = {
   postId: string | undefined;
   userId: string | undefined;
   vcId: string | undefined;
+  whiteboardId: string | undefined;
   loading: boolean;
 };
 
@@ -83,19 +85,19 @@ const useUrlResolver = ({
       urlResolverData?.urlResolver.space.id :
       urlResolverData?.urlResolver.space?.levelZeroSpaceID;
 
-    const subspaceIds = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ?
-      [spaceId] :
-      urlResolverData?.urlResolver.space?.level === SpaceLevel.L1 ?
-        [spaceId, urlResolverData?.urlResolver.space?.id] :
-        urlResolverData?.urlResolver.space?.level === SpaceLevel.L2 ?
-          [spaceId, urlResolverData?.urlResolver.space.parentSpaces[0], urlResolverData?.urlResolver.space?.id] :
-          undefined;
+    // const subspaceIds = spaceId && urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ?
+    //   [spaceId] :
+    //   urlResolverData?.urlResolver.space?.level === SpaceLevel.L1 ?
+    //     [spaceId, urlResolverData?.urlResolver.space?.id] :
+    //     urlResolverData?.urlResolver.space?.level === SpaceLevel.L2 ?
+    //       [spaceId, urlResolverData?.urlResolver.space.parentSpaces[0], urlResolverData?.urlResolver.space?.id] :
+    //       undefined;
 
     const subspaceId = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ? undefined : urlResolverData?.urlResolver.space?.id;
 
     return {
       spaceId,
-      subspaceIds,
+      subspaceIds: undefined, //!!
       subspaceId,
       spaceLevel: urlResolverData?.urlResolver.space?.level,
       organizationId: urlResolverData?.urlResolver.organizationId,
@@ -105,6 +107,7 @@ const useUrlResolver = ({
       postId: urlResolverData?.urlResolver.space?.collaboration.postId,
       userId: urlResolverData?.urlResolver.userId,
       vcId: urlResolverData?.urlResolver.vcId,
+      whiteboardId: urlResolverData?.urlResolver.space?.collaboration.whiteboardId,
       //PENDING
       innovationPackId: undefined,
       innovationHubId: undefined,

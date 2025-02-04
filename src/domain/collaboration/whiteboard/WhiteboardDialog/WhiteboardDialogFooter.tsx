@@ -73,7 +73,6 @@ const WhiteboardDialogFooter = ({
 
   const spaceContext = useSpace();
   const subspaceContext = useSubSpace();
-  const subsubspaceContext = useOpportunity();
 
   // TODO: this must be refactored to use just a space...
   let spaceLevel = SpaceLevel.L0;
@@ -87,10 +86,8 @@ const WhiteboardDialogFooter = ({
     switch (spaceLevel) {
       case SpaceLevel.L0:
         return spaceContext.myMembershipStatus;
-      case SpaceLevel.L1:
+      default:
         return subspaceContext.myMembershipStatus;
-      case SpaceLevel.L2:
-        return subsubspaceContext.myMembershipStatus;
     }
   };
 
@@ -100,8 +97,6 @@ const WhiteboardDialogFooter = ({
         return spaceContext.profile;
       case SpaceLevel.L1:
         return subspaceContext.profile;
-      case SpaceLevel.L2:
-        return subsubspaceContext.profile;
     }
   };
 

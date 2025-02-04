@@ -818,6 +818,7 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
+  AccountAdmin = 'ACCOUNT_ADMIN',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
@@ -832,6 +833,7 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceMemberInvitee = 'SPACE_MEMBER_INVITEE',
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -2180,6 +2182,7 @@ export type CredentialMetadataOutput = {
 };
 
 export enum CredentialType {
+  AccountAdmin = 'ACCOUNT_ADMIN',
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
@@ -2202,6 +2205,7 @@ export enum CredentialType {
   SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
   SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceMemberInvitee = 'SPACE_MEMBER_INVITEE',
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -3527,6 +3531,8 @@ export type MeQueryResults = {
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
+  /** The number of invitations the current authenticated user can act on. */
+  communityInvitationsCount: Scalars['Float'];
   /** The query id */
   id: Scalars['String'];
   /** The Spaces I am contributing to */
@@ -3547,7 +3553,15 @@ export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type MeQueryResultsCommunityInvitationsCountArgs = {
+  states?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type MeQueryResultsMySpacesArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']>;
 };
 
@@ -3803,7 +3817,7 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
-  /** Invite an existing Contriburor to join the specified RoleSet in the Entry Role. */
+  /** Invite an existing Contributor to join the specified RoleSet in the Entry Role. */
   inviteContributorsEntryRoleOnRoleSet: Array<Invitation>;
   /** Invite a User to join the platform and the specified RoleSet as a member. */
   inviteUserToPlatformAndRoleSet: PlatformInvitation;
@@ -5663,6 +5677,7 @@ export enum RoleSetContributorType {
 }
 
 export enum RoleSetRoleImplicit {
+  AccountAdmin = 'ACCOUNT_ADMIN',
   SubspaceAdmin = 'SUBSPACE_ADMIN',
 }
 
@@ -7168,6 +7183,7 @@ export enum UrlType {
   InnovationPacks = 'INNOVATION_PACKS',
   Organization = 'ORGANIZATION',
   Space = 'SPACE',
+  Unknown = 'UNKNOWN',
   User = 'USER',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
@@ -13222,6 +13238,9 @@ export type PostQuery = {
           __typename?: 'Post';
           id: string;
           createdDate: Date;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -30137,196 +30156,4 @@ export type UrlResolverQuery = {
         }
       | undefined;
   };
-};
-
-export type SpaceUrlResolverQueryVariables = Exact<{
-  nameId: Scalars['NameID'];
-}>;
-
-export type SpaceUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; space?: { __typename?: 'Space'; id: string } | undefined };
-};
-
-export type SubspaceUrlResolverQueryVariables = Exact<{
-  spaceNameId: Scalars['NameID'];
-  subspaceL1NameId?: InputMaybe<Scalars['NameID']>;
-  subspaceL2NameId?: InputMaybe<Scalars['NameID']>;
-  includeSubspaceL1?: InputMaybe<Scalars['Boolean']>;
-  includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type SubspaceUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: {
-    __typename?: 'LookupByNameQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          subspaceByNameID?: {
-            __typename?: 'Space';
-            id: string;
-            subspaceByNameID?: { __typename?: 'Space'; id: string };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SpaceKeyEntitiesIDsQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceKeyEntitiesIDsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: { __typename?: 'Community'; id: string };
-          collaboration: {
-            __typename?: 'Collaboration';
-            id: string;
-            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type OrganizationUrlResolverQueryVariables = Exact<{
-  nameId: Scalars['NameID'];
-}>;
-
-export type OrganizationUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; organization?: string | undefined };
-};
-
-export type VirtualContributorUrlResolverQueryVariables = Exact<{
-  nameId: Scalars['NameID'];
-}>;
-
-export type VirtualContributorUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; virtualContributor?: string | undefined };
-};
-
-export type VirtualContributorKeyEntitiesIDsQueryVariables = Exact<{
-  virtualContributorId: Scalars['UUID'];
-}>;
-
-export type VirtualContributorKeyEntitiesIDsQuery = {
-  __typename?: 'Query';
-  virtualContributor: {
-    __typename?: 'VirtualContributor';
-    knowledgeBase?:
-      | { __typename?: 'KnowledgeBase'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } }
-      | undefined;
-  };
-};
-
-export type CalloutUrlResolverQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID'];
-  calloutIds: Scalars['UUID'];
-}>;
-
-export type CalloutUrlResolverQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    calloutsSet?:
-      | { __typename?: 'CalloutsSet'; id: string; callouts: Array<{ __typename?: 'Callout'; id: string }> }
-      | undefined;
-  };
-};
-
-export type InnovationHubUrlResolverQueryVariables = Exact<{
-  innovationHubNameId: Scalars['NameID'];
-}>;
-
-export type InnovationHubUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; innovationHub?: string | undefined };
-};
-
-export type InnovationPackUrlResolverQueryVariables = Exact<{
-  innovationPackNameId: Scalars['NameID'];
-}>;
-
-export type InnovationPackUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; innovationPack?: string | undefined };
-};
-
-export type PostInCalloutUrlResolverQueryVariables = Exact<{
-  calloutId: Scalars['UUID'];
-  postNameId: Scalars['UUID'];
-}>;
-
-export type PostInCalloutUrlResolverQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    callout?:
-      | {
-          __typename?: 'Callout';
-          contributions: Array<{
-            __typename?: 'CalloutContribution';
-            id: string;
-            post?: { __typename?: 'Post'; id: string } | undefined;
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type TemplatesSetUrlResolverQueryVariables = Exact<{
-  spaceId?: Scalars['UUID'];
-  includeSpace?: InputMaybe<Scalars['Boolean']>;
-  innovationPackId?: Scalars['UUID'];
-  includeInnovationPack?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type TemplatesSetUrlResolverQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          templatesManager?:
-            | {
-                __typename?: 'TemplatesManager';
-                templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-    innovationPack?:
-      | { __typename?: 'InnovationPack'; templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined }
-      | undefined;
-  };
-};
-
-export type TemplateUrlResolverQueryVariables = Exact<{
-  templatesSetId: Scalars['UUID'];
-  templateNameId: Scalars['NameID'];
-}>;
-
-export type TemplateUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; template?: string | undefined };
-};
-
-export type UserUrlResolverQueryVariables = Exact<{
-  nameId: Scalars['NameID'];
-}>;
-
-export type UserUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; user?: string | undefined };
 };

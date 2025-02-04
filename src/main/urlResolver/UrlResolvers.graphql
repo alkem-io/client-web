@@ -21,141 +21,142 @@ query UrlResolver($url: String!) {
   }
 }
 
-query SpaceUrlResolver ($nameId: NameID!) {
-  lookupByName {
-    space(NAMEID: $nameId) {
-      id
-    }
-  }
-}
 
-query SubspaceUrlResolver(
-  $spaceNameId: NameID!,
-  $subspaceL1NameId: NameID = "nameid",
-  $subspaceL2NameId: NameID = "nameid",
-  $includeSubspaceL1: Boolean = false,
-  $includeSubspaceL2: Boolean = false,
-) {
-  lookupByName {
-    space(NAMEID: $spaceNameId) {
-      id
-      subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
-        id
-        subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
-          id
-        }
-      }
-    }
-  }
-}
+# query SpaceUrlResolver ($nameId: NameID!) {
+#   lookupByName {
+#     space(NAMEID: $nameId) {
+#       id
+#     }
+#   }
+# }
 
-query SpaceKeyEntitiesIDs($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      community {
-        id
-      }
-      collaboration {
-        id
-        calloutsSet {
-          id
-        }
-      }
-    }
-  }
-}
+# query SubspaceUrlResolver(
+#   $spaceNameId: NameID!,
+#   $subspaceL1NameId: NameID = "nameid",
+#   $subspaceL2NameId: NameID = "nameid",
+#   $includeSubspaceL1: Boolean = false,
+#   $includeSubspaceL2: Boolean = false,
+# ) {
+#   lookupByName {
+#     space(NAMEID: $spaceNameId) {
+#       id
+#       subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
+#         id
+#         subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
+#           id
+#         }
+#       }
+#     }
+#   }
+# }
 
-query OrganizationUrlResolver ($nameId: NameID!) {
-  lookupByName {
-    organization(NAMEID: $nameId)
-  }
-}
+# query SpaceKeyEntitiesIDs($spaceId: UUID!) {
+#   lookup {
+#     space(ID: $spaceId) {
+#       id
+#       community {
+#         id
+#       }
+#       collaboration {
+#         id
+#         calloutsSet {
+#           id
+#         }
+#       }
+#     }
+#   }
+# }
 
-query VirtualContributorUrlResolver($nameId: NameID!) {
-  lookupByName{
-    virtualContributor(NAMEID: $nameId)
-  }
-}
+# query OrganizationUrlResolver ($nameId: NameID!) {
+#   lookupByName {
+#     organization(NAMEID: $nameId)
+#   }
+# }
 
-query VirtualContributorKeyEntitiesIDs($virtualContributorId: UUID!) {
-  virtualContributor(ID: $virtualContributorId) {
-    knowledgeBase {
-      id
-      calloutsSet {
-        id
-      }
-    }
-  }
-}
+# query VirtualContributorUrlResolver($nameId: NameID!) {
+#   lookupByName{
+#     virtualContributor(NAMEID: $nameId)
+#   }
+# }
 
-query CalloutUrlResolver($calloutsSetId: UUID!, $calloutIds: UUID!) { #//!! Rewrite this, I need to pass nameId
-  lookup {
-    calloutsSet(ID: $calloutsSetId) {
-      id
-      callouts(IDs: [$calloutIds]) {
-        id
-      }
-    }
-  }
-}
+# query VirtualContributorKeyEntitiesIDs($virtualContributorId: UUID!) {
+#   virtualContributor(ID: $virtualContributorId) {
+#     knowledgeBase {
+#       id
+#       calloutsSet {
+#         id
+#       }
+#     }
+#   }
+# }
 
-query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
-  lookupByName {
-    innovationHub(NAMEID: $innovationHubNameId)
-  }
-}
+# query CalloutUrlResolver($calloutsSetId: UUID!, $calloutIds: UUID!) { #//!! Rewrite this, I need to pass nameId
+#   lookup {
+#     calloutsSet(ID: $calloutsSetId) {
+#       id
+#       callouts(IDs: [$calloutIds]) {
+#         id
+#       }
+#     }
+#   }
+# }
 
-query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
-  lookupByName {
-    innovationPack(NAMEID: $innovationPackNameId)
-  }
-}
+# query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
+#   lookupByName {
+#     innovationHub(NAMEID: $innovationHubNameId)
+#   }
+# }
 
-query PostInCalloutUrlResolver($calloutId: UUID!, $postNameId: UUID!) { #//!! Rewrite this, I need to pass nameId
-  lookup {
-    callout(ID: $calloutId) {
-      contributions( IDs: [$postNameId]) {
-        id
-        post {
-          id
-        }
-      }
-    }
-  }
-}
+# query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
+#   lookupByName {
+#     innovationPack(NAMEID: $innovationPackNameId)
+#   }
+# }
 
-query TemplatesSetUrlResolver(
-  $spaceId: UUID! = "00000000-0000-0000-0000-000000000000",
-  $includeSpace: Boolean = false,
-  $innovationPackId: UUID! = "00000000-0000-0000-0000-000000000000",
-  $includeInnovationPack: Boolean = false
-) {
-  lookup {
-    space(ID: $spaceId) @include(if: $includeSpace) {
-      templatesManager {
-        templatesSet {
-          id
-        }
-      }
-    }
-    innovationPack(ID: $innovationPackId) @include(if: $includeInnovationPack) {
-      templatesSet {
-        id
-      }
-    }
-  }
-}
+# query PostInCalloutUrlResolver($calloutId: UUID!, $postNameId: UUID!) { #//!! Rewrite this, I need to pass nameId
+#   lookup {
+#     callout(ID: $calloutId) {
+#       contributions( IDs: [$postNameId]) {
+#         id
+#         post {
+#           id
+#         }
+#       }
+#     }
+#   }
+# }
 
-query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
-  lookupByName {
-    template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
-  }
-}
+# query TemplatesSetUrlResolver(
+#   $spaceId: UUID! = "00000000-0000-0000-0000-000000000000",
+#   $includeSpace: Boolean = false,
+#   $innovationPackId: UUID! = "00000000-0000-0000-0000-000000000000",
+#   $includeInnovationPack: Boolean = false
+# ) {
+#   lookup {
+#     space(ID: $spaceId) @include(if: $includeSpace) {
+#       templatesManager {
+#         templatesSet {
+#           id
+#         }
+#       }
+#     }
+#     innovationPack(ID: $innovationPackId) @include(if: $includeInnovationPack) {
+#       templatesSet {
+#         id
+#       }
+#     }
+#   }
+# }
 
-query UserUrlResolver($nameId: NameID!) {
-  lookupByName {
-    user(NAMEID: $nameId)
-  }
-}
+# query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
+#   lookupByName {
+#     template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
+#   }
+# }
+
+# query UserUrlResolver($nameId: NameID!) {
+#   lookupByName {
+#     user(NAMEID: $nameId)
+#   }
+# }
 

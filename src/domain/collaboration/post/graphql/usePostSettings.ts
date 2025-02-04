@@ -113,12 +113,10 @@ const usePostSettings = ({
     update: removeFromCache,
   });
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (postId: string) => {
     await deletePost({
       variables: {
-        input: {
-          ID: id,
-        },
+        postId
       },
     });
   };

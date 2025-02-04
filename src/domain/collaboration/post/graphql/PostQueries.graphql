@@ -5,6 +5,10 @@ query Post(
     post(ID: $postId) {
       id
       createdDate
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         displayName

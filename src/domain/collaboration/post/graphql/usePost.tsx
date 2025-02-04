@@ -14,6 +14,8 @@ interface usePostProps {
 
 type usePostProvided = {
   permissions: {
+    canUpdate: boolean;
+    canDelete: boolean;
     canReadComments: boolean;
     canPostComments: boolean;
     canDeleteComment: (authorId: string | undefined) => boolean;
@@ -130,6 +132,8 @@ const usePost = ({ postId }: usePostProps): usePostProvided => {
 
   return {
     permissions: {
+      canUpdate: post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
+      canDelete: post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false,
       canReadComments,
       canPostComments,
       canDeleteComment,

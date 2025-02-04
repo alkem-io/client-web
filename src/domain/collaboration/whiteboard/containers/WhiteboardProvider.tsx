@@ -25,7 +25,7 @@ const WhiteboardProvider = ({
   children,
 }: PropsWithChildren<WhiteboardProviderProps>) => {
   //!! Check if this is working at all
-  const { calloutId, contributionId, whiteboardId } = useUrlResolver();
+  const { calloutId, contributionId } = useUrlResolver();
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, contributionId: contributionId! },
     skip: !calloutId || !contributionId,

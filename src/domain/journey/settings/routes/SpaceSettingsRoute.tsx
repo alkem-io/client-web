@@ -17,7 +17,6 @@ import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirec
 
 const SpaceSettingsRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-
   const { spaceId, communityId } = useSpace();
 
   return (
