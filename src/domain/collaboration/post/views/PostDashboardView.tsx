@@ -5,7 +5,6 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
-import { SectionSpacer } from '@/domain/shared/components/Section/Section';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -152,7 +151,6 @@ const PostDashboardView = ({ mode, postId, vcEnabled, bannerOverlayOverride }: P
                 />
               </Gutters>
             </ScrollerWithGradient>
-            <SectionSpacer double />
             <Box>
               {permissions.canPostComments && (
                 <PostMessageToCommentsForm

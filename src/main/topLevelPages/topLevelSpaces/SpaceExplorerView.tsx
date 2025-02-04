@@ -119,7 +119,10 @@ export const SpaceExplorerView = ({
   loadingSearchResults = null,
 }: SpaceExplorerViewProps) => {
   const { t } = useTranslation();
-  const { spaceId: welcomeSpaceId } = useUrlResolver({ throwIfNotFound: false, overrideUrlParams: { spaceNameId: 'welcome-space' } });
+  const { spaceId: welcomeSpaceId } = useUrlResolver({
+    throwIfNotFound: false, overrideUrlParams:
+      { spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId') }
+  });
   const { data: spaceExplorerData } = useSpaceExplorerWelcomeSpaceQuery({
     variables: { spaceId: welcomeSpaceId! },
     skip: !welcomeSpaceId,

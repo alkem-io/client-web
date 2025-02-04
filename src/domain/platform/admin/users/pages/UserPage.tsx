@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
-import UserRemoveModal from '@/domain/platform/admin/components/User/UserRemoveModal';
 import UserForm from '@/domain/community/user/userForm/UserForm';
 import { Loading } from '@/core/ui/loading/Loading';
 import {
@@ -18,6 +17,7 @@ import { createUserNameID } from '@/domain/community/user/utils/createUserNameId
 import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface UserPageProps {
   mode: EditMode;
@@ -164,12 +164,16 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly }) => {
         avatar={data?.lookup.user?.profile.avatar}
         onDelete={() => setModalOpened(true)}
       />
-      <UserRemoveModal
-        show={isModalOpened}
-        onCancel={closeModal}
-        onConfirm={handleRemoveUser}
-        name={user?.profile.displayName}
-        loading={userRemoveLoading}
+      <ConfirmationDialog
+        entities={{ title: 'Remove user' }}
+        options={{ show: isModalOpened }}
+        actions={{
+          onCancel: closeModal,
+          onConfirm: handleRemoveUser,
+        }}
+        state={{
+          isLoading: userRemoveLoading,
+        }}
       />
     </>
   );

@@ -1,15 +1,13 @@
-import { Grid } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const UserAdminMembershipPage = () => {
   const { t } = useTranslation();
@@ -67,7 +65,7 @@ const UserAdminMembershipPage = () => {
 
   return (
     <UserAdminLayout currentTab={SettingsSection.Membership}>
-      <GridProvider columns={12}>
+      <Gutters>
         <ContributionsView
           title={t('common.my-memberships')}
           contributions={memberships}
@@ -75,17 +73,12 @@ const UserAdminMembershipPage = () => {
           enableLeave
           onLeave={refetch}
         />
-      </GridProvider>
-      <SectionSpacer />
-      <Grid container rowSpacing={4}>
-        <Grid item xs={12}>
-          <ContributionsView
-            title={t('pages.user-profile.pending-applications.title')}
-            contributions={applications}
-            loading={loading}
-          />
-        </Grid>
-      </Grid>
+        <ContributionsView
+          title={t('pages.user-profile.pending-applications.title')}
+          contributions={applications}
+          loading={loading}
+        />
+      </Gutters>
     </UserAdminLayout>
   );
 };

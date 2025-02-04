@@ -10,7 +10,6 @@ import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/co
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';

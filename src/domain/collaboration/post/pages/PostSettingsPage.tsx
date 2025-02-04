@@ -14,7 +14,6 @@ import {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
-import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import {
@@ -149,20 +148,16 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
 
             return (
               <>
-                <SectionSpacer double />
                 <Box>
                   <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                  <SectionSpacer />
                   {/* Do not show VisualType.Card for Posts for now, see #4362.
                       TODO: Maybe in the future we want to remove those visuals from the database,
                       for now Card profiles don't have a Banner because it's not shown anywhere */}
                   <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
                 </Box>
-                <SectionSpacer double />
                 {canMoveCard && (
                   <Box>
                     <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
-                    <SectionSpacer />
                     <Autocomplete
                       disablePortal
                       options={calloutsOfTypePost}

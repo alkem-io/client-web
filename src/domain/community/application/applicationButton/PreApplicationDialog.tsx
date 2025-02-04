@@ -4,11 +4,12 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import isApplicationPending from './isApplicationPending';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface PreApplicationDialogProps {
   open: boolean;
@@ -32,11 +33,11 @@ const PreApplicationDialog = ({
   parentApplyUrl,
 }: PreApplicationDialogProps) => {
   const { t } = useTranslation();
+  const { spaceId, spaceLevel } = useUrlResolver();
   const { profile: spaceProfile } = useSpace();
   const { profile: challengeProfile } = useSubSpace();
-  const { opportunityId } = useOpportunity();
-  const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Subspace' : 'Space'}` as const);
+  const parentCommunityName = spaceId ? challengeProfile.displayName : spaceProfile.displayName;
+  const buttonText = t(`components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const);
 
   return (
     <Dialog open={open}>

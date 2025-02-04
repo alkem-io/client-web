@@ -3,7 +3,7 @@ import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogTitle } from '../dialog/deprecated';
+import DialogHeader from '../dialog/DialogHeader';
 import Loading from '../loading/Loading';
 import QRCode from './QRCode';
 
@@ -42,9 +42,7 @@ const QRCodeDialog = ({ entities, actions, options, state }: QRCodeDialogProps) 
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
-      <DialogTitle id="confirmation-dialog-title" onClose={actions.onCancel}>
-        {title}
-      </DialogTitle>
+      <DialogHeader onClose={actions.onCancel} title={title} />
       <DialogContent sx={{ display: 'flex', flexFlow: 'column nowrap' }}>
         {content}
         {state?.isLoading && <Loading text="Generating credential request" />}

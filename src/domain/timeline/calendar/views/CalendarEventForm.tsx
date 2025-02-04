@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle } from '@/core/ui/typography';
 import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '@/core/apollo/generated/graphql-schema';
 import { displayNameValidator } from '@/core/ui/forms/validator';
@@ -152,9 +151,7 @@ const CalendarEventForm = ({
 
   return (
     <GridProvider columns={12}>
-      <DialogHeader onClose={onClose}>
-        <BlockTitle>{dialogTitle}</BlockTitle>
-      </DialogHeader>
+      <DialogHeader onClose={onClose} title={dialogTitle} />
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}

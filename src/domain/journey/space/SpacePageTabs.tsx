@@ -6,6 +6,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
 import HeaderNavigationButton from '@/domain/shared/components/PageHeader/HeaderNavigationButton';
 import {
+  alpha,
   BottomNavigation,
   BottomNavigationAction,
   Drawer,
@@ -18,7 +19,6 @@ import {
   TabProps,
   useTheme,
 } from '@mui/material';
-import hexToRGBA from '@/core/utils/hexToRGBA';
 import {
   DashboardOutlined,
   History,
@@ -130,7 +130,7 @@ const SpacePageTabs = ({
                 color: navigationForegroundColor,
               },
               '.MuiBottomNavigationAction-root:not(.Mui-selected)': {
-                color: hexToRGBA(navigationForegroundColor, 0.75),
+                color: alpha(navigationForegroundColor, 0.75),
               },
             }}
           >

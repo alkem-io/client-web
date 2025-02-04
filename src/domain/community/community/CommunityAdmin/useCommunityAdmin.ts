@@ -24,8 +24,6 @@ import useRoleSetApplicationsAndInvitations, {
 interface useCommunityAdminParams {
   roleSetId: string;
   spaceId?: string;
-  challengeId?: string;
-  opportunityId?: string;
   spaceLevel: SpaceLevel | undefined;
 }
 

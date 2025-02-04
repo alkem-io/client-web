@@ -18,7 +18,7 @@ import {
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
-import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
@@ -51,7 +51,7 @@ export const SubspaceListView = () => {
   const notify = useNotification();
   const navigate = useNavigate();
 
-  const { spaceNameId, spaceId } = useSpace();
+  const { spaceId } = useSpace();
   const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
   const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
   const [selectedState, setSelectedState] = useState<string>();
