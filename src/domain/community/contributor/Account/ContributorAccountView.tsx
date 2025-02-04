@@ -218,7 +218,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 
-  const doesWingbackAccountExist = !!externalSubscriptionID;
+  const enableWingbackAccountCreation = !loading && !externalSubscriptionID;
 
   // Temporarily we're ordering the priority in this way: Display usage/limit from FREE / PLUS / PREMIUM
   const { limit: hostedSpaceLimit = 0, usage: hostedSpaceUsage = 0 } =
@@ -474,7 +474,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             buttonComponent={
               <LoadingButton
                 variant="contained"
-                disabled={doesWingbackAccountExist}
+                disabled={!enableWingbackAccountCreation}
                 loading={isWingbackCreating}
                 sx={{ textTransform: 'none', flexShrink: 1 }}
                 onClick={onCreateWingbackAccountClick}
@@ -482,7 +482,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 <Caption noWrap>{t('pages.admin.generic.sections.account.addExternalSub')}</Caption>
               </LoadingButton>
             }
-            disabled={doesWingbackAccountExist}
+            disabled={!enableWingbackAccountCreation}
             disabledTooltip={t('pages.admin.generic.sections.account.externalSubExists')}
           />
         )}
