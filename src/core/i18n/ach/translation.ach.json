@@ -1877,6 +1877,10 @@
               "titleWithDaysLeft": "crwdns19706:0{{daysLeft}}crwdne19706:0",
               "description": "crwdns19708:0{{planName}}crwdne19708:0"
             },
+            "externalSubExists": "crwdns28736:0crwdne28736:0",
+            "addExternalSub": "crwdns28738:0crwdne28738:0",
+            "externalSubAdded": "crwdns28740:0crwdne28740:0",
+            "externalSubErrored": "crwdns28742:0crwdne28742:0",
             "yourLicense": "crwdns19710:0crwdne19710:0",
             "changeLicense": "crwdns19712:0crwdne19712:0",
             "changeLicense_description": "crwdns19714:0crwdne19714:0",
