@@ -1,7 +1,16 @@
 import {
+  AgentBeginVerifiedCredentialRequestOutput,
+  CredentialMetadataOutput,
+} from '@/core/apollo/generated/graphql-schema';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { DialogTitle } from '@/core/ui/dialog/deprecated';
+import Loading from '@/core/ui/loading/Loading';
+import QRCode from '@/core/ui/qrCode/QRCode';
+import {
   Box,
   Button,
   DialogActions,
+  DialogContent,
   DialogContentText,
   List,
   ListItemButton,
@@ -11,15 +20,6 @@ import {
 import Dialog from '@mui/material/Dialog';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  AgentBeginVerifiedCredentialRequestOutput,
-  CredentialMetadataOutput,
-} from '@/core/apollo/generated/graphql-schema';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import Loading from '@/core/ui/loading/Loading';
-import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
-import QRCode from '@/core/ui/qrCode/QRCode';
-import { makeStyles } from '@mui/styles';
 
 interface RequestCredentialDialogProps {
   entities: {
@@ -43,28 +43,8 @@ interface RequestCredentialDialogProps {
   };
 }
 
-const useStyles = makeStyles({
-  dialogPaper: {
-    height: '100vh',
-  },
-  dialogContent: {
-    overflowX: 'hidden',
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  slideContent: {
-    flexGrow: 1,
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  qrCode: {
-    flexGrow: 1,
-  },
-});
-
 const RequestCredentialDialog = ({ entities, actions, options, state }: RequestCredentialDialogProps) => {
   const { t } = useTranslation();
-  const styles = useStyles();
   const { credentialMetadata } = entities;
 
   const containerRef = useRef(null);
@@ -87,7 +67,7 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
   }, [options.show]);
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog" classes={{ paper: styles.dialogPaper }}>
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
       <DialogTitle
         id="credential-request-dialog-title"
         onClose={() => {
@@ -98,7 +78,7 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
       >
         {title}
       </DialogTitle>
-      <DialogContent ref={containerRef} className={styles.dialogContent}>
+      <DialogContent ref={containerRef} sx={{ overflowX: 'hidden', display: 'flex', flexFlow: 'column nowrap' }}>
         <Slide
           direction="right"
           unmountOnExit
@@ -129,13 +109,13 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
           in={Boolean(vcInteraction) || loadingToken}
           container={containerRef.current}
         >
-          <Box className={styles.slideContent}>
+          <Box sx={{ flexGrow: 1, display: 'flex', flexFlow: 'column nowrap' }}>
             <DialogContentText>
               Scan the QR code to share the credential with your cloud hosted wallet
             </DialogContentText>
             {loadingToken && <Loading text="Generating credential request" />}
             {!loadingToken && (vcInteraction?.jwt || vcInteraction?.qrCodeImg) && (
-              <QRCode qrCodeJwt={vcInteraction.jwt} qrCodeImg={vcInteraction.qrCodeImg} className={styles.qrCode} />
+              <QRCode qrCodeJwt={vcInteraction.jwt} qrCodeImg={vcInteraction.qrCodeImg} sx={{ flexGrow: 1 }} />
             )}
           </Box>
         </Slide>

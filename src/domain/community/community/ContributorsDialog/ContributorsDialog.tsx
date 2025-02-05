@@ -1,8 +1,8 @@
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { DialogTitle } from '@/core/ui/dialog/deprecated';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DialogActions } from '@mui/material';
-import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export interface ContributorsDialogContentProps {
   dialogOpen: boolean;

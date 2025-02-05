@@ -1,9 +1,8 @@
 import Avatar from '@/core/ui/avatar/Avatar';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
-import Tag from '@/core/ui/tags/deprecated/Tag';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { Button, DialogActions, Grid } from '@mui/material';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import { Box, Button, DialogActions, DialogContent, Divider, Grid, Typography, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
@@ -11,77 +10,49 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
-import UserPopUpDelimiter from './UserPopUpDelimiter';
-import UserPopUpTagContainer from './UserPopUpTagContainer';
-import RouterLink from '@/core/ui/link/RouterLink';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
-const useUserPopUpStyles = makeStyles(theme => ({
-  header: {
-    display: 'flex',
-    gap: theme.spacing(4),
-    alignItems: 'center',
+const Header = styled('div')(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(4),
+  alignItems: 'center',
 
-    [theme.breakpoints.down('lg')]: {
-      flexWrap: 'wrap',
-      gap: theme.spacing(2),
-    },
+  [theme.breakpoints.down('lg')]: {
+    flexWrap: 'wrap',
+    gap: theme.spacing(2),
   },
-  profile: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
+}));
 
-    [theme.breakpoints.down('lg')]: {
-      gap: 0,
-      flexGrow: 1,
-    },
-  },
-  userName: {
-    whiteSpace: 'nowrap',
-    display: 'flex',
+const Profile = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
 
-    [theme.breakpoints.down('lg')]: {
-      flexGrow: 1,
-      justifyContent: 'center',
-    },
-  },
-  description: {
-    display: 'flex',
+  [theme.breakpoints.down('lg')]: {
+    gap: 0,
     flexGrow: 1,
   },
-  body: {
-    maxHeight: 600,
-    overflow: 'auto',
+}));
 
-    '& > div': {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: theme.spacing(2),
-    },
-  },
-  centeredText: {
-    textAlign: 'center',
-    display: 'flex',
-    alignItems: 'center',
+const UserName = styled('div')(({ theme }) => ({
+  whiteSpace: 'nowrap',
+  display: 'flex',
+
+  [theme.breakpoints.down('lg')]: {
+    flexGrow: 1,
     justifyContent: 'center',
   },
-  icon: {
-    marginRight: theme.spacing(1),
+}));
+
+const StyledTable = styled(Table)(({ theme }) => ({
+  '& > thead > tr > th': {
+    background: theme.palette.primary.main,
+    color: theme.palette.background.paper,
   },
-  table: {
-    '& > thead > tr > th': {
-      background: theme.palette.primary.main,
-      color: theme.palette.background.paper,
-      // textAlign: 'center',
-    },
-    '& td': {
-      padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
-    },
+  '& td': {
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
   },
 }));
 
@@ -94,7 +65,6 @@ const getStringOfNames = (arr: string[]) => arr.join(', ');
 
 const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   const { t } = useTranslation();
-  const styles = useUserPopUpStyles();
 
   const { user: userMetadata, loading } = useUserMetadata(id);
   const user = userMetadata?.user;
@@ -113,45 +83,41 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   return (
     <Dialog open maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
       <DialogHeader onClose={onHide}>
-        <div className={styles.header}>
-          <div className={styles.profile}>
+        <Header>
+          <Profile>
             <Avatar
               src={user?.profile.avatar?.uri}
               sx={{ borderRadius: 1 }}
               size="large"
               aria-label={t('common.avatar-of', { user: user?.profile.displayName })}
             />
-            <div className={styles.userName}>
-              <WrapperTypography variant={'h3'}>{user?.profile.displayName}</WrapperTypography>
-            </div>
-          </div>
+            <UserName>
+              <Typography variant="h3">{user?.profile.displayName}</Typography>
+            </UserName>
+          </Profile>
           {user?.profile.description && (
-            <div className={styles.description}>
-              <WrapperTypography weight={'medium'} color={'neutral'} as={'p'}>
-                {user?.profile.description}
-              </WrapperTypography>
-            </div>
+            <Box display="flex" flexGrow={1}>
+              <p>{user?.profile.description}</p>
+            </Box>
           )}
-        </div>
+        </Header>
       </DialogHeader>
-      <DialogContent dividers className={styles.body}>
+      <DialogContent
+        dividers
+        sx={{
+          maxHeight: 600,
+          overflow: 'auto',
+        }}
+      >
         {loading ? (
           <Loading text={'Loading user'} />
         ) : (
-          <div>
-            <div className={styles.centeredText}>
-              {tags.length > 0 ? (
-                <UserPopUpTagContainer>
-                  {tags.map((t, i) => (
-                    <Tag key={i} text={t} color="neutralMedium" />
-                  ))}
-                </UserPopUpTagContainer>
-              ) : (
-                <span>No tags available</span>
-              )}
-            </div>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Box display="flex" justifyContent="center">
+              <TagsComponent tags={tags} size="medium" variant="filled" />
+            </Box>
             <div>
-              <Table size="small" className={styles.table}>
+              <StyledTable size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell component="th" align="center">
@@ -165,59 +131,39 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
                 <TableBody>
                   {spaces && spaces.length > 0 && (
                     <TableRow>
-                      <TableCell align="center">
-                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
-                          Groups
-                        </WrapperTypography>
-                      </TableCell>
-                      <TableCell align="center">
-                        <WrapperTypography weight={'medium'}>{getStringOfNames(spaces)}</WrapperTypography>
-                      </TableCell>
+                      <TableCell align="center">Groups</TableCell>
+                      <TableCell align="center">{getStringOfNames(spaces)}</TableCell>
                     </TableRow>
                   )}
                   {challenges && challenges.length > 0 && (
                     <TableRow>
-                      <TableCell align="center">
-                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
-                          Challenges
-                        </WrapperTypography>
-                      </TableCell>
+                      <TableCell align="center">Challenges</TableCell>
                       <TableCell align="center">{getStringOfNames(challenges)}</TableCell>
                     </TableRow>
                   )}
                   {organizations && organizations.length > 0 && (
                     <TableRow>
-                      <TableCell align="center">
-                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
-                          Organizations
-                        </WrapperTypography>
-                      </TableCell>
+                      <TableCell align="center">Organizations</TableCell>
                       <TableCell align="center">{getStringOfNames(organizations)}</TableCell>
                     </TableRow>
                   )}
                   {opportunities && opportunities.length > 0 && (
                     <TableRow>
-                      <TableCell align="center">
-                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
-                          Opportunites
-                        </WrapperTypography>
-                      </TableCell>
+                      <TableCell align="center">Opportunities</TableCell>
                       <TableCell align="center">{getStringOfNames(opportunities)}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
-              </Table>
+              </StyledTable>
               {noMembership && (
-                <div className={styles.centeredText}>
-                  <WrapperTypography weight={'medium'} className={styles.centeredText}>
-                    User has no memberships
-                  </WrapperTypography>
-                </div>
+                <Box display="flex" justifyContent="center">
+                  User has no memberships
+                </Box>
               )}
             </div>
             {refs.length > 0 && (
               <>
-                <UserPopUpDelimiter />
+                <Divider />
                 <Grid container spacing={2}>
                   {refs.map((x, i) => (
                     <Grid key={i} item container justifyContent={'center'}>
@@ -232,17 +178,15 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
                 </Grid>
               </>
             )}
-          </div>
+          </Box>
         )}
       </DialogContent>
       <DialogActions>
-        {user?.profile.url && (
-          <Link component={RouterLink} to={user.profile.url} underline="none">
-            <Button variant="outlined" aria-label="user-profile-button">
-              {t('buttons.view-profile')}
-            </Button>
-          </Link>
-        )}
+        <Link href={user?.profile?.url ?? ''} underline="none">
+          <Button variant="outlined" aria-label="user-profile-button">
+            {t('buttons.view-profile')}
+          </Button>
+        </Link>
       </DialogActions>
     </Dialog>
   );

@@ -29,6 +29,7 @@ export interface ReferenceSegmentProps extends BoxProps {
   // TODO REMOVE CALLBACK FROM SIGNATURE!
   onRemove?: (ref: Reference, remove: RemoveFunc) => void;
   temporaryLocation?: boolean;
+  fullWidth?: boolean;
 }
 
 export const referenceSegmentValidationObject = yup.object().shape({
@@ -48,6 +49,7 @@ export const ReferenceSegment = ({
   compactMode = false,
   onAdd,
   onRemove,
+  fullWidth,
   temporaryLocation = false,
   ...props
 }: ReferenceSegmentProps) => {
@@ -109,8 +111,9 @@ export const ReferenceSegment = ({
                     disabled={disabled || isRemoving(index)}
                     fullWidth={isMobile}
                   />
-                  <Box display="flex" flexDirection="row">
+                  <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput
+                      fullWidth={fullWidth}
                       name={`${fieldName}.${index}.uri`}
                       title={t('common.url')}
                       readOnly={readOnly}
