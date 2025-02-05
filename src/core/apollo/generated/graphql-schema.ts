@@ -2465,7 +2465,7 @@ export type Forum = {
 };
 
 export type ForumDiscussionArgs = {
-  ID: Scalars['String'];
+  ID: Scalars['UUID'];
 };
 
 export type ForumDiscussionsArgs = {
@@ -7161,6 +7161,7 @@ export type UrlResolverQueryResultSpace = {
 
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
+  discussionId?: Maybe<Scalars['UUID']>;
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
@@ -7173,6 +7174,7 @@ export enum UrlType {
   Callout = 'CALLOUT',
   ContributionPost = 'CONTRIBUTION_POST',
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
+  Discussion = 'DISCUSSION',
   Forum = 'FORUM',
   InnovationHub = 'INNOVATION_HUB',
   InnovationLibrary = 'INNOVATION_LIBRARY',
@@ -14703,7 +14705,7 @@ export type LatestReleaseDiscussionQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    latestReleaseDiscussion?: { __typename?: 'LatestReleaseDiscussion'; id: string; nameID: string } | undefined;
+    latestReleaseDiscussion?: { __typename?: 'LatestReleaseDiscussion'; id: string } | undefined;
   };
 };
 
@@ -15179,7 +15181,7 @@ export type DiscussionCardFragment = {
 };
 
 export type PlatformDiscussionQueryVariables = Exact<{
-  discussionId: Scalars['String'];
+  discussionId: Scalars['UUID'];
 }>;
 
 export type PlatformDiscussionQuery = {
@@ -26746,6 +26748,7 @@ export type UrlResolverQuery = {
     organizationId?: string | undefined;
     userId?: string | undefined;
     vcId?: string | undefined;
+    discussionId?: string | undefined;
     space?:
       | {
           __typename?: 'UrlResolverQueryResultSpace';

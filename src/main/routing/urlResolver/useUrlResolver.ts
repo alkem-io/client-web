@@ -54,6 +54,9 @@ type UseUrlResolverProvided = {
   userId: string | undefined;
   vcId: string | undefined;
 
+  // Forum:
+  discussionId: string | undefined;
+
   //!! pending
   // Templates
   innovationPackId: string | undefined;
@@ -99,6 +102,9 @@ const useUrlResolver = ({
       organizationId: urlResolverData?.urlResolver.organizationId,
       userId: urlResolverData?.urlResolver.userId,
       vcId: urlResolverData?.urlResolver.vcId,
+
+      // Forum:
+      discussionId: urlResolverData?.urlResolver.discussionId,
 
       // PENDING
       innovationPackId: undefined,

@@ -3823,6 +3823,7 @@ export type UrlResolverQueryResultSpaceFieldPolicy = {
   parentSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UrlResolverQueryResultsKeySpecifier = (
+  | 'discussionId'
   | 'organizationId'
   | 'space'
   | 'type'
@@ -3831,6 +3832,7 @@ export type UrlResolverQueryResultsKeySpecifier = (
   | UrlResolverQueryResultsKeySpecifier
 )[];
 export type UrlResolverQueryResultsFieldPolicy = {
+  discussionId?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

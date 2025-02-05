@@ -1,14 +1,11 @@
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import DiscussionPage from './DiscussionPage';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 
 export const Discussion = () => {
-  const { discussionNameId } = useUrlParams();
+  const { discussionId } = useUrlResolver();
 
-  if (!discussionNameId) {
-    throw new Error('No discussionNameId found in URL params');
-  }
 
-  return <DiscussionPage discussionNameId={discussionNameId} />;
+  return <DiscussionPage discussionId={discussionId} />;
 };
 
 export default Discussion;

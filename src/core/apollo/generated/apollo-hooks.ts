@@ -9360,7 +9360,6 @@ export const LatestReleaseDiscussionDocument = gql`
       id
       latestReleaseDiscussion {
         id
-        nameID
       }
     }
   }
@@ -9635,7 +9634,7 @@ export function refetchPlatformDiscussionsQuery(variables?: SchemaTypes.Platform
 }
 
 export const PlatformDiscussionDocument = gql`
-  query platformDiscussion($discussionId: String!) {
+  query platformDiscussion($discussionId: UUID!) {
     platform {
       id
       forum {
@@ -22138,6 +22137,7 @@ export const UrlResolverDocument = gql`
       organizationId
       userId
       vcId
+      discussionId
     }
   }
 `;

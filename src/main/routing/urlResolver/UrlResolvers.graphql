@@ -18,6 +18,7 @@ query UrlResolver($url: String!) {
     organizationId
     userId
     vcId
+    discussionId
   }
 }
 
