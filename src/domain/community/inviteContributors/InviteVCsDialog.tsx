@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 import SearchField from '@/core/ui/search/SearchField';
-import { VirtualContributorProps } from '../community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -63,10 +62,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const fetchVCs = async () => {
-    let acc = await getAvailableVirtualContributors('', false);
+    let acc = await getAvailableVirtualContributors(filter, false);
     setOnAccount(acc);
 
-    let lib = await getAvailableVirtualContributorsInLibrary('');
+    let lib = await getAvailableVirtualContributorsInLibrary(filter);
     setInLibrary(lib);
   };
 
@@ -74,14 +73,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
   ]);
-
-  const filterVCs = (virtualContributor: VirtualContributorProps) =>
-    virtualContributor.profile.displayName.toLowerCase().includes(filter.toLowerCase());
-
-  const filteredVCs = useMemo(
-    () => (inLibrary && filter.length > 0 ? inLibrary.filter(filterVCs) : inLibrary) ?? [],
-    [inLibrary, filter]
-  );
 
   // debounce as we could have multiple changes in a short period of time
   const debouncedFetchVCs = debounce(fetchVCs, 100);
@@ -91,7 +82,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   // on memberVCs change, update the lists of VCs
   useEffect(() => {
     memoizedDebouncedFetchVCs();
-  }, [virtualContributors]); // do not add memoizedDebouncedFetchVCs in the dependencies
+  }, [virtualContributors, filter]); // do not add memoizedDebouncedFetchVCs in the dependencies
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);
@@ -125,7 +116,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   };
 
   const getContributorById = (id: string) => {
-    return onAccount?.find(c => c.id === id) || filteredVCs?.find(c => c.id === id);
+    return onAccount?.find(c => c.id === id) || inLibrary?.find(c => c.id === id);
   };
 
   const onAddClick = async () => {
@@ -178,7 +169,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   );
 
   const isEmpty =
-    (!onAccount || onAccount.length === 0) && (!filteredVCs || filteredVCs.length === 0) && !availableVCsLoading;
+    (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !availableVCsLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -213,7 +204,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {availableVCsLoading ? (
             <Loading />
           ) : (
-            <InviteContributorsList contributors={filteredVCs} onCardClick={onLibraryContributorClick} />
+            <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
           )}
           {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
         </Gutters>
