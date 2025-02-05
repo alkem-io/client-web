@@ -13842,6 +13842,12 @@ export const UpdateVirtualContributorDocument = gql`
         }
         displayName
         description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }

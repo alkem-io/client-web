@@ -38,12 +38,12 @@ import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovation
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 
 const enum Entities {
   Space = 'Space',
@@ -231,7 +231,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     const requiredSpaceId = ensurePresence(selectedId, 'SpaceId');
     return deleteSpace({
       variables: {
-        spaceId: requiredSpaceId
+        spaceId: requiredSpaceId,
       },
     });
   };
