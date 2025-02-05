@@ -1048,9 +1048,10 @@
       "inviteToRole": "crwdns18824:0crwdne18824:0"
     },
     "inviteContributorsDialog": {
+      "title": "crwdns28746:0crwdne28746:0",
       "vcs": {
         "onAccount": {
-          "title": "crwdns18826:0crwdne18826:0"
+          "title": "crwdns28748:0crwdne28748:0"
         },
         "inLibrary": {
           "title": "crwdns18828:0crwdne18828:0"
@@ -2260,7 +2261,7 @@
         },
         "recentJourneys": {
           "seeMore": "crwdns20092:0crwdne20092:0",
-          "seeMoreSubspaces": "crwdns20094:0{{spaceName}}crwdne20094:0"
+          "seeMoreSubspaces": "crwdns28744:0crwdne28744:0"
         },
         "campaignBlock": {
           "createYourVCButton": "crwdns20096:0crwdne20096:0",
