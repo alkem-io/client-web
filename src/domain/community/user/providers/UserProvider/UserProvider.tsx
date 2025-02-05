@@ -34,6 +34,7 @@ const UserContext = createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
+// DRAFT FOR OPTIMIZATION DISCUSSION
 const UserProvider: FC = ({ children }) => {
   const [hasCreatedUser, setHasCreatedUser] = useState(false);
 
