@@ -1877,6 +1877,10 @@
               "titleWithDaysLeft": "Free Trial - {{daysLeft}} days left",
               "description": "Click here to set up your full {{planName}} subscription"
             },
+            "externalSubExists": "This account already has an existing Wingback account",
+            "addExternalSub": "Create a Wingback account",
+            "externalSubAdded": "Successfully created a Wingback account",
+            "externalSubErrored": "An error occurred while creating the Wingback account",
             "yourLicense": "Your current license:",
             "changeLicense": "Change the Space license",
             "changeLicense_description": "Contact the Alkemio team to change the license.",
