@@ -1,3 +1,5 @@
+import { PropsWithChildren } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import VCPageLayout from '../layout/VCPageLayout';
@@ -9,14 +11,12 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { ReactNode } from 'react';
 
 type VCProfilePageProps = {
   openKnowledgeBaseDialog?: boolean;
-  children?: ReactNode;
 };
 
-export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
+export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: PropsWithChildren<VCProfilePageProps>) => {
   const { t } = useTranslation();
   const { vcId } = useUrlResolver();
 
