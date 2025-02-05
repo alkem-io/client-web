@@ -1441,7 +1441,8 @@ export const UserDetailsFragmentDoc = gql`
       }
       description
       avatar: visual(type: AVATAR) {
-        ...VisualFull
+        id
+        uri
       }
       references {
         id
@@ -1455,7 +1456,6 @@ export const UserDetailsFragmentDoc = gql`
       url
     }
   }
-  ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const UserDisplayNameFragmentDoc = gql`

@@ -35,11 +35,10 @@ import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager'
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
-  const { spaceId, collaborationId, journeyPath } = useUrlResolver();
-  const { loading: loadingSpace, communityId } = useSpace();
+  const { spaceId, collaborationId, journeyPath, loading: resolving } = useUrlResolver();
+  const { communityId } = useSpace();
 
-
-  if (!spaceId && !loadingSpace) {
+  if (!spaceId && !resolving) {
     throw new TypeError('Must be within a Space');
   }
 
@@ -51,7 +50,7 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
-  const { data, loading } = useSpaceCommunityPageQuery({
+  const { data, loading: loadingCommunity } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
       includeCommunity: isAuthenticated,
@@ -141,7 +140,7 @@ const SpaceCommunityPage = () => {
               {showVirtualContributorsBlock && (
                 <VirtualContributorsBlock
                   virtualContributors={virtualContributors}
-                  loading={loading}
+                  loading={loadingCommunity}
                   showInviteOption={hasInvitePrivilege}
                 />
               )}

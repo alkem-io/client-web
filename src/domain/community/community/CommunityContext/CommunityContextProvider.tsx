@@ -20,7 +20,10 @@ const CommunityContextProvider: FC = ({ children }) => {
   const { permissions: subspacePermissions } = useSubSpace();
 
   const { data: spaceData, loading: isLoadingSpace } = useSpaceCommunityQuery({
-    variables: { spaceId: spaceId!, includeDetails: spacePermissions.canReadCommunity },
+    variables: {
+      spaceId: spaceId!,
+      includeDetails: spacePermissions.canReadCommunity,
+    },
     errorPolicy: 'all',
     skip: spaceLevel !== SpaceLevel.L0 || !spaceId,
   });
@@ -34,14 +37,10 @@ const CommunityContextProvider: FC = ({ children }) => {
     skip: spaceLevel === SpaceLevel.L0 || !spaceId,
   });
 
-
-  const community =
-    spaceData?.lookup.space?.community ??
-    challengeData?.lookup.space?.community;
+  const community = spaceData?.lookup.space?.community ?? challengeData?.lookup.space?.community;
 
   const communityName =
-    spaceData?.lookup.space?.profile.displayName ??
-    challengeData?.lookup.space?.profile.displayName;
+    spaceData?.lookup.space?.profile.displayName ?? challengeData?.lookup.space?.profile.displayName;
 
   const isLoading = isLoadingSpace || isLoadingChallenge;
 
