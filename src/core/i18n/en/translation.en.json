@@ -2261,7 +2261,7 @@
         },
         "recentJourneys": {
           "seeMore": "Explore all your Spaces",
-          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
+          "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
         "campaignBlock": {
           "createYourVCButton": "Create your Virtual Contributor!",
