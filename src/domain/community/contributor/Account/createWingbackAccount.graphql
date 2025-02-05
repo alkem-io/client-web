@@ -1,0 +1,3 @@
+mutation createWingbackAccount($accountID: UUID!) {
+  createWingbackAccount(accountID: $accountID)
+}
