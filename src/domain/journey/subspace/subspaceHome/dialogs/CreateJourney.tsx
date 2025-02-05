@@ -10,7 +10,7 @@ import {
 import { CreateSubspaceForm } from '../../forms/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
-import { RECENT_SPACES_LIST } from '@/domain/journey/common/journeyDashboard/constants';
+import { RECENT_SPACES_LIST_LIMIT } from '@/domain/journey/common/journeyDashboard/constants';
 
 export interface CreateJourneyProps {
   isVisible: boolean;
@@ -26,7 +26,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
     refetchQueries: [
       refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId }),
       refetchDashboardWithMembershipsQuery({
-        limit: RECENT_SPACES_LIST,
+        limit: RECENT_SPACES_LIST_LIMIT,
       }),
     ],
   });
