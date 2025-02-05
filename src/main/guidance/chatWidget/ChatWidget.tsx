@@ -1,4 +1,12 @@
-import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
+import logoSrc from '@/main/ui/logo/logoSmall.svg';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '@/main/ui/platformNavigation/constants';
+import { InfoOutlined } from '@mui/icons-material';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import {
   Box,
   IconButton,
@@ -10,10 +18,9 @@ import {
   Tooltip,
   useTheme,
 } from '@mui/material';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { ReactElement, cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
+  Widget,
   addResponseMessage,
   addUserMessage,
   dropMessages,
@@ -21,24 +28,17 @@ import {
   renderCustomComponent,
   setBadgeCount,
   toggleWidget,
-  Widget,
-} from 'react-chat-widget';
-import logoSrc from '@/main/ui/logo/logoSmall.svg';
+} from 'react-chat-widget-react-18';
+import 'react-chat-widget-react-18/lib/styles.css';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import 'react-chat-widget/lib/styles.css';
+import { useUserContext } from '../../../domain/community/user';
+import ChatWidgetFooter from './ChatWidgetFooter';
+import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
+import ChatWidgetMenu from './ChatWidgetMenu';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
-import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
-import { createPortal } from 'react-dom';
-import ChatWidgetFooter from './ChatWidgetFooter';
-import Gutters from '@/core/ui/grid/Gutters';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import { InfoOutlined } from '@mui/icons-material';
-import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '@/main/ui/platformNavigation/constants';
-import ChatWidgetMenu from './ChatWidgetMenu';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
-import { useUserContext } from '../../../domain/community/user';
 
 type FeedbackType = 'positive' | 'negative';
 
