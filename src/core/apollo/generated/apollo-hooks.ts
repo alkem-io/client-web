@@ -13754,6 +13754,12 @@ export const VirtualContributorDocument = gql`
           avatar: visual(type: AVATAR) {
             ...VisualFull
           }
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -13829,6 +13835,12 @@ export const VirtualContributorProfileDocument = gql`
           url
           avatar: visual(type: AVATAR) {
             ...VisualFull
+          }
+          references {
+            id
+            name
+            uri
+            description
           }
         }
       }
@@ -13986,6 +13998,12 @@ export const UpdateVirtualContributorDocument = gql`
         }
         displayName
         description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }
