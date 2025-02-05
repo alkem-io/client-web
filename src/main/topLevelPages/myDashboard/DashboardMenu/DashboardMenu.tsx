@@ -36,7 +36,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   const { setOpenDialog } = usePendingMembershipsDialog();
 
   const { data: invitesData } = usePendingInvitationsCountQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
   const pendingInvitationsCount = invitesData?.me?.communityInvitationsCount || 0;
 

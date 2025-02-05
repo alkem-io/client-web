@@ -3,7 +3,7 @@ import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import PendingMembershipsUserMenuItem from '@/domain/community/pendingMembership/PendingMembershipsUserMenuItem';
+import PendingMembershipsDialog from '@/domain/community/pendingMembership/PendingMembershipsDialog';
 import {
   AssignmentIndOutlined,
   DashboardOutlined,
@@ -29,6 +29,11 @@ import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
 import { FocusTrap } from '@mui/base/FocusTrap';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import Avatar from '@/core/ui/avatar/Avatar';
+import {
+  PendingMembershipsDialogType,
+  usePendingMembershipsDialog,
+} from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
+import { usePendingInvitationsCountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -47,12 +52,15 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const platformOrigin = usePlatformOrigin();
     const homeUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
 
+    const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+    const { setOpenDialog } = usePendingMembershipsDialog();
+
     const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
 
-    // todo: change with RoleName.GlobalAdmin?
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
-    const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+    const { data: invitesData } = usePendingInvitationsCountQuery();
+    const pendingInvitationsCount = invitesData?.me?.communityInvitationsCount || 0;
 
     // the roles should follow the order
     const role = useMemo(() => {
@@ -117,19 +125,15 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                 </NavigatableMenuItem>
               )}
               {user && (
-                <PendingMembershipsUserMenuItem>
-                  {({ header, openDialog }) => (
-                    <NavigatableMenuItem
-                      iconComponent={HdrStrongOutlined}
-                      onClick={() => {
-                        openDialog();
-                        onClose?.();
-                      }}
-                    >
-                      {header}
-                    </NavigatableMenuItem>
-                  )}
-                </PendingMembershipsUserMenuItem>
+                <NavigatableMenuItem
+                  iconComponent={HdrStrongOutlined}
+                  onClick={() => {
+                    setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
+                    onClose?.();
+                  }}
+                >
+                  {t('community.pendingMembership.pendingMembershipsWithCount', { count: pendingInvitationsCount })}
+                </NavigatableMenuItem>
               )}
               <UserMenuDivider />
               {children}
@@ -179,6 +183,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             </MenuList>
           </FocusTrap>
         </Wrapper>
+        {user && <PendingMembershipsDialog />}
         <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       </>
     );
