@@ -5,7 +5,7 @@ import { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { usePostQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface usePostProps {

@@ -4,7 +4,7 @@ import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 /**
  * @deprecated

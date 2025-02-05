@@ -8,7 +8,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface PreApplicationDialogProps {

@@ -14,7 +14,7 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildAboutUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 

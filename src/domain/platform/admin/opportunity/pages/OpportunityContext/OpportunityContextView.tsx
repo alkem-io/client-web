@@ -3,7 +3,7 @@ import { ContextForm, ContextFormValues } from '@/domain/context/ContextForm';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OpportunityContextSegment } from '@/domain/platform/admin/opportunity/OpportunityContextSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   refetchSubspaceProfileInfoQuery,
   useSubspaceProfileInfoQuery,

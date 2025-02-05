@@ -4,7 +4,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceProfileView from './SubspaceProfileView';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const SubspaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId } = useUrlResolver();

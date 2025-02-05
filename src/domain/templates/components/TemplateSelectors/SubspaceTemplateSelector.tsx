@@ -11,7 +11,7 @@ import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/gen
 import { useSpaceDefaultTemplatesQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface SubspaceTemplateSelectorProps extends GuttersProps {
   name: string;

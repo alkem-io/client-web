@@ -13,7 +13,7 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const KnowledgeBasePage = () => {
   const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();

@@ -12,7 +12,7 @@ import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 

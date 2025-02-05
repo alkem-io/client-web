@@ -1,7 +1,7 @@
 import { ChallengeRoute } from '@/domain/journey/settings/routes/ChallengeRoute';
 import { OpportunityRoute } from '@/domain/journey/settings/routes/OpportunityRoute';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
 
 const SubspaceSettingsRoute = () => {

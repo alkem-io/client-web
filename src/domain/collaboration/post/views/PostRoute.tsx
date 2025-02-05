@@ -5,7 +5,7 @@ import PostSettingsPage from '../pages/PostSettingsPage';
 import PostSharePage from '../pages/PostSharePage';
 import { PostDialogSection } from './PostDialogSection';
 import { PostLayoutHolder } from './PostLayoutWithOutlet';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface PostRouteProps {
   parentPagePath: string;

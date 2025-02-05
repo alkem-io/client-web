@@ -4,7 +4,7 @@ import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthoriz
 import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
-import { JourneyPath } from '@/main/urlResolver/useUrlResolver';
+import { JourneyPath } from '@/main/routing/urlResolver/useUrlResolver';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';

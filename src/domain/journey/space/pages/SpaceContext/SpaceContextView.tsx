@@ -3,7 +3,7 @@ import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/gene
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Box, Container, Grid } from '@mui/material';
 import SpaceContextForm, { SpaceEditFormValuesType } from '@/domain/platform/admin/components/SpaceContextForm';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export const SpaceContextView = () => {
   const notify = useNotification();

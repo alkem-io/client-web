@@ -4,7 +4,7 @@ import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 

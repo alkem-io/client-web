@@ -5,7 +5,7 @@ import {
   SpaceLevel,
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SubspacePermissions {

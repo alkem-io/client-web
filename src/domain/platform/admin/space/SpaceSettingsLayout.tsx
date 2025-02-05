@@ -18,7 +18,7 @@ import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';

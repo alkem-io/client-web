@@ -1,5 +1,5 @@
 import Loading from '@/core/ui/loading/Loading';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';

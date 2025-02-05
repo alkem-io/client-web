@@ -7,7 +7,7 @@ import {
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface SpacePermissions {
   canRead: boolean;

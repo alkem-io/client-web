@@ -2,7 +2,7 @@ import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { buildSettingsProfileUrl } from '@/main/routing/urlBuilders';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const VCPageBanner = () => {
   const { vcId } = useUrlResolver();

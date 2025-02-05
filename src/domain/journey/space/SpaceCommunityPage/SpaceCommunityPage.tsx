@@ -22,7 +22,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';

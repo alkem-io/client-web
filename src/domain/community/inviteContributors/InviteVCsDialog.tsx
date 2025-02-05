@@ -15,7 +15,7 @@ import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileC
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';

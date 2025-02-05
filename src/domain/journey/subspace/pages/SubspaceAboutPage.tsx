@@ -12,7 +12,7 @@ import SubspaceContributorsDialogContent from '@/domain/community/community/enti
 import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '@/main/routing/urlBuilders';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 const SubspaceAboutPage = () => {

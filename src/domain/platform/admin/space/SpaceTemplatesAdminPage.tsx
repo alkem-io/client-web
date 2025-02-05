@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useSpaceTemplatesAdminQuery } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';

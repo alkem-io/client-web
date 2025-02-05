@@ -21,7 +21,7 @@ import { NavigationState } from '@/core/routing/ScrollToTop';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type CalloutLocation = {
   parentPagePath: string;

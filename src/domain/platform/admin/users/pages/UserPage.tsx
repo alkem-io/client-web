@@ -16,7 +16,7 @@ import { UserModel } from '@/domain/community/user/models/User';
 import { createUserNameID } from '@/domain/community/user/utils/createUserNameId';
 import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface UserPageProps {

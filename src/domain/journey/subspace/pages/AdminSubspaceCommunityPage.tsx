@@ -24,7 +24,7 @@ import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportT
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();

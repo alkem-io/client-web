@@ -7,7 +7,7 @@ import {
   useCreateSubspaceMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   CommunityMembershipStatus,

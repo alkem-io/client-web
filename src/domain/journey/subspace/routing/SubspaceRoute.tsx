@@ -11,7 +11,7 @@ import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';

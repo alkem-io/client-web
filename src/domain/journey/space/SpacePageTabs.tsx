@@ -33,7 +33,7 @@ import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
 import { EntityTabsProps } from '../common/EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import ActivityDialog from '../common/Activity/ActivityDialog';
 
 type TabDefinition = {

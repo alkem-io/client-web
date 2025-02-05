@@ -26743,6 +26743,88 @@ export type InAppNotificationUserMentionedFragment = {
     | undefined;
 };
 
+export type UrlResolverQueryVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+export type UrlResolverQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    type: UrlType;
+    organizationId?: string | undefined;
+    userId?: string | undefined;
+    vcId?: string | undefined;
+    space?:
+      | {
+          __typename?: 'UrlResolverQueryResultSpace';
+          id: string;
+          level: SpaceLevel;
+          levelZeroSpaceID: string;
+          parentSpaces: Array<string>;
+          collaboration: {
+            __typename?: 'UrlResolverQueryResultCollaboration';
+            id: string;
+            calloutId?: string | undefined;
+            calloutsSetId?: string | undefined;
+            contributionId?: string | undefined;
+            postId?: string | undefined;
+            whiteboardId?: string | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceUrlResolverQueryVariables = Exact<{
+  spaceNameId: Scalars['NameID'];
+  subspaceL1NameId?: InputMaybe<Scalars['NameID']>;
+  subspaceL2NameId?: InputMaybe<Scalars['NameID']>;
+  includeSubspaceL1?: InputMaybe<Scalars['Boolean']>;
+  includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type SpaceUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: {
+    __typename?: 'LookupByNameQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subspaceByNameID?: {
+            __typename?: 'Space';
+            id: string;
+            subspaceByNameID?: { __typename?: 'Space'; id: string };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceKeyEntitiesIDsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceKeyEntitiesIDsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: { __typename?: 'Community'; id: string };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;
@@ -29892,88 +29974,6 @@ export type SpaceExplorerWelcomeSpaceQuery = {
           __typename?: 'Space';
           id: string;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-        }
-      | undefined;
-  };
-};
-
-export type UrlResolverQueryVariables = Exact<{
-  url: Scalars['String'];
-}>;
-
-export type UrlResolverQuery = {
-  __typename?: 'Query';
-  urlResolver: {
-    __typename?: 'UrlResolverQueryResults';
-    type: UrlType;
-    organizationId?: string | undefined;
-    userId?: string | undefined;
-    vcId?: string | undefined;
-    space?:
-      | {
-          __typename?: 'UrlResolverQueryResultSpace';
-          id: string;
-          level: SpaceLevel;
-          levelZeroSpaceID: string;
-          parentSpaces: Array<string>;
-          collaboration: {
-            __typename?: 'UrlResolverQueryResultCollaboration';
-            id: string;
-            calloutId?: string | undefined;
-            calloutsSetId?: string | undefined;
-            contributionId?: string | undefined;
-            postId?: string | undefined;
-            whiteboardId?: string | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SpaceUrlResolverQueryVariables = Exact<{
-  spaceNameId: Scalars['NameID'];
-  subspaceL1NameId?: InputMaybe<Scalars['NameID']>;
-  subspaceL2NameId?: InputMaybe<Scalars['NameID']>;
-  includeSubspaceL1?: InputMaybe<Scalars['Boolean']>;
-  includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type SpaceUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: {
-    __typename?: 'LookupByNameQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          subspaceByNameID?: {
-            __typename?: 'Space';
-            id: string;
-            subspaceByNameID?: { __typename?: 'Space'; id: string };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SpaceKeyEntitiesIDsQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceKeyEntitiesIDsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: { __typename?: 'Community'; id: string };
-          collaboration: {
-            __typename?: 'Collaboration';
-            id: string;
-            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
-          };
         }
       | undefined;
   };

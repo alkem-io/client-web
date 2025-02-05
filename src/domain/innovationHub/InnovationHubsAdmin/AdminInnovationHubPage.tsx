@@ -18,7 +18,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Button } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationHubSpacesField from './InnovationHubSpacesField';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const AdminInnovationHubPage = () => {
   const { t } = useTranslation();

@@ -2,7 +2,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import SubspaceProfileView from '@/domain/journey/subspace/pages/SubspaceProfile/SubspaceProfileView';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const OpportunityProfilePage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { spaceId } = useUrlResolver();

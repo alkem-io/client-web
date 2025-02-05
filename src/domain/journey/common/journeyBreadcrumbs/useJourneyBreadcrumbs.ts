@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { JourneyPath } from '@/main/urlResolver/useUrlResolver';
+import { JourneyPath } from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
 

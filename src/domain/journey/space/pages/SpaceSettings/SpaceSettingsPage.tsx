@@ -3,7 +3,7 @@ import SpaceSettingsView from './SpaceSettingsView';
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Skeleton } from '@mui/material';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';

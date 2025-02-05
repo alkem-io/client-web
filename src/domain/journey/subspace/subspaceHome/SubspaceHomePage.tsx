@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, {
   DashboardNavigationProps,

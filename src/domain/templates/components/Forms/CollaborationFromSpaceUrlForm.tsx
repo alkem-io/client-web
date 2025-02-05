@@ -5,7 +5,7 @@ import { Text } from '@/core/ui/typography';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import useUrlParser from '@/main/routing/resolvers/useUrlParser';
+import useUrlParser from '@/main/routing/useUrlParser';
 import {
   useSpaceCollaborationIdLazyQuery,
   useSpaceUrlResolverLazyQuery,

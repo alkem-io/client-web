@@ -5,7 +5,7 @@ import { styled, Tabs } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { PostDialogSection } from './PostDialogSection';
 import usePost from '../graphql/usePost';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
   marginTop: theme.spacing(-0.4),
