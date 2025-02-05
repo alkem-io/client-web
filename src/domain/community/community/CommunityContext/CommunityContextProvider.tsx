@@ -13,13 +13,14 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
  * @param children
  * @constructor
  */
+//!! remove this
 const CommunityContextProvider: FC = ({ children }) => {
   const { spaceId, spaceLevel } = useUrlResolver();
   const { permissions: spacePermissions } = useSpace();
   const { permissions: subspacePermissions } = useSubSpace();
 
   const { data: spaceData, loading: isLoadingSpace } = useSpaceCommunityQuery({
-    variables: { spaceId: spaceId!, includeDetails: spacePermissions.communityReadAccess },
+    variables: { spaceId: spaceId!, includeDetails: spacePermissions.canReadCommunity },
     errorPolicy: 'all',
     skip: spaceLevel !== SpaceLevel.L0 || !spaceId,
   });

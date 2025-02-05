@@ -11,15 +11,12 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface SpacePermissions {
   canRead: boolean;
-  viewerCanUpdate: boolean;
-  canReadPosts: boolean;
+  canUpdate: boolean;
   canReadSubspaces: boolean;
   canCreateSubspaces: boolean;
   canCreateTemplates: boolean;
-  canCreate: boolean;
-  communityReadAccess: boolean;
+  canReadCommunity: boolean;
   canReadCollaboration: boolean;
-  contextPrivileges: AuthorizationPrivilege[];
 }
 
 interface SpaceContextProps {
@@ -57,15 +54,12 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   },
   permissions: {
     canRead: false,
-    viewerCanUpdate: false,
-    canCreate: false,
+    canUpdate: false,
     canCreateSubspaces: false,
     canCreateTemplates: false,
-    canReadPosts: false,
     canReadSubspaces: false,
-    communityReadAccess: false,
+    canReadCommunity: false,
     canReadCollaboration: false,
-    contextPrivileges: [],
   },
   visibility: SpaceVisibility.Active,
   myMembershipStatus: undefined,
@@ -108,74 +102,47 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const roleSetId = communityData?.lookup.space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
 
-
-  const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const collaborationPrivileges = space?.collaboration?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
-  const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
-
   // A member has READ and an Admin can also access it, this is more of a temporary solution
   const canAccessTemplatesManager =
-    space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
+    communityData?.lookup.space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
     spacePrivileges.includes(AuthorizationPrivilege.Grant);
-  let canCreateTemplates = false;
 
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId || !canAccessTemplatesManager,
   });
+  const canCreateTemplates = (canAccessTemplatesManager &&
+    (templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.Create
+    ))) ?? false;
 
-  if (canAccessTemplatesManager) {
-    canCreateTemplates =
-      templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
-        AuthorizationPrivilege.Create
-      ) ?? false;
-  }
-
-  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
-  const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-  const myMembershipStatus = space?.community?.roleSet?.myMembershipStatus;
+  const communityPrivileges = communityData?.lookup.space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const myMembershipStatus = communityData?.lookup.space?.community?.roleSet?.myMembershipStatus;
 
   const permissions = useMemo<SpacePermissions>(() => {
     return {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
-      viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
-      canReadSubspaces,
-      canCreateSubspaces: canCreateSubspaces,
+      canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
+      canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
+      canReadSubspaces: spacePrivileges.includes(AuthorizationPrivilege.Read),  //!! ??
       canCreateTemplates,
-      canCreate,
-      communityReadAccess: isAuthenticated && communityPrivileges.includes(AuthorizationPrivilege.Read),
+      canReadCommunity: isAuthenticated && communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
-      canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
-      contextPrivileges,
     };
   }, [
     spacePrivileges,
-    canReadSubspaces,
-    canCreateSubspaces,
     canCreateTemplates,
-    canCreate,
     communityPrivileges,
     collaborationPrivileges,
-    contextPrivileges,
   ]);
 
   const profile = useMemo(() => {
     return {
       displayName: space?.profile.displayName ?? '',
       url: space?.profile.url ?? '',
-/*      id: space?.profile.id ?? '',
-      displayName: space?.profile.displayName || '',
-      description: space?.profile.description,
-      tagset: space?.profile.tagset,
-      visuals: space?.profile.visuals ?? [],
-      tagline: space?.profile.tagline || '',
-      references: space?.profile.references ?? [],
-      location: space?.profile.location,
-      url: space?.profile.url ?? '',
-      visibility,*/
     };
   }, [space?.profile]);
 

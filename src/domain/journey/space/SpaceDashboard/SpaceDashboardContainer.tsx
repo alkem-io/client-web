@@ -61,7 +61,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     variables: {
       spaceId: spaceId!,
       authorizedReadAccess: spacePermissions.canRead,
-      authorizedReadAccessCommunity: spacePermissions.communityReadAccess,
+      authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
     skip: !spaceId,

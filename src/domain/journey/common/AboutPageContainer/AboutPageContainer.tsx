@@ -24,7 +24,7 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 interface AboutPagePermissions {
-  communityReadAccess: boolean;
+  canReadCommunity: boolean;
 }
 
 export interface AboutPageContainerEntities {
@@ -74,7 +74,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const nonMemberProfile = nonMembersData?.lookup.space?.profile;
   const nonMemberCommunity = nonMembersData?.lookup.space?.community;
 
-  const communityReadAccess =
+  const canReadCommunity =
     nonMemberCommunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
   const {
@@ -85,7 +85,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     variables: {
       spaceId: journeyId!,
     },
-    skip: nonMembersDataLoading || !journeyId || !communityReadAccess,
+    skip: nonMembersDataLoading || !journeyId || !canReadCommunity,
   });
 
   const {
@@ -101,7 +101,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
       RoleSetContributorType.Organization,
       RoleSetContributorType.Virtual,
     ],
-    skip: !communityReadAccess,
+    skip: !canReadCommunity,
   });
   const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);
   const memberProfile = membersData?.lookup.space?.profile;
@@ -144,7 +144,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   );
 
   const permissions: AboutPagePermissions = {
-    communityReadAccess,
+    canReadCommunity,
   };
 
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
