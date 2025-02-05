@@ -1,11 +1,11 @@
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { DialogTitle } from '../dialog/deprecated';
 import Loading from '../loading/Loading';
-import { DialogContent, DialogTitle } from '../dialog/deprecated';
 import QRCode from './QRCode';
-import { makeStyles } from '@mui/styles';
 
 type QRCodeDialogProps = {
   entities: {
@@ -28,22 +28,8 @@ type QRCodeDialogProps = {
   };
 };
 
-const useStyles = makeStyles({
-  paper: {
-    height: '100vh',
-  },
-  content: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  qrCode: {
-    flexGrow: 1,
-  },
-});
-
 const QRCodeDialog = ({ entities, actions, options, state }: QRCodeDialogProps) => {
   const { t } = useTranslation();
-  const styles = useStyles();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;
   if (!title) {
@@ -55,15 +41,15 @@ const QRCodeDialog = ({ entities, actions, options, state }: QRCodeDialogProps) 
   }
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog" classes={{ paper: styles.paper }}>
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
       <DialogTitle id="confirmation-dialog-title" onClose={actions.onCancel}>
         {title}
       </DialogTitle>
-      <DialogContent className={styles.content}>
+      <DialogContent sx={{ display: 'flex', flexFlow: 'column nowrap' }}>
         {content}
         {state?.isLoading && <Loading text="Generating credential request" />}
         {!state?.isLoading && entities.qrCodeJwt && (
-          <QRCode qrCodeJwt={entities.qrCodeJwt} qrCodeImg={entities.qrCodeImg} className={styles.qrCode} />
+          <QRCode qrCodeJwt={entities.qrCodeJwt} qrCodeImg={entities.qrCodeImg} sx={{ flexGrow: 1 }} />
         )}
         {!state?.isLoading && entities.qrCodeImg && <img src={entities.qrCodeImg} alt="qr code" />}
       </DialogContent>

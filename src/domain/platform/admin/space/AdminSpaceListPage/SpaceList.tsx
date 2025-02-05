@@ -26,7 +26,6 @@ export const SpaceList: FC = () => {
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
   const { data: platformLicensingData } = usePlatformLicensingPlansQuery();
 
-
   const allLicensePlans = platformLicensingData?.platform.licensingFramework.plans ?? [];
   const spaceLicensePlans = allLicensePlans.filter(
     plan =>

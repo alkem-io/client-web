@@ -1,8 +1,6 @@
-import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import { PropsWithChildren, forwardRef } from 'react';
 import HelpButton from '@/core/ui/button/HelpButton';
+import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
+import { PropsWithChildren, forwardRef } from 'react';
 
 export interface ProfileCardProps {
   title: string;
@@ -10,29 +8,19 @@ export interface ProfileCardProps {
   helpText?: string;
 }
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    card: {
-      background: theme.palette.neutralLight.main,
-      width: '100%',
-    },
-    cardHeader: {
-      paddingBottom: theme.spacing(1),
-    },
-    cardContent: {
-      paddingTop: theme.spacing(1),
-    },
-  })
-);
-
 export const CredentialProfileCard = forwardRef<HTMLDivElement | null, ProfileCardProps>(
   ({ title, subtitle, helpText, children }: PropsWithChildren<ProfileCardProps>, ref) => {
-    const styles = useStyles();
-
     return (
-      <Card ref={ref} className={styles.card} square aria-label="profile-card" elevation={0} variant="outlined">
+      <Card
+        ref={ref}
+        sx={{ bgcolor: 'neutralLight.main', width: 1 }}
+        square
+        aria-label="profile-card"
+        elevation={0}
+        variant="outlined"
+      >
         <CardHeader
-          className={styles.cardHeader}
+          sx={{ pb: 1 }}
           title={
             <Typography variant="h4" alignItems="center" display="flex">
               <Box component="span" fontWeight="bold">
@@ -43,7 +31,7 @@ export const CredentialProfileCard = forwardRef<HTMLDivElement | null, ProfileCa
           }
           subheader={subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
         />
-        <CardContent className={styles.cardContent}>{children}</CardContent>
+        <CardContent sx={{ pt: 1 }}>{children}</CardContent>
       </Card>
     );
   }

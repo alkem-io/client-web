@@ -1,7 +1,6 @@
 import Section from '@/core/ui/content/deprecated/Section';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 
 export const ErrorPage = ({ error }: { error: Error }) => {
@@ -10,10 +9,10 @@ export const ErrorPage = ({ error }: { error: Error }) => {
   return (
     <div style={{ display: 'flex', height: '100%', alignItems: 'center' }}>
       <Section>
-        <WrapperTypography as="h1" variant="h1" weight="bold">
+        <Typography variant="h1" mb={3}>
           {t('pages.error.title')}
-        </WrapperTypography>
-        <WrapperTypography as="h2" variant="h3" color="neutral">
+        </Typography>
+        <Typography variant="h3" mb={2} fontWeight="medium" color="neutral.main">
           <Trans
             i18nKey="pages.error.line1"
             values={{ message: error.message }}
@@ -21,14 +20,14 @@ export const ErrorPage = ({ error }: { error: Error }) => {
               italic: <i />,
             }}
           />
-        </WrapperTypography>
-        <WrapperTypography as="h2" variant="h3" color="neutral">
+        </Typography>
+        <Typography variant="h3" mb={2} fontWeight="medium" color="neutral.main">
           {t('pages.error.line2', { graphQLEndpoint: privateGraphQLEndpoint })}
-        </WrapperTypography>
-        {import.meta.env.MODE === 'development' && <WrapperTypography as="pre">{error.stack}</WrapperTypography>}
-        <WrapperTypography as="h5" variant="h5" color="neutralMedium">
+        </Typography>
+        {import.meta.env.MODE === 'development' && <Typography mb={2}>{error.stack}</Typography>}
+        <Typography variant="h5" color="neutralMedium.main" fontWeight="regular" mb={2}>
           {t('pages.error.line3')}
-        </WrapperTypography>
+        </Typography>
         <div>
           <Button variant="outlined" onClick={() => window.location.reload()}>
             {t('pages.error.buttons.reload')}

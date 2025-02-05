@@ -1,14 +1,14 @@
-import getMetricCount, { Metric } from './getMetricCount';
-import { useTranslation } from 'react-i18next';
-import { ReactNode, useMemo } from 'react';
-import { MetricType } from '../MetricType';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MetricType } from '../MetricType';
+import getMetricCount, { Metric } from './getMetricCount';
 
 export interface MetricItem {
   name: ReactNode;
   type?: MetricType;
   isLoading?: boolean;
-  count: number | undefined;
+  count: number;
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
 }
 
