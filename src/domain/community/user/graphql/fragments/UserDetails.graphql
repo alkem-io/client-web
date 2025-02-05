@@ -15,8 +15,7 @@ fragment UserDetails on User {
     }
     description
     avatar: visual(type: AVATAR) {
-      id
-      uri
+      ...VisualFull
     }
     references {
       id

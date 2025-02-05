@@ -8296,7 +8296,21 @@ export type UserPendingMembershipsQuery = {
             location?:
               | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
               | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -17543,7 +17557,21 @@ export type UserDetailsFragment = {
     location?:
       | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
       | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    avatar?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
@@ -17589,7 +17617,21 @@ export type CreateUserMutation = {
       location?:
         | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
         | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
@@ -17628,7 +17670,21 @@ export type CreateUserNewRegistrationMutation = {
       location?:
         | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
         | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
@@ -17713,7 +17769,21 @@ export type UserQuery = {
             location?:
               | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
               | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -17797,7 +17867,21 @@ export type UserProfileQuery = {
             location?:
               | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
               | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -17903,7 +17987,21 @@ export type UserProviderQuery = {
             location?:
               | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
               | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -18045,7 +18143,21 @@ export type UpdateUserMutation = {
       location?:
         | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
         | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
