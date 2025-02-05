@@ -110,9 +110,7 @@ const JourneyCardHorizontal = ({
             <Chip
               variant="filled"
               color="primary"
-              label={
-                <Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>
-              }
+              label={<Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>}
             />
           )}
         </BlockTitleWithIcon>

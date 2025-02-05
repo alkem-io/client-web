@@ -667,10 +667,6 @@ export type AiPersonaService = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
-export type AiPersonaServiceIngestInput = {
-  aiPersonaServiceID: Scalars['UUID'];
-};
-
 export type AiServer = {
   __typename?: 'AiServer';
   /** A particular AiPersonaService */
@@ -835,6 +831,7 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceMemberInvitee = 'SPACE_MEMBER_INVITEE',
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -2216,6 +2213,7 @@ export enum CredentialType {
   SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
   SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceMemberInvitee = 'SPACE_MEMBER_INVITEE',
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -3677,8 +3675,6 @@ export type Mutation = {
   aiServerCreateAiPersonaService: AiPersonaService;
   /** Deletes the specified AiPersonaService. */
   aiServerDeleteAiPersonaService: AiPersonaService;
-  /** Trigger an ingesting of data on the remove AI Persona Service. */
-  aiServerPersonaServiceIngest: Scalars['Boolean'];
   /** Updates the specified AI Persona. */
   aiServerUpdateAiPersonaService: AiPersonaService;
   /** Apply to join the specified RoleSet in the entry Role. */
@@ -3769,6 +3765,8 @@ export type Mutation = {
   createUserNewRegistration: User;
   /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
+  /** Creates an account in Wingback */
+  createWingbackAccount: Scalars['String'];
   /** Deletes the specified Actor. */
   deleteActor: Actor;
   /** Deletes the specified Actor Group, including contained Actors. */
@@ -4027,10 +4025,6 @@ export type MutationAiServerDeleteAiPersonaServiceArgs = {
   deleteData: DeleteAiPersonaServiceInput;
 };
 
-export type MutationAiServerPersonaServiceIngestArgs = {
-  ingestData: AiPersonaServiceIngestInput;
-};
-
 export type MutationAiServerUpdateAiPersonaServiceArgs = {
   aiPersonaServiceData: UpdateAiPersonaServiceInput;
 };
@@ -4185,6 +4179,10 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateVirtualContributorArgs = {
   virtualContributorData: CreateVirtualContributorOnAccountInput;
+};
+
+export type MutationCreateWingbackAccountArgs = {
+  accountID: Scalars['UUID'];
 };
 
 export type MutationDeleteActorArgs = {
@@ -16671,6 +16669,12 @@ export type AllOrganizationsQuery = {
   };
 };
 
+export type CreateWingbackAccountMutationVariables = Exact<{
+  accountID: Scalars['UUID'];
+}>;
+
+export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
+
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -18592,6 +18596,15 @@ export type VirtualContributorQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
           };
         }
       | undefined;
@@ -18640,6 +18653,15 @@ export type VirtualContributorProfileQuery = {
                   minWidth: number;
                   alternativeText?: string | undefined;
                 }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           };
         }
@@ -18740,6 +18762,9 @@ export type UpdateVirtualContributorSettingsMutation = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
   };

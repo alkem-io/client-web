@@ -1,24 +1,22 @@
-import { Grid } from '@mui/material';
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import References from '@/domain/shared/components/References/References';
-import { styled } from '@mui/styles';
 import { UserMetadata } from '@/domain/community/user/hooks/useUserMetadataWrapper';
+import References from '@/domain/shared/components/References/References';
+import SocialLinks from '@/domain/shared/components/SocialLinks/SocialLinks';
 import {
   SocialNetworkEnum,
   isSocialNetworkSupported,
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography';
-import SocialLinks from '@/domain/shared/components/SocialLinks/SocialLinks';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import { Grid, styled } from '@mui/material';
 import { groupBy } from 'lodash';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface UserProfileViewProps {
   entities: {
     userMetadata: UserMetadata;
-    verified: boolean;
   };
 }
 

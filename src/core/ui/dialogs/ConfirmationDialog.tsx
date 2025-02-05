@@ -1,14 +1,13 @@
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { LoadingButton } from '@mui/lab';
+import { Button, DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
-import { LoadingButton } from '@mui/lab';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { DialogContent } from '../dialog/deprecated';
-import DialogHeader from '../dialog/DialogHeader';
-import { BlockTitle } from '../typography';
 import { Actions } from '../actions/Actions';
+import DialogHeader from '../dialog/DialogHeader';
 import { gutters } from '../grid/utils';
-import { Button } from '@mui/material';
+import { BlockTitle } from '../typography';
 /**
  * @deprecated Needs refactor, do not base other components on this Props.
  */

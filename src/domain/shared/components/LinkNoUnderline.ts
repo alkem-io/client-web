@@ -1,4 +1,4 @@
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 /**

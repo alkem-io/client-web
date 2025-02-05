@@ -1,3 +1,5 @@
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import {
   FormControl,
   FormHelperText,
@@ -8,27 +10,8 @@ import {
   Select,
   SelectProps,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
 import React, { useMemo } from 'react';
-import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-
-const useStyles = makeStyles(theme => ({
-  icon: {
-    paddingRight: theme.spacing(1),
-    color: theme.palette.primary.main,
-    fontSize: theme.typography.body1.fontSize,
-  },
-  input: {
-    display: 'flex',
-    alignItems: 'center',
-    '& .MuiListItemIcon-root': { minWidth: '36px' },
-    '&.MuiSelect-select': {
-      height: '1.4375em',
-    },
-  },
-}));
 
 export interface FormikSelectValue {
   id: string;
@@ -60,8 +43,6 @@ export const FormikSelect = ({
   const tErr = useValidationMessageTranslation();
 
   const [field, meta] = useField(name);
-  const styles = useStyles();
-
   const isError = Boolean(meta.error) && meta.touched;
 
   const helperText = useMemo(() => {
@@ -81,16 +62,25 @@ export const FormikSelect = ({
         label={title}
         onBlur={field.onBlur}
         onChange={field.onChange}
-        variant={'outlined'}
+        variant="outlined"
         placeholder={placeholder}
-        inputProps={{
-          className: styles.input,
-        }}
         endAdornment={endAdornment}
+        inputProps={{
+          sx: {
+            display: 'flex',
+            alignItems: 'center',
+            '&.MuiSelect-select': { height: '1.4375em' },
+            '& .MuiListItemIcon-root': { minWidth: '36px' },
+          },
+        }}
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
-            {el.icon && <ListItemIcon sx={{ color: 'primary.main' }}>{el.icon}</ListItemIcon>}
+            {el.icon && (
+              <ListItemIcon sx={{ color: 'primary.main', paddingRight: theme => theme.spacing(1) }}>
+                {el.icon}
+              </ListItemIcon>
+            )}
             <ListItemText>{el.name}</ListItemText>
           </MenuItem>
         ))}

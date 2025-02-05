@@ -1,3 +1,5 @@
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import type {
   BinaryFileData,
@@ -8,30 +10,12 @@ import type {
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { compact, debounce, merge } from 'lodash';
-import React, { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
-import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
-import Loading from '@/core/ui/loading/Loading';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-
-const useActorWhiteboardStyles = makeStyles(theme => ({
-  container: {
-    height: '100%',
-    flexGrow: 1,
-  },
-  '@global': {
-    '.excalidraw-modal-container': {
-      zIndex: `${theme.zIndex.modal + 1} !important`,
-    },
-  },
-  excalidrawAlkemioBackground: {
-    background: `${theme.palette.primary.dark} !important`,
-  },
-}));
+import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
@@ -65,8 +49,6 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
-
-  const styles = useActorWhiteboardStyles();
 
   const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
@@ -130,14 +112,14 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
     () => (exportedElements, appState) =>
       (
-        <Box className={'Card'}>
-          <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
+        <Box className="Card">
+          <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
             <BackupIcon />
           </Box>
           <h2>Save to the Alkemio</h2>
-          <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
+          <Box className="Card-details">Save the scene in Alkemio and share it with others.</Box>
           <button
-            className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
+            className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
             title="Save to Alkemio"
             aria-label="Save to Alkemio"
             type="button"
@@ -155,7 +137,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           </button>
         </Box>
       ),
-    [data, actions, styles.excalidrawAlkemioBackground]
+    [data, actions]
   );
 
   // This needs to be removed in case it crashes the export window
@@ -187,7 +169,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   );
 
   return (
-    <div className={styles.container}>
+    <Box sx={{ height: 1, flexGrow: 1 }}>
       {whiteboard && (
         <Suspense fallback={<Loading />}>
           <Excalidraw
@@ -203,7 +185,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           />
         </Suspense>
       )}
-    </div>
+    </Box>
   );
 };
 

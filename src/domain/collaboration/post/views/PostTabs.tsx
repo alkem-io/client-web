@@ -1,11 +1,10 @@
-import { Tabs } from '@mui/material';
-import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
+import { gutters } from '@/core/ui/grid/utils';
 import NavigationTab from '@/core/ui/tabs/NavigationTab';
+import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
+import { styled, Tabs } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { usePost } from '../context/PostProvider';
 import { PostDialogSection } from './PostDialogSection';
-import { styled } from '@mui/styles';
-import { gutters } from '@/core/ui/grid/utils';
-import { useTranslation } from 'react-i18next';
 
 const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
   marginTop: theme.spacing(-0.4),

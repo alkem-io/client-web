@@ -20,8 +20,10 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../../virtualContributor/components/BasicSpaceCard';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 
 type VirtualContributorProps = {
   id: string;
@@ -41,6 +43,7 @@ type VirtualContributorProps = {
     tagsets?: Tagset[] | undefined;
     url: string;
     avatar?: Visual | undefined;
+    references?: Reference[];
   };
 };
 
@@ -52,6 +55,7 @@ type VirtualContributorFromProps = {
   tagsets?: Tagset[];
   hostDisplayName: string;
   subSpaceName: string;
+  references?: Reference[];
 };
 
 type Props = {
@@ -76,7 +80,7 @@ export const VirtualContributorForm = ({
 
   const {
     nameID,
-    profile: { displayName, description, tagline, tagsets },
+    profile: { id: vcProfileId, displayName, description, tagline, tagsets, references: vcReferences },
     account,
   } = virtualContributor;
 
@@ -91,8 +95,9 @@ export const VirtualContributorForm = ({
       tagsets: tagsets,
       hostDisplayName: account?.host?.profile.displayName ?? '',
       subSpaceName: subSpaceName ?? '',
+      references: vcReferences ?? [],
     }),
-    [displayName, nameID, description, tagline, tagsets, account, subSpaceName]
+    [displayName, nameID, description, tagline, tagsets, account, subSpaceName, vcReferences]
   );
 
   const validationSchema = yup.object().shape({
@@ -133,6 +138,12 @@ export const VirtualContributorForm = ({
           ID: r.id,
           tags: r.tags ?? [],
         })),
+        references: otherData?.references?.map(r => ({
+          ID: r.id,
+          name: r.name,
+          uri: r.uri,
+          description: r.description,
+        })),
       },
       ...otherData,
     };
@@ -161,7 +172,7 @@ export const VirtualContributorForm = ({
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ values: { hostDisplayName }, handleSubmit }) => {
+        {({ values: { references, hostDisplayName }, handleSubmit }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <GridContainer>
@@ -184,6 +195,14 @@ export const VirtualContributorForm = ({
                       {keywordsTagsetWrapped ? (
                         <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />
                       ) : null}
+
+                      <ProfileReferenceSegment
+                        fullWidth
+                        compactMode
+                        profileId={vcProfileId}
+                        references={references ?? []}
+                      />
+
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
                         {hasBackNavigation && (

@@ -114,7 +114,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
         });
       } else {
         setIsHost(
-          organizationData.lookup.organization?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false
+          organizationData.lookup.organization?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
+            false
         );
       }
     }
