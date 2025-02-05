@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 export interface UserProfileViewProps {
   entities: {
     userMetadata: UserMetadata;
-    verified: boolean;
   };
 }
 
