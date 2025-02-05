@@ -36,7 +36,7 @@ import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/u
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { spaceId, spaceNameId } = useSpace();
+  const { spaceId } = useSpace();
   const { subspaceId } = useSubSpace();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -83,9 +83,7 @@ export const OpportunityList: FC = () => {
   const handleDelete = (item: SearchableListItem) => {
     return deleteOpportunity({
       variables: {
-        input: {
-          ID: item.id,
-        },
+        spaceId: item.id,
       },
     });
   };
@@ -124,7 +122,7 @@ export const OpportunityList: FC = () => {
   // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesSetIdQuery({
     variables: { spaceId },
-    skip: !spaceNameId,
+    skip: !spaceId,
   });
 
   const templateSetPrivileges =
@@ -133,7 +131,7 @@ export const OpportunityList: FC = () => {
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceNameId);
+    await handleCreateCollaborationTemplate(values, spaceId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedItem(undefined);
   };

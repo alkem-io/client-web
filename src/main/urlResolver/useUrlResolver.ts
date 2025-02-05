@@ -1,4 +1,3 @@
-import * as Apollo from '@apollo/client';
 import {
   useUrlResolverQuery,
 /*
@@ -17,98 +16,91 @@ import {
   useVirtualContributorUrlResolverQuery,
   */
 } from '@/core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '@/core/routing/useUrlParams';
-import UrlParams from '../routing/urlParams';
-import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
-import { compact, uniq } from 'lodash';
-import { useLocation } from 'react-router-dom';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
+import { compact } from 'lodash';
+
+export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
+
 
 type UseUrlResolverProvided = {
+  type: UrlType | undefined;
+  // Space:
+  /**
+   * The current Space or Subspace Id, no matter the level
+   */
   spaceId: string | undefined;
-  subspaceIds: string[] | undefined; // level0, level1, level2
-  subspaceId: string | undefined;
   spaceLevel: SpaceLevel | undefined;
-  organizationId: string | undefined;
-  innovationPackId: string | undefined;
-  innovationHubId: string | undefined;
-  templateId: string | undefined;
+  levelZeroSpaceId: string | undefined;
+  /**
+   * [level0, level1, level2]
+   */
+  journeyPath: JourneyPath;
+  /**
+   * The parent space id of the current space
+   */
+  parentSpaceId: string | undefined;
+
+  // Collaboration:
+  collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   calloutId: string | undefined;
   contributionId: string | undefined;
   postId: string | undefined;
+  whiteboardId: string | undefined;
+
+  // Contributors:
+  organizationId: string | undefined;
   userId: string | undefined;
   vcId: string | undefined;
-  whiteboardId: string | undefined;
+
+  //!! pending
+  // Templates
+  innovationPackId: string | undefined;
+  innovationHubId: string | undefined;
+  templateId: string | undefined;
   loading: boolean;
 };
 
 type useUrlResolverParams = {
-  throwIfNotFound?: boolean;
-  overrideUrlParams?: UrlParams;
+  handleException?: (ex: Error) => boolean;
 };
 
 const useUrlResolver = ({
-  throwIfNotFound = true,
-  overrideUrlParams,
+  handleException = (ex) => { throw ex; },
 }: useUrlResolverParams = {}): UseUrlResolverProvided => {
-  const urlParams = {
-    ...useUrlParams(),
-    ...overrideUrlParams,
-  };
-
-  const {
-    spaceNameId,
-    subspaceNameId,
-    subsubspaceNameId,
-    organizationNameId,
-    innovationHubNameId,
-    innovationPackNameId,
-    templateNameId,
-    userNameId,
-    vcNameId,
-    calloutNameId,
-    postNameId,
-  } = urlParams;
-  let loading = false;
 
   const { data: urlResolverData, loading: urlResolverLoading } = useUrlResolverQuery({
     variables: {
       url: window.location.href,
-    }
+    },
+    // skip:
   });
 
-  const result: UseUrlResolverProvided = useMemo(() => {
-
-    const spaceId = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ?
-      urlResolverData?.urlResolver.space.id :
-      urlResolverData?.urlResolver.space?.levelZeroSpaceID;
-
-    // const subspaceIds = spaceId && urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ?
-    //   [spaceId] :
-    //   urlResolverData?.urlResolver.space?.level === SpaceLevel.L1 ?
-    //     [spaceId, urlResolverData?.urlResolver.space?.id] :
-    //     urlResolverData?.urlResolver.space?.level === SpaceLevel.L2 ?
-    //       [spaceId, urlResolverData?.urlResolver.space.parentSpaces[0], urlResolverData?.urlResolver.space?.id] :
-    //       undefined;
-
-    const subspaceId = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ? undefined : urlResolverData?.urlResolver.space?.id;
-
+  //!! memoize this with lodash? window.location.href
+  const result = useMemo<UseUrlResolverProvided>(() => {
     return {
-      spaceId,
-      subspaceIds: undefined, //!!
-      subspaceId,
+      type: urlResolverData?.urlResolver.type,
+      // Space:
+      spaceId: urlResolverData?.urlResolver.space?.id,
       spaceLevel: urlResolverData?.urlResolver.space?.level,
-      organizationId: urlResolverData?.urlResolver.organizationId,
+      levelZeroSpaceId: urlResolverData?.urlResolver.space?.levelZeroSpaceID,
+      parentSpaceId: (urlResolverData?.urlResolver.space?.parentSpaces ?? []).slice(-1)[0],
+      journeyPath: compact(urlResolverData?.urlResolver.space?.parentSpaces) as JourneyPath,
+      // Collaboration:
+      collaborationId: urlResolverData?.urlResolver.space?.collaboration.id,
       calloutsSetId: urlResolverData?.urlResolver.space?.collaboration.calloutsSetId,
       calloutId: urlResolverData?.urlResolver.space?.collaboration.calloutId,
       contributionId: urlResolverData?.urlResolver.space?.collaboration.contributionId,
       postId: urlResolverData?.urlResolver.space?.collaboration.postId,
+      whiteboardId: urlResolverData?.urlResolver.space?.collaboration.whiteboardId,
+
+      // Contributors:
+      organizationId: urlResolverData?.urlResolver.organizationId,
       userId: urlResolverData?.urlResolver.userId,
       vcId: urlResolverData?.urlResolver.vcId,
-      whiteboardId: urlResolverData?.urlResolver.space?.collaboration.whiteboardId,
-      //PENDING
+
+      // PENDING
       innovationPackId: undefined,
       innovationHubId: undefined,
       templateId: undefined,

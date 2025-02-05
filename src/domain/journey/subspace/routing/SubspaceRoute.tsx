@@ -11,16 +11,16 @@ import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
 
 const SubspaceRoute = () => {
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <Routes>
         <Route index element={<SubspaceHomePage />} />
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />

@@ -38,7 +38,7 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
-  spaceLevel: SpaceLevel;
+  spaceLevel: SpaceLevel | undefined;
   displayName: ReactNode;
   tagline: ReactNode;
   references: Reference[] | undefined;
@@ -90,7 +90,7 @@ const JourneyAboutDialog = ({
   tagline,
   references,
   ribbon,
-  spaceLevel,
+  spaceLevel = SpaceLevel.L0,
   leadUsers,
   leadOrganizations,
   provider: host,

@@ -2015,7 +2015,7 @@
         "notifications": {
           "space-created": "Space created successfully.",
           "errorCreatingSpace": "An error occurred while creating the Space.",
-          "space-removed": "Space '{{name}}' removed successfully."
+          "space-removed": "Space removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Settings saved successfully",

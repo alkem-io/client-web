@@ -15,7 +15,7 @@ import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileC
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
@@ -25,8 +25,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, roleSetId } = useSpace();
-  const { level: spaceLevel } = useRouteResolver();
+  const { spaceId, spaceLevel } = useUrlResolver();
+  const { roleSetId } = useSpace();
 
   const { virtualContributors } = useRoleSetManager({
     roleSetId,

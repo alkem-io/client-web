@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import SubspaceHomeContainer from './SubspaceHomeContainer';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '@/domain/journey/common/EntityPageLayout';
@@ -22,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, {
   DashboardNavigationProps,
@@ -41,14 +40,11 @@ const Outline = (props: DashboardNavigationProps) => {
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
-
-  const { journeyId, level: spaceLevel, journeyPath, parentSpaceId, loading } = useRouteResolver();
+  const { spaceId, spaceLevel, journeyPath, parentSpaceId, levelZeroSpaceId, loading } = useUrlResolver();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-
-  const { spaceId } = useSpace();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
@@ -82,7 +78,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   };
 
   return (
-    <SubspaceHomeContainer spaceId={journeyId}>
+    <SubspaceHomeContainer spaceId={spaceId}>
       {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId, roleSet }) => {
         const { collaboration, community, profile, level } = subspace ?? {};
 
@@ -90,9 +86,10 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
           <>
             <SubspacePageLayout
               spaceReadAccess={spaceReadAccess}
-              journeyId={journeyId}
+              journeyId={spaceId}
               journeyPath={journeyPath}
               journeyUrl={profile?.url}
+              levelZeroSpaceId={levelZeroSpaceId}
               parentSpaceId={parentSpaceId}
               loading={loading}
               welcome={
@@ -167,7 +164,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               infoColumnChildren={
                 <>
                   <Outline
-                    currentItemId={journeyId}
+                    currentItemId={spaceId}
                     dashboardNavigation={dashboardNavigation.dashboardNavigation}
                     onCreateSubspace={openCreateSubspace}
                     onCurrentItemNotFound={dashboardNavigation.refetch}
@@ -197,7 +194,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               parentSpaceId={parentSpaceId}
               dialogOpen={dialog}
               callouts={callouts}
-              journeyId={journeyId}
+              journeyId={spaceId}
               journeyUrl={profile?.url}
               dashboardNavigation={dashboardNavigation}
               communityId={community?.id}

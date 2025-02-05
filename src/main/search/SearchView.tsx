@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSearchQuery, useSearchScopeDetailsSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
   SearchResult,
@@ -35,7 +35,6 @@ import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
-import useUrlResolver from '../urlResolver/useUrlResolver';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -88,7 +87,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const queryParams = useQueryParams();
 
-  const spaceId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
+  const spaceNameId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
 
   const termsFromUrl = useMemo(() => {
     const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM).filter(identity);
@@ -143,10 +142,12 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value, ...calloutFilter.value],
     [journeyFilter, contributionFilter, contributorFilter, calloutFilter]
   );
-  const { spaceId, loading: resolvingSpace } = useUrlResolver({
-    throwIfNotFound: false,
-    overrideUrlParams: { spaceNameId },
+
+  const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
+    variables: { spaceNameId: spaceNameId! },
+    skip: !spaceNameId
   });
+  const spaceId = spaceIdData?.lookupByName.space?.id;
 
   const { data, loading: isSearching } = useSearchQuery({
     variables: {

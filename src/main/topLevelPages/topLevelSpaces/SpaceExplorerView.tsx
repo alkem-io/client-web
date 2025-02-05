@@ -22,8 +22,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { compact } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
-import { useSpaceExplorerWelcomeSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -119,10 +118,13 @@ export const SpaceExplorerView = ({
   loadingSearchResults = null,
 }: SpaceExplorerViewProps) => {
   const { t } = useTranslation();
-  const { spaceId: welcomeSpaceId } = useUrlResolver({
-    throwIfNotFound: false, overrideUrlParams:
-      { spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId') }
+  const spaceNameId = t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId');
+  const { data: spaceIdData } = useSpaceUrlResolverQuery({
+    variables: { spaceNameId: spaceNameId },
+    skip: !spaceNameId
   });
+  const welcomeSpaceId = spaceIdData?.lookupByName.space?.id;
+
   const { data: spaceExplorerData } = useSpaceExplorerWelcomeSpaceQuery({
     variables: { spaceId: welcomeSpaceId! },
     skip: !welcomeSpaceId,

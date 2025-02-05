@@ -15,7 +15,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ChallengeProfileViewProps {
-  subspaceId: string;
+  subspaceId: string | undefined;
 }
 
 const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {

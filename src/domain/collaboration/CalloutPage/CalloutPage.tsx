@@ -18,10 +18,10 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -30,7 +30,6 @@ type CalloutLocation = {
 export interface CalloutPageProps {
   renderPage: (calloutGroupName?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
-  level: SpaceLevel;
   children?: (props: CalloutLocation) => ReactNode;
 }
 
@@ -49,10 +48,9 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { calloutId, journeyId, parentSpaceId, journeyPath } = useRouteResolver();
+  const { spaceId, levelZeroSpaceId, parentSpaceId, calloutId, spaceLevel, journeyPath } = useUrlResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
-  const isL0Space = !useLocation().pathname.includes('challenges');
 
   const { t } = useTranslation();
 
@@ -98,15 +96,16 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const PageLayout = usePageLayoutByEntity(isL0Space);
+  const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
 
-  const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
+  const spaceReadAccess = useCanReadSpace({ spaceId });
 
   if (isCalloutLoading && !typedCalloutDetails) {
     return (
       <PageLayout
         spaceReadAccess={spaceReadAccess}
-        journeyId={journeyId}
+        journeyId={spaceId}
+        levelZeroSpaceId={levelZeroSpaceId}
         journeyPath={journeyPath}
         parentSpaceId={parentSpaceId}
         currentSection={EntityPageSection.Contribute}

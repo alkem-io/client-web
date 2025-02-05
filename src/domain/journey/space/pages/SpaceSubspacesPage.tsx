@@ -12,7 +12,7 @@ import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
@@ -22,8 +22,8 @@ import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnColl
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { journeyPath } = useRouteResolver();
-  const { spaceId, permissions, visibility, collaborationId, calloutsSetId } = useSpace();
+  const { spaceId, journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
+  const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -31,6 +31,9 @@ const SpaceSubspacesPage = () => {
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
+      if (!spaceId) {
+        return;
+      }
       const result = await createSubspace({
         spaceID: spaceId,
         displayName: value.displayName,

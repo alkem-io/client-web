@@ -21,6 +21,7 @@ import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
@@ -125,6 +126,7 @@ export interface ContributorAccountViewProps {
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const ensurePresence = useEnsurePresence();
   const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
@@ -192,7 +194,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     setDeleteDialogOpen(false);
   };
   // Space deletion
-  const [deleteSpaceMutation, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
+  const [deleteSpace, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
     onCompleted: () => {
       clearDeleteState();
       notify(t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.space') }), 'success');
@@ -200,16 +202,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     refetchQueries: ['AccountInformation'],
   });
 
-  const deleteSpace = () => {
-    if (!selectedId) {
-      return;
-    }
-
-    return deleteSpaceMutation({
+  const handleDeleteSpace = () => {
+    const requiredSpaceId = ensurePresence(selectedId, 'SpaceId');
+    return deleteSpace({
       variables: {
-        input: {
-          ID: selectedId,
-        },
+        spaceId: requiredSpaceId
       },
     });
   };
@@ -315,7 +312,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const deleteEntity = () => {
     switch (entity) {
       case Entities.Space:
-        return deleteSpace();
+        return handleDeleteSpace();
       case Entities.VirtualContributor:
         return deleteVC();
       case Entities.InnovationPack:

@@ -33,7 +33,7 @@ import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
 import { EntityTabsProps } from '../common/EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import ActivityDialog from '../common/Activity/ActivityDialog';
 
 type TabDefinition = {
@@ -96,7 +96,7 @@ const SpacePageTabs = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isActivityVisible, setIsActivityVisible] = useState(false);
 
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   useLayoutEffect(() => {
     onMenuOpen?.(isDrawerOpen);
@@ -185,7 +185,7 @@ const SpacePageTabs = ({
         <ActivityDialog
           open={isActivityVisible}
           onClose={() => setIsActivityVisible(false)}
-          journeyId={journeyId ?? ''}
+          spaceId={spaceId}
         />
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
@@ -292,7 +292,7 @@ const SpacePageTabs = ({
       <ActivityDialog
         open={isActivityVisible}
         onClose={() => setIsActivityVisible(false)}
-        journeyId={journeyId ?? ''}
+        spaceId={spaceId}
       />
     </>
   );

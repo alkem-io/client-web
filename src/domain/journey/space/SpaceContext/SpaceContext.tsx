@@ -1,10 +1,8 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useSpaceHostQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceCommunityIdsQuery, useSpaceQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SpaceInfoFragment,
   SpacePrivacyMode,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -25,32 +23,34 @@ export interface SpacePermissions {
 }
 
 interface SpaceContextProps {
+  /**
+   * This is the level 0 space id, not neccessarily the the current space
+   */
   spaceId: string;
+  spaceNameId: string; // This is the level 0 nameId, not neccessarily the the current space, it's used for search
   communityId: string;
   collaborationId: string;
   calloutsSetId: string;
   roleSetId: string;
   isPrivate?: boolean;
-  loading: boolean;
   permissions: SpacePermissions;
   profile: {
     displayName: string;
     url: string;
   }
-  // TODO Some components just randomly access SpaceContext instead of just querying the data the usual way.
-  // TODO This Context should provide as little data as possible or just be removed.
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
+  loading: boolean;
 }
 
 const SpaceContext = React.createContext<SpaceContextProps>({
-  loading: false,
-  isPrivate: undefined,
   spaceId: '',
+  spaceNameId: '',
   communityId: '',
   collaborationId: '',
   calloutsSetId: '',
   roleSetId: '',
+  isPrivate: undefined,
   profile: {
     displayName: '',
     url: '',
@@ -67,9 +67,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canReadCollaboration: false,
     contextPrivileges: [],
   },
-
   visibility: SpaceVisibility.Active,
   myMembershipStatus: undefined,
+  loading: false,
 });
 
 interface SpaceProviderProps {}
@@ -77,26 +77,37 @@ interface SpaceProviderProps {}
 const NO_PRIVILEGES = [];
 
 const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
-  const { spaceId } = useUrlResolver();
-
   const { isAuthenticated } = useUserContext();
+  const { levelZeroSpaceId } = useUrlResolver();
+  const spaceId = levelZeroSpaceId ?? '';
+
   const {
     data,
-    loading,
-  } = useSpaceHostQuery({
+    loading: loadingSpaceQuery,
+  } = useSpaceQuery({
     variables: { spaceId: spaceId! },
-    errorPolicy: 'all',
     skip: !spaceId,
   });
 
   const space = data?.lookup.space;
+  const spaceNameId = space?.nameID ?? '';
   const visibility = space?.visibility || SpaceVisibility.Active;
 
-  const communityId = space?.community?.id ?? '';
+  const {
+    data: communityData,
+    loading: communityLoading
+  } = useSpaceCommunityIdsQuery({
+    variables: { spaceId: spaceId! },
+    skip: !spaceId || !isAuthenticated,
+  });
+
+
+  const communityId = communityData?.lookup.space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';
   const calloutsSetId = space?.collaboration?.calloutsSet?.id ?? '';
-  const roleSetId = space?.community?.roleSet?.id ?? '';
+  const roleSetId = communityData?.lookup.space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
+
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -125,6 +136,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const myMembershipStatus = space?.community?.roleSet?.myMembershipStatus;
 
   const permissions = useMemo<SpacePermissions>(() => {
     return {
@@ -152,7 +164,9 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const profile = useMemo(() => {
     return {
-      id: space?.profile.id ?? '',
+      displayName: space?.profile.displayName ?? '',
+      url: space?.profile.url ?? '',
+/*      id: space?.profile.id ?? '',
       displayName: space?.profile.displayName || '',
       description: space?.profile.description,
       tagset: space?.profile.tagset,
@@ -161,14 +175,17 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       references: space?.profile.references ?? [],
       location: space?.profile.location,
       url: space?.profile.url ?? '',
-      visibility,
+      visibility,*/
     };
   }, [space?.profile]);
 
+  const loading = loadingSpaceQuery || communityLoading;
   return (
     <SpaceContext.Provider
       value={{
         spaceId,
+        spaceNameId,
+        profile,
         communityId,
         collaborationId,
         calloutsSetId,
@@ -177,7 +194,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         isPrivate,
         loading,
         visibility,
-        myMembershipStatus: space?.community?.roleSet?.myMembershipStatus,
+        myMembershipStatus,
       }}
     >
       {children}

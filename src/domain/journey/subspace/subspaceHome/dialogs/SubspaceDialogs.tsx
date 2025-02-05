@@ -77,7 +77,7 @@ const SubspaceDialogs = ({
         open={dialogOpen === SubspaceDialog.Contributors}
         onClose={handleClose}
       />
-      <ActivityDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
+      <ActivityDialog spaceId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog
         journeyId={journeyId}
         parentSpaceId={parentSpaceId}

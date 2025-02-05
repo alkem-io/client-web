@@ -14,7 +14,7 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildAboutUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
@@ -27,7 +27,7 @@ const SpaceDashboardPage = ({
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceId, collaborationId, journeyPath } = useRouteResolver();
+  const { spaceId, collaborationId, journeyPath } = useUrlResolver();
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>

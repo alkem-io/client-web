@@ -1,4 +1,4 @@
-import ensurePresence from '@/core/utils/ensurePresence';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 import {
   MessageDetailsFragmentDoc,
   useRemoveMessageOnRoomMutation,
@@ -13,6 +13,7 @@ interface UsePostMessageMutationsOptions {
 }
 
 const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMessageMutationsOptions) => {
+  const ensurePresence = useEnsurePresence();
   const [postMessage, { loading: postingMessage }] = useSendMessageToRoomMutation({
     update: (cache, { data }) => {
       if (isSubscribedToMessages) {
@@ -84,7 +85,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
   });
 
   const handlePostMessage = (message: string) => {
-    const requiredRoomId = ensurePresence(roomId);
+    const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return postMessage({
       variables: {
@@ -97,7 +98,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
   };
 
   const handleReply = ({ threadId, messageText }: { threadId: string; messageText: string }) => {
-    const requiredRoomId = ensurePresence(roomId);
+    const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return postReply({
       variables: {

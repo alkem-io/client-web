@@ -107,9 +107,7 @@ export const SubspaceListView = () => {
   const handleDelete = (item: { id: string }) => {
     return deleteSubspace({
       variables: {
-        input: {
-          ID: item.id,
-        },
+        spaceId: item.id
       },
     });
   };
@@ -180,7 +178,7 @@ export const SubspaceListView = () => {
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceNameId);
+    await handleCreateCollaborationTemplate(values, spaceId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedItem(undefined);
   };

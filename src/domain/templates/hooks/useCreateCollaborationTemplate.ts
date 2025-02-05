@@ -9,7 +9,7 @@ import { toCreateTemplateFromCollaborationMutationVariables } from '../component
 export interface CollaborationCreationUtils {
   handleCreateCollaborationTemplate: (
     values: CollaborationTemplateFormSubmittedValues,
-    destinationSpaceNameId: string
+    destinationSpaceId: string
   ) => Promise<unknown>;
 }
 

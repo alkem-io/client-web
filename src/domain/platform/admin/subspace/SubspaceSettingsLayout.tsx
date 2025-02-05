@@ -12,7 +12,7 @@ import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
@@ -25,8 +25,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const entityAttrs = useSubSpace();
 
   const { t } = useTranslation();
-
-  const { journeyId, journeyPath, level: spaceLevel } = useRouteResolver();
+  const { spaceId, spaceLevel, journeyPath, levelZeroSpaceId } = useUrlResolver();
 
   const tabs = useMemo(() => {
     const tabs: TabDefinition<SettingsSection>[] = [
@@ -73,7 +72,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     <EntitySettingsLayout
       entityTypeName="subspace"
       subheaderTabs={tabs}
-      pageBanner={<ChildJourneyPageBanner journeyId={journeyId} />}
+      pageBanner={<ChildJourneyPageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
         <RouterLink to={entityAttrs.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>

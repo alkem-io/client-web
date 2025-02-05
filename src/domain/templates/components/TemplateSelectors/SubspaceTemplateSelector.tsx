@@ -11,7 +11,7 @@ import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/gen
 import { useSpaceDefaultTemplatesQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 interface SubspaceTemplateSelectorProps extends GuttersProps {
   name: string;
@@ -19,7 +19,7 @@ interface SubspaceTemplateSelectorProps extends GuttersProps {
 
 export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ name, ...rest }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: loadingSpace } = useSpace();
+  const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
 

@@ -22,7 +22,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -33,11 +33,11 @@ import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const SpaceCommunityPage = () => {
-  const { isAuthenticated } = useUserContext();
-  const { collaborationId, journeyPath } = useRouteResolver();
-  const { spaceId, loading: loadingSpace, communityId } = useSpace();
-
   const { t } = useTranslation();
+  const { isAuthenticated } = useUserContext();
+  const { spaceId, collaborationId, journeyPath } = useUrlResolver();
+  const { loading: loadingSpace, communityId } = useSpace();
+
 
   if (!spaceId && !loadingSpace) {
     throw new TypeError('Must be within a Space');
@@ -53,7 +53,7 @@ const SpaceCommunityPage = () => {
 
   const { data, loading } = useSpaceCommunityPageQuery({
     variables: {
-      spaceId,
+      spaceId: spaceId!,
       includeCommunity: isAuthenticated,
     },
     skip: !spaceId,

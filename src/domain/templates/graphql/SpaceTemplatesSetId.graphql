@@ -1,4 +1,4 @@
-query SpaceTemplatesSetId($spaceId: UUID!) {   #//!! Remove this query?
+query SpaceTemplatesSetId($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

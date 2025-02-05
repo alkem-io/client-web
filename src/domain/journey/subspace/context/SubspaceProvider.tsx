@@ -5,7 +5,7 @@ import {
   SpaceLevel,
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SubspacePermissions {
@@ -56,12 +56,12 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
 interface SubspaceProviderProps {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   const { data, loading } = useSubspacePendingMembershipInfoQuery({
-    variables: { subspaceId: journeyId! },
+    variables: { subspaceId: spaceId! },
     errorPolicy: 'all',
-    skip: !journeyId,
+    skip: !spaceId,
   });
 
   const subspace = data?.lookup.space;
@@ -108,7 +108,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       value={{
         subspace,
         level: subspace?.level || SpaceLevel.L1,
-        subspaceId: journeyId ?? '',
+        subspaceId: spaceId ?? '',
         subspaceNameId,
         communityId,
         roleSetId,

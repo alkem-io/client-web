@@ -4,7 +4,7 @@ import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
 import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
-import { CalloutGroupName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
 
@@ -41,7 +41,7 @@ const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
     return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
-  return <CalloutPage level={SpaceLevel.L0} parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default SpaceCalloutPage;

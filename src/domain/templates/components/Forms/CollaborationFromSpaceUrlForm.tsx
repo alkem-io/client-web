@@ -7,8 +7,8 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useUrlParser from '@/main/routing/resolvers/useUrlParser';
 import {
-  useJourneyRouteResolverLazyQuery,
   useSpaceCollaborationIdLazyQuery,
+  useSpaceUrlResolverLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
 
@@ -29,7 +29,7 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
   const [collapsed, setCollapsed] = useState<boolean>(collapsible ?? false);
   const { parseUrl } = useUrlParser();
 
-  const [resolveJourneyRoute] = useJourneyRouteResolverLazyQuery();
+  const [resolveSpaceNameIds] = useSpaceUrlResolverLazyQuery();
   const [resolveCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
   const [handleUse, loading] = useLoadingState(async () => {
@@ -40,15 +40,16 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
       setUrlError(parseResult.error);
     } else {
       // Then resolve that url with the server to get the spaceId
-      const { data: journeyResult } = await resolveJourneyRoute({
+      const { data: journeyResult } = await resolveSpaceNameIds({
         variables: {
           spaceNameId: parseResult.journey[0]!,
-          challengeNameId: parseResult.journey[1]!,
-          opportunityNameId: parseResult.journey[2]!,
-          includeChallenge: !!parseResult.journey[1],
-          includeOpportunity: !!parseResult.journey[2],
-        },
+          subspaceL1NameId: parseResult.journey[1]!,
+          subspaceL2NameId: parseResult.journey[2]!,
+          includeSubspaceL1: !!parseResult.journey[1],
+          includeSubspaceL2: !!parseResult.journey[2],
+        }
       });
+
       const spaceId =
         journeyResult?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id ??
         journeyResult?.lookupByName.space?.subspaceByNameID?.id ??

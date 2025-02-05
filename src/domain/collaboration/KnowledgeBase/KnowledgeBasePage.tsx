@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
@@ -14,9 +13,10 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 const KnowledgeBasePage = () => {
-  const { journeyPath, collaborationId, calloutsSetId } = useRouteResolver();
+  const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
 
   const { t } = useTranslation();
 

@@ -22,50 +22,43 @@ query UrlResolver($url: String!) {
 }
 
 
-# query SpaceUrlResolver ($nameId: NameID!) {
-#   lookupByName {
-#     space(NAMEID: $nameId) {
-#       id
-#     }
-#   }
-# }
 
-# query SubspaceUrlResolver(
-#   $spaceNameId: NameID!,
-#   $subspaceL1NameId: NameID = "nameid",
-#   $subspaceL2NameId: NameID = "nameid",
-#   $includeSubspaceL1: Boolean = false,
-#   $includeSubspaceL2: Boolean = false,
-# ) {
-#   lookupByName {
-#     space(NAMEID: $spaceNameId) {
-#       id
-#       subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
-#         id
-#         subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
-#           id
-#         }
-#       }
-#     }
-#   }
-# }
+query SpaceUrlResolver(
+  $spaceNameId: NameID!,
+  $subspaceL1NameId: NameID = "nameid",
+  $subspaceL2NameId: NameID = "nameid",
+  $includeSubspaceL1: Boolean = false,
+  $includeSubspaceL2: Boolean = false,
+) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
+      id
+      subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
+        id
+        subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
+          id
+        }
+      }
+    }
+  }
+}
 
-# query SpaceKeyEntitiesIDs($spaceId: UUID!) {
-#   lookup {
-#     space(ID: $spaceId) {
-#       id
-#       community {
-#         id
-#       }
-#       collaboration {
-#         id
-#         calloutsSet {
-#           id
-#         }
-#       }
-#     }
-#   }
-# }
+query SpaceKeyEntitiesIDs($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+      }
+      collaboration {
+        id
+        calloutsSet {
+          id
+        }
+      }
+    }
+  }
+}
 
 # query OrganizationUrlResolver ($nameId: NameID!) {
 #   lookupByName {

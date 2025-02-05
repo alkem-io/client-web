@@ -3,7 +3,7 @@ import { ContextForm, ContextFormValues } from '@/domain/context/ContextForm';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OpportunityContextSegment } from '@/domain/platform/admin/opportunity/OpportunityContextSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import {
   refetchSubspaceProfileInfoQuery,
   useSubspaceProfileInfoQuery,
@@ -14,17 +14,17 @@ const OpportunityContextView = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { subSubSpaceId: opportunityId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: opportunityId! })],
+    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: spaceId! })],
     awaitRefetchQueries: true,
   });
 
   const { data: subspacePrfile, loading } = useSubspaceProfileInfoQuery({
-    variables: { subspaceId: opportunityId! },
-    skip: !opportunityId,
+    variables: { subspaceId: spaceId! },
+    skip: !spaceId,
   });
 
   const opportunity = subspacePrfile?.lookup.space;

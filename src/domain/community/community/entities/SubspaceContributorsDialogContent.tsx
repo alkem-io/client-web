@@ -4,18 +4,18 @@ import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
-      spaceId: journeyId!,
+      spaceId: spaceId!,
     },
-    skip: !dialogOpen || !journeyId,
+    skip: !dialogOpen || !spaceId,
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 

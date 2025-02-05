@@ -132,7 +132,7 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>
-      <StorageConfigContextProvider locationType="post" postId={postId} calloutId={calloutId}>
+      <StorageConfigContextProvider locationType="post" postId={postId}>
         <PostForm
           edit
           loading={postSettings.loading || postSettings.updating || isMovingContribution}

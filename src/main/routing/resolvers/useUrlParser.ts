@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { JourneyPath } from './RouteResolver';
+import { JourneyPath } from '@/main/urlResolver/useUrlResolver';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
