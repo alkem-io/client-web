@@ -1877,6 +1877,10 @@
               "titleWithDaysLeft": "Gratis Proefperiode - {{daysLeft}} dagen over",
               "description": "Klik hier om uw volledige {{planName}} abonnement in te stellen"
             },
+            "externalSubExists": "This account already has an existing Wingback account",
+            "addExternalSub": "Create a Wingback account",
+            "externalSubAdded": "Successfully created a Wingback account",
+            "externalSubErrored": "An error occurred while creating the Wingback account",
             "yourLicense": "Je huidige licentie:",
             "changeLicense": "Wijzig de Space licentie",
             "changeLicense_description": "Neem contact op met het Alkemio team om de licentie te veranderen.",
