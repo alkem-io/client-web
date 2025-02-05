@@ -18713,6 +18713,12 @@ export const ConfigurationDocument = gql`
           iframeAllowedUrls
         }
       }
+      metadata {
+        services {
+          name
+          version
+        }
+      }
     }
   }
   ${ConfigurationFragmentDoc}
@@ -18828,64 +18834,6 @@ export type PlatformLicensingPlansQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformLicensingPlansQuery(variables?: SchemaTypes.PlatformLicensingPlansQueryVariables) {
   return { query: PlatformLicensingPlansDocument, variables: variables };
-}
-
-export const ServerMetadataDocument = gql`
-  query serverMetadata {
-    platform {
-      metadata {
-        services {
-          name
-          version
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useServerMetadataQuery__
- *
- * To run a query within a React component, call `useServerMetadataQuery` and pass it any options that fit your needs.
- * When your component renders, `useServerMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useServerMetadataQuery({
- *   variables: {
- *   },
- * });
- */
-export function useServerMetadataQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>(
-    ServerMetadataDocument,
-    options
-  );
-}
-
-export function useServerMetadataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ServerMetadataQuery, SchemaTypes.ServerMetadataQueryVariables>(
-    ServerMetadataDocument,
-    options
-  );
-}
-
-export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQuery>;
-export type ServerMetadataLazyQueryHookResult = ReturnType<typeof useServerMetadataLazyQuery>;
-export type ServerMetadataQueryResult = Apollo.QueryResult<
-  SchemaTypes.ServerMetadataQuery,
-  SchemaTypes.ServerMetadataQueryVariables
->;
-export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadataQueryVariables) {
-  return { query: ServerMetadataDocument, variables: variables };
 }
 
 export const ShareLinkWithUserDocument = gql`

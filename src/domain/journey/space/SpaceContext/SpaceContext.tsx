@@ -1,5 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import { useSpaceCommunityIdsQuery, useSpaceQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSpaceCommunityIdsQuery,
+  useSpaceQuery,
+  useSpaceTemplatesManagerQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -34,7 +38,7 @@ interface SpaceContextProps {
   profile: {
     displayName: string;
     url: string;
-  }
+  };
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
   loading: boolean;
@@ -75,10 +79,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { levelZeroSpaceId } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
 
-  const {
-    data,
-    loading: loadingSpaceQuery,
-  } = useSpaceQuery({
+  const { data, loading: loadingSpaceQuery } = useSpaceQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
@@ -87,14 +88,10 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const spaceNameId = space?.nameID ?? '';
   const visibility = space?.visibility || SpaceVisibility.Active;
 
-  const {
-    data: communityData,
-    loading: communityLoading
-  } = useSpaceCommunityIdsQuery({
+  const { data: communityData, loading: communityLoading } = useSpaceCommunityIdsQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId || !isAuthenticated,
   });
-
 
   const communityId = communityData?.lookup.space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';
@@ -107,17 +104,19 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   // A member has READ and an Admin can also access it, this is more of a temporary solution
   const canAccessTemplatesManager =
-    communityData?.lookup.space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
+    communityData?.lookup.space?.community?.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
     spacePrivileges.includes(AuthorizationPrivilege.Grant);
 
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId || !canAccessTemplatesManager,
   });
-  const canCreateTemplates = (canAccessTemplatesManager &&
-    (templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.Create
-    ))) ?? false;
+  const canCreateTemplates =
+    (canAccessTemplatesManager &&
+      templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
+        AuthorizationPrivilege.Create
+      )) ??
+    false;
 
   const communityPrivileges = communityData?.lookup.space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const myMembershipStatus = communityData?.lookup.space?.community?.roleSet?.myMembershipStatus;
@@ -127,17 +126,12 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      canReadSubspaces: spacePrivileges.includes(AuthorizationPrivilege.Read),  //!! ??
+      canReadSubspaces: spacePrivileges.includes(AuthorizationPrivilege.Read), //!! ??
       canCreateTemplates,
       canReadCommunity: isAuthenticated && communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
     };
-  }, [
-    spacePrivileges,
-    canCreateTemplates,
-    communityPrivileges,
-    collaborationPrivileges,
-  ]);
+  }, [spacePrivileges, canCreateTemplates, communityPrivileges, collaborationPrivileges]);
 
   const profile = useMemo(() => {
     return {

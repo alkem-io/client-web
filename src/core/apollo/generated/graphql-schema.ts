@@ -22780,6 +22780,10 @@ export type ConfigurationQuery = {
       __typename?: 'PlatformSettings';
       integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
     };
+    metadata: {
+      __typename?: 'Metadata';
+      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
+    };
   };
 };
 
@@ -22844,19 +22848,6 @@ export type PlatformLicensingPlansQuery = {
         name: string;
         licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
-    };
-  };
-};
-
-export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ServerMetadataQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    metadata: {
-      __typename?: 'Metadata';
-      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
     };
   };
 };
