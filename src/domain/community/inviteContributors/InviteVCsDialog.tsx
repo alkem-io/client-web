@@ -35,6 +35,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.Virtual],
+    fetchContributors: true,
   });
 
   // data

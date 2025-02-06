@@ -101,6 +101,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
       RoleSetContributorType.Organization,
       RoleSetContributorType.Virtual,
     ],
+    fetchContributors: true,
     skip: !canReadCommunity,
   });
   const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);

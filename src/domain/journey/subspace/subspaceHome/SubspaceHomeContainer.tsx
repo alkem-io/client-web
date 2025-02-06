@@ -61,6 +61,7 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
     roleSetId: community?.roleSet.id,
     relevantRoles: [RoleName.Lead],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
   });
 
   return (

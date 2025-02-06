@@ -23,6 +23,7 @@ const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogCon
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member] ?? [];
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];

@@ -14,6 +14,7 @@ const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogConten
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
     skip: !dialogOpen,
   });
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];

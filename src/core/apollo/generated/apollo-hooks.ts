@@ -5573,9 +5573,10 @@ export const RoleSetRoleAssignmentDocument = gql`
   query RoleSetRoleAssignment(
     $roleSetId: UUID!
     $roles: [RoleName!]!
-    $includeUsers: Boolean = true
-    $includeOrganizations: Boolean = true
-    $includeVirtualContributors: Boolean = true
+    $includeUsers: Boolean = false
+    $includeOrganizations: Boolean = false
+    $includeVirtualContributors: Boolean = false
+    $includeRoleDefinitions: Boolean = false
   ) {
     lookup {
       roleSet(ID: $roleSetId) {
@@ -5598,7 +5599,7 @@ export const RoleSetRoleAssignmentDocument = gql`
             ...RoleSetMemberVirtualContributor
           }
         }
-        roleDefinitions(roles: $roles) {
+        roleDefinitions(roles: $roles) @include(if: $includeRoleDefinitions) {
           ...RoleDefinitionPolicy
         }
       }
@@ -5627,6 +5628,7 @@ export const RoleSetRoleAssignmentDocument = gql`
  *      includeUsers: // value for 'includeUsers'
  *      includeOrganizations: // value for 'includeOrganizations'
  *      includeVirtualContributors: // value for 'includeVirtualContributors'
+ *      includeRoleDefinitions: // value for 'includeRoleDefinitions'
  *   },
  * });
  */

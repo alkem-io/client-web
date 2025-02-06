@@ -3807,12 +3807,22 @@ export type UrlResolverQueryResultCollaborationFieldPolicy = {
   postId?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UrlResolverQueryResultInnovationPackKeySpecifier = (
+  | 'id'
+  | 'templatesSet'
+  | UrlResolverQueryResultInnovationPackKeySpecifier
+)[];
+export type UrlResolverQueryResultInnovationPackFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultSpaceKeySpecifier = (
   | 'collaboration'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
   | 'parentSpaces'
+  | 'templatesSet'
   | UrlResolverQueryResultSpaceKeySpecifier
 )[];
 export type UrlResolverQueryResultSpaceFieldPolicy = {
@@ -3821,9 +3831,20 @@ export type UrlResolverQueryResultSpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultTemplatesSetKeySpecifier = (
+  | 'id'
+  | 'templateId'
+  | UrlResolverQueryResultTemplatesSetKeySpecifier
+)[];
+export type UrlResolverQueryResultTemplatesSetFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UrlResolverQueryResultsKeySpecifier = (
   | 'discussionId'
+  | 'innovationPack'
   | 'organizationId'
   | 'space'
   | 'type'
@@ -3833,6 +3854,7 @@ export type UrlResolverQueryResultsKeySpecifier = (
 )[];
 export type UrlResolverQueryResultsFieldPolicy = {
   discussionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5055,12 +5077,26 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | UrlResolverQueryResultCollaborationKeySpecifier);
     fields?: UrlResolverQueryResultCollaborationFieldPolicy;
   };
+  UrlResolverQueryResultInnovationPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultInnovationPackKeySpecifier
+      | (() => undefined | UrlResolverQueryResultInnovationPackKeySpecifier);
+    fields?: UrlResolverQueryResultInnovationPackFieldPolicy;
+  };
   UrlResolverQueryResultSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
       | UrlResolverQueryResultSpaceKeySpecifier
       | (() => undefined | UrlResolverQueryResultSpaceKeySpecifier);
     fields?: UrlResolverQueryResultSpaceFieldPolicy;
+  };
+  UrlResolverQueryResultTemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultTemplatesSetKeySpecifier
+      | (() => undefined | UrlResolverQueryResultTemplatesSetKeySpecifier);
+    fields?: UrlResolverQueryResultTemplatesSetFieldPolicy;
   };
   UrlResolverQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UrlResolverQueryResultsKeySpecifier | (() => undefined | UrlResolverQueryResultsKeySpecifier);

@@ -56,6 +56,8 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
+    fetchRoleDefinitions: true,
     onChange: () => refetchAvailableContributors(),
   });
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
@@ -125,21 +127,21 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
   };
 
   // Adding new members:
-  const handleAddUser = (memberId: string) => assignRoleToUser(memberId, RoleName.Member);
+  const onAddUser = (memberId: string) => assignRoleToUser(memberId, RoleName.Member);
 
-  const handleRemoveUser = async (memberId: string) => removeRoleFromUser(memberId, RoleName.Member);
+  const onRemoveUser = (memberId: string) => removeRoleFromUser(memberId, RoleName.Member);
 
-  const handleUserLeadChange = (memberId: string, isLead: boolean) =>
+  const onUserLeadChange = (memberId: string, isLead: boolean) =>
     isLead ? assignRoleToUser(memberId, RoleName.Lead) : removeRoleFromUser(memberId, RoleName.Lead);
 
-  const handleRemoveOrganization = async (memberId: string) => removeRoleFromOrganization(memberId, RoleName.Member);
+  const onRemoveOrganization = (memberId: string) => removeRoleFromOrganization(memberId, RoleName.Member);
 
-  const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) =>
+  const onUserAuthorizationChange = (memberId: string, isAdmin: boolean) =>
     isAdmin ? assignRoleToUser(memberId, RoleName.Admin) : removeRoleFromUser(memberId, RoleName.Admin);
 
-  const handleAddOrganization = async (memberId: string) => assignRoleToOrganization(memberId, RoleName.Member);
+  const onAddOrganization = (memberId: string) => assignRoleToOrganization(memberId, RoleName.Member);
 
-  const onOrganizationLeadChange = async (memberId: string, isLead: boolean) =>
+  const onOrganizationLeadChange = (memberId: string, isLead: boolean) =>
     isLead ? assignRoleToOrganization(memberId, RoleName.Lead) : removeRoleFromOrganization(memberId, RoleName.Lead);
 
   const {
@@ -174,17 +176,17 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     platformInvitations,
     onApplicationStateChange: applicationStateChange,
     onInvitationStateChange: invitationStateChange,
-    onUserLeadChange: handleUserLeadChange,
-    onUserAuthorizationChange: handleUserAuthorizationChange,
-    onOrganizationLeadChange: onOrganizationLeadChange,
-    onAddUser: handleAddUser,
-    onAddOrganization: handleAddOrganization,
-    onAddVirtualContributor,
-    onRemoveUser: handleRemoveUser,
-    onRemoveOrganization: handleRemoveOrganization,
-    onRemoveVirtualContributor,
     onDeleteInvitation: deleteInvitation,
     onDeletePlatformInvitation: deletePlatformInvitation,
+    onUserLeadChange,
+    onUserAuthorizationChange,
+    onOrganizationLeadChange,
+    onAddUser,
+    onAddOrganization,
+    onAddVirtualContributor,
+    onRemoveUser,
+    onRemoveOrganization,
+    onRemoveVirtualContributor,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,

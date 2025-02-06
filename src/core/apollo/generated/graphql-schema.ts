@@ -7150,6 +7150,12 @@ export type UrlResolverQueryResultCollaboration = {
   whiteboardId?: Maybe<Scalars['UUID']>;
 };
 
+export type UrlResolverQueryResultInnovationPack = {
+  __typename?: 'UrlResolverQueryResultInnovationPack';
+  id: Scalars['UUID'];
+  templatesSet: UrlResolverQueryResultTemplatesSet;
+};
+
 export type UrlResolverQueryResultSpace = {
   __typename?: 'UrlResolverQueryResultSpace';
   collaboration: UrlResolverQueryResultCollaboration;
@@ -7157,11 +7163,19 @@ export type UrlResolverQueryResultSpace = {
   level: SpaceLevel;
   levelZeroSpaceID: Scalars['UUID'];
   parentSpaces: Array<Scalars['UUID']>;
+  templatesSet?: Maybe<UrlResolverQueryResultTemplatesSet>;
+};
+
+export type UrlResolverQueryResultTemplatesSet = {
+  __typename?: 'UrlResolverQueryResultTemplatesSet';
+  id: Scalars['UUID'];
+  templateId?: Maybe<Scalars['UUID']>;
 };
 
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
+  innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
@@ -9060,6 +9074,7 @@ export type RoleSetRoleAssignmentQueryVariables = Exact<{
   includeUsers?: InputMaybe<Scalars['Boolean']>;
   includeOrganizations?: InputMaybe<Scalars['Boolean']>;
   includeVirtualContributors?: InputMaybe<Scalars['Boolean']>;
+  includeRoleDefinitions?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type RoleSetRoleAssignmentQuery = {
@@ -9165,7 +9180,7 @@ export type RoleSetRoleAssignmentQuery = {
               };
             }>;
           }>;
-          roleDefinitions: Array<{
+          roleDefinitions?: Array<{
             __typename?: 'Role';
             id: string;
             name: RoleName;

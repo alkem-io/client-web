@@ -39,6 +39,7 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
     roleSetId,
     relevantRoles: MANAGED_ROLES,
     contributorTypes: [RoleSetContributorType.User],
+    fetchContributors: true,
   });
 
   const availableUsersForRole = useRoleSetAvailableUsers({

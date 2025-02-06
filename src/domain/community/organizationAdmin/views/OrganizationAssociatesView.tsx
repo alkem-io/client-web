@@ -26,6 +26,7 @@ export const OrganizationAssociatesView: FC = () => {
     roleSetId,
     relevantRoles: [RoleName.Associate],
     contributorTypes: [RoleSetContributorType.User],
+    fetchContributors: true,
   });
 
   const availableUsersForRole = useRoleSetAvailableUsers({

@@ -74,7 +74,9 @@ type useRoleSetManagerParams = {
   roleSetId: string | undefined;
   relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetContributorType[];
-  parentRoleSetId?: string;
+  fetchContributors?: boolean;
+  fetchRoleDefinitions?: boolean;
+  parentRoleSetId?: string; //!! not used?
   onChange?: () => void;
   skip?: boolean;
 };
@@ -82,6 +84,8 @@ type useRoleSetManagerParams = {
 const useRoleSetManager = ({
   roleSetId,
   relevantRoles,
+  fetchContributors = false,
+  fetchRoleDefinitions = false,
   contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
   onChange,
   skip,
@@ -125,9 +129,10 @@ const useRoleSetManager = ({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
-      includeUsers: contributorTypes.includes(RoleSetContributorType.User),
-      includeOrganizations: contributorTypes.includes(RoleSetContributorType.Organization),
-      includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
+      includeUsers: fetchContributors && contributorTypes.includes(RoleSetContributorType.User),
+      includeOrganizations: fetchContributors && contributorTypes.includes(RoleSetContributorType.Organization),
+      includeVirtualContributors: fetchContributors && contributorTypes.includes(RoleSetContributorType.Virtual),
+      includeRoleDefinitions: fetchRoleDefinitions,
     },
     skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
   });
@@ -195,7 +200,7 @@ const useRoleSetManager = ({
     }
 
     const rolesDefinitions: Record<RoleName, RoleDefinition> | undefined =
-      roleSetData?.lookup.roleSet?.roleDefinitions.reduce((acc, roleDefinition) => {
+      roleSetData?.lookup.roleSet?.roleDefinitions?.reduce((acc, roleDefinition) => {
         acc[roleDefinition.name] = roleDefinition;
         return acc;
       }, {} as Record<RoleName, RoleDefinition>);
@@ -210,7 +215,7 @@ const useRoleSetManager = ({
       usersByRole,
       organizationsByRole,
       virtualContributorsByRole,
-      rolesDefinitions,
+      rolesDefinitions: fetchRoleDefinitions ? rolesDefinitions : undefined,
     };
   }, [roleSetData?.lookup]);
 

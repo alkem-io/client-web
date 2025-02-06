@@ -63,6 +63,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Organization,
     contributorTypes: [RoleSetContributorType.User],
+    fetchContributors: true,
     skip: !organizationId,
   });
   const usersWithRoles = usersByRole[RoleName.Associate];

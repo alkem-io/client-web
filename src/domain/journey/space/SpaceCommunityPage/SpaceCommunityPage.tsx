@@ -66,6 +66,7 @@ const SpaceCommunityPage = () => {
       RoleSetContributorType.Organization,
       RoleSetContributorType.Virtual,
     ],
+    fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member];
   const leadUsers = usersByRole[RoleName.Lead];
