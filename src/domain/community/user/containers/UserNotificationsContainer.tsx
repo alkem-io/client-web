@@ -1,12 +1,12 @@
-import { sortBy } from 'lodash';
-import { PropsWithChildren, useMemo } from 'react';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   useUpdatePreferenceOnUserMutation,
   useUserNotificationsPreferencesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import { Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { sortBy } from 'lodash';
+import { useMemo } from 'react';
 
 export interface UserNotificationsContainerEntities {
   preferences: Preference[];
@@ -27,7 +27,7 @@ export interface UserNotificationsContainerProps
     UserNotificationsContainerState
   > {}
 
-const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotificationsContainerProps>) => {
+const UserNotificationsContainer = ({ children }: UserNotificationsContainerProps) => {
   const { userId } = useUrlResolver();
   const { data, loading } = useUserNotificationsPreferencesQuery({
     variables: {

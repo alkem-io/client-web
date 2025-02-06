@@ -1,17 +1,17 @@
-import { gutters } from '@/core/ui/grid/utils';
-import { Box } from '@mui/material';
-import React, { useRef } from 'react';
+import useCanGoBack from '@/core/routing/useCanGoBack';
+import useNavigate from '@/core/routing/useNavigate';
 import BackButton from '@/core/ui/actions/BackButton';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
+import { gutters } from '@/core/ui/grid/utils';
 import ApplicationButtonContainer, {
   ApplicationButtonContainerProps,
 } from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
+import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import { LockOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '@/core/routing/useNavigate';
 import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
-import useCanGoBack from '@/core/routing/useCanGoBack';
 
 interface JourneyUnauthorizedDialogProps
   extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,
@@ -51,11 +51,11 @@ const JourneyUnauthorizedDialog = ({
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
         <ApplicationButtonContainer parentSpaceId={parentSpaceId} journeyId={journeyId} loading={loading}>
-          {(e, s) => (
+          {(applicationButtonProps, applicationButtonLoading) => (
             <ApplicationButton
               ref={applicationButtonRef}
-              {...e?.applicationButtonProps}
-              loading={s.loading}
+              {...applicationButtonProps}
+              loading={applicationButtonLoading}
               journeyId={journeyId}
               spaceLevel={spaceLevel}
             />
