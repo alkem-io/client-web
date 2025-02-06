@@ -1,4 +1,4 @@
-query DashboardWithMemberships($limit: Float!) {
+query DashboardWithMemberships($limit: Float! = 0) {
   me {
     spaceMembershipsHierarchical(limit: $limit) {
       id

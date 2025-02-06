@@ -28368,7 +28368,7 @@ export type PendingInvitationsCountQuery = {
 };
 
 export type DashboardWithMembershipsQueryVariables = Exact<{
-  limit: Scalars['Float'];
+  limit?: Scalars['Float'];
 }>;
 
 export type DashboardWithMembershipsQuery = {

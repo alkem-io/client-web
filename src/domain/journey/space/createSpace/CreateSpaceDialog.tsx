@@ -36,7 +36,6 @@ import { TagCategoryValues, info } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Gutters from '@/core/ui/grid/Gutters';
-import { RECENT_SPACES_LIST_LIMIT } from '../../common/journeyDashboard/constants';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
@@ -139,12 +138,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           licensePlanID: values.licensePlanId,
         },
       },
-      refetchQueries: [
-        'AccountInformation',
-        refetchDashboardWithMembershipsQuery({
-          limit: RECENT_SPACES_LIST_LIMIT,
-        }),
-      ],
+      refetchQueries: ['AccountInformation', refetchDashboardWithMembershipsQuery()],
       onError: () => {
         setDialogOpen(true);
         setPlansTableDialogOpen(false);

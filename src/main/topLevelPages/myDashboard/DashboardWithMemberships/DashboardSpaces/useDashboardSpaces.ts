@@ -6,18 +6,13 @@ import { Theme, useMediaQuery } from '@mui/material';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useDashboardWithMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
-import { RECENT_SPACES_LIST_LIMIT } from '@/domain/journey/common/journeyDashboard/constants';
 
 export const useDashboardSpaces = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSpaceName, setSelectedSpaceName] = useState('');
   const [selectedSpaceIdx, setSelectedSpaceIdx] = useState<number | null>(null);
 
-  const { data, loading } = useDashboardWithMembershipsQuery({
-    variables: {
-      limit: RECENT_SPACES_LIST_LIMIT,
-    },
-  });
+  const { data, loading } = useDashboardWithMembershipsQuery();
 
   const theme = useTheme();
 

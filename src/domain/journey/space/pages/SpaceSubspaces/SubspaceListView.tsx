@@ -40,7 +40,6 @@ import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/com
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
-import { RECENT_SPACES_LIST_LIMIT } from '@/domain/journey/common/journeyDashboard/constants';
 
 export const SubspaceListView = () => {
   const { t } = useTranslation();
@@ -113,12 +112,7 @@ export const SubspaceListView = () => {
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
-    refetchQueries: [
-      refetchAdminSpaceSubspacesPageQuery({ spaceId }),
-      refetchDashboardWithMembershipsQuery({
-        limit: RECENT_SPACES_LIST_LIMIT,
-      }),
-    ],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId }), refetchDashboardWithMembershipsQuery()],
     awaitRefetchQueries: true,
   });
 

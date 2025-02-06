@@ -13998,12 +13998,6 @@ export const UpdateVirtualContributorDocument = gql`
         }
         displayName
         description
-        references {
-          id
-          name
-          uri
-          description
-        }
       }
     }
   }
@@ -14071,6 +14065,12 @@ export const UpdateVirtualContributorSettingsDocument = gql`
         }
         displayName
         description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }
@@ -22918,7 +22918,7 @@ export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.Pend
 }
 
 export const DashboardWithMembershipsDocument = gql`
-  query DashboardWithMemberships($limit: Float!) {
+  query DashboardWithMemberships($limit: Float! = 0) {
     me {
       spaceMembershipsHierarchical(limit: $limit) {
         id
@@ -22954,7 +22954,7 @@ export const DashboardWithMembershipsDocument = gql`
  * });
  */
 export function useDashboardWithMembershipsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.DashboardWithMembershipsQuery,
     SchemaTypes.DashboardWithMembershipsQueryVariables
   >
@@ -22985,7 +22985,7 @@ export type DashboardWithMembershipsQueryResult = Apollo.QueryResult<
   SchemaTypes.DashboardWithMembershipsQuery,
   SchemaTypes.DashboardWithMembershipsQueryVariables
 >;
-export function refetchDashboardWithMembershipsQuery(variables: SchemaTypes.DashboardWithMembershipsQueryVariables) {
+export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.DashboardWithMembershipsQueryVariables) {
   return { query: DashboardWithMembershipsDocument, variables: variables };
 }
 
