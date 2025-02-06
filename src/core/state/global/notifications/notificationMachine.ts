@@ -22,7 +22,6 @@ export type NotificationsEvent =
 export const notificationMachine = createMachine<NotificationsContext, NotificationsEvent>({
   id: 'notification',
   initial: 'active',
-  predictableActionArguments: true,
   context: {
     notifications: [],
   },
