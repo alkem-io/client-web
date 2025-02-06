@@ -36,9 +36,9 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   const { setOpenDialog } = usePendingMembershipsDialog();
 
   const { data: invitesData } = usePendingInvitationsCountQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
-  const pendingInvitationsCount = invitesData?.me?.communityInvitations?.length ?? 0;
+  const pendingInvitationsCount = invitesData?.me?.communityInvitationsCount || 0;
 
   const changeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     setActivityEnabled(event.target.checked);
