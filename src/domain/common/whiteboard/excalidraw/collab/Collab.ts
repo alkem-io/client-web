@@ -109,7 +109,7 @@ class Collab {
 
   destroy() {
     window.removeEventListener(EVENT.UNLOAD, this.onUnload);
-    window.removeEventListener(EVENT.POINTER_MOVE, this.onPointerMove);
+    window.removeEventListener(EVENT.POINTER_MOVE, this.onPointerMove); // @@@ WIP ~ #7611
     window.removeEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
 
     if (this.activeIntervalId) {
@@ -147,6 +147,7 @@ class Collab {
       return element;
     });
 
+    // @@@ WIP ~ #7611
     this.excalidrawAPI.updateScene({
       elements,
       storeAction: StoreAction.NONE,
@@ -164,6 +165,7 @@ class Collab {
     if (!opts?.isUnload) {
       this.state.activeRoomLink = '';
       this.collaborators = new Map();
+      // @@@ WIP ~ #7611
       this.excalidrawAPI.updateScene({
         collaborators: this.collaborators,
       });
@@ -268,6 +270,7 @@ class Collab {
     collaborators.set(socketId, user);
     this.collaborators = collaborators;
 
+    // @@@ WIP ~ #7611
     this.excalidrawAPI.updateScene({
       collaborators,
     });
@@ -338,6 +341,7 @@ class Collab {
   ) => {
     const { StoreAction } = await this.excalidrawUtils;
 
+    // @@@ WIP ~ #7611
     this.excalidrawAPI.updateScene({
       elements,
       storeAction: init ? StoreAction.CAPTURE : StoreAction.NONE,
@@ -352,6 +356,7 @@ class Collab {
     this.excalidrawAPI.history.clear();
   };
 
+  // @@@ WIP ~ #7611
   private onPointerMove = () => {
     if (this.idleTimeoutId) {
       window.clearTimeout(this.idleTimeoutId);
@@ -399,7 +404,7 @@ class Collab {
   };
 
   private initializeIdleDetector = () => {
-    document.addEventListener(EVENT.POINTER_MOVE, this.onPointerMove);
+    document.addEventListener(EVENT.POINTER_MOVE, this.onPointerMove); // @@@ WIP ~ #7611
     document.addEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
   };
 
@@ -415,6 +420,7 @@ class Collab {
     }
 
     this.collaborators = collaborators;
+    // @@@ WIP ~ #7611
     this.excalidrawAPI.updateScene({ collaborators });
   };
 

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -116,12 +116,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
 
   const initialPathname = useRef(pathname).current;
 
-  useEffect(() => {
-    if (pathname !== initialPathname) {
-      onClose();
-    }
-  }, [pathname]);
-
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
@@ -129,8 +123,10 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   const styles = useStyles();
   const columns = useGlobalGridColumns();
 
-  const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSavedDate, setLastSavedDate] = useState<Date>();
   const [isSceneInitialized, setSceneInitialized] = useState(false);
+
+  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
@@ -159,51 +155,54 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
         error: string;
       };
 
-  const prepareWhiteboardForUpdate = async (
-    whiteboard: WhiteboardDetails,
-    state: RelevantExcalidrawState | undefined,
-    shouldUploadPreviewImages = true
-  ): Promise<PrepareWhiteboardResult> => {
-    if (!state) {
-      return {
-        success: false,
-        error: 'Excalidraw state not defined',
-      };
-    }
-    if (!whiteboard?.profile?.id) {
-      return {
-        success: false,
-        error: 'Whiteboard profile not defined',
-      };
-    }
-    if (!formikRef.current?.isValid) {
-      return {
-        success: false,
-        error: 'Whiteboard form not valid',
-      };
-    }
+  const prepareWhiteboardForUpdate = useCallback(
+    async (
+      whiteboard: WhiteboardDetails,
+      state: RelevantExcalidrawState | undefined,
+      shouldUploadPreviewImages = true
+    ): Promise<PrepareWhiteboardResult> => {
+      if (!state) {
+        return {
+          success: false,
+          error: 'Excalidraw state not defined',
+        };
+      }
+      if (!whiteboard?.profile?.id) {
+        return {
+          success: false,
+          error: 'Whiteboard profile not defined',
+        };
+      }
+      if (!formikRef.current?.isValid) {
+        return {
+          success: false,
+          error: 'Whiteboard form not valid',
+        };
+      }
 
-    const previewImages =
-      shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
-        ? await generateWhiteboardPreviewImages(whiteboard, state)
-        : undefined;
+      const previewImages =
+        shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
+          ? await generateWhiteboardPreviewImages(whiteboard, state)
+          : undefined;
 
-    const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
+      const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
-    return {
-      success: true,
-      whiteboard: {
-        ...whiteboard,
-        profile: {
-          ...whiteboard.profile,
-          displayName,
+      return {
+        success: true,
+        whiteboard: {
+          ...whiteboard,
+          profile: {
+            ...whiteboard.profile,
+            displayName,
+          },
         },
-      },
-      previewImages,
-    };
-  };
+        previewImages,
+      };
+    },
+    [filesManager.loading.downloadingFiles, generateWhiteboardPreviewImages]
+  );
 
-  const getWhiteboardState = async () => {
+  const getWhiteboardState = useCallback(async () => {
     if (!whiteboard || !excalidrawAPI) {
       return;
     }
@@ -212,9 +211,9 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
       appState: excalidrawAPI.getAppState(),
       files: excalidrawAPI.getFiles(),
     };
-  };
+  }, [whiteboard, excalidrawAPI]);
 
-  const onClose = async () => {
+  const onClose = useCallback(async () => {
     if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
       const whiteboardState = await getWhiteboardState();
       const prepareWhiteboardResult = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
@@ -228,20 +227,23 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
       }
     }
     actions.onCancel();
-  };
+  }, [actions, logError, whiteboard, collabApiRef, editModeEnabled, getWhiteboardState, prepareWhiteboardForUpdate]);
 
-  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
-    if (excalidrawAPI) {
-      try {
-        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
-      } catch (err) {
-        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        logError(new Error(`Error importing whiteboard template: '${err}'`), {
-          category: TagCategoryValues.WHITEBOARD,
-        });
+  const handleImportTemplate = useCallback(
+    async (template: WhiteboardTemplateContent) => {
+      if (excalidrawAPI) {
+        try {
+          await mergeWhiteboard(excalidrawAPI, template.whiteboard.content); // @@@ WIP ~ #7611 - ???
+        } catch (err) {
+          notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+          logError(new Error(`Error importing whiteboard template: '${err}'`), {
+            category: TagCategoryValues.WHITEBOARD,
+          });
+        }
       }
-    }
-  };
+    },
+    [excalidrawAPI, t, notify, logError]
+  );
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
@@ -252,12 +254,16 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     }
   });
 
-  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
-
   const initialValues = useMemo(
     () => ({ displayName: whiteboard?.profile?.displayName ?? '' }),
     [whiteboard?.profile?.displayName]
   );
+
+  useEffect(() => {
+    if (pathname !== initialPathname) {
+      onClose();
+    }
+  }, [pathname, initialPathname, onClose]);
 
   useEffect(() => {
     formikRef.current?.resetForm({

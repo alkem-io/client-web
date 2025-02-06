@@ -33,6 +33,7 @@ const WhiteboardPage = ({
 
   const calloutId = data?.lookup.collaboration?.calloutsSet.callouts?.[0].id;
 
+  // @@@ WIP ~ #7611
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>
       {(entities, state) => (

@@ -64,8 +64,10 @@ const WhiteboardView = ({
   });
 
   return (
+    // @@@ WIP ~ #7611
     <WhiteboardActionsContainer>
       {(_, actionsState, actions) => (
+        // @@@ WIP ~ #7611
         <WhiteboardDialog
           entities={{
             whiteboard,

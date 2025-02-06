@@ -6,8 +6,18 @@ import type {
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { makeStyles } from '@mui/styles';
-import { debounce, merge } from 'lodash';
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce, DebouncedFunc, merge } from 'lodash';
+import React, {
+  MutableRefObject,
+  PropsWithChildren,
+  Ref,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import { useUserContext } from '@/domain/community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
@@ -121,24 +131,85 @@ const CollaborativeExcalidrawWrapper = ({
   const styles = useActorWhiteboardStyles();
 
   const { user } = useUserContext();
-  const username = user?.user.profile.displayName ?? 'User';
+  const username = useMemo(() => user?.user.profile.displayName ?? 'User', [user?.user.profile.displayName]);
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
-  const handleScroll = useRef(
-    debounce(async () => {
-      excalidrawApi?.refresh();
-    }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
-  ).current;
+  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
+
+  // @@@ WIP ~ #7611
+  // ------------------------------------------------------------------------------------------------------------------
+  /**
+   * 	Key Observations and Adjustments:
+   *
+   * 	excalidrawApi Availability: We are correctly using useState to manage the excalidrawApi, and it's initialized asynchronously within the handleInitializeApi callback. This means the excalidrawApi might not be immediately available when the component mounts.
+   *
+   * 	handleScroll Purpose: Our handleScroll function calls excalidrawApi?.refresh(). It's important to understand why we're calling refresh(). Based on the Excalidraw documentation, refresh() is typically used to re-render the Excalidraw component when its container size changes or when something else outside of Excalidraw's internal state affects its rendering. If we're calling it solely on window scroll, we should carefully consider whether it's actually necessary for our use case. Frequent calls to refresh() can impact performance.
+   *
+   * 	Collab API Integration: The collabApi and its onPointerUpdate function are passed to Excalidraw. This is good.
+   *
+   * 	whiteboard Key: We are correctly using the whiteboard.id as the key to the <Excalidraw> component, forcing a re-render when the whiteboard changes.
+   *
+   * 	Dependency Array Updates: We now pass excalidrawApi to the debounced function. So excalidrawApi becomes important dependency in the useEffect.
+   */
+
+  const debouncedRefresh = useRef<DebouncedFunc<() => void> | null>(null) as MutableRefObject<DebouncedFunc<
+    () => void
+  > | null>; // Explicitly cast to MutableRefObject
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, true);
+    debouncedRefresh.current = debounce(() => {
+      if (excalidrawApi) {
+        excalidrawApi.refresh();
+      } else {
+        console.warn('excalidrawApi is not available.');
+      }
+    }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL);
+
+    const handleScroll = () => {
+      debouncedRefresh.current?.();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
 
     return () => {
-      handleScroll.cancel();
-      window.removeEventListener('scroll', handleScroll, true);
+      debouncedRefresh.current?.cancel();
+      window.removeEventListener('scroll', handleScroll, { capture: true });
     };
-  }, [handleScroll]);
+  }, [excalidrawApi]);
+
+  /**
+   * Key Changes and Reasoning:
+   *
+   * excalidrawApi in Dependency Array: The useEffect hook for handleScroll now includes excalidrawApi in its dependency array: useEffect(() => { ... }, [excalidrawApi]);. This is essential because the debounce callback depends on excalidrawApi. If excalidrawApi changes (i.e., it's initially null and then becomes an object), the useEffect should re-run to create a new debounced function that uses the updated excalidrawApi.
+   *
+   * debouncedRefresh useRef: The debouncedRefresh variable is now a useRef to persist the debounced function across re-renders, initialized in each useEffect callback.
+   *
+   * Removed useCallback for HandleScroll: handleScroll is not being used as dependency. Also, in the useEffect it is correctly attached and removed.
+   *
+   * Careful Handling of excalidrawApi Undefined: The debounced function now includes a conditional check: if (excalidrawApi) { excalidrawApi.refresh(); } else { console.warn("excalidrawApi is not yet available to refresh."); }. This handles the case where the API is not immediately available.
+   *
+   * Passive and Capture: The passive: true, capture: true options remain in the addEventListener call for performance and robustness.
+   *
+   * Important Questions to Consider:
+   *
+   * Why refresh() on Scroll? Reiterate whether you truly need to call excalidrawApi.refresh() on every scroll event. If the Excalidraw component is correctly handling resizing and re-rendering itself based on its container size, this might be unnecessary and detrimental to performance. Consider profiling your application to see if this scroll handler is causing performance bottlenecks. Alternative approaches might involve:
+   *
+   * Resizing Observer: Using a ResizeObserver to detect changes in the size of the Excalidraw container and calling refresh() only when the container size changes. This is a more targeted approach.
+   *
+   * Debouncing Resizes: If the container size changes frequently (e.g., due to responsive layout changes), debounce the resize handler instead of the scroll handler.
+   *
+   * Alternative Event: Is the intention of the original code to "refresh" the excalidraw on container/viewport size change (and not scroll)?
+   *
+   *
+   *
+   * In Summary:
+   *
+   * The revised code addresses the potential issues in the original snippet within the context of our component. However, the need for calling excalidrawApi.refresh() on every scroll event should be carefully evaluated, as it might not be the most efficient approach. Consider using a ResizeObserver or debouncing resize events instead if the goal is to re-render Excalidraw when its container size changes.
+   *
+   *
+   */
+  // ------------------------------------------------------------------------------------------------------------------
 
   const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
     () => ({
@@ -186,8 +257,6 @@ const CollaborativeExcalidrawWrapper = ({
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };
-
-  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
 
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 

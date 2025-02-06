@@ -130,6 +130,7 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
   y: element.y + displacement.y,
 });
 
+// @@@ WIP ~ #7611 - ???
 const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
   const { getSceneVersion, StoreAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
     () => import('@alkemio/excalidraw')

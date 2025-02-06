@@ -99,7 +99,7 @@ const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardAc
         errors: result.errors?.map(({ message }) => message),
       };
     },
-    [createWhiteboard]
+    [createWhiteboard, uploadVisuals]
   );
 
   const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
@@ -141,7 +141,7 @@ const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardAc
         errors: undefined,
       };
     },
-    []
+    [uploadVisuals]
   );
 
   const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
@@ -171,7 +171,7 @@ const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardAc
       onUpdate: handleUploadWhiteboardVisuals,
       onChangeDisplayName: handleChangeDisplayName,
     }),
-    [handleUploadWhiteboardVisuals]
+    [handleCreateWhiteboard, handleDeleteWhiteboard, handleUploadWhiteboardVisuals, handleChangeDisplayName]
   );
 
   return (
