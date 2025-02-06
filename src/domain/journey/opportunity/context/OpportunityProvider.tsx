@@ -1,4 +1,3 @@
-import React, { FC, useMemo } from 'react';
 import { useSubspaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -6,6 +5,7 @@ import {
   SubspaceProviderFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;
@@ -54,12 +54,10 @@ const DEFAULT_CONTEXT = {
  */
 const OpportunityContext = React.createContext<OpportunityContextProps>(DEFAULT_CONTEXT);
 
-interface OpportunityProviderProps {}
-
 /**
  * @deprecated
  */
-const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
+const OpportunityProvider: FC<PropsWithChildren> = ({ children }) => {
   const { subSubSpaceId: opportunityId } = useRouteResolver();
 
   const { data, loading } = useSubspaceProviderQuery({
@@ -102,4 +100,4 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   );
 };
 
-export { OpportunityProvider, OpportunityContext };
+export { OpportunityContext, OpportunityProvider };

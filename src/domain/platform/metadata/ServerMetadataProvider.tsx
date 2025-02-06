@@ -1,9 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Metadata, ServerMetadataQuery } from '@/core/apollo/generated/graphql-schema';
 import { ServerMetadataDocument } from '@/core/apollo/generated/apollo-hooks';
+import { Metadata, ServerMetadataQuery } from '@/core/apollo/generated/graphql-schema';
 import queryRequest from '@/core/http/queryRequest';
-import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
 import { TagCategoryValues, warn as logWarn } from '@/core/logging/sentry/log';
+import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
 
 interface ServerMetadataContextProps {
   metadata?: Partial<Metadata>;
@@ -17,7 +17,7 @@ export const ServerMetadataContext = React.createContext<ServerMetadataContextPr
   error: undefined,
 });
 
-export interface ServerMetadataProviderProps {
+interface ServerMetadataProviderProps extends PropsWithChildren {
   url: string;
 }
 

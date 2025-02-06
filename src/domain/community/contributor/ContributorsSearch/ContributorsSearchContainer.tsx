@@ -1,12 +1,8 @@
-import { PropsWithChildren, useMemo } from 'react';
-import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '@/core/container/container';
 import {
   useContributorsPageOrganizationsQuery,
   useContributorsPageUsersQuery,
   useContributorsVirtualInLibraryQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user';
 import {
   ContributorsPageOrganizationsQuery,
   ContributorsPageOrganizationsQueryVariables,
@@ -17,8 +13,12 @@ import {
   Tagset,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { ContainerChildProps } from '@/core/container/container';
 import { arrayShuffle } from '@/core/utils/array.shuffle';
+import { useUserContext } from '@/domain/community/user';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { ApolloError } from '@apollo/client';
+import { useMemo } from 'react';
 
 export interface PaginatedResult<T> {
   items: T[] | undefined;
@@ -74,11 +74,7 @@ export interface ContributorsSearchContainerProps
   pageSize: number;
 }
 
-const ContributorsSearchContainer = ({
-  searchTerms,
-  pageSize,
-  children,
-}: PropsWithChildren<ContributorsSearchContainerProps>) => {
+const ContributorsSearchContainer = ({ searchTerms, pageSize, children }: ContributorsSearchContainerProps) => {
   const { isAuthenticated } = useUserContext();
 
   const usersQueryResult = usePaginatedQuery<ContributorsPageUsersQuery, ContributorsPageUsersQueryVariables>({

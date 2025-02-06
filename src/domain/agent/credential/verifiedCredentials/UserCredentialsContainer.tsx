@@ -1,4 +1,3 @@
-import { PropsWithChildren, useCallback } from 'react';
 import {
   useBeginAlkemioUserCredentialOfferInteractionMutation,
   useBeginCommunityMemberCredentialOfferInteractionMutation,
@@ -6,13 +5,14 @@ import {
   useGetSupportedCredentialMetadataQuery,
   useUserSsiQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import {
   AgentBeginVerifiedCredentialOfferOutput,
   AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
   VerifiedCredential,
 } from '@/core/apollo/generated/graphql-schema';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { useCallback } from 'react';
 
 interface UserCredentialsContainerEntities {
   credentialMetadata: CredentialMetadataOutput[] | undefined;
@@ -33,18 +33,17 @@ interface UserCredentialsContainerActions {
   generateCredentialRequest(credential: CredentialMetadataOutput): Promise<AgentBeginVerifiedCredentialRequestOutput>;
 }
 
-interface UserCredentialsContainerProps
-  extends ContainerChildProps<
-    UserCredentialsContainerEntities,
-    UserCredentialsContainerActions,
-    UserCredentialsContainerState
-  > {
+interface UserCredentialsChildProps {
+  entities: UserCredentialsContainerEntities;
+  state: UserCredentialsContainerState;
+  actions: UserCredentialsContainerActions;
+}
+
+interface UserCredentialsContainerProps extends SimpleContainerProps<UserCredentialsChildProps> {
   userID: string;
 }
 
-export const UserCredentialsContainer = ({
-  children /* userID */,
-}: PropsWithChildren<UserCredentialsContainerProps>) => {
+export const UserCredentialsContainer = ({ children /* userID */ }: UserCredentialsContainerProps) => {
   // TODO - the container should retrieve specific users VCs, hence the userID
   const { data: userData, loading: getUserCredentialsLoading } = useUserSsiQuery({
     fetchPolicy: 'network-only',
@@ -110,24 +109,24 @@ export const UserCredentialsContainer = ({
 
   return (
     <>
-      {children(
-        {
+      {children({
+        entities: {
           credentialMetadata: credentialMetadata?.getSupportedVerifiedCredentialMetadata,
           verifiedCredentials,
         },
-        {
+        state: {
           getUserCredentialsLoading,
           getCredentialMetadataLoading,
           generateAlkemioUserCredentialOfferLoading,
           generateCommunityMemberCredentialOfferLoading,
           generateCredentialRequestLoading,
         },
-        {
+        actions: {
           generateAlkemioUserCredentialOffer,
           generateCommunityMemberCredentialOffer,
           generateCredentialRequest,
-        }
-      )}
+        },
+      })}
     </>
   );
 };

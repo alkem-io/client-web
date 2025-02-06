@@ -1,14 +1,14 @@
-import { FC, useEffect, useMemo, createContext } from 'react';
 import {
   refetchUserProviderQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
   useUserProviderQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { AuthorizationPrivilege, LicenseEntitlementType, RoleName, User } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
+import { FC, PropsWithChildren, createContext, useEffect, useMemo } from 'react';
+import { UserMetadata, toUserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -34,7 +34,7 @@ const UserContext = createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider: FC = ({ children }) => {
+const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
   const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
@@ -98,4 +98,4 @@ const UserProvider: FC = ({ children }) => {
   return <UserContext.Provider value={providedValue}>{children}</UserContext.Provider>;
 };
 
-export { UserProvider, UserContext };
+export { UserContext, UserProvider };

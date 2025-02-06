@@ -1,10 +1,10 @@
-import { FC, useMemo } from 'react';
 import { useSpaceCommunityQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CommunityContext, CommunityContextValue } from './CommunityContext';
+import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import { FC, PropsWithChildren, useMemo } from 'react';
+import { CommunityContext, CommunityContextValue } from './CommunityContext';
 
 /**
  * @deprecated
@@ -13,7 +13,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
  * @param children
  * @constructor
  */
-const CommunityContextProvider: FC = ({ children }) => {
+const CommunityContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { spaceId, subSpaceId: challengeId, subSubSpaceId: opportunityId, journeyTypeName } = useRouteResolver();
 
   const { permissions: spacePermissions } = useSpace();

@@ -1,20 +1,19 @@
-import { ApolloError } from '@apollo/client';
-import { PropsWithChildren } from 'react';
-import { useUserContext } from '@/domain/community/user';
-import { ContainerChildProps } from '@/core/container/container';
+import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
   DashboardTopCalloutFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
 import { ActivityLogResultType } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
+import { useUserContext } from '@/domain/community/user';
 import {
   RECENT_ACTIVITIES_LIMIT_INITIAL,
   TOP_CALLOUTS_LIMIT,
 } from '@/domain/journey/common/journeyDashboard/constants';
-import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { ApolloError } from '@apollo/client';
 
 export interface ActivityContainerEntities {
   permissions: {
@@ -38,7 +37,7 @@ export interface ActivityContainerProps
   spaceId: string | undefined;
 }
 
-export const ActivityContainer = ({ spaceId, children }: PropsWithChildren<ActivityContainerProps>) => {
+export const ActivityContainer = ({ spaceId, children }: ActivityContainerProps) => {
   const { user } = useUserContext();
   const { permissions: spacePermissions } = useSpace();
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({

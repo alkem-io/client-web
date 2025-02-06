@@ -1,13 +1,8 @@
-import { ApolloError } from '@apollo/client';
-import React, { FC, useCallback } from 'react';
-import { useSpace } from '../SpaceContext/useSpace';
-import { useUserContext } from '@/domain/community/user';
 import {
   useSendMessageToCommunityLeadsMutation,
   useSpaceDashboardReferencesQuery,
   useSpacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
@@ -15,12 +10,17 @@ import {
   Reference,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
+import { useUserContext } from '@/domain/community/user';
+import { ApolloError } from '@apollo/client';
+import { FC, useCallback } from 'react';
+import { useSpace } from '../SpaceContext/useSpace';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;

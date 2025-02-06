@@ -1,6 +1,3 @@
-import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useSpaceProviderQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -9,7 +6,10 @@ import {
   SpacePrivacyMode,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useUserContext } from '@/domain/community/user';
+import { ApolloError } from '@apollo/client';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -77,11 +77,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   myMembershipStatus: undefined,
 });
 
-interface SpaceProviderProps {}
-
 const NO_PRIVILEGES = [];
 
-const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
+const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { spaceNameId = '' } = useUrlParams();
 
   const { isAuthenticated } = useUserContext();
@@ -197,4 +195,4 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   );
 };
 
-export { SpaceContextProvider, SpaceContext };
+export { SpaceContext, SpaceContextProvider };
