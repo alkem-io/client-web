@@ -209,7 +209,6 @@ const useWhiteboardFilesManager = ({
     }
 
     log('I need to download these files', pendingFileIds);
-    const newFiles: BinaryFilesWithUrl = {};
 
     setDownloadingFiles(true);
 
@@ -228,8 +227,8 @@ const useWhiteboardFilesManager = ({
         log('DOWNLOADING ', file);
         try {
           const dataURL = await fetchFileToDataURL(file.url);
-          newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
-          fileStoreAddFile(fileId, newFiles[fileId]);
+          // try-catch will avoid putting the file in the store if fetching fails
+          fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
         } catch (e) {
           error(`Error downloading file: ${file.url}`, { label: 'whiteboard-file-manager' });
           throw e;
