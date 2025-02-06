@@ -319,15 +319,18 @@ class Collab {
       restoredRemoteElements as RemoteExcalidrawElement[],
       appState
     );
+    // Avoid broadcasting to the rest of the collaborators the scene
+    // we just received!
+    // Note: this needs to be set before updating the scene as it
+    // synchronously calls render.
+    this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(reconciledElements);
 
     // Download the files that this instance is missing:
     return this.filesManager.loadFiles({ files: remoteFiles }).then(() => {
-      // Avoid broadcasting to the rest of the collaborators the scene
-      // we just received!
-      // Note: this needs to be set before updating the scene as it
-      // synchronously calls render.
-      this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(reconciledElements);
-
+      // once the files are loaded, we need to update the scene again to render them
+      // instead of updating the scene twice, which is already expensive, we
+      // return the elements once the files have been loaded
+      // that way we render the elements and images at the same time
       return reconciledElements;
     });
   };

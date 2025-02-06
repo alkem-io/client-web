@@ -201,8 +201,8 @@ const useWhiteboardFilesManager = ({
     }
 
     const files = whiteboard.files;
-
-    const pendingFileIds = Object.keys(files).filter(fileId => !files[fileId]?.dataURL);
+    // leave only the incoming files that don't have a dataURL and are not in the fileStore
+    const pendingFileIds = Object.keys(files).filter(fileId => !files[fileId]?.dataURL && !fileStore.current[fileId]);
 
     if (!pendingFileIds.length) {
       return;
