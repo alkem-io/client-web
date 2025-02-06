@@ -37,6 +37,7 @@ import {
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
 import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
 import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
+import SpaceWelcomeDialog from './SpaceWelcomeDialog';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
@@ -89,6 +90,7 @@ const SpaceDashboardView = ({
   const { t } = useTranslation();
 
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
+  const [openWelcome, setOpenWelcome] = useState(false);
   const [vcId, setVcId] = useState<string>('');
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -106,6 +108,11 @@ const SpaceDashboardView = ({
     removeVCCreationCache();
   };
 
+  const onCloseWelcome = () => {
+    setOpenWelcome(false);
+    removeSpaceWelcomeCache();
+  };
+
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
     const cachedVC = getVCCreationCache();
@@ -119,15 +126,12 @@ const SpaceDashboardView = ({
   }, []);
 
   useEffect(() => {
-    // on mount of a space, check the cache and show the welcome if present
+    // on space change, check the cache and show welcome
     const cachedSpaceWelcome = getSpaceWelcomeCache();
 
     if (spaceId && cachedSpaceWelcome === spaceId) {
-      // TODO: impl
-      console.log('show welcome!!!');
+      setOpenWelcome(true);
     }
-
-    return removeSpaceWelcomeCache;
   }, [spaceId]);
 
   return (
@@ -205,6 +209,7 @@ const SpaceDashboardView = ({
             vcId={vcId}
           />
         )}
+        {spaceId && openWelcome && <SpaceWelcomeDialog onClose={onCloseWelcome} />}
       </PageContent>
     </>
   );

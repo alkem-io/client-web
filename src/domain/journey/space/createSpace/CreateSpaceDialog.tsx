@@ -78,6 +78,11 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const { availablePlans } = useSpacePlans({ skip: !dialogOpen, accountId });
 
   const handleClose = () => {
+    if (creatingLoading) {
+      // TODO: show a confirmation dialog
+      return;
+    }
+
     setDialogOpen(false);
     setCreatingLoading(false);
     onClose?.();
@@ -155,8 +160,9 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
     const spaceID = newSpace?.createSpace.id;
     if (spaceID) {
-      setDialogOpen(false);
+      addSpaceWelcomeCache(spaceID);
       setCreatingLoading(false);
+      setDialogOpen(false);
       info(`Space Created SpaceId:${spaceID}`, {
         category: TagCategoryValues.SPACE_CREATION,
         label: 'Space Created',
@@ -164,7 +170,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
       notify(t('pages.admin.space.notifications.space-created'), 'success');
 
       if (redirectOnComplete) {
-        addSpaceWelcomeCache(newSpace.createSpace.id);
         const { data: spaceUrlData } = await getSpaceUrl({
           variables: {
             spaceNameId: spaceID,
@@ -200,19 +205,30 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
               <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
               <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
                 <PageContentBlockSeamless sx={{ paddingX: 0, paddingBottom: 0 }}>
-                  <FormikInputField name="name" title={t('components.nameSegment.name')} required />
-                  <NameIdField name="nameID" title={t('common.url')} required />
+                  <FormikInputField
+                    name="name"
+                    title={t('components.nameSegment.name')}
+                    required
+                    disabled={creatingLoading}
+                  />
+                  <NameIdField name="nameID" title={t('common.url')} required disabled={creatingLoading} />
                   <FormikInputField
                     name="tagline"
                     title={`${t('context.space.tagline.title')} (${t('common.optional')})`}
                     rows={3}
                     maxLength={SMALL_TEXT_LENGTH}
+                    disabled={creatingLoading}
                   />
-                  <TagsetSegment title={`${t('common.tags')} (${t('common.optional')})`} tagsets={tagsets} />
+                  <TagsetSegment
+                    disabled={creatingLoading}
+                    title={`${t('common.tags')} (${t('common.optional')})`}
+                    tagsets={tagsets}
+                  />
 
                   <Gutters disableGap disablePadding>
                     <FormControlLabel
                       checked={addTutorialCallouts}
+                      disabled={creatingLoading}
                       onChange={(_event, isChecked) => setAddTutorialCallouts(isChecked)}
                       control={<Checkbox />}
                       label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
@@ -220,6 +236,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
                     <FormControlLabel
                       value={hasAcceptedTerms}
+                      disabled={creatingLoading}
                       onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
                       required
                       control={<Checkbox />}
