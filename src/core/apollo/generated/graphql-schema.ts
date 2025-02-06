@@ -19917,6 +19917,19 @@ export type JourneyBreadcrumbsSpaceFragment = {
   };
 };
 
+export type JourneyBreadcrumbsSubpaceFragment = {
+  __typename?: 'Space';
+  id: string;
+  level: SpaceLevel;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
 export type SpacePrivilegesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -26806,6 +26819,20 @@ export type UrlResolverQuery = {
             contributionId?: string | undefined;
             postId?: string | undefined;
             whiteboardId?: string | undefined;
+          };
+          templatesSet?:
+            | { __typename?: 'UrlResolverQueryResultTemplatesSet'; id: string; templateId?: string | undefined }
+            | undefined;
+        }
+      | undefined;
+    innovationPack?:
+      | {
+          __typename?: 'UrlResolverQueryResultInnovationPack';
+          id: string;
+          templatesSet: {
+            __typename?: 'UrlResolverQueryResultTemplatesSet';
+            id: string;
+            templateId?: string | undefined;
           };
         }
       | undefined;

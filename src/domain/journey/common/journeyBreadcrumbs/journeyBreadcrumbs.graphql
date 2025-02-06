@@ -1,4 +1,4 @@
-query JourneyBreadcrumbsSpace(  #//!! To check if passing NameIds
+query JourneyBreadcrumbsSpace(
   $spaceId: UUID!,
   $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000",
   $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000",
@@ -10,10 +10,10 @@ query JourneyBreadcrumbsSpace(  #//!! To check if passing NameIds
       ...JourneyBreadcrumbsSpace
     }
     subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
-      ...JourneyBreadcrumbsSpace
+      ...JourneyBreadcrumbsSubpace
     }
     subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
-      ...JourneyBreadcrumbsSpace
+      ...JourneyBreadcrumbsSubpace
     }
   }
 }
@@ -26,7 +26,18 @@ fragment JourneyBreadcrumbsSpace on Space {
     url
     displayName
     avatar: visual(type: BANNER) {
-      id
+      ...VisualUri
+    }
+  }
+}
+fragment JourneyBreadcrumbsSubpace on Space {
+  id
+  level
+  profile {
+    id
+    url
+    displayName
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
   }

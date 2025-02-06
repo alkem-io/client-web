@@ -13,12 +13,23 @@ query UrlResolver($url: String!) {
         postId
         whiteboardId
       }
+      templatesSet {
+        id
+        templateId
+      }
       parentSpaces
     }
     organizationId
     userId
     vcId
     discussionId
+    innovationPack {
+      id
+      templatesSet {
+        id
+        templateId
+      }
+    }
   }
 }
 

@@ -57,11 +57,13 @@ type UseUrlResolverProvided = {
   // Forum:
   discussionId: string | undefined;
 
-  //!! pending
   // Templates
   innovationPackId: string | undefined;
-  innovationHubId: string | undefined;
+  templatesSetId: string | undefined;
   templateId: string | undefined;
+
+  //!! pending
+  innovationHubId: string | undefined;
   loading: boolean;
 };
 
@@ -82,34 +84,42 @@ const useUrlResolver = ({
 
   //!! memoize this with lodash? window.location.href
   const result = useMemo<UseUrlResolverProvided>(() => {
+    const type = urlResolverData?.urlResolver.type;
+    const data = urlResolverData?.urlResolver;
     return {
-      type: urlResolverData?.urlResolver.type,
+      type,
       // Space:
-      spaceId: urlResolverData?.urlResolver.space?.id,
-      spaceLevel: urlResolverData?.urlResolver.space?.level,
-      levelZeroSpaceId: urlResolverData?.urlResolver.space?.levelZeroSpaceID,
-      parentSpaceId: (urlResolverData?.urlResolver.space?.parentSpaces ?? []).slice(-1)[0],
-      journeyPath: compact(urlResolverData?.urlResolver.space?.parentSpaces) as JourneyPath,
+      spaceId: data?.space?.id,
+      spaceLevel: data?.space?.level,
+      levelZeroSpaceId: data?.space?.levelZeroSpaceID,
+      parentSpaceId: (data?.space?.parentSpaces ?? []).slice(-1)[0],
+      journeyPath: compact(data?.space?.parentSpaces) as JourneyPath,
+
       // Collaboration:
-      collaborationId: urlResolverData?.urlResolver.space?.collaboration.id,
-      calloutsSetId: urlResolverData?.urlResolver.space?.collaboration.calloutsSetId,
-      calloutId: urlResolverData?.urlResolver.space?.collaboration.calloutId,
-      contributionId: urlResolverData?.urlResolver.space?.collaboration.contributionId,
-      postId: urlResolverData?.urlResolver.space?.collaboration.postId,
-      whiteboardId: urlResolverData?.urlResolver.space?.collaboration.whiteboardId,
+      collaborationId: data?.space?.collaboration.id,
+      calloutsSetId: data?.space?.collaboration.calloutsSetId,
+      calloutId: data?.space?.collaboration.calloutId,
+      contributionId: data?.space?.collaboration.contributionId,
+      postId: data?.space?.collaboration.postId,
+      whiteboardId: data?.space?.collaboration.whiteboardId,
 
       // Contributors:
-      organizationId: urlResolverData?.urlResolver.organizationId,
-      userId: urlResolverData?.urlResolver.userId,
-      vcId: urlResolverData?.urlResolver.vcId,
+      organizationId: data?.organizationId,
+      userId: data?.userId,
+      vcId: data?.vcId,
+
+      // Innovation Packs:
+      innovationPackId: data?.innovationPack?.id,
+
+      // Templates:
+      templatesSetId: data?.space?.templatesSet?.id ?? data?.innovationPack?.templatesSet.id,
+      templateId: data?.space?.templatesSet?.templateId ?? data?.innovationPack?.templatesSet.templateId,
 
       // Forum:
-      discussionId: urlResolverData?.urlResolver.discussionId,
+      discussionId: data?.discussionId,
 
       // PENDING
-      innovationPackId: undefined,
       innovationHubId: undefined,
-      templateId: undefined,
       loading: urlResolverLoading
     }
   }, [urlResolverData, urlResolverLoading]);

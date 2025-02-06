@@ -1717,7 +1717,21 @@ export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
       url
       displayName
       avatar: visual(type: BANNER) {
-        id
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
+  fragment JourneyBreadcrumbsSubpace on Space {
+    id
+    level
+    profile {
+      id
+      url
+      displayName
+      avatar: visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -15396,14 +15410,15 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
         ...JourneyBreadcrumbsSpace
       }
       subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
-        ...JourneyBreadcrumbsSpace
+        ...JourneyBreadcrumbsSubpace
       }
       subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
-        ...JourneyBreadcrumbsSpace
+        ...JourneyBreadcrumbsSubpace
       }
     }
   }
   ${JourneyBreadcrumbsSpaceFragmentDoc}
+  ${JourneyBreadcrumbsSubpaceFragmentDoc}
 `;
 
 /**
@@ -22198,12 +22213,23 @@ export const UrlResolverDocument = gql`
           postId
           whiteboardId
         }
+        templatesSet {
+          id
+          templateId
+        }
         parentSpaces
       }
       organizationId
       userId
       vcId
       discussionId
+      innovationPack {
+        id
+        templatesSet {
+          id
+          templateId
+        }
+      }
     }
   }
 `;
