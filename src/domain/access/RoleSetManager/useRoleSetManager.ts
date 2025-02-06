@@ -75,7 +75,7 @@ type useRoleSetManagerParams = {
   relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetContributorType[];
   parentRoleSetId?: string;
-  onRefetch?: () => void;
+  onChange?: () => void;
   skip?: boolean;
 };
 
@@ -83,7 +83,7 @@ const useRoleSetManager = ({
   roleSetId,
   relevantRoles,
   contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
-  onRefetch,
+  onChange,
   skip,
 }: useRoleSetManagerParams): useRoleSetManagerProvided => {
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
@@ -214,10 +214,10 @@ const useRoleSetManager = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData(), onRefetch?.()]);
+  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData(), onChange?.()]);
 
-  // Wraps any function call into an await + refetch
-  const refetchAfterMutation =
+  // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
+  const onMutationCall =
     (mutation: (...args) => Promise<unknown>) =>
     async (...args) => {
       await mutation(...args);
@@ -229,6 +229,10 @@ const useRoleSetManager = ({
     removeRoleFromUser,
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
+    assignRoleToOrganization,
+    removeRoleFromOrganization,
+    assignRoleToVirtualContributor,
+    removeRoleFromVirtualContributor,
     loading: updatingRoleSet,
   } = useRoleSetManagerRolesAssignment({ roleSetId });
 
@@ -245,10 +249,14 @@ const useRoleSetManager = ({
     virtualContributorsByRole: data.virtualContributorsByRole,
     rolesDefinitions: data.rolesDefinitions,
 
-    assignRoleToUser: refetchAfterMutation(assignRoleToUser),
-    assignPlatformRoleToUser: refetchAfterMutation(assignPlatformRoleToUser),
-    removeRoleFromUser: refetchAfterMutation(removeRoleFromUser),
-    removePlatformRoleFromUser: refetchAfterMutation(removePlatformRoleFromUser),
+    assignRoleToUser: onMutationCall(assignRoleToUser),
+    assignPlatformRoleToUser: onMutationCall(assignPlatformRoleToUser),
+    assignRoleToOrganization: onMutationCall(assignRoleToOrganization),
+    assignRoleToVirtualContributor: onMutationCall(assignRoleToVirtualContributor),
+    removeRoleFromUser: onMutationCall(removeRoleFromUser),
+    removePlatformRoleFromUser: onMutationCall(removePlatformRoleFromUser),
+    removeRoleFromOrganization: onMutationCall(removeRoleFromOrganization),
+    removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
     refetch: refetchAll,
   };
