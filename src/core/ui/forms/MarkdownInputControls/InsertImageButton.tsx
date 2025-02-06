@@ -1,4 +1,4 @@
-import { Button, IconButton, IconButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
 import { Editor } from '@tiptap/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,8 +12,9 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle } from '@/core/ui/typography';
 import FormikInputField from '../FormikInputField/FormikInputField';
+import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
-interface InsertImageButtonProps extends IconButtonProps {
+interface InsertImageButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
@@ -65,14 +66,14 @@ const InsertImageButton = ({
 
   return (
     <>
-      <IconButton
+      <MarkdownInputToolbarButton
         onClick={openDialog}
         disabled={isDisabled}
-        aria-label={t('components.wysiwyg-editor.toolbar.image.image')}
+        tooltip={t('components.wysiwyg-editor.toolbar.image.image')}
         {...buttonProps}
       >
         <AddPhotoAlternateOutlined />
-      </IconButton>
+      </MarkdownInputToolbarButton>
       <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>
         <DialogHeader onClose={closeDialog}>
           <BlockTitle>{t('components.wysiwyg-editor.image.dialogHeader')}</BlockTitle>

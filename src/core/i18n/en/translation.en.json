@@ -1110,7 +1110,8 @@
         "list.indent": "Indent",
         "list.outdent": "Remove indent",
         "remove.remove": "Remove",
-        "embed.video": "Embed Video or other Media"
+        "embed.video": "Embed Video or other Media",
+        "horizontal.line": "Insert horizontal line"
       },
       "image": {
         "dialogHeader": "Insert Image"
