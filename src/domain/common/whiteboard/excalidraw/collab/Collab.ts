@@ -321,15 +321,15 @@ class Collab {
     );
 
     // Download the files that this instance is missing:
-    await this.filesManager.loadFiles({ files: remoteFiles });
+    return this.filesManager.loadFiles({ files: remoteFiles }).then(() => {
+      // Avoid broadcasting to the rest of the collaborators the scene
+      // we just received!
+      // Note: this needs to be set before updating the scene as it
+      // synchronously calls render.
+      this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(reconciledElements);
 
-    // Avoid broadcasting to the rest of the collaborators the scene
-    // we just received!
-    // Note: this needs to be set before updating the scene as it
-    // synchronously calls render.
-    this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(reconciledElements);
-
-    return reconciledElements;
+      return reconciledElements;
+    });
   };
 
   private handleRemoteSceneUpdate = async (
