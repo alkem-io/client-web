@@ -79,7 +79,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
   const handleClose = () => {
     if (creatingLoading) {
-      // TODO: show a confirmation dialog
+      // do not allow stopping the creation process
       return;
     }
 
@@ -130,6 +130,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
         category: TagCategoryValues.UI,
         label: 'SpaceCreationError',
       });
+      notify('No Available Plans. Please, contact support.', 'success');
       return;
     }
 
