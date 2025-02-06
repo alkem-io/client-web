@@ -35,7 +35,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
-import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
+import { usePlanAvailability } from '@/domain/journey/space/createSpace/usePlanAvailability';
 import { addVCCreationCache } from './TryVC/utils';
 import { info as logInfo } from '@/core/logging/sentry/log';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';

@@ -36,6 +36,7 @@ import {
   removeVCCreationCache,
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
 import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
+import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
@@ -116,6 +117,18 @@ const SpaceDashboardView = ({
 
     return onCloseTryVirtualContributor;
   }, []);
+
+  useEffect(() => {
+    // on mount of a space, check the cache and show the welcome if present
+    const cachedSpaceWelcome = getSpaceWelcomeCache();
+
+    if (spaceId && cachedSpaceWelcome === spaceId) {
+      // TODO: impl
+      console.log('show welcome!!!');
+    }
+
+    return removeSpaceWelcomeCache;
+  }, [spaceId]);
 
   return (
     <>

@@ -13,7 +13,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
-import { usePlanAvailability } from './usePlanAvailability';
+import { usePlanAvailability } from '../usePlanAvailability';
 import { TagCategoryValues, error } from '@/core/logging/sentry/log';
 import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
 import { PlanFeatures, PlanName, PlanPrice } from '@/domain/license/plans/ui/PlanCardsComponents';
@@ -30,6 +30,9 @@ interface PlansTableDialogProps {
   onSelectPlan: (planName: string) => void;
 }
 
+/**
+ * @deprecated Not used, keeping it for reference
+ */
 const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps) => {
   const { t } = useTranslation();
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));

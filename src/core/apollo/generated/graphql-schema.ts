@@ -21354,6 +21354,7 @@ export type FreePlanAvailabilityQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
+                license: { __typename?: 'License'; availableEntitlements?: Array<LicenseEntitlementType> | undefined };
               }
             | undefined;
         }
