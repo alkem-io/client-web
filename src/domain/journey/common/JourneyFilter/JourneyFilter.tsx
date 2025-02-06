@@ -27,6 +27,7 @@ const JourneyFilter = <T extends Identifiable>({
   children,
 }: CardFilterProps<T>) => {
   const [terms, setTerms] = useState<string[]>([]);
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
   const allValues = useMemo(
     () =>
@@ -44,6 +45,28 @@ const JourneyFilter = <T extends Identifiable>({
     [data, terms, valueGetter]
   );
 
+  const deselectTerm = (term: string, index: number) => {
+    setTerms(currentTerms => currentTerms.filter(t => t !== term));
+    setSelectedIndexes(prevIndexes => prevIndexes.filter(idx => idx !== index));
+  };
+
+  const selectTerm = (term: string, index: number) => {
+    // do not allow selection of terms that are not considered in the search
+    if (selectedIndexes.length >= MAX_TERMS_SEARCH) {
+      return;
+    }
+    setSelectedIndexes(prevIndexes => [...prevIndexes, index]);
+    setTerms(currentTerms => uniq([...currentTerms, term]));
+  };
+
+  const onTermClick = (term: string, index: number) => {
+    if (selectedIndexes.includes(index)) {
+      deselectTerm(term, index);
+    } else {
+      selectTerm(term, index);
+    }
+  };
+
   if (!data.length) {
     return <>{children([])}</>;
   }
@@ -60,14 +83,12 @@ const JourneyFilter = <T extends Identifiable>({
       {allValues && (
         <TagsComponent
           tags={allValues}
-          variant="filled"
           color="primary"
           gap={gutters(0.5)}
           justifyContent="end"
           height={gutters(2.5)}
-          onClickTag={term => {
-            setTerms(currentTerms => uniq([...currentTerms, term]));
-          }}
+          selectedIndexes={selectedIndexes}
+          onClickTag={onTermClick}
           canShowAll
         />
       )}
