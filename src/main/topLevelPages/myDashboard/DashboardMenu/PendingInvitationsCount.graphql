@@ -1,7 +1,5 @@
 query PendingInvitationsCount {
   me {
-    communityInvitations(states: ["invited"]) {
-      id
-    }
+    communityInvitationsCount(states: ["invited"])
   }
 }
