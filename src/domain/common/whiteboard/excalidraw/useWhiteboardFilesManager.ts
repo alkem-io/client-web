@@ -203,36 +203,41 @@ const useWhiteboardFilesManager = ({
     const files = whiteboard.files;
 
     const pendingFileIds = Object.keys(files).filter(fileId => !files[fileId]?.dataURL);
+
+    if (!pendingFileIds.length) {
+      return;
+    }
+
     log('I need to download these files', pendingFileIds);
     const newFiles: BinaryFilesWithUrl = {};
 
     setDownloadingFiles(true);
 
-    try {
-      await Promise.all(
-        pendingFileIds.map(async fileId => {
-          const file = whiteboard!.files![fileId];
-          if (fileStore.current[fileId]?.dataURL) {
-            log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
-            return;
-          }
-          if (file.url) {
-            log('DOWNLOADING ', file);
-            try {
-              const dataURL = await fetchFileToDataURL(file.url);
-              newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
-              fileStoreAddFile(fileId, newFiles[fileId]);
-            } catch (e) {
-              error(`Error downloading file: ${file.url}`, { label: 'whiteboard-file-manager' });
-            }
-          } else {
-            error(`Cannot download: ${file.id}`, { label: 'whiteboard-file-manager' });
-          }
-        })
-      );
-    } finally {
-      setDownloadingFiles(false);
-    }
+    await Promise.allSettled(
+      pendingFileIds.map(async fileId => {
+        if (fileStore.current[fileId]?.dataURL) {
+          log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
+          return;
+        }
+        const file = whiteboard!.files![fileId];
+        if (!file.url) {
+          error(`Cannot download: ${file.id}`, { label: 'whiteboard-file-manager' });
+          throw new Error(`Cannot download: ${file.id}`);
+        }
+
+        log('DOWNLOADING ', file);
+        try {
+          const dataURL = await fetchFileToDataURL(file.url);
+          newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
+          fileStoreAddFile(fileId, newFiles[fileId]);
+        } catch (e) {
+          error(`Error downloading file: ${file.url}`, { label: 'whiteboard-file-manager' });
+          throw e;
+        }
+      })
+    );
+
+    setDownloadingFiles(false);
   };
 
   /**
