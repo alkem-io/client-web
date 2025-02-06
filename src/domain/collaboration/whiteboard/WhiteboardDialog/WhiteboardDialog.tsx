@@ -227,7 +227,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
       }
     }
     actions.onCancel();
-  }, [actions, logError, whiteboard, collabApiRef, editModeEnabled, getWhiteboardState, prepareWhiteboardForUpdate]);
+  }, [actions, logError, whiteboard, collabApiRef, editModeEnabled, getWhiteboardState, prepareWhiteboardForUpdate]); // @@@ WIP ~ #7611
 
   const handleImportTemplate = useCallback(
     async (template: WhiteboardTemplateContent) => {
@@ -242,7 +242,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
         }
       }
     },
-    [excalidrawAPI, t, notify, logError]
+    [excalidrawAPI, t, notify, logError] // @@@ WIP ~ #7611
   );
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -269,7 +269,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     formikRef.current?.resetForm({
       values: initialValues,
     });
-  }, [initialValues]);
+  }, [formikRef, initialValues]); // @@@ WIP ~ #7611
 
   if (state?.loadingWhiteboardValue) {
     return <Loading text="Loading whiteboard..." />;

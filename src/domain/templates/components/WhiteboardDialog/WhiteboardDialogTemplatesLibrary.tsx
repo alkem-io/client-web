@@ -1,5 +1,5 @@
 import { Box, Button, IconButton } from '@mui/material';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
@@ -27,18 +27,21 @@ const WhiteboardDialogTemplatesLibrary = ({
   const columns = useGlobalGridColumns();
 
   const [getTemplateContent] = useTemplateContentLazyQuery();
-  const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
-    const { data } = await getTemplateContent({ variables: { templateId, includeWhiteboard: true } });
-    if (data?.lookup.template?.whiteboard?.content) {
-      const templateData = {
-        whiteboard: {
-          content: data?.lookup.template?.whiteboard.content,
-        },
-      };
-      onImportTemplate(templateData);
-    }
-    setDialogOpen(false);
-  };
+  const handleSelectTemplate = useCallback(
+    async ({ id: templateId }: Identifiable): Promise<void> => {
+      const { data } = await getTemplateContent({ variables: { templateId, includeWhiteboard: true } });
+      if (data?.lookup.template?.whiteboard?.content) {
+        const templateData = {
+          whiteboard: {
+            content: data?.lookup.template?.whiteboard.content,
+          },
+        };
+        onImportTemplate(templateData);
+      }
+      setDialogOpen(false);
+    },
+    [getTemplateContent, onImportTemplate]
+  ); // @@@ WIP ~ #7611
 
   return (
     <>

@@ -131,7 +131,7 @@ const CollaborativeExcalidrawWrapper = ({
   const styles = useActorWhiteboardStyles();
 
   const { user } = useUserContext();
-  const username = useMemo(() => user?.user.profile.displayName ?? 'User', [user?.user.profile.displayName]);
+  const username = user?.user.profile.displayName ?? 'User';
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 

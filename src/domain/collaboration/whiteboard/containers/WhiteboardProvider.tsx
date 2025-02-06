@@ -46,7 +46,7 @@ const WhiteboardProvider = ({
           contribution.whiteboard &&
           (contribution.whiteboard.nameID === whiteboardId || contribution.whiteboard.id === whiteboardId)
       ),
-    []
+    [callout?.contributions, whiteboardId]
   );
 
   const framingWhiteboard = callout?.framing.whiteboard;
