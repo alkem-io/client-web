@@ -4,7 +4,7 @@
     "intro": "Hallo, dit is de automatische begeleidingschat van Alkemio. Het kan je antwoorden geven op basis van Alkemio's documentatie. Waar ben je naar op zoek?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "Gebruik de Alkemio begeleidingschat om automatisch antwoord te krijgen vanuit de documentatie van Alkemio.\n\nDit is een __geavanceerde zoekmodule__ aangedreven door een online generatieve AI engine. Het interpreteert je vraag en leidt je naar de meest relevante hulp uit het Help center van Alkemio. Bij het antwoord worden ook de gebruikte bronnen weergegeven.\n\n__Maak je geen zorgen over je privacy:__ de zoekmachine gebruikt of slaat geen gebruikersgegevens op en het kan de interactie niet koppelen aan individuele gebruikers. Als je contact wil opnemen met het Alkemio team, klik dan op de contactknop onderaan."
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its profile!"
     },
     "feedback": {
       "message": "Is dit antwoord relevant?",
@@ -3198,7 +3198,7 @@
       "title": "Kies een (Sub)Space",
       "description": "Welke Space of Subspace wil je tot leven brengen met de Virtual Contributor? Hieronder kun je kiezen uit alle Spaces en Subspaces waar je de host van bent.",
       "label": "(Sub)Space",
-      "noSpaces": "Je hebt een Space nodig om door te gaan met deze optie. Om een Virtual Contributor te creëren, ga alsjeblieft terug en volg de flow voor geschreven Kennis."
+      "noSpaces": "You need to be an admin of a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hallo, {{vcName}}!",
