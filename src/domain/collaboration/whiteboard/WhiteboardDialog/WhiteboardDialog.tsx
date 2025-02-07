@@ -34,7 +34,7 @@ import WhiteboardDisplayName from './WhiteboardDisplayName';
 
 export interface WhiteboardDetails {
   id: string;
-  nameID: string;
+  nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
   contentUpdatePolicy?: ContentUpdatePolicy;
   profile: {
     id: string;

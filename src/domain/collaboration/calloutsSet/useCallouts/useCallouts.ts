@@ -27,9 +27,11 @@ export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { callou
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrder'> & {
-  authorization: {
-    myPrivileges?: AuthorizationPrivilege[];
-  };
+  authorization:
+    | {
+        myPrivileges?: AuthorizationPrivilege[];
+      }
+    | undefined;
   framing: {
     profile: {
       id: string;
@@ -143,8 +145,8 @@ const useCallouts = ({
     () =>
       calloutsSet?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
-        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+        const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
@@ -153,7 +155,7 @@ const useCallouts = ({
         );
         const flowStates = innovationFlowTagset?.tags;
 
-        return {
+        const result: TypedCallout = {
           ...callout,
           framing: {
             profile: callout.framing.profile,
@@ -166,7 +168,8 @@ const useCallouts = ({
           entitledToSaveAsTemplate,
           flowStates,
           groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
-        } as TypedCallout;
+        };
+        return result;
       }),
     [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate]
   );

@@ -78,18 +78,37 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
     }
 
     const draft = callout.visibility === CalloutVisibility.Draft;
-    const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+    const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
-    return {
-      ...callout,
+    // TODO:
+    // These deconstructions are here to avoid TS errors when casting to TypedCalloutDetails
+    // But a general clean up of TypedCallout and TypedCalloutDetails is needed
+
+    const { framing, ...calloutRest } = callout;
+    const { whiteboard: whiteboardData, ...framingRest } = framing;
+    const whiteboard = whiteboardData ? { ...whiteboardData, calloutNameId: callout.nameID } : undefined;
+
+    const result: TypedCalloutDetails = {
+      ...calloutRest,
+      framing: {
+        ...framingRest,
+        whiteboard: whiteboard,
+      },
+      authorization: {
+        myPrivileges: callout.authorization?.myPrivileges,
+      },
       draft,
       editable,
+      movable: false,
+      canSaveAsTemplate: false,
+      entitledToSaveAsTemplate: false,
+      flowStates: [],
       comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
       groupName: getCalloutGroupNameValue(
-        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
+        framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
       ),
-      // TODO: Try to remove this `as unknown`
-    } as unknown as TypedCalloutDetails;
+    };
+    return result;
   }, [callout, locationState]);
 
   const backOrElse = useBackToPath();
