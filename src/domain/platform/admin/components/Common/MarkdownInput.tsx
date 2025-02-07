@@ -1,8 +1,7 @@
-import { Grid } from '@mui/material';
-import React, { FC } from 'react';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import useProfileStyles from './useProfileStyles';
 import { MarkdownTextMaxLength } from '@/core/ui/forms/field-length.constants';
+import { Grid } from '@mui/material';
+import { FC } from 'react';
 
 interface MarkdownInputFieldProps {
   name: string;
@@ -30,15 +29,12 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
   helperText,
   loading,
 }: MarkdownInputFieldProps) => {
-  const styles = useProfileStyles();
-
   return (
     <Grid item xs={12}>
       <FormikMarkdownField
         name={name}
         title={label}
         placeholder={placeholder || label}
-        className={styles.field}
         disabled={disabled}
         rows={rows}
         required={required}

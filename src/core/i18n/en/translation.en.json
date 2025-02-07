@@ -4,7 +4,7 @@
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "Use the Alkemio guidance chat to get automatic answers to your questions from Alkemio’s documentation.\n\nThis is an __advanced search module__ powered by a widely used online generative AI engine. It interprets your question and guides you to the most relevant help from the Alkemio help center. You can see the sources of the answers as well.\n\n__Don’t worry about your privacy:__ the search engine does not use or store any user data, and it cannot link the interaction to individual users. If you need to contact the Alkemio team, please click the contact button below."
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its profile!"
     },
     "feedback": {
       "message": "Is the answer relevant?",
@@ -493,7 +493,8 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    }
+    },
+    "supportEmail": "support@alkem.io"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -1048,9 +1049,10 @@
       "inviteToRole": "Invite to be a: "
     },
     "inviteContributorsDialog": {
+      "title": "Virtual Contributors Store",
       "vcs": {
         "onAccount": {
-          "title": "Virtual Contributors from my account"
+          "title": "Virtual Contributors linked to this Space's account"
         },
         "inLibrary": {
           "title": "Other Virtual Contributors"
@@ -1684,6 +1686,11 @@
         }
       },
       "emptyInbox": "No pending notifications"
+    },
+    "spaceWelcomeDialog": {
+      "title": "\uD83C\uDF89 Your Space is Ready!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and settings.<br>\uD83D\uDCDD <b>Add content</b> - Create whiteboards, posts, and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the Space Settings.<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your Space if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "button": "Get Started"
     }
   },
   "navigation": {
@@ -2260,7 +2267,7 @@
         },
         "recentJourneys": {
           "seeMore": "Explore all your Spaces",
-          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
+          "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
         "campaignBlock": {
           "createYourVCButton": "Create your Virtual Contributor!",
@@ -3160,7 +3167,7 @@
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need to be an admin of a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",

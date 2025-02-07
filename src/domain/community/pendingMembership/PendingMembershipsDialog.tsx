@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -24,16 +24,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
 
-type ButtonImplementationParams = {
-  header: ReactNode;
-  openDialog: () => void;
-};
-
-type PendingMembershipsUserMenuItemProps = {
-  children: ({ header, openDialog }: ButtonImplementationParams) => ReactNode;
-};
-
-const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenuItemProps) => {
+const PendingMembershipsDialog = () => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -50,7 +41,10 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
     });
   };
 
-  const { invitations, applications } = usePendingMemberships();
+  // skip if the dialog is not open
+  const { invitations, applications } = usePendingMemberships({
+    skip: !Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? ''),
+  });
 
   const currentInvitation =
     openDialog?.type === PendingMembershipsDialogType.InvitationView
@@ -64,8 +58,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
   const nonVirtualContributorInvitations = invitations?.filter(
     invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
   );
-
-  const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;
 
   const onInvitationAccept = () => {
     if (openDialog?.journeyUri) {
@@ -82,10 +74,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
 
   return (
     <>
-      {children({
-        header: t('community.pendingMembership.pendingMembershipsWithCount', { count: pendingMembershipsCount }),
-        openDialog: () => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList }),
-      })}
       <DialogWithGrid
         columns={12}
         open={openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList}
@@ -176,4 +164,4 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
   );
 };
 
-export default PendingMembershipsUserMenuItem;
+export default PendingMembershipsDialog;

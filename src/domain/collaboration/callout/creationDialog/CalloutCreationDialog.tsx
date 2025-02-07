@@ -1,37 +1,36 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog/Dialog';
+import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
+  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
-  CalloutGroupName,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutCreationTypeWithPreviewImages } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import { LoadingButton } from '@mui/lab';
-import calloutIcons from '../utils/calloutIcons';
-import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Actions } from '@/core/ui/actions/Actions';
-import { gutters } from '@/core/ui/grid/utils';
-import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
-import { Reference } from '@/domain/common/profile/Profile';
-import { Identifiable } from '@/core/utils/Identifiable';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { findDefaultTagset } from '@/domain/common/tags/utils';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { gutters } from '@/core/ui/grid/utils';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { Reference } from '@/domain/common/profile/Profile';
+import { findDefaultTagset } from '@/domain/common/tags/utils';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import { LoadingButton } from '@mui/lab';
+import { Box, Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material';
+import Dialog from '@mui/material/Dialog/Dialog';
+import { useCallback, useLayoutEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { CalloutCreationTypeWithPreviewImages } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
+import calloutIcons from '../utils/calloutIcons';
+import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 
 export type CalloutCreationDialogFields = {
   description?: string;

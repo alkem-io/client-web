@@ -13754,6 +13754,12 @@ export const VirtualContributorDocument = gql`
           avatar: visual(type: AVATAR) {
             ...VisualFull
           }
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -13829,6 +13835,12 @@ export const VirtualContributorProfileDocument = gql`
           url
           avatar: visual(type: AVATAR) {
             ...VisualFull
+          }
+          references {
+            id
+            name
+            uri
+            description
           }
         }
       }
@@ -14053,6 +14065,12 @@ export const UpdateVirtualContributorSettingsDocument = gql`
         }
         displayName
         description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }
@@ -16359,6 +16377,9 @@ export const FreePlanAvailabilityDocument = gql`
           authorization {
             id
             myPrivileges
+          }
+          license {
+            availableEntitlements
           }
         }
       }
@@ -22843,9 +22864,7 @@ export function refetchCampaignBlockCredentialsQuery(variables?: SchemaTypes.Cam
 export const PendingInvitationsCountDocument = gql`
   query PendingInvitationsCount {
     me {
-      communityInvitations(states: ["invited"]) {
-        id
-      }
+      communityInvitationsCount(states: ["invited"])
     }
   }
 `;
@@ -22902,9 +22921,9 @@ export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.Pend
 }
 
 export const DashboardWithMembershipsDocument = gql`
-  query DashboardWithMemberships {
+  query DashboardWithMemberships($limit: Float! = 0) {
     me {
-      spaceMembershipsHierarchical {
+      spaceMembershipsHierarchical(limit: $limit) {
         id
         space {
           ...DashboardSpaceMembership
@@ -22933,6 +22952,7 @@ export const DashboardWithMembershipsDocument = gql`
  * @example
  * const { data, loading, error } = useDashboardWithMembershipsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */
@@ -23568,9 +23588,9 @@ export function refetchLatestContributionsSpacesFlatQuery(
 }
 
 export const MyMembershipsDocument = gql`
-  query MyMemberships {
+  query MyMemberships($limit: Float) {
     me {
-      spaceMembershipsHierarchical {
+      spaceMembershipsHierarchical(limit: $limit) {
         id
         space {
           ...SpaceMembership
@@ -23605,6 +23625,7 @@ export const MyMembershipsDocument = gql`
  * @example
  * const { data, loading, error } = useMyMembershipsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */

@@ -1,18 +1,19 @@
-import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { LoadingButton } from '@mui/lab';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import { DialogActions, DialogContent } from '@/core/ui/dialog/deprecated';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
-import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
 import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { DialogActions } from '@/core/ui/dialog/deprecated';
+import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
 import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/CalloutLayout';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { LoadingButton } from '@mui/lab';
+import { DialogContent } from '@mui/material';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 
 export interface CalloutEditDialogProps {
   open: boolean;

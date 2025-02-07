@@ -18597,6 +18597,15 @@ export type VirtualContributorQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
           };
         }
       | undefined;
@@ -18645,6 +18654,15 @@ export type VirtualContributorProfileQuery = {
                   minWidth: number;
                   alternativeText?: string | undefined;
                 }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           };
         }
@@ -18745,6 +18763,9 @@ export type UpdateVirtualContributorSettingsMutation = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
   };
@@ -21334,6 +21355,7 @@ export type FreePlanAvailabilityQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
+                license: { __typename?: 'License'; availableEntitlements?: Array<LicenseEntitlementType> | undefined };
               }
             | undefined;
         }
@@ -28344,13 +28366,12 @@ export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never
 
 export type PendingInvitationsCountQuery = {
   __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    communityInvitations: Array<{ __typename?: 'CommunityInvitationResult'; id: string }>;
-  };
+  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
 };
 
-export type DashboardWithMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+export type DashboardWithMembershipsQueryVariables = Exact<{
+  limit?: Scalars['Float'];
+}>;
 
 export type DashboardWithMembershipsQuery = {
   __typename?: 'Query';
@@ -29655,7 +29676,9 @@ export type LatestContributionsSpacesFlatQuery = {
   };
 };
 
-export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+export type MyMembershipsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
 
 export type MyMembershipsQuery = {
   __typename?: 'Query';
