@@ -1,6 +1,6 @@
-query MyMemberships {
+query MyMemberships($limit: Float) {
   me {
-    spaceMembershipsHierarchical {
+    spaceMembershipsHierarchical(limit: $limit) {
       id
       space {
         ...SpaceMembership

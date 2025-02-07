@@ -1,7 +1,6 @@
 import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import UserPageLayout from '../layout/UserPageLayout';
 import UserProfilePageView from './UserProfilePageView';
@@ -11,7 +10,6 @@ import useAccountResources from '@/domain/community/contributor/useAccountResour
 import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export const UserProfilePage = () => {
-  const { verified } = useUserContext();
   const { userId } = useUrlResolver();
 
   const { user: userMetadata, loading } = useUserMetadata(userId);
@@ -43,7 +41,7 @@ export const UserProfilePage = () => {
         contributions={contributions}
         accountResources={accountResources}
         organizationIds={organizationIds}
-        entities={{ userMetadata, verified }}
+        entities={{ userMetadata }}
       />
     </UserPageLayout>
   );

@@ -1,12 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect, useCallback } from 'react';
+
 import { debounce } from 'lodash';
+import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
+
 import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
@@ -20,6 +24,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import SearchField from '@/core/ui/search/SearchField';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -46,6 +51,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // state
+  const [filter, setFilter] = useState<string>('');
   const [onAccount, setOnAccount] = useState<ContributorProps[]>();
   const [inLibrary, setInLibrary] = useState<ContributorProps[]>();
   const [openPreviewDialog, setOpenPreviewDialog] = useState(false);
@@ -56,10 +62,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const fetchVCs = async () => {
-    let acc = await getAvailableVirtualContributors('', false);
+    let acc = await getAvailableVirtualContributors(filter, false);
     setOnAccount(acc);
 
-    let lib = await getAvailableVirtualContributorsInLibrary('');
+    let lib = await getAvailableVirtualContributorsInLibrary(filter);
     setInLibrary(lib);
   };
 
@@ -76,7 +82,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   // on memberVCs change, update the lists of VCs
   useEffect(() => {
     memoizedDebouncedFetchVCs();
-  }, [virtualContributors]); // do not add memoizedDebouncedFetchVCs in the dependencies
+  }, [virtualContributors, filter]); // do not add memoizedDebouncedFetchVCs in the dependencies
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);
@@ -167,15 +173,32 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
+      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+
       <DialogContent>
+        <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
+          <SearchField
+            value={filter}
+            sx={{ maxWidth: 400, marginLeft: 'auto' }}
+            placeholder={t('community.virtualContributors.searchVC')}
+            onChange={event => setFilter(event.target.value)}
+          />
+        </Gutters>
+
         <Gutters disablePadding disableGap>
           {showOnAccount && (
-            <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.onAccount.title')} />
+            <PageContentBlockHeader
+              variant="caption"
+              title={t('components.inviteContributorsDialog.vcs.onAccount.title')}
+            />
           )}
           {showOnAccount && <InviteContributorsList contributors={onAccount} onCardClick={onAccountContributorClick} />}
           {showOnAccount && (
             <Gutters disableGap disablePadding paddingTop={gutters()}>
-              <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.inLibrary.title')} />
+              <PageContentBlockHeader
+                variant="caption"
+                title={t('components.inviteContributorsDialog.vcs.inLibrary.title')}
+              />
             </Gutters>
           )}
           {availableVCsLoading ? (

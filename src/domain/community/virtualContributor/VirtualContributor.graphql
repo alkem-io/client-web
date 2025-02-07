@@ -52,6 +52,12 @@ query VirtualContributor($id: UUID!) {
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }
@@ -71,6 +77,12 @@ query VirtualContributorProfile($id: UUID!) {
         url
         avatar: visual(type: AVATAR) {
           ...VisualFull
+        }
+        references {
+          id
+          name
+          uri
+          description
         }
       }
     }
@@ -141,6 +153,12 @@ mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributo
       }
       displayName
       description
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
 }

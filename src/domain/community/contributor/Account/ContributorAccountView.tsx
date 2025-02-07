@@ -184,7 +184,6 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
-
   const myAccountEntitlements = account?.license?.availableEntitlements || [];
   const myAccountEntitlementDetails = account?.license?.entitlements || [];
   const externalSubscriptionID = account?.externalSubscriptionID;
@@ -500,7 +499,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: hostedSpaceLimit,
             })}
           />
-          <Gutters disablePadding disableGap fullHeight>
+          <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
             {loading && <JourneyCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
@@ -555,7 +554,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: vcLimit,
             })}
           />
-          <Gutters disablePadding fullHeight>
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <JourneyCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
@@ -598,7 +597,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: innovationPackLimit,
             })}
           />
-          <Gutters disablePadding fullHeight>
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(pack => (
@@ -639,7 +638,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: innovationHubLimit,
             })}
           />
-          <Gutters disablePadding fullHeight>
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
               innovationHubs?.map(hub => (
