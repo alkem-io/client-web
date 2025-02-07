@@ -22305,30 +22305,6 @@ export type AdminSpaceFragment = {
     | undefined;
 };
 
-export type SpaceTemplatesAdminQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceTemplatesAdminQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          profile: { __typename?: 'Profile'; id: string; url: string };
-          templatesManager?:
-            | {
-                __typename?: 'TemplatesManager';
-                id: string;
-                templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type SpaceStorageAdminPageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;

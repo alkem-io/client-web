@@ -88,6 +88,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               spaceReadAccess={spaceReadAccess}
               journeyId={spaceId}
               journeyPath={journeyPath}
+              spaceLevel={spaceLevel}
               journeyUrl={profile?.url}
               levelZeroSpaceId={levelZeroSpaceId}
               parentSpaceId={parentSpaceId}

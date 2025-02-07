@@ -4,7 +4,7 @@ import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthoriz
 import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
-import { JourneyPath } from '@/main/routing/urlResolver/useUrlResolver';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';
@@ -46,7 +46,8 @@ export interface SubspacePageLayoutProps {
   parentSpaceId: string | undefined;
   levelZeroSpaceId: string | undefined;
   spaceReadAccess: SpaceReadAccess;
-  journeyPath: JourneyPath;
+  spaceLevel: SpaceLevel | undefined;
+  journeyPath: JourneyPath | undefined;
   journeyUrl?: string | undefined; // TODO make required
   loading?: boolean;
   unauthorizedDialogDisabled?: boolean;
@@ -100,6 +101,7 @@ const SubspacePageLayout = ({
   levelZeroSpaceId,
   spaceReadAccess,
   journeyPath,
+  spaceLevel,
   journeyUrl,
   loading = false,
   unauthorizedDialogDisabled = false,
@@ -153,12 +155,6 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-  let spaceLevel = SpaceLevel.L0;
-  if (journeyPath.length === 2) {
-    spaceLevel = SpaceLevel.L1;
-  } else if (journeyPath.length === 3) {
-    spaceLevel = SpaceLevel.L2;
-  }
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>

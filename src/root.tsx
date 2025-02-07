@@ -26,6 +26,7 @@ import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
+import { UrlResolverProvider } from './main/routing/urlResolver/UrlResolverProvider';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -82,25 +83,27 @@ const Root: FC = () => {
                         <UserGeoProvider>
                           <ApmProvider>
                             <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                              <UserProvider>
-                                <PendingMembershipsDialogProvider>
-                                  <InAppNotificationsProvider>
-                                    <ApmUserSetter />
-                                    <ScrollToTop />
-                                    <InAppNotificationsDialog />
-                                    <NotFoundErrorBoundary
-                                      errorComponent={
-                                        <TopLevelLayout>
-                                          <Error404 />
-                                        </TopLevelLayout>
-                                      }
-                                    >
-                                      <TopLevelRoutes />
-                                      <GlobalErrorDialog />
-                                    </NotFoundErrorBoundary>
-                                  </InAppNotificationsProvider>
-                                </PendingMembershipsDialogProvider>
-                              </UserProvider>
+                              <UrlResolverProvider>
+                                <UserProvider>
+                                  <PendingMembershipsDialogProvider>
+                                    <InAppNotificationsProvider>
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <InAppNotificationsDialog />
+                                      <NotFoundErrorBoundary
+                                        errorComponent={
+                                          <TopLevelLayout>
+                                            <Error404 />
+                                          </TopLevelLayout>
+                                        }
+                                      >
+                                        <TopLevelRoutes />
+                                        <GlobalErrorDialog />
+                                      </NotFoundErrorBoundary>
+                                    </InAppNotificationsProvider>
+                                  </PendingMembershipsDialogProvider>
+                                </UserProvider>
+                              </UrlResolverProvider>
                             </AlkemioApolloProvider>
                           </ApmProvider>
                         </UserGeoProvider>

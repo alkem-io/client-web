@@ -5,12 +5,9 @@ import { Text } from '@/core/ui/typography';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import useUrlParser from '@/main/routing/useUrlParser';
-import {
-  useSpaceCollaborationIdLazyQuery,
-  useSpaceUrlResolverLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useUrlResolverLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
+import { UrlType } from '@/core/apollo/generated/graphql-schema';
 
 interface CollaborationFromSpaceUrlFormProps {
   onUseCollaboration: (url: string) => Promise<unknown>;
@@ -27,48 +24,31 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
   const [url, setUrl] = useState('');
   const [urlError, setUrlError] = useState<string>();
   const [collapsed, setCollapsed] = useState<boolean>(collapsible ?? false);
-  const { parseUrl } = useUrlParser();
-
-  const [resolveSpaceNameIds] = useSpaceUrlResolverLazyQuery();
-  const [resolveCollaborationId] = useSpaceCollaborationIdLazyQuery();
+  const [parseUrl] = useUrlResolverLazyQuery();
 
   const [handleUse, loading] = useLoadingState(async () => {
     setUrlError(undefined);
-    // First parse the url pasted and see if it's a valid journey url
-    const parseResult = parseUrl(url);
-    if ('error' in parseResult) {
-      setUrlError(parseResult.error);
+    if (!url) {
+      setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.urlRequired'));
+      return;
+    }
+    const { data, error } = await parseUrl({
+      variables: { url },
+    });
+    if (error) {
+      setUrlError(error.message);
+      return;
+    }
+    if (data?.urlResolver.type !== UrlType.Space) {
+      setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.invalidUrl'));
+      return;
+    }
+    const collaborationId = data.urlResolver.space?.collaboration.id;
+    if (!collaborationId) {
+      setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.collaborationNotFoundError'));
     } else {
-      // Then resolve that url with the server to get the spaceId
-      const { data: journeyResult } = await resolveSpaceNameIds({
-        variables: {
-          spaceNameId: parseResult.journey[0]!,
-          subspaceL1NameId: parseResult.journey[1]!,
-          subspaceL2NameId: parseResult.journey[2]!,
-          includeSubspaceL1: !!parseResult.journey[1],
-          includeSubspaceL2: !!parseResult.journey[2],
-        }
-      });
-
-      const spaceId =
-        journeyResult?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id ??
-        journeyResult?.lookupByName.space?.subspaceByNameID?.id ??
-        journeyResult?.lookupByName.space?.id;
-      if (!spaceId) {
-        setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.spaceNotFoundError'));
-      } else {
-        // Then get the collaboration Id
-        const { data: collaborationResult } = await resolveCollaborationId({
-          variables: { spaceId },
-        });
-        const collaborationId = collaborationResult?.lookup.space?.collaboration.id;
-        if (!collaborationId) {
-          setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.collaborationNotFoundError'));
-        } else {
-          // Finally, if everything went well, return the collaborationId to the parent component
-          await onUseCollaboration(collaborationId);
-        }
-      }
+      // Finally, if everything went well, return the collaborationId to the parent component
+      await onUseCollaboration(collaborationId);
     }
   });
 

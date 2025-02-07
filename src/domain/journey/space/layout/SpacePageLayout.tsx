@@ -11,7 +11,7 @@ import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { JourneyPath } from '@/main/routing/urlResolver/useUrlResolver';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -20,7 +20,7 @@ import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
   unauthorizedDialogDisabled?: boolean;
-  journeyPath: JourneyPath;
+  journeyPath: JourneyPath | undefined;
 }
 
 const SpacePageLayout = ({
@@ -34,7 +34,7 @@ const SpacePageLayout = ({
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId
+    skip: !spaceId,
   });
   const profile = spaceData?.lookup.space?.profile;
 

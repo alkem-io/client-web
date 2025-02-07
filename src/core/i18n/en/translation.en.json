@@ -883,6 +883,8 @@
         "title": "Subspace URL",
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this Subspace",
+        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"

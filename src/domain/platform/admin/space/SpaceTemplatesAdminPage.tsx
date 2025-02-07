@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useSpaceTemplatesAdminQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -8,6 +8,7 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection'
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
@@ -47,13 +48,16 @@ const TemplateTypePermissions = {
 
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, routePrefix }) => {
   const { templateId, loading: resolvingTemplate } = useUrlResolver();
+  const {
+    profile: { url: spaceUrl },
+  } = useSpace();
 
-  const { data, loading: loadingSpace } = useSpaceTemplatesAdminQuery({
+  const { data, loading: loadingSpace } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId,
   });
   const templatesSetId = data?.lookup.space?.templatesManager?.templatesSet?.id;
-  const baseUrl = `${buildSettingsUrl(data?.lookup.space?.profile.url ?? '')}/templates`;
+  const baseUrl = `${buildSettingsUrl(spaceUrl)}/templates`;
 
   const loading = loadingSpace || resolvingTemplate;
   return (

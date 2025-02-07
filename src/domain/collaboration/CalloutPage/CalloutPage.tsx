@@ -106,6 +106,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
         spaceReadAccess={spaceReadAccess}
         journeyId={spaceId}
         levelZeroSpaceId={levelZeroSpaceId}
+        spaceLevel={spaceLevel}
         journeyPath={journeyPath}
         parentSpaceId={parentSpaceId}
         currentSection={EntityPageSection.Contribute}
