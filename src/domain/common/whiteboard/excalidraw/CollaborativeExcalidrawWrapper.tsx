@@ -131,12 +131,13 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
-  // -----------------------------------------------------------------------------
-  const debouncedRefresh = useMemo(() => {
-    return debounce(async () => {
-      excalidrawApi?.refresh();
-    }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL);
-  }, [excalidrawApi]);
+  const debouncedRefresh = useMemo(
+    () =>
+      debounce(async () => {
+        excalidrawApi?.refresh();
+      }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL),
+    [excalidrawApi]
+  );
 
   useEffect(() => {
     window.addEventListener('scroll', debouncedRefresh, true);
@@ -146,7 +147,6 @@ const CollaborativeExcalidrawWrapper = ({
       window.removeEventListener('scroll', debouncedRefresh, true);
     };
   }, [debouncedRefresh]);
-  // -----------------------------------------------------------------------------
 
   const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
     () => ({
