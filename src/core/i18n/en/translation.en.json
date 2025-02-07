@@ -748,9 +748,14 @@
         "description": "",
         "placeholder": ""
       },
-      "background": {
+      "description": {
         "title": "A description of the subspace that is visible on the subspace dashboard",
         "description": "",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Current Reality",
+        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
         "placeholder": ""
       },
       "impact": {
