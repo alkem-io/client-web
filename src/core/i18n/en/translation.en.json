@@ -493,7 +493,8 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    }
+    },
+    "supportEmail": "support@alkem.io"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -1685,6 +1686,11 @@
         }
       },
       "emptyInbox": "No pending notifications"
+    },
+    "spaceWelcomeDialog": {
+      "title": "\uD83C\uDF89 Your Space is Ready!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and settings.<br>\uD83D\uDCDD <b>Add content</b> - Create whiteboards, posts, and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the Space Settings.<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your Space if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "button": "Get Started"
     }
   },
   "navigation": {
