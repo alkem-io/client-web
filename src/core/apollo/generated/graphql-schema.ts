@@ -17264,6 +17264,13 @@ export type UpdateOrganizationSettingsMutation = {
   };
 };
 
+export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PendingInvitationsCountQuery = {
+  __typename?: 'Query';
+  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
+};
+
 export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
@@ -20925,6 +20932,7 @@ export type FreePlanAvailabilityQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
+                license: { __typename?: 'License'; availableEntitlements?: Array<LicenseEntitlementType> | undefined };
               }
             | undefined;
         }
@@ -27922,13 +27930,6 @@ export type CampaignBlockCredentialsQuery = {
         }
       | undefined;
   };
-};
-
-export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PendingInvitationsCountQuery = {
-  __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
 };
 
 export type DashboardWithMembershipsQueryVariables = Exact<{

@@ -6,7 +6,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
-
 interface WhiteboardProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
@@ -21,9 +20,7 @@ export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardProvider = ({
-  children,
-}: PropsWithChildren<WhiteboardProviderProps>) => {
+const WhiteboardProvider = ({ children }: PropsWithChildren<WhiteboardProviderProps>) => {
   //!! Check if this is working at all
   const { calloutId, contributionId } = useUrlResolver();
   const { data, loading } = useWhiteboardFromCalloutQuery({
@@ -35,6 +32,7 @@ const WhiteboardProvider = ({
 
   const callout = data?.lookup.callout;
   const whiteboardContribution = callout?.contributions[0];
+
   const framingWhiteboard = callout?.framing.whiteboard;
   const authorization = callout?.authorization;
 

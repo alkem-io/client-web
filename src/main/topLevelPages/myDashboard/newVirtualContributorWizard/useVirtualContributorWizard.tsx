@@ -3,7 +3,6 @@ import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
-  usePlansTableQuery,
   useSpaceUrlLazyQuery,
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
@@ -18,7 +17,6 @@ import {
   RoleName,
   CreateCalloutInput,
   CreateVirtualContributorOnAccountMutationVariables,
-  LicensingCredentialBasedPlanType,
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -35,9 +33,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
-import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './TryVC/utils';
-import { info as logInfo } from '@/core/logging/sentry/log';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -158,32 +154,11 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     setAvailableExistingSpaces(result);
   }, [allSpaceSubspaces, availableSpaces]);
 
-  // get plans data todo: make lazy, usePlanAvailability is temp
-  const skipPlansQueries = Boolean(allAccountSpaces.length);
-  const { data: plansData } = usePlansTableQuery({ skip: skipPlansQueries });
-  const { isPlanAvailable } = usePlanAvailability({ skip: skipPlansQueries });
-
-  const plans = useMemo(
-    () =>
-      plansData?.platform.licensingFramework.plans
-        .filter(plan => plan.enabled)
-        .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
-        .filter(plan => isPlanAvailable(plan))
-        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
-    [plansData, isPlanAvailable]
-  );
-
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount', 'AccountInformation', 'LatestContributionsSpacesFlat'],
   });
 
   const executeCreateSpace = async () => {
-    if (plans.length === 0) {
-      logInfo(`No available plans for this account. User: ${user?.user.id}`);
-      notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
-      return;
-    }
-
     // loading
     setStep(steps.loadingStep);
 

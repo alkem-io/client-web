@@ -186,6 +186,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
+
   const myAccountEntitlements = account?.license?.availableEntitlements || [];
   const myAccountEntitlementDetails = account?.license?.entitlements || [];
   const externalSubscriptionID = account?.externalSubscriptionID;
