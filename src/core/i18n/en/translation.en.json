@@ -4,7 +4,7 @@
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance%3E) to visit its profile!"
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its profile!"
     },
     "feedback": {
       "message": "Is the answer relevant?",
