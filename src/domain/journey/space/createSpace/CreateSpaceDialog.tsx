@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
+import { Checkbox, DialogContent, FormControlLabel, Link } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -27,15 +27,16 @@ import NameIdField from '@/core/utils/nameId/NameIdField';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import PlansTableDialog from './plansTable/PlansTableDialog';
 import { refetchDashboardWithMembershipsQuery, useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useSpaceUrlLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
-import Loading from '@/core/ui/loading/Loading';
-import { TagCategoryValues, info } from '@/core/logging/sentry/log';
+import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Gutters from '@/core/ui/grid/Gutters';
+import { addSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
+import { useSpacePlans } from '@/domain/journey/space/createSpace/useSpacePlans';
+import { LoadingButton } from '@mui/lab';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
@@ -57,14 +58,33 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotification();
+
+  // State
   const [dialogOpen, setDialogOpen] = useState(true);
-  const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
-  const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
+  const [creatingLoading, setCreatingLoading] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [addTutorialCallouts, setAddTutorialCallouts] = useState(true);
+
+  const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
+
+  const config = useConfig();
+  const { isAuthenticated } = useAuthenticationContext();
+
+  const { accountId: currentUserAccountId } = useUserContext();
+
+  // either the account is passed in or we pick it up from the user context
+  const accountId = account?.id ?? currentUserAccountId;
+
+  const { availablePlans } = useSpacePlans({ skip: !dialogOpen, accountId });
 
   const handleClose = () => {
+    if (creatingLoading) {
+      // do not allow stopping the creation process
+      return;
+    }
+
     setDialogOpen(false);
-    setPlansTableDialogOpen(false);
-    setCreatingDialogOpen(false);
+    setCreatingLoading(false);
     onClose?.();
     redirectOnComplete && redirectToHome();
   };
@@ -96,20 +116,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
     tagsets: tagsetsSegmentSchema,
   });
 
-  const { isAuthenticated } = useAuthenticationContext();
-
-  const { accountId: currentUserAccountId } = useUserContext();
-
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
-  const [addTutorialCallouts, setAddTutorialCallouts] = useState(true);
-
-  const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
-
-  const config = useConfig();
-
-  // either the account is passed in or we pick it up from the user context
-  const accountId = account?.id ?? currentUserAccountId;
-
   const [CreateNewSpace] = useCreateSpaceMutation();
   const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
@@ -117,9 +123,18 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
       return;
     }
 
-    setDialogOpen(false);
-    setPlansTableDialogOpen(false);
-    setCreatingDialogOpen(true);
+    const planId = availablePlans[0]?.id;
+
+    if (!planId) {
+      logError(`No available plans on Space Creation. Account: ${accountId}`, {
+        category: TagCategoryValues.UI,
+        label: 'SpaceCreationError',
+      });
+      notify('No Available Plans. Please, contact support.', 'success');
+      return;
+    }
+
+    setCreatingLoading(true);
     const { data: newSpace } = await CreateNewSpace({
       variables: {
         spaceData: {
@@ -135,21 +150,20 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
             addTutorialCallouts,
           },
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
-          licensePlanID: values.licensePlanId,
+          licensePlanID: planId,
         },
       },
       refetchQueries: ['AccountInformation', refetchDashboardWithMembershipsQuery()],
       onError: () => {
-        setDialogOpen(true);
-        setPlansTableDialogOpen(false);
-        setCreatingDialogOpen(false);
+        setCreatingLoading(false);
       },
     });
 
     const spaceID = newSpace?.createSpace.id;
     if (spaceID) {
+      addSpaceWelcomeCache(spaceID);
+      setCreatingLoading(false);
       setDialogOpen(false);
-      setCreatingDialogOpen(false);
       info(`Space Created SpaceId:${spaceID}`, {
         category: TagCategoryValues.SPACE_CREATION,
         label: 'Space Created',
@@ -159,7 +173,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
       if (redirectOnComplete) {
         const { data: spaceUrlData } = await getSpaceUrl({
           variables: {
-            spaceNameId: newSpace.createSpace.id,
+            spaceNameId: spaceID,
           },
         });
 
@@ -186,84 +200,84 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, handleSubmit, errors }) => {
+        {({ handleSubmit, errors }) => {
           return (
-            <>
-              <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
-                <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
-                <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
-                  <PageContentBlockSeamless sx={{ paddingX: 0, paddingBottom: 0 }}>
-                    <FormikInputField name="name" title={t('components.nameSegment.name')} required />
-                    <NameIdField name="nameID" title={t('common.url')} required />
-                    <FormikInputField
-                      name="tagline"
-                      title={`${t('context.space.tagline.title')} (${t('common.optional')})`}
-                      rows={3}
-                      maxLength={SMALL_TEXT_LENGTH}
+            <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
+              <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
+              <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
+                <PageContentBlockSeamless sx={{ paddingX: 0, paddingBottom: 0 }}>
+                  <FormikInputField
+                    name="name"
+                    title={t('components.nameSegment.name')}
+                    required
+                    disabled={creatingLoading}
+                  />
+                  <NameIdField name="nameID" title={t('common.url')} required disabled={creatingLoading} />
+                  <FormikInputField
+                    name="tagline"
+                    title={`${t('context.space.tagline.title')} (${t('common.optional')})`}
+                    rows={3}
+                    maxLength={SMALL_TEXT_LENGTH}
+                    disabled={creatingLoading}
+                  />
+                  <TagsetSegment
+                    disabled={creatingLoading}
+                    title={`${t('common.tags')} (${t('common.optional')})`}
+                    tagsets={tagsets}
+                  />
+
+                  <Gutters disableGap disablePadding>
+                    <FormControlLabel
+                      checked={addTutorialCallouts}
+                      disabled={creatingLoading}
+                      onChange={(_event, isChecked) => setAddTutorialCallouts(isChecked)}
+                      control={<Checkbox />}
+                      label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
                     />
-                    <TagsetSegment title={`${t('common.tags')} (${t('common.optional')})`} tagsets={tagsets} />
 
-                    <Gutters disableGap disablePadding>
-                      <FormControlLabel
-                        checked={addTutorialCallouts}
-                        onChange={(_event, isChecked) => setAddTutorialCallouts(isChecked)}
-                        control={<Checkbox />}
-                        label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
-                      />
+                    <FormControlLabel
+                      value={hasAcceptedTerms}
+                      disabled={creatingLoading}
+                      onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
+                      required
+                      control={<Checkbox />}
+                      label={
+                        <Caption>
+                          <Trans
+                            i18nKey="createSpace.terms.checkboxLabel"
+                            components={{
+                              terms: (
+                                <Link
+                                  underline="always"
+                                  onClick={event => {
+                                    event.stopPropagation();
+                                    event.preventDefault();
+                                    setIsTermsDialogOpen(true);
+                                  }}
+                                />
+                              ),
+                            }}
+                          />
+                        </Caption>
+                      }
+                    />
+                  </Gutters>
 
-                      <FormControlLabel
-                        value={hasAcceptedTerms}
-                        onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
-                        required
-                        control={<Checkbox />}
-                        label={
-                          <Caption>
-                            <Trans
-                              i18nKey="createSpace.terms.checkboxLabel"
-                              components={{
-                                terms: (
-                                  <Link
-                                    underline="always"
-                                    onClick={event => {
-                                      event.stopPropagation();
-                                      event.preventDefault();
-                                      setIsTermsDialogOpen(true);
-                                    }}
-                                  />
-                                ),
-                              }}
-                            />
-                          </Caption>
-                        }
-                      />
-                    </Gutters>
-
-                    <DialogFooter>
-                      <Actions justifyContent="end" padding={gutters()}>
-                        <Button
-                          variant="contained"
-                          onClick={() => {
-                            setDialogOpen(false);
-                            setPlansTableDialogOpen(true);
-                          }}
-                          disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms}
-                        >
-                          {t('buttons.continue')}
-                        </Button>
-                      </Actions>
-                    </DialogFooter>
-                  </PageContentBlockSeamless>
-                </DialogContent>
-              </DialogWithGrid>
-              <PlansTableDialog
-                onClose={handleClose}
-                open={plansTableDialogOpen}
-                onSelectPlan={licensePlanId => {
-                  setFieldValue('licensePlanId', licensePlanId);
-                  handleSubmit();
-                }}
-              />
-            </>
+                  <DialogFooter>
+                    <Actions justifyContent="end" padding={gutters()}>
+                      <LoadingButton
+                        variant="contained"
+                        loading={creatingLoading}
+                        onClick={() => handleSubmit()}
+                        disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms || creatingLoading}
+                      >
+                        {t('buttons.continue')}
+                      </LoadingButton>
+                    </Actions>
+                  </DialogFooter>
+                </PageContentBlockSeamless>
+              </DialogContent>
+            </DialogWithGrid>
           );
         }}
       </Formik>
@@ -278,11 +292,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           )}
         </DialogContent>
       </DialogWithGrid>
-      <Dialog open={creatingDialogOpen}>
-        <DialogContent sx={{ display: 'flex', alignItems: 'center' }}>
-          <Loading />
-        </DialogContent>
-      </Dialog>
     </>
   );
 };

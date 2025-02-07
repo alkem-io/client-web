@@ -127,6 +127,36 @@ export interface ContributorAccountViewProps {
   account?: AccountTabResourcesProps;
 }
 
+const BlockHeader = ({
+  title,
+  tooltip,
+  usage,
+  limit,
+  isAvailable,
+}: {
+  title: string;
+  tooltip: string;
+  usage: number;
+  limit: number;
+  isAvailable: boolean;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Gutters disablePadding disableGap row justifyContent="space-between">
+      <BlockTitle>{title}</BlockTitle>
+      {isAvailable || usage > 0 ? (
+        <TextWithTooltip text={`${usage}/${limit}`} tooltip={tooltip} />
+      ) : (
+        <TextWithTooltip
+          text={t('pages.admin.generic.sections.account.notAvailable')}
+          tooltip={t('pages.admin.generic.sections.account.notAvailableNotice')}
+        />
+      )}
+    </Gutters>
+  );
+};
+
 const StyledCreationButton = ({ disabled, onClick }: { disabled: boolean; onClick: () => void }) => {
   const { t } = useTranslation();
 
@@ -179,7 +209,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const privileges = account?.authorization?.myPrivileges ?? [];
 
-  const canCreateWingbackAccount = privileges.includes(AuthorizationPrivilege.TransferResourceAccept);
+  const canCreateWingbackAccount = privileges.includes(AuthorizationPrivilege.AccountLicenseManage);
   const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace);
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
@@ -458,19 +488,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       </PageContentColumn>
       <PageContentColumn columns={12}>
         <PageContentBlock halfWidth>
-          <Gutters disablePadding disableGap row justifyContent="space-between">
-            <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
-            <TextWithTooltip
-              text={`${hostedSpaceUsage}/${hostedSpaceLimit}`}
-              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-                type: t('pages.admin.generic.sections.account.virtualContributors'),
-                usage: hostedSpaceUsage,
-                limit: hostedSpaceLimit,
-              })}
-            />
-          </Gutters>
-
-          <Gutters disablePadding disableGap justifyContent="space-between" height="100%">
+          <BlockHeader
+            title={t('pages.admin.generic.sections.account.hostedSpaces')}
+            usage={hostedSpaceUsage}
+            limit={hostedSpaceLimit}
+            isAvailable={canCreateSpace}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.hostedSpaces'),
+              usage: hostedSpaceUsage,
+              limit: hostedSpaceLimit,
+            })}
+          />
+          <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
             {loading && <JourneyCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
@@ -514,18 +543,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           </Actions>
         </PageContentBlock>
         <PageContentBlock halfWidth>
-          <Gutters disablePadding disableGap row justifyContent="space-between">
-            <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
-            <TextWithTooltip
-              text={`${vcUsage}/${vcLimit}`}
-              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-                type: t('pages.admin.generic.sections.account.virtualContributors'),
-                usage: vcUsage,
-                limit: vcLimit,
-              })}
-            />
-          </Gutters>
-          <Gutters disablePadding justifyContent="space-between" height="100%">
+          <BlockHeader
+            title={t('pages.admin.generic.sections.account.virtualContributors')}
+            usage={vcUsage}
+            limit={vcLimit}
+            isAvailable={canCreateVirtualContributor}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.virtualContributors'),
+              usage: vcUsage,
+              limit: vcLimit,
+            })}
+          />
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <JourneyCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
@@ -557,18 +586,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           </Gutters>
         </PageContentBlock>
         <PageContentBlock halfWidth>
-          <Gutters disablePadding disableGap row justifyContent="space-between">
-            <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-            <TextWithTooltip
-              text={`${innovationPackUsage}/${innovationPackLimit}`}
-              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-                type: t('pages.admin.generic.sections.account.innovationPacks'),
-                usage: innovationPackUsage,
-                limit: innovationPackLimit,
-              })}
-            />
-          </Gutters>
-          <Gutters disablePadding justifyContent="space-between" height="100%">
+          <BlockHeader
+            title={t('pages.admin.generic.sections.account.innovationPacks')}
+            usage={innovationPackUsage}
+            limit={innovationPackLimit}
+            isAvailable={canCreateInnovationPack}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.innovationPacks'),
+              usage: innovationPackUsage,
+              limit: innovationPackLimit,
+            })}
+          />
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(pack => (
@@ -598,18 +627,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           </Gutters>
         </PageContentBlock>
         <PageContentBlock halfWidth>
-          <Gutters disablePadding disableGap row justifyContent="space-between">
-            <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-            <TextWithTooltip
-              text={`${innovationHubUsage}/${innovationHubLimit}`}
-              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-                type: t('pages.admin.generic.sections.account.customHomepages'),
-                usage: innovationHubUsage,
-                limit: innovationHubLimit,
-              })}
-            />
-          </Gutters>
-          <Gutters disablePadding justifyContent="space-between" height="100%">
+          <BlockHeader
+            title={t('pages.admin.generic.sections.account.customHomepages')}
+            usage={innovationHubUsage}
+            limit={innovationHubLimit}
+            isAvailable={canCreateInnovationHub}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.customHomepages'),
+              usage: innovationHubUsage,
+              limit: innovationHubLimit,
+            })}
+          />
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
               innovationHubs?.map(hub => (
