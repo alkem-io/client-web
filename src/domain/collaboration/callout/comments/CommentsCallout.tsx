@@ -19,7 +19,7 @@ import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 
-type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId' | 'vcInteractions';
+type NeededFields = 'id' | 'authorization' | 'messages' | 'vcInteractions';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {

@@ -18,7 +18,6 @@ import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/Callou
 import CalloutEditDialog from '../edit/editDialog/CalloutEditDialog';
 import { CalloutEditType } from '../edit/CalloutEditType';
 import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import {
   ArrowDownwardOutlined,
@@ -53,6 +52,8 @@ import { PostCardPost } from '../post/PostCard';
 import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
 import { CalloutTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CalloutTemplateForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -139,9 +140,10 @@ const CalloutSettingsContainer = ({
   disablePostResponses,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
+  const ensurePresence = useEnsurePresence();
 
-  // SpaceNameId is needed to save callout as template in this space
-  const { spaceNameId } = useUrlParams();
+  // levelZeroSpaceId is needed to save callout as template in this space
+  const { levelZeroSpaceId } = useUrlResolver();
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
@@ -184,12 +186,9 @@ const CalloutSettingsContainer = ({
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
-    if (!spaceNameId) {
-      setSaveAsTemplateDialogOpen(false);
-      return;
-    }
+    const requiredSpaceId = ensurePresence(levelZeroSpaceId);
 
-    await handleCreateCalloutTemplate(values, spaceNameId);
+    await handleCreateCalloutTemplate(values, requiredSpaceId);
     setSaveAsTemplateDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
