@@ -493,7 +493,8 @@
         "year": "crwdns18176:0{{count}}crwdne18176:0",
         "year_plural": "crwdns18178:0{{count}}crwdne18178:0"
       }
-    }
+    },
+    "supportEmail": "crwdns28750:0crwdne28750:0"
   },
   "community": {
     "memberUsers": "crwdns18180:0{{count}}crwdne18180:0",
@@ -1685,6 +1686,11 @@
         }
       },
       "emptyInbox": "crwdns19512:0crwdne19512:0"
+    },
+    "spaceWelcomeDialog": {
+      "title": "crwdns28752:0crwdne28752:0",
+      "description": "crwdns28754:0crwdne28754:0",
+      "button": "crwdns28756:0crwdne28756:0"
     }
   },
   "navigation": {
