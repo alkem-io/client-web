@@ -74,7 +74,6 @@ class Collab {
   activeIntervalId: number | null = null;
   idleTimeoutId: number | null = null;
 
-  private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<SocketId, Collaborator>();
   private onCloseConnection: () => void;
@@ -185,7 +184,7 @@ class Collab {
           {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
               if (!this.portal.socketInitialized) {
-                this.initializeRoom({ fetchScene: false });
+                this.portal.socketInitialized = true;
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
                   {
@@ -271,36 +270,6 @@ class Collab {
     this.excalidrawAPI.updateScene({
       collaborators,
     });
-  };
-
-  private initializeRoom = ({
-    fetchScene,
-    roomLinkData,
-  }:
-    | {
-        fetchScene: true;
-        roomLinkData: { roomId: string } | null;
-      }
-    | { fetchScene: false; roomLinkData?: null }) => {
-    clearTimeout(this.socketInitializationTimer!);
-
-    if (fetchScene && roomLinkData) {
-      try {
-        this.queueBroadcastAllElements();
-      } catch (error: unknown) {
-        const err = error as Error;
-        // log the error and move on. other peers will sync us the scene.
-        // eslint-disable-next-line no-console
-        logError(err?.message ?? JSON.stringify(err), {
-          category: TagCategoryValues.WHITEBOARD,
-          label: 'Collab',
-        });
-      } finally {
-        this.portal.socketInitialized = true;
-      }
-    } else {
-      this.portal.socketInitialized = true;
-    }
   };
 
   private reconcileElementsAndLoadFiles = async (
