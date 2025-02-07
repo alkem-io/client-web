@@ -8522,7 +8522,6 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         __typename?: 'VirtualContributor';
         searchVisibility: SearchVisibility;
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -8579,7 +8578,6 @@ export type AvailableVirtualContributorsQuery = {
               virtualContributorsInRole: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -8618,7 +8616,6 @@ export type AvailableVirtualContributorsQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -8656,7 +8653,6 @@ export type AvailableVirtualContributorsQuery = {
   virtualContributors?: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    nameID: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -8692,7 +8688,6 @@ export type AvailableVirtualContributorsQuery = {
 export type VirtualContributorFullFragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -9424,7 +9419,6 @@ export type BeginCommunityMemberCredentialOfferInteractionMutation = {
 export type UserAgentSsiFragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   agent: {
     __typename?: 'Agent';
     id: string;
@@ -9454,7 +9448,6 @@ export type UserSsiQuery = {
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
           agent: {
             __typename?: 'Agent';
             id: string;
@@ -10859,7 +10852,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -10899,7 +10891,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -10943,7 +10934,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -10988,7 +10978,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11028,7 +11017,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11077,7 +11065,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11122,7 +11109,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11171,7 +11157,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11220,7 +11205,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11260,7 +11244,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11331,7 +11314,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -11371,7 +11353,6 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         message: string;
         journeyDisplayName: string;
         space?:
@@ -12044,31 +12025,7 @@ export type CreatePostFromContributeTabMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
-    post?:
-      | {
-          __typename?: 'Post';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            url: string;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        }
-      | undefined;
+    post?: { __typename?: 'Post'; id: string } | undefined;
   };
 };
 
@@ -28259,7 +28216,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28299,7 +28255,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28343,7 +28298,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28392,7 +28346,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28432,7 +28385,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28481,7 +28433,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28526,7 +28477,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28575,7 +28525,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28624,7 +28573,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28664,7 +28612,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28735,7 +28682,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           journeyDisplayName: string;
           space?:
             | {
@@ -28775,7 +28721,6 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          parentNameID: string;
           message: string;
           journeyDisplayName: string;
           space?:
@@ -28849,7 +28794,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -28879,7 +28823,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -28913,7 +28856,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -28948,7 +28890,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -28978,7 +28919,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29017,7 +28957,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29052,7 +28991,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29091,7 +29029,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29130,7 +29067,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29160,7 +29096,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29221,7 +29156,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         journeyDisplayName: string;
         space?:
           | {
@@ -29251,7 +29185,6 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        parentNameID: string;
         message: string;
         journeyDisplayName: string;
         space?:

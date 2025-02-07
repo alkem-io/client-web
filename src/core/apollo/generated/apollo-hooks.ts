@@ -170,7 +170,6 @@ export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
 export const VirtualContributorFullFragmentDoc = gql`
   fragment VirtualContributorFull on VirtualContributor {
     id
-    nameID
     profile {
       id
       displayName
@@ -250,7 +249,6 @@ export const AccountItemProfileFragmentDoc = gql`
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
     id
-    nameID
     agent {
       id
       did
@@ -6838,7 +6836,6 @@ export const ActivityLogOnCollaborationDocument = gql`
       description
       type
       child
-      parentNameID
       journeyDisplayName: parentDisplayName
       space {
         id
@@ -7610,24 +7607,9 @@ export const CreatePostFromContributeTabDocument = gql`
     createContributionOnCallout(contributionData: $postData) {
       post {
         id
-        nameID
-        profile {
-          id
-          displayName
-          description
-          url
-          tagset {
-            ...TagsetDetails
-          }
-          visual(type: CARD) {
-            ...VisualUri
-          }
-        }
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
 `;
 export type CreatePostFromContributeTabMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreatePostFromContributeTabMutation,
@@ -23108,7 +23090,6 @@ export const LatestContributionsDocument = gql`
         description
         type
         child
-        parentNameID
         journeyDisplayName: parentDisplayName
         space {
           id
@@ -23250,7 +23231,6 @@ export const LatestContributionsGroupedDocument = gql`
       description
       type
       child
-      parentNameID
       journeyDisplayName: parentDisplayName
       space {
         id
