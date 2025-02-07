@@ -41,7 +41,11 @@ export const SAVE_TO_LOCAL_STORAGE_TIMEOUT = 300;
 export const FILE_UPLOAD_TIMEOUT = 300;
 export const LOAD_IMAGES_TIMEOUT = 500;
 export const SYNC_BROWSER_TABS_TIMEOUT = 50;
-export const CURSOR_SYNC_TIMEOUT = 33; // ~30fps
+
+export const SYNC_FULL_SCENE_INTERVAL_MS = 10000;
+export const CURSOR_SYNC_TIMEOUT = 100; // 10fps - no default
+export const SCENE_SYNC_TIMEOUT = 10; // 5ms is the default behaviour
+
 export const DELETED_ELEMENT_TIMEOUT = 24 * 60 * 60 * 1000; // 1 day
 
 // 1 year (https://stackoverflow.com/a/25201898/927631)
