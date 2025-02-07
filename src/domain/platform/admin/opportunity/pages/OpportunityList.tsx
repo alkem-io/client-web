@@ -19,7 +19,7 @@ import {
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
-  useSpaceTemplatesSetIdQuery,
+  useSpaceTemplatesManagerQuery,
   useSubspacesInSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
@@ -120,7 +120,7 @@ export const OpportunityList: FC = () => {
   );
 
   // check for TemplateCreation privileges
-  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+  const { data: templateData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId,
   });

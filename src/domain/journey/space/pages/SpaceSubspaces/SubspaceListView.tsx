@@ -12,7 +12,7 @@ import {
   useAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
-  useSpaceTemplatesSetIdQuery,
+  useSpaceTemplatesManagerQuery,
   useUpdateTemplateDefaultMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -107,7 +107,7 @@ export const SubspaceListView = () => {
   const handleDelete = (item: { id: string }) => {
     return deleteSubspace({
       variables: {
-        spaceId: item.id
+        spaceId: item.id,
       },
     });
   };
@@ -167,7 +167,7 @@ export const SubspaceListView = () => {
   // };
 
   // check for TemplateCreation privileges
-  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+  const { data: templateData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId,
   });

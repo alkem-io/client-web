@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { CollaborationTemplateFormSubmittedValues } from '../components/Forms/CollaborationTemplateForm';
 import {
   useCreateTemplateFromCollaborationMutation,
-  useSpaceTemplatesSetIdLazyQuery,
+  useSpaceTemplatesManagerLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { toCreateTemplateFromCollaborationMutationVariables } from '../components/Forms/common/mappings';
 
@@ -15,7 +15,7 @@ export interface CollaborationCreationUtils {
 
 export const useCreateCollaborationTemplate = (): CollaborationCreationUtils => {
   const [createCollaborationTemplate] = useCreateTemplateFromCollaborationMutation();
-  const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
+  const [fetchTemplatesSetId] = useSpaceTemplatesManagerLazyQuery();
 
   const handleCreateCollaborationTemplate = useCallback(
     async (values: CollaborationTemplateFormSubmittedValues, destinationSpaceId: string) => {

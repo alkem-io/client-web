@@ -10,7 +10,7 @@ import {
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
-  useSpaceTemplatesSetIdQuery,
+  useSpaceTemplatesManagerQuery,
   useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -78,7 +78,10 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   let isSubspace = spaceLevel !== SpaceLevel.L0;
 
   const { subspaceId } = useSubSpace();
-  const { spaceId, profile: { url: levelZeroSpaceUrl } } = useSpace();
+  const {
+    spaceId,
+    profile: { url: levelZeroSpaceUrl },
+  } = useSpace();
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -138,7 +141,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
 
   // check for TemplateCreation privileges
-  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+  const { data: templateData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId,
   });
@@ -481,7 +484,10 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
           )}
           {isSubspace && canDelete && (
             <PageContentBlock sx={{ borderColor: theme.palette.error.main }}>
-              <PageContentBlockHeader sx={{ color: theme.palette.error.main }} title={t('components.deleteEntity.title')} />
+              <PageContentBlockHeader
+                sx={{ color: theme.palette.error.main }}
+                title={t('components.deleteEntity.title')}
+              />
               <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
                 <DeleteIcon />
                 <Caption>{t('components.deleteEntity.description', { entity: t('common.subspace') })}</Caption>

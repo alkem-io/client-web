@@ -29,7 +29,7 @@ import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportT
 import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { useCreateTemplateMutation, useSpaceTemplatesSetIdLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
@@ -91,12 +91,12 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
 
-  const [fetchSpaceTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
+  const [fetchSpaceTemplatesManager] = useSpaceTemplatesManagerLazyQuery();
 
   const [createTemplate] = useCreateTemplateMutation();
 
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
-    const { data: templatesSetData } = await fetchSpaceTemplatesSetId({ variables: { spaceId } });
+    const { data: templatesSetData } = await fetchSpaceTemplatesManager({ variables: { spaceId } });
     const templatesSetId = templatesSetData?.lookup.space?.templatesManager?.templatesSet?.id;
     if (templatesSetId) {
       await createTemplate({
