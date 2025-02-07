@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { SearchTagsInputProps } from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import { Identifiable } from '@/core/utils/Identifiable';
 import filterFn, { MatchInformation, ValueType, getAllValues } from '@/core/utils/filtering/filterFn';
@@ -59,13 +59,16 @@ const JourneyFilter = <T extends Identifiable>({
     setTerms(currentTerms => uniq([...currentTerms, term]));
   };
 
-  const onTermClick = (term: string, index: number) => {
-    if (selectedIndexes.includes(index)) {
-      deselectTerm(term, index);
-    } else {
-      selectTerm(term, index);
-    }
-  };
+  const onTermClick = useCallback(
+    (term: string, index: number) => {
+      if (selectedIndexes.includes(index)) {
+        deselectTerm(term, index);
+      } else {
+        selectTerm(term, index);
+      }
+    },
+    [selectedIndexes, deselectTerm, selectTerm]
+  );
 
   if (!data.length) {
     return <>{children([])}</>;

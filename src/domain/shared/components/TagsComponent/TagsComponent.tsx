@@ -66,7 +66,7 @@ const TagsComponent = ({
         />
       </Tooltip>
     ),
-    [color, size, variant, selectedIndexes]
+    [color, size, variant, selectedIndexes, selectedVariant]
   );
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
