@@ -34,7 +34,6 @@ import {
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
-import { WhiteboardFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -79,7 +78,7 @@ export interface CalloutSettingsContainerProps
           id: string;
         };
       };
-      whiteboard?: WhiteboardFragmentWithCallout;
+      whiteboard?: WhiteboardDetailsFragment;
     };
     comments?: {
       messages: MessageDetailsFragment[] | undefined;

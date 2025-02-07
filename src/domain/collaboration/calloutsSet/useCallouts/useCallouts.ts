@@ -22,10 +22,6 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/Innov
 import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
-export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
-
-export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
-
 export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrder'> & {
   authorization:
     | {
@@ -61,12 +57,12 @@ export type TypedCalloutDetails = TypedCallout &
           id: string;
         };
       };
-      whiteboard?: WhiteboardFragmentWithCallout;
+      whiteboard?: WhiteboardDetailsFragment;
     };
     groupName: CalloutGroupName;
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
-    comments: CommentsWithMessagesFragmentWithCallout | undefined;
+    comments?: CommentsWithMessagesFragment | undefined;
   };
 
 interface UseCalloutsParams {

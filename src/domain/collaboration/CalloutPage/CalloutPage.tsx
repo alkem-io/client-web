@@ -86,7 +86,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
 
     const { framing, ...calloutRest } = callout;
     const { whiteboard: whiteboardData, ...framingRest } = framing;
-    const whiteboard = whiteboardData ? { ...whiteboardData, calloutNameId: callout.nameID } : undefined;
+    const whiteboard = whiteboardData ? { ...whiteboardData } : undefined;
 
     const result: TypedCalloutDetails = {
       ...calloutRest,
@@ -103,7 +103,6 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
       flowStates: [],
-      comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
       groupName: getCalloutGroupNameValue(
         framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
       ),
