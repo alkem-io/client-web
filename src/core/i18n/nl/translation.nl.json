@@ -1876,7 +1876,7 @@
             "notAvailable": "Niet beschikbaar",
             "notAvailableNotice": "Neem contact op met het Alkemio team om deze functie in te schakelen op je account",
             "noTemplates": "Dit Innovatiepakket heeft nog geen templates",
-            "customHomepages": "Landingspagina's",
+            "customHomepages": "Startpagina's",
             "hostTitle": "Host",
             "contactsLink": "Als je een van deze instellingen wilt wijzigen, neem dan hier contact op met het Alkemio team.",
             "freeTrialNotice": {
@@ -2112,7 +2112,7 @@
         "spaceListFilter": {
           "header": {
             "title": "Huidige Selectie",
-            "subtitle": "De volgorde hieronder is de volgorde waarin de Spaces zichtbaar zijn op de landingspagina"
+            "subtitle": "De volgorde hieronder is de volgorde waarin de Spaces zichtbaar zijn op de Startpagina"
           }
         }
       }
@@ -3046,7 +3046,7 @@
           "Tot 250 leden",
           "Realtime Whiteboards voor meerdere gebruikers tegelijk",
           "Maak je Virtual Contributor",
-          "Custom Homepage (met Support)"
+          "Startpagina (met Support)"
         ],
         "disclaimer": "",
         "disabledDisclaimer": ""
@@ -3059,7 +3059,7 @@
           "Tot 250 leden",
           "Realtime Whiteboards voor meerdere gebruikers tegelijk",
           "Maak je Virtual Contributor",
-          "Custom Homepage (met Support)",
+          "Startpagina (met Support)",
           "1 jaar succesprogramma"
         ],
         "disclaimer": "",
