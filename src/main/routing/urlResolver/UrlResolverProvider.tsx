@@ -1,9 +1,11 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact, isEqual } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import UrlParams from '../urlParams';
+import { TopLevelRoutePath } from '../TopLevelRoutePath';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -86,6 +88,35 @@ const emptyResult: UrlResolverContextValue = {
   loading: true,
 };
 
+const NOT_RESOLVABLE_URLS = [
+  ...Object.values(IdentityRoutes),
+  'docs',
+  'dev',
+  'home', // Nothing to resolve on home
+  TopLevelRoutePath.InnovationLibrary,
+];
+
+/**
+ * Filter urls that shouldn't be resolved by the server anyway
+ * @param url
+ * @returns boolean for skip, true if shouldn't be resolved
+ */
+const isNotResolvableUrl = (url: string) => {
+  if (!url) {
+    return true;
+  }
+  try {
+    const { pathname } = new URL(url);
+    if (NOT_RESOLVABLE_URLS.some(route => pathname.match(`^/${route}(/|$)`))) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    // Invalid url
+    return true;
+  }
+};
+
 /**
  * Helper function to choose between two urlResolver results objects and generate the urlResolver result based on the selected one
  * For example, spaces have a calloutSet, but also VCs have a calloutSet.
@@ -109,9 +140,9 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
-  const [queryUrl, setQueryUrl] = useState<string>();
-
-  const [dynamicUrlParams, setDynamicUrlParams] = useState<UrlParams>({});
+  const [currentUrl, setCurrentUrl] = useState(window.location.href);
+  // Store the result of the URL resolver query in a state to avoid screen shaking
+  const [value, setValue] = useState<UrlResolverContextValue>(emptyResult);
 
   /**
    * Default Apollo's cache behaviour will store the result of the URL resolver queries based on the Id of the space returned
@@ -126,26 +157,26 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
    *      but the cache is returning the previous value { spaceId: 1234, templateId: 5678 },
    *      completing that null templateId which is wrong
    *
-   * To avoid this, we have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
+   * To avoid this, we are have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
    * This way, the cache will store the entire result of the query based on the URL, and will not try to merge the results of different queries.
    */
   const { data: urlResolverData, loading: urlResolverLoading } = useUrlResolverQuery({
     variables: {
-      url: queryUrl!,
+      url: currentUrl,
     },
-    skip: !queryUrl,
+    skip: isNotResolvableUrl(currentUrl),
   });
 
+  const [urlParams, setUrlParamsState] = useState<UrlParams>({});
   const setUrlParams = (url: string, params: UrlParams) => {
-    if (!isEqual(params, dynamicUrlParams)) {
-      setDynamicUrlParams(params);
-      setQueryUrl(url);
+    if (!isEqual(params, urlParams)) {
+      console.log('NOT EQUAL REQUESTING', { url, params, urlParams });
+      setUrlParamsState(params);
+      setCurrentUrl(url);
+    } else {
+      console.log('request ignored, params are the same', url, params, urlParams);
     }
   };
-
-  const emptyWithSetParams = { ...emptyResult, setUrlParams }; // add the setUrlParams function for the initial state
-  // Store the result of the URL resolver query in a state to avoid screen shaking
-  const [value, setValue] = useState<UrlResolverContextValue>(emptyWithSetParams);
 
   const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
     if (urlResolverData?.urlResolver.type) {
@@ -163,8 +194,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
         parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
         journeyPath: journeyPath,
+
         // Collaboration:
         collaborationId: data.space?.collaboration.id,
+
         // CalloutsSet:
         ...selectUrlParams(
           type,
@@ -180,17 +213,22 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
             whiteboardId: calloutsSet?.['whiteboardId'], // No whiteboards yet on VCKBs, so TypeScript is complaining
           })
         ),
+
         // Calendar:
         calendarId: data.space?.calendar?.id,
         calendarEventId: data.space?.calendar?.calendarEventId,
+
         // Contributors:
         organizationId: data.organizationId,
         userId: data.userId,
         vcId: data.virtualContributor?.id,
+
         // Innovation Packs:
         innovationPackId: data.innovationPack?.id,
+
         // InnovationHub:
         innovationHubId: data.innovationHubId,
+
         // Templates:
         ...selectUrlParams(
           type,
@@ -212,7 +250,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     } else {
       return undefined;
     }
-  }, [dynamicUrlParams, urlResolverData, urlResolverLoading]);
+  }, [urlParams, urlResolverData, urlResolverLoading]);
 
   useEffect(() => {
     if (resolvingResult) {
