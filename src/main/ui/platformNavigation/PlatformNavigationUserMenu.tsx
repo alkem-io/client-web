@@ -33,7 +33,7 @@ import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
-import { usePendingInvitationsCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -59,8 +59,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
 
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
-    const { data: invitesData } = usePendingInvitationsCountQuery();
-    const pendingInvitationsCount = invitesData?.me?.communityInvitationsCount || 0;
+    const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
     // the roles should follow the order
     const role = useMemo(() => {
