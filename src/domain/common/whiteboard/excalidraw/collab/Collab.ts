@@ -19,6 +19,7 @@ import {
   CURSOR_SYNC_TIMEOUT,
   EVENT,
   IDLE_THRESHOLD,
+  SCENE_SYNC_TIMEOUT,
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
@@ -419,15 +420,22 @@ class Collab {
     this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
-  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
-    const { hashElementsVersion } = await this.excalidrawUtils;
-    const newVersion = hashElementsVersion(elements);
+  private throttledSyncScene = throttle(
+    async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+      const { hashElementsVersion } = await this.excalidrawUtils;
+      const newVersion = hashElementsVersion(elements);
 
-    if (newVersion !== this.lastBroadcastedOrReceivedSceneVersion) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
-      this.lastBroadcastedOrReceivedSceneVersion = newVersion;
-      this.queueBroadcastAllElements();
-    }
+      if (newVersion !== this.lastBroadcastedOrReceivedSceneVersion) {
+        this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
+        this.lastBroadcastedOrReceivedSceneVersion = newVersion;
+        this.queueBroadcastAllElements();
+      }
+    },
+    SCENE_SYNC_TIMEOUT
+  );
+
+  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+    this.throttledSyncScene(elements, files);
   };
 
   private queueBroadcastAllElements = throttle(async () => {
