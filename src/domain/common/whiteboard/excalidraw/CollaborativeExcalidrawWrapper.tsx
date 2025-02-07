@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
@@ -21,7 +22,6 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
@@ -95,6 +95,12 @@ const CollaborativeExcalidrawWrapper = ({
   collabApiRef,
   children: renderChildren,
 }: WhiteboardWhiteboardProps) => {
+  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
+
+  const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
+
+  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
   const { whiteboard, filesManager, lastSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
 
@@ -105,20 +111,22 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
-  const handleScroll = useRef(
-    debounce(async () => {
-      excalidrawApi?.refresh();
-    }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
-  ).current;
+  const debouncedRefresh = useMemo(
+    () =>
+      debounce(async () => {
+        excalidrawApi?.refresh();
+      }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL),
+    [excalidrawApi]
+  );
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('scroll', debouncedRefresh, true);
 
     return () => {
-      handleScroll.cancel();
-      window.removeEventListener('scroll', handleScroll, true);
+      debouncedRefresh.cancel();
+      window.removeEventListener('scroll', debouncedRefresh, true);
     };
-  }, [handleScroll]);
+  }, [debouncedRefresh]);
 
   const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
     () => ({
@@ -166,12 +174,6 @@ const CollaborativeExcalidrawWrapper = ({
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };
-
-  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
-
-  const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
-
-  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
   const isOnline = useOnlineStatus();
 
