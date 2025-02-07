@@ -16378,6 +16378,9 @@ export const FreePlanAvailabilityDocument = gql`
             id
             myPrivileges
           }
+          license {
+            availableEntitlements
+          }
         }
       }
     }
