@@ -3167,7 +3167,7 @@
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need to be an admin of a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",
