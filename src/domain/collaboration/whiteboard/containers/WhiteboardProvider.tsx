@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import { useWhiteboardFromCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   WhiteboardDetailsFragment,
@@ -38,10 +38,14 @@ const WhiteboardProvider = ({
 
   const callout = data?.lookup.callout;
 
-  const whiteboardContribution = callout?.contributions?.find(
-    contribution =>
-      contribution.whiteboard &&
-      (contribution.whiteboard.nameID === whiteboardId || contribution.whiteboard.id === whiteboardId)
+  const whiteboardContribution = useMemo(
+    () =>
+      callout?.contributions?.find(
+        contribution =>
+          contribution.whiteboard &&
+          (contribution.whiteboard.nameID === whiteboardId || contribution.whiteboard.id === whiteboardId)
+      ),
+    [callout, whiteboardId]
   );
 
   const framingWhiteboard = callout?.framing.whiteboard;

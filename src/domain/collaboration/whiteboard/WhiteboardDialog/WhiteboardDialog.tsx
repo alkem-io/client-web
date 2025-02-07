@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -116,12 +116,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
 
   const initialPathname = useRef(pathname).current;
 
-  useEffect(() => {
-    if (pathname !== initialPathname) {
-      onClose();
-    }
-  }, [pathname]);
-
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
@@ -214,7 +208,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     };
   };
 
-  const onClose = async () => {
+  const onClose = useCallback(async () => {
     if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
       const whiteboardState = await getWhiteboardState();
       const prepareWhiteboardResult = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
@@ -228,20 +222,23 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
       }
     }
     actions.onCancel();
-  };
+  }, [editModeEnabled, collabApiRef, whiteboard, getWhiteboardState, prepareWhiteboardForUpdate, actions]);
 
-  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
-    if (excalidrawAPI) {
-      try {
-        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
-      } catch (err) {
-        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        logError(new Error(`Error importing whiteboard template: '${err}'`), {
-          category: TagCategoryValues.WHITEBOARD,
-        });
+  const handleImportTemplate = useCallback(
+    async (template: WhiteboardTemplateContent) => {
+      if (excalidrawAPI) {
+        try {
+          await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        } catch (err) {
+          notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+          logError(new Error(`Error importing whiteboard template: '${err}'`), {
+            category: TagCategoryValues.WHITEBOARD,
+          });
+        }
       }
-    }
-  };
+    },
+    [excalidrawAPI, notify, t]
+  );
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
@@ -258,6 +255,12 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     () => ({ displayName: whiteboard?.profile?.displayName ?? '' }),
     [whiteboard?.profile?.displayName]
   );
+
+  useEffect(() => {
+    if (pathname !== initialPathname) {
+      onClose();
+    }
+  }, [pathname]);
 
   useEffect(() => {
     formikRef.current?.resetForm({

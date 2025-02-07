@@ -99,7 +99,7 @@ const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardAc
         errors: result.errors?.map(({ message }) => message),
       };
     },
-    [createWhiteboard]
+    [createWhiteboard] // @@@ WIP ~ #7611 - missing "uploadVisuals" dependency
   );
 
   const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
