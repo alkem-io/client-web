@@ -53,8 +53,10 @@ interface MDInputProps extends InputBaseComponentProps {
 
 // Keep MDInput ref forwarded in order the title label to be able to move up from the correct position when the input is focused and to be visible, otherwise the ref is not set correctly by MUI.
 const MDInput = forwardRef<MarkdownInputRefApi, PropsWithChildren<MDInputProps>>((props, ref) => (
-  <MarkdownInput ref={ref} {...props} storageBucketId={localStorage.getItem('currentStorageBucketId')} />
+  <MarkdownInput ref={ref} {...props} storageBucketId={localStorage.getItem('currentStorageBucketId') ?? ''} />
 ));
+
+MDInput.displayName = 'MDInput';
 
 const FilledDetector = ({ value }: { value: string | undefined }) => {
   const formControl = useFormControl();
