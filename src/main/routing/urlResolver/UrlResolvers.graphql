@@ -7,11 +7,13 @@ query UrlResolver($url: String!) {
       levelZeroSpaceID
       collaboration {
         id
-        calloutId
-        calloutsSetId
-        contributionId
-        postId
-        whiteboardId
+        calloutsSet {
+          id
+          calloutId
+          contributionId
+          postId
+          whiteboardId
+        }
       }
       templatesSet {
         id
@@ -21,7 +23,15 @@ query UrlResolver($url: String!) {
     }
     organizationId
     userId
-    vcId
+    virtualContributor {
+      id
+      calloutsSet {
+        id
+        calloutId
+        contributionId
+        postId
+      }
+    }
     discussionId
     innovationPack {
       id
@@ -33,14 +43,12 @@ query UrlResolver($url: String!) {
   }
 }
 
-
-
 query SpaceUrlResolver(
-  $spaceNameId: NameID!,
-  $subspaceL1NameId: NameID = "nameid",
-  $subspaceL2NameId: NameID = "nameid",
-  $includeSubspaceL1: Boolean = false,
-  $includeSubspaceL2: Boolean = false,
+  $spaceNameId: NameID!
+  $subspaceL1NameId: NameID = "nameid"
+  $subspaceL2NameId: NameID = "nameid"
+  $includeSubspaceL1: Boolean = false
+  $includeSubspaceL2: Boolean = false
 ) {
   lookupByName {
     space(NAMEID: $spaceNameId) {
@@ -164,4 +172,3 @@ query SpaceKeyEntitiesIDs($spaceId: UUID!) {
 #     user(NAMEID: $nameId)
 #   }
 # }
-

@@ -22109,11 +22109,13 @@ export const UrlResolverDocument = gql`
         levelZeroSpaceID
         collaboration {
           id
-          calloutId
-          calloutsSetId
-          contributionId
-          postId
-          whiteboardId
+          calloutsSet {
+            id
+            calloutId
+            contributionId
+            postId
+            whiteboardId
+          }
         }
         templatesSet {
           id
@@ -22123,7 +22125,15 @@ export const UrlResolverDocument = gql`
       }
       organizationId
       userId
-      vcId
+      virtualContributor {
+        id
+        calloutsSet {
+          id
+          calloutId
+          contributionId
+          postId
+        }
+      }
       discussionId
       innovationPack {
         id

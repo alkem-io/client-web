@@ -7141,14 +7141,20 @@ export type UpdateWhiteboardEntityInput = {
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
-export type UrlResolverQueryResultCollaboration = {
-  __typename?: 'UrlResolverQueryResultCollaboration';
+export type UrlResolverQueryResultCalloutsSet = {
+  __typename?: 'UrlResolverQueryResultCalloutsSet';
   calloutId?: Maybe<Scalars['UUID']>;
-  calloutsSetId?: Maybe<Scalars['UUID']>;
   contributionId?: Maybe<Scalars['UUID']>;
   id: Scalars['UUID'];
   postId?: Maybe<Scalars['UUID']>;
+  type: UrlType;
   whiteboardId?: Maybe<Scalars['UUID']>;
+};
+
+export type UrlResolverQueryResultCollaboration = {
+  __typename?: 'UrlResolverQueryResultCollaboration';
+  calloutsSet: UrlResolverQueryResultCalloutsSet;
+  id: Scalars['UUID'];
 };
 
 export type UrlResolverQueryResultInnovationPack = {
@@ -7173,6 +7179,12 @@ export type UrlResolverQueryResultTemplatesSet = {
   templateId?: Maybe<Scalars['UUID']>;
 };
 
+export type UrlResolverQueryResultVirtualContributor = {
+  __typename?: 'UrlResolverQueryResultVirtualContributor';
+  calloutsSet: UrlResolverQueryResultCalloutsSet;
+  id: Scalars['UUID'];
+};
+
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
@@ -7181,12 +7193,13 @@ export type UrlResolverQueryResults = {
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
   userId?: Maybe<Scalars['UUID']>;
-  vcId?: Maybe<Scalars['UUID']>;
+  virtualContributor?: Maybe<UrlResolverQueryResultVirtualContributor>;
 };
 
 export enum UrlType {
   Admin = 'ADMIN',
   Callout = 'CALLOUT',
+  CalloutsSet = 'CALLOUTS_SET',
   ContributionPost = 'CONTRIBUTION_POST',
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
   Discussion = 'DISCUSSION',
@@ -26712,7 +26725,6 @@ export type UrlResolverQuery = {
     type: UrlType;
     organizationId?: string | undefined;
     userId?: string | undefined;
-    vcId?: string | undefined;
     discussionId?: string | undefined;
     space?:
       | {
@@ -26724,15 +26736,31 @@ export type UrlResolverQuery = {
           collaboration: {
             __typename?: 'UrlResolverQueryResultCollaboration';
             id: string;
-            calloutId?: string | undefined;
-            calloutsSetId?: string | undefined;
-            contributionId?: string | undefined;
-            postId?: string | undefined;
-            whiteboardId?: string | undefined;
+            calloutsSet: {
+              __typename?: 'UrlResolverQueryResultCalloutsSet';
+              id: string;
+              calloutId?: string | undefined;
+              contributionId?: string | undefined;
+              postId?: string | undefined;
+              whiteboardId?: string | undefined;
+            };
           };
           templatesSet?:
             | { __typename?: 'UrlResolverQueryResultTemplatesSet'; id: string; templateId?: string | undefined }
             | undefined;
+        }
+      | undefined;
+    virtualContributor?:
+      | {
+          __typename?: 'UrlResolverQueryResultVirtualContributor';
+          id: string;
+          calloutsSet: {
+            __typename?: 'UrlResolverQueryResultCalloutsSet';
+            id: string;
+            calloutId?: string | undefined;
+            contributionId?: string | undefined;
+            postId?: string | undefined;
+          };
         }
       | undefined;
     innovationPack?:

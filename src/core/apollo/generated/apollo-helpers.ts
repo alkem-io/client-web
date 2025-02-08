@@ -3790,22 +3790,31 @@ export type TimelineFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UrlResolverQueryResultCollaborationKeySpecifier = (
+export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
   | 'calloutId'
-  | 'calloutsSetId'
   | 'contributionId'
   | 'id'
   | 'postId'
+  | 'type'
   | 'whiteboardId'
-  | UrlResolverQueryResultCollaborationKeySpecifier
+  | UrlResolverQueryResultCalloutsSetKeySpecifier
 )[];
-export type UrlResolverQueryResultCollaborationFieldPolicy = {
+export type UrlResolverQueryResultCalloutsSetFieldPolicy = {
   calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
-  calloutsSetId?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postId?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultCollaborationKeySpecifier = (
+  | 'calloutsSet'
+  | 'id'
+  | UrlResolverQueryResultCollaborationKeySpecifier
+)[];
+export type UrlResolverQueryResultCollaborationFieldPolicy = {
+  calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UrlResolverQueryResultInnovationPackKeySpecifier = (
   | 'id'
@@ -3842,6 +3851,15 @@ export type UrlResolverQueryResultTemplatesSetFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   templateId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UrlResolverQueryResultVirtualContributorKeySpecifier = (
+  | 'calloutsSet'
+  | 'id'
+  | UrlResolverQueryResultVirtualContributorKeySpecifier
+)[];
+export type UrlResolverQueryResultVirtualContributorFieldPolicy = {
+  calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultsKeySpecifier = (
   | 'discussionId'
   | 'innovationPack'
@@ -3849,7 +3867,7 @@ export type UrlResolverQueryResultsKeySpecifier = (
   | 'space'
   | 'type'
   | 'userId'
-  | 'vcId'
+  | 'virtualContributor'
   | UrlResolverQueryResultsKeySpecifier
 )[];
 export type UrlResolverQueryResultsFieldPolicy = {
@@ -3859,7 +3877,7 @@ export type UrlResolverQueryResultsFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   userId?: FieldPolicy<any> | FieldReadFunction<any>;
-  vcId?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserKeySpecifier = (
   | 'account'
@@ -5070,6 +5088,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
   };
+  UrlResolverQueryResultCalloutsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultCalloutsSetKeySpecifier
+      | (() => undefined | UrlResolverQueryResultCalloutsSetKeySpecifier);
+    fields?: UrlResolverQueryResultCalloutsSetFieldPolicy;
+  };
   UrlResolverQueryResultCollaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5097,6 +5122,13 @@ export type StrictTypedTypePolicies = {
       | UrlResolverQueryResultTemplatesSetKeySpecifier
       | (() => undefined | UrlResolverQueryResultTemplatesSetKeySpecifier);
     fields?: UrlResolverQueryResultTemplatesSetFieldPolicy;
+  };
+  UrlResolverQueryResultVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultVirtualContributorKeySpecifier
+      | (() => undefined | UrlResolverQueryResultVirtualContributorKeySpecifier);
+    fields?: UrlResolverQueryResultVirtualContributorFieldPolicy;
   };
   UrlResolverQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UrlResolverQueryResultsKeySpecifier | (() => undefined | UrlResolverQueryResultsKeySpecifier);

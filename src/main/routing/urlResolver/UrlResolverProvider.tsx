@@ -158,16 +158,16 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
           // Collaboration:
           collaborationId: data?.space?.collaboration.id,
-          calloutsSetId: data?.space?.collaboration.calloutsSetId,
-          calloutId: data?.space?.collaboration.calloutId,
-          contributionId: data?.space?.collaboration.contributionId,
-          postId: data?.space?.collaboration.postId,
-          whiteboardId: data?.space?.collaboration.whiteboardId,
+          calloutsSetId: data?.space?.collaboration.calloutsSet.id,
+          calloutId: data?.space?.collaboration.calloutsSet.calloutId,
+          contributionId: data?.space?.collaboration.calloutsSet.contributionId,
+          postId: data?.space?.collaboration.calloutsSet.postId,
+          whiteboardId: data?.space?.collaboration.calloutsSet.whiteboardId,
 
           // Contributors:
           organizationId: data?.organizationId,
           userId: data?.userId,
-          vcId: data?.vcId,
+          vcId: data?.virtualContributor?.id,
 
           // Innovation Packs:
           innovationPackId: data?.innovationPack?.id,
