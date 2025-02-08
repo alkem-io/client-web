@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
   PropsWithChildren,
+  forwardRef,
 } from 'react';
 import {
   FormControl,
@@ -46,6 +47,15 @@ interface MarkdownFieldProps extends InputProps {
   controlsVisible?: 'always' | 'focused';
 }
 
+interface MDInputProps extends InputBaseComponentProps {
+  storageBucketId?: string;
+}
+
+// Keep MDInput ref forwarded in order the title label to be able to move up from the correct position when the input is focused and to be visible, otherwise the ref is not set correctly by MUI.
+const MDInput = forwardRef<MarkdownInputRefApi, PropsWithChildren<MDInputProps>>((props, ref) => (
+  <MarkdownInput ref={ref} {...props} storageBucketId={localStorage.getItem('currentStorageBucketId')} />
+));
+
 const FilledDetector = ({ value }: { value: string | undefined }) => {
   const formControl = useFormControl();
 
@@ -83,6 +93,13 @@ export const FormikMarkdownField = ({
 }: MarkdownFieldProps) => {
   const tErr = useValidationMessageTranslation();
   const { t } = useTranslation();
+
+  // Usually store a reference to the child in a Ref, but in this case we need state
+  // cause label's presence/position depends on the presence of this ref.
+  const [inputElement, setInputElement] = useState<MarkdownInputRefApi | null>(null);
+
+  const inputElementRef = useRef<MarkdownInputRefApi | null>(null);
+
   const validate = () => {
     const characterCount = inputElementRef.current?.value?.length ?? 0;
     const isAboveCharacterLimit = maxLength && characterCount > maxLength;
@@ -122,15 +139,13 @@ export const FormikMarkdownField = ({
     helper.setTouched(true);
   }, [helper]);
 
-  // Usually store a reference to the child in a Ref, but in this case we need state
-  // cause label's presence/position depends on the presence of this ref.
-  const [inputElement, setInputElement] = useState<MarkdownInputRefApi | null>(null);
-  const inputElementRef = useRef<MarkdownInputRefApi | null>(null);
-
-  const inputRef = useCallback((nextInputElement: MarkdownInputRefApi | null) => {
-    inputElementRef.current = nextInputElement;
-    setInputElement(nextInputElement);
-  }, []);
+  const inputRef = useCallback(
+    (nextInputElement: MarkdownInputRefApi | null) => {
+      inputElementRef.current = nextInputElement;
+      setInputElement(nextInputElement);
+    },
+    [inputElementRef]
+  );
 
   const focusInput = () => {
     inputElement?.focus();
@@ -140,12 +155,14 @@ export const FormikMarkdownField = ({
 
   const storageConfig = useStorageConfigContext();
 
-  const MDInput = useCallback(
-    (props: PropsWithChildren<InputBaseComponentProps>) => (
-      <MarkdownInput {...props} storageBucketId={storageConfig?.storageBucketId} />
-    ),
-    [storageConfig?.storageBucketId]
-  );
+  useEffect(() => {
+    // Save the current storageBucketId in localStorage so it can be used in MDInput
+    storageConfig?.storageBucketId && localStorage.setItem('currentStorageBucketId', storageConfig.storageBucketId);
+
+    return () => {
+      localStorage.removeItem('currentStorageBucketId');
+    };
+  }, [storageConfig]);
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
