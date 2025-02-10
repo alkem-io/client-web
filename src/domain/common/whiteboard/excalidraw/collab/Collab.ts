@@ -1,4 +1,4 @@
-import { throttle } from 'lodash';
+import { cloneDeep, throttle } from 'lodash';
 import type {
   Collaborator,
   ExcalidrawImperativeAPI,
@@ -33,6 +33,8 @@ import {
 } from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
 import type { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { detectChanges } from './detect.changes';
+import { mergeElements } from '@/domain/common/whiteboard/excalidraw/collab/merge.elements';
 
 type CollabState = {
   errorMessage: string;
@@ -81,6 +83,7 @@ class Collab {
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
+  private prevElements: ReadonlyArray<OrderedExcalidrawElement>;
 
   constructor(props: CollabProps) {
     this.state = {
@@ -101,6 +104,7 @@ class Collab {
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.onSceneInitChange = props.onSceneInitChange;
     this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
+    this.prevElements = [];
   }
 
   init() {
@@ -227,9 +231,8 @@ class Collab {
               } else if (isSceneUpdatePayload(data)) {
                 const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
                 const remoteFiles = data.payload.files;
-                await this.handleRemoteSceneUpdate(
-                  await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles)
-                );
+                const result = await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles);
+                await this.handleRemoteSceneUpdate(result);
               }
             },
             'collaborator-mode': event => {
@@ -311,6 +314,7 @@ class Collab {
     const appState = this.excalidrawAPI.getAppState();
 
     const { restoreElements, hashElementsVersion, reconcileElements } = await this.excalidrawUtils;
+    mergeElements(remoteElements, localElements);
 
     const restoredRemoteElements = restoreElements(remoteElements, null);
 
@@ -455,9 +459,19 @@ class Collab {
     const newVersion = hashElementsVersion(elements);
 
     if (newVersion !== this.lastBroadcastedOrReceivedSceneVersion) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
+      const elementDeltas = detectChanges(this.prevElements, elements);
+      // console.log(detectChanges(this.prevElements as never, elements as never));
+
+      this.portal.broadcastScene(
+        WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
+        elementDeltas as OrderedExcalidrawElement[],
+        files,
+        { syncAll: false }
+      );
       this.lastBroadcastedOrReceivedSceneVersion = newVersion;
       this.queueBroadcastAllElements();
+
+      this.prevElements = cloneDeep(elements);
     }
   };
 
