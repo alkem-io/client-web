@@ -749,9 +749,14 @@
         "description": "crwdns18498:0crwdne18498:0",
         "placeholder": "crwdns18500:0crwdne18500:0"
       },
+      "description": {
+        "title": "crwdns28762:0crwdne28762:0",
+        "description": "crwdns28764:0crwdne28764:0",
+        "placeholder": "crwdns28766:0crwdne28766:0"
+      },
       "background": {
-        "title": "crwdns18502:0crwdne18502:0",
-        "description": "crwdns18504:0crwdne18504:0",
+        "title": "crwdns28768:0crwdne28768:0",
+        "description": "crwdns28770:0crwdne28770:0",
         "placeholder": "crwdns18506:0crwdne18506:0"
       },
       "impact": {
