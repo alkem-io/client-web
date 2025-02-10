@@ -23,7 +23,7 @@ import {
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { DeleteOutline } from '@mui/icons-material';
+import { DeleteOutline, SettingsOutlined } from '@mui/icons-material';
 import {
   useCreateWingbackAccountMutation,
   useDeleteInnovationHubMutation,
@@ -44,6 +44,8 @@ import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import useNavigate from '@/core/routing/useNavigate';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const enum Entities {
   Space = 'Space',
@@ -177,6 +179,7 @@ const StyledCreationButton = ({ disabled, onClick }: { disabled: boolean; onClic
 
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const notify = useNotification();
   const ensurePresence = useEnsurePresence();
   const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
@@ -451,17 +454,30 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       </MenuItemWithIcon>
     );
 
-  const getHubActions = (id: string) =>
-    canDeleteEntities && (
-      <MenuItemWithIcon
-        key="delete"
-        disabled={deleteHubLoading}
-        iconComponent={DeleteOutline}
-        onClick={() => onDeleteHubClick(id)}
-      >
-        {t('buttons.delete')}
-      </MenuItemWithIcon>
-    );
+  const getHubActions = (hub: Identifiable & { profile: { url: string } }) => (
+    <>
+      {canDeleteEntities && (
+        <MenuItemWithIcon
+          key="delete"
+          disabled={deleteHubLoading}
+          iconComponent={DeleteOutline}
+          onClick={() => onDeleteHubClick(hub.id)}
+        >
+          {t('buttons.delete')}
+        </MenuItemWithIcon>
+      )}
+      {hub.profile.url && (
+        <MenuItemWithIcon
+          key="settings"
+          disabled={deleteHubLoading}
+          iconComponent={SettingsOutlined}
+          onClick={() => navigate(hub.profile.url)}
+        >
+          {t('common.settings')}
+        </MenuItemWithIcon>
+      )}
+    </>
+  );
 
   return (
     <>
@@ -639,7 +655,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
               innovationHubs?.map(hub => (
-                <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub.id)} />
+                <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub)} />
               ))}
             <Actions justifyContent="end">
               {canCreateInnovationHub && account?.id && (
@@ -656,7 +672,6 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                   />
                   <CreateInnovationHubDialog
                     accountId={account.id}
-                    accountHostName={accountHostName}
                     open={createInnovationHubDialogOpen}
                     onClose={() => setCreateInnovationHubDialogOpen(false)}
                   />

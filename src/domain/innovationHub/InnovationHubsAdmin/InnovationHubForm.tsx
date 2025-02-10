@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Tagset, TagsetType, Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
-import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
@@ -25,7 +24,6 @@ export interface InnovationHubFormValues {
     tagline: string;
     tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
   };
-  accountId: string;
 }
 
 type InnovationHubFormProps = {
@@ -40,9 +38,6 @@ type InnovationHubFormProps = {
     tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
     visual?: Visual;
   };
-  accountId?: string;
-
-  accounts?: { id: string; name: string }[];
 
   loading?: boolean;
   onSubmit: (formData: InnovationHubFormValues) => void;
@@ -53,8 +48,6 @@ const InnovationHubForm = ({
   nameID,
   subdomain,
   profile,
-  accountId,
-  accounts,
   loading,
   onSubmit,
 }: InnovationHubFormProps) => {
@@ -72,7 +65,6 @@ const InnovationHubForm = ({
       tagline: profile?.tagline ?? '',
       tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [], allowedValues: [], type: TagsetType.Freeform }],
     },
-    accountId: accountId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -84,7 +76,6 @@ const InnovationHubForm = ({
       tagline: yup.string().max(MID_TEXT_LENGTH),
       tagsets: tagsetsSegmentSchema,
     }),
-    accountId: yup.string().required(),
   });
 
   return (
@@ -99,14 +90,6 @@ const InnovationHubForm = ({
               disabled={!isNew}
             />
             <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
-            <FormGroup>
-              <FormikAutocomplete
-                title={t('pages.admin.innovationHubs.fields.host')}
-                name="accountId"
-                values={accounts ?? []}
-                placeholder={t('pages.admin.innovationHubs.fields.host')}
-              />
-            </FormGroup>
             <FormikInputField
               name="profile.tagline"
               title={t('components.profile.fields.tagline.title')}
