@@ -11,7 +11,6 @@ import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -23,8 +22,10 @@ import {
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface WhiteboardDialogFooterProps {
+  whiteboardUrl: string | undefined;
   lastSavedDate: Date | undefined;
   canUpdateContent: boolean;
   onDelete: () => void;
@@ -53,6 +54,7 @@ enum ReadonlyReason {
 }
 
 const WhiteboardDialogFooter = ({
+  whiteboardUrl,
   lastSavedDate,
   canUpdateContent,
   onDelete,
@@ -65,21 +67,12 @@ const WhiteboardDialogFooter = ({
   updating = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
-
-  const { pathname } = useLocation();
-
   const { isAuthenticated } = useAuthenticationContext();
 
+  // TODO: WhiteboardDialogFooter depends on being inside a Space, not sure if this is fully correct
+  const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
   const spaceContext = useSpace();
   const subspaceContext = useSubSpace();
-
-  // TODO: this must be refactored to use just a space...
-  let spaceLevel = SpaceLevel.L0;
-  if (pathname.includes('opportunities')) {
-    spaceLevel = SpaceLevel.L2;
-  } else if (pathname.includes('challenges')) {
-    spaceLevel = SpaceLevel.L1;
-  }
 
   const getMyMembershipStatus = () => {
     switch (spaceLevel) {
@@ -181,7 +174,7 @@ const WhiteboardDialogFooter = ({
                   <span />
                 ),
                 journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-                signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
                 learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
               }}
             />

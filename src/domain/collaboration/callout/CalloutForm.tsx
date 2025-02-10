@@ -4,6 +4,7 @@ import {
   CalloutGroupName,
   CalloutState,
   CalloutType,
+  SpaceLevel,
   Tagset,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -34,7 +35,7 @@ import CalloutWhiteboardField, {
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
-import { useLocation } from 'react-router-dom';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type FormValueType = {
   displayName: string;
@@ -105,7 +106,8 @@ const CalloutForm = ({
   disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
-  const isL0Space = useLocation().pathname.includes('challenges');
+  const { spaceLevel } = useUrlResolver();
+  const isL0Space = spaceLevel === SpaceLevel.L0;
 
   const tagsets: Tagset[] = useMemo(
     () => [

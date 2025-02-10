@@ -26727,29 +26727,6 @@ export type SpaceUrlResolverQuery = {
   };
 };
 
-export type SpaceKeyEntitiesIDsQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceKeyEntitiesIDsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: { __typename?: 'Community'; id: string };
-          collaboration: {
-            __typename?: 'Collaboration';
-            id: string;
-            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
-          };
-        }
-      | undefined;
-  };
-};
-
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;

@@ -19,7 +19,6 @@ import { Skeleton } from '@mui/material';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BackButton from '@/core/ui/actions/BackButton';
-import { useLocation } from 'react-router-dom';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { ForumOutlined } from '@mui/icons-material';
@@ -137,8 +136,6 @@ export const DiscussionPage = ({ discussionId }: { discussionId: string | undefi
     setDeleteDiscussionId(undefined);
   };
 
-  const { pathname } = useLocation();
-
   return (
     <StorageConfigContextProvider locationType="platform">
       <TopLevelPageLayout
@@ -150,9 +147,7 @@ export const DiscussionPage = ({ discussionId }: { discussionId: string | undefi
             <BreadcrumbsItem uri="/forum" iconComponent={ForumOutlined}>
               {t('pages.forum.shortName')}
             </BreadcrumbsItem>
-            <BreadcrumbsItem uri={pathname} iconComponent={ForumOutlined}>
-              {discussion?.title}
-            </BreadcrumbsItem>
+            <BreadcrumbsItem iconComponent={ForumOutlined}>{discussion?.title}</BreadcrumbsItem>
           </TopLevelPageBreadcrumbs>
         }
       >

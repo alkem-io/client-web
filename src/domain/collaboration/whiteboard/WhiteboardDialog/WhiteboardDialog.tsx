@@ -21,7 +21,6 @@ import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import {
   PreviewImageDimensions,
   WhiteboardPreviewImage,
@@ -94,10 +93,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
-
-  const { pathname } = useLocation();
-
-  const initialPathname = useRef(pathname).current;
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
@@ -239,12 +234,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   );
 
   useEffect(() => {
-    if (pathname !== initialPathname) {
-      onClose();
-    }
-  }, [pathname]);
-
-  useEffect(() => {
     formikRef.current?.resetForm({
       values: initialValues,
     });
@@ -317,6 +306,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                 <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
+                  whiteboardUrl={whiteboard.profile.url}
                   collaboratorModeReason={modeReason}
                   lastSavedDate={lastSavedDate}
                   onDelete={() => setDeleteDialogOpen(true)}

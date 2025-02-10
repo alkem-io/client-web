@@ -80,20 +80,8 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
     const draft = callout.visibility === CalloutVisibility.Draft;
     const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
-    // TODO:
-    // These deconstructions are here to avoid TS errors when casting to TypedCalloutDetails
-    // But a general clean up of TypedCallout and TypedCalloutDetails is needed
-
-    const { framing, ...calloutRest } = callout;
-    const { whiteboard: whiteboardData, ...framingRest } = framing;
-    const whiteboard = whiteboardData ? { ...whiteboardData } : undefined;
-
     const result: TypedCalloutDetails = {
-      ...calloutRest,
-      framing: {
-        ...framingRest,
-        whiteboard: whiteboard,
-      },
+      ...callout,
       authorization: {
         myPrivileges: callout.authorization?.myPrivileges,
       },
@@ -104,7 +92,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       entitledToSaveAsTemplate: false,
       flowStates: [],
       groupName: getCalloutGroupNameValue(
-        framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
+        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
       ),
     };
     return result;
