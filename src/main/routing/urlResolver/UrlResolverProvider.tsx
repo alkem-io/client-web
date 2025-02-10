@@ -1,7 +1,7 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
-import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -76,22 +76,6 @@ const emptyResult: UrlResolverContextValue = {
 const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
-  /**
-   * Apollo's cache is too smart
-   * for example:
-   *   - for a Url like /space/spaceNameId/settings/templates
-   *      the server is returning { spaceId: 1234, templateId: null } // which is correct
-   *   - but then when the user navigates to /space/spaceNameId/settings/templates/templateNameId
-   *      the server is returning { spaceId: 1234, templateId: 5678 } // which is also correct
-   *   - but then when the user closes the dialog, and the URL changes back to /space/spaceNameId/settings/templates
-   *      Apollo is not making the request again, which is good,
-   *      but the cache is returning the previous value { spaceId: 1234, templateId: 5678 },
-   *      completing that null templateId which is wrong
-   *
-   * So I had to write a dumber cache that just stores url => result object
-   */
-  const cache = useRef<Record<string, UrlResolverContextValue>>({});
-  const value = useRef<UrlResolverContextValue>(emptyResult);
   // Using a state to force a re-render of the children when the url changes
   const [currentUrl, setCurrentUrl] = useState(window.location.href);
 
@@ -127,71 +111,78 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  /**
+   * Default Apollo's cache behaviour will store the result of the URL resolver queries based on the Id of the space returned
+   * And will fill the gaps of missing Ids when the user navigates to a different URL
+   * for example:
+   *   - for a Url like /space/spaceNameId/settings/templates
+   *      the server is returning { spaceId: 1234, templateId: null } // which is correct
+   *   - but then when the user navigates to /space/spaceNameId/settings/templates/templateNameId
+   *      the server is returning { spaceId: 1234, templateId: 5678 } // which is also correct
+   *   - but then when the user closes the dialog, and the URL changes back to /space/spaceNameId/settings/templates
+   *      Apollo is not making the request again, which is good,
+   *      but the cache is returning the previous value { spaceId: 1234, templateId: 5678 },
+   *      completing that null templateId which is wrong
+   *
+   * To avoid this, we are have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
+   * This way, the cache will store the entire result of the query based on the URL, and will not try to merge the results of different queries.
+   */
   const { data: urlResolverData, loading: urlResolverLoading } = useUrlResolverQuery({
     variables: {
       url: currentUrl,
     },
-    skip: cache.current[currentUrl] !== undefined,
   });
 
-  if (cache.current[currentUrl]) {
-    value.current = cache.current[currentUrl];
-  } else {
-    //!! memoize this with lodash? window.location.href
-    //const result = useMemo<UrlResolverContextValue>(() => {
+  const result = useMemo<UrlResolverContextValue>(() => {
     if (urlResolverData?.urlResolver.type) {
-      const result = (() => {
-        const type = urlResolverData?.urlResolver.type;
-        const data = urlResolverData?.urlResolver;
-        const spaceId = data?.space?.id;
-        const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
-        const journeyPath = spacesIds.length > 0 ? (spacesIds as JourneyPath) : undefined;
+      const type = urlResolverData?.urlResolver.type;
+      const data = urlResolverData?.urlResolver;
+      const spaceId = data?.space?.id;
+      const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
+      const journeyPath = spacesIds.length > 0 ? (spacesIds as JourneyPath) : undefined;
 
-        return {
-          type,
-          // Space:
-          spaceId: data?.space?.id,
-          spaceLevel: data?.space?.level,
-          levelZeroSpaceId: data?.space?.levelZeroSpaceID,
-          parentSpaceId: (data?.space?.parentSpaces ?? []).slice(-1)[0],
-          journeyPath: journeyPath,
+      return {
+        type,
+        // Space:
+        spaceId: data?.space?.id,
+        spaceLevel: data?.space?.level,
+        levelZeroSpaceId: data?.space?.levelZeroSpaceID,
+        parentSpaceId: (data?.space?.parentSpaces ?? []).slice(-1)[0],
+        journeyPath: journeyPath,
 
-          // Collaboration:
-          collaborationId: data?.space?.collaboration.id,
-          calloutsSetId: data?.space?.collaboration.calloutsSet.id,
-          calloutId: data?.space?.collaboration.calloutsSet.calloutId,
-          contributionId: data?.space?.collaboration.calloutsSet.contributionId,
-          postId: data?.space?.collaboration.calloutsSet.postId,
-          whiteboardId: data?.space?.collaboration.calloutsSet.whiteboardId,
+        // Collaboration:
+        collaborationId: data?.space?.collaboration.id,
+        calloutsSetId: data?.space?.collaboration.calloutsSet.id,
+        calloutId: data?.space?.collaboration.calloutsSet.calloutId,
+        contributionId: data?.space?.collaboration.calloutsSet.contributionId,
+        postId: data?.space?.collaboration.calloutsSet.postId,
+        whiteboardId: data?.space?.collaboration.calloutsSet.whiteboardId,
 
-          // Contributors:
-          organizationId: data?.organizationId,
-          userId: data?.userId,
-          vcId: data?.virtualContributor?.id,
+        // Contributors:
+        organizationId: data?.organizationId,
+        userId: data?.userId,
+        vcId: data?.virtualContributor?.id,
 
-          // Innovation Packs:
-          innovationPackId: data?.innovationPack?.id,
+        // Innovation Packs:
+        innovationPackId: data?.innovationPack?.id,
 
-          // Templates:
-          templatesSetId: data?.space?.templatesSet?.id ?? data?.innovationPack?.templatesSet.id,
-          templateId: data?.space?.templatesSet?.templateId ?? data?.innovationPack?.templatesSet.templateId,
+        // Templates:
+        templatesSetId: data?.space?.templatesSet?.id ?? data?.innovationPack?.templatesSet.id,
+        templateId: data?.space?.templatesSet?.templateId ?? data?.innovationPack?.templatesSet.templateId,
 
-          // Forum:
-          discussionId: data?.discussionId,
+        // Forum:
+        discussionId: data?.discussionId,
 
-          // PENDING
-          innovationHubId: undefined,
-          loading: urlResolverLoading,
-        };
-        // }, [currentUrl, urlResolverData, urlResolverLoading]);
-      })();
-      cache.current[currentUrl] = result;
-      value.current = result;
+        // PENDING
+        innovationHubId: undefined,
+        loading: urlResolverLoading,
+      };
+    } else {
+      return emptyResult;
     }
-  }
-  console.log('render', window.location.href, currentUrl, value.current);
+  }, [currentUrl, urlResolverData, urlResolverLoading]);
 
-  return <UrlResolverContext.Provider value={value.current}>{children}</UrlResolverContext.Provider>;
+  return <UrlResolverContext.Provider value={result}>{children}</UrlResolverContext.Provider>;
 };
 
 export { UrlResolverProvider, UrlResolverContext };
