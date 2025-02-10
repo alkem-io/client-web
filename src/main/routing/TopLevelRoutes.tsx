@@ -37,7 +37,7 @@ const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virt
 const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
 const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
-  () => import('@/domain/innovationHub/InnovationHubsAdmin/InnovationHubsRoutes')
+  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
 const ProfileRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/profile/routing/ProfileRoute'));
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(

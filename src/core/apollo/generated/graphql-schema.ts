@@ -7205,6 +7205,7 @@ export enum UrlType {
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
   Discussion = 'DISCUSSION',
   Forum = 'FORUM',
+  Home = 'HOME',
   InnovationHub = 'INNOVATION_HUB',
   InnovationLibrary = 'INNOVATION_LIBRARY',
   InnovationPacks = 'INNOVATION_PACKS',
@@ -18727,45 +18728,6 @@ export type DashboardSpacesQuery = {
   }>;
 };
 
-export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubAvailableSpacesQuery = {
-  __typename?: 'Query';
-  spaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    visibility: SpaceVisibility;
-    provider:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-      | {
-          __typename?: 'VirtualContributor';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
-};
-
-export type InnovationHubSpaceFragment = {
-  __typename?: 'Space';
-  id: string;
-  visibility: SpaceVisibility;
-  provider:
-    | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      };
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
 export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AdminInnovationHubsListQuery = {
@@ -18793,179 +18755,6 @@ export type DeleteInnovationHubMutationVariables = Exact<{
 export type DeleteInnovationHubMutation = {
   __typename?: 'Mutation';
   deleteInnovationHub: { __typename?: 'InnovationHub'; id: string };
-};
-
-export type InnovationHubProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  description?: string | undefined;
-  tagline?: string | undefined;
-  url: string;
-  tagset?:
-    | {
-        __typename?: 'Tagset';
-        id: string;
-        name: string;
-        tags: Array<string>;
-        allowedValues: Array<string>;
-        type: TagsetType;
-      }
-    | undefined;
-  visual?:
-    | {
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-        alternativeText?: string | undefined;
-      }
-    | undefined;
-};
-
-export type InnovationHubSettingsQueryVariables = Exact<{
-  innovationHubId: Scalars['UUID'];
-}>;
-
-export type InnovationHubSettingsQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          nameID: string;
-          subdomain: string;
-          spaceVisibilityFilter?: SpaceVisibility | undefined;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagline?: string | undefined;
-            url: string;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
-          spaceListFilter?:
-            | Array<{
-                __typename?: 'Space';
-                id: string;
-                visibility: SpaceVisibility;
-                provider:
-                  | {
-                      __typename?: 'Organization';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
-                    }
-                  | {
-                      __typename?: 'User';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
-                    }
-                  | {
-                      __typename?: 'VirtualContributor';
-                      id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
-                    };
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type AdminInnovationHubFragment = {
-  __typename?: 'InnovationHub';
-  id: string;
-  nameID: string;
-  subdomain: string;
-  spaceVisibilityFilter?: SpaceVisibility | undefined;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagline?: string | undefined;
-    url: string;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?:
-      | {
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }
-      | undefined;
-  };
-  spaceListFilter?:
-    | Array<{
-        __typename?: 'Space';
-        id: string;
-        visibility: SpaceVisibility;
-        provider:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }
-          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      }>
-    | undefined;
 };
 
 export type CreateInnovationHubMutationVariables = Exact<{
@@ -19102,6 +18891,218 @@ export type UpdateInnovationHubMutation = {
         }>
       | undefined;
   };
+};
+
+export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationHubAvailableSpacesQuery = {
+  __typename?: 'Query';
+  spaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    visibility: SpaceVisibility;
+    provider:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  }>;
+};
+
+export type InnovationHubSpaceFragment = {
+  __typename?: 'Space';
+  id: string;
+  visibility: SpaceVisibility;
+  provider:
+    | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      };
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+};
+
+export type InnovationHubProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  description?: string | undefined;
+  tagline?: string | undefined;
+  url: string;
+  tagset?:
+    | {
+        __typename?: 'Tagset';
+        id: string;
+        name: string;
+        tags: Array<string>;
+        allowedValues: Array<string>;
+        type: TagsetType;
+      }
+    | undefined;
+  visual?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
+    | undefined;
+};
+
+export type InnovationHubSettingsQueryVariables = Exact<{
+  innovationHubId: Scalars['UUID'];
+}>;
+
+export type InnovationHubSettingsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          subdomain: string;
+          spaceVisibilityFilter?: SpaceVisibility | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagline?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+          spaceListFilter?:
+            | Array<{
+                __typename?: 'Space';
+                id: string;
+                visibility: SpaceVisibility;
+                provider:
+                  | {
+                      __typename?: 'Organization';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | {
+                      __typename?: 'VirtualContributor';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    };
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type InnovationHubSettingsFragment = {
+  __typename?: 'InnovationHub';
+  id: string;
+  nameID: string;
+  subdomain: string;
+  spaceVisibilityFilter?: SpaceVisibility | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline?: string | undefined;
+    url: string;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+  spaceListFilter?:
+    | Array<{
+        __typename?: 'Space';
+        id: string;
+        visibility: SpaceVisibility;
+        provider:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }>
+    | undefined;
 };
 
 export type InnovationHubQueryVariables = Exact<{

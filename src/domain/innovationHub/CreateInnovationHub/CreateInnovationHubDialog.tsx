@@ -3,7 +3,7 @@ import { DialogContent } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
-import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsAdmin/InnovationHubForm';
+import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
 import { useCreateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
 import { InnovationHubType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';

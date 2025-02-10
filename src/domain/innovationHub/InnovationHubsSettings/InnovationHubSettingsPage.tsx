@@ -2,14 +2,14 @@ import { sortBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useInnovationHubSettingsQuery, useUpdateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
-import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
+import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import InnovationHubSpacesField from './InnovationHubSpacesField';
+import InnovationHubSpacesField from '../InnovationHubsSettings/InnovationHubSpacesField';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import InnovationHubProfileLayout from './InnovationHubProfileLayout';
+import InnovationHubProfileLayout from '../InnovationHubsSettings/InnovationHubProfileLayout';
 
 const InnovationHubSettingsPage = () => {
   const { t } = useTranslation();
