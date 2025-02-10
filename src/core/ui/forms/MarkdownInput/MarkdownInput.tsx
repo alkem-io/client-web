@@ -30,13 +30,13 @@ import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
-  storageBucketId: string | undefined;
 }
 
 type Offset = {
@@ -72,7 +72,6 @@ export const MarkdownInput = memo(
         hideImageOptions,
         onFocus,
         onBlur,
-        storageBucketId,
         temporaryLocation = false,
       },
       ref
@@ -85,6 +84,8 @@ export const MarkdownInput = memo(
       const isInteractingWithInput = hasFocus || isControlsDialogOpen;
 
       const [htmlContent, setHtmlContent] = useState('');
+
+      const storageConfig = useStorageConfigContext();
 
       const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
 
@@ -121,6 +122,8 @@ export const MarkdownInput = memo(
 
         return false; // Not an image or HTML with images
       };
+
+      const storageBucketId = storageConfig?.storageBucketId;
 
       /**
        * Handles the paste event in the editor.
