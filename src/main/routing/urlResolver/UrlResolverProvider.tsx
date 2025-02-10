@@ -1,5 +1,6 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 
@@ -44,8 +45,9 @@ export type UrlResolverContextValue = {
   templatesSetId: string | undefined;
   templateId: string | undefined;
 
-  //!! pending
+  // Innovation Hubs
   innovationHubId: string | undefined;
+
   loading: boolean;
 };
 
@@ -72,6 +74,25 @@ const emptyResult: UrlResolverContextValue = {
   innovationHubId: undefined,
   loading: true,
 };
+
+/**
+ * Helper function to choose between two urlResolver results objects and generate the urlResolver result based on the selected one
+ * For example, spaces have a calloutSet, but also VCs have a calloutSet.
+ * This function can select the correct one based on the urlType
+ *
+ * @param values An object coming from the urlResolverService
+ *   for example something like:{
+ *    [UrlType.Space]: Space.Collaboration { CalloutsSet { id: '123', calloutId: '456' ...} }
+ *    [UrlType.VirtualContributor]: VC.KnowledgeBase { CalloutsSet { id: '789', calloutId: '001' ...} }
+ * @param urlType the type to use
+ * @param generate A function that should generate the result based on the object selected by urlType
+ * @returns
+ */
+const selectUrlParams = <T extends {}, R extends {}>(
+  urlType: UrlType,
+  values: PartialRecord<UrlType, Partial<T | undefined>>,
+  generate: (values: Partial<T> | undefined) => R
+): R => generate(values[urlType] ?? undefined);
 
 const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
@@ -135,8 +156,8 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
   const result = useMemo<UrlResolverContextValue>(() => {
     if (urlResolverData?.urlResolver.type) {
-      const type = urlResolverData?.urlResolver.type;
-      const data = urlResolverData?.urlResolver;
+      const type = urlResolverData.urlResolver.type;
+      const data = urlResolverData.urlResolver;
       const spaceId = data?.space?.id;
       const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
       const journeyPath = spacesIds.length > 0 ? (spacesIds as JourneyPath) : undefined;
@@ -144,37 +165,58 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       return {
         type,
         // Space:
-        spaceId: data?.space?.id,
-        spaceLevel: data?.space?.level,
-        levelZeroSpaceId: data?.space?.levelZeroSpaceID,
-        parentSpaceId: (data?.space?.parentSpaces ?? []).slice(-1)[0],
+        spaceId: data.space?.id,
+        spaceLevel: data.space?.level,
+        levelZeroSpaceId: data.space?.levelZeroSpaceID,
+        parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
         journeyPath: journeyPath,
 
         // Collaboration:
-        collaborationId: data?.space?.collaboration.id,
-        calloutsSetId: data?.space?.collaboration.calloutsSet.id,
-        calloutId: data?.space?.collaboration.calloutsSet.calloutId,
-        contributionId: data?.space?.collaboration.calloutsSet.contributionId,
-        postId: data?.space?.collaboration.calloutsSet.postId,
-        whiteboardId: data?.space?.collaboration.calloutsSet.whiteboardId,
+        collaborationId: data.space?.collaboration.id,
+
+        // CalloutsSet:
+        ...selectUrlParams(
+          type,
+          {
+            [UrlType.Space]: data.space?.collaboration.calloutsSet,
+            [UrlType.VirtualContributor]: data.virtualContributor?.calloutsSet,
+          },
+          calloutsSet => ({
+            calloutsSetId: calloutsSet?.id,
+            calloutId: calloutsSet?.calloutId,
+            contributionId: calloutsSet?.contributionId,
+            postId: calloutsSet?.postId,
+            whiteboardId: calloutsSet?.['whiteboardId'], // No whiteboards yet on VCKBs, so TypeScript is complaining
+          })
+        ),
 
         // Contributors:
-        organizationId: data?.organizationId,
-        userId: data?.userId,
-        vcId: data?.virtualContributor?.id,
+        organizationId: data.organizationId,
+        userId: data.userId,
+        vcId: data.virtualContributor?.id,
 
         // Innovation Packs:
-        innovationPackId: data?.innovationPack?.id,
+        innovationPackId: data.innovationPack?.id,
+
+        // InnovationHub:
+        innovationHubId: data.innovationHubId,
 
         // Templates:
-        templatesSetId: data?.space?.templatesSet?.id ?? data?.innovationPack?.templatesSet.id,
-        templateId: data?.space?.templatesSet?.templateId ?? data?.innovationPack?.templatesSet.templateId,
+        ...selectUrlParams(
+          type,
+          {
+            [UrlType.Space]: data.space?.templatesSet,
+            [UrlType.InnovationPacks]: data.innovationPack?.templatesSet,
+          },
+          templatesSet => ({
+            templatesSetId: templatesSet?.id,
+            templateId: templatesSet?.templateId,
+          })
+        ),
 
         // Forum:
-        discussionId: data?.discussionId,
+        discussionId: data.discussionId,
 
-        // PENDING
-        innovationHubId: undefined,
         loading: urlResolverLoading,
       };
     } else {

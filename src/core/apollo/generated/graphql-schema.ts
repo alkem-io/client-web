@@ -7188,6 +7188,7 @@ export type UrlResolverQueryResultVirtualContributor = {
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
+  innovationHubId?: Maybe<Scalars['UUID']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
@@ -18726,21 +18727,6 @@ export type DashboardSpacesQuery = {
   }>;
 };
 
-export type AccountsListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AccountsListQuery = {
-  __typename?: 'Query';
-  accounts: Array<{
-    __typename?: 'Account';
-    id: string;
-    host?:
-      | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
-      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
-      | { __typename?: 'VirtualContributor'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
-      | undefined;
-  }>;
-};
-
 export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubAvailableSpacesQuery = {
@@ -26726,6 +26712,7 @@ export type UrlResolverQuery = {
     organizationId?: string | undefined;
     userId?: string | undefined;
     discussionId?: string | undefined;
+    innovationHubId?: string | undefined;
     space?:
       | {
           __typename?: 'UrlResolverQueryResultSpace';
