@@ -49,11 +49,11 @@ type CreateSpaceDialogProps = {
         name: string | undefined;
       }
     | undefined;
-  redirectOnComplete?: boolean;
+  withRedirectOnClose?: boolean;
   onClose?: () => void;
 };
 
-const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: CreateSpaceDialogProps) => {
+const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: CreateSpaceDialogProps) => {
   const redirectToHome = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
     setDialogOpen(false);
     setCreatingLoading(false);
     onClose?.();
-    redirectOnComplete && redirectToHome();
+    withRedirectOnClose && redirectToHome();
   };
 
   const tagsets = useMemo(() => {
@@ -170,20 +170,16 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
       });
       notify(t('pages.admin.space.notifications.space-created'), 'success');
 
-      if (redirectOnComplete) {
-        const { data: spaceUrlData } = await getSpaceUrl({
-          variables: {
-            spaceNameId: spaceID,
-          },
-        });
+      const { data: spaceUrlData } = await getSpaceUrl({
+        variables: {
+          spaceNameId: spaceID,
+        },
+      });
 
-        const spaceUrl = spaceUrlData?.space.profile.url;
-        if (spaceUrl) {
-          navigate(spaceUrl);
-          return;
-        }
-      } else {
-        handleClose();
+      const spaceUrl = spaceUrlData?.space.profile.url;
+      if (spaceUrl) {
+        navigate(spaceUrl);
+        return;
       }
     }
   });
@@ -271,7 +267,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                         onClick={() => handleSubmit()}
                         disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms || creatingLoading}
                       >
-                        {t('buttons.continue')}
+                        {t('buttons.create')}
                       </LoadingButton>
                     </Actions>
                   </DialogFooter>
