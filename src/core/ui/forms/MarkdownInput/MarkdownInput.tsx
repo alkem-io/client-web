@@ -115,6 +115,10 @@ export const MarkdownInput = memo(
           return true; // Image
         }
 
+        if (clipboardData?.files?.length && clipboardData?.files[0].type.startsWith('image/')) {
+          return true;
+        }
+
         if (item.kind === 'string' && item.type === 'text/html') {
           const htmlContent = clipboardData?.getData('text/html');
           return htmlContent?.includes('<img') ?? false; // HTML tag with image
@@ -160,26 +164,22 @@ export const MarkdownInput = memo(
             }
 
             if (!imageProcessed && isImage) {
-              if (item.kind === 'file' && item.type.startsWith('image/')) {
-                const file = item.getAsFile();
+              const file = item.getAsFile();
 
-                if (file) {
-                  const reader = new FileReader();
+              if (file) {
+                const reader = new FileReader();
 
-                  reader.onload = () => {
-                    uploadFile({
-                      variables: {
-                        file,
-                        uploadData: { storageBucketId, temporaryLocation },
-                      },
-                    });
-                  };
+                reader.onload = () => {
+                  uploadFile({
+                    variables: {
+                      file,
+                      uploadData: { storageBucketId, temporaryLocation },
+                    },
+                  });
+                };
 
-                  reader.readAsDataURL(file);
-                  imageProcessed = true;
-                }
-              } else if (item.kind === 'string' && item.type === 'text/html') {
-                imageProcessed = true; // HTML with images
+                reader.readAsDataURL(file);
+                imageProcessed = true;
               }
             }
 
