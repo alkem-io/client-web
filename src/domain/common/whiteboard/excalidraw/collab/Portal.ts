@@ -43,7 +43,7 @@ class Portal {
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithUrl>;
   socket: Socket | null = null;
-  socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
+  sceneInitilized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
   broadcastedFiles: Set<string> = new Set();
@@ -131,12 +131,12 @@ class Portal {
     this.socket.close();
     this.socket = null;
     this.roomId = null;
-    this.socketInitialized = false;
+    this.sceneInitilized = false;
     this.broadcastedElementVersions = new Map();
   }
 
   isOpen() {
-    return !!(this.socketInitialized && this.socket && this.roomId);
+    return !!(this.sceneInitilized && this.socket && this.roomId);
   }
 
   private _broadcastSocketData(data: SocketUpdateData, { volatile = false }: BroadcastOptions = {}) {
