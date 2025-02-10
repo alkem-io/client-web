@@ -28,7 +28,7 @@ const DialogHeader = ({
         {children}
       </BlockTitleWithIcon>
       <ActionsBar>
-        {onClose && (
+        {Boolean(onClose) && (
           <IconButton onClick={onClose} aria-label={t('buttons.close')}>
             <Close />
           </IconButton>
