@@ -7,16 +7,17 @@ import {
   AuthorizationPrivilege,
   RoleName,
   RoleSetContributorType,
+  SpaceLevel,
   SubspacePageSpaceFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 interface SubspaceHomeContainerProvided {
+  level: SpaceLevel | undefined;
   innovationFlow: UseInnovationFlowStatesProvided;
   callouts: UseCalloutsProvided;
   subspace?: SubspacePageSpaceFragment;
@@ -30,11 +31,10 @@ interface SubspaceHomeContainerProvided {
 }
 
 interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
-  journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
+  spaceId: string | undefined;
 }
 
-const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerProps) => {
+const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeContainerProps) => {
   const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
 
   const { data } = useSubspacePageQuery({
@@ -57,15 +57,17 @@ const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerPro
   const community = data?.lookup.space?.community;
   const communityReadAccess = (community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
-  const { organizations, users } = useRoleSetAdmin({
+  const { organizations, users } = useRoleSetManager({
     roleSetId: community?.roleSet.id,
     relevantRoles: [RoleName.Lead],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
   });
 
   return (
     <>
       {children({
+        level: data?.lookup.space?.level,
         innovationFlow,
         callouts,
         subspace: data?.lookup.space,

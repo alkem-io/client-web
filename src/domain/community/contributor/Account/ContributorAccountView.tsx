@@ -23,7 +23,7 @@ import {
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { DeleteOutline } from '@mui/icons-material';
+import { DeleteOutline, SettingsOutlined } from '@mui/icons-material';
 import {
   useCreateWingbackAccountMutation,
   useDeleteInnovationHubMutation,
@@ -33,16 +33,19 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import CreationButton from '@/core/ui/button/CreationButton';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import useNavigate from '@/core/routing/useNavigate';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const enum Entities {
   Space = 'Space',
@@ -176,7 +179,9 @@ const StyledCreationButton = ({ disabled, onClick }: { disabled: boolean; onClic
 
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const notify = useNotification();
+  const ensurePresence = useEnsurePresence();
   const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
@@ -248,7 +253,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     setDeleteDialogOpen(false);
   };
   // Space deletion
-  const [deleteSpaceMutation, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
+  const [deleteSpace, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
     onCompleted: () => {
       clearDeleteState();
       notify(t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.space') }), 'success');
@@ -256,16 +261,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     refetchQueries: ['AccountInformation'],
   });
 
-  const deleteSpace = () => {
-    if (!selectedId) {
-      return;
-    }
-
-    return deleteSpaceMutation({
+  const handleDeleteSpace = () => {
+    const requiredSpaceId = ensurePresence(selectedId, 'SpaceId');
+    return deleteSpace({
       variables: {
-        input: {
-          ID: selectedId,
-        },
+        spaceId: requiredSpaceId,
       },
     });
   };
@@ -371,7 +371,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const deleteEntity = () => {
     switch (entity) {
       case Entities.Space:
-        return deleteSpace();
+        return handleDeleteSpace();
       case Entities.VirtualContributor:
         return deleteVC();
       case Entities.InnovationPack:
@@ -454,17 +454,30 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       </MenuItemWithIcon>
     );
 
-  const getHubActions = (id: string) =>
-    canDeleteEntities && (
-      <MenuItemWithIcon
-        key="delete"
-        disabled={deleteHubLoading}
-        iconComponent={DeleteOutline}
-        onClick={() => onDeleteHubClick(id)}
-      >
-        {t('buttons.delete')}
-      </MenuItemWithIcon>
-    );
+  const getHubActions = (hub: Identifiable & { profile: { url: string } }) => (
+    <>
+      {canDeleteEntities && (
+        <MenuItemWithIcon
+          key="delete"
+          disabled={deleteHubLoading}
+          iconComponent={DeleteOutline}
+          onClick={() => onDeleteHubClick(hub.id)}
+        >
+          {t('buttons.delete')}
+        </MenuItemWithIcon>
+      )}
+      {hub.profile.url && (
+        <MenuItemWithIcon
+          key="settings"
+          disabled={deleteHubLoading}
+          iconComponent={SettingsOutlined}
+          onClick={() => navigate(hub.profile.url)}
+        >
+          {t('common.settings')}
+        </MenuItemWithIcon>
+      )}
+    </>
+  );
 
   return (
     <>
@@ -507,8 +520,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 account?.spaces.map(space => (
                   <JourneyCardHorizontal
                     key={space.id}
-                    journeyTypeName="space"
-                    journey={{ profile: space.profile, community: {} }}
+                    journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
                     size="medium"
                     deepness={0}
                     seamless
@@ -643,7 +655,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
               innovationHubs?.map(hub => (
-                <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub.id)} />
+                <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub)} />
               ))}
             <Actions justifyContent="end">
               {canCreateInnovationHub && account?.id && (
@@ -660,7 +672,6 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                   />
                   <CreateInnovationHubDialog
                     accountId={account.id}
-                    accountHostName={accountHostName}
                     open={createInnovationHubDialogOpen}
                     onClose={() => setCreateInnovationHubDialogOpen(false)}
                   />

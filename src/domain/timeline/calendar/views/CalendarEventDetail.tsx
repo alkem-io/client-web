@@ -58,7 +58,7 @@ const CalendarEventDetail = ({
               <BlockTitle>{t('common.events')}</BlockTitle>
             </DialogHeader>
             <DialogContent>
-              <PostDashboardView
+              {/*<PostDashboardView
                 mode="messages"
                 displayName="&nbsp;"
                 description={event?.profile.description}
@@ -72,7 +72,8 @@ const CalendarEventDetail = ({
                 vcInteractions={vcInteractions}
                 vcEnabled={false}
                 {...rest}
-              />
+              />*/}
+              PENDING //!!
             </DialogContent>
             <Actions justifyContent="space-between" padding={gutters()}>
               {actions}

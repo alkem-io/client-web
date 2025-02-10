@@ -1,13 +1,12 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { Context, Profile } from '@/core/apollo/generated/graphql-schema';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import { SpaceContextSegment } from '../space/SpaceContextSegment';
 
 interface SpaceEditFormProps {
-  context?: Context;
-  profile?: Omit<Profile, 'storageBucket' | 'url'>;
+  context: { impact?: string; vision?: string; who?: string } | undefined;
+  profile: { description?: string } | undefined;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   isEdit: boolean;
@@ -23,10 +22,10 @@ export interface SpaceEditFormValuesType {
 
 const SpaceEditForm: FC<SpaceEditFormProps> = ({ context, profile, onSubmit, wireSubmit, loading }) => {
   const initialValues: SpaceEditFormValuesType = {
-    background: profile?.description || '',
-    impact: context?.impact || '',
-    vision: context?.vision || '',
-    who: context?.who || '',
+    background: profile?.description ?? '',
+    impact: context?.impact ?? '',
+    vision: context?.vision ?? '',
+    who: context?.who ?? '',
   };
 
   const validationSchema = yup.object().shape({

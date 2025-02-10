@@ -6,12 +6,10 @@ import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
-import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
@@ -74,33 +72,30 @@ const WhiteboardDialogFooter = ({
 
   const spaceContext = useSpace();
   const subspaceContext = useSubSpace();
-  const subsubspaceContext = useOpportunity();
 
-  const journeyTypeName = getJourneyTypeName({
-    ...subsubspaceContext,
-    ...subspaceContext,
-    ...spaceContext,
-  });
+  // TODO: this must be refactored to use just a space...
+  let spaceLevel = SpaceLevel.L0;
+  if (pathname.includes('opportunities')) {
+    spaceLevel = SpaceLevel.L2;
+  } else if (pathname.includes('challenges')) {
+    spaceLevel = SpaceLevel.L1;
+  }
 
   const getMyMembershipStatus = () => {
-    switch (journeyTypeName) {
-      case 'space':
+    switch (spaceLevel) {
+      case SpaceLevel.L0:
         return spaceContext.myMembershipStatus;
-      case 'subspace':
+      default:
         return subspaceContext.myMembershipStatus;
-      case 'subsubspace':
-        return subsubspaceContext.myMembershipStatus;
     }
   };
 
   const getJourneyProfile = () => {
-    switch (journeyTypeName) {
-      case 'space':
+    switch (spaceLevel) {
+      case SpaceLevel.L0:
         return spaceContext.profile;
-      case 'subspace':
+      case SpaceLevel.L1:
         return subspaceContext.profile;
-      case 'subsubspace':
-        return subsubspaceContext.profile;
     }
   };
 
@@ -176,7 +171,7 @@ const WhiteboardDialogFooter = ({
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
               values={{
-                journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
               }}
               components={{

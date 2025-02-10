@@ -13,7 +13,7 @@ import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type Props = {
   title?: string;

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useAdminInnovationPackQuery, useUpdateInnovationPackMutation } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';

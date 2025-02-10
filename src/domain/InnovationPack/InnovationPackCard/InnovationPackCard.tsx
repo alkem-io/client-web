@@ -14,7 +14,7 @@ import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '@/core/ui/grid/utils';
 import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 
 export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;

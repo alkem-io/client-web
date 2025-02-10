@@ -12,7 +12,6 @@ interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
 const SingleWhiteboardCallout = ({
   callout,
   loading,
-  journeyTypeName,
   contributionsCount,
   onExpand,
   onCollapse,
@@ -30,13 +29,7 @@ const SingleWhiteboardCallout = ({
   }
 
   return (
-    <CalloutSettingsContainer
-      callout={callout}
-      expanded={expanded}
-      onExpand={onExpand}
-      journeyTypeName={journeyTypeName}
-      {...calloutSettingsProps}
-    >
+    <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
       {calloutSettingsProvided => (
         <CalloutLayout
           callout={callout}
@@ -55,7 +48,6 @@ const SingleWhiteboardCallout = ({
             <WhiteboardView
               whiteboardId={callout.framing.whiteboard?.id}
               backToWhiteboards={handleCloseWhiteboardDialog}
-              journeyTypeName={journeyTypeName}
               whiteboardShareUrl={callout.framing.profile.url}
               readOnlyDisplayName
               displayName={callout.framing.profile.displayName}

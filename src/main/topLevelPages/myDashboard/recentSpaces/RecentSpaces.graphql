@@ -11,6 +11,7 @@ query RecentSpaces($limit: Float) {
         profile {
           ...RecentSpaceProfile
         }
+        level
         __typename # do not remove
       }
     }

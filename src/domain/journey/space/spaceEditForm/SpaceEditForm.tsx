@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Profile, Reference, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
@@ -77,6 +77,8 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, 
     tagsets: tagsetsSegmentSchema,
   });
 
+  const level = SpaceLevel.L0;
+
   return (
     <Formik
       initialValues={initialValues}
@@ -103,7 +105,7 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, 
                 )}
                 <FormikInputField
                   name={'tagline'}
-                  title={t('context.space.tagline.title')}
+                  title={t(`context.${level}.tagline.title`)}
                   rows={3}
                   maxLength={SMALL_TEXT_LENGTH}
                 />

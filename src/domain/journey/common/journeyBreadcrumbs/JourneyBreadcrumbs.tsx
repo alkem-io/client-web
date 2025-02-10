@@ -1,6 +1,6 @@
 import { useJourneyBreadcrumbs, UseJourneyBreadcrumbsParams } from './useJourneyBreadcrumbs';
 import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
-import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { Expandable } from '@/core/ui/navigation/Expandable';

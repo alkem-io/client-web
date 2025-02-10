@@ -15,16 +15,15 @@ import { Caption } from '@/core/ui/typography';
 import { Visual } from '@/domain/common/visual/Visual';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -51,10 +50,10 @@ export interface JourneyCardHorizontalProps {
         myRoles?: RoleName[];
       };
     };
+    spaceLevel: SpaceLevel;
   };
   deepness?: number;
   seamless?: boolean;
-  journeyTypeName: JourneyTypeName | undefined;
   sx?: PaperProps['sx'];
   actions?: ReactNode;
   size?: AvatarSize;
@@ -71,15 +70,14 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 
 const JourneyCardHorizontal = ({
   journey,
-  journeyTypeName,
-  deepness = !journeyTypeName || journeyTypeName === 'subspace' ? 0 : 1,
+  deepness = !journey.spaceLevel || journey.spaceLevel === SpaceLevel.L1 ? 0 : 1,
   seamless,
   sx,
   actions,
   size,
   disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
-  const Icon = journeyTypeName ? spaceIcon[journeyTypeName] : undefined;
+  const Icon = journey.spaceLevel ? spaceIconByLevel[journey.spaceLevel] : undefined;
 
   const { t } = useTranslation();
 

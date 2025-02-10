@@ -16,7 +16,7 @@ const SpaceTabs = (props: EntityTabsProps) => {
     <SpacePageTabs
       {...props}
       entityTypeName="space"
-      showSettings={permissions.viewerCanUpdate}
+      showSettings={permissions.canUpdate}
       settingsUrl={settingsUrl}
       rootUrl={profile.url}
       shareUrl={profile.url}

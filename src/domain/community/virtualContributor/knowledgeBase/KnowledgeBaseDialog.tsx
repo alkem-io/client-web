@@ -10,7 +10,6 @@ import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-s
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
 
@@ -58,31 +57,30 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
         {loadingPrivileges || loading ? (
           <Loading />
         ) : (
-          <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
-            <Gutters disablePadding>
-              {(knowledgeBaseDescription || canCreateCallout) && (
-                <DescriptionComponent
-                  description={knowledgeBaseDescription}
-                  canEdit={canCreateCallout}
-                  onUpdate={updateDescription}
+            <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+              <Gutters disablePadding>
+                {(knowledgeBaseDescription || canCreateCallout) && (
+                  <DescriptionComponent
+                    description={knowledgeBaseDescription}
+                    canEdit={canCreateCallout}
+                    onUpdate={updateDescription}
+                  />
+                )}
+                <CalloutsGroupView
+                  calloutsSetId={calloutsSetId}
+                  callouts={callouts}
+                  canCreateCallout={canCreateCallout}
+                  loading={calloutsSetLoading}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  groupName={CalloutGroupName.Knowledge}
+                  createButtonPlace="bottom"
+                  availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+                  disableRichMedia
+                  disablePostResponses
                 />
-              )}
-              <CalloutsGroupView
-                calloutsSetId={calloutsSetId}
-                callouts={callouts}
-                canCreateCallout={canCreateCallout}
-                loading={calloutsSetLoading}
-                journeyTypeName={KnowledgeBaseCalloutsSetType}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
-                groupName={CalloutGroupName.Knowledge}
-                createButtonPlace="bottom"
-                availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-                disableRichMedia
-                disablePostResponses
-              />
-            </Gutters>
-          </StorageConfigContextProvider>
+              </Gutters>
+            </StorageConfigContextProvider>
         )}
       </DialogContent>
       {canCreateCallout && (

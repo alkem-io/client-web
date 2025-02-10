@@ -15,7 +15,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ChallengeProfileViewProps {
-  subspaceId: string;
+  subspaceId: string | undefined;
 }
 
 const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
@@ -73,7 +73,6 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
         isEdit
         name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
-        journeyType="subspace"
         tagset={challenge?.profile.tagset}
         profile={challenge?.profile}
         onSubmit={onSubmit}

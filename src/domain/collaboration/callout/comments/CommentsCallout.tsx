@@ -1,12 +1,12 @@
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo } from 'react';
-import { CommentsWithMessagesFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useUserContext } from '@/domain/community/user';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutState,
+  CommentsWithMessagesFragment,
   CommunityMembershipStatus,
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
@@ -19,12 +19,12 @@ import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 
-type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId' | 'vcInteractions';
-export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
+type NeededFields = 'id' | 'authorization' | 'messages' | 'vcInteractions';
+export type CommentsCalloutData = Pick<CommentsWithMessagesFragment, NeededFields>;
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
-    comments: CommentsCalloutData | undefined;
+    comments?: CommentsCalloutData | undefined;
   };
   calloutActions?: boolean;
 }

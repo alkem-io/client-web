@@ -2,6 +2,7 @@ query SpaceContributionDetails($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      level
       profile {
         id
         url

@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
@@ -11,7 +11,6 @@ import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/com
 import { LocationSegment } from '../location/LocationSegment';
 import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
@@ -29,7 +28,6 @@ export interface ProfileFormValues {
 
 type ProfileFormProps = {
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
-  journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -41,7 +39,6 @@ type ProfileFormProps = {
 
 const ProfileForm = ({
   profile,
-  journeyType,
   name,
   nameID,
   tagset,
@@ -83,6 +80,9 @@ const ProfileForm = ({
 
   let isSubmitWired = false;
 
+  // TODO: why is this needed on a profile?
+  const spaceLevel = SpaceLevel.L0;
+
   return (
     <Formik
       initialValues={initialValues}
@@ -110,7 +110,7 @@ const ProfileForm = ({
             />
             <FormikInputField
               name={'tagline'}
-              title={t(`context.${journeyType}.tagline.title` as const)}
+              title={t(`context.${spaceLevel}.tagline.title` as const)}
               rows={3}
               maxLength={SMALL_TEXT_LENGTH}
             />

@@ -7,7 +7,6 @@ import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal'
 import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
 type WhiteboardShareSettingsProps = {
   createdBy:
@@ -26,7 +25,6 @@ type WhiteboardShareSettingsProps = {
   onChange?: (contentUpdatePolicy: ContentUpdatePolicy) => void;
   loading?: boolean;
   updating?: boolean;
-  journeyTypeName: JourneyTypeName;
 };
 
 const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
@@ -37,7 +35,6 @@ const WhiteboardShareSettings = ({
   onChange,
   loading = false,
   updating = false,
-  journeyTypeName,
 }: WhiteboardShareSettingsProps) => {
   const { t } = useTranslation();
 
@@ -81,13 +78,7 @@ const WhiteboardShareSettings = ({
                     key={option}
                     value={option}
                     control={<Radio />}
-                    label={
-                      <Caption>
-                        {t(`components.shareSettings.editableBy.options.${option}` as const, {
-                          journey: t(`common.${journeyTypeName}` as const),
-                        })}
-                      </Caption>
-                    }
+                    label={<Caption>{t(`components.shareSettings.editableBy.options.${option}` as const)}</Caption>}
                   />
                 ))}
               </RadioGroup>

@@ -7,8 +7,7 @@ import VCProfilePageView from './VCProfilePageView';
 import { useBodyOfKnowledgeProfileQuery, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { VirtualContributorProfileProps } from './model';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
@@ -58,7 +57,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: PropsWithCh
     <VCPageLayout>
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
-        virtualContributor={data?.lookup.virtualContributor as VirtualContributorProfileProps}
+        virtualContributor={data?.lookup.virtualContributor}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
       {children}

@@ -1,0 +1,38 @@
+
+fragment InnovationHubProfile on Profile {
+  id
+  displayName
+  description
+  tagline
+  tagset {
+    ...TagsetDetails
+  }
+  visual(type: BANNER_WIDE) {
+    ...VisualFull
+  }
+  url
+}
+
+query InnovationHubSettings($innovationHubId: UUID!) {
+  platform {
+    id
+    innovationHub(id: $innovationHubId) {
+      ...InnovationHubSettings
+    }
+  }
+}
+
+fragment InnovationHubSettings on InnovationHub {
+  id
+  nameID
+  subdomain
+
+  profile {
+    ...InnovationHubProfile
+  }
+  spaceListFilter {
+    ...InnovationHubSpace
+  }
+
+  spaceVisibilityFilter
+}

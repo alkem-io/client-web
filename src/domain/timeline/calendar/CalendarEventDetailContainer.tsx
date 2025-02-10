@@ -9,7 +9,6 @@ import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
-import { PostDashboardViewProps } from '@/domain/collaboration/post/views/PostDashboardView';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
@@ -20,7 +19,11 @@ type Provided = {
   canAddReaction: boolean;
   event?: CalendarEventDetailData;
   messages: Message[];
-  vcInteractions: PostDashboardViewProps['vcInteractions'];
+  vcInteractions: {
+    id: string;
+    threadID: string;
+    virtualContributorID: string;
+  }[];
   roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;

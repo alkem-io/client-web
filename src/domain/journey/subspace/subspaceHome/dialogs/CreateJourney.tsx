@@ -9,7 +9,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../../forms/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
-import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '../../icon/SubspaceIcon2';
 
 export interface CreateJourneyProps {
   isVisible: boolean;

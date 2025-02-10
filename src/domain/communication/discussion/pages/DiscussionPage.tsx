@@ -29,16 +29,16 @@ import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
 
-export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string }) => {
+export const DiscussionPage = ({ discussionId }: { discussionId: string | undefined }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
-      discussionId: discussionNameId!,
+      discussionId: discussionId!,
     },
-    skip: !discussionNameId,
+    skip: !discussionId,
   });
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.forum.discussion?.comments.id);
@@ -112,7 +112,7 @@ export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string 
   const [deleteComment] = useRemoveMessageOnRoomMutation({
     refetchQueries: [
       refetchPlatformDiscussionQuery({
-        discussionId: discussionNameId!,
+        discussionId: discussionId!,
       }),
     ],
   });

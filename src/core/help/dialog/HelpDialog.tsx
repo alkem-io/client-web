@@ -4,7 +4,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { buildWelcomeSpaceUrl } from '@/main/routing/urlBuilders';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
@@ -49,9 +48,10 @@ const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
 const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   const { t } = useTranslation();
 
-  const { locations } = useConfig();
-
-  const { services } = useServerMetadata();
+  const {
+    locations,
+    serverMetadata: { services },
+  } = useConfig();
 
   const handleClose = () => (onClose ? onClose() : undefined);
 

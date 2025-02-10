@@ -8,7 +8,7 @@ import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
-import { Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
@@ -28,7 +28,6 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { refetchDashboardWithMembershipsQuery, useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useSpaceUrlLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -117,7 +116,6 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   });
 
   const [CreateNewSpace] = useCreateSpaceMutation();
-  const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!accountId) {
       return;
@@ -170,13 +168,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
       });
       notify(t('pages.admin.space.notifications.space-created'), 'success');
 
-      const { data: spaceUrlData } = await getSpaceUrl({
-        variables: {
-          spaceNameId: spaceID,
-        },
-      });
-
-      const spaceUrl = spaceUrlData?.space.profile.url;
+      const spaceUrl = newSpace?.createSpace.profile.url;
       if (spaceUrl) {
         navigate(spaceUrl);
         return;
@@ -211,7 +203,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
                   <NameIdField name="nameID" title={t('common.url')} required disabled={creatingLoading} />
                   <FormikInputField
                     name="tagline"
-                    title={`${t('context.space.tagline.title')} (${t('common.optional')})`}
+                    title={`${t(`context.${SpaceLevel.L0}.tagline.title` as const)} (${t('common.optional')})`}
                     rows={3}
                     maxLength={SMALL_TEXT_LENGTH}
                     disabled={creatingLoading}

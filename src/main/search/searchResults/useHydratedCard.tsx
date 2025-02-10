@@ -24,7 +24,7 @@ import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyC
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 

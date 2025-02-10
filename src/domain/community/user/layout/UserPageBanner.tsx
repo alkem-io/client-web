@@ -4,7 +4,7 @@ import { useUserContext } from '../hooks/useUserContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const UserPageBanner = () => {
   const { user: currentUser } = useUserContext();

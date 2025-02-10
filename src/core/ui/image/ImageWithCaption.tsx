@@ -1,8 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react';
-import { Box, BoxProps, ButtonBase, styled } from '@mui/material';
+import { alpha, Box, BoxProps, ButtonBase, styled } from '@mui/material';
 import ImageFadeIn from './ImageFadeIn';
 import { gutters } from '../grid/utils';
-import hexToRGBA from '@/core/utils/hexToRGBA';
 import { Caption } from '../typography';
 import Centered from '../utils/Centered';
 
@@ -30,7 +29,7 @@ const CaptionContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   width: '100%',
   height: gutters(2)(theme),
-  backgroundColor: hexToRGBA(theme.palette.common.white, 0.8),
+  backgroundColor: alpha(theme.palette.common.white, 0.8),
 }));
 
 const ImageWithCaption = ({

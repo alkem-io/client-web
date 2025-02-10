@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import CloseIcon from '@mui/icons-material/Close';
 import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
 import LabeledCount from '@/core/ui/content/LabeledCount';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 export interface AssociatedOrganizationCardProps extends ContributorCardHorizontalProps {
   enableLeave?: boolean;
@@ -62,11 +63,10 @@ const AssociatedOrganizationCard = ({
               </LoadingButton>
             </Box>
             <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-              <DialogTitle>
-                {t('components.associated-organization.confirmation-dialog.title', {
+              <DialogHeader title={t('components.associated-organization.confirmation-dialog.title', {
                   organization: profile?.displayName,
                 })}
-              </DialogTitle>
+              />
               <DialogContent sx={{ paddingX: 2 }}>
                 {t('components.associated-organization.confirmation-dialog.text')}
               </DialogContent>

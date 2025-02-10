@@ -8,17 +8,17 @@ import ActivityContainer from './ActivityContainer';
 export interface ActivityDialogProps {
   open?: boolean;
   onClose?: () => void;
-  journeyId: string;
+  spaceId: string | undefined;
 }
 
-const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProps) => {
+const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
 
   return (
     <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog">
       <DialogHeader onClose={onClose} title={t('common.contributions')} />
       <DialogContent sx={{ paddingTop: 0 }}>
-        <ActivityContainer spaceId={journeyId}>
+        <ActivityContainer spaceId={spaceId}>
           {({ ...entities }) => (
             <RecentContributionsBlock
               readUsersAccess={entities.permissions.readUsers}

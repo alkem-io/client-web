@@ -17,7 +17,6 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/Innov
 import { Reference } from '@/domain/common/profile/Profile';
 import { findDefaultTagset } from '@/domain/common/tags/utils';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
@@ -53,7 +52,6 @@ export interface CalloutCreationDialogProps {
   loading: boolean;
   groupName: CalloutGroupName;
   flowState?: string;
-  journeyTypeName: CalloutsSetParentType;
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
@@ -66,7 +64,6 @@ const CalloutCreationDialog = ({
   loading,
   groupName,
   flowState,
-  journeyTypeName,
   availableCalloutTypes,
   disableRichMedia,
   disablePostResponses,
@@ -277,7 +274,6 @@ const CalloutCreationDialog = ({
               callout={callout}
               onChange={handleValueChange}
               onStatusChanged={handleStatusChange}
-              journeyTypeName={journeyTypeName}
               temporaryLocation // Always true for callout creation
               disableRichMedia={disableRichMedia}
               disablePostResponses={disablePostResponses && selectedCalloutType === CalloutType.Post}

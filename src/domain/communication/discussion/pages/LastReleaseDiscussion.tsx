@@ -4,17 +4,17 @@ import DiscussionPage from './DiscussionPage';
 export const LastReleaseDiscussion = () => {
   const { data, loading } = useLatestReleaseDiscussionQuery();
 
-  const lastReleaseNameID = data?.platform?.latestReleaseDiscussion?.nameID;
+  const lastReleaseDiscussionId = data?.platform?.latestReleaseDiscussion?.id;
 
   if (loading) {
     return null;
   }
 
-  if (!lastReleaseNameID) {
+  if (!lastReleaseDiscussionId) {
     throw new Error('No release discussions found');
   }
 
-  return <DiscussionPage discussionNameId={lastReleaseNameID!} />;
+  return <DiscussionPage discussionId={lastReleaseDiscussionId!} />;
 };
 
 export default LastReleaseDiscussion;

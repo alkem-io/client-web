@@ -6,7 +6,7 @@ import DashboardContributingOrganizations from './DashboardContributingOrganizat
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import withOptionalCount from '@/domain/shared/utils/withOptionalCount';
+import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 
 const EntityDashboardContributorsSection = ({
   memberUsers,
@@ -20,9 +20,9 @@ const EntityDashboardContributorsSection = ({
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('contributors-section.title')} />
-      <BlockSectionTitle>{withOptionalCount(t('common.organizations'), memberOrganizationsCount)}</BlockSectionTitle>
+      <BlockSectionTitle><EllipsableWithCount count={memberOrganizationsCount}>{t('common.organizations')}</EllipsableWithCount></BlockSectionTitle>
       <DashboardContributingOrganizations organizations={memberOrganizations} />
-      <BlockSectionTitle>{withOptionalCount(t('common.users'), memberUsersCount)}</BlockSectionTitle>
+      <BlockSectionTitle><EllipsableWithCount count={memberUsersCount}>{t('common.users')}</EllipsableWithCount></BlockSectionTitle>
       <DashboardContributingUsers users={memberUsers} />
       {children}
     </PageContentBlock>

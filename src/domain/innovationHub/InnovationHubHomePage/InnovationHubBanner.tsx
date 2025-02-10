@@ -2,7 +2,7 @@ import { Visual } from '@/domain/common/visual/Visual';
 import { Box, Paper } from '@mui/material';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { gutters } from '@/core/ui/grid/utils';
-import { PlatformTitle, Tagline } from '@/core/ui/typography';
+import { PageTitle, Tagline } from '@/core/ui/typography';
 
 type InnovationHubBannerProps = {
   banner: Visual | undefined;
@@ -14,7 +14,7 @@ const InnovationHubBanner = ({ banner, displayName, tagline }: InnovationHubBann
   <Box>
     <ImageBlurredSides src={banner?.uri} alt={banner?.alternativeText} blurRadius={2} height={gutters(9)} />
     <Paper square sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingY: gutters(0.5) }}>
-      <PlatformTitle component="h2">{displayName}</PlatformTitle>
+      <PageTitle>{displayName}</PageTitle>
       <Tagline lineHeight={gutters(2)}>{tagline}</Tagline>
     </Paper>
   </Box>

@@ -22,7 +22,6 @@ const CalloutsGroupView = ({
   groupName,
   flowState,
   createButtonPlace = 'bottom',
-  journeyTypeName,
   calloutsSetId,
   availableCalloutTypes,
   disableRichMedia,
@@ -55,7 +54,6 @@ const CalloutsGroupView = ({
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
       <CalloutsView
-        journeyTypeName={journeyTypeName}
         disableRichMedia={disableRichMedia}
         disablePostResponses={disablePostResponses}
         {...calloutsViewProps}
@@ -68,7 +66,6 @@ const CalloutsGroupView = ({
         loading={loading}
         groupName={groupName}
         flowState={flowState}
-        journeyTypeName={journeyTypeName}
         availableCalloutTypes={availableCalloutTypes}
         disableRichMedia={disableRichMedia}
         disablePostResponses={disablePostResponses}
