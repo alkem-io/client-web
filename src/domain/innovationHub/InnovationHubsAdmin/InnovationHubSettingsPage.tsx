@@ -1,23 +1,22 @@
 import { sortBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useAdminInnovationHubQuery, useUpdateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useInnovationHubSettingsQuery, useUpdateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
 import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationHubSpacesField from './InnovationHubSpacesField';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import InnovationHubProfileLayout from './InnovationHubProfileLayout';
 
 const InnovationHubSettingsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { innovationHubId } = useUrlResolver();
 
-  const { data, loading } = useAdminInnovationHubQuery({
+  const { data, loading } = useInnovationHubSettingsQuery({
     variables: { innovationHubId: innovationHubId! },
     skip: !innovationHubId,
   });
@@ -79,7 +78,7 @@ const InnovationHubSettingsPage = () => {
   const isLoading = loading || updating;
 
   return (
-    <AdminLayout currentTab={AdminSection.InnovationHubs}>
+    <InnovationHubProfileLayout innovationHub={innovationHub} loading={loading}>
       <PageContent>
         <PageContentColumn columns={12}>
           <StorageConfigContextProvider locationType="innovationHub" innovationHubId={data?.platform.innovationHub?.id}>
@@ -99,7 +98,7 @@ const InnovationHubSettingsPage = () => {
           </StorageConfigContextProvider>
         </PageContentColumn>
       </PageContent>
-    </AdminLayout>
+    </InnovationHubProfileLayout>
   );
 };
 

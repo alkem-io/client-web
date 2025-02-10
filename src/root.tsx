@@ -83,27 +83,27 @@ const Root: FC = () => {
                         <UserGeoProvider>
                           <ApmProvider>
                             <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                              <UrlResolverProvider>
-                                <UserProvider>
-                                  <PendingMembershipsDialogProvider>
-                                    <InAppNotificationsProvider>
-                                      <ApmUserSetter />
-                                      <ScrollToTop />
-                                      <InAppNotificationsDialog />
-                                      <NotFoundErrorBoundary
-                                        errorComponent={
-                                          <TopLevelLayout>
-                                            <Error404 />
-                                          </TopLevelLayout>
-                                        }
-                                      >
+                              <UserProvider>
+                                <PendingMembershipsDialogProvider>
+                                  <InAppNotificationsProvider>
+                                    <ApmUserSetter />
+                                    <ScrollToTop />
+                                    <InAppNotificationsDialog />
+                                    <NotFoundErrorBoundary
+                                      errorComponent={
+                                        <TopLevelLayout>
+                                          <Error404 />
+                                        </TopLevelLayout>
+                                      }
+                                    >
+                                      <UrlResolverProvider>
                                         <TopLevelRoutes />
-                                        <GlobalErrorDialog />
-                                      </NotFoundErrorBoundary>
-                                    </InAppNotificationsProvider>
-                                  </PendingMembershipsDialogProvider>
-                                </UserProvider>
-                              </UrlResolverProvider>
+                                      </UrlResolverProvider>
+                                      <GlobalErrorDialog />
+                                    </NotFoundErrorBoundary>
+                                  </InAppNotificationsProvider>
+                                </PendingMembershipsDialogProvider>
+                              </UserProvider>
                             </AlkemioApolloProvider>
                           </ApmProvider>
                         </UserGeoProvider>

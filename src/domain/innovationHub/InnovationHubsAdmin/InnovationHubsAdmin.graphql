@@ -33,9 +33,10 @@ fragment InnovationHubProfile on Profile {
   visual(type: BANNER_WIDE) {
     ...VisualFull
   }
+  url
 }
 
-query AdminInnovationHub($innovationHubId: UUID!) {
+query InnovationHubSettings($innovationHubId: UUID!) {
   platform {
     id
     innovationHub(id: $innovationHubId) {
@@ -51,17 +52,6 @@ fragment AdminInnovationHub on InnovationHub {
 
   profile {
     ...InnovationHubProfile
-  }
-  # Requires admin privileges
-  account {
-    id
-    host {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
   }
   spaceListFilter {
     ...InnovationHubSpace

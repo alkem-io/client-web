@@ -18801,6 +18801,7 @@ export type InnovationHubProfileFragment = {
   displayName: string;
   description?: string | undefined;
   tagline?: string | undefined;
+  url: string;
   tagset?:
     | {
         __typename?: 'Tagset';
@@ -18828,11 +18829,11 @@ export type InnovationHubProfileFragment = {
     | undefined;
 };
 
-export type AdminInnovationHubQueryVariables = Exact<{
+export type InnovationHubSettingsQueryVariables = Exact<{
   innovationHubId: Scalars['UUID'];
 }>;
 
-export type AdminInnovationHubQuery = {
+export type InnovationHubSettingsQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -18850,6 +18851,7 @@ export type AdminInnovationHubQuery = {
             displayName: string;
             description?: string | undefined;
             tagline?: string | undefined;
+            url: string;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -18873,27 +18875,6 @@ export type AdminInnovationHubQuery = {
                   minHeight: number;
                   minWidth: number;
                   alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
-          account: {
-            __typename?: 'Account';
-            id: string;
-            host?:
-              | {
-                  __typename?: 'Organization';
-                  id: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
-                }
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
-                }
-              | {
-                  __typename?: 'VirtualContributor';
-                  id: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
                 }
               | undefined;
           };
@@ -18938,6 +18919,7 @@ export type AdminInnovationHubFragment = {
     displayName: string;
     description?: string | undefined;
     tagline?: string | undefined;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -18961,23 +18943,6 @@ export type AdminInnovationHubFragment = {
           minHeight: number;
           minWidth: number;
           alternativeText?: string | undefined;
-        }
-      | undefined;
-  };
-  account: {
-    __typename?: 'Account';
-    id: string;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-      | {
-          __typename?: 'VirtualContributor';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
         }
       | undefined;
   };
@@ -19021,6 +18986,7 @@ export type CreateInnovationHubMutation = {
       displayName: string;
       description?: string | undefined;
       tagline?: string | undefined;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -19044,23 +19010,6 @@ export type CreateInnovationHubMutation = {
             minHeight: number;
             minWidth: number;
             alternativeText?: string | undefined;
-          }
-        | undefined;
-    };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      host?:
-        | {
-            __typename?: 'Organization';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-        | {
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }
         | undefined;
     };
@@ -19105,6 +19054,7 @@ export type UpdateInnovationHubMutation = {
       displayName: string;
       description?: string | undefined;
       tagline?: string | undefined;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -19128,23 +19078,6 @@ export type UpdateInnovationHubMutation = {
             minHeight: number;
             minWidth: number;
             alternativeText?: string | undefined;
-          }
-        | undefined;
-    };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      host?:
-        | {
-            __typename?: 'Organization';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-        | {
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }
         | undefined;
     };

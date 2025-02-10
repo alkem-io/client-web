@@ -1529,6 +1529,7 @@ export const InnovationHubProfileFragmentDoc = gql`
     visual(type: BANNER_WIDE) {
       ...VisualFull
     }
+    url
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
@@ -1557,16 +1558,6 @@ export const AdminInnovationHubFragmentDoc = gql`
     subdomain
     profile {
       ...InnovationHubProfile
-    }
-    account {
-      id
-      host {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
     }
     spaceListFilter {
       ...InnovationHubSpace
@@ -14580,8 +14571,8 @@ export type DeleteInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationHubMutation,
   SchemaTypes.DeleteInnovationHubMutationVariables
 >;
-export const AdminInnovationHubDocument = gql`
-  query AdminInnovationHub($innovationHubId: UUID!) {
+export const InnovationHubSettingsDocument = gql`
+  query InnovationHubSettings($innovationHubId: UUID!) {
     platform {
       id
       innovationHub(id: $innovationHubId) {
@@ -14593,55 +14584,55 @@ export const AdminInnovationHubDocument = gql`
 `;
 
 /**
- * __useAdminInnovationHubQuery__
+ * __useInnovationHubSettingsQuery__
  *
- * To run a query within a React component, call `useAdminInnovationHubQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useInnovationHubSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminInnovationHubQuery({
+ * const { data, loading, error } = useInnovationHubSettingsQuery({
  *   variables: {
  *      innovationHubId: // value for 'innovationHubId'
  *   },
  * });
  */
-export function useAdminInnovationHubQuery(
+export function useInnovationHubSettingsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AdminInnovationHubQuery,
-    SchemaTypes.AdminInnovationHubQueryVariables
+    SchemaTypes.InnovationHubSettingsQuery,
+    SchemaTypes.InnovationHubSettingsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminInnovationHubQuery, SchemaTypes.AdminInnovationHubQueryVariables>(
-    AdminInnovationHubDocument,
+  return Apollo.useQuery<SchemaTypes.InnovationHubSettingsQuery, SchemaTypes.InnovationHubSettingsQueryVariables>(
+    InnovationHubSettingsDocument,
     options
   );
 }
 
-export function useAdminInnovationHubLazyQuery(
+export function useInnovationHubSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AdminInnovationHubQuery,
-    SchemaTypes.AdminInnovationHubQueryVariables
+    SchemaTypes.InnovationHubSettingsQuery,
+    SchemaTypes.InnovationHubSettingsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AdminInnovationHubQuery, SchemaTypes.AdminInnovationHubQueryVariables>(
-    AdminInnovationHubDocument,
+  return Apollo.useLazyQuery<SchemaTypes.InnovationHubSettingsQuery, SchemaTypes.InnovationHubSettingsQueryVariables>(
+    InnovationHubSettingsDocument,
     options
   );
 }
 
-export type AdminInnovationHubQueryHookResult = ReturnType<typeof useAdminInnovationHubQuery>;
-export type AdminInnovationHubLazyQueryHookResult = ReturnType<typeof useAdminInnovationHubLazyQuery>;
-export type AdminInnovationHubQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminInnovationHubQuery,
-  SchemaTypes.AdminInnovationHubQueryVariables
+export type InnovationHubSettingsQueryHookResult = ReturnType<typeof useInnovationHubSettingsQuery>;
+export type InnovationHubSettingsLazyQueryHookResult = ReturnType<typeof useInnovationHubSettingsLazyQuery>;
+export type InnovationHubSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubSettingsQuery,
+  SchemaTypes.InnovationHubSettingsQueryVariables
 >;
-export function refetchAdminInnovationHubQuery(variables: SchemaTypes.AdminInnovationHubQueryVariables) {
-  return { query: AdminInnovationHubDocument, variables: variables };
+export function refetchInnovationHubSettingsQuery(variables: SchemaTypes.InnovationHubSettingsQueryVariables) {
+  return { query: InnovationHubSettingsDocument, variables: variables };
 }
 
 export const CreateInnovationHubDocument = gql`
