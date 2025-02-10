@@ -20814,7 +20814,10 @@ export type CreateSpaceMutationVariables = Exact<{
   spaceData: CreateSpaceOnAccountInput;
 }>;
 
-export type CreateSpaceMutation = { __typename?: 'Mutation'; createSpace: { __typename?: 'Space'; id: string } };
+export type CreateSpaceMutation = {
+  __typename?: 'Mutation';
+  createSpace: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+};
 
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
 

@@ -110,9 +110,9 @@ export const CreateSubspaceForm = ({
           />
           <FormikMarkdownField
             name="background"
-            title={t(`context.${level}.background.title`)}
+            title={t(`context.${level}.description.title`)}
             rows={5}
-            helperText={t(`context.${level}.background.description`)}
+            helperText={t(`context.${level}.description.description`)}
             disabled={isSubmitting}
             maxLength={MARKDOWN_TEXT_LENGTH}
             temporaryLocation

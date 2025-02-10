@@ -546,7 +546,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 />
                 {createSpaceDialogOpen && (
                   <CreateSpaceDialog
-                    redirectOnComplete={false}
+                    withRedirectOnClose={false}
                     onClose={() => setCreateSpaceDialogOpen(false)}
                     account={{ id: account?.id, name: accountHostName }}
                   />

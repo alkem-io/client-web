@@ -28,7 +28,6 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { refetchDashboardWithMembershipsQuery, useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useSpaceUrlLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -49,11 +48,11 @@ type CreateSpaceDialogProps = {
         name: string | undefined;
       }
     | undefined;
-  redirectOnComplete?: boolean;
+  withRedirectOnClose?: boolean;
   onClose?: () => void;
 };
 
-const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: CreateSpaceDialogProps) => {
+const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: CreateSpaceDialogProps) => {
   const redirectToHome = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -86,7 +85,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
     setDialogOpen(false);
     setCreatingLoading(false);
     onClose?.();
-    redirectOnComplete && redirectToHome();
+    withRedirectOnClose && redirectToHome();
   };
 
   const tagsets = useMemo(() => {
@@ -117,7 +116,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   });
 
   const [CreateNewSpace] = useCreateSpaceMutation();
-  const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!accountId) {
       return;
@@ -170,20 +168,10 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
       });
       notify(t('pages.admin.space.notifications.space-created'), 'success');
 
-      if (redirectOnComplete) {
-        const { data: spaceUrlData } = await getSpaceUrl({
-          variables: {
-            spaceId: spaceID,
-          },
-        });
-
-        const spaceUrl = spaceUrlData?.lookup.space?.profile.url;
-        if (spaceUrl) {
-          navigate(spaceUrl);
-          return;
-        }
-      } else {
-        handleClose();
+      const spaceUrl = newSpace?.createSpace.profile.url;
+      if (spaceUrl) {
+        navigate(spaceUrl);
+        return;
       }
     }
   });
@@ -271,7 +259,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                         onClick={() => handleSubmit()}
                         disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms || creatingLoading}
                       >
-                        {t('buttons.continue')}
+                        {t('buttons.create')}
                       </LoadingButton>
                     </Actions>
                   </DialogFooter>

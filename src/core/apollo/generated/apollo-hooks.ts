@@ -16181,6 +16181,10 @@ export const CreateSpaceDocument = gql`
   mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
     createSpace(spaceData: $spaceData) {
       id
+      profile {
+        id
+        url
+      }
     }
   }
 `;
