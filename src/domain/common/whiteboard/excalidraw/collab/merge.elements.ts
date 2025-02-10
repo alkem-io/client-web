@@ -6,10 +6,10 @@ export const mergeElements = (
   toBeUsed: ReadonlyArray<ExcalidrawElement>
 ) => {
   const toBeUsedMap = new Map<string, ExcalidrawElement>(toBeUsed.map(x => [x.id, x]));
-
-  return toBeMergedWith.map(x => mergeWith(x, toBeUsedMap.get(x.id), mergeFn));
+  return toBeMergedWith.map(x => mergeWith(x, toBeUsedMap.get(x.id), preferDestinationFields));
 };
 
-const mergeFn: MergeWithCustomizer = (destValue: unknown, srcValue: unknown) => {
-  return destValue !== undefined ? destValue : srcValue;
+const preferDestinationFields: MergeWithCustomizer = (destValue: unknown, srcValue: unknown) => {
+  // if the destination value is defined, prefer it instead of the source value
+  return destValue === undefined ? srcValue : destValue;
 };

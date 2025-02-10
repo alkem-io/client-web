@@ -232,7 +232,6 @@ class Collab {
                 const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
                 const remoteFiles = data.payload.files;
                 const result = await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles);
-                console.log(result.find(x => x.id === 'mcUDKzKv24UsBCLkYTqQd'));
                 await this.handleRemoteSceneUpdate(result);
               }
             },
@@ -315,11 +314,9 @@ class Collab {
     const appState = this.excalidrawAPI.getAppState();
 
     const { restoreElements, hashElementsVersion, reconcileElements } = await this.excalidrawUtils;
+    mergeElements(remoteElements, localElements);
 
-    const mergedRemoteElements = cloneDeep(remoteElements);
-    mergeElements(mergedRemoteElements, localElements);
-
-    const restoredRemoteElements = restoreElements(mergedRemoteElements, null);
+    const restoredRemoteElements = restoreElements(remoteElements, null);
 
     const reconciledElements = reconcileElements(
       localElements,
@@ -472,7 +469,7 @@ class Collab {
         { syncAll: false }
       );
       this.lastBroadcastedOrReceivedSceneVersion = newVersion;
-      // this.queueBroadcastAllElements();
+      this.queueBroadcastAllElements();
 
       this.prevElements = cloneDeep(elements);
     }
