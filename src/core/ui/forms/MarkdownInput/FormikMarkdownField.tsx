@@ -1,23 +1,5 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  PropsWithChildren,
-  forwardRef,
-} from 'react';
-import {
-  FormControl,
-  FormHelperText,
-  InputBaseComponentProps,
-  InputLabel,
-  InputProps,
-  OutlinedInput,
-  useFormControl,
-} from '@mui/material';
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -29,7 +11,6 @@ import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '@/core/logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 import { useTranslation } from 'react-i18next';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -46,17 +27,6 @@ interface MarkdownFieldProps extends InputProps {
   temporaryLocation?: boolean;
   controlsVisible?: 'always' | 'focused';
 }
-
-interface MDInputProps extends InputBaseComponentProps {
-  storageBucketId?: string;
-}
-
-// Keep MDInput ref forwarded in order the title label to be able to move up from the correct position when the input is focused and to be visible, otherwise the ref is not set correctly by MUI.
-const MDInput = forwardRef<MarkdownInputRefApi, PropsWithChildren<MDInputProps>>((props, ref) => (
-  <MarkdownInput ref={ref} {...props} storageBucketId={localStorage.getItem('currentStorageBucketId') ?? ''} />
-));
-
-MDInput.displayName = 'MDInput';
 
 const FilledDetector = ({ value }: { value: string | undefined }) => {
   const formControl = useFormControl();
@@ -155,17 +125,6 @@ export const FormikMarkdownField = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
-  const storageConfig = useStorageConfigContext();
-
-  useEffect(() => {
-    // Save the current storageBucketId in localStorage so it can be used in MDInput
-    storageConfig?.storageBucketId && localStorage.setItem('currentStorageBucketId', storageConfig.storageBucketId);
-
-    return () => {
-      localStorage.removeItem('currentStorageBucketId');
-    };
-  }, [storageConfig]);
-
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
@@ -187,7 +146,7 @@ export const FormikMarkdownField = ({
           onChange={handleChange}
           onBlur={handleBlur}
           label={title}
-          inputComponent={MDInput}
+          inputComponent={MarkdownInput}
           inputRef={inputRef}
           inputProps={{
             controlsVisible,
