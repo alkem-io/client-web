@@ -145,6 +145,7 @@ export const VCProfileContentView = ({
         <KnowledgeBaseDialog
           id={virtualContributor?.id ?? ''}
           title={`${name}: ${t('virtualContributorSpaceSettings.bodyOfKnowledge')}`}
+          placeholder={t('virtualContributorSpaceSettings.placeholder')}
           onClose={onCloseKnowledgeBase}
         />
       )}
