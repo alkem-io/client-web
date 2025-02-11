@@ -5,7 +5,7 @@ import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/
 import { toCreateTemplateMutationVariables } from '../components/Forms/common/mappings';
 
 export interface CalloutCreationUtils {
-  handleCreateCalloutTemplate: (values: CalloutTemplateFormSubmittedValues, spaceNameId: string) => Promise<unknown>;
+  handleCreateCalloutTemplate: (values: CalloutTemplateFormSubmittedValues, targetSpaceId: string) => Promise<unknown>;
 }
 
 export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
@@ -13,8 +13,8 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
   const [fetchTemplatesSetId] = useSpaceTemplatesManagerLazyQuery();
 
   const handleCreateCalloutTemplate = useCallback(
-    async (values: CalloutTemplateFormSubmittedValues, spaceId: string) => {
-      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceId } });
+    async (values: CalloutTemplateFormSubmittedValues, targetSpaceId: string) => {
+      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceId: targetSpaceId } });
       const templatesSetId = templatesData?.lookup.space?.templatesManager?.templatesSet?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');

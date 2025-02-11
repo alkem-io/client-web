@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
-import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { LocationSegment } from '../location/LocationSegment';
@@ -19,7 +19,6 @@ import { DEFAULT_TAGSET } from '../tags/tagset.constants';
 
 export interface ProfileFormValues {
   name: string;
-  nameID: string;
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
@@ -29,7 +28,6 @@ export interface ProfileFormValues {
 type ProfileFormProps = {
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
-  nameID?: string;
   tagset?: Tagset;
   onSubmit: (formData: ProfileFormValues) => void;
   wireSubmit: (setter: () => void) => void;
@@ -40,7 +38,6 @@ type ProfileFormProps = {
 const ProfileForm = ({
   profile,
   name,
-  nameID,
   tagset,
   onSubmit,
   wireSubmit,
@@ -63,7 +60,6 @@ const ProfileForm = ({
 
   const initialValues: ProfileFormValues = {
     name: name || '',
-    nameID: nameID || '',
     tagline: profile?.tagline || '',
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references || [],
@@ -72,7 +68,6 @@ const ProfileForm = ({
 
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
-    nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
@@ -101,7 +96,7 @@ const ProfileForm = ({
 
         return (
           <Gutters>
-            <NameSegment disabled={isEdit} required={!isEdit} />
+            <FormikInputField name="name" title={t('components.nameSegment.name')} required />
             <LocationSegment
               disabled={!isEdit}
               cols={2}

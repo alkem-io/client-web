@@ -1,4 +1,4 @@
-query SpaceSubspaces($spaceId: UUID!) { #//!! To check if using NameIds
+query SpaceSubspaces($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
@@ -12,7 +12,7 @@ query SpaceSubspaces($spaceId: UUID!) { #//!! To check if using NameIds
           myPrivileges
         }
         virtualContributors {
-          id #//!! NameID removed
+          id
           profile {
             id
             displayName

@@ -16484,7 +16484,6 @@ export const SubspaceProfileInfoDocument = gql`
     lookup {
       space(ID: $subspaceId) {
         id
-        nameID
         profile {
           id
           displayName

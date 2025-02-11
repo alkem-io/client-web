@@ -2,7 +2,6 @@ query SubspaceProfileInfo($subspaceId: UUID!) {
   lookup {
     space(ID: $subspaceId) {
       id
-      nameID
       profile {
         id
         displayName

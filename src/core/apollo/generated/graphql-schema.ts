@@ -20937,7 +20937,6 @@ export type SubspaceProfileInfoQuery = {
       | {
           __typename?: 'Space';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;

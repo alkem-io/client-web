@@ -100,7 +100,7 @@ const TemplatesAdmin = ({
           cardVisualId: mutationResult.profile?.cardVisual?.id,
           previewVisualId: mutationResult.profile?.previewVisual?.id,
         },
-        mutationResult.nameID
+        mutationResult.nameID // To upload the screenshots with the whiteboard nameId
       );
     }
   };
