@@ -19,20 +19,17 @@ query PlansTable {
   }
 }
 
-query FreePlanAvailability {
-  me {
-    id
-    user {
+query AccountPlanAvailability($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
       id
-      account {
+      authorization {
         id
-        authorization {
-          id
-          myPrivileges
-        }
-        license {
-          availableEntitlements
-        }
+        myPrivileges
+      }
+      license {
+        id
+        availableEntitlements
       }
     }
   }

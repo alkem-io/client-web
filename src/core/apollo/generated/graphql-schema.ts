@@ -1614,6 +1614,11 @@ export type ContributorRolesInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type ConversionVcSpaceToVcKnowledgeBaseInput = {
+  /** The Virtual Contributor to be converted. */
+  virtualContributorID: Scalars['UUID'];
+};
+
 export type ConvertSubspaceToSpaceInput = {
   /** The subspace to be promoted to be a new Space. Note: the original Subspace will no longer exist after the conversion.  */
   subspaceID: Scalars['UUID'];
@@ -3720,12 +3725,12 @@ export type Mutation = {
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
+  /** Convert a VC of type ALKEMIO_SPACE to be of type KNOWLEDGE_BASE. All Callouts from the Space currently being used are moved to the Knowledge Base. Note: only allowed for VCs using a Space within the same Account. */
+  convertVirtualContributorToUseKnowledgeBase: VirtualContributor;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
   createActorGroup: ActorGroup;
-  /** Creates a new Callout on the specified CalloutsSet. */
-  createCallout: Callout;
   /** Create a new Callout on the CalloutsSet. */
   createCalloutOnCalloutsSet: Callout;
   /** Create a guidance chat room. */
@@ -3880,6 +3885,8 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
+  /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
+  transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
   transferInnovationHubToAccount: InnovationHub;
   /** Transfer the specified Innovation Pack to another Account. */
@@ -4098,16 +4105,16 @@ export type MutationConvertOpportunityToChallengeArgs = {
   convertData: ConvertSubsubspaceToSubspaceInput;
 };
 
+export type MutationConvertVirtualContributorToUseKnowledgeBaseArgs = {
+  conversionData: ConversionVcSpaceToVcKnowledgeBaseInput;
+};
+
 export type MutationCreateActorArgs = {
   actorData: CreateActorInput;
 };
 
 export type MutationCreateActorGroupArgs = {
   actorGroupData: CreateActorGroupInput;
-};
-
-export type MutationCreateCalloutArgs = {
-  calloutData: CreateCalloutOnCalloutsSetInput;
 };
 
 export type MutationCreateCalloutOnCalloutsSetArgs = {
@@ -4392,6 +4399,10 @@ export type MutationSendMessageToRoomArgs = {
 
 export type MutationSendMessageToUserArgs = {
   messageData: CommunicationSendMessageToUserInput;
+};
+
+export type MutationTransferCalloutArgs = {
+  transferData: TransferCalloutInput;
 };
 
 export type MutationTransferInnovationHubToAccountArgs = {
@@ -4828,6 +4839,8 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Virtual Contributor that is used to provide chat help on the platform. */
+  chatGuidanceVirtualContributor: VirtualContributor;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** The date at which the entity was created. */
@@ -6583,6 +6596,13 @@ export type TransferAccountVirtualContributorInput = {
   virtualContributorID: Scalars['UUID'];
 };
 
+export type TransferCalloutInput = {
+  /** The Callout to be transferred. */
+  calloutID: Scalars['UUID'];
+  /** The target CalloutsSet to which the Callout will be transferred. */
+  targetCalloutsSetID: Scalars['UUID'];
+};
+
 export type UpdateActorInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
@@ -6597,6 +6617,8 @@ export type UpdateAiPersonaInput = {
 
 export type UpdateAiPersonaServiceInput = {
   ID: Scalars['UUID'];
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfig>;
   prompt?: InputMaybe<Array<Scalars['String']>>;
@@ -17523,6 +17545,13 @@ export type UpdateOrganizationSettingsMutation = {
   };
 };
 
+export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PendingInvitationsCountQuery = {
+  __typename?: 'Query';
+  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
+};
+
 export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
@@ -21333,31 +21362,26 @@ export type PlansTableQuery = {
   };
 };
 
-export type FreePlanAvailabilityQueryVariables = Exact<{ [key: string]: never }>;
+export type AccountPlanAvailabilityQueryVariables = Exact<{
+  accountId: Scalars['UUID'];
+}>;
 
-export type FreePlanAvailabilityQuery = {
+export type AccountPlanAvailabilityQuery = {
   __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    id: string;
-    user?:
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
       | {
-          __typename?: 'User';
+          __typename?: 'Account';
           id: string;
-          account?:
-            | {
-                __typename?: 'Account';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-                license: { __typename?: 'License'; availableEntitlements?: Array<LicenseEntitlementType> | undefined };
-              }
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
         }
       | undefined;
   };
@@ -28360,13 +28384,6 @@ export type CampaignBlockCredentialsQuery = {
         }
       | undefined;
   };
-};
-
-export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PendingInvitationsCountQuery = {
-  __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; communityInvitationsCount: number };
 };
 
 export type DashboardWithMembershipsQueryVariables = Exact<{
