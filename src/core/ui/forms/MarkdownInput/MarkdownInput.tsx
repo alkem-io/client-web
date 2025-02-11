@@ -144,55 +144,33 @@ export const MarkdownInput = memo(
           const clipboardData = event.clipboardData;
           const items = clipboardData?.items;
 
-          if (!items) {
+          if (!items || !storageBucketId) {
             return false;
           }
-
-          if (!storageBucketId) {
-            return false;
-          }
-
-          let imageProcessed = false;
 
           for (const item of items) {
             const isImage = isImageOrHtmlWithImage(item, clipboardData);
 
             if (hideImageOptions && isImage) {
               event.preventDefault();
-
               return true; // Block paste of images or HTML with images
             }
 
-            if (!imageProcessed && isImage) {
+            if (isImage) {
               const file = item.getAsFile();
 
               if (file) {
                 const reader = new FileReader();
 
                 reader.onload = () => {
-                  uploadFile({
-                    variables: {
-                      file,
-                      uploadData: { storageBucketId, temporaryLocation },
-                    },
-                  });
+                  uploadFile({ variables: { file, uploadData: { storageBucketId, temporaryLocation } } });
                 };
 
                 reader.readAsDataURL(file);
-                imageProcessed = true;
+                event.preventDefault();
+                return true; // Block default behavior for images
               }
             }
-
-            if (imageProcessed) {
-              // Stop if we have already processed an image
-              break;
-            }
-          }
-
-          if (imageProcessed) {
-            event.preventDefault();
-
-            return true; // Block default behavior for images
           }
 
           return false; // Allow default behavior for text
