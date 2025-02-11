@@ -1602,6 +1602,11 @@ export type ContributorRolesInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type ConversionVcSpaceToVcKnowledgeBaseInput = {
+  /** The Virtual Contributor to be converted. */
+  virtualContributorID: Scalars['UUID'];
+};
+
 export type ConvertSubspaceToSpaceInput = {
   /** The subspace to be promoted to be a new Space. Note: the original Subspace will no longer exist after the conversion.  */
   subspaceID: Scalars['UUID'];
@@ -3708,12 +3713,12 @@ export type Mutation = {
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
+  /** Convert a VC of type ALKEMIO_SPACE to be of type KNOWLEDGE_BASE. All Callouts from the Space currently being used are moved to the Knowledge Base. Note: only allowed for VCs using a Space within the same Account. */
+  convertVirtualContributorToUseKnowledgeBase: VirtualContributor;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
   createActorGroup: ActorGroup;
-  /** Creates a new Callout on the specified CalloutsSet. */
-  createCallout: Callout;
   /** Create a new Callout on the CalloutsSet. */
   createCalloutOnCalloutsSet: Callout;
   /** Create a guidance chat room. */
@@ -3868,6 +3873,8 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
+  /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
+  transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
   transferInnovationHubToAccount: InnovationHub;
   /** Transfer the specified Innovation Pack to another Account. */
@@ -4086,16 +4093,16 @@ export type MutationConvertOpportunityToChallengeArgs = {
   convertData: ConvertSubsubspaceToSubspaceInput;
 };
 
+export type MutationConvertVirtualContributorToUseKnowledgeBaseArgs = {
+  conversionData: ConversionVcSpaceToVcKnowledgeBaseInput;
+};
+
 export type MutationCreateActorArgs = {
   actorData: CreateActorInput;
 };
 
 export type MutationCreateActorGroupArgs = {
   actorGroupData: CreateActorGroupInput;
-};
-
-export type MutationCreateCalloutArgs = {
-  calloutData: CreateCalloutOnCalloutsSetInput;
 };
 
 export type MutationCreateCalloutOnCalloutsSetArgs = {
@@ -4380,6 +4387,10 @@ export type MutationSendMessageToRoomArgs = {
 
 export type MutationSendMessageToUserArgs = {
   messageData: CommunicationSendMessageToUserInput;
+};
+
+export type MutationTransferCalloutArgs = {
+  transferData: TransferCalloutInput;
 };
 
 export type MutationTransferInnovationHubToAccountArgs = {
@@ -6573,6 +6584,13 @@ export type TransferAccountVirtualContributorInput = {
   virtualContributorID: Scalars['UUID'];
 };
 
+export type TransferCalloutInput = {
+  /** The Callout to be transferred. */
+  calloutID: Scalars['UUID'];
+  /** The target CalloutsSet to which the Callout will be transferred. */
+  targetCalloutsSetID: Scalars['UUID'];
+};
+
 export type UpdateActorInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
@@ -6587,6 +6605,8 @@ export type UpdateAiPersonaInput = {
 
 export type UpdateAiPersonaServiceInput = {
   ID: Scalars['UUID'];
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfig>;
   prompt?: InputMaybe<Array<Scalars['String']>>;
@@ -7213,6 +7233,7 @@ export enum UrlType {
   InnovationPacks = 'INNOVATION_PACKS',
   Organization = 'ORGANIZATION',
   Space = 'SPACE',
+  SpaceExplorer = 'SPACE_EXPLORER',
   Unknown = 'UNKNOWN',
   User = 'USER',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
@@ -13798,14 +13819,6 @@ export type WhiteboardDetailsFragment = {
     | undefined;
 };
 
-export type WhiteboardSummaryFragment = {
-  __typename?: 'Whiteboard';
-  id: string;
-  nameID: string;
-  createdDate: Date;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
 export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
 
 export type CollaborationWithWhiteboardDetailsFragment = {
@@ -13817,7 +13830,6 @@ export type CollaborationWithWhiteboardDetailsFragment = {
     callouts: Array<{
       __typename?: 'Callout';
       id: string;
-      nameID: string;
       type: CalloutType;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -14008,7 +14020,6 @@ export type WhiteboardFromCalloutQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          nameID: string;
           type: CalloutType;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -14104,6 +14115,7 @@ export type WhiteboardFromCalloutQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
             whiteboard?:
               | {
                   __typename?: 'Whiteboard';
@@ -17424,36 +17436,6 @@ export type UserSelectorUserInformationFragment = {
   };
 };
 
-export type UserAvatarsQueryVariables = Exact<{
-  ids: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type UserAvatarsQuery = {
-  __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  }>;
-};
-
 export type UserDetailsFragment = {
   __typename?: 'User';
   id: string;
@@ -17825,22 +17807,14 @@ export type UserProfileQuery = {
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
-      nameID: string;
       displayName: string;
       roles: Array<string>;
       visibility: SpaceVisibility;
-      subspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        nameID: string;
-        displayName: string;
-        roles: Array<string>;
-      }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string; roles: Array<string> }>;
     }>;
     organizations: Array<{
       __typename?: 'RolesResultOrganization';
       id: string;
-      nameID: string;
       displayName: string;
       roles: Array<string>;
     }>;
@@ -18007,12 +17981,10 @@ export type UserContributionsQuery = {
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
-      nameID: string;
       roles: Array<string>;
       subspaces: Array<{
         __typename?: 'RolesResultCommunity';
         id: string;
-        nameID: string;
         type: SpaceType;
         level: SpaceLevel;
         roles: Array<string>;
@@ -18530,8 +18502,7 @@ export type VcMembershipsQuery = {
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
-      nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; level: SpaceLevel }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; level: SpaceLevel }>;
     }>;
   };
   me: {
@@ -18659,7 +18630,6 @@ export type AdminInnovationHubsListQuery = {
       innovationHubs: Array<{
         __typename?: 'InnovationHub';
         id: string;
-        nameID: string;
         subdomain: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }>;

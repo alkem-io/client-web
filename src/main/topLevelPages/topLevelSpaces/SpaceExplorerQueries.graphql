@@ -135,7 +135,7 @@ fragment SpaceExplorerSubspace on Space {
   }
 }
 
-query SpaceExplorerWelcomeSpace($spaceId: UUID!) { #//!! To check if using NameIds
+query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

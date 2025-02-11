@@ -257,8 +257,8 @@ export const OrganizationForm: FC<Props> = ({
                     />
                   </PageContentColumn>
                   <PageContentColumn columns={6}>
-                    <PageContentBlockHeader title={title} />
                     <Gutters disablePadding>
+                      <PageContentBlockHeader title={title} />
                       <NameSegment disabled={isEditMode} required={!isEditMode} />
                       {!isCreateMode && (
                         <>

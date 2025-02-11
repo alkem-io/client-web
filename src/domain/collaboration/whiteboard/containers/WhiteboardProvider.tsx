@@ -21,13 +21,10 @@ export interface IProvidedEntitiesState {
 }
 
 const WhiteboardProvider = ({ children }: PropsWithChildren<WhiteboardProviderProps>) => {
-  //!! Check if this is working at all
   const { calloutId, contributionId } = useUrlResolver();
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, contributionId: contributionId! },
     skip: !calloutId || !contributionId,
-    errorPolicy: 'all',
-    fetchPolicy: 'cache-and-network', //!! TODO: Check if this is still needed
   });
 
   const callout = data?.lookup.callout;

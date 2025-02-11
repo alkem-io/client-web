@@ -947,17 +947,6 @@ export const PostSettingsCalloutFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
-export const WhiteboardSummaryFragmentDoc = gql`
-  fragment WhiteboardSummary on Whiteboard {
-    id
-    nameID
-    createdDate
-    profile {
-      id
-      displayName
-    }
-  }
-`;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
@@ -965,7 +954,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       id
       callouts {
         id
-        nameID
         type
         authorization {
           id
@@ -8516,7 +8504,6 @@ export const WhiteboardFromCalloutDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        nameID
         type
         authorization {
           id
@@ -8529,6 +8516,7 @@ export const WhiteboardFromCalloutDocument = gql`
           }
         }
         contributions(IDs: [$contributionId]) {
+          id
           whiteboard {
             ...WhiteboardDetails
           }
@@ -12582,77 +12570,6 @@ export function refetchUserSelectorUserDetailsQuery(variables: SchemaTypes.UserS
   return { query: UserSelectorUserDetailsDocument, variables: variables };
 }
 
-export const UserAvatarsDocument = gql`
-  query userAvatars($ids: [UUID!]!) {
-    users(IDs: $ids) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        location {
-          country
-          city
-        }
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-
-/**
- * __useUserAvatarsQuery__
- *
- * To run a query within a React component, call `useUserAvatarsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserAvatarsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserAvatarsQuery({
- *   variables: {
- *      ids: // value for 'ids'
- *   },
- * });
- */
-export function useUserAvatarsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>(
-    UserAvatarsDocument,
-    options
-  );
-}
-
-export function useUserAvatarsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserAvatarsQuery, SchemaTypes.UserAvatarsQueryVariables>(
-    UserAvatarsDocument,
-    options
-  );
-}
-
-export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
-export type UserAvatarsLazyQueryHookResult = ReturnType<typeof useUserAvatarsLazyQuery>;
-export type UserAvatarsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserAvatarsQuery,
-  SchemaTypes.UserAvatarsQueryVariables
->;
-export function refetchUserAvatarsQuery(variables: SchemaTypes.UserAvatarsQueryVariables) {
-  return { query: UserAvatarsDocument, variables: variables };
-}
-
 export const CreateUserDocument = gql`
   mutation createUser($input: CreateUserInput!) {
     createUser(userData: $input) {
@@ -13052,20 +12969,17 @@ export const UserProfileDocument = gql`
       id
       spaces {
         id
-        nameID
         displayName
         roles
         visibility
         subspaces {
           id
-          nameID
           displayName
           roles
         }
       }
       organizations {
         id
-        nameID
         displayName
         roles
       }
@@ -13279,11 +13193,9 @@ export const UserContributionsDocument = gql`
       id
       spaces {
         id
-        nameID
         roles
         subspaces {
           id
-          nameID
           type
           level
           roles
@@ -14204,10 +14116,8 @@ export const VcMembershipsDocument = gql`
     rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
       spaces {
         id
-        nameID
         subspaces {
           id
-          nameID
           level
         }
       }
@@ -14375,7 +14285,6 @@ export const AdminInnovationHubsListDocument = gql`
       library {
         innovationHubs {
           id
-          nameID
           subdomain
           profile {
             id

@@ -48,16 +48,6 @@ fragment WhiteboardDetails on Whiteboard {
   }
 }
 
-fragment WhiteboardSummary on Whiteboard {
-  id
-  nameID
-  createdDate
-  profile {
-    id
-    displayName
-  }
-}
-
 fragment WhiteboardContent on Whiteboard {
   id
   content
@@ -69,7 +59,6 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
     callouts {
       id
-      nameID
       type
       authorization {
         id
@@ -90,11 +79,10 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
   }
 }
 
-query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {  #//!! To check if using NameIds
+query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
-      nameID
       type
       authorization {
         id
@@ -106,7 +94,8 @@ query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {  #//!! 
           ...WhiteboardDetails
         }
       }
-      contributions(IDs: [$contributionId]) { #//!! To check if using contributionId or whiteboardId (Probably wb!) To check if using NameIds
+      contributions(IDs: [$contributionId]) {
+        id
         whiteboard {
           ...WhiteboardDetails
         }
