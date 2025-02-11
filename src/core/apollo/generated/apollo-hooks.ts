@@ -41,7 +41,6 @@ export const VisualUriFragmentDoc = gql`
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   fragment InnovationPackProviderProfileWithAvatar on Contributor {
     id
-    nameID
     profile {
       id
       displayName
@@ -1530,7 +1529,6 @@ export const InnovationHubSpaceFragmentDoc = gql`
 export const InnovationHubSettingsFragmentDoc = gql`
   fragment InnovationHubSettings on InnovationHub {
     id
-    nameID
     subdomain
     profile {
       ...InnovationHubProfile
@@ -1546,7 +1544,6 @@ export const InnovationHubSettingsFragmentDoc = gql`
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   fragment InnovationHubHomeInnovationHub on InnovationHub {
     id
-    nameID
     profile {
       id
       displayName
@@ -3585,7 +3582,6 @@ export const InnovationPackProfilePageDocument = gql`
     lookup {
       innovationPack(ID: $innovationPackId) {
         id
-        nameID
         authorization {
           id
           myPrivileges
@@ -3667,7 +3663,6 @@ export const AdminInnovationPacksListDocument = gql`
         id
         innovationPacks {
           id
-          nameID
           profile {
             id
             displayName
@@ -3783,7 +3778,6 @@ export const AdminInnovationPackDocument = gql`
     lookup {
       innovationPack(ID: $innovationPackId) {
         id
-        nameID
         provider {
           ...InnovationPackProviderProfileWithAvatar
         }
@@ -3858,7 +3852,6 @@ export const CreateInnovationPackDocument = gql`
   mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
     createInnovationPack(innovationPackData: $packData) {
       id
-      nameID
     }
   }
 `;
@@ -3907,7 +3900,6 @@ export const UpdateInnovationPackDocument = gql`
   mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
     updateInnovationPack(innovationPackData: $packData) {
       id
-      nameID
     }
   }
 `;
@@ -13488,7 +13480,6 @@ export const VirtualContributorDocument = gql`
     lookup {
       virtualContributor(ID: $id) {
         id
-        nameID
         authorization {
           id
           myPrivileges
@@ -22196,7 +22187,6 @@ export const UserRolesSearchCardsDocument = gql`
         roles
         subspaces {
           id
-          nameID
           roles
         }
       }

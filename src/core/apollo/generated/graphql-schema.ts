@@ -7225,6 +7225,7 @@ export enum UrlType {
   CalloutsSet = 'CALLOUTS_SET',
   ContributionPost = 'CONTRIBUTION_POST',
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
+  ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
   Discussion = 'DISCUSSION',
   Forum = 'FORUM',
   Home = 'HOME',
@@ -7612,7 +7613,6 @@ export type InnovationPackProfilePageQuery = {
       | {
           __typename?: 'InnovationPack';
           id: string;
-          nameID: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -7620,7 +7620,6 @@ export type InnovationPackProfilePageQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7632,7 +7631,6 @@ export type InnovationPackProfilePageQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7644,7 +7642,6 @@ export type InnovationPackProfilePageQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7699,7 +7696,6 @@ export type AdminInnovationPacksListQuery = {
       innovationPacks: Array<{
         __typename?: 'InnovationPack';
         id: string;
-        nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }>;
     };
@@ -7749,14 +7745,12 @@ export type AdminInnovationPackQuery = {
       | {
           __typename?: 'InnovationPack';
           id: string;
-          nameID: string;
           listedInStore: boolean;
           searchVisibility: SearchVisibility;
           provider:
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7768,7 +7762,6 @@ export type AdminInnovationPackQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7780,7 +7773,6 @@ export type AdminInnovationPackQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7828,7 +7820,7 @@ export type CreateInnovationPackMutationVariables = Exact<{
 
 export type CreateInnovationPackMutation = {
   __typename?: 'Mutation';
-  createInnovationPack: { __typename?: 'InnovationPack'; id: string; nameID: string };
+  createInnovationPack: { __typename?: 'InnovationPack'; id: string };
 };
 
 export type UpdateInnovationPackMutationVariables = Exact<{
@@ -7837,13 +7829,12 @@ export type UpdateInnovationPackMutationVariables = Exact<{
 
 export type UpdateInnovationPackMutation = {
   __typename?: 'Mutation';
-  updateInnovationPack: { __typename?: 'InnovationPack'; id: string; nameID: string };
+  updateInnovationPack: { __typename?: 'InnovationPack'; id: string };
 };
 
 type InnovationPackProviderProfileWithAvatar_Organization_Fragment = {
   __typename?: 'Organization';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -7856,7 +7847,6 @@ type InnovationPackProviderProfileWithAvatar_Organization_Fragment = {
 type InnovationPackProviderProfileWithAvatar_User_Fragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -7869,7 +7859,6 @@ type InnovationPackProviderProfileWithAvatar_User_Fragment = {
 type InnovationPackProviderProfileWithAvatar_VirtualContributor_Fragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -7919,7 +7908,6 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -7931,7 +7919,6 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'User';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -7943,7 +7930,6 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -18112,7 +18098,6 @@ export type VirtualContributorQuery = {
       | {
           __typename?: 'VirtualContributor';
           id: string;
-          nameID: string;
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
@@ -18655,7 +18640,6 @@ export type CreateInnovationHubMutation = {
   createInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
-    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -18723,7 +18707,6 @@ export type UpdateInnovationHubMutation = {
   updateInnovationHub: {
     __typename?: 'InnovationHub';
     id: string;
-    nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
     profile: {
@@ -18868,7 +18851,6 @@ export type InnovationHubSettingsQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
-          nameID: string;
           subdomain: string;
           spaceVisibilityFilter?: SpaceVisibility | undefined;
           profile: {
@@ -18936,7 +18918,6 @@ export type InnovationHubSettingsQuery = {
 export type InnovationHubSettingsFragment = {
   __typename?: 'InnovationHub';
   id: string;
-  nameID: string;
   subdomain: string;
   spaceVisibilityFilter?: SpaceVisibility | undefined;
   profile: {
@@ -19007,7 +18988,6 @@ export type InnovationHubQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19026,7 +19006,6 @@ export type InnovationHubQuery = {
 export type InnovationHubHomeInnovationHubFragment = {
   __typename?: 'InnovationHub';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -27200,7 +27179,7 @@ export type UserRolesSearchCardsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       roles: Array<string>;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; roles: Array<string> }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
     }>;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; roles: Array<string> }>;
   };
@@ -27357,7 +27336,6 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'Organization';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -27369,7 +27347,6 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -27381,7 +27358,6 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;

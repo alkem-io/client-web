@@ -1,7 +1,5 @@
-import { PropsWithChildren } from 'react';
-
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
 import { useBodyOfKnowledgeProfileQuery, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -12,11 +10,23 @@ import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 
+/**
+ * children will have the virtual contributor data available if it is loaded
+ */
+interface VirtualContributorProvided {
+  id: string;
+  profile: {
+    displayName: string;
+    url: string;
+  };
+}
+
 type VCProfilePageProps = {
   openKnowledgeBaseDialog?: boolean;
+  children?: (vc: VirtualContributorProvided | undefined) => ReactNode;
 };
 
-export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: PropsWithChildren<VCProfilePageProps>) => {
+export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
   const { vcId } = useUrlResolver();
 
@@ -60,7 +70,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: PropsWithCh
         virtualContributor={data?.lookup.virtualContributor}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
-      {children}
+      {children?.(data?.lookup.virtualContributor)}
     </VCPageLayout>
   );
 };

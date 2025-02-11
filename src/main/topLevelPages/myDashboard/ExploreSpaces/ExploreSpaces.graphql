@@ -22,7 +22,7 @@ query ExploreAllSpaces {
   }
 }
 
-query WelcomeSpace($spaceId: UUID!) { #//!! To check if using NameIds
+query WelcomeSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       ...ExploreSpaces

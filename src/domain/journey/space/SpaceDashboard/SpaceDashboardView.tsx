@@ -114,10 +114,10 @@ const SpaceDashboardView = ({
 
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
-    const cachedVC = getVCCreationCache();
+    const cachedVCId = getVCCreationCache();
 
-    if (cachedVC) {
-      setVcId(cachedVC);
+    if (cachedVCId) {
+      setVcId(cachedVCId);
       setTryVirtualContributorOpen(true);
     }
 

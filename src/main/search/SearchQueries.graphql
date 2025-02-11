@@ -260,7 +260,6 @@ query userRolesSearchCards($userId: UUID!) {
       roles
       subspaces {
         id
-        nameID
         roles
       }
     }

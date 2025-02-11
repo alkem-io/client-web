@@ -2,7 +2,6 @@ query VirtualContributor($id: UUID!) {
   lookup {
     virtualContributor(ID: $id) {
       id
-      nameID # Used for VirtualContributor form
       authorization {
         id
         myPrivileges

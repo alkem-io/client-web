@@ -5,7 +5,6 @@ query AdminInnovationPacksList {
       id
       innovationPacks {
         id
-        nameID
         profile {
           id
           displayName
@@ -43,7 +42,6 @@ query AdminInnovationPack($innovationPackId: UUID!) {
   lookup {
     innovationPack(ID: $innovationPackId) {
       id
-      nameID
       provider {
         ...InnovationPackProviderProfileWithAvatar
       }
@@ -62,20 +60,17 @@ query AdminInnovationPack($innovationPackId: UUID!) {
 mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
   createInnovationPack(innovationPackData: $packData) {
     id
-    nameID
   }
 }
 
 mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
   updateInnovationPack(innovationPackData: $packData) {
     id
-    nameID
   }
 }
 
 fragment InnovationPackProviderProfileWithAvatar on Contributor {
   id
-  nameID
   profile {
     id
     displayName

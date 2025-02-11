@@ -18,7 +18,6 @@ import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 
 export interface InnovationPackFormValues {
-  nameID: string;
   profile: {
     displayName: string;
     description: string;
@@ -31,7 +30,6 @@ export interface InnovationPackFormValues {
 
 type InnovationPackFormProps = {
   isNew?: boolean;
-  nameID?: string;
   profile?: {
     id?: string;
     displayName?: string;
@@ -50,7 +48,6 @@ type InnovationPackFormProps = {
  */
 const InnovationPackForm = ({
   isNew = false,
-  nameID,
   profile,
   listedInStore,
   searchVisibility,
@@ -63,7 +60,6 @@ const InnovationPackForm = ({
   const profileId = profile?.id ?? '';
 
   const initialValues: InnovationPackFormValues = {
-    nameID: nameID ?? '',
     profile: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
@@ -77,7 +73,6 @@ const InnovationPackForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     profile: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),

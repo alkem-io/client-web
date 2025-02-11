@@ -94,7 +94,6 @@ const AdminInnovationPackPage = () => {
               <PageContentColumn columns={12}>
                 <PageContentBlock>
                   <InnovationPackForm
-                    nameID={innovationPack.nameID}
                     profile={innovationPack.profile}
                     provider={innovationPack.provider}
                     onSubmit={handleSubmit}
