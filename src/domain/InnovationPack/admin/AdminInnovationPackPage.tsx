@@ -77,7 +77,7 @@ const AdminInnovationPackPage = () => {
         },
       },
     });
-    if (data?.updateInnovationPack.nameID) {
+    if (data?.updateInnovationPack.id) {
       notify(t('pages.admin.innovation-packs.saved-successfully'), 'success');
     }
   };

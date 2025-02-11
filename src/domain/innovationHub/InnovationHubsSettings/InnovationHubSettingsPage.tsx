@@ -47,7 +47,7 @@ const InnovationHubSettingsPage = () => {
         },
       },
     });
-    if (data?.updateInnovationHub.nameID) {
+    if (data?.updateInnovationHub.id) {
       notify(t('pages.admin.innovationHubs.saved'), 'success');
     }
   };
@@ -70,7 +70,7 @@ const InnovationHubSettingsPage = () => {
         },
       },
     });
-    if (data?.updateInnovationHub.nameID) {
+    if (data?.updateInnovationHub.id) {
       notify(t('pages.admin.innovationHubs.saved'), 'success');
     }
   };
@@ -79,11 +79,10 @@ const InnovationHubSettingsPage = () => {
 
   return (
     <InnovationHubProfileLayout innovationHub={innovationHub} loading={loading}>
-      <PageContent>
+      <PageContent background="transparent">
         <PageContentColumn columns={12}>
           <StorageConfigContextProvider locationType="innovationHub" innovationHubId={data?.platform.innovationHub?.id}>
             <InnovationHubForm
-              nameID={innovationHub?.nameID}
               profile={innovationHub?.profile}
               subdomain={innovationHub?.subdomain}
               onSubmit={handleSubmit}

@@ -14,11 +14,11 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
 import { IconButton } from '@mui/material';
 import { Actions } from '@/core/ui/actions/Actions';
+import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
 
 interface InnovationHubProfileLayoutProps {
   innovationHub:
     | (Identifiable & {
-        nameID: string;
         profile: {
           displayName: string;
           tagline?: string;
@@ -52,7 +52,7 @@ const InnovationHubProfileLayout = ({
       }
       header={
         <PageBanner
-          banner={innovationHub?.profile?.visual}
+          banner={innovationHub?.profile?.visual?.uri ? innovationHub.profile.visual : defaultPageBanner}
           cardComponent={PageBannerCardWithVisual}
           header={
             <>

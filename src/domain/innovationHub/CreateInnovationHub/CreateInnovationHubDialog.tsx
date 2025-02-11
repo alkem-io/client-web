@@ -30,7 +30,6 @@ const CreateInnovationHubDialog = ({ accountId, open = false, onClose }: CreateI
       variables: {
         hubData: {
           accountID: requiredAccountId,
-          nameID: formData.nameID,
           subdomain: formData.subdomain,
           profileData: {
             displayName: formData.profile.displayName,

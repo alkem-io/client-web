@@ -24,9 +24,7 @@ query InnovationHubSettings($innovationHubId: UUID!) {
 
 fragment InnovationHubSettings on InnovationHub {
   id
-  nameID
   subdomain
-
   profile {
     ...InnovationHubProfile
   }

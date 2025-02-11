@@ -4,7 +4,6 @@ query AdminInnovationHubsList {
     library {
       innovationHubs {
         id
-        nameID
         subdomain
         profile {
           id

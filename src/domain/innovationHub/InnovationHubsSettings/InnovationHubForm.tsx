@@ -3,20 +3,19 @@ import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Tagset, TagsetType, Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
+import { subdomainValidator } from '@/core/ui/forms/validator/subdomainValidator';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 
 export interface InnovationHubFormValues {
-  nameID: string;
   subdomain: string;
   profile: {
     displayName: string;
@@ -28,7 +27,6 @@ export interface InnovationHubFormValues {
 
 type InnovationHubFormProps = {
   isNew?: boolean;
-  nameID?: string;
   subdomain?: string;
   profile?: {
     id?: string;
@@ -43,21 +41,13 @@ type InnovationHubFormProps = {
   onSubmit: (formData: InnovationHubFormValues) => void;
 };
 
-const InnovationHubForm = ({
-  isNew = false,
-  nameID,
-  subdomain,
-  profile,
-  loading,
-  onSubmit,
-}: InnovationHubFormProps) => {
+const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmit }: InnovationHubFormProps) => {
   const { t } = useTranslation();
 
   const profileId = profile?.id ?? '';
   const banner = profile?.visual;
 
   const initialValues: InnovationHubFormValues = {
-    nameID: nameID ?? '',
     subdomain: subdomain ?? '',
     profile: {
       displayName: profile?.displayName ?? '',
@@ -68,8 +58,7 @@ const InnovationHubForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    nameID: nameIdValidator,
-    subdomain: nameIdValidator,
+    subdomain: subdomainValidator,
     profile: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
@@ -89,7 +78,7 @@ const InnovationHubForm = ({
               required
               disabled={!isNew}
             />
-            <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
+            <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} required />
             <FormikInputField
               name="profile.tagline"
               title={t('components.profile.fields.tagline.title')}
