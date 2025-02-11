@@ -8842,7 +8842,6 @@ export type CommunityVirtualMembersListQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -8868,7 +8867,6 @@ export type CommunityVirtualMembersListQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -8894,7 +8892,6 @@ export type CommunityVirtualMembersListQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -9693,7 +9690,6 @@ export type CalloutPageCalloutQuery = {
                     | {
                         __typename?: 'Organization';
                         id: string;
-                        nameID: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9724,7 +9720,6 @@ export type CalloutPageCalloutQuery = {
                     | {
                         __typename?: 'User';
                         id: string;
-                        nameID: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -9755,7 +9750,6 @@ export type CalloutPageCalloutQuery = {
                     | {
                         __typename?: 'VirtualContributor';
                         id: string;
-                        nameID: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -11705,7 +11699,6 @@ export type UpdateCalloutVisibilityMutation = {
               | {
                   __typename?: 'Organization';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -11731,7 +11724,6 @@ export type UpdateCalloutVisibilityMutation = {
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -11757,7 +11749,6 @@ export type UpdateCalloutVisibilityMutation = {
               | {
                   __typename?: 'VirtualContributor';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12389,7 +12380,6 @@ export type CreateCalloutMutation = {
               | {
                   __typename?: 'Organization';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12415,7 +12405,6 @@ export type CreateCalloutMutation = {
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12441,7 +12430,6 @@ export type CreateCalloutMutation = {
               | {
                   __typename?: 'VirtualContributor';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12773,7 +12761,6 @@ export type CalloutDetailsQuery = {
                     | {
                         __typename?: 'Organization';
                         id: string;
-                        nameID: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -12804,7 +12791,6 @@ export type CalloutDetailsQuery = {
                     | {
                         __typename?: 'User';
                         id: string;
-                        nameID: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -12835,7 +12821,6 @@ export type CalloutDetailsQuery = {
                     | {
                         __typename?: 'VirtualContributor';
                         id: string;
-                        nameID: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -13052,7 +13037,6 @@ export type CalloutDetailsFragment = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -13078,7 +13062,6 @@ export type CalloutDetailsFragment = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -13104,7 +13087,6 @@ export type CalloutDetailsFragment = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -13296,7 +13278,6 @@ export type PostQuery = {
                 | {
                     __typename?: 'Organization';
                     id: string;
-                    nameID: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -13327,7 +13308,6 @@ export type PostQuery = {
                 | {
                     __typename?: 'User';
                     id: string;
-                    nameID: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -13358,7 +13338,6 @@ export type PostQuery = {
                 | {
                     __typename?: 'VirtualContributor';
                     id: string;
-                    nameID: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -14718,7 +14697,6 @@ export type CreateDiscussionMutation = {
           | {
               __typename?: 'Organization';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14744,7 +14722,6 @@ export type CreateDiscussionMutation = {
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14770,7 +14747,6 @@ export type CreateDiscussionMutation = {
           | {
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14840,7 +14816,6 @@ export type UpdateDiscussionMutation = {
           | {
               __typename?: 'Organization';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14866,7 +14841,6 @@ export type UpdateDiscussionMutation = {
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14892,7 +14866,6 @@ export type UpdateDiscussionMutation = {
           | {
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -14965,7 +14938,6 @@ export type DiscussionDetailsFragment = {
         | {
             __typename?: 'Organization';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -14991,7 +14963,6 @@ export type DiscussionDetailsFragment = {
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -15017,7 +14988,6 @@ export type DiscussionDetailsFragment = {
         | {
             __typename?: 'VirtualContributor';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -15209,7 +15179,6 @@ export type PlatformDiscussionQuery = {
                   | {
                       __typename?: 'Organization';
                       id: string;
-                      nameID: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15240,7 +15209,6 @@ export type PlatformDiscussionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      nameID: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15271,7 +15239,6 @@ export type PlatformDiscussionQuery = {
                   | {
                       __typename?: 'VirtualContributor';
                       id: string;
-                      nameID: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15399,7 +15366,6 @@ export type MessageDetailsFragment = {
     | {
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -15425,7 +15391,6 @@ export type MessageDetailsFragment = {
     | {
         __typename?: 'User';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -15451,7 +15416,6 @@ export type MessageDetailsFragment = {
     | {
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -15511,7 +15475,6 @@ export type CommentsWithMessagesFragment = {
       | {
           __typename?: 'Organization';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -15537,7 +15500,6 @@ export type CommentsWithMessagesFragment = {
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -15563,7 +15525,6 @@ export type CommentsWithMessagesFragment = {
       | {
           __typename?: 'VirtualContributor';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -15742,7 +15703,6 @@ export type RoomEventsSubscription = {
               | {
                   __typename?: 'Organization';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15768,7 +15728,6 @@ export type RoomEventsSubscription = {
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15794,7 +15753,6 @@ export type RoomEventsSubscription = {
               | {
                   __typename?: 'VirtualContributor';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15884,7 +15842,6 @@ export type CommunityUpdatesQuery = {
                   | {
                       __typename?: 'Organization';
                       id: string;
-                      nameID: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15915,7 +15872,6 @@ export type CommunityUpdatesQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      nameID: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -15946,7 +15902,6 @@ export type CommunityUpdatesQuery = {
                   | {
                       __typename?: 'VirtualContributor';
                       id: string;
-                      nameID: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -16623,7 +16578,6 @@ export type UserContributorFragment = {
 type ContributorDetails_Organization_Fragment = {
   __typename?: 'Organization';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16650,7 +16604,6 @@ type ContributorDetails_Organization_Fragment = {
 type ContributorDetails_User_Fragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16677,7 +16630,6 @@ type ContributorDetails_User_Fragment = {
 type ContributorDetails_VirtualContributor_Fragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16718,7 +16670,6 @@ export type AssociatedOrganizationQuery = {
       | {
           __typename?: 'Organization';
           id: string;
-          nameID: string;
           roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
           profile: {
             __typename?: 'Profile';
@@ -16751,14 +16702,12 @@ export type RolesOrganizationQuery = {
     id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
-      nameID: string;
       id: string;
       roles: Array<string>;
       displayName: string;
       visibility: SpaceVisibility;
       subspaces: Array<{
         __typename?: 'RolesResultCommunity';
-        nameID: string;
         id: string;
         displayName: string;
         roles: Array<string>;
@@ -16771,7 +16720,6 @@ export type RolesOrganizationQuery = {
 export type OrganizationInfoFragment = {
   __typename?: 'Organization';
   id: string;
-  nameID: string;
   contactEmail?: string | undefined;
   domain?: string | undefined;
   website?: string | undefined;
@@ -16829,7 +16777,6 @@ export type OrganizationInfoQuery = {
       | {
           __typename?: 'Organization';
           id: string;
-          nameID: string;
           contactEmail?: string | undefined;
           domain?: string | undefined;
           website?: string | undefined;
@@ -16948,7 +16895,6 @@ export type CreateOrganizationMutation = {
   createOrganization: {
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
@@ -19181,7 +19127,6 @@ export type AboutPageNonMembersQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19207,7 +19152,6 @@ export type AboutPageNonMembersQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19233,7 +19177,6 @@ export type AboutPageNonMembersQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19464,7 +19407,6 @@ export type JourneyDataQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19490,7 +19432,6 @@ export type JourneyDataQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19516,7 +19457,6 @@ export type JourneyDataQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19874,7 +19814,6 @@ export type SpaceCommunityPageQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19900,7 +19839,6 @@ export type SpaceCommunityPageQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19926,7 +19864,6 @@ export type SpaceCommunityPageQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -20263,7 +20200,6 @@ export type SpacePageQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -20289,7 +20225,6 @@ export type SpacePageQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -20315,7 +20250,6 @@ export type SpacePageQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -20518,7 +20452,6 @@ export type SpacePageFragment = {
     | {
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -20544,7 +20477,6 @@ export type SpacePageFragment = {
     | {
         __typename?: 'User';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -20570,7 +20502,6 @@ export type SpacePageFragment = {
     | {
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -25280,7 +25211,6 @@ export type CalendarEventDetailsQuery = {
                 | {
                     __typename?: 'Organization';
                     id: string;
-                    nameID: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -25311,7 +25241,6 @@ export type CalendarEventDetailsQuery = {
                 | {
                     __typename?: 'User';
                     id: string;
-                    nameID: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -25342,7 +25271,6 @@ export type CalendarEventDetailsQuery = {
                 | {
                     __typename?: 'VirtualContributor';
                     id: string;
-                    nameID: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -25474,7 +25402,6 @@ export type CalendarEventDetailsFragment = {
         | {
             __typename?: 'Organization';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25500,7 +25427,6 @@ export type CalendarEventDetailsFragment = {
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25526,7 +25452,6 @@ export type CalendarEventDetailsFragment = {
         | {
             __typename?: 'VirtualContributor';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25668,7 +25593,6 @@ export type CreateCalendarEventMutation = {
           | {
               __typename?: 'Organization';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -25694,7 +25618,6 @@ export type CreateCalendarEventMutation = {
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -25720,7 +25643,6 @@ export type CreateCalendarEventMutation = {
           | {
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -25846,7 +25768,6 @@ export type UpdateCalendarEventMutation = {
           | {
               __typename?: 'Organization';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -25872,7 +25793,6 @@ export type UpdateCalendarEventMutation = {
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -25898,7 +25818,6 @@ export type UpdateCalendarEventMutation = {
           | {
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -26090,7 +26009,6 @@ export type GuidanceRoomMessagesQuery = {
               | {
                   __typename?: 'Organization';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -26116,7 +26034,6 @@ export type GuidanceRoomMessagesQuery = {
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -26142,7 +26059,6 @@ export type GuidanceRoomMessagesQuery = {
               | {
                   __typename?: 'VirtualContributor';
                   id: string;
-                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;

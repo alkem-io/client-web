@@ -758,7 +758,6 @@ export const ReactionDetailsFragmentDoc = gql`
 export const ContributorDetailsFragmentDoc = gql`
   fragment ContributorDetails on Contributor {
     id
-    nameID
     profile {
       id
       displayName
@@ -1235,7 +1234,6 @@ export const FullLocationFragmentDoc = gql`
 export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {
     id
-    nameID
     contactEmail
     domain
     authorization {
@@ -11315,7 +11313,6 @@ export const AssociatedOrganizationDocument = gql`
     lookup {
       organization(ID: $organizationId) {
         id
-        nameID
         roleSet {
           id
           myRoles
@@ -11411,13 +11408,11 @@ export const RolesOrganizationDocument = gql`
     rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       spaces {
-        nameID
         id
         roles
         displayName
         visibility
         subspaces {
-          nameID
           id
           displayName
           roles
@@ -11594,7 +11589,6 @@ export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganizationInput!) {
     createOrganization(organizationData: $input) {
       id
-      nameID
       profile {
         id
         displayName

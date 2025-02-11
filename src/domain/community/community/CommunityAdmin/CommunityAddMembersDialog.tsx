@@ -12,7 +12,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
 
 interface Entity extends Identifiable {
-  nameID?: string;
   email?: string;
   profile: {
     displayName: string;
