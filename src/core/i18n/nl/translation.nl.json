@@ -3095,7 +3095,7 @@
     },
     "name": "Naam",
     "bodyOfKnowledge": "Kennisbank",
-    "placeholder": "Here you'll find a collection of documents and texts that are ingested to give this VC its insights and functionality.",
+    "placeholder": "Hier vind je een verzameling documenten en teksten die zijn gebruikt om deze VC zijn inzichten en functionaliteit te bieden.",
     "infoTextBoK": "Selecteer de Space of Subspace die je wilt gebruiken als kennisbank voor deze Virtual Contributor",
     "noSubspacesInfo": "Maak eerst een Subspace, en vul deze met de relevante informatie voor je Virtual Contributor.",
     "confirmDeletion": {
