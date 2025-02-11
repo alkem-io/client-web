@@ -29,7 +29,6 @@ mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
     id
     post {
       id
-      nameID
       profile {
         id
         url

@@ -1,4 +1,4 @@
-query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) { #//!! To check if using NameIds
+query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
       id
@@ -15,7 +15,6 @@ query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) 
 
 fragment Callout on Callout {
   id
-  nameID
   type
   sortOrder
   activity
@@ -47,7 +46,6 @@ query CalloutDetails($calloutId: UUID!) {
 
 fragment CalloutDetails on Callout {
   id
-  nameID
   type
   framing {
     id

@@ -106,7 +106,6 @@ fragment PostParent on SearchResultPost {
 fragment SearchResultUser on SearchResultUser {
   user {
     id
-    nameID
     isContactable
     profile {
       displayName
@@ -119,7 +118,6 @@ fragment SearchResultCallout on SearchResultCallout {
   id
   callout {
     id
-    nameID
     type
     framing {
       id
@@ -172,7 +170,6 @@ fragment CalloutParent on SearchResultCallout {
 fragment SearchResultOrganization on SearchResultOrganization {
   organization {
     id
-    nameID
     profile {
       displayName
       ...SearchResultProfile

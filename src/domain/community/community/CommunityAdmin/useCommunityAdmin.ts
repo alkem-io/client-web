@@ -15,11 +15,10 @@ import useRoleSetApplicationsAndInvitations, {
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
-// TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
   roleSetId: string;
   spaceId?: string;
-  spaceLevel: SpaceLevel | undefined;
+  spaceLevel?: SpaceLevel;
 }
 
 export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {

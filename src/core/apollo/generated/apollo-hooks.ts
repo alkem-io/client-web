@@ -56,7 +56,6 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
 export const InnovationPackCardFragmentDoc = gql`
   fragment InnovationPackCard on InnovationPack {
     id
-    nameID
     profile {
       id
       displayName
@@ -333,7 +332,6 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       callouts(groups: $filterCalloutGroups) {
         id
-        nameID
         type
         activity
         sortOrder
@@ -644,7 +642,6 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
-    nameID
     type
     sortOrder
     activity
@@ -827,7 +824,6 @@ export const CommentsWithMessagesFragmentDoc = gql`
 export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
     id
-    nameID
     type
     framing {
       id
@@ -888,7 +884,6 @@ export const CalloutDetailsFragmentDoc = gql`
 export const PostSettingsFragmentDoc = gql`
   fragment PostSettings on Post {
     id
-    nameID
     authorization {
       id
       myPrivileges
@@ -916,7 +911,6 @@ export const PostSettingsFragmentDoc = gql`
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
     id
-    nameID
     type
     contributions {
       id
@@ -1115,7 +1109,6 @@ export const CommunityGuidelinesDetailsFragmentDoc = gql`
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
-    nameID
     email
     profile {
       id
@@ -1139,7 +1132,6 @@ export const CommunityPageMembersFragmentDoc = gql`
 export const BasicOrganizationDetailsFragmentDoc = gql`
   fragment BasicOrganizationDetails on Organization {
     id
-    nameID
     profile {
       id
       url
@@ -1154,7 +1146,6 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
-    nameID
     metrics {
       id
       name
@@ -1198,7 +1189,6 @@ export const OrganizationContributorPaginatedFragmentDoc = gql`
 export const UserContributorFragmentDoc = gql`
   fragment UserContributor on User {
     id
-    nameID
     isContactable
     userProfile: profile {
       id
@@ -2826,7 +2816,6 @@ export const SearchResultUserFragmentDoc = gql`
   fragment SearchResultUser on SearchResultUser {
     user {
       id
-      nameID
       isContactable
       profile {
         displayName
@@ -2854,7 +2843,6 @@ export const SearchResultCalloutFragmentDoc = gql`
     id
     callout {
       id
-      nameID
       type
       framing {
         id
@@ -2899,7 +2887,6 @@ export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {
     organization {
       id
-      nameID
       profile {
         displayName
         ...SearchResultProfile
@@ -7885,6 +7872,7 @@ export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
     createCalloutOnCalloutsSet(calloutData: $calloutData) {
       ...CalloutDetails
+      nameID
     }
   }
   ${CalloutDetailsFragmentDoc}
@@ -8340,7 +8328,6 @@ export const MoveContributionToCalloutDocument = gql`
       id
       post {
         id
-        nameID
         profile {
           id
           url
@@ -9697,7 +9684,6 @@ export const ForumDiscussionUpdatedDocument = gql`
   subscription forumDiscussionUpdated($forumID: UUID!) {
     forumDiscussionUpdated(forumID: $forumID) {
       id
-      nameID
       profile {
         id
         displayName
@@ -20360,6 +20346,7 @@ export const CreateTemplateDocument = gql`
       }
     ) {
       id
+      nameID
       profile @include(if: $includeProfileVisuals) {
         id
         cardVisual: visual(type: CARD) {
@@ -20505,6 +20492,7 @@ export const UpdateTemplateDocument = gql`
       }
     ) {
       id
+      nameID
       profile @include(if: $includeProfileVisuals) {
         id
         cardVisual: visual(type: CARD) {
@@ -22477,7 +22465,6 @@ export const InnovationLibraryDocument = gql`
         }
         innovationPacks {
           id
-          nameID
           profile {
             id
             displayName

@@ -45,7 +45,6 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
   const toPostFormInput = (post?: PostSettingsFragment): PostFormInput | undefined =>
     post && {
       id: post.id,
-      nameID: post.nameID,
       profileData: {
         displayName: post.profile.displayName,
         description: post.profile.description!,

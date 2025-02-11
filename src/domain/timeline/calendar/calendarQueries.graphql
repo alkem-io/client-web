@@ -38,7 +38,7 @@ fragment DashboardTimelineAuthorization on Collaboration {
 
 fragment CalendarEventInfo on CalendarEvent {
   id
-  nameID
+  nameID  # Needed to scroll to the events
   startDate
   durationDays
   durationMinutes

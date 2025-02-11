@@ -2656,6 +2656,7 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'authorization'
+  | 'chatGuidanceVirtualContributor'
   | 'configuration'
   | 'createdDate'
   | 'forum'
@@ -2674,6 +2675,7 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  chatGuidanceVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   forum?: FieldPolicy<any> | FieldReadFunction<any>;

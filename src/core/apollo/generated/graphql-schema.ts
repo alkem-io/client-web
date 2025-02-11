@@ -4816,6 +4816,8 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Virtual Contributor that is used to provide chat help on the platform. */
+  chatGuidanceVirtualContributor: VirtualContributor;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** The date at which the entity was created. */
@@ -7864,7 +7866,6 @@ export type InnovationPackProviderProfileWithAvatarFragment =
 export type InnovationPackCardFragment = {
   __typename?: 'InnovationPack';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -8510,7 +8511,6 @@ export type AvailableOrganizationsQuery = {
     organization: Array<{
       __typename?: 'Organization';
       id: string;
-      nameID: string;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -9497,7 +9497,6 @@ export type CalloutPageCalloutQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          nameID: string;
           type: CalloutType;
           sortOrder: number;
           activity: number;
@@ -9873,7 +9872,6 @@ export type InnovationFlowSettingsQuery = {
             callouts: Array<{
               __typename?: 'Callout';
               id: string;
-              nameID: string;
               type: CalloutType;
               activity: number;
               sortOrder: number;
@@ -10070,7 +10068,6 @@ export type InnovationFlowCollaborationFragment = {
     callouts: Array<{
       __typename?: 'Callout';
       id: string;
-      nameID: string;
       type: CalloutType;
       activity: number;
       sortOrder: number;
@@ -11540,7 +11537,6 @@ export type UpdateCalloutVisibilityMutation = {
   updateCalloutVisibility: {
     __typename?: 'Callout';
     id: string;
-    nameID: string;
     type: CalloutType;
     sortOrder: number;
     activity: number;
@@ -12223,8 +12219,8 @@ export type CreateCalloutMutation = {
   __typename?: 'Mutation';
   createCalloutOnCalloutsSet: {
     __typename?: 'Callout';
-    id: string;
     nameID: string;
+    id: string;
     type: CalloutType;
     sortOrder: number;
     activity: number;
@@ -12504,7 +12500,6 @@ export type CalloutsQuery = {
           callouts: Array<{
             __typename?: 'Callout';
             id: string;
-            nameID: string;
             type: CalloutType;
             sortOrder: number;
             activity: number;
@@ -12541,7 +12536,6 @@ export type CalloutsQuery = {
 export type CalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  nameID: string;
   type: CalloutType;
   sortOrder: number;
   activity: number;
@@ -12583,7 +12577,6 @@ export type CalloutDetailsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          nameID: string;
           type: CalloutType;
           sortOrder: number;
           activity: number;
@@ -12891,7 +12884,6 @@ export type CalloutDetailsQuery = {
 export type CalloutDetailsFragment = {
   __typename?: 'Callout';
   id: string;
-  nameID: string;
   type: CalloutType;
   sortOrder: number;
   activity: number;
@@ -13456,12 +13448,7 @@ export type MoveContributionToCalloutMutation = {
     __typename?: 'CalloutContribution';
     id: string;
     post?:
-      | {
-          __typename?: 'Post';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; url: string };
-        }
+      | { __typename?: 'Post'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } }
       | undefined;
   };
 };
@@ -13479,7 +13466,6 @@ export type PostSettingsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          nameID: string;
           type: CalloutType;
           contributions: Array<{
             __typename?: 'CalloutContribution';
@@ -13546,7 +13532,6 @@ export type PostSettingsQuery = {
       | {
           __typename?: 'Post';
           id: string;
-          nameID: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -13588,7 +13573,6 @@ export type PostSettingsQuery = {
 export type PostSettingsFragment = {
   __typename?: 'Post';
   id: string;
-  nameID: string;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -13627,7 +13611,6 @@ export type PostSettingsFragment = {
 export type PostSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  nameID: string;
   type: CalloutType;
   contributions: Array<{
     __typename?: 'CalloutContribution';
@@ -15337,7 +15320,6 @@ export type ForumDiscussionUpdatedSubscription = {
   forumDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
-    nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: ForumDiscussionCategory;
@@ -16360,7 +16342,6 @@ export type RemoveCommunityGuidelinesContentMutation = {
 export type CommunityPageMembersFragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   email: string;
   profile: {
     __typename?: 'Profile';
@@ -16385,7 +16366,6 @@ export type CommunityPageMembersFragment = {
 export type BasicOrganizationDetailsFragment = {
   __typename?: 'Organization';
   id: string;
-  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16408,7 +16388,6 @@ export type AllOrganizationsQuery = {
     organization: Array<{
       __typename?: 'Organization';
       id: string;
-      nameID: string;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -16446,7 +16425,6 @@ export type ContributorsPageOrganizationsQuery = {
     organization: Array<{
       __typename?: 'Organization';
       id: string;
-      nameID: string;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       orgProfile: {
         __typename?: 'Profile';
@@ -16481,7 +16459,6 @@ export type ContributorsPageUsersQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
-      nameID: string;
       isContactable: boolean;
       userProfile: {
         __typename?: 'Profile';
@@ -16552,7 +16529,6 @@ export type OrganizationContributorPaginatedFragment = {
   organization: Array<{
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     orgProfile: {
       __typename?: 'Profile';
@@ -16575,7 +16551,6 @@ export type OrganizationContributorPaginatedFragment = {
 export type OrganizationContributorFragment = {
   __typename?: 'Organization';
   id: string;
-  nameID: string;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   orgProfile: {
     __typename?: 'Profile';
@@ -16593,7 +16568,6 @@ export type UserContributorPaginatedFragment = {
   users: Array<{
     __typename?: 'User';
     id: string;
-    nameID: string;
     isContactable: boolean;
     userProfile: {
       __typename?: 'Profile';
@@ -16625,7 +16599,6 @@ export type UserContributorPaginatedFragment = {
 export type UserContributorFragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   isContactable: boolean;
   userProfile: {
     __typename?: 'Profile';
@@ -24585,6 +24558,7 @@ export type CreateTemplateMutation = {
   createTemplate: {
     __typename?: 'Template';
     id: string;
+    nameID: string;
     profile?: {
       __typename?: 'Profile';
       id: string;
@@ -24619,6 +24593,7 @@ export type UpdateTemplateMutation = {
   updateTemplate: {
     __typename?: 'Template';
     id: string;
+    nameID: string;
     profile?: {
       __typename?: 'Profile';
       id: string;
@@ -26825,7 +26800,6 @@ export type SearchQuery = {
           callout: {
             __typename?: 'Callout';
             id: string;
-            nameID: string;
             type: CalloutType;
             framing: {
               __typename?: 'CalloutFraming';
@@ -26899,7 +26873,6 @@ export type SearchQuery = {
           organization: {
             __typename?: 'Organization';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               displayName: string;
@@ -26934,7 +26907,6 @@ export type SearchQuery = {
           user: {
             __typename?: 'User';
             id: string;
-            nameID: string;
             isContactable: boolean;
             profile: {
               __typename?: 'Profile';
@@ -27127,7 +27099,6 @@ export type SearchResultUserFragment = {
   user: {
     __typename?: 'User';
     id: string;
-    nameID: string;
     isContactable: boolean;
     profile: {
       __typename?: 'Profile';
@@ -27159,7 +27130,6 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
-    nameID: string;
     type: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
@@ -27220,7 +27190,6 @@ export type SearchResultOrganizationFragment = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     profile: {
       __typename?: 'Profile';
       displayName: string;
@@ -27470,7 +27439,6 @@ export type InnovationLibraryQuery = {
       innovationPacks: Array<{
         __typename?: 'InnovationPack';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;

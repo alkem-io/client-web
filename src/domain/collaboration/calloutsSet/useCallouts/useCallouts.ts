@@ -22,7 +22,7 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/Innov
 import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
-export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrder'> & {
+export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   authorization:
     | {
         myPrivileges?: AuthorizationPrivilege[];

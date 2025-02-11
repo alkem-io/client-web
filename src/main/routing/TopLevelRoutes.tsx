@@ -8,7 +8,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
 import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
-import { WithApmTransaction } from '@/domain/shared/components';
+import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
 import devRoute from '@/dev/routes';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';

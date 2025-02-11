@@ -19,7 +19,7 @@ fragment WhiteboardProfile on Profile {
 
 fragment WhiteboardDetails on Whiteboard {
   id
-  nameID # Whiteboard nameID is used to name the screenshots uploaded as visuals (banner, card, etc.)
+  nameID # Used to name the screenshots uploaded as visuals (banner, card, etc.)
   createdDate
   profile {
     ...WhiteboardProfile

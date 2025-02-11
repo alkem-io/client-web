@@ -88,7 +88,6 @@ fragment InnovationPackProviderProfileWithAvatar on Contributor {
 
 fragment InnovationPackCard on InnovationPack {
   id
-  nameID
   profile {
     id
     displayName

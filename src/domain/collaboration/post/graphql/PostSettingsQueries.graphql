@@ -11,7 +11,6 @@ query PostSettings($postId: UUID!, $calloutId: UUID!) {
 
 fragment PostSettings on Post {
   id
-  nameID
   authorization {
     id
     myPrivileges
@@ -36,7 +35,6 @@ fragment PostSettings on Post {
 
 fragment PostSettingsCallout on Callout {
   id
-  nameID
   type
   # TODO This is done to find the contributionId for this postId (see usePostSettings), there must be an easier way
   contributions {
