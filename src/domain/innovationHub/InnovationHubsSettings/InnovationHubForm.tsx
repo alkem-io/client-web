@@ -10,7 +10,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { nameIdValidator } from '@/core/ui/forms/validator';
+import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';

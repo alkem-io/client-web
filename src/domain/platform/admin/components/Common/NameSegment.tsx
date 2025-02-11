@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormRow from '@/core/ui/forms/FormRow';
 import FormikInputFieldField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import nonReservedNameIdValidator from '@/main/routing/nonReservedNameIdValidator';
 
 export const nameSegmentSchema = yup.object().shape({

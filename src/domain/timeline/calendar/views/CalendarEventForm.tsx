@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '@/core/apollo/generated/graphql-schema';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
