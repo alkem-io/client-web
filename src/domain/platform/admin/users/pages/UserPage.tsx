@@ -4,26 +4,22 @@ import UserForm from '@/domain/community/user/userForm/UserForm';
 import { Loading } from '@/core/ui/loading/Loading';
 import {
   useCreateTagsetOnProfileMutation,
-  useCreateUserMutation,
   useDeleteUserMutation,
-  UserDetailsFragmentDoc,
   useUpdateUserMutation,
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { CreateUserInput } from '@/core/apollo/generated/graphql-schema';
 import { UserModel } from '@/domain/community/user/models/User';
-import { createUserNameID } from '@/domain/community/user/utils/createUserNameId';
 import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface UserPageProps {
-  mode: EditMode;
+  readOnly?: boolean;
 }
 
-const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly }) => {
+const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -61,80 +57,35 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly }) => {
     },
   });
 
-  const isEditMode = mode === EditMode.edit;
-
-  const [createUser, { loading: createMutationLoading }] = useCreateUserMutation({
-    onCompleted: () => {
-      notify('User saved successfully!', 'success');
-    },
-    update: (cache, { data }) => {
-      if (data) {
-        const { createUser } = data;
-
-        cache.modify({
-          fields: {
-            users(existingUsers = []) {
-              const newUserRef = cache.writeFragment({
-                data: createUser,
-                fragment: UserDetailsFragmentDoc,
-              });
-              return [...existingUsers, newUserRef];
-            },
-          },
-        });
-      }
-    },
-  });
-
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
     // there is an issue handling multiple snackbars.
     onError: error => console.error(error.message),
   });
 
-  const isSaving = updateMutationLoading || createMutationLoading;
+  const isSaving = updateMutationLoading;
 
   const handleSave = async (editedUser: UserModel) => {
-    const { id: userID, memberof, profile, ...rest } = editedUser;
+    const profileId = editedUser.profile.id;
+    const tagsetsToAdd = editedUser.profile.tagsets?.filter(x => !x.id) ?? [];
 
-    if (mode === EditMode.new) {
-      const userInput: CreateUserInput = {
-        ...rest,
-        nameID: createUserNameID(rest.firstName, rest.lastName),
-        profileData: {
-          description: profile.description,
-          displayName: profile.displayName,
-          referencesData: profile.references,
-        },
-      };
-
-      createUser({
+    for (const tagset of tagsetsToAdd) {
+      await createTagset({
         variables: {
-          input: userInput,
-        },
-      });
-    } else if (isEditMode && editedUser.id) {
-      const profileId = editedUser.profile.id;
-      const tagsetsToAdd = editedUser.profile.tagsets?.filter(x => !x.id) ?? [];
-
-      for (const tagset of tagsetsToAdd) {
-        await createTagset({
-          variables: {
-            input: {
-              name: tagset.name,
-              tags: tagset.tags,
-              profileID: profileId,
-            },
+          input: {
+            name: tagset.name,
+            tags: tagset.tags,
+            profileID: profileId,
           },
-        });
-      }
-
-      updateUser({
-        variables: {
-          input: getUpdateUserInput(editedUser),
         },
       });
     }
+
+    updateUser({
+      variables: {
+        input: getUpdateUserInput(editedUser),
+      },
+    });
   };
 
   const handleRemoveUser = () => {
@@ -158,7 +109,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly }) => {
     <>
       {isSaving && <Loading text={'Saving...'} />}
       <UserForm
-        editMode={mode}
+        editMode={readOnly ? EditMode.readOnly : EditMode.edit}
         onSave={handleSave}
         user={user}
         avatar={data?.lookup.user?.profile.avatar}
