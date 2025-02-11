@@ -1,3 +1,5 @@
+import { PropsWithChildren } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import VCPageLayout from '../layout/VCPageLayout';
@@ -5,18 +7,17 @@ import VCProfilePageView from './VCProfilePageView';
 import { useBodyOfKnowledgeProfileQuery, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
+import { VirtualContributorProfileProps } from './model';
 import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { ReactNode } from 'react';
 
 type VCProfilePageProps = {
   openKnowledgeBaseDialog?: boolean;
-  children?: ReactNode;
 };
 
-export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
+export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: PropsWithChildren<VCProfilePageProps>) => {
   const { t } = useTranslation();
   const { vcId } = useUrlResolver();
 
@@ -57,7 +58,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     <VCPageLayout>
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
-        virtualContributor={data?.lookup.virtualContributor}
+        virtualContributor={data?.lookup.virtualContributor as VirtualContributorProfileProps}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
       {children}

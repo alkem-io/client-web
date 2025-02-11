@@ -500,7 +500,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: hostedSpaceLimit,
             })}
           />
-          <Gutters disablePadding disableGap fullHeight>
+          <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
             {loading && <JourneyCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
@@ -534,7 +534,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 />
                 {createSpaceDialogOpen && (
                   <CreateSpaceDialog
-                    redirectOnComplete={false}
+                    withRedirectOnClose={false}
                     onClose={() => setCreateSpaceDialogOpen(false)}
                     account={{ id: account?.id, name: accountHostName }}
                   />
@@ -555,7 +555,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: vcLimit,
             })}
           />
-          <Gutters disablePadding fullHeight>
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <JourneyCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
@@ -598,7 +598,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: innovationPackLimit,
             })}
           />
-          <Gutters disablePadding fullHeight>
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(pack => (
@@ -639,7 +639,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: innovationHubLimit,
             })}
           />
-          <Gutters disablePadding fullHeight>
+          <Gutters disablePadding justifyContent="space-between" fullHeight>
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
               innovationHubs?.map(hub => (

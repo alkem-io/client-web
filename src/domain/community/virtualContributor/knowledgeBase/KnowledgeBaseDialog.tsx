@@ -18,11 +18,12 @@ type KnowledgeBaseDialogProps = {
   onClose: () => void;
   title: string;
   id: string;
+  placeholder: string;
 };
 
 const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
-const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) => {
+const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
   const { t } = useTranslation();
   const {
     calloutsSetId,
@@ -37,6 +38,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
     ingestKnowledge,
     ingestLoading,
     hasReadAccess,
+
     loadingPrivileges,
   } = useKnowledgeBase({ id });
 
@@ -60,9 +62,9 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
         ) : (
           <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
             <Gutters disablePadding>
-              {(knowledgeBaseDescription || canCreateCallout) && (
+              {(placeholder || knowledgeBaseDescription || canCreateCallout) && (
                 <DescriptionComponent
-                  description={knowledgeBaseDescription}
+                  description={knowledgeBaseDescription || placeholder}
                   canEdit={canCreateCallout}
                   onUpdate={updateDescription}
                 />

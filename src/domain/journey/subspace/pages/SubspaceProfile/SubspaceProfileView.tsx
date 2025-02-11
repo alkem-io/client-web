@@ -1,19 +1,18 @@
-import { Grid } from '@mui/material';
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   refetchSubspaceProfileInfoQuery,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import Gutters from '@/core/ui/grid/Gutters';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
 import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
-import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
-import Gutters from '@/core/ui/grid/Gutters';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { Grid, Typography } from '@mui/material';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ChallengeProfileViewProps {
   subspaceId: string;
@@ -84,9 +83,9 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
         <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Grid>
       <Grid item marginTop={2}>
-        <WrapperTypography variant={'h4'} color={'primary'}>
+        <Typography variant="h4" color="primary.main" mb={1} fontWeight="medium">
           {t('components.visualSegment.title')}
-        </WrapperTypography>
+        </Typography>
         <EditVisualsView visuals={challenge?.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
       </Grid>
     </Gutters>
