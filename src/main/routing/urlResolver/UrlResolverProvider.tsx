@@ -99,6 +99,8 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
   const [currentUrl, setCurrentUrl] = useState(window.location.href);
+  // Store the result of the URL resolver query in a state to avoid screen shaking
+  const [value, setValue] = useState<UrlResolverContextValue>(emptyResult);
 
   // Force a re-render also when the url changes through the history API
   useEffect(() => {
@@ -154,7 +156,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  const result = useMemo<UrlResolverContextValue>(() => {
+  const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
       const data = urlResolverData.urlResolver;
@@ -220,11 +222,17 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         loading: urlResolverLoading,
       };
     } else {
-      return emptyResult;
+      return undefined;
     }
   }, [currentUrl, urlResolverData, urlResolverLoading]);
 
-  return <UrlResolverContext.Provider value={result}>{children}</UrlResolverContext.Provider>;
+  useEffect(() => {
+    if (resolvingResult) {
+      setValue(resolvingResult);
+    }
+  }, [resolvingResult]);
+
+  return <UrlResolverContext.Provider value={value}>{children}</UrlResolverContext.Provider>;
 };
 
 export { UrlResolverProvider, UrlResolverContext };
