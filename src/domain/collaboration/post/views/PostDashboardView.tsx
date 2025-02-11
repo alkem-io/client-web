@@ -1,10 +1,9 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { alpha, Box } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -17,10 +16,11 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
-import LocationCaption from '@/core/ui/location/LocationCaption'; //!! add this back
 import usePost from '../graphql/usePost';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlockBanner from '@/core/ui/content/PageContentBlockBanner';
+import { BlockSectionTitle } from '@/core/ui/typography';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -28,7 +28,6 @@ const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 export interface PostDashboardViewProps {
   mode: 'messages' | 'share';
   postId: string | undefined;
-  bannerOverlayOverride?: ReactNode;
   vcEnabled?: boolean;
 }
 
@@ -47,26 +46,22 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const PostDashboardView = ({ mode, postId, vcEnabled, bannerOverlayOverride }: PostDashboardViewProps) => {
+const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) => {
   const { t } = useTranslation();
   const {
-    loading: {
-      loading
-    },
+    loading: { loading },
     actions,
     post,
     permissions,
     comments,
   } = usePost({
-    postId
+    postId,
   });
-
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
-
 
   const deleteComment = (id: string) => (comments.roomId ? actions.deleteMessage(comments.roomId, id) : undefined);
   const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
@@ -98,19 +93,18 @@ const PostDashboardView = ({ mode, postId, vcEnabled, bannerOverlayOverride }: P
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
-  const bannerOverlay = bannerOverlayOverride ?? (
-    <AuthorComponent avatarSrc={post?.createdBy?.profile.avatar?.uri} name={post?.createdBy?.profile.displayName} createdDate={post?.createdDate} loading={loading} />
-  );
-
   return (
-    <PageContentBlock>
+    <PageContentBlock sx={{ flexDirection: 'row' }}>
       <PageContentColumn columns={6}>
-        <DashboardGenericSection
-          bannerUrl={post?.profile.banner?.uri}
-          alwaysShowBanner
-          bannerOverlay={bannerOverlay}
-          headerText={post?.profile.displayName}
-        >
+        <PageContentBlock>
+          <PageContentBlockBanner bannerUrl={post?.profile.banner?.uri}>
+            <AuthorComponent
+              avatarSrc={post?.createdBy?.profile.avatar?.uri}
+              name={post?.createdBy?.profile.displayName}
+              createdDate={post?.createdDate}
+              loading={loading}
+            />
+          </PageContentBlockBanner>
           {loading ? (
             <>
               <Skeleton width={'80%'} />
@@ -123,7 +117,7 @@ const PostDashboardView = ({ mode, postId, vcEnabled, bannerOverlayOverride }: P
               <TagsComponent tags={post?.profile.tagset?.tags ?? []} loading={loading} />
             </Gutters>
           )}
-        </DashboardGenericSection>
+        </PageContentBlock>
         <References references={post?.profile.references} />
       </PageContentColumn>
       {mode === 'messages' && permissions.canReadComments && (
@@ -156,12 +150,12 @@ const PostDashboardView = ({ mode, postId, vcEnabled, bannerOverlayOverride }: P
                 <PostMessageToCommentsForm
                   vcEnabled={vcEnabled}
                   placeholder={t('pages.post.dashboard.comment.placeholder')}
-                  onPostComment={postMessage}
+                  onPostComment={actions.postMessage}
                 />
               )}
               {!permissions.canPostComments && (
                 <Box paddingY={4} display="flex" justifyContent="center">
-                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+                  <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
                 </Box>
               )}
             </Box>
@@ -189,16 +183,16 @@ const PostDashboardView = ({ mode, postId, vcEnabled, bannerOverlayOverride }: P
       )}
       {mode === 'share' && (
         <PageContentColumn columns={6}>
-          <DashboardGenericSection>
-            {(loading || !post?.profile.url) ? (
+          <PageContentBlock>
+            {loading || !post?.profile.url ? (
               <Skeleton />
             ) : (
               <ShareComponent url={post.profile.url} entityTypeName="card" />
             )}
-          </DashboardGenericSection>
+          </PageContentBlock>
         </PageContentColumn>
       )}
-    </PageContentBlock >
+    </PageContentBlock>
   );
 };
 

@@ -63,6 +63,12 @@ export const typePolicies: TypedTypePolicies = {
   UrlResolverQueryResultCollaboration: {
     keyFields: false,
   },
+  UrlResolverQueryResultCalloutsSet: {
+    keyFields: false,
+  },
+  UrlResolverQueryResultVirtualContributor: {
+    keyFields: false,
+  },
   Query: {
     fields: {
       usersPaginated: paginationFieldPolicy(['filter'], 'User'),
