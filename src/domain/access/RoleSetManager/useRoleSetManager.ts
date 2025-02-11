@@ -76,7 +76,6 @@ type useRoleSetManagerParams = {
   contributorTypes?: readonly RoleSetContributorType[];
   fetchContributors?: boolean;
   fetchRoleDefinitions?: boolean;
-  parentRoleSetId?: string; //!! not used?
   onChange?: () => void;
   skip?: boolean;
 };

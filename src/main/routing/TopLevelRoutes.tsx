@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '@/domain/journey/space/SpaceContext/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -91,14 +90,12 @@ export const TopLevelRoutes = () => {
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
                 <SpaceContextProvider>
-                  <CommunityContextProvider>
-                    <EntityPageLayoutHolder>
-                      <Suspense fallback={<Loading />}>
-                        <SpaceRoute />
-                      </Suspense>
-                      <RenderPoint />
-                    </EntityPageLayoutHolder>
-                  </CommunityContextProvider>
+                  <EntityPageLayoutHolder>
+                    <Suspense fallback={<Loading />}>
+                      <SpaceRoute />
+                    </Suspense>
+                    <RenderPoint />
+                  </EntityPageLayoutHolder>
                 </SpaceContextProvider>
               </WithApmTransaction>
             </NonIdentity>

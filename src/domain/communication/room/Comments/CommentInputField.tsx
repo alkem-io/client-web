@@ -7,9 +7,10 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { useCommunityContext } from '@/domain/community/community/CommunityContext';
 import { HelpOutlineOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
@@ -155,7 +156,10 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
 
   const [queryUsers] = useMentionableUsersLazyQuery();
 
-  const { roleSetId } = useCommunityContext();
+  //!! Confirm if this is correct
+  const { roleSetId: spaceRoleSetId } = useSpace();
+  const { roleSetId: subspaceRoleSetId } = useSubSpace();
+  const roleSetId = spaceRoleSetId ?? subspaceRoleSetId;
 
   const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>
     currentMentionedUsersRef.current.some(mention => mention.id === profile.url);

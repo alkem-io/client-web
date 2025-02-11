@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
-import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceRoute from '@/domain/journey/subspace/routing/SubspaceRoute';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -55,9 +54,7 @@ const SpaceRoute = () => {
         path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
         element={
           <SubspaceProvider>
-            <CommunityContextProvider>
-              <SubspaceRoute />
-            </CommunityContextProvider>
+            <SubspaceRoute />
           </SubspaceProvider>
         }
       />
