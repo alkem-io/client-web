@@ -61,13 +61,16 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
-  const fetchVCs = async () => {
-    let acc = await getAvailableVirtualContributors(filter, false);
+  const fetchVCs = useCallback(async () => {
+    const acc = await getAvailableVirtualContributors(filter, false);
     setOnAccount(acc);
 
-    let lib = await getAvailableVirtualContributorsInLibrary(filter);
-    setInLibrary(lib);
-  };
+    const lib = await getAvailableVirtualContributorsInLibrary(filter);
+
+    // Exclude objects from lib that are present in acc
+    const filteredLib = lib.filter(libItem => !acc.some(accItem => accItem.id === libItem.id));
+    setInLibrary(filteredLib);
+  }, [filter, getAvailableVirtualContributors, getAvailableVirtualContributorsInLibrary]);
 
   const memoizedFetchVCs = useCallback(fetchVCs, [
     getAvailableVirtualContributors,
