@@ -130,7 +130,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         category: TagCategoryValues.UI,
         label: 'SpaceCreationError',
       });
-      notify('No Available Plans. Please, contact support.', 'success');
+      notify('No Available Plans. Please, contact support.', 'warning');
       return;
     }
 

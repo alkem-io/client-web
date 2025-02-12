@@ -1,5 +1,5 @@
-import { useUserContext } from '@/domain/community/user';
-import { useFreePlanAvailabilityQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useMemo } from 'react';
+import { useAccountPlanAvailabilityQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   LicenseEntitlementType,
@@ -16,36 +16,41 @@ type Props = {
   accountId?: string;
 };
 
-export const usePlanAvailability = ({ skip }: Props): Provided => {
-  const { user: currentUser, loading: loadingUser } = useUserContext();
-
-  const { data: meData, loading: loadingMeData } = useFreePlanAvailabilityQuery({
-    skip,
+export const usePlanAvailability = ({ skip, accountId }: Props): Provided => {
+  const { data: accountData, loading: loadingAccountData } = useAccountPlanAvailabilityQuery({
+    variables: {
+      accountId: accountId!,
+    },
+    skip: skip || !accountId,
   });
 
-  // TODO: if accountId is provided, fetch account privileges (and skip loadingUser)
-  const myPrivileges = meData?.me.user?.account?.authorization?.myPrivileges ?? [];
-  const entitlements = meData?.me.user?.account?.license?.availableEntitlements ?? [];
+  const { privileges, entitlements } = useMemo(() => {
+    const account = accountData?.lookup?.account;
+
+    return {
+      privileges: account?.authorization?.myPrivileges ?? [],
+      entitlements: account?.license.availableEntitlements ?? [],
+    };
+  }, [accountData]);
 
   const isPlanAvailable = (plan: { name: string }) => {
-    if (loadingUser || loadingMeData || !currentUser?.user?.id) {
+    if (!accountData || loadingAccountData) {
       return false;
     }
 
-    //TODO: Add or remove explicit checks if needed
     if (plan.name === LicensingCredentialBasedCredentialType.SpaceLicenseFree) {
       return (
-        myPrivileges.includes(AuthorizationPrivilege.CreateSpace) &&
+        privileges.includes(AuthorizationPrivilege.CreateSpace) &&
         entitlements.includes(LicenseEntitlementType.AccountSpaceFree)
       );
     } else if (plan.name === LicensingCredentialBasedCredentialType.SpaceLicensePlus) {
       return (
-        myPrivileges.includes(AuthorizationPrivilege.CreateSpace) &&
+        privileges.includes(AuthorizationPrivilege.CreateSpace) &&
         entitlements.includes(LicenseEntitlementType.AccountSpacePlus)
       );
     } else if (plan.name === LicensingCredentialBasedCredentialType.SpaceLicensePremium) {
       return (
-        myPrivileges.includes(AuthorizationPrivilege.CreateSpace) &&
+        privileges.includes(AuthorizationPrivilege.CreateSpace) &&
         entitlements.includes(LicenseEntitlementType.AccountSpacePremium)
       );
     } else {
@@ -54,7 +59,7 @@ export const usePlanAvailability = ({ skip }: Props): Provided => {
   };
 
   return {
-    loading: loadingMeData || loadingUser,
+    loading: loadingAccountData,
     isPlanAvailable,
   };
 };
