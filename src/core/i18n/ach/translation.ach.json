@@ -2887,6 +2887,10 @@
     "delete": {
       "title": "crwdns20760:0crwdne20760:0",
       "description": "crwdns20762:0crwdne20762:0"
+    },
+    "closeConfirm": {
+      "title": "crwdns28774:0crwdne28774:0",
+      "description": "crwdns28776:0crwdne28776:0"
     }
   },
   "innovation-edit": {
