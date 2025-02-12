@@ -20,7 +20,6 @@ interface SubspaceContextProps {
   subspace?: SubspacePendingMembershipInfoFragment;
   subspaceId: string;
   level: SpaceLevel;
-  subspaceNameId: string;
   communityId: string;
   roleSetId: string;
   loading: boolean;
@@ -33,7 +32,6 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
   loading: true,
   level: SpaceLevel.L1,
   subspaceId: '',
-  subspaceNameId: '',
   communityId: '',
   roleSetId: '',
   permissions: {
@@ -67,7 +65,6 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const subspace = data?.lookup.space;
   const communityId = subspace?.community?.id ?? '';
   const roleSetId = subspace?.community?.roleSet?.id ?? '';
-  const subspaceNameId = data?.lookup.space?.profile.displayName ?? '';
 
   const myPrivileges = useMemo(
     () => subspace?.authorization?.myPrivileges ?? [],
@@ -109,7 +106,6 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         subspace,
         level: subspace?.level || SpaceLevel.L1,
         subspaceId: spaceId ?? '',
-        subspaceNameId,
         communityId,
         roleSetId,
         permissions,

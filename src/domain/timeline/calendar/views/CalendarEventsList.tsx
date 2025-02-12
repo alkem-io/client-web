@@ -24,7 +24,7 @@ import { useLocation } from 'react-router-dom';
 type CalendarEventsListProps = {
   events: {
     id: string;
-    nameID: string;
+    nameID: string; // Used for scrolling to the event and highlight events when clicking on a date
     startDate?: Date;
     durationDays?: number | undefined;
     durationMinutes: number;
