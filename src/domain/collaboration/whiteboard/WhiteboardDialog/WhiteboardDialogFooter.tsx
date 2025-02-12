@@ -248,12 +248,14 @@ const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
 };
 
 const LastSaveError = ({ error }: { error: string | undefined }) => {
+  const { t } = useTranslation();
+
   if (!error) {
     return null;
   }
 
   return (
-    <Tooltip title={<Caption>The server failed to save your last changes</Caption>} placement="top">
+    <Tooltip title={<Caption>{t('pages.whiteboard.room-not-saved')}</Caption>} placement="top">
       <ErrorOutlineOutlinedIcon color="error" />
     </Tooltip>
   );
