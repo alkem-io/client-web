@@ -12,6 +12,7 @@ import { DialogActions, DialogContent } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -53,8 +54,13 @@ const CalloutEditDialog = ({
     groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
+  const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
 
   const handleStatusChanged = (valid: boolean) => setValid(valid);
+
+  const onCloseEdit = useCallback(() => {
+    setCloseConfirmDialogOpen(true);
+  }, []);
 
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
 
@@ -91,13 +97,13 @@ const CalloutEditDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} columns={8} aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
+      <DialogWithGrid open={open} columns={8} aria-labelledby="callout-visibility-dialog-title" onClose={onCloseEdit}>
         <DialogHeader
           icon={CalloutIcon && <CalloutIcon />}
           title={t('components.calloutEdit.titleWithType', {
             type: t(`components.calloutTypeSelect.label.${calloutType}` as const),
           })}
-          onClose={onClose}
+          onClose={onCloseEdit}
         />
         <DialogContent>
           <StorageConfigContextProvider locationType="callout" calloutId={callout.id}>
@@ -133,6 +139,20 @@ const CalloutEditDialog = ({
             {t('buttons.save')}
           </LoadingButton>
         </DialogActions>
+        <ConfirmationDialog
+          actions={{
+            onConfirm: onClose,
+            onCancel: () => setCloseConfirmDialogOpen(false),
+          }}
+          options={{
+            show: closeConfirmDialogOpen,
+          }}
+          entities={{
+            titleId: 'post-edit.closeConfirm.title',
+            contentId: 'post-edit.closeConfirm.description',
+            confirmButtonTextId: 'buttons.yes-close',
+          }}
+        />
       </DialogWithGrid>
     </>
   );
