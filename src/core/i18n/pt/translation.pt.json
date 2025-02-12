@@ -2887,6 +2887,10 @@
     "delete": {
       "title": "Tem certeza que deseja excluir esse post?",
       "description": "Esta ação não pode ser desfeita"
+    },
+    "closeConfirm": {
+      "title": "Discard Callout",
+      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
