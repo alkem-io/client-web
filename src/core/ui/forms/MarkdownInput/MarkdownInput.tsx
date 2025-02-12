@@ -111,12 +111,8 @@ export const MarkdownInput = memo(
       });
 
       const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
-        if (item.kind === 'file' && item.type.startsWith('image/')) {
+        if (item.type.startsWith('image/') || (item.kind === 'file' && item.type.startsWith('image/'))) {
           return true; // Image
-        }
-
-        if (clipboardData?.files?.length && clipboardData?.files[0].type.startsWith('image/')) {
-          return true;
         }
 
         if (item.kind === 'string' && item.type === 'text/html') {
@@ -141,14 +137,20 @@ export const MarkdownInput = memo(
        */
       const handlePaste = useCallback(
         (_view: EditorView, event: ClipboardEvent): boolean => {
+          if (!storageBucketId) {
+            return false; // Allow default behavior for text
+          }
+
           const clipboardData = event.clipboardData;
           const items = clipboardData?.items;
 
-          if (!items || !storageBucketId) {
-            return false;
+          if (!items) {
+            return false; // Allow default behavior for text
           }
 
-          for (const item of items) {
+          const itemsArray = Array.from(items); // Keep `Array.from` since if any kind of `for` loop is used it will iterate only over one item.
+
+          itemsArray.forEach(item => {
             const isImage = isImageOrHtmlWithImage(item, clipboardData);
 
             if (hideImageOptions && isImage) {
@@ -171,7 +173,7 @@ export const MarkdownInput = memo(
                 return true; // Block default behavior for images
               }
             }
-          }
+          });
 
           return false; // Allow default behavior for text
         },
