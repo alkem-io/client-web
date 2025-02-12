@@ -85,8 +85,6 @@ export const MarkdownInput = memo(
 
       const [htmlContent, setHtmlContent] = useState('');
 
-      const storageConfig = useStorageConfigContext();
-
       const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
 
       const storageConfig = useStorageConfigContext();
