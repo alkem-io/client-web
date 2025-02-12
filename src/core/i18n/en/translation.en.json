@@ -3068,6 +3068,7 @@
     },
     "name": "Name",
     "bodyOfKnowledge": "Body Of Knowledge",
+    "placeholder": "Here you'll find a collection of documents and texts that are ingested to give this VC its insights and functionality.",
     "infoTextBoK": "Select the Subspace you want as a body of knowledge for this Virtual Contributor",
     "noSubspacesInfo": "Create a Subspace first, and populate it with the relevant information for your Virtual Contributor.",
     "confirmDeletion": {
