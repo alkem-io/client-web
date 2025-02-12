@@ -26,7 +26,7 @@ const SpaceDashboardPage = ({
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceId, collaborationId, journeyPath } = useUrlResolver();
+  const { spaceId, collaborationId, journeyPath, calendarEventId } = useUrlResolver();
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
@@ -72,6 +72,7 @@ const SpaceDashboardPage = ({
                 journeyId={spaceId}
                 parentSpaceId={undefined}
                 parentPath={entities.space?.profile.url ?? ''}
+                calendarEventId={calendarEventId}
               />
             )}
             <JourneyAboutDialog

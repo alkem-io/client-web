@@ -63,6 +63,9 @@ export const typePolicies: TypedTypePolicies = {
   UrlResolverQueryResultCollaboration: {
     keyFields: false,
   },
+  UrlResolverQueryResultCalendar: {
+    keyFields: false,
+  },
   UrlResolverQueryResultCalloutsSet: {
     keyFields: false,
   },

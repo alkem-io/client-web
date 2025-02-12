@@ -8,7 +8,6 @@ import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesList
 import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
 import ActivityDialog from '@/domain/journey/common/Activity/ActivityDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import { useParams } from 'react-router-dom';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
@@ -31,6 +30,7 @@ export interface SubspaceDialogsProps {
   };
   communityId: string | undefined;
   collaborationId: string | undefined;
+  calendarEventId: string | undefined;
 }
 
 const SubspaceDialogs = ({
@@ -42,9 +42,9 @@ const SubspaceDialogs = ({
   dashboardNavigation,
   communityId,
   collaborationId,
+  calendarEventId,
 }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
-  const { calendarEventNameId } = useParams();
 
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
 
@@ -84,7 +84,7 @@ const SubspaceDialogs = ({
         open={dialogOpen === SubspaceDialog.Timeline}
         onClose={handleClose}
         parentPath={journeyUrl}
-        calendarEventNameId={calendarEventNameId}
+        calendarEventId={calendarEventId}
         temporaryLocation
       />
       <ShareDialog

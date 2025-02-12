@@ -3,6 +3,7 @@ import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -31,6 +32,10 @@ export type UrlResolverContextValue = {
   contributionId: string | undefined;
   postId: string | undefined;
   whiteboardId: string | undefined;
+
+  // Calendar:
+  calendarId: string | undefined;
+  calendarEventId: string | undefined;
 
   // Contributors:
   organizationId: string | undefined;
@@ -64,6 +69,8 @@ const emptyResult: UrlResolverContextValue = {
   contributionId: undefined,
   postId: undefined,
   whiteboardId: undefined,
+  calendarId: undefined,
+  calendarEventId: undefined,
   organizationId: undefined,
   userId: undefined,
   vcId: undefined,
@@ -102,37 +109,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Store the result of the URL resolver query in a state to avoid screen shaking
   const [value, setValue] = useState<UrlResolverContextValue>(emptyResult);
 
-  // Force a re-render also when the url changes through the history API
+  const location = useLocation();
   useEffect(() => {
-    const handleUrlChange = () => {
-      setCurrentUrl(window.location.href);
-    };
-    const originalPushState = window.history.pushState;
-    const originalReplaceState = window.history.replaceState;
-
-    window.history.pushState = function (...args) {
-      const result = originalPushState.apply(this, args);
-      window.dispatchEvent(new Event('pushstate'));
-      return result;
-    };
-
-    window.history.replaceState = function (...args) {
-      const result = originalReplaceState.apply(this, args);
-      window.dispatchEvent(new Event('replacestate'));
-      return result;
-    };
-    window.addEventListener('popstate', handleUrlChange);
-    window.addEventListener('pushstate', handleUrlChange);
-    window.addEventListener('replacestate', handleUrlChange);
-
-    return () => {
-      window.history.pushState = originalPushState;
-      window.history.replaceState = originalReplaceState;
-      window.removeEventListener('popstate', handleUrlChange);
-      window.removeEventListener('pushstate', handleUrlChange);
-      window.removeEventListener('replacestate', handleUrlChange);
-    };
-  }, []);
+    setCurrentUrl(window.location.href);
+  }, [location]);
 
   /**
    * Default Apollo's cache behaviour will store the result of the URL resolver queries based on the Id of the space returned
@@ -191,6 +171,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
             whiteboardId: calloutsSet?.['whiteboardId'], // No whiteboards yet on VCKBs, so TypeScript is complaining
           })
         ),
+
+        // Calendar:
+        calendarId: data.space?.calendar?.id,
+        calendarEventId: data.space?.calendar?.calendarEventId,
 
         // Contributors:
         organizationId: data.organizationId,

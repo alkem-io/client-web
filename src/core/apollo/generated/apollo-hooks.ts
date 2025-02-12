@@ -21853,6 +21853,10 @@ export const UrlResolverDocument = gql`
             whiteboardId
           }
         }
+        calendar {
+          id
+          calendarEventId
+        }
         templatesSet {
           id
           templateId

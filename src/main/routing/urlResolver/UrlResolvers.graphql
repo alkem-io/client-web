@@ -15,6 +15,10 @@ query UrlResolver($url: String!) {
           whiteboardId
         }
       }
+      calendar {
+        id
+        calendarEventId
+      }
       templatesSet {
         id
         templateId

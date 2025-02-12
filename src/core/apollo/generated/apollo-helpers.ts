@@ -3794,6 +3794,15 @@ export type TimelineFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UrlResolverQueryResultCalendarKeySpecifier = (
+  | 'calendarEventId'
+  | 'id'
+  | UrlResolverQueryResultCalendarKeySpecifier
+)[];
+export type UrlResolverQueryResultCalendarFieldPolicy = {
+  calendarEventId?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
   | 'calloutId'
   | 'contributionId'
@@ -3830,6 +3839,7 @@ export type UrlResolverQueryResultInnovationPackFieldPolicy = {
   templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UrlResolverQueryResultSpaceKeySpecifier = (
+  | 'calendar'
   | 'collaboration'
   | 'id'
   | 'level'
@@ -3839,6 +3849,7 @@ export type UrlResolverQueryResultSpaceKeySpecifier = (
   | UrlResolverQueryResultSpaceKeySpecifier
 )[];
 export type UrlResolverQueryResultSpaceFieldPolicy = {
+  calendar?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5093,6 +5104,13 @@ export type StrictTypedTypePolicies = {
   Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
+  };
+  UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultCalendarKeySpecifier
+      | (() => undefined | UrlResolverQueryResultCalendarKeySpecifier);
+    fields?: UrlResolverQueryResultCalendarFieldPolicy;
   };
   UrlResolverQueryResultCalloutsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

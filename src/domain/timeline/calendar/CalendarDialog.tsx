@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material';
-import { Button, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
@@ -16,6 +16,8 @@ import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import EditButton from '@/core/ui/actions/EditButton';
+import DeleteButton from '@/core/ui/actions/DeleteButton';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -27,7 +29,7 @@ export interface CalendarDialogProps {
   parentSpaceId: string | undefined;
   onClose: () => void;
   parentPath: string;
-  calendarEventNameId?: string;
+  calendarEventId?: string;
   temporaryLocation?: boolean;
 }
 
@@ -37,7 +39,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
   parentSpaceId,
   onClose,
   parentPath,
-  calendarEventNameId, //!! Remove this nameId
+  calendarEventId,
   temporaryLocation = false,
 }) => {
   const { t } = useTranslation();
@@ -186,7 +188,12 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                     }
                     onClose={handleClose}
                     isSubmitting={updatingCalendarEvent}
-                    actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
+                    actions={
+                      <>
+                        {privileges.canDeleteEvents && <DeleteButton onClick={() => setDeletingEvent(event)} />}
+                        <BackButton onClick={() => setEditingEventId(undefined)} />
+                      </>
+                    }
                     isSubspace={isSubspace}
                   />
                 )}
@@ -194,7 +201,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
             );
           } else {
             // Events List:
-            if (!calendarEventNameId) {
+            if (!calendarEventId) {
               return (
                 <CalendarEventsList
                   events={events}
@@ -211,22 +218,14 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
               );
             } else {
               // Event Details:
-              const event = events.find(
-                event => event.id === calendarEventNameId || event.nameID === calendarEventNameId
-              );
+              const event = events.find(event => event.id === calendarEventId);
               return (
                 <CalendarEventDetail
                   eventId={event?.id}
                   onClose={onClose}
-                  canEdit={privileges.canEditEvents}
-                  onEdit={() => setEditingEventId(event?.id)}
-                  canDelete={privileges.canDeleteEvents}
-                  onDelete={() => setDeletingEvent(event)}
                   actions={
                     <>
-                      <Button onClick={() => setEditingEventId(event?.id)} variant="contained">
-                        aaa
-                      </Button>
+                      {privileges.canEditEvents && <EditButton onClick={() => setEditingEventId(event?.id)} />}
                       <BackButton onClick={navigateBack} variant="contained" />
                     </>
                   }

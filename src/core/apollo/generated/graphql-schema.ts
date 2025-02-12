@@ -7163,6 +7163,12 @@ export type UpdateWhiteboardEntityInput = {
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UrlResolverQueryResultCalendar = {
+  __typename?: 'UrlResolverQueryResultCalendar';
+  calendarEventId?: Maybe<Scalars['UUID']>;
+  id: Scalars['UUID'];
+};
+
 export type UrlResolverQueryResultCalloutsSet = {
   __typename?: 'UrlResolverQueryResultCalloutsSet';
   calloutId?: Maybe<Scalars['UUID']>;
@@ -7187,6 +7193,7 @@ export type UrlResolverQueryResultInnovationPack = {
 
 export type UrlResolverQueryResultSpace = {
   __typename?: 'UrlResolverQueryResultSpace';
+  calendar?: Maybe<UrlResolverQueryResultCalendar>;
   collaboration: UrlResolverQueryResultCollaboration;
   id: Scalars['UUID'];
   level: SpaceLevel;
@@ -7227,6 +7234,7 @@ export enum UrlType {
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
   Discussion = 'DISCUSSION',
+  Documentation = 'DOCUMENTATION',
   Forum = 'FORUM',
   Home = 'HOME',
   InnovationHub = 'INNOVATION_HUB',
@@ -26476,6 +26484,9 @@ export type UrlResolverQuery = {
               whiteboardId?: string | undefined;
             };
           };
+          calendar?:
+            | { __typename?: 'UrlResolverQueryResultCalendar'; id: string; calendarEventId?: string | undefined }
+            | undefined;
           templatesSet?:
             | { __typename?: 'UrlResolverQueryResultTemplatesSet'; id: string; templateId?: string | undefined }
             | undefined;
