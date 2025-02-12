@@ -1056,22 +1056,6 @@ export const ApplicationFormFragmentDoc = gql`
     }
   }
 `;
-export const CommunityDetailsFragmentDoc = gql`
-  fragment CommunityDetails on Community {
-    id
-    roleSet {
-      id
-      myMembershipStatus
-    }
-    communication {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-`;
 export const CommunityGuidelinesDetailsFragmentDoc = gql`
   fragment CommunityGuidelinesDetails on CommunityGuidelines {
     id
@@ -2575,6 +2559,10 @@ export const CollaborationTimelineInfoFragmentDoc = gql`
 export const CalendarEventDetailsFragmentDoc = gql`
   fragment CalendarEventDetails on CalendarEvent {
     ...CalendarEventInfo
+    authorization {
+      id
+      myPrivileges
+    }
     type
     createdBy {
       id
@@ -10716,75 +10704,6 @@ export type UpdateApplicationFormOnRoleSetMutationOptions = Apollo.BaseMutationO
   SchemaTypes.UpdateApplicationFormOnRoleSetMutation,
   SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
 >;
-export const SpaceCommunityDocument = gql`
-  query SpaceCommunity($spaceId: UUID!, $includeDetails: Boolean = false) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        profile {
-          id
-          displayName
-        }
-        community {
-          id
-          ...CommunityDetails @include(if: $includeDetails)
-          roleSet {
-            id
-          }
-        }
-      }
-    }
-  }
-  ${CommunityDetailsFragmentDoc}
-`;
-
-/**
- * __useSpaceCommunityQuery__
- *
- * To run a query within a React component, call `useSpaceCommunityQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCommunityQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      includeDetails: // value for 'includeDetails'
- *   },
- * });
- */
-export function useSpaceCommunityQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>(
-    SpaceCommunityDocument,
-    options
-  );
-}
-
-export function useSpaceCommunityLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityQuery, SchemaTypes.SpaceCommunityQueryVariables>(
-    SpaceCommunityDocument,
-    options
-  );
-}
-
-export type SpaceCommunityQueryHookResult = ReturnType<typeof useSpaceCommunityQuery>;
-export type SpaceCommunityLazyQueryHookResult = ReturnType<typeof useSpaceCommunityLazyQuery>;
-export type SpaceCommunityQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCommunityQuery,
-  SchemaTypes.SpaceCommunityQueryVariables
->;
-export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunityQueryVariables) {
-  return { query: SpaceCommunityDocument, variables: variables };
-}
-
 export const CommunityGuidelinesDocument = gql`
   query CommunityGuidelines($communityId: UUID!) {
     lookup {

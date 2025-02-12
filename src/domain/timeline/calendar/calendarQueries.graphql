@@ -67,6 +67,10 @@ query calendarEventDetails($eventId: UUID!, $includeSubspace: Boolean = false) {
 
 fragment CalendarEventDetails on CalendarEvent {
   ...CalendarEventInfo
+  authorization {
+    id
+    myPrivileges
+  }
   type
   createdBy {
     id

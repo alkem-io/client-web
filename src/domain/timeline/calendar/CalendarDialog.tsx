@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
@@ -37,7 +37,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
   parentSpaceId,
   onClose,
   parentPath,
-  calendarEventNameId,
+  calendarEventNameId, //!! Remove this nameId
   temporaryLocation = false,
 }) => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
-  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEventDetailsFragment, 'id' | 'nameID' | 'profile'>>();
+  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEventDetailsFragment, 'id' | 'profile'>>();
 
   const handleClose = () => {
     setIsCreatingEvent(false);
@@ -160,7 +160,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
 
             // Editing an event:
           } else if (editingEventId) {
-            const event = events.find(event => event.nameID === editingEventId || event.id === editingEventId);
+            const event = events.find(event => event.id === editingEventId);
             if (!event) {
               setEditingEventId(undefined);
               return;
@@ -211,16 +211,25 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
               );
             } else {
               // Event Details:
-              const event = events.find(event => event.nameID === calendarEventNameId);
+              const event = events.find(
+                event => event.id === calendarEventNameId || event.nameID === calendarEventNameId
+              );
               return (
                 <CalendarEventDetail
                   eventId={event?.id}
                   onClose={onClose}
                   canEdit={privileges.canEditEvents}
-                  onEdit={() => setEditingEventId(event?.nameID)}
+                  onEdit={() => setEditingEventId(event?.id)}
                   canDelete={privileges.canDeleteEvents}
                   onDelete={() => setDeletingEvent(event)}
-                  actions={<BackButton onClick={navigateBack} />}
+                  actions={
+                    <>
+                      <Button onClick={() => setEditingEventId(event?.id)} variant="contained">
+                        aaa
+                      </Button>
+                      <BackButton onClick={navigateBack} variant="contained" />
+                    </>
+                  }
                 />
               );
             }

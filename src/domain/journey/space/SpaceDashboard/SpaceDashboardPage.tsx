@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { useParams, useResolvedPath } from 'react-router-dom';
+import { useResolvedPath } from 'react-router-dom';
 import SpaceDashboardContainer from './SpaceDashboardContainer';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
@@ -23,7 +23,6 @@ const SpaceDashboardPage = ({
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
   const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
-  const { calendarEventNameId } = useParams();
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
@@ -73,7 +72,6 @@ const SpaceDashboardPage = ({
                 journeyId={spaceId}
                 parentSpaceId={undefined}
                 parentPath={entities.space?.profile.url ?? ''}
-                calendarEventNameId={calendarEventNameId}
               />
             )}
             <JourneyAboutDialog

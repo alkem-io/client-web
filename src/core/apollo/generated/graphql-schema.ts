@@ -16144,50 +16144,6 @@ export type UpdateApplicationFormOnRoleSetMutation = {
   updateApplicationFormOnRoleSet: { __typename?: 'RoleSet'; id: string };
 };
 
-export type CommunityDetailsFragment = {
-  __typename?: 'Community';
-  id: string;
-  roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-  communication: {
-    __typename?: 'Communication';
-    id: string;
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
-export type SpaceCommunityQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-  includeDetails?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type SpaceCommunityQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-            communication: {
-              __typename?: 'Communication';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
 export type CommunityGuidelinesQueryVariables = Exact<{
   communityId: Scalars['UUID'];
 }>;
@@ -25107,6 +25063,9 @@ export type CalendarEventDetailsQuery = {
           wholeDay: boolean;
           multipleDays: boolean;
           visibleOnParentCalendar: boolean;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           createdBy?:
             | {
                 __typename?: 'User';
@@ -25302,6 +25261,9 @@ export type CalendarEventDetailsFragment = {
   wholeDay: boolean;
   multipleDays: boolean;
   visibleOnParentCalendar: boolean;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   createdBy?:
     | {
         __typename?: 'User';
@@ -25493,6 +25455,9 @@ export type CreateCalendarEventMutation = {
     wholeDay: boolean;
     multipleDays: boolean;
     visibleOnParentCalendar: boolean;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     createdBy?:
       | {
           __typename?: 'User';
@@ -25668,6 +25633,9 @@ export type UpdateCalendarEventMutation = {
     wholeDay: boolean;
     multipleDays: boolean;
     visibleOnParentCalendar: boolean;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     createdBy?:
       | {
           __typename?: 'User';
