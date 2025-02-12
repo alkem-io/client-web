@@ -18,6 +18,7 @@ import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSit
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { UrlParamsChangedProvider } from './urlResolver/UrlParamsChangedProvider';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -89,14 +90,16 @@ export const TopLevelRoutes = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                <SpaceContextProvider>
-                  <EntityPageLayoutHolder>
-                    <Suspense fallback={<Loading />}>
-                      <SpaceRoute />
-                    </Suspense>
-                    <RenderPoint />
-                  </EntityPageLayoutHolder>
-                </SpaceContextProvider>
+                <UrlParamsChangedProvider>
+                  <SpaceContextProvider>
+                    <EntityPageLayoutHolder>
+                      <Suspense fallback={<Loading />}>
+                        <SpaceRoute />
+                      </Suspense>
+                      <RenderPoint />
+                    </EntityPageLayoutHolder>
+                  </SpaceContextProvider>
+                </UrlParamsChangedProvider>
               </WithApmTransaction>
             </NonIdentity>
           }

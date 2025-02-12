@@ -1,9 +1,9 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { PartialRecord } from '@/core/utils/PartialRecords';
-import { compact } from 'lodash';
+import { compact, isEqual } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import UrlParams from '../urlParams';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -53,6 +53,7 @@ export type UrlResolverContextValue = {
   // Innovation Hubs
   innovationHubId: string | undefined;
 
+  setUrlParams: (url: string, params: UrlParams) => void;
   loading: boolean;
 };
 
@@ -79,6 +80,9 @@ const emptyResult: UrlResolverContextValue = {
   templatesSetId: undefined,
   templateId: undefined,
   innovationHubId: undefined,
+  setUrlParams: () => {
+    console.error('setUrlParams not implemented');
+  },
   loading: true,
 };
 
@@ -109,11 +113,6 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Store the result of the URL resolver query in a state to avoid screen shaking
   const [value, setValue] = useState<UrlResolverContextValue>(emptyResult);
 
-  const location = useLocation();
-  useEffect(() => {
-    setCurrentUrl(window.location.href);
-  }, [location]);
-
   /**
    * Default Apollo's cache behaviour will store the result of the URL resolver queries based on the Id of the space returned
    * And will fill the gaps of missing Ids when the user navigates to a different URL
@@ -135,6 +134,17 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       url: currentUrl,
     },
   });
+
+  const [urlParams, setUrlParamsState] = useState<UrlParams>({});
+  const setUrlParams = (url: string, params: UrlParams) => {
+    if (!isEqual(params, urlParams)) {
+      console.log('NOT EQUAL REQUESTING', { url, params, urlParams });
+      setUrlParamsState(params);
+      setCurrentUrl(url);
+    } else {
+      console.log('request ignored, params are the same', url, params, urlParams);
+    }
+  };
 
   const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
     if (urlResolverData?.urlResolver.type) {
@@ -202,13 +212,13 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
         // Forum:
         discussionId: data.discussionId,
-
+        setUrlParams: setUrlParams,
         loading: urlResolverLoading,
       };
     } else {
       return undefined;
     }
-  }, [currentUrl, urlResolverData, urlResolverLoading]);
+  }, [urlParams, urlResolverData, urlResolverLoading]);
 
   useEffect(() => {
     if (resolvingResult) {
