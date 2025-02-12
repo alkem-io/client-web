@@ -2887,6 +2887,10 @@
     "delete": {
       "title": "Voulez-vous vraiment supprimer cette annonce ?",
       "description": "Cette action ne peut pas être annulée"
+    },
+    "closeConfirm": {
+      "title": "Discard Callout",
+      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
