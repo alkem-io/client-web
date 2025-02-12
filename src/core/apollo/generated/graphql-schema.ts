@@ -20663,31 +20663,26 @@ export type PlansTableQuery = {
   };
 };
 
-export type FreePlanAvailabilityQueryVariables = Exact<{ [key: string]: never }>;
+export type AccountPlanAvailabilityQueryVariables = Exact<{
+  accountId: Scalars['UUID'];
+}>;
 
-export type FreePlanAvailabilityQuery = {
+export type AccountPlanAvailabilityQuery = {
   __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    id: string;
-    user?:
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
       | {
-          __typename?: 'User';
+          __typename?: 'Account';
           id: string;
-          account?:
-            | {
-                __typename?: 'Account';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-                license: { __typename?: 'License'; availableEntitlements?: Array<LicenseEntitlementType> | undefined };
-              }
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
         }
       | undefined;
   };
