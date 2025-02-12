@@ -75,10 +75,10 @@ fragment DocumentData on Document {
   mimeType
   createdBy {
     id
-    nameID
     profile {
       id
       displayName
+      url
     }
   }
   uploadedDate

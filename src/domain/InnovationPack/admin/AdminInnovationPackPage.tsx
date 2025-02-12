@@ -76,6 +76,7 @@ const AdminInnovationPackPage = () => {
           },
         },
       },
+      refetchQueries: ['AdminInnovationPack'],
     });
     if (data?.updateInnovationPack.id) {
       notify(t('pages.admin.innovation-packs.saved-successfully'), 'success');

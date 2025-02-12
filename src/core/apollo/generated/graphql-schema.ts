@@ -21618,7 +21618,6 @@ export type SubspacePendingMembershipInfoQuery = {
       | {
           __typename?: 'Space';
           id: string;
-          nameID: string;
           level: SpaceLevel;
           profile: {
             __typename?: 'Profile';
@@ -21695,7 +21694,6 @@ export type SubspacePendingMembershipInfoQuery = {
 export type SubspacePendingMembershipInfoFragment = {
   __typename?: 'Space';
   id: string;
-  nameID: string;
   level: SpaceLevel;
   profile: {
     __typename?: 'Profile';
@@ -22076,8 +22074,7 @@ export type SpaceStorageAdminPageQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      nameID: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                     }
                   | undefined;
                 authorization?:
@@ -22114,8 +22111,7 @@ export type SpaceStorageAdminPageQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      nameID: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                     }
                   | undefined;
                 authorization?:
@@ -22192,8 +22188,7 @@ export type StorageAggregatorLookupQuery = {
                 | {
                     __typename?: 'User';
                     id: string;
-                    nameID: string;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   }
                 | undefined;
               authorization?:
@@ -22220,8 +22215,7 @@ export type StorageAggregatorLookupQuery = {
                 | {
                     __typename?: 'User';
                     id: string;
-                    nameID: string;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   }
                 | undefined;
               authorization?:
@@ -22278,8 +22272,7 @@ export type StorageAggregatorFragment = {
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
       authorization?:
@@ -22306,8 +22299,7 @@ export type StorageAggregatorFragment = {
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
       authorization?:
@@ -22350,8 +22342,7 @@ export type StorageBucketFragment = {
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         }
       | undefined;
     authorization?:
@@ -22391,8 +22382,7 @@ export type DocumentDataFragment = {
     | {
         __typename?: 'User';
         id: string;
-        nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }
     | undefined;
   authorization?:

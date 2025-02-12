@@ -30,7 +30,7 @@ query SpaceDashboardReferences($spaceId: UUID!) {
 fragment SpacePage on Space {
   id
   level
-  nameID
+  nameID  # Used for SpaceEdit Page
   provider {
     ...ContributorDetails
   }

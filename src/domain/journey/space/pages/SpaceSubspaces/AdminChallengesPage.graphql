@@ -1,4 +1,4 @@
-query AdminSpaceSubspacesPage($spaceId: UUID!) {  #//!! To check if using NameIds
+query AdminSpaceSubspacesPage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

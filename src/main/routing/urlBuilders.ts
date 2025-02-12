@@ -14,8 +14,6 @@ export const buildSettingsProfileUrl = (entityUrl: string) => {
 
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
-export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
-
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
   const fullReturnUrl = isAbsoluteUrl(returnUrl) ? returnUrl : `${origin}${returnUrl}`;
   return `?returnUrl=${encodeURI(fullReturnUrl)}`;

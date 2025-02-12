@@ -1,6 +1,5 @@
 fragment SubspacePendingMembershipInfo on Space {
   id
-  nameID
   level
   profile {
     id

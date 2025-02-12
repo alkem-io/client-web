@@ -1980,7 +1980,6 @@ export const MyMembershipsRoleSetFragmentDoc = gql`
 export const SubspacePendingMembershipInfoFragmentDoc = gql`
   fragment SubspacePendingMembershipInfo on Space {
     id
-    nameID
     level
     profile {
       id
@@ -2127,10 +2126,10 @@ export const DocumentDataFragmentDoc = gql`
     mimeType
     createdBy {
       id
-      nameID
       profile {
         id
         displayName
+        url
       }
     }
     uploadedDate
