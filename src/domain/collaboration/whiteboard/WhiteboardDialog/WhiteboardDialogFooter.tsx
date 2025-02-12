@@ -1,6 +1,7 @@
-import { MouseEventHandler, useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, DialogContent } from '@mui/material';
+import { Button, DialogContent, Tooltip } from '@mui/material';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -27,7 +28,8 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 interface WhiteboardDialogFooterProps {
-  lastSavedDate: Date | undefined;
+  lastSuccessfulSavedDate: Date | undefined;
+  lastSaveError: string | undefined;
   canUpdateContent: boolean;
   onDelete: () => void;
   canDelete?: boolean;
@@ -55,7 +57,8 @@ enum ReadonlyReason {
 }
 
 const WhiteboardDialogFooter = ({
-  lastSavedDate,
+  lastSuccessfulSavedDate,
+  lastSaveError,
   canUpdateContent,
   onDelete,
   canDelete,
@@ -197,7 +200,12 @@ const WhiteboardDialogFooter = ({
             {t('pages.whiteboard.restartCollaboration')}
           </Button>
         )}
-        {!readonlyReason && <LastSavedCaption date={lastSavedDate} />}
+        {!readonlyReason && (
+          <>
+            <LastSavedCaption date={lastSuccessfulSavedDate} />
+            {LastSaveError && <LastSaveError error={lastSaveError} />}
+          </>
+        )}
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
@@ -237,4 +245,16 @@ const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   }
 
   return <Caption>{t('common.last-saved', { datetime: formattedTime })}</Caption>;
+};
+
+const LastSaveError = ({ error }: { error: string | undefined }) => {
+  if (!error) {
+    return null;
+  }
+
+  return (
+    <Tooltip title={<Caption>The server failed to save your last changes</Caption>} placement="top">
+      <ErrorOutlineOutlinedIcon color="error" />
+    </Tooltip>
+  );
 };

@@ -105,7 +105,8 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
 
   const columns = useGlobalGridColumns();
 
-  const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSaveError, setLastSaveError] = useState<string | undefined>();
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
@@ -114,8 +115,8 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     fetchPolicy: 'network-only',
   });
 
-  if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-    setLastSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
+  if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
+    setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
   }
 
   const filesManager = useWhiteboardFilesManager({
@@ -261,7 +262,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   return (
     <>
       <CollaborativeExcalidrawWrapper
-        entities={{ whiteboard, filesManager, lastSavedDate }}
+        entities={{ whiteboard, filesManager, lastSuccessfulSavedDate }}
         collabApiRef={collabApiRef}
         options={{
           UIOptions: {
@@ -274,8 +275,13 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
-          onRemoteSave: () => {
-            setLastSavedDate(new Date());
+          onRemoteSave: (error?: string) => {
+            if (error) {
+              setLastSaveError(error);
+            } else {
+              setLastSuccessfulSavedDate(new Date());
+              setLastSaveError(undefined);
+            }
           },
           onSceneInitChange: setSceneInitialized,
         }}
@@ -318,7 +324,8 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
                   collaboratorModeReason={modeReason}
-                  lastSavedDate={lastSavedDate}
+                  lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+                  lastSaveError={lastSaveError}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}
