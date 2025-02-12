@@ -2887,6 +2887,10 @@
     "delete": {
       "title": "Bist du sicher, dass du diesen Beitrag löschen willst?",
       "description": "Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "closeConfirm": {
+      "title": "Discard Callout",
+      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
