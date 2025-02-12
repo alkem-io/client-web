@@ -2887,6 +2887,10 @@
     "delete": {
       "title": "Weet je zeker dat je deze Post wil verwijderen?",
       "description": "Deze actie kan niet ongedaan gemaakt worden"
+    },
+    "closeConfirm": {
+      "title": "Discard Callout",
+      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
