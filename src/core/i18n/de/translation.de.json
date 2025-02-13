@@ -207,6 +207,11 @@
     }
   },
   "common": {
+    "space-level": {
+      "L0": "Space",
+      "L1": "Subspace",
+      "L2": "Subsubspace"
+    },
     "account": "Account",
     "all": "All",
     "knowledge-base": "Wissensdatenbank",
@@ -371,7 +376,7 @@
       "male": "männlich",
       "female": "weiblich"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
@@ -379,7 +384,7 @@
       "subsubspace": "$t(common.subsubspace)",
       "subsubspace_plural": "$t(common.subsubspaces)",
       "agreement": "$t(common.agreement)",
-      "agreement_plural": "$t(common.Agreements)"
+      "agreement_plural": "$t(common.agreements)"
     },
     "verified-status": {
       "verified": "Verifiziert",
@@ -711,41 +716,41 @@
     }
   },
   "context": {
-    "space": {
+    "L0": {
       "tagline": {
-        "title": "Überschrift",
-        "description": "Erklären Sie in einem Satz, worum es bei diesem Hub geht.",
+        "title": "Tagline",
+        "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
       "background": {
-        "title": "Hintergrund",
-        "description": "Geben Sie einen kurzen Überblick über die Notwendigkeit dieses Hub und wie er zustande kam.",
+        "title": "Background",
+        "description": "Give a brief overview of the need for this Space and how it came about.",
         "placeholder": ""
       },
       "impact": {
-        "title": "Auswirkungen",
-        "description": "Wie werden Menschen und Organisationen davon betroffen sein?",
+        "title": "Impact",
+        "description": "What will this Space change? How will people and organizations be affected?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Worum geht es in deiner Community?",
-        "description": "Was ist der Referenzrahmen für diesen Hub?",
+        "title": "What is this community about?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
         "placeholder": ""
       },
       "who": {
-        "title": "Wer sollte beteiligt werden?",
-        "description": "Denken Sie an Einzelpersonen, Organisationen, öffentliche Einrichtungen, Forschungsinstitute usw.",
+        "title": "Who should be involved?",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       }
     },
-    "subspace": {
+    "L1": {
       "displayName": {
-        "title": "Title",
+        "title": "Title *",
         "description": "",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Subspace Statement",
+        "title": "Tagline",
         "description": "",
         "placeholder": ""
       },
@@ -788,7 +793,7 @@
         "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
-    "subsubspace": {
+    "L2": {
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",
@@ -884,6 +889,8 @@
         "title": "Subspace URL",
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
+        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
@@ -927,8 +934,8 @@
       "editableBy": {
         "title": "This whiteboard can be edited by:",
         "options": {
-          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
-          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
+          "ADMINS": "The owner and the admins and leads of this (sub)space",
           "OWNER": "The owner of this whiteboard"
         }
       }
@@ -1111,7 +1118,8 @@
         "list.indent": "Einrücken",
         "list.outdent": "Einzug entfernen",
         "remove.remove": "Entfernen",
-        "embed.video": "Embed Video or other Media"
+        "embed.video": "Embed Video or other Media",
+        "horizontal.line": "Insert horizontal line"
       },
       "image": {
         "dialogHeader": "Bild einfügen"
@@ -1162,8 +1170,8 @@
     "activity-log-section": {
       "title": "Bester Beitrag",
       "activity-sign-in-error-message": "Um die letzten Beiträge zu sehen, melden Sie sich bitte an.",
-      "activity-join-error-message": "Um die letzten Beiträge zu sehen, treten Sie bitte bei wenn Sie noch kein Mitglied dieser {{journeyType}} sind.",
-      "activity-sign-in-and-join-error-message": "Um die letzten Beiträge zu sehen, treten Sie bitte bei wenn Sie noch kein Mitglied dieser {{journeyType}} sind."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -2026,7 +2034,7 @@
         "notifications": {
           "space-created": "Hub erfolgreich erstellt.",
           "errorCreatingSpace": "An error ocurred while creating the Space.",
-          "space-removed": "Hub '{{name}}' erfolgreich entfernt."
+          "space-removed": "Space removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Einstellungen erfolgreich gespeichert",
@@ -2550,8 +2558,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
-        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",
