@@ -86,7 +86,7 @@
     "@emotion/styled": "^11.13.5",
     "@mui/base": "^5.0.0-beta.23",
     "@mui/icons-material": "^5.15.10",
-    "@mui/lab": "5.0.0-alpha.56",
+    "@mui/lab": "^5.0.0-alpha.56",
     "@mui/material": "5.13.x",
     "@mui/x-data-grid": "^5.0.1",
     "@mui/x-date-pickers": "^5.0.16",
