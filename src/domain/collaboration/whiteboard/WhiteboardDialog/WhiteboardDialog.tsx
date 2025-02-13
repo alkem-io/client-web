@@ -121,7 +121,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
       setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
     }
-  }, [lastSuccessfulSavedDate]);
+  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
