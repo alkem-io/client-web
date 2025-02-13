@@ -39,7 +39,6 @@ const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/In
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
-const ProfileRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/profile/routing/ProfileRoute'));
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
@@ -233,18 +232,6 @@ export const TopLevelRoutes = () => {
               <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
                 <Suspense fallback={<Loading />}>
                   <ForumRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Profile}`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.Profile}`}>
-                <Suspense fallback={<Loading />}>
-                  <ProfileRoute />
                 </Suspense>
               </WithApmTransaction>
             </NonIdentity>
