@@ -207,6 +207,11 @@
     }
   },
   "common": {
+    "space-level": {
+      "L0": "crwdns28778:0crwdne28778:0",
+      "L1": "crwdns28780:0crwdne28780:0",
+      "L2": "crwdns28782:0crwdne28782:0"
+    },
     "account": "crwdns17670:0crwdne17670:0",
     "all": "crwdns17672:0crwdne17672:0",
     "knowledge-base": "crwdns17674:0crwdne17674:0",
@@ -371,15 +376,15 @@
       "male": "crwdns17990:0crwdne17990:0",
       "female": "crwdns17992:0crwdne17992:0"
     },
-    "journeyTypes": {
-      "space": "crwdns17994:0$t(common.space)crwdne17994:0",
-      "space_plural": "crwdns17996:0$t(common.spaces)crwdne17996:0",
-      "subspace": "crwdns17998:0$t(common.subspace)crwdne17998:0",
-      "subspace_plural": "crwdns18000:0$t(common.subspaces)crwdne18000:0",
-      "subsubspace": "crwdns18002:0$t(common.subsubspace)crwdne18002:0",
-      "subsubspace_plural": "crwdns18004:0$t(common.subsubspaces)crwdne18004:0",
-      "agreement": "crwdns18006:0$t(common.agreement)crwdne18006:0",
-      "agreement_plural": "crwdns18008:0$t(common.agreements)crwdne18008:0"
+    "spaceTypes": {
+      "space": "crwdns28784:0$t(common.space)crwdne28784:0",
+      "space_plural": "crwdns28786:0$t(common.spaces)crwdne28786:0",
+      "subspace": "crwdns28788:0$t(common.subspace)crwdne28788:0",
+      "subspace_plural": "crwdns28790:0$t(common.subspaces)crwdne28790:0",
+      "subsubspace": "crwdns28792:0$t(common.subsubspace)crwdne28792:0",
+      "subsubspace_plural": "crwdns28794:0$t(common.subsubspaces)crwdne28794:0",
+      "agreement": "crwdns28796:0$t(common.agreement)crwdne28796:0",
+      "agreement_plural": "crwdns28798:0$t(common.agreements)crwdne28798:0"
     },
     "verified-status": {
       "verified": "crwdns18010:0crwdne18010:0",
@@ -711,127 +716,127 @@
     }
   },
   "context": {
-    "space": {
+    "L0": {
       "tagline": {
-        "title": "crwdns18460:0crwdne18460:0",
-        "description": "crwdns18462:0crwdne18462:0",
-        "placeholder": "crwdns18464:0crwdne18464:0"
+        "title": "crwdns28800:0crwdne28800:0",
+        "description": "crwdns28802:0crwdne28802:0",
+        "placeholder": "crwdns28804:0crwdne28804:0"
       },
       "background": {
-        "title": "crwdns18466:0crwdne18466:0",
-        "description": "crwdns18468:0crwdne18468:0",
-        "placeholder": "crwdns18470:0crwdne18470:0"
+        "title": "crwdns28806:0crwdne28806:0",
+        "description": "crwdns28808:0crwdne28808:0",
+        "placeholder": "crwdns28810:0crwdne28810:0"
       },
       "impact": {
-        "title": "crwdns18472:0crwdne18472:0",
-        "description": "crwdns18474:0crwdne18474:0",
-        "placeholder": "crwdns18476:0crwdne18476:0"
+        "title": "crwdns28812:0crwdne28812:0",
+        "description": "crwdns28814:0crwdne28814:0",
+        "placeholder": "crwdns28816:0crwdne28816:0"
       },
       "vision": {
-        "title": "crwdns18478:0crwdne18478:0",
-        "description": "crwdns18480:0crwdne18480:0",
-        "placeholder": "crwdns18482:0crwdne18482:0"
+        "title": "crwdns28818:0crwdne28818:0",
+        "description": "crwdns28820:0crwdne28820:0",
+        "placeholder": "crwdns28822:0crwdne28822:0"
       },
       "who": {
-        "title": "crwdns18484:0crwdne18484:0",
-        "description": "crwdns18486:0crwdne18486:0",
-        "placeholder": "crwdns18488:0crwdne18488:0"
+        "title": "crwdns28824:0crwdne28824:0",
+        "description": "crwdns28826:0crwdne28826:0",
+        "placeholder": "crwdns28828:0crwdne28828:0"
       }
     },
-    "subspace": {
+    "L1": {
       "displayName": {
-        "title": "crwdns18490:0crwdne18490:0",
-        "description": "crwdns18492:0crwdne18492:0",
-        "placeholder": "crwdns18494:0crwdne18494:0"
+        "title": "crwdns28830:0crwdne28830:0",
+        "description": "crwdns28832:0crwdne28832:0",
+        "placeholder": "crwdns28834:0crwdne28834:0"
       },
       "tagline": {
-        "title": "crwdns18496:0crwdne18496:0",
-        "description": "crwdns18498:0crwdne18498:0",
-        "placeholder": "crwdns18500:0crwdne18500:0"
+        "title": "crwdns28836:0crwdne28836:0",
+        "description": "crwdns28838:0crwdne28838:0",
+        "placeholder": "crwdns28840:0crwdne28840:0"
       },
       "description": {
-        "title": "crwdns28762:0crwdne28762:0",
-        "description": "crwdns28764:0crwdne28764:0",
-        "placeholder": "crwdns28766:0crwdne28766:0"
+        "title": "crwdns28842:0crwdne28842:0",
+        "description": "crwdns28844:0crwdne28844:0",
+        "placeholder": "crwdns28846:0crwdne28846:0"
       },
       "background": {
-        "title": "crwdns28768:0crwdne28768:0",
-        "description": "crwdns28770:0crwdne28770:0",
-        "placeholder": "crwdns18506:0crwdne18506:0"
+        "title": "crwdns28848:0crwdne28848:0",
+        "description": "crwdns28850:0crwdne28850:0",
+        "placeholder": "crwdns28852:0crwdne28852:0"
       },
       "impact": {
-        "title": "crwdns18508:0crwdne18508:0",
-        "description": "crwdns18510:0crwdne18510:0",
-        "placeholder": "crwdns18512:0crwdne18512:0"
+        "title": "crwdns28854:0crwdne28854:0",
+        "description": "crwdns28856:0crwdne28856:0",
+        "placeholder": "crwdns28858:0crwdne28858:0"
       },
       "vision": {
-        "title": "crwdns18514:0crwdne18514:0",
-        "description": "crwdns18516:0crwdne18516:0",
-        "placeholder": "crwdns18518:0crwdne18518:0"
+        "title": "crwdns28860:0crwdne28860:0",
+        "description": "crwdns28862:0crwdne28862:0",
+        "placeholder": "crwdns28864:0crwdne28864:0"
       },
       "who": {
-        "title": "crwdns18520:0crwdne18520:0",
-        "description": "crwdns18522:0crwdne18522:0",
-        "placeholder": "crwdns18524:0crwdne18524:0"
+        "title": "crwdns28866:0crwdne28866:0",
+        "description": "crwdns28868:0crwdne28868:0",
+        "placeholder": "crwdns28870:0crwdne28870:0"
       },
       "tags": {
-        "title": "crwdns18526:0crwdne18526:0",
-        "description": "crwdns18528:0crwdne18528:0",
-        "placeholder": "crwdns18530:0crwdne18530:0",
-        "tooltip": "crwdns18532:0crwdne18532:0"
+        "title": "crwdns28872:0crwdne28872:0",
+        "description": "crwdns28874:0crwdne28874:0",
+        "placeholder": "crwdns28876:0crwdne28876:0",
+        "tooltip": "crwdns28878:0crwdne28878:0"
       },
       "addTutorialCallouts": {
-        "title": "crwdns18534:0crwdne18534:0"
+        "title": "crwdns28880:0crwdne28880:0"
       },
       "template": {
-        "title": "crwdns18536:0crwdne18536:0",
-        "defaultTemplate": "crwdns18538:0crwdne18538:0"
+        "title": "crwdns28882:0crwdne28882:0",
+        "defaultTemplate": "crwdns28884:0crwdne28884:0"
       }
     },
-    "subsubspace": {
+    "L2": {
       "displayName": {
-        "title": "crwdns18540:0crwdne18540:0",
-        "description": "crwdns18542:0crwdne18542:0",
-        "placeholder": "crwdns18544:0crwdne18544:0"
+        "title": "crwdns28886:0crwdne28886:0",
+        "description": "crwdns28888:0crwdne28888:0",
+        "placeholder": "crwdns28890:0crwdne28890:0"
       },
       "tagline": {
-        "title": "crwdns18546:0crwdne18546:0",
-        "description": "crwdns18548:0crwdne18548:0",
-        "placeholder": "crwdns18550:0crwdne18550:0"
+        "title": "crwdns28892:0crwdne28892:0",
+        "description": "crwdns28894:0crwdne28894:0",
+        "placeholder": "crwdns28896:0crwdne28896:0"
       },
       "background": {
-        "title": "crwdns18552:0crwdne18552:0",
-        "description": "crwdns18554:0crwdne18554:0",
-        "placeholder": "crwdns18556:0crwdne18556:0"
+        "title": "crwdns28898:0crwdne28898:0",
+        "description": "crwdns28900:0crwdne28900:0",
+        "placeholder": "crwdns28902:0crwdne28902:0"
       },
       "impact": {
-        "title": "crwdns18558:0crwdne18558:0",
-        "description": "crwdns18560:0crwdne18560:0",
-        "placeholder": "crwdns18562:0crwdne18562:0"
+        "title": "crwdns28904:0crwdne28904:0",
+        "description": "crwdns28906:0crwdne28906:0",
+        "placeholder": "crwdns28908:0crwdne28908:0"
       },
       "vision": {
-        "title": "crwdns18564:0crwdne18564:0",
-        "description": "crwdns18566:0crwdne18566:0",
-        "placeholder": "crwdns18568:0crwdne18568:0"
+        "title": "crwdns28910:0crwdne28910:0",
+        "description": "crwdns28912:0crwdne28912:0",
+        "placeholder": "crwdns28914:0crwdne28914:0"
       },
       "who": {
-        "title": "crwdns18570:0crwdne18570:0",
-        "description": "crwdns18572:0crwdne18572:0",
-        "placeholder": "crwdns18574:0crwdne18574:0"
+        "title": "crwdns28916:0crwdne28916:0",
+        "description": "crwdns28918:0crwdne28918:0",
+        "placeholder": "crwdns28920:0crwdne28920:0"
       },
       "tags": {
-        "title": "crwdns18576:0crwdne18576:0",
-        "description": "crwdns18578:0crwdne18578:0",
-        "placeholder": "crwdns18580:0crwdne18580:0"
+        "title": "crwdns28922:0crwdne28922:0",
+        "description": "crwdns28924:0crwdne28924:0",
+        "placeholder": "crwdns28926:0crwdne28926:0"
       },
       "addCallouts": {
-        "title": "crwdns18582:0crwdne18582:0"
+        "title": "crwdns28928:0crwdne28928:0"
       },
       "addTutorialCallouts": {
-        "title": "crwdns18584:0crwdne18584:0"
+        "title": "crwdns28930:0crwdne28930:0"
       },
       "innovationFlow": {
-        "title": "crwdns18586:0crwdne18586:0"
+        "title": "crwdns28932:0crwdne28932:0"
       }
     }
   },
@@ -884,6 +889,8 @@
         "title": "crwdns18642:0crwdne18642:0",
         "description": "crwdns18644:0crwdne18644:0",
         "use": "crwdns24940:0crwdne24940:0",
+        "urlRequired": "crwdns28934:0crwdne28934:0",
+        "invalidUrl": "crwdns28936:0crwdne28936:0",
         "spaceNotFoundError": "crwdns18648:0crwdne18648:0",
         "collaborationNotFoundError": "crwdns18650:0crwdne18650:0",
         "selectAnother": "crwdns18652:0crwdne18652:0"
@@ -927,8 +934,8 @@
       "editableBy": {
         "title": "crwdns18690:0crwdne18690:0",
         "options": {
-          "CONTRIBUTORS": "crwdns18692:0{{journey}}crwdne18692:0",
-          "ADMINS": "crwdns18694:0{{journey}}crwdne18694:0",
+          "CONTRIBUTORS": "crwdns28938:0crwdne28938:0",
+          "ADMINS": "crwdns28940:0crwdne28940:0",
           "OWNER": "crwdns18696:0crwdne18696:0"
         }
       }
@@ -1111,7 +1118,8 @@
         "list.indent": "crwdns18902:0crwdne18902:0",
         "list.outdent": "crwdns18904:0crwdne18904:0",
         "remove.remove": "crwdns18906:0crwdne18906:0",
-        "embed.video": "crwdns18908:0crwdne18908:0"
+        "embed.video": "crwdns18908:0crwdne18908:0",
+        "horizontal.line": "crwdns28942:0crwdne28942:0"
       },
       "image": {
         "dialogHeader": "crwdns18910:0crwdne18910:0"
@@ -1162,8 +1170,8 @@
     "activity-log-section": {
       "title": "crwdns18952:0crwdne18952:0",
       "activity-sign-in-error-message": "crwdns18954:0crwdne18954:0",
-      "activity-join-error-message": "crwdns18956:0{{journeyType}}crwdne18956:0",
-      "activity-sign-in-and-join-error-message": "crwdns18958:0{{journeyType}}crwdne18958:0"
+      "activity-join-error-message": "crwdns28944:0{{spaceType}}crwdne28944:0",
+      "activity-sign-in-and-join-error-message": "crwdns28946:0{{spaceType}}crwdne28946:0"
     },
     "activityLogView": {
       "description": {
@@ -2026,7 +2034,7 @@
         "notifications": {
           "space-created": "crwdns19822:0crwdne19822:0",
           "errorCreatingSpace": "crwdns19824:0crwdne19824:0",
-          "space-removed": "crwdns19826:0{{name}}crwdne19826:0"
+          "space-removed": "crwdns28948:0crwdne28948:0"
         },
         "settings": {
           "savedSuccessfully": "crwdns19828:0crwdne19828:0",
@@ -2550,8 +2558,8 @@
       "readonlyReason": {
         "readonly": "crwdns20396:0crwdne20396:0",
         "contentUpdatePolicy": "crwdns20398:0{{ownerName}}crwdne20398:0",
-        "noMembership": "crwdns20400:0{{journeyType}}crwdne20400:0",
-        "unauthenticated": "crwdns20402:0{{journeyType}}crwdne20402:0"
+        "noMembership": "crwdns28950:0{{spaceType}}crwdne28950:0",
+        "unauthenticated": "crwdns28952:0{{spaceType}}crwdne28952:0"
       },
       "readonlyDialog": {
         "title": "crwdns20404:0crwdne20404:0",
