@@ -23,7 +23,7 @@ query CalloutStorageConfig($calloutId: UUID!) {
   }
 }
 
-query CalloutPostStorageConfig($postId: UUID!) { #//!! Rewrite this, not using calloutId anymore
+query CalloutPostStorageConfig($postId: UUID!) {
   lookup {
     post(ID: $postId) {
       id
