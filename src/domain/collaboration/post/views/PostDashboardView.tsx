@@ -21,6 +21,8 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockBanner from '@/core/ui/content/PageContentBlockBanner';
 import { BlockSectionTitle } from '@/core/ui/typography';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { times } from 'lodash';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -105,18 +107,17 @@ const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) 
               loading={loading}
             />
           </PageContentBlockBanner>
-          {loading ? (
-            <>
-              <Skeleton width={'80%'} />
-              <Skeleton width={'70%'} />
-              <Skeleton width={'60%'} />
-            </>
-          ) : (
-            <Gutters>
-              <WrapperMarkdown>{post?.profile.description ?? ''}</WrapperMarkdown>
-              <TagsComponent tags={post?.profile.tagset?.tags ?? []} loading={loading} />
-            </Gutters>
-          )}
+          <Gutters>
+            {loading ? (
+              times(3).map(i => <Skeleton key={i} />)
+            ) : (
+              <>
+                <PageContentBlockHeader title={post?.profile.displayName} />
+                <WrapperMarkdown>{post?.profile.description ?? ''}</WrapperMarkdown>
+                <TagsComponent tags={post?.profile.tagset?.tags ?? []} loading={loading} />
+              </>
+            )}
+          </Gutters>
         </PageContentBlock>
         <References references={post?.profile.references} />
       </PageContentColumn>
