@@ -1,9 +1,11 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { TopLevelRoutePath } from '../TopLevelRoutePath';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -82,6 +84,35 @@ const emptyResult: UrlResolverContextValue = {
   loading: true,
 };
 
+const NOT_RESOLVABLE_URLS = [
+  ...Object.values(IdentityRoutes),
+  'docs',
+  'dev',
+  'home', // Nothing to resolve on home
+  TopLevelRoutePath.InnovationLibrary,
+];
+
+/**
+ * Filter urls that shouldn't be resolved by the server anyway
+ * @param url
+ * @returns boolean for skip, true if shouldn't be resolved
+ */
+const isNotResolvableUrl = (url: string) => {
+  if (!url) {
+    return true;
+  }
+  try {
+    const { pathname } = new URL(url);
+    if (NOT_RESOLVABLE_URLS.some(route => pathname.match(`^/${route}(/|$)`))) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    // Invalid url
+    return true;
+  }
+};
+
 /**
  * Helper function to choose between two urlResolver results objects and generate the urlResolver result based on the selected one
  * For example, spaces have a calloutSet, but also VCs have a calloutSet.
@@ -134,6 +165,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     variables: {
       url: currentUrl,
     },
+    skip: isNotResolvableUrl(currentUrl),
   });
 
   const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
