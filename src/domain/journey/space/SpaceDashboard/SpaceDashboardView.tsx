@@ -92,7 +92,7 @@ const SpaceDashboardView = ({
   const [openWelcome, setOpenWelcome] = useState(false);
   const [vcId, setVcId] = useState<string>('');
 
-  const translatedSpaceLevel = t(`common.space-level.${level || SpaceLevel.L0}`);
+  const translatedSpaceLevel = t(`common.space-level.${level ?? SpaceLevel.L0}`);
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 

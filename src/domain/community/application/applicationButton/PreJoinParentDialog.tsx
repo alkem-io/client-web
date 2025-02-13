@@ -18,12 +18,14 @@ export interface PreJoinParentDialogProps {
 const PreJoinParentDialog = ({ open, onClose, onJoin }: PreJoinParentDialogProps) => {
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
-  //!! This is all wrong
+
   const { profile: spaceProfile } = useSpace();
   const { profile: challengeProfile } = useSubSpace();
 
   const parentCommunityName = spaceId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const);
+  const buttonText = t(
+    `components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const
+  );
 
   return (
     <Dialog open={open}>

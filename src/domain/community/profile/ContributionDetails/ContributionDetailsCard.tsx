@@ -22,7 +22,7 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   handleLeaveCommunity?: () => void;
   loading?: boolean;
   visibility?: SpaceVisibility;
-  level?: SpaceLevel;
+  level: SpaceLevel;
 }
 
 const ContributionDetailsCard = ({

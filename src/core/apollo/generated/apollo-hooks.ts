@@ -897,6 +897,7 @@ export const PostSettingsFragmentDoc = gql`
         id
         name
         uri
+        description
       }
       visuals {
         ...VisualFull
