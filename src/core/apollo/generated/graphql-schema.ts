@@ -13544,7 +13544,15 @@ export type PostSettingsQuery = {
                   type: TagsetType;
                 }
               | undefined;
-            references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
             visuals: Array<{
               __typename?: 'Visual';
               id: string;
@@ -13585,7 +13593,9 @@ export type PostSettingsFragment = {
           type: TagsetType;
         }
       | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
     visuals: Array<{
       __typename?: 'Visual';
       id: string;

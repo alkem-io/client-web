@@ -106,6 +106,7 @@ const CalloutForm = ({
   disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
+  // Note that we can also have callouts on a VC Knowledge Base, so don't tie this component to spaces
   const { spaceLevel } = useUrlResolver();
   const isL0Space = spaceLevel === SpaceLevel.L0;
 

@@ -45,6 +45,7 @@ const MyResources = () => {
           key={space.id}
           journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
           size="small"
+          deepness={0}
           seamless
           sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
           disableHoverState
