@@ -52,7 +52,7 @@ export const OrganizationPageView = ({ entities, accountResources, state: { load
         avatar: organization?.profile.avatar?.uri,
         displayName: organization?.profile.displayName || '',
         settingsTooltip: t('pages.organization.settings.tooltip'),
-        settingsUrl: buildSettingsUrl(organization?.nameID || ''),
+        settingsUrl: buildSettingsUrl(organization?.profile.url ?? ''),
         bio: organization?.profile.description,
         verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
         tagsets,

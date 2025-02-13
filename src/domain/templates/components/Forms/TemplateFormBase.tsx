@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';

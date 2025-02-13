@@ -15,8 +15,6 @@ export interface CalloutTemplate extends TemplateBase {
         tagsets?: UpdateTagset[];
       };
       whiteboard?: {
-        // For Whiteboard Callout templates
-        nameID?: string;
         profile: {
           displayName: string;
           description?: string;

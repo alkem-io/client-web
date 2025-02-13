@@ -2,9 +2,10 @@ import React, { FC, useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
+  SpaceLevel,
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SubspacePermissions {
@@ -18,7 +19,7 @@ interface SubspacePermissions {
 interface SubspaceContextProps {
   subspace?: SubspacePendingMembershipInfoFragment;
   subspaceId: string;
-  subspaceNameId: string;
+  level: SpaceLevel;
   communityId: string;
   roleSetId: string;
   loading: boolean;
@@ -29,8 +30,8 @@ interface SubspaceContextProps {
 
 export const SubspaceContext = React.createContext<SubspaceContextProps>({
   loading: true,
+  level: SpaceLevel.L1,
   subspaceId: '',
-  subspaceNameId: '',
   communityId: '',
   roleSetId: '',
   permissions: {
@@ -53,18 +54,17 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
 interface SubspaceProviderProps {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   const { data, loading } = useSubspacePendingMembershipInfoQuery({
-    variables: { subspaceId: journeyId! },
+    variables: { subspaceId: spaceId! },
     errorPolicy: 'all',
-    skip: !journeyId,
+    skip: !spaceId,
   });
 
   const subspace = data?.lookup.space;
   const communityId = subspace?.community?.id ?? '';
   const roleSetId = subspace?.community?.roleSet?.id ?? '';
-  const subspaceNameId = data?.lookup.space?.profile.displayName ?? '';
 
   const myPrivileges = useMemo(
     () => subspace?.authorization?.myPrivileges ?? [],
@@ -104,8 +104,8 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     <SubspaceContext.Provider
       value={{
         subspace,
-        subspaceId: journeyId ?? '',
-        subspaceNameId,
+        level: subspace?.level || SpaceLevel.L1,
+        subspaceId: spaceId ?? '',
         communityId,
         roleSetId,
         permissions,

@@ -8,31 +8,16 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 
-// TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useInviteContributorsParams {
   roleSetId: string;
   spaceId?: string;
-  challengeId?: string;
-  opportunityId?: string;
   spaceLevel: SpaceLevel | undefined;
 }
 
-const useInviteContributors = ({
-  roleSetId,
-  spaceId,
-  challengeId,
-  opportunityId,
-  spaceLevel,
-}: useInviteContributorsParams) => {
-  const journeyTypeName = getJourneyTypeName({
-    spaceNameId: spaceId,
-    challengeNameId: challengeId,
-    opportunityNameId: opportunityId,
-  })!;
-
+//TODO Use rolesetManager for this
+const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteContributorsParams) => {
   // Fetch community virtual members list
   const {
     data: roleSetData,
@@ -42,7 +27,7 @@ const useInviteContributors = ({
     variables: {
       roleSetId,
       spaceId,
-      includeSpaceHost: journeyTypeName === 'space',
+      includeSpaceHost: spaceLevel === SpaceLevel.L0,
     },
     skip: !roleSetId || !spaceId,
   });

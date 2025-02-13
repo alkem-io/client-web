@@ -11,8 +11,7 @@ import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';
 
-interface SubspaceCardProps
-  extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
+interface SubspaceCardProps extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'parentSegment'> {
   tagline: string;
   spaceUri?: string;
   spaceDisplayName?: ReactNode;

@@ -1,14 +1,13 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '@/domain/journey/space/SpaceContext/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
 import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
-import { WithApmTransaction } from '@/domain/shared/components';
+import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
 import devRoute from '@/dev/routes';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
@@ -36,7 +35,9 @@ const OrganizationRoute = lazyWithGlobalErrorHandler(
 const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
 const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
 const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
-const ProfileRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/profile/routing/ProfileRoute'));
+const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
+  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
+);
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
@@ -88,14 +89,12 @@ export const TopLevelRoutes = () => {
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
                 <SpaceContextProvider>
-                  <CommunityContextProvider>
-                    <EntityPageLayoutHolder>
-                      <Suspense fallback={<Loading />}>
-                        <SpaceRoute />
-                      </Suspense>
-                      <RenderPoint />
-                    </EntityPageLayoutHolder>
-                  </CommunityContextProvider>
+                  <EntityPageLayoutHolder>
+                    <Suspense fallback={<Loading />}>
+                      <SpaceRoute />
+                    </Suspense>
+                    <RenderPoint />
+                  </EntityPageLayoutHolder>
                 </SpaceContextProvider>
               </WithApmTransaction>
             </NonIdentity>
@@ -179,6 +178,18 @@ export const TopLevelRoutes = () => {
           }
         />
         <Route
+          path={`${TopLevelRoutePath.InnovationHubs}/*`}
+          element={
+            <NonIdentity>
+              <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
+                <Suspense fallback={<Loading />}>
+                  <InnovationHubsRoutes />
+                </Suspense>
+              </WithApmTransaction>
+            </NonIdentity>
+          }
+        />
+        <Route
           path={`${TopLevelRoutePath.Docs}/*`}
           element={
             <Suspense fallback={<Loading />}>
@@ -217,18 +228,6 @@ export const TopLevelRoutes = () => {
               <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
                 <Suspense fallback={<Loading />}>
                   <ForumRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Profile}`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.Profile}`}>
-                <Suspense fallback={<Loading />}>
-                  <ProfileRoute />
                 </Suspense>
               </WithApmTransaction>
             </NonIdentity>

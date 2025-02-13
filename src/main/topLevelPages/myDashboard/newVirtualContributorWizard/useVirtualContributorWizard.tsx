@@ -322,10 +322,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       if (spaceId) {
         const { data } = await getNewSpaceUrl({
           variables: {
-            spaceNameId: spaceId,
+            spaceId,
           },
         });
-        const spaceUrl = data?.space?.profile.url;
+        const spaceUrl = data?.lookup.space?.profile.url;
 
         if (spaceUrl) {
           navigate(spaceUrl);

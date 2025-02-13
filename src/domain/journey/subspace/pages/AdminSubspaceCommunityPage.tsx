@@ -12,7 +12,6 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -21,26 +20,18 @@ import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockColla
 import { BlockTitle } from '@/core/ui/typography';
 import CommunityGuidelinesContainer from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const {
-    loading: isLoadingChallenge,
-    communityId,
-    roleSetId,
-    subspaceId: challengeId,
-    subspaceNameId,
-  } = useSubSpace();
-  const { loading: isLoadingSpace } = useSpace();
+  const { spaceId, spaceLevel } = useUrlResolver();
+  const { loading: isLoadingChallenge, communityId, roleSetId, profile } = useSubSpace();
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
-
-  const { spaceId, spaceLevel } = useRouteResolver();
 
   const {
     users,
@@ -72,7 +63,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
+  } = useCommunityAdmin({ roleSetId, spaceId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -90,7 +81,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  if (!spaceId || isLoadingChallenge || isLoadingSpace) {
+  if (!spaceId || isLoadingChallenge) {
     return null;
   }
 
@@ -113,7 +104,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
           </PageContentBlock>
           <PageContentBlockSeamless columns={4} disablePadding>
             <InvitationOptionsBlock
-              spaceDisplayName={subspaceNameId}
+              spaceDisplayName={profile.displayName}
               inviteExistingUser={inviteExistingUser}
               inviteExternalUser={inviteExternalUser}
               currentApplicationsUserIds={currentApplicationsUserIds}

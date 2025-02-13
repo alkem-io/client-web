@@ -33,7 +33,6 @@ const CreateInnovationPackDialog = ({
       variables: {
         packData: {
           accountID: accountId,
-          nameID: formData.nameID,
           profileData: {
             displayName: formData.profile.displayName,
             description: formData.profile.description,

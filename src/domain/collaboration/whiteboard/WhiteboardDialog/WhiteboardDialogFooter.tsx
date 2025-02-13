@@ -6,14 +6,11 @@ import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
-import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -25,8 +22,10 @@ import {
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface WhiteboardDialogFooterProps {
+  whiteboardUrl: string | undefined;
   lastSuccessfulSavedDate: Date | undefined;
   lastSaveError: string | undefined;
   consecutiveSaveErrors: number;
@@ -57,6 +56,7 @@ enum ReadonlyReason {
 }
 
 const WhiteboardDialogFooter = ({
+  whiteboardUrl,
   lastSuccessfulSavedDate,
   canUpdateContent,
   onDelete,
@@ -69,40 +69,28 @@ const WhiteboardDialogFooter = ({
   updating = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
-
-  const { pathname } = useLocation();
-
   const { isAuthenticated } = useAuthenticationContext();
 
+  // TODO: WhiteboardDialogFooter depends on being inside a Space, not sure if this is fully correct
+  const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
   const spaceContext = useSpace();
   const subspaceContext = useSubSpace();
-  const subsubspaceContext = useOpportunity();
-
-  const journeyTypeName = getJourneyTypeName({
-    ...subsubspaceContext,
-    ...subspaceContext,
-    ...spaceContext,
-  });
 
   const getMyMembershipStatus = () => {
-    switch (journeyTypeName) {
-      case 'space':
+    switch (spaceLevel) {
+      case SpaceLevel.L0:
         return spaceContext.myMembershipStatus;
-      case 'subspace':
+      default:
         return subspaceContext.myMembershipStatus;
-      case 'subsubspace':
-        return subsubspaceContext.myMembershipStatus;
     }
   };
 
   const getJourneyProfile = () => {
-    switch (journeyTypeName) {
-      case 'space':
+    switch (spaceLevel) {
+      case SpaceLevel.L0:
         return spaceContext.profile;
-      case 'subspace':
+      case SpaceLevel.L1:
         return subspaceContext.profile;
-      case 'subsubspace':
-        return subsubspaceContext.profile;
     }
   };
 
@@ -178,7 +166,7 @@ const WhiteboardDialogFooter = ({
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
               values={{
-                journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
               }}
               components={{
@@ -188,7 +176,7 @@ const WhiteboardDialogFooter = ({
                   <span />
                 ),
                 journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-                signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
                 learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
               }}
             />

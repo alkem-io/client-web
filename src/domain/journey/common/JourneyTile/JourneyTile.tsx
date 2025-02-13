@@ -5,13 +5,12 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import GridItem from '@/core/ui/grid/GridItem';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import { gutters } from '@/core/ui/grid/utils';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from './PrivacyIcon';
 
 type JourneyTileProps = {
@@ -22,10 +21,9 @@ type JourneyTileProps = {
           url: string;
           cardBanner?: Visual;
         };
+        level?: SpaceLevel;
       }
     | undefined;
-  journeyTypeName: JourneyTypeName;
-
   columns?: number;
   isPrivate?: boolean;
 };

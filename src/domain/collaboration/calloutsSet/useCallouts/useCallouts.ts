@@ -22,14 +22,12 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/Innov
 import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
-export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
-
-export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
-
-export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrder'> & {
-  authorization: {
-    myPrivileges?: AuthorizationPrivilege[];
-  };
+export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
+  authorization:
+    | {
+        myPrivileges?: AuthorizationPrivilege[];
+      }
+    | undefined;
   framing: {
     profile: {
       id: string;
@@ -59,12 +57,12 @@ export type TypedCalloutDetails = TypedCallout &
           id: string;
         };
       };
-      whiteboard?: WhiteboardFragmentWithCallout;
+      whiteboard?: WhiteboardDetailsFragment;
     };
     groupName: CalloutGroupName;
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
-    comments: CommentsWithMessagesFragmentWithCallout | undefined;
+    comments?: CommentsWithMessagesFragment | undefined;
   };
 
 interface UseCalloutsParams {
@@ -143,8 +141,8 @@ const useCallouts = ({
     () =>
       calloutsSet?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
-        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+        const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
@@ -153,7 +151,7 @@ const useCallouts = ({
         );
         const flowStates = innovationFlowTagset?.tags;
 
-        return {
+        const result: TypedCallout = {
           ...callout,
           framing: {
             profile: callout.framing.profile,
@@ -166,7 +164,8 @@ const useCallouts = ({
           entitledToSaveAsTemplate,
           flowStates,
           groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
-        } as TypedCallout;
+        };
+        return result;
       }),
     [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate]
   );

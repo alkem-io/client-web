@@ -6,7 +6,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export const OrganizationPage = () => {
   const { organizationId, loading: resolvingOrganization } = useUrlResolver();

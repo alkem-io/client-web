@@ -20,8 +20,6 @@ generates:
         NameID: string
         Emoji: string
         UUID: string
-        UUID_NAMEID: string
-        UUID_NAMEID_EMAIL: string
         DID: string
         CID: string
         DateTime: Date

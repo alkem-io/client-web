@@ -1,6 +1,5 @@
 fragment OrganizationInfo on Organization {
   id
-  nameID
   contactEmail
   domain
   authorization {

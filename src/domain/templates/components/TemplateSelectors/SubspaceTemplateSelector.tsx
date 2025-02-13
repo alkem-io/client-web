@@ -7,11 +7,11 @@ import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplat
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import { TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useSpaceDefaultTemplatesQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface SubspaceTemplateSelectorProps extends GuttersProps {
   name: string;
@@ -19,7 +19,7 @@ interface SubspaceTemplateSelectorProps extends GuttersProps {
 
 export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ name, ...rest }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: loadingSpace } = useSpace();
+  const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
 
@@ -40,7 +40,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
       templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
     )?.template?.profile.displayName;
-    const defaultPlatformTemplate = t('context.subspace.template.defaultTemplate');
+    const defaultPlatformTemplate = t(`context.${SpaceLevel.L1}.template.defaultTemplate`);
     return selectedTemplate ?? defaultSpaceTemplate ?? defaultPlatformTemplate;
   }, [templateId, templateData, defaultSpaceTemplatesData, t]);
 
@@ -53,7 +53,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
 
   return (
     <Gutters row alignItems="center" {...rest}>
-      <BlockSectionTitle>{t('context.subspace.template.title')}</BlockSectionTitle>
+      <BlockSectionTitle>{t(`context.${SpaceLevel.L1}.template.title`)}</BlockSectionTitle>
       {loading ? <Skeleton width="100%" /> : <Text>{templateName}</Text>}
       <Box sx={{ marginLeft: 'auto' }}>
         <Button

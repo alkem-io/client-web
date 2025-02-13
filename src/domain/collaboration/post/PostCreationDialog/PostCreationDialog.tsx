@@ -14,7 +14,7 @@ export type PostCreationDialogProps = {
   open: boolean;
   postNames: string[];
   onClose: () => void;
-  onCreate: (post: PostCreationOutput) => Promise<{ nameID: string } | undefined>;
+  onCreate: (post: PostCreationOutput) => Promise<unknown>;
   calloutDisplayName: string;
   calloutId: string;
   defaultDescription?: string;

@@ -207,6 +207,11 @@
     }
   },
   "common": {
+    "space-level": {
+      "L0": "Space",
+      "L1": "Subspace",
+      "L2": "Subsubspace"
+    },
     "account": "Account",
     "all": "All",
     "knowledge-base": "Knowledge base",
@@ -371,7 +376,7 @@
       "male": "male",
       "female": "female"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
@@ -711,7 +716,7 @@
     }
   },
   "context": {
-    "space": {
+    "L0": {
       "tagline": {
         "title": "Tagline",
         "description": "Explain in one sentence what this Space is about.",
@@ -738,7 +743,7 @@
         "placeholder": ""
       }
     },
-    "subspace": {
+    "L1": {
       "displayName": {
         "title": "Title *",
         "description": "",
@@ -788,7 +793,7 @@
         "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
-    "subsubspace": {
+    "L2": {
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",
@@ -884,6 +889,8 @@
         "title": "Subspace URL",
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this Subspace",
+        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
@@ -927,8 +934,8 @@
       "editableBy": {
         "title": "This whiteboard can be edited by:",
         "options": {
-          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
-          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
+          "ADMINS": "The owner and the admins and leads of this (sub)space",
           "OWNER": "The owner of this whiteboard"
         }
       }
@@ -1111,7 +1118,8 @@
         "list.indent": "Indent",
         "list.outdent": "Remove indent",
         "remove.remove": "Remove",
-        "embed.video": "Embed Video or other Media"
+        "embed.video": "Embed Video or other Media",
+        "horizontal.line": "Insert horizontal line"
       },
       "image": {
         "dialogHeader": "Insert Image"
@@ -1162,8 +1170,8 @@
     "activity-log-section": {
       "title": "Recent Contributions",
       "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -2026,7 +2034,7 @@
         "notifications": {
           "space-created": "Space created successfully.",
           "errorCreatingSpace": "An error occurred while creating the Space.",
-          "space-removed": "Space '{{name}}' removed successfully."
+          "space-removed": "Space removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Settings saved successfully",
@@ -2541,8 +2549,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
-        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",
