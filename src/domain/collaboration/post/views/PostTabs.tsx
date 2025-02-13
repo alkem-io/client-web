@@ -16,9 +16,9 @@ const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
 
 const PostTabs = ({ currentTab }: { currentTab: PostDialogSection }) => {
   const { t } = useTranslation();
-  const {postId } = useUrlResolver();
+  const { postId } = useUrlResolver();
   const { permissions } = usePost({
-    postId
+    postId,
   });
 
   return (
