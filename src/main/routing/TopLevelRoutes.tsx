@@ -18,7 +18,7 @@ import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSit
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { UrlParamsChangedProvider } from './urlResolver/UrlParamsChangedProvider';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -43,7 +43,10 @@ const ProfileRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/space/routing/SpaceRoute'));
+const SpaceRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/journey/space/routing/SpaceRoute'),
+  withUrlResolverParams
+);
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -90,16 +93,14 @@ export const TopLevelRoutes = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                <UrlParamsChangedProvider>
-                  <SpaceContextProvider>
-                    <EntityPageLayoutHolder>
-                      <Suspense fallback={<Loading />}>
-                        <SpaceRoute />
-                      </Suspense>
-                      <RenderPoint />
-                    </EntityPageLayoutHolder>
-                  </SpaceContextProvider>
-                </UrlParamsChangedProvider>
+                <SpaceContextProvider>
+                  <EntityPageLayoutHolder>
+                    <Suspense fallback={<Loading />}>
+                      <SpaceRoute />
+                    </Suspense>
+                    <RenderPoint />
+                  </EntityPageLayoutHolder>
+                </SpaceContextProvider>
               </WithApmTransaction>
             </NonIdentity>
           }
