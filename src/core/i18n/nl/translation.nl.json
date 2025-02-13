@@ -207,6 +207,11 @@
     }
   },
   "common": {
+    "space-level": {
+      "L0": "Space",
+      "L1": "Subspace",
+      "L2": "Subsubspace"
+    },
     "account": "Account",
     "all": "Alles",
     "knowledge-base": "Kennisbank",
@@ -371,7 +376,7 @@
       "male": "man",
       "female": "vrouw"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
@@ -711,41 +716,41 @@
     }
   },
   "context": {
-    "space": {
+    "L0": {
       "tagline": {
         "title": "Tagline",
-        "description": "Leg in één zin uit waar deze Space over gaat.",
+        "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
       "background": {
-        "title": "Achtergrond",
-        "description": "Geef een korte omschrijving waar de behoefte voor deze Space vandaan komt en hoe de Space is ontstaan.",
+        "title": "Background",
+        "description": "Give a brief overview of the need for this Space and how it came about.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "Wat zal deze Space veranderen? Wat is de impact voor individuen en organisaties?",
+        "description": "What will this Space change? How will people and organizations be affected?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Waar gaat deze community over?",
-        "description": "Wat is het referentiekader voor deze Space?",
+        "title": "What is this community about?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie moeten erbij betrokken worden?",
-        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
+        "title": "Who should be involved?",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       }
     },
-    "subspace": {
+    "L1": {
       "displayName": {
-        "title": "Titel",
+        "title": "Title *",
         "description": "",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Subspace Tagline",
+        "title": "Tagline",
         "description": "",
         "placeholder": ""
       },
@@ -760,75 +765,75 @@
         "placeholder": ""
       },
       "impact": {
-        "title": "Aanvullende context",
-        "description": "Geef een korte beschrijving van hoe deze Subspace in het grotere plaatje past. Wat is de impact?",
+        "title": "Additional context",
+        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Toekomstvisie",
-        "description": "Let op, deze informatie wordt ook gebruikt voor de beschrijving op het Dashboard",
+        "title": "Future Vision",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie kunnen een bijdrage leveren",
-        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
+        "title": "Who should contribute",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       },
       "tags": {
-        "title": "Labels",
+        "title": "Tags",
         "description": "",
         "placeholder": "",
         "tooltip": "Tags"
       },
       "addTutorialCallouts": {
-        "title": "Voeg tutorials samenwerkingtools toe"
+        "title": "Add tutorials collaboration tools"
       },
       "template": {
         "title": "Template:",
-        "defaultTemplate": "Standaard Alkemio template voor Subspaces"
+        "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
-    "subsubspace": {
+    "L2": {
       "displayName": {
-        "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en pakkend te houden",
+        "title": "Title",
+        "description": "Try to keep it short, descriptive and engaging",
         "placeholder": ""
       },
       "tagline": {
         "title": "Tagline",
-        "description": "Leg in één zin uit waar deze Subspace over gaat.",
+        "description": "In one sentence, explain what this Subspace is about.",
         "placeholder": ""
       },
       "background": {
-        "title": "Achtergrond",
-        "description": "Geef een korte omschrijving van hoe de Subspace is ontstaan en hoe het past in het grotere plaatje.",
+        "title": "Background",
+        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "Wat zal deze Subspace veranderen? Wat is de impact op mensen en organisaties?",
+        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Omschrijving",
-        "description": "Beschrijf het idee en de impact ervan op de bovenliggende Subspace. Let op, deze informatie wordt ook gebruikt as beschrijving op het Dashboard.",
+        "title": "Description",
+        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie is erbij betrokken?",
-        "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Subspace.",
+        "title": "Who is involved?",
+        "description": "Describe the people and organizations who are currently working on this Subspace.",
         "placeholder": ""
       },
       "tags": {
-        "title": "Labels",
-        "description": "Gebruik labels in die ervoor zorgen dat de Subspace opvalt en makkelijk te vinden is.",
+        "title": "Tags",
+        "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
       "addCallouts": {
-        "title": "Voeg standaard samenwerkingstools van template toe"
+        "title": "Add default template's collaboration tools"
       },
       "addTutorialCallouts": {
-        "title": "Voeg tutorials samenwerkingtools toe"
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -884,6 +889,8 @@
         "title": "Subspace URL",
         "description": "Voer de URL in van de Subspace die u wilt kopiëren als template.",
         "use": "Gebruik deze Space",
+        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space niet gevonden",
         "collaborationNotFoundError": "Samenwerking niet gevonden",
         "selectAnother": "Update Samenwerking vanuit een andere Space"
@@ -927,8 +934,8 @@
       "editableBy": {
         "title": "Dit whiteboard kan bewerkt worden door:",
         "options": {
-          "CONTRIBUTORS": "Iedereen die kan bijdragen in deze {{journey}}",
-          "ADMINS": "De eigenaar en de beheerders van deze {{journey}}",
+          "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
+          "ADMINS": "The owner and the admins and leads of this (sub)space",
           "OWNER": "De eigenaar van dit whiteboard"
         }
       }
@@ -1111,7 +1118,8 @@
         "list.indent": "Inspringen",
         "list.outdent": "Inspringing verwijderen",
         "remove.remove": "Verwijderen",
-        "embed.video": "Video of andere Media insluiten"
+        "embed.video": "Video of andere Media insluiten",
+        "horizontal.line": "Insert horizontal line"
       },
       "image": {
         "dialogHeader": "Afbeelding invoegen"
@@ -1162,8 +1170,8 @@
     "activity-log-section": {
       "title": "Recente bijdragen",
       "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
-      "activity-join-error-message": "Om recente bijdragen te zien, kunt u zich aansluiten als u nog geen lid bent van deze {{journeyType}}.",
-      "activity-sign-in-and-join-error-message": "Log in of meld je aan om de recente bijdragen te zien als je nog geen lid bent van deze {{journeyType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -2026,7 +2034,7 @@
         "notifications": {
           "space-created": "Space succesvol aangemaakt.",
           "errorCreatingSpace": "Er is een fout opgetreden tijdens het maken van de Space.",
-          "space-removed": "Space '{{name}}' succesvol verwijderd."
+          "space-removed": "Space removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Instellingen succesvol opgeslagen",
@@ -2550,8 +2558,8 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "Je moet lid zijn van {{journeyType}} om dit whiteboard te kunnen bewerken. <journeylink>Klik hier om je aan te melden</journeylink>",
-        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{journeyType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "Alleen bekijken modus",
