@@ -126,7 +126,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      canReadSubspaces: spacePrivileges.includes(AuthorizationPrivilege.Read), //!! ??
+      canReadSubspaces: spacePrivileges.includes(AuthorizationPrivilege.Read),
       canCreateTemplates,
       canReadCommunity: isAuthenticated && communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
