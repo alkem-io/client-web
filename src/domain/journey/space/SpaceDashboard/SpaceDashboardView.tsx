@@ -8,7 +8,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import PageContent from '@/core/ui/content/PageContent';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
@@ -41,6 +40,7 @@ import SpaceWelcomeDialog from './SpaceWelcomeDialog';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
+  level: SpaceLevel | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -55,7 +55,6 @@ type SpaceDashboardViewProps = {
   entityReadAccess: boolean;
   readUsersAccess: boolean;
   childEntitiesCount?: number;
-  journeyTypeName: JourneyTypeName;
   recommendations?: ReactNode;
   loading: boolean;
   shareUpdatesUrl: string;
@@ -72,6 +71,7 @@ type SpaceDashboardViewProps = {
 
 const SpaceDashboardView = ({
   spaceId,
+  level,
   collaborationId,
   calloutsSetId,
   vision = '',
@@ -82,7 +82,6 @@ const SpaceDashboardView = ({
   timelineReadAccess = false,
   host,
   leadUsers,
-  journeyTypeName,
   callouts,
   shareUpdatesUrl,
   myMembershipStatus,
@@ -93,9 +92,9 @@ const SpaceDashboardView = ({
   const [openWelcome, setOpenWelcome] = useState(false);
   const [vcId, setVcId] = useState<string>('');
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const translatedSpaceLevel = t(`common.space-level.${level ?? SpaceLevel.L0}`);
 
-  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -115,10 +114,10 @@ const SpaceDashboardView = ({
 
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
-    const cachedVC = getVCCreationCache();
+    const cachedVCId = getVCCreationCache();
 
-    if (cachedVC) {
-      setVcId(cachedVC);
+    if (cachedVCId) {
+      setVcId(cachedVCId);
       setTryVirtualContributorOpen(true);
     }
 
@@ -152,7 +151,7 @@ const SpaceDashboardView = ({
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
                   journeyId={spaceId}
-                  spaceLevel={SpaceLevel.L0}
+                  spaceLevel={level}
                 />
               </PageContentColumn>
             );
@@ -166,7 +165,7 @@ const SpaceDashboardView = ({
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              journeyTypeName="space"
+              level={level}
               member={myMembershipStatus === CommunityMembershipStatus.Member}
             />
           </PageContentBlock>
@@ -176,14 +175,14 @@ const SpaceDashboardView = ({
             to={EntityPageSection.About}
             variant="contained"
           >
-            {t('common.aboutThis', { entity: translatedJourneyTypeName })}
+            {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>
           <DashboardNavigation
             currentItemId={spaceId}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
+          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} level={level} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 
@@ -193,7 +192,6 @@ const SpaceDashboardView = ({
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
-            journeyTypeName={journeyTypeName}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
             groupName={CalloutGroupName.Home}

@@ -4,7 +4,7 @@ import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthoriz
 import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
-import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';
@@ -44,8 +44,10 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
   parentSpaceId: string | undefined;
+  levelZeroSpaceId: string | undefined;
   spaceReadAccess: SpaceReadAccess;
-  journeyPath: JourneyPath;
+  spaceLevel: SpaceLevel | undefined;
+  journeyPath: JourneyPath | undefined;
   journeyUrl?: string | undefined; // TODO make required
   loading?: boolean;
   unauthorizedDialogDisabled?: boolean;
@@ -95,14 +97,16 @@ enum MenuState {
 
 const SubspacePageLayout = ({
   journeyId,
+  parentSpaceId,
+  levelZeroSpaceId,
   spaceReadAccess,
   journeyPath,
+  spaceLevel,
   journeyUrl,
   loading = false,
   unauthorizedDialogDisabled = false,
   welcome,
   actions,
-  parentSpaceId,
   children,
   infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
@@ -151,12 +155,6 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-  let spaceLevel = SpaceLevel.L0;
-  if (journeyPath.length === 2) {
-    spaceLevel = SpaceLevel.L1;
-  } else if (journeyPath.length === 3) {
-    spaceLevel = SpaceLevel.L2;
-  }
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
@@ -172,7 +170,7 @@ const SubspacePageLayout = ({
             <InnovationFlowHolder>
               <TopLevelLayout
                 breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
-                header={<ChildJourneyPageBanner journeyId={journeyId} />}
+                header={<ChildJourneyPageBanner journeyId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
                 floatingActions={
                   <FloatingActionButtons
                     visible

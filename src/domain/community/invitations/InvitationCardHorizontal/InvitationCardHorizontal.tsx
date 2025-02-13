@@ -6,7 +6,6 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import LinkButton from '@/core/ui/button/LinkButton';
-import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 
 type InvitationCardHorizontalProps = {
   invitation: InvitationWithMeta | undefined;
@@ -30,7 +29,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
           i18nKey="community.pendingMembership.invitationTitle"
           journeyDisplayName={invitation.space.profile.displayName}
           journeyUrl={invitation.space.profile.url}
-          journeyTypeName={getChildJourneyTypeName(invitation.space)}
+          spaceLevel={invitation.space.level}
           createdDate={invitation.invitation.createdDate}
           author={{ displayName: invitation.userDisplayName }}
           type={invitation.invitation.contributorType}

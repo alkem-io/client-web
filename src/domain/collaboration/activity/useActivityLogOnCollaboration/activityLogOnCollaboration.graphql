@@ -8,7 +8,6 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     description
     type
     child
-    parentNameID
     journeyDisplayName: parentDisplayName
     space {
       id

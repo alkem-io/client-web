@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormRow from '@/core/ui/forms/FormRow';
-import FormikInputFieldField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import nonReservedNameIdValidator from '@/main/routing/nonReservedNameIdValidator';
 
 export const nameSegmentSchema = yup.object().shape({
@@ -34,26 +33,22 @@ export const NameSegment: FC<NameSegmentProps> = ({
 
   return (
     <>
-      <FormRow>
-        <FormikInputFieldField
-          name={nameFieldName}
-          title={t('components.nameSegment.name')}
-          required
-          helpIconText={nameHelpText}
-          loading={loading}
-        />
-      </FormRow>
-      <FormRow>
-        <FormikInputFieldField
-          name={nameIdFieldName}
-          title={t('components.nameSegment.nameID.title')}
-          placeholder={t('components.nameSegment.nameID.placeholder')}
-          disabled={disabled}
-          required={required}
-          helpIconText={nameIDHelpText}
-          loading={loading}
-        />
-      </FormRow>
+      <FormikInputField
+        name={nameFieldName}
+        title={t('components.nameSegment.name')}
+        required
+        helpIconText={nameHelpText}
+        loading={loading}
+      />
+      <FormikInputField
+        name={nameIdFieldName}
+        title={t('components.nameSegment.nameID.title')}
+        placeholder={t('components.nameSegment.nameID.placeholder')}
+        disabled={disabled}
+        required={required}
+        helpIconText={nameIDHelpText}
+        loading={loading}
+      />
     </>
   );
 };

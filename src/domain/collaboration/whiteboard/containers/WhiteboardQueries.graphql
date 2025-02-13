@@ -1,0 +1,158 @@
+fragment WhiteboardProfile on Profile {
+  id
+  url
+  displayName
+  description
+  visual(type: CARD) {
+    ...VisualFull
+  }
+  preview: visual(type: BANNER) {
+    ...VisualFull
+  }
+  tagset {
+    ...TagsetDetails
+  }
+  storageBucket {
+    id
+  }
+}
+
+fragment WhiteboardDetails on Whiteboard {
+  id
+  nameID # Used to name the screenshots uploaded as visuals (banner, card, etc.)
+  createdDate
+  profile {
+    ...WhiteboardProfile
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  contentUpdatePolicy
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      location {
+        id
+        country
+        city
+      }
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+fragment WhiteboardContent on Whiteboard {
+  id
+  content
+}
+
+fragment CollaborationWithWhiteboardDetails on Collaboration {
+  id
+  calloutsSet {
+    id
+    callouts {
+      id
+      type
+      authorization {
+        id
+        myPrivileges
+      }
+      contributions {
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+      framing {
+        id
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+    }
+  }
+}
+
+query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      type
+      authorization {
+        id
+        myPrivileges
+      }
+      framing {
+        id
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+      contributions(IDs: [$contributionId]) {
+        id
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+    }
+  }
+}
+
+query WhiteboardWithContent($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+      ...WhiteboardContent
+    }
+  }
+}
+
+query WhiteboardWithoutContent($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+    }
+  }
+}
+
+query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      id
+      updatedDate
+    }
+  }
+}
+
+mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $input) {
+    whiteboard {
+      ...WhiteboardDetails
+      profile {
+        url
+      }
+    }
+  }
+}
+
+mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
+  deleteWhiteboard(whiteboardData: $input) {
+    id
+  }
+}
+
+mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {
+  updateWhiteboard(whiteboardData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

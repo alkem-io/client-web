@@ -10,12 +10,13 @@ import {
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
-  useSpaceTemplatesSetIdQuery,
+  useSpaceTemplatesManagerQuery,
   useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
+  SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
@@ -31,8 +32,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { Box, Button, CircularProgress } from '@mui/material';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
@@ -46,8 +46,8 @@ import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { noop } from 'lodash';
 
 type SpaceSettingsViewProps = {
-  journeyId: string;
-  journeyTypeName: JourneyTypeName; // TODO: The idea is to just pass isSubspace as a boolean here
+  spaceId: string; // TODO: The idea is to just pass isSubspace as a boolean here
+  spaceLevel: SpaceLevel;
 };
 
 const defaultSpaceSettings = {
@@ -69,16 +69,19 @@ const defaultSpaceSettings = {
   },
 };
 
-const errorColor = '#940000';
-
-export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsViewProps) => {
+export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const notify = useNotification();
   const navigate = useNavigate();
-  const isSubspace = journeyTypeName !== 'space';
+
+  let isSubspace = spaceLevel !== SpaceLevel.L0;
 
   const { subspaceId } = useSubSpace();
-  const { spaceId, spaceNameId } = useSpace();
+  const {
+    spaceId,
+    profile: { url: levelZeroSpaceUrl },
+  } = useSpace();
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -99,9 +102,9 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
       'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
-    onCompleted: data => {
-      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
-      navigate(`/${spaceNameId}`, { replace: true });
+    onCompleted: () => {
+      notify(t('pages.admin.space.notifications.space-removed'), 'success');
+      navigate(levelZeroSpaceUrl, { replace: true });
     },
   });
 
@@ -118,39 +121,38 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
   const handleDelete = (id: string) => {
     return deleteSpace({
       variables: {
-        input: {
-          ID: id,
-        },
+        spaceId: id,
       },
     });
   };
 
   const { data: hostData } = useSpaceHostQuery({
-    variables: { spaceNameId: journeyId },
-    skip: isSubspace,
+    variables: { spaceId },
+    skip: !spaceId || isSubspace,
   });
-  const hostId = hostData?.space.provider.id;
+  const hostId = hostData?.lookup.space?.provider.id;
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId: journeyId,
+      spaceId,
     },
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
 
   // check for TemplateCreation privileges
-  const { data: templateData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId },
-    skip: !spaceNameId,
+  const { data: templateData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId },
+    skip: !spaceId,
   });
 
-  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSetPrivileges =
+    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceNameId);
+    await handleCreateCollaborationTemplate(values, spaceId);
     setSaveAsTemplateDialogOpen(false);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
   };
@@ -214,23 +216,23 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
       } as SpaceSettingsCollaboration,
     };
 
-    switch (journeyTypeName) {
-      case 'space': {
+    switch (spaceLevel) {
+      case SpaceLevel.L0: {
         await updateSpaceSettings({
           variables: {
             settingsData: {
-              spaceID: journeyId,
+              spaceID: spaceId,
               settings: settingsVariable,
             },
           },
         });
         break;
       }
-      case 'subspace': {
+      case SpaceLevel.L1: {
         await updateSpaceSettings({
           variables: {
             settingsData: {
-              spaceID: journeyId,
+              spaceID: spaceId,
               settings: settingsVariable,
             },
           },
@@ -356,7 +358,7 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostData?.space?.provider.profile?.displayName,
+                            host: hostData?.lookup.space?.provider.profile.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />
@@ -481,8 +483,11 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
             </PageContentBlock>
           )}
           {isSubspace && canDelete && (
-            <PageContentBlock sx={{ borderColor: errorColor }}>
-              <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteEntity.title')} />
+            <PageContentBlock sx={{ borderColor: theme.palette.error.main }}>
+              <PageContentBlockHeader
+                sx={{ color: theme.palette.error.main }}
+                title={t('components.deleteEntity.title')}
+              />
               <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
                 <DeleteIcon />
                 <Caption>{t('components.deleteEntity.description', { entity: t('common.subspace') })}</Caption>

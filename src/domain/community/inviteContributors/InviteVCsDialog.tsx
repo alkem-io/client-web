@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
-
 import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -19,24 +17,25 @@ import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileC
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import SearchField from '@/core/ui/search/SearchField';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, roleSetId } = useSpace();
-  const { spaceLevel } = useRouteResolver();
+  const { spaceId, spaceLevel } = useUrlResolver();
+  const { roleSetId } = useSpace();
 
-  const { virtualContributors } = useRoleSetAdmin({
+  const { virtualContributors } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.Virtual],
+    fetchContributors: true,
   });
 
   // data

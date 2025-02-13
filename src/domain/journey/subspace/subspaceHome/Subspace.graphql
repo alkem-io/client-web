@@ -8,6 +8,7 @@ query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = fa
 
 fragment SubspacePageSpace on Space {
   id
+  level
   authorization {
     id
     myPrivileges

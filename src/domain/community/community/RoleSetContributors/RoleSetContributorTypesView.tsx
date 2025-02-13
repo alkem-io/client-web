@@ -1,7 +1,5 @@
 import { Identifiable } from '@/core/utils/Identifiable';
 import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
-import { SectionSpacer } from '@/domain/shared/components/Section/Section';
-import withOptionalCount from '@/domain/shared/utils/withOptionalCount';
 import { styled } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { ComponentType } from 'react';
@@ -11,6 +9,7 @@ import DashboardContributingUsers, {
 } from '../EntityDashboardContributorsSection/DashboardContributingUsers';
 import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
+import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 
 export interface RoleSetContributorTypesViewProps extends ContributingOrganizationsProps {
   loading?: boolean;
@@ -37,13 +36,12 @@ const RoleSetContributorTypesView = ({
 
   return (
     <>
-      <SubSectionHeading>{withOptionalCount(t('common.organizations'), organizationsCount)}</SubSectionHeading>
+      <SubSectionHeading><EllipsableWithCount count={organizationsCount}>{t('common.organizations')}</EllipsableWithCount></SubSectionHeading>
       <ContributingOrganizations
         organizations={organizations}
         loading={loading}
         noOrganizationsView={noOrganizationsView}
       />
-      <SectionSpacer />
       <UsersComponent users={users?.map(mapUserCardPropsToContributorCardProps)} />
     </>
   );

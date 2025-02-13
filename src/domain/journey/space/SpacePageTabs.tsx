@@ -6,6 +6,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
 import HeaderNavigationButton from '@/domain/shared/components/PageHeader/HeaderNavigationButton';
 import {
+  alpha,
   BottomNavigation,
   BottomNavigationAction,
   Drawer,
@@ -18,7 +19,6 @@ import {
   TabProps,
   useTheme,
 } from '@mui/material';
-import hexToRGBA from '@/core/utils/hexToRGBA';
 import {
   DashboardOutlined,
   History,
@@ -33,7 +33,7 @@ import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
 import { EntityTabsProps } from '../common/EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import ActivityDialog from '../common/Activity/ActivityDialog';
 
 type TabDefinition = {
@@ -96,7 +96,7 @@ const SpacePageTabs = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isActivityVisible, setIsActivityVisible] = useState(false);
 
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   useLayoutEffect(() => {
     onMenuOpen?.(isDrawerOpen);
@@ -130,7 +130,7 @@ const SpacePageTabs = ({
                 color: navigationForegroundColor,
               },
               '.MuiBottomNavigationAction-root:not(.Mui-selected)': {
-                color: hexToRGBA(navigationForegroundColor, 0.75),
+                color: alpha(navigationForegroundColor, 0.75),
               },
             }}
           >
@@ -185,7 +185,7 @@ const SpacePageTabs = ({
         <ActivityDialog
           open={isActivityVisible}
           onClose={() => setIsActivityVisible(false)}
-          journeyId={journeyId ?? ''}
+          spaceId={spaceId}
         />
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
@@ -292,7 +292,7 @@ const SpacePageTabs = ({
       <ActivityDialog
         open={isActivityVisible}
         onClose={() => setIsActivityVisible(false)}
-        journeyId={journeyId ?? ''}
+        spaceId={spaceId}
       />
     </>
   );

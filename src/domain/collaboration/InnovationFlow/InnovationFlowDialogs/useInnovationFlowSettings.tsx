@@ -28,7 +28,6 @@ type useInnovationFlowSettingsProps = {
 
 export interface GroupedCallout {
   id: string;
-  nameID: string;
   type: CalloutType;
   activity: number;
   sortOrder: number;
@@ -73,7 +72,6 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
       collaboration?.calloutsSet.callouts
         ?.map<GroupedCallout>(callout => ({
           id: callout.id,
-          nameID: callout.nameID,
           profile: {
             displayName: callout.framing.profile.displayName,
           },
