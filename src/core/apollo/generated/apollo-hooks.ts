@@ -12357,6 +12357,65 @@ export type UpdateOrganizationSettingsMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateOrganizationSettingsMutation,
   SchemaTypes.UpdateOrganizationSettingsMutationVariables
 >;
+export const PendingInvitationsCountDocument = gql`
+  query PendingInvitationsCount {
+    me {
+      communityInvitationsCount(states: ["invited"])
+    }
+  }
+`;
+
+/**
+ * __usePendingInvitationsCountQuery__
+ *
+ * To run a query within a React component, call `usePendingInvitationsCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePendingInvitationsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePendingInvitationsCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePendingInvitationsCountQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PendingInvitationsCountQuery,
+    SchemaTypes.PendingInvitationsCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PendingInvitationsCountQuery, SchemaTypes.PendingInvitationsCountQueryVariables>(
+    PendingInvitationsCountDocument,
+    options
+  );
+}
+
+export function usePendingInvitationsCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PendingInvitationsCountQuery,
+    SchemaTypes.PendingInvitationsCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PendingInvitationsCountQuery,
+    SchemaTypes.PendingInvitationsCountQueryVariables
+  >(PendingInvitationsCountDocument, options);
+}
+
+export type PendingInvitationsCountQueryHookResult = ReturnType<typeof usePendingInvitationsCountQuery>;
+export type PendingInvitationsCountLazyQueryHookResult = ReturnType<typeof usePendingInvitationsCountLazyQuery>;
+export type PendingInvitationsCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.PendingInvitationsCountQuery,
+  SchemaTypes.PendingInvitationsCountQueryVariables
+>;
+export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.PendingInvitationsCountQueryVariables) {
+  return { query: PendingInvitationsCountDocument, variables: variables };
+}
+
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(
     $spaceId: UUID!
@@ -16366,21 +16425,18 @@ export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVa
   return { query: PlansTableDocument, variables: variables };
 }
 
-export const FreePlanAvailabilityDocument = gql`
-  query FreePlanAvailability {
-    me {
-      id
-      user {
+export const AccountPlanAvailabilityDocument = gql`
+  query AccountPlanAvailability($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
         id
-        account {
+        authorization {
           id
-          authorization {
-            id
-            myPrivileges
-          }
-          license {
-            availableEntitlements
-          }
+          myPrivileges
+        }
+        license {
+          id
+          availableEntitlements
         }
       }
     }
@@ -16388,54 +16444,55 @@ export const FreePlanAvailabilityDocument = gql`
 `;
 
 /**
- * __useFreePlanAvailabilityQuery__
+ * __useAccountPlanAvailabilityQuery__
  *
- * To run a query within a React component, call `useFreePlanAvailabilityQuery` and pass it any options that fit your needs.
- * When your component renders, `useFreePlanAvailabilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAccountPlanAvailabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountPlanAvailabilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFreePlanAvailabilityQuery({
+ * const { data, loading, error } = useAccountPlanAvailabilityQuery({
  *   variables: {
+ *      accountId: // value for 'accountId'
  *   },
  * });
  */
-export function useFreePlanAvailabilityQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.FreePlanAvailabilityQuery,
-    SchemaTypes.FreePlanAvailabilityQueryVariables
+export function useAccountPlanAvailabilityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountPlanAvailabilityQuery,
+    SchemaTypes.AccountPlanAvailabilityQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.FreePlanAvailabilityQuery, SchemaTypes.FreePlanAvailabilityQueryVariables>(
-    FreePlanAvailabilityDocument,
+  return Apollo.useQuery<SchemaTypes.AccountPlanAvailabilityQuery, SchemaTypes.AccountPlanAvailabilityQueryVariables>(
+    AccountPlanAvailabilityDocument,
     options
   );
 }
 
-export function useFreePlanAvailabilityLazyQuery(
+export function useAccountPlanAvailabilityLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.FreePlanAvailabilityQuery,
-    SchemaTypes.FreePlanAvailabilityQueryVariables
+    SchemaTypes.AccountPlanAvailabilityQuery,
+    SchemaTypes.AccountPlanAvailabilityQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.FreePlanAvailabilityQuery, SchemaTypes.FreePlanAvailabilityQueryVariables>(
-    FreePlanAvailabilityDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.AccountPlanAvailabilityQuery,
+    SchemaTypes.AccountPlanAvailabilityQueryVariables
+  >(AccountPlanAvailabilityDocument, options);
 }
 
-export type FreePlanAvailabilityQueryHookResult = ReturnType<typeof useFreePlanAvailabilityQuery>;
-export type FreePlanAvailabilityLazyQueryHookResult = ReturnType<typeof useFreePlanAvailabilityLazyQuery>;
-export type FreePlanAvailabilityQueryResult = Apollo.QueryResult<
-  SchemaTypes.FreePlanAvailabilityQuery,
-  SchemaTypes.FreePlanAvailabilityQueryVariables
+export type AccountPlanAvailabilityQueryHookResult = ReturnType<typeof useAccountPlanAvailabilityQuery>;
+export type AccountPlanAvailabilityLazyQueryHookResult = ReturnType<typeof useAccountPlanAvailabilityLazyQuery>;
+export type AccountPlanAvailabilityQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountPlanAvailabilityQuery,
+  SchemaTypes.AccountPlanAvailabilityQueryVariables
 >;
-export function refetchFreePlanAvailabilityQuery(variables?: SchemaTypes.FreePlanAvailabilityQueryVariables) {
-  return { query: FreePlanAvailabilityDocument, variables: variables };
+export function refetchAccountPlanAvailabilityQuery(variables: SchemaTypes.AccountPlanAvailabilityQueryVariables) {
+  return { query: AccountPlanAvailabilityDocument, variables: variables };
 }
 
 export const ContactSupportLocationDocument = gql`
@@ -22859,65 +22916,6 @@ export type CampaignBlockCredentialsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCampaignBlockCredentialsQuery(variables?: SchemaTypes.CampaignBlockCredentialsQueryVariables) {
   return { query: CampaignBlockCredentialsDocument, variables: variables };
-}
-
-export const PendingInvitationsCountDocument = gql`
-  query PendingInvitationsCount {
-    me {
-      communityInvitationsCount(states: ["invited"])
-    }
-  }
-`;
-
-/**
- * __usePendingInvitationsCountQuery__
- *
- * To run a query within a React component, call `usePendingInvitationsCountQuery` and pass it any options that fit your needs.
- * When your component renders, `usePendingInvitationsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePendingInvitationsCountQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePendingInvitationsCountQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PendingInvitationsCountQuery,
-    SchemaTypes.PendingInvitationsCountQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PendingInvitationsCountQuery, SchemaTypes.PendingInvitationsCountQueryVariables>(
-    PendingInvitationsCountDocument,
-    options
-  );
-}
-
-export function usePendingInvitationsCountLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PendingInvitationsCountQuery,
-    SchemaTypes.PendingInvitationsCountQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PendingInvitationsCountQuery,
-    SchemaTypes.PendingInvitationsCountQueryVariables
-  >(PendingInvitationsCountDocument, options);
-}
-
-export type PendingInvitationsCountQueryHookResult = ReturnType<typeof usePendingInvitationsCountQuery>;
-export type PendingInvitationsCountLazyQueryHookResult = ReturnType<typeof usePendingInvitationsCountLazyQuery>;
-export type PendingInvitationsCountQueryResult = Apollo.QueryResult<
-  SchemaTypes.PendingInvitationsCountQuery,
-  SchemaTypes.PendingInvitationsCountQueryVariables
->;
-export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.PendingInvitationsCountQueryVariables) {
-  return { query: PendingInvitationsCountDocument, variables: variables };
 }
 
 export const DashboardWithMembershipsDocument = gql`
