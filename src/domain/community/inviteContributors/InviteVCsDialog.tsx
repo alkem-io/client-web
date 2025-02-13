@@ -67,8 +67,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
 
     const lib = await getAvailableVirtualContributorsInLibrary(filter);
 
+    const accIds = new Set(acc.map(accItem => accItem.id));
+
     // Exclude objects from lib that are present in acc
-    const filteredLib = lib.filter(libItem => !acc.some(accItem => accItem.id === libItem.id));
+    const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
     setInLibrary(filteredLib);
   }, [filter, getAvailableVirtualContributors, getAvailableVirtualContributorsInLibrary]);
 
