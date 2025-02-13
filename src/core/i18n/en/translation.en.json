@@ -2510,7 +2510,6 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "loadingScene": "Loading scene",
-      "room-not-saved": "We could not save the last changes. If the problem persists we suggest saving the whiteboard to disk to not loose your work.",
       "state-actions": {
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",

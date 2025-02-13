@@ -107,6 +107,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
 
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [lastSaveError, setLastSaveError] = useState<string | undefined>();
+  const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
@@ -278,9 +279,11 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
           onRemoteSave: (error?: string) => {
             if (error) {
               setLastSaveError(error);
+              setConsecutiveSaveErrors(count => count + 1);
             } else {
               setLastSuccessfulSavedDate(new Date());
               setLastSaveError(undefined);
+              setConsecutiveSaveErrors(0);
             }
           },
           onSceneInitChange: setSceneInitialized,
@@ -326,6 +329,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                   collaboratorModeReason={modeReason}
                   lastSuccessfulSavedDate={lastSuccessfulSavedDate}
                   lastSaveError={lastSaveError}
+                  consecutiveSaveErrors={consecutiveSaveErrors}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}

@@ -1,7 +1,6 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, DialogContent, Tooltip } from '@mui/material';
-import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import { Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -30,6 +29,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 interface WhiteboardDialogFooterProps {
   lastSuccessfulSavedDate: Date | undefined;
   lastSaveError: string | undefined;
+  consecutiveSaveErrors: number;
   canUpdateContent: boolean;
   onDelete: () => void;
   canDelete?: boolean;
@@ -58,7 +58,6 @@ enum ReadonlyReason {
 
 const WhiteboardDialogFooter = ({
   lastSuccessfulSavedDate,
-  lastSaveError,
   canUpdateContent,
   onDelete,
   canDelete,
@@ -203,7 +202,6 @@ const WhiteboardDialogFooter = ({
         {!readonlyReason && (
           <>
             <LastSavedCaption date={lastSuccessfulSavedDate} />
-            {LastSaveError && <LastSaveError error={lastSaveError} />}
           </>
         )}
         {directMessageDialog}
@@ -245,18 +243,4 @@ const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   }
 
   return <Caption>{t('common.last-saved', { datetime: formattedTime })}</Caption>;
-};
-
-const LastSaveError = ({ error }: { error: string | undefined }) => {
-  const { t } = useTranslation();
-
-  if (!error) {
-    return null;
-  }
-
-  return (
-    <Tooltip title={<Caption>{t('pages.whiteboard.room-not-saved')}</Caption>} placement="top">
-      <ErrorOutlineOutlinedIcon color="error" />
-    </Tooltip>
-  );
 };
