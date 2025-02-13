@@ -61,7 +61,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
+  // THIRD
   const fetchVCs = useCallback(async () => {
+    console.log('debounce activated fetchVCs()');
+
     const acc = await getAvailableVirtualContributors(filter, false);
     setOnAccount(acc);
 
@@ -69,25 +72,17 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
 
     const accIds = new Set(acc.map(accItem => accItem.id));
 
-    // Exclude objects from lib that are present in acc
+    // Exclude objects from `lib` that are present in `acc` so we can show the user only the ones that are not in their account.
     const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
     setInLibrary(filteredLib);
   }, [filter, getAvailableVirtualContributors, getAvailableVirtualContributorsInLibrary]);
 
-  const memoizedFetchVCs = useCallback(fetchVCs, [
-    getAvailableVirtualContributors,
-    getAvailableVirtualContributorsInLibrary,
-  ]);
-
   // debounce as we could have multiple changes in a short period of time
   const debouncedFetchVCs = debounce(fetchVCs, 100);
 
-  const memoizedDebouncedFetchVCs = useCallback(debouncedFetchVCs, [memoizedFetchVCs]);
-
-  // on memberVCs change, update the lists of VCs
   useEffect(() => {
-    memoizedDebouncedFetchVCs();
-  }, [virtualContributors, filter]); // do not add memoizedDebouncedFetchVCs in the dependencies
+    debouncedFetchVCs();
+  }, [virtualContributors, filter]);
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);
