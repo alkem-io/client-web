@@ -14,9 +14,8 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
-import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
-const SubspaceRouteComponent = () => {
+const SubspaceRoute = () => {
   const { spaceId } = useUrlResolver();
 
   return (
@@ -66,7 +65,5 @@ const SubspaceRouteComponent = () => {
     </StorageConfigContextProvider>
   );
 };
-
-const SubspaceRoute = withUrlResolverParams(SubspaceRouteComponent);
 
 export default SubspaceRoute;

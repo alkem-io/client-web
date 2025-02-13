@@ -29,15 +29,29 @@ const InnovationLibraryPage = lazyWithGlobalErrorHandler(
 );
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
 const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platform/admin/routing/AdminRoute'));
-const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
-const OrganizationRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/organization/routing/OrganizationRoute')
+const UserRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/user/routing/UserRoute'),
+  withUrlResolverParams
 );
-const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
-const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
-const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
+const OrganizationRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/organization/routing/OrganizationRoute'),
+  withUrlResolverParams
+);
+const VCRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/virtualContributor/VCRoute'),
+  withUrlResolverParams
+);
+const ForumRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/communication/discussion/routing/ForumRoute'),
+  withUrlResolverParams
+);
+const InnovationPackRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/InnovationPack/InnovationPackRoute'),
+  withUrlResolverParams
+);
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
-  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
+  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes'),
+  withUrlResolverParams
 );
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
