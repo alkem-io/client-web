@@ -13,7 +13,7 @@ import {
   Title,
   Undo,
 } from '@mui/icons-material';
-import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
+import { Box, Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
@@ -229,7 +229,7 @@ const MarkdownInputControls = memo(
             </ControlsButton>
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
             {!hideImageOptions && (
-              <>
+              <Box>
                 <InsertImageButton
                   editor={editor}
                   onDialogOpen={onDialogOpen}
@@ -237,7 +237,7 @@ const MarkdownInputControls = memo(
                   temporaryLocation={temporaryLocation}
                 />
                 <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-              </>
+              </Box>
             )}
 
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
