@@ -116,9 +116,12 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     fetchPolicy: 'network-only',
   });
 
-  if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-    setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
-  }
+  useEffect(() => {
+    // on the initialization of lastSuccessfulSavedDate take the date from the database
+    if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
+      setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
+    }
+  }, [lastSuccessfulSavedDate]);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,

@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 import { Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
