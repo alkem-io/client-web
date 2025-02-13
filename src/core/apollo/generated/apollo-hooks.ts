@@ -2516,7 +2516,6 @@ export const EventProfileFragmentDoc = gql`
 export const CalendarEventInfoFragmentDoc = gql`
   fragment CalendarEventInfo on CalendarEvent {
     id
-    nameID
     startDate
     durationDays
     durationMinutes
