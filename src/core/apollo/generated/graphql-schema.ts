@@ -24880,7 +24880,6 @@ export type SpaceCalendarEventsQuery = {
                 events: Array<{
                   __typename?: 'CalendarEvent';
                   id: string;
-                  nameID: string;
                   startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
@@ -24945,7 +24944,6 @@ export type CollaborationTimelineInfoFragment = {
       events: Array<{
         __typename?: 'CalendarEvent';
         id: string;
-        nameID: string;
         startDate?: Date | undefined;
         durationDays?: number | undefined;
         durationMinutes: number;
@@ -25001,7 +24999,6 @@ export type DashboardTimelineAuthorizationFragment = {
 export type CalendarEventInfoFragment = {
   __typename?: 'CalendarEvent';
   id: string;
-  nameID: string;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -25049,7 +25046,6 @@ export type CalendarEventDetailsQuery = {
           type: CalendarEventType;
           createdDate?: Date | undefined;
           id: string;
-          nameID: string;
           startDate?: Date | undefined;
           durationDays?: number | undefined;
           durationMinutes: number;
@@ -25247,7 +25243,6 @@ export type CalendarEventDetailsFragment = {
   type: CalendarEventType;
   createdDate?: Date | undefined;
   id: string;
-  nameID: string;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -25441,7 +25436,6 @@ export type CreateCalendarEventMutation = {
     type: CalendarEventType;
     createdDate?: Date | undefined;
     id: string;
-    nameID: string;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
@@ -25619,7 +25613,6 @@ export type UpdateCalendarEventMutation = {
     type: CalendarEventType;
     createdDate?: Date | undefined;
     id: string;
-    nameID: string;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;

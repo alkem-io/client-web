@@ -25,7 +25,6 @@ const createLayoutHolder = () => {
   const LayoutContext = createContext<LayoutContext>({
     layout: undefined,
     setLayout: () => {
-      return;
       throw new Error('Not within the LayoutHolder.');
     },
   });
