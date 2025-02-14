@@ -171,16 +171,22 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
 
   useEffect(() => {
     const fetchVirtualContributors = async () => {
-      const [accountVCs, libraryVCs] = await Promise.all([
-        getAvailableVirtualContributors(undefined, false),
-        getAvailableVirtualContributorsInLibrary(undefined),
-      ]);
+      try {
+        const [accountVCs, libraryVCs] = await Promise.all([
+          getAvailableVirtualContributors(undefined, false),
+          getAvailableVirtualContributorsInLibrary(undefined),
+        ]);
 
-      const accountVCIds = new Set(accountVCs.map(vc => vc.id));
-      const filteredLibraryVCs = libraryVCs?.filter(vc => !accountVCIds.has(vc.id));
+        const accountVCIds = new Set(accountVCs.map(vc => vc.id));
+        const filteredLibraryVCs = libraryVCs?.filter(vc => !accountVCIds.has(vc.id));
 
-      setOnAccount(accountVCs);
-      setInLibrary(filteredLibraryVCs);
+        setOnAccount(accountVCs);
+        setInLibrary(filteredLibraryVCs);
+      } catch (error) {
+        notify(t('components.inviteContributorsDialog.vcFetchErrorMessage'), 'error');
+        setOnAccount([]);
+        setInLibrary([]);
+      }
     };
 
     fetchVirtualContributors();
