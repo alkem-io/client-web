@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { debounce } from 'lodash';
 
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
@@ -23,7 +24,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import SearchField from '@/core/ui/search/SearchField';
-import { debounce } from 'lodash';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -49,8 +49,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     availableVCsLoading,
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
-  const [filter, setFilter] = useState<string>('');
-  const [inputValue, setInputValue] = useState<string>('');
+  const [filter, setFilter] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const [isFilterPristine, setIsFilterPristine] = useState(true);
   const [onAccount, setOnAccount] = useState<ContributorProps[]>([]);
   const [inLibrary, setInLibrary] = useState<ContributorProps[]>([]);
@@ -159,7 +159,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     []
   );
 
-  // When inputValue changes, we update filter with delay.
+  // When `inputValue` changes, we update `filter` with delay. Do not use debouncing directly on the `onChange` prop since it will apply the delay
+  // on every key press, which will cause the input to lag.
   useEffect(() => {
     debouncedSetFilter(inputValue);
 
@@ -236,14 +237,12 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               title={t('components.inviteContributorsDialog.vcs.onAccount.title')}
             />
           )}
-
           {showOnAccount && (
             <InviteContributorsList
               contributors={filteredOnAccount ?? onAccount}
               onCardClick={onAccountContributorClick}
             />
           )}
-
           {showOnAccount && (
             <Gutters disableGap disablePadding paddingTop={gutters()}>
               <PageContentBlockHeader
@@ -261,17 +260,14 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               onCardClick={onLibraryContributorClick}
             />
           )}
-
           {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
         </Gutters>
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose} color="primary">
           {t('buttons.close')}
         </Button>
       </DialogActions>
-
       {openInviteDialog && selectedVirtualContributorId && (
         <InviteVirtualContributorDialog
           title={t('components.invitations.inviteExistingVCDialog.title')}
@@ -282,7 +278,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           onInviteUser={inviteData => inviteExistingUser({ roleSetId, ...inviteData })}
         />
       )}
-
       {openPreviewDialog && selectedContributor && (
         <PreviewContributorDialog
           open={openPreviewDialog}

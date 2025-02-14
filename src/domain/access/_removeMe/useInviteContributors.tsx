@@ -73,7 +73,6 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
     const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
     return virtualContributors;
   };
-
   const getAvailableVirtualContributors = async (filter?: string, all: boolean = false) => {
     const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(spaceLevel, spaceId, all, filter);
     return virtualContributors;

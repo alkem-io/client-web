@@ -213,7 +213,6 @@ const useRoleSetAvailableContributors = ({
     fetchAvailableVirtualContributorsInLibrary,
     { loading: loadingAvailableVirtualContributorsInLibrary, refetch: refetchAvailableVirtualContributorsInLibrary },
   ] = useAvailableVirtualContributorsInLibraryLazyQuery();
-
   const findAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
     if (!roleSetId) {
       throw new Error('roleSetId is required');
@@ -231,7 +230,6 @@ const useRoleSetAvailableContributors = ({
     fetchAvailableVirtualContributorsForRoleSet,
     { loading: loadingAvailableVirtualContributorsForRoleSet, refetch: refetchAvailableVirtualContributorsForRoleSet },
   ] = useAvailableVirtualContributorsLazyQuery();
-
   const findAvailableVirtualContributorsForRoleSet = async (
     spaceLevel: SpaceLevel | undefined,
     spaceId: string | undefined,
