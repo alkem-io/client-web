@@ -61,8 +61,8 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
   }, [roleSetData]);
 
   const {
-    findAvailableVirtualContributorsForRoleSet, // @@@ WIP ~ #7669 - VCs from account
-    findAvailableVirtualContributorsInLibrary, // @@@ WIP ~ #7669 - VCs from Lib
+    findAvailableVirtualContributorsForRoleSet,
+    findAvailableVirtualContributorsInLibrary,
     loading: availableVCsLoading,
   } = useRoleSetAvailableContributors({
     roleSetId,
@@ -70,12 +70,12 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
   });
 
   const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
-    const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter); // @@@ WIP ~ #7669 - VCs from Lib
+    const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
     return virtualContributors;
   };
 
   const getAvailableVirtualContributors = async (filter?: string, all: boolean = false) => {
-    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(spaceLevel, spaceId, all, filter); // @@@ WIP ~ #7669 - VCs from account
+    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(spaceLevel, spaceId, all, filter);
     return virtualContributors;
   };
 

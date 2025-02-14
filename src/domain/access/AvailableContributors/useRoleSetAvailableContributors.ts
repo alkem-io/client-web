@@ -214,12 +214,11 @@ const useRoleSetAvailableContributors = ({
     { loading: loadingAvailableVirtualContributorsInLibrary, refetch: refetchAvailableVirtualContributorsInLibrary },
   ] = useAvailableVirtualContributorsInLibraryLazyQuery();
 
-  // @@@ WIP ~ #7669 - VCs from Lib ⬇️
   const findAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
     if (!roleSetId) {
       throw new Error('roleSetId is required');
     }
-    const { data, refetch } = await fetchAvailableVirtualContributorsInLibrary(); // @@@ WIP ~ #7669 - VCs from Lib
+    const { data, refetch } = await fetchAvailableVirtualContributorsInLibrary();
 
     const virtualContributors = (data?.platform.library.virtualContributors ?? []).filter(
       vc => vc.searchVisibility === SearchVisibility.Public && filterByName(vc, filter) && filterExistingVcs(vc)
@@ -233,14 +232,12 @@ const useRoleSetAvailableContributors = ({
     { loading: loadingAvailableVirtualContributorsForRoleSet, refetch: refetchAvailableVirtualContributorsForRoleSet },
   ] = useAvailableVirtualContributorsLazyQuery();
 
-  // @@@ WIP ~ #7669 - VCs from account ⬇️
   const findAvailableVirtualContributorsForRoleSet = async (
     spaceLevel: SpaceLevel | undefined,
     spaceId: string | undefined,
     all: boolean = false,
     filter?: string
   ) => {
-    // @@@ WIP ~ #7669 - VCs from account ⬇️
     const { data, refetch } = await fetchAvailableVirtualContributorsForRoleSet({
       variables: {
         filterSpace: !all || spaceLevel !== SpaceLevel.L0,

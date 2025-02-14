@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
@@ -23,6 +23,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import SearchField from '@/core/ui/search/SearchField';
+import { debounce } from 'lodash';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -38,10 +39,9 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     fetchContributors: true,
   });
 
-  // data
   const {
-    getAvailableVirtualContributors, // @@@ WIP ~ #7669 - VCs from Account
-    getAvailableVirtualContributorsInLibrary, // @@@ WIP ~ #7669 - VCs from Lib
+    getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     onAddVirtualContributor,
     getBoKProfile,
@@ -49,56 +49,19 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     availableVCsLoading,
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
-  // state
   const [filter, setFilter] = useState<string>('');
-  const [onAccount, setOnAccount] = useState<ContributorProps[]>([]);
-  console.log('onAccount >>>', onAccount);
-  const [inLibrary, setInLibrary] = useState<ContributorProps[]>([]);
-  console.log('inLibrary >>>', inLibrary);
-  const [filteredOnAccount, setFilteredOnAccount] = useState<ContributorProps[]>();
-  console.log('filteredOnAccount >>>', filteredOnAccount);
-  const [filteredInLibrary, setFilteredInLibrary] = useState<ContributorProps[]>();
-  console.log('filteredInLibrary >>>', filteredInLibrary);
-
+  const [inputValue, setInputValue] = useState<string>('');
   const [isFilterPristine, setIsFilterPristine] = useState(true);
-
+  const [onAccount, setOnAccount] = useState<ContributorProps[]>([]);
+  const [inLibrary, setInLibrary] = useState<ContributorProps[]>([]);
+  const [filteredOnAccount, setFilteredOnAccount] = useState<ContributorProps[]>();
+  const [filteredInLibrary, setFilteredInLibrary] = useState<ContributorProps[]>();
   const [openPreviewDialog, setOpenPreviewDialog] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
   const [action, setAction] = useState<'add' | 'invite'>();
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
-
-  // NEW -------------------------------------------------------------------------------------------------------------------------------
-  useEffect(() => {
-    (async function () {
-      const accountVCs = await getAvailableVirtualContributors(undefined, false);
-      setOnAccount(accountVCs);
-
-      const libraryVCs = await getAvailableVirtualContributorsInLibrary(undefined);
-      const accountVCIds = new Set(accountVCs.map(vc => vc.id));
-      const filteredLibraryVCs = libraryVCs?.filter(vc => !accountVCIds.has(vc.id));
-      setInLibrary(filteredLibraryVCs);
-    })();
-  }, [virtualContributors]);
-
-  useEffect(() => {
-    if (Boolean(filter)) {
-      const filteredAcc = onAccount?.filter(accItem => accItem.profile.displayName.includes(filter));
-      const filteredLib = inLibrary?.filter(libItem => libItem.profile.displayName.includes(filter));
-
-      setFilteredOnAccount(filteredAcc);
-      setFilteredInLibrary(filteredLib);
-    } else {
-      if (!isFilterPristine) {
-        setOnAccount(onAccount);
-        setInLibrary(inLibrary);
-        setFilteredOnAccount(undefined);
-        setFilteredInLibrary(undefined);
-      }
-    }
-  }, [filter, onAccount, inLibrary, isFilterPristine]);
-  // -------------------------------------------------------------------------------------------------------------------------------
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);
@@ -188,6 +151,60 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     </>
   );
 
+  const debouncedSetFilter = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFilter(value);
+      }, 300),
+    []
+  );
+
+  // When inputValue changes, we update filter with delay.
+  useEffect(() => {
+    debouncedSetFilter(inputValue);
+
+    return () => {
+      debouncedSetFilter.cancel();
+    };
+  }, [inputValue, debouncedSetFilter]);
+
+  useEffect(() => {
+    const fetchVirtualContributors = async () => {
+      const [accountVCs, libraryVCs] = await Promise.all([
+        getAvailableVirtualContributors(undefined, false),
+        getAvailableVirtualContributorsInLibrary(undefined),
+      ]);
+
+      const accountVCIds = new Set(accountVCs.map(vc => vc.id));
+      const filteredLibraryVCs = libraryVCs?.filter(vc => !accountVCIds.has(vc.id));
+
+      setOnAccount(accountVCs);
+      setInLibrary(filteredLibraryVCs);
+    };
+
+    fetchVirtualContributors();
+  }, [virtualContributors]);
+
+  const memoizedFilteredOnAccount = useMemo(
+    () => (filter ? onAccount?.filter(acc => acc.profile.displayName.includes(filter)) : undefined),
+    [filter, onAccount]
+  );
+
+  const memoizedFilteredInLibrary = useMemo(
+    () => (filter ? inLibrary?.filter(lib => lib.profile.displayName.includes(filter)) : undefined),
+    [filter, inLibrary]
+  );
+
+  useEffect(() => {
+    if (filter) {
+      setFilteredOnAccount(memoizedFilteredOnAccount);
+      setFilteredInLibrary(memoizedFilteredInLibrary);
+    } else if (!isFilterPristine) {
+      setFilteredOnAccount(undefined);
+      setFilteredInLibrary(undefined);
+    }
+  }, [filter, isFilterPristine, memoizedFilteredOnAccount, memoizedFilteredInLibrary]);
+
   const availableOnAccount = onAccount ?? filteredOnAccount;
   const availableInLibrary = inLibrary ?? filteredInLibrary;
   const isEmpty =
@@ -202,11 +219,11 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
       <DialogContent>
         <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
           <SearchField
-            value={filter}
+            value={inputValue}
             sx={{ maxWidth: 400, marginLeft: 'auto' }}
             placeholder={t('community.virtualContributors.searchVC')}
             onChange={event => {
-              setFilter(event.target.value);
+              setInputValue(event.target.value);
               isFilterPristine && setIsFilterPristine(false);
             }}
           />
