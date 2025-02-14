@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  useState,
+  useEffect,
+  // useCallback
+} from 'react';
 
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 
@@ -53,7 +57,9 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   // state
   const [filter, setFilter] = useState<string>('');
   const [onAccount, setOnAccount] = useState<ContributorProps[]>();
+  console.log('@@@ onAccount >>>', onAccount);
   const [inLibrary, setInLibrary] = useState<ContributorProps[]>();
+  console.log('@@@ inLibrary >>>', inLibrary);
   const [openPreviewDialog, setOpenPreviewDialog] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
@@ -61,28 +67,46 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
-  // THIRD
-  const fetchVCs = useCallback(async () => {
-    console.log('debounce activated fetchVCs()');
+  // CURR -------------------------------------------------------------------------------------------------------------------------------
+  // const fetchVCs = useCallback(async () => {
+  //   const acc = await getAvailableVirtualContributors(filter, false);
+  //   console.log('@@@ VCs in Account >>>', acc);
+  //   setOnAccount(acc);
 
-    const acc = await getAvailableVirtualContributors(filter, false);
-    setOnAccount(acc);
+  //   const lib = await getAvailableVirtualContributorsInLibrary(filter);
+  //   console.log('@@@ ALL VCs >>>', lib);
 
-    const lib = await getAvailableVirtualContributorsInLibrary(filter);
+  //   const accIds = new Set(acc.map(accItem => accItem.id));
 
-    const accIds = new Set(acc.map(accItem => accItem.id));
+  //   // Exclude objects from `lib` that are present in `acc` so we can show the user only the ones that are not in their account.
+  //   const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
+  //   setInLibrary(filteredLib);
+  // }, [filter, getAvailableVirtualContributors, getAvailableVirtualContributorsInLibrary]);
 
-    // Exclude objects from `lib` that are present in `acc` so we can show the user only the ones that are not in their account.
-    const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
-    setInLibrary(filteredLib);
-  }, [filter, getAvailableVirtualContributors, getAvailableVirtualContributorsInLibrary]);
+  // // debounce as we could have multiple changes in a short period of time
+  // const debouncedFetchVCs = debounce(fetchVCs, 100);
 
-  // debounce as we could have multiple changes in a short period of time
-  const debouncedFetchVCs = debounce(fetchVCs, 100);
+  // useEffect(() => {
+  //   debouncedFetchVCs();
+  // }, [virtualContributors, filter]);
+  // -------------------------------------------------------------------------------------------------------------------------------
 
+  // NEW -------------------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
-    debouncedFetchVCs();
-  }, [virtualContributors, filter]);
+    (async function () {
+      const acc = await getAvailableVirtualContributors(filter, false);
+      console.log('@@@ acc >>>', acc);
+      const lib = await getAvailableVirtualContributorsInLibrary(filter);
+      console.log('@@@ lib >>>', lib);
+
+      const accIds = new Set(acc.map(accItem => accItem.id));
+      const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
+
+      setOnAccount(acc);
+      setInLibrary(filteredLib);
+    })();
+  }, [filter, virtualContributors]);
+  // -------------------------------------------------------------------------------------------------------------------------------
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);
