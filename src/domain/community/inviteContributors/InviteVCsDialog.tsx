@@ -1,10 +1,5 @@
-import {
-  useState,
-  useEffect,
-  // useCallback
-} from 'react';
+import { useState, useEffect } from 'react';
 
-// import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
@@ -56,10 +51,17 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
 
   // state
   const [filter, setFilter] = useState<string>('');
-  const [onAccount, setOnAccount] = useState<ContributorProps[]>();
-  console.log('@@@ onAccount >>>', onAccount);
-  const [inLibrary, setInLibrary] = useState<ContributorProps[]>();
-  console.log('@@@ inLibrary >>>', inLibrary);
+  const [onAccount, setOnAccount] = useState<ContributorProps[]>([]);
+  console.log('onAccount >>>', onAccount);
+  const [inLibrary, setInLibrary] = useState<ContributorProps[]>([]);
+  console.log('inLibrary >>>', inLibrary);
+  const [filteredOnAccount, setFilteredOnAccount] = useState<ContributorProps[]>();
+  console.log('filteredOnAccount >>>', filteredOnAccount);
+  const [filteredInLibrary, setFilteredInLibrary] = useState<ContributorProps[]>();
+  console.log('filteredInLibrary >>>', filteredInLibrary);
+
+  const [isFilterPristine, setIsFilterPristine] = useState(true);
+
   const [openPreviewDialog, setOpenPreviewDialog] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
@@ -67,45 +69,35 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
-  // CURR -------------------------------------------------------------------------------------------------------------------------------
-  // const fetchVCs = useCallback(async () => {
-  //   const acc = await getAvailableVirtualContributors(filter, false);
-  //   console.log('@@@ VCs in Account >>>', acc);
-  //   setOnAccount(acc);
-
-  //   const lib = await getAvailableVirtualContributorsInLibrary(filter);
-  //   console.log('@@@ ALL VCs >>>', lib);
-
-  //   const accIds = new Set(acc.map(accItem => accItem.id));
-
-  //   // Exclude objects from `lib` that are present in `acc` so we can show the user only the ones that are not in their account.
-  //   const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
-  //   setInLibrary(filteredLib);
-  // }, [filter, getAvailableVirtualContributors, getAvailableVirtualContributorsInLibrary]);
-
-  // // debounce as we could have multiple changes in a short period of time
-  // const debouncedFetchVCs = debounce(fetchVCs, 100);
-
-  // useEffect(() => {
-  //   debouncedFetchVCs();
-  // }, [virtualContributors, filter]);
-  // -------------------------------------------------------------------------------------------------------------------------------
-
   // NEW -------------------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
     (async function () {
-      const acc = await getAvailableVirtualContributors(filter, false); // @@@ WIP ~ #7669 - VCs from Account
-      console.log('@@@ acc >>>', acc);
-      const lib = await getAvailableVirtualContributorsInLibrary(filter); // @@@ WIP ~ #7669 - VCs from Lib
-      console.log('@@@ lib >>>', lib);
+      const accountVCs = await getAvailableVirtualContributors(undefined, false);
+      setOnAccount(accountVCs);
 
-      const accIds = new Set(acc.map(accItem => accItem.id));
-      const filteredLib = lib.filter(libItem => !accIds.has(libItem.id));
-
-      setOnAccount(acc);
-      setInLibrary(filter.length > 0 ? lib : filteredLib); // If the filter was used, show all VCs from the library regardless if they are linked to the account.
+      const libraryVCs = await getAvailableVirtualContributorsInLibrary(undefined);
+      const accountVCIds = new Set(accountVCs.map(vc => vc.id));
+      const filteredLibraryVCs = libraryVCs?.filter(vc => !accountVCIds.has(vc.id));
+      setInLibrary(filteredLibraryVCs);
     })();
-  }, [filter, virtualContributors]);
+  }, [virtualContributors]);
+
+  useEffect(() => {
+    if (Boolean(filter)) {
+      const filteredAcc = onAccount?.filter(accItem => accItem.profile.displayName.includes(filter));
+      const filteredLib = inLibrary?.filter(libItem => libItem.profile.displayName.includes(filter));
+
+      setFilteredOnAccount(filteredAcc);
+      setFilteredInLibrary(filteredLib);
+    } else {
+      if (!isFilterPristine) {
+        setOnAccount(onAccount);
+        setInLibrary(inLibrary);
+        setFilteredOnAccount(undefined);
+        setFilteredInLibrary(undefined);
+      }
+    }
+  }, [filter, onAccount, inLibrary, isFilterPristine]);
   // -------------------------------------------------------------------------------------------------------------------------------
 
   const getContributorsBoKProfile = async (vcId: string) => {
@@ -140,7 +132,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   };
 
   const getContributorById = (id: string) => {
-    return onAccount?.find(c => c.id === id) || inLibrary?.find(c => c.id === id);
+    return (
+      (filteredOnAccount ?? onAccount)?.find(c => c.id === id) ||
+      (filteredInLibrary ?? inLibrary)?.find(c => c.id === id)
+    );
   };
 
   const onAddClick = async () => {
@@ -173,7 +168,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const showOnAccount = onAccount && onAccount.length > 0 && !availableVCsLoading;
+  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !availableVCsLoading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -193,8 +188,12 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     </>
   );
 
+  const availableOnAccount = onAccount ?? filteredOnAccount;
+  const availableInLibrary = inLibrary ?? filteredInLibrary;
   const isEmpty =
-    (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !availableVCsLoading;
+    (!availableOnAccount || availableOnAccount.length === 0) &&
+    (!availableInLibrary || availableInLibrary.length === 0) &&
+    !availableVCsLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -206,7 +205,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
             value={filter}
             sx={{ maxWidth: 400, marginLeft: 'auto' }}
             placeholder={t('community.virtualContributors.searchVC')}
-            onChange={event => setFilter(event.target.value)}
+            onChange={event => {
+              setFilter(event.target.value);
+              isFilterPristine && setIsFilterPristine(false);
+            }}
           />
         </Gutters>
 
@@ -218,7 +220,12 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
             />
           )}
 
-          {showOnAccount && <InviteContributorsList contributors={onAccount} onCardClick={onAccountContributorClick} />}
+          {showOnAccount && (
+            <InviteContributorsList
+              contributors={filteredOnAccount ?? onAccount}
+              onCardClick={onAccountContributorClick}
+            />
+          )}
 
           {showOnAccount && (
             <Gutters disableGap disablePadding paddingTop={gutters()}>
@@ -232,7 +239,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {availableVCsLoading ? (
             <Loading />
           ) : (
-            <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
+            <InviteContributorsList
+              contributors={filteredInLibrary ?? inLibrary}
+              onCardClick={onLibraryContributorClick}
+            />
           )}
 
           {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
