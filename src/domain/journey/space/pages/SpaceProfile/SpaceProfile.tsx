@@ -10,14 +10,14 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 
 export const SpaceProfile = () => {
-  const { spaceId, spaceNameId, } = useSpace();
+  const { spaceId, spaceNameId } = useSpace();
   const notify = useNotification();
   const { t } = useTranslation();
   const { data: spaceData } = useSpaceProfileQuery({
     variables: {
       spaceId,
     },
-    skip: !spaceId
+    skip: !spaceId,
   });
   const [updateSpace, { loading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),

@@ -8,14 +8,7 @@ export interface WhiteboardRouteProps {
 const WhiteboardRoute = ({ parentPagePath }: WhiteboardRouteProps) => {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <WhiteboardPage
-            parentUrl={parentPagePath}
-          />
-        }
-      />
+      <Route path="/" element={<WhiteboardPage parentUrl={parentPagePath} />} />
     </Routes>
   );
 };

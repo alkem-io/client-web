@@ -63,7 +63,8 @@ const AssociatedOrganizationCard = ({
               </LoadingButton>
             </Box>
             <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-              <DialogHeader title={t('components.associated-organization.confirmation-dialog.title', {
+              <DialogHeader
+                title={t('components.associated-organization.confirmation-dialog.title', {
                   organization: profile?.displayName,
                 })}
               />

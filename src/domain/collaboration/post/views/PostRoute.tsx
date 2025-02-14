@@ -20,10 +20,7 @@ const PostRoute = ({ parentPagePath }: PostRouteProps) => {
     <Routes>
       <Route path="/" element={<PostLayoutHolder />}>
         <Route index element={<Navigate replace to={PostDialogSection.Dashboard} state={{ keepScroll: true }} />} />
-        <Route
-          path={PostDialogSection.Dashboard}
-          element={<PostDashboardPage postId={postId} onClose={onClose} />}
-        />
+        <Route path={PostDialogSection.Dashboard} element={<PostDashboardPage postId={postId} onClose={onClose} />} />
         <Route
           path={PostDialogSection.Share}
           element={<PostSharePage calloutId={calloutId} postId={postId} onClose={onClose} />}

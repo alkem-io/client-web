@@ -9,10 +9,7 @@ export interface CalloutRouteProps {
 
 const CalloutRoute = ({ parentPagePath }: CalloutRouteProps) => (
   <Routes>
-    <Route
-      path={`posts/:${nameOfUrl.postNameId}/*`}
-      element={<PostRoute parentPagePath={parentPagePath} />}
-    />
+    <Route path={`posts/:${nameOfUrl.postNameId}/*`} element={<PostRoute parentPagePath={parentPagePath} />} />
     <Route
       path={`whiteboards/:${nameOfUrl.whiteboardNameId}/*`}
       element={<WhiteboardRoute parentPagePath={parentPagePath} />}

@@ -133,7 +133,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     variables: {
       postId: postOptions.postId!, // ensured by skip
     },
-    skip: skip || locationType !== 'post' || !postOptions.postId
+    skip: skip || locationType !== 'post' || !postOptions.postId,
   });
 
   const templateOptions = options as UseStorageConfigOptionsTemplate;

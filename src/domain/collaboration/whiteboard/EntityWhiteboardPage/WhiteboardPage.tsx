@@ -6,10 +6,7 @@ export interface WhiteboardPageProps {
   parentUrl: string;
 }
 
-const WhiteboardPage = ({
-  parentUrl,
-  ...props
-}: WhiteboardPageProps) => {
+const WhiteboardPage = ({ parentUrl, ...props }: WhiteboardPageProps) => {
   const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
   const backToWhiteboards = () => backToExplore();
 

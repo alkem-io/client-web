@@ -11,7 +11,6 @@ interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {
 }
 
 const ChildJourneyPageBanner = ({ journeyId, levelZeroSpaceId, ...props }: ChildJourneyPageBannerProps) => {
-
   const { data } = useChildJourneyPageBannerQuery({
     variables: {
       level0Space: levelZeroSpaceId!,

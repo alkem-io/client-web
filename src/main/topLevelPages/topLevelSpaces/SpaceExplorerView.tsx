@@ -121,7 +121,7 @@ export const SpaceExplorerView = ({
   const spaceNameId = t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId');
   const { data: spaceIdData } = useSpaceUrlResolverQuery({
     variables: { spaceNameId: spaceNameId },
-    skip: !spaceNameId
+    skip: !spaceNameId,
   });
   const welcomeSpaceId = spaceIdData?.lookupByName.space?.id;
 

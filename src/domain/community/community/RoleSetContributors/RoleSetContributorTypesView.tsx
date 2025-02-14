@@ -36,7 +36,9 @@ const RoleSetContributorTypesView = ({
 
   return (
     <>
-      <SubSectionHeading><EllipsableWithCount count={organizationsCount}>{t('common.organizations')}</EllipsableWithCount></SubSectionHeading>
+      <SubSectionHeading>
+        <EllipsableWithCount count={organizationsCount}>{t('common.organizations')}</EllipsableWithCount>
+      </SubSectionHeading>
       <ContributingOrganizations
         organizations={organizations}
         loading={loading}

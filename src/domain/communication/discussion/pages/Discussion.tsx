@@ -4,7 +4,6 @@ import DiscussionPage from './DiscussionPage';
 export const Discussion = () => {
   const { discussionId } = useUrlResolver();
 
-
   return <DiscussionPage discussionId={discussionId} />;
 };
 

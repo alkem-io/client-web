@@ -2,7 +2,11 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { useSearchQuery, useSearchScopeDetailsSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSearchQuery,
+  useSearchScopeDetailsSpaceQuery,
+  useSpaceUrlResolverQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
   SearchResult,
@@ -145,7 +149,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
     variables: { spaceNameId: spaceNameId! },
-    skip: !spaceNameId
+    skip: !spaceNameId,
   });
   const spaceId = spaceIdData?.lookupByName.space?.id;
 

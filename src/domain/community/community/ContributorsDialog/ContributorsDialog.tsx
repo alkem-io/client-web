@@ -1,7 +1,6 @@
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
-
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';

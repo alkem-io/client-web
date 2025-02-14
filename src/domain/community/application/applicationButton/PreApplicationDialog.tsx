@@ -37,7 +37,9 @@ const PreApplicationDialog = ({
   const { profile: spaceProfile } = useSpace();
   const { profile: challengeProfile } = useSubSpace();
   const parentCommunityName = spaceId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const);
+  const buttonText = t(
+    `components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const
+  );
 
   return (
     <Dialog open={open}>

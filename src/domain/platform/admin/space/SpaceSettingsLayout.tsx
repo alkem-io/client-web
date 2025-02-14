@@ -81,7 +81,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
   const { spaceId, journeyPath, loading: resolvingSpace } = useUrlResolver();
   const { data: spaceData, loading: loadingSpace } = useSpaceProfileQuery({
     variables: { spaceId: spaceId! },
-    skip: !spaceId
+    skip: !spaceId,
   });
   const profile = spaceData?.lookup.space?.profile;
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
