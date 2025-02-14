@@ -184,8 +184,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
         setInLibrary(filteredLibraryVCs);
       } catch (error) {
         notify(t('components.inviteContributorsDialog.vcFetchErrorMessage'), 'error');
-        setOnAccount([]);
-        setInLibrary([]);
       }
     };
 
