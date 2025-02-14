@@ -57,6 +57,13 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
+// Filter functions for contributors already in the role
+const filterByName = (vc: ContributorNameProps, filter?: string) =>
+  vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
+
+const filterExisting = (currentMembers: Identifiable[]) => (contributor: Identifiable) =>
+  !currentMembers.some(member => member.id === contributor.id);
+
 const useRoleSetAvailableContributors = ({
   roleSetId,
   filterCurrentMembers = [],
@@ -176,7 +183,7 @@ const useRoleSetAvailableContributors = ({
       },
     });
     return {
-      organizations: data?.organizationsPaginated.organization ?? [],
+      organizations: data?.organizationsPaginated.organization.filter(filterExisting(filterCurrentMembers)) ?? [],
       hasMore: data?.organizationsPaginated.pageInfo.hasNextPage ?? false,
       refetch,
       loading,
@@ -192,14 +199,7 @@ const useRoleSetAvailableContributors = ({
     };
   };
 
-  // Filter functions for virtual contributors
-  const filterByName = (vc: ContributorNameProps, filter?: string) =>
-    vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
-
-  const filterExisting = (contributor: Identifiable) =>
-    !filterCurrentMembers.some(member => member.id === contributor.id);
-
-  // TODO: Implement ServerSide pagination and filtering
+  // TODO: Implement ServerSide pagination and filtering for VCs
   const mockPaginatedResponse = <T>(virtualContributors: T[], refetch: () => Promise<unknown>) => ({
     virtualContributors,
     refetch,
@@ -207,19 +207,22 @@ const useRoleSetAvailableContributors = ({
     loading: false,
     fetchMore: () => Promise.resolve(),
   });
+  const filterExistingVcs = filterExisting(filterCurrentMembers);
 
   const [
     fetchAvailableVirtualContributorsInLibrary,
     { loading: loadingAvailableVirtualContributorsInLibrary, refetch: refetchAvailableVirtualContributorsInLibrary },
   ] = useAvailableVirtualContributorsInLibraryLazyQuery();
+
+  // @@@ WIP ~ #7669 - VCs from Lib ⬇️
   const findAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
     if (!roleSetId) {
       throw new Error('roleSetId is required');
     }
-    const { data, refetch } = await fetchAvailableVirtualContributorsInLibrary();
+    const { data, refetch } = await fetchAvailableVirtualContributorsInLibrary(); // @@@ WIP ~ #7669 - VCs from Lib
 
     const virtualContributors = (data?.platform.library.virtualContributors ?? []).filter(
-      vc => vc.searchVisibility === SearchVisibility.Public && filterByName(vc, filter) && filterExisting(vc)
+      vc => vc.searchVisibility === SearchVisibility.Public && filterByName(vc, filter) && filterExistingVcs(vc)
     );
 
     return mockPaginatedResponse(virtualContributors, refetch);
@@ -229,12 +232,15 @@ const useRoleSetAvailableContributors = ({
     fetchAvailableVirtualContributorsForRoleSet,
     { loading: loadingAvailableVirtualContributorsForRoleSet, refetch: refetchAvailableVirtualContributorsForRoleSet },
   ] = useAvailableVirtualContributorsLazyQuery();
+
+  // @@@ WIP ~ #7669 - VCs from account ⬇️
   const findAvailableVirtualContributorsForRoleSet = async (
     spaceLevel: SpaceLevel | undefined,
     spaceId: string | undefined,
     all: boolean = false,
     filter?: string
   ) => {
+    // @@@ WIP ~ #7669 - VCs from account ⬇️
     const { data, refetch } = await fetchAvailableVirtualContributorsForRoleSet({
       variables: {
         filterSpace: !all || spaceLevel !== SpaceLevel.L0,
@@ -247,7 +253,7 @@ const useRoleSetAvailableContributors = ({
     if (spaceLevel === SpaceLevel.L0) {
       return mockPaginatedResponse(
         (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
-          vc => filterByName(vc, filter) && filterExisting(vc)
+          vc => filterByName(vc, filter) && filterExistingVcs(vc)
         ),
         refetch
       );
@@ -256,7 +262,7 @@ const useRoleSetAvailableContributors = ({
     // Results for Subspaces - Community Members including External VCs (filter in the query)
     if (all) {
       return mockPaginatedResponse(
-        (roleSet?.virtualContributorsInRole ?? []).filter(vc => filterByName(vc, filter) && filterExisting(vc)),
+        (roleSet?.virtualContributorsInRole ?? []).filter(vc => filterByName(vc, filter) && filterExistingVcs(vc)),
         refetch
       );
     }
@@ -267,7 +273,7 @@ const useRoleSetAvailableContributors = ({
         vc =>
           data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
           filterByName(vc, filter) &&
-          filterExisting(vc)
+          filterExistingVcs(vc)
       ),
       refetch
     );

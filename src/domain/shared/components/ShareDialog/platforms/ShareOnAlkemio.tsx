@@ -9,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption, Text } from '@/core/ui/typography';
 import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import SendButton from '@/domain/shared/components/SendButton';
+import SendButton from '@/core/ui/actions/SendButton';
 import { useShareLinkWithUserMutation } from '@/core/apollo/generated/apollo-hooks';
 
 const ICON_URL = '/share-dialog/alkemio.png';

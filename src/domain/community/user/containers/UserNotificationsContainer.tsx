@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
 import { PropsWithChildren, useMemo } from 'react';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   useUpdatePreferenceOnUserMutation,
   useUserNotificationsPreferencesQuery,

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../PostForm/PostForm';
-import usePostSettings from '../containers/PostSettings/usePostSettings';
+import usePostSettings from '../graphql/usePostSettings';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,
@@ -14,7 +14,6 @@ import {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
-import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import {
@@ -47,7 +46,6 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
   const toPostFormInput = (post?: PostSettingsFragment): PostFormInput | undefined =>
     post && {
       id: post.id,
-      nameID: post.nameID,
       profileData: {
         displayName: post.profile.displayName,
         description: post.profile.description!,
@@ -138,7 +136,7 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onCloseEdit}>
-      <StorageConfigContextProvider locationType="post" postId={postId} calloutId={calloutId}>
+      <StorageConfigContextProvider locationType="post" postId={postId}>
         <PostForm
           edit
           loading={postSettings.loading || postSettings.updating || isMovingContribution}
@@ -154,20 +152,16 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
 
             return (
               <>
-                <SectionSpacer double />
                 <Box>
                   <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                  <SectionSpacer />
                   {/* Do not show VisualType.Card for Posts for now, see #4362.
                       TODO: Maybe in the future we want to remove those visuals from the database,
                       for now Card profiles don't have a Banner because it's not shown anywhere */}
                   <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
                 </Box>
-                <SectionSpacer double />
                 {canMoveCard && (
                   <Box>
                     <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
-                    <SectionSpacer />
                     <Autocomplete
                       disablePortal
                       options={calloutsOfTypePost}

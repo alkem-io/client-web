@@ -8,7 +8,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import SendButton from '@/domain/shared/components/SendButton';
+import SendButton from '@/core/ui/actions/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { InviteExternalUserData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';

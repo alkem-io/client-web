@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useAdminInnovationPackQuery, useUpdateInnovationPackMutation } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -76,8 +76,9 @@ const AdminInnovationPackPage = () => {
           },
         },
       },
+      refetchQueries: ['AdminInnovationPack'],
     });
-    if (data?.updateInnovationPack.nameID) {
+    if (data?.updateInnovationPack.id) {
       notify(t('pages.admin.innovation-packs.saved-successfully'), 'success');
     }
   };
@@ -94,7 +95,6 @@ const AdminInnovationPackPage = () => {
               <PageContentColumn columns={12}>
                 <PageContentBlock>
                   <InnovationPackForm
-                    nameID={innovationPack.nameID}
                     profile={innovationPack.profile}
                     provider={innovationPack.provider}
                     onSubmit={handleSubmit}

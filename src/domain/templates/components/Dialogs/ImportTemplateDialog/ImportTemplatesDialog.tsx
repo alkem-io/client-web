@@ -14,11 +14,11 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useImportTemplateDialogPlatformTemplatesQuery,
   useImportTemplateDialogQuery,
-  useSpaceTemplatesSetIdQuery,
+  useSpaceTemplatesManagerQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { gutters } from '@/core/ui/grid/utils';
 import SearchIcon from '@mui/icons-material/Search';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface ImportTemplatesOptions {
   /**
@@ -54,9 +54,9 @@ const ImportTemplatesDialog = ({
   templateType,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
+  const { levelZeroSpaceId } = useUrlResolver();
 
-  const canUseSpaceTemplates = !disableSpaceTemplates && !!spaceNameId;
+  const canUseSpaceTemplates = !disableSpaceTemplates && !!levelZeroSpaceId;
   const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
@@ -76,11 +76,11 @@ const ImportTemplatesDialog = ({
     handleClosePreview();
   };
 
-  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId: spaceNameId! },
-    skip: !open || !canUseSpaceTemplates,
+  const { data: templatesSetData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId: levelZeroSpaceId! },
+    skip: !open || !canUseSpaceTemplates || !levelZeroSpaceId,
   });
-  const templatesSetId = templatesSetData?.space.templatesManager?.templatesSet?.id;
+  const templatesSetId = templatesSetData?.lookup.space?.templatesManager?.templatesSet?.id;
 
   const { data: templatesData, loading: loadingTemplates } = useImportTemplateDialogQuery({
     fetchPolicy: 'network-only',

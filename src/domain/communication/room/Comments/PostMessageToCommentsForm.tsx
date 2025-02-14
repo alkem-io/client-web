@@ -1,4 +1,3 @@
-import { FetchResult } from '@apollo/client';
 import { AvatarProps, Box, BoxProps, styled } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -16,7 +15,7 @@ const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme 
 }));
 
 export interface PostMessageToCommentsFormProps {
-  onPostComment?: (comment: string) => Promise<FetchResult<unknown>> | void;
+  onPostComment?: (comment: string) => Promise<unknown> | void;
   title?: string;
   placeholder?: string;
   maxLength?: number;
@@ -58,7 +57,7 @@ const PostMessageToCommentsForm = ({
   const handleSubmit = async (values: formValues, { resetForm }: FormikHelpers<formValues>) => {
     if (onPostComment) {
       const result = await onPostComment(values.post);
-      if (result && !result.errors) {
+      if (result) {
         resetForm();
       }
     }

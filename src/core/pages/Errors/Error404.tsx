@@ -4,7 +4,7 @@ import { log404NotFound } from '@/core/logging/sentry/log';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Box, Link, LinkProps, styled } from '@mui/material';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
-import { PageTitle, PlatformTitle, Tagline, Text } from '@/core/ui/typography';
+import { PageTitle, Tagline, Text } from '@/core/ui/typography';
 import { EastOutlined } from '@mui/icons-material';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import SearchBar from '@/main/ui/layout/topBar/SearchBar';
@@ -94,9 +94,9 @@ export const Error404 = () => {
         <PageContentBlock>
           <Container>
             <LeftArea>
-              <PlatformTitle sx={theme => ({ [theme.breakpoints.down('md')]: { textAlign: 'center' } })}>
+              <PageTitle component="h1" sx={theme => ({ [theme.breakpoints.down('md')]: { textAlign: 'center' } })}>
                 {t('pages.four-ou-four.title')}
-              </PlatformTitle>
+              </PageTitle>
               <Picture
                 src="/404.svg"
                 sx={theme => ({

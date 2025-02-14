@@ -25,21 +25,20 @@ import OpportunityMetrics from '@/domain/journey/opportunity/utils/useOpportunit
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import References from '@/domain/shared/components/References/References';
 import { Reference, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
-import { getSpaceLabel } from '@/domain/journey/JourneyTypeName';
 import Loading from '@/core/ui/loading/Loading';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
-  spaceLevel: SpaceLevel;
+  spaceLevel: SpaceLevel | undefined;
   displayName: ReactNode;
   tagline: ReactNode;
   references: Reference[] | undefined;
@@ -91,7 +90,7 @@ const JourneyAboutDialog = ({
   tagline,
   references,
   ribbon,
-  spaceLevel,
+  spaceLevel = SpaceLevel.L0,
   leadUsers,
   leadOrganizations,
   provider: host,
@@ -142,7 +141,7 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  const JourneyIcon = spaceLevelIcon[spaceLevel];
+  const JourneyIcon = spaceIconByLevel[spaceLevel];
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(spaceLevel));
 
   const breakpoint = useCurrentBreakpoint();
@@ -152,8 +151,6 @@ const JourneyAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-
-  const journeyTypeName = getSpaceLabel(spaceLevel);
 
   return (
     <DialogWithGrid
@@ -201,19 +198,19 @@ const JourneyAboutDialog = ({
             )}
             {background && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${journeyTypeName}.background.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.background.title` as const)} />
                 <WrapperMarkdown>{background}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {impact && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${journeyTypeName}.impact.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.impact.title` as const)} />
                 <WrapperMarkdown>{impact}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {who && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${journeyTypeName}.who.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />
                 <WrapperMarkdown>{who}</WrapperMarkdown>
               </PageContentBlock>
             )}
@@ -224,7 +221,9 @@ const JourneyAboutDialog = ({
               {leftColumnChildrenTop}
               <PageContentBlock>
                 <PageContentBlockHeader
-                  title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
+                  title={t('components.journeyMetrics.title', {
+                    journey: t(`common.space-level.${spaceLevel}` as const),
+                  })}
                 />
                 <ActivityView activity={metricsItems} loading={loading} />
               </PageContentBlock>

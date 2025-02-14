@@ -1,6 +1,5 @@
-mutation deleteSpace($input: DeleteSpaceInput!) {
-  deleteSpace(deleteData: $input) {
+mutation deleteSpace($spaceId: UUID!) {
+  deleteSpace(deleteData: { ID: $spaceId }) {
     id
-    nameID
   }
 }

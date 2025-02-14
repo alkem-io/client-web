@@ -4,7 +4,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
-import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
@@ -19,7 +19,6 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 
 type InvitationDialogProps = {
   open: boolean;
@@ -96,7 +95,7 @@ const InvitationDialog = ({
                     alignItems={isMobile ? 'center' : 'start'}
                   >
                     <JourneyCard
-                      iconComponent={spaceLevelIcon[invitation.space.level]}
+                      iconComponent={spaceIconByLevel[invitation.space.level]}
                       header={invitation.space.profile.displayName}
                       tags={invitation.space.profile.tagset?.tags ?? []}
                       banner={invitation.space.profile.visual}
@@ -110,7 +109,7 @@ const InvitationDialog = ({
                           i18nKey="community.pendingMembership.invitationTitle"
                           journeyDisplayName={invitation.space.profile.displayName}
                           journeyUrl={invitation.space.profile.url}
-                          journeyTypeName={getChildJourneyTypeName(invitation.space)}
+                          spaceLevel={invitation.space.level}
                           createdDate={invitation.invitation.createdDate}
                           author={{ displayName: invitation.userDisplayName }}
                           type={invitation.invitation.contributorType}

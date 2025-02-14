@@ -7,24 +7,13 @@ interface SpaceTemplatesAdminRoutesProps extends SettingsPageProps {
   spaceId: string;
 }
 
-enum RoutePaths {
-  calloutTemplatesRoutePath = 'callout-templates',
-  postTemplatesRoutePath = 'post-templates',
-  whiteboardTemplatesRoutePath = 'whiteboard-templates',
-  innovationTemplatesRoutePath = 'innovation-templates',
-  communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
-}
-
 const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
   const { pathname: url } = useResolvedPath('.');
 
   return (
     <Routes>
-      <Route index element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />} />
-      <Route
-        path={`:${nameOfUrl.templateNameId}`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
+      <Route index element={<SpaceTemplatesAdminPage {...props} routePrefix={url} />} />
+      <Route path={`:${nameOfUrl.templateNameId}`} element={<SpaceTemplatesAdminPage {...props} routePrefix={url} />} />
     </Routes>
   );
 };

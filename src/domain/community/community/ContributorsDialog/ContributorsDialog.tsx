@@ -1,5 +1,6 @@
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { DialogTitle } from '@/core/ui/dialog/deprecated';
+
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,11 +24,7 @@ const ContributorsDialog = ({ open, onClose, dialogContent: Content }: Contribut
 
   return (
     <DialogWithGrid open={open} columns={4} fullWidth aria-labelledby="community-updates-dialog-title">
-      <DialogTitle id="community-updates-dialog-title" onClose={handleClose}>
-        <Box display="flex" alignItems="center">
-          {t('dashboard-contributors-section.dialog-title')}
-        </Box>
-      </DialogTitle>
+      <DialogHeader onClose={handleClose} title={t('dashboard-contributors-section.dialog-title')} />
       <DialogContent dividers>
         <Box marginBottom={2}>
           <Content dialogOpen={open} />

@@ -1,5 +1,15 @@
-query ChildJourneyPageBanner($spaceId: UUID!) {
+query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
   lookup {
+    level0Space: space(ID: $level0Space) {
+      id
+      profile {
+        id
+        banner :visual(type: BANNER) {
+          id
+          uri
+        }
+      }
+    }
     space(ID: $spaceId) {
       id
       profile {

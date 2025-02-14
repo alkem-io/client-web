@@ -6,7 +6,7 @@ import GridContainer from '@/core/ui/grid/GridContainer';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography/components';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
-import SendButton from '@/domain/shared/components/SendButton';
+import SendButton from '@/core/ui/actions/SendButton';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Alert, DialogActions, DialogContent } from '@mui/material';
 import { Formik, FormikState } from 'formik';

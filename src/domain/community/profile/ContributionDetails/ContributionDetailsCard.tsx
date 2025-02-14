@@ -7,15 +7,13 @@ import { BlockTitle } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import CardRibbon from '@/core/ui/card/CardRibbon';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   tagline: string;
-  journeyTypeName: JourneyTypeName;
   displayName: string;
   enableLeave?: boolean;
   leavingCommunityDialogOpen?: boolean;
@@ -24,12 +22,12 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   handleLeaveCommunity?: () => void;
   loading?: boolean;
   visibility?: SpaceVisibility;
+  level: SpaceLevel;
 }
 
 const ContributionDetailsCard = ({
   displayName,
   tagline,
-  journeyTypeName,
   enableLeave,
   leavingCommunityDialogOpen = false,
   leavingCommunity,
@@ -37,6 +35,7 @@ const ContributionDetailsCard = ({
   handleLeaveCommunity,
   loading,
   visibility,
+  level,
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
@@ -50,7 +49,7 @@ const ContributionDetailsCard = ({
     <>
       <JourneyCard
         {...props}
-        iconComponent={spaceIcon[journeyTypeName]}
+        iconComponent={spaceIconByLevel[level || SpaceLevel.L0]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}

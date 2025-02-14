@@ -4,34 +4,31 @@ import { useMemo } from 'react';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useChildJourneyPageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 
 interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {
   journeyId: string | undefined;
+  levelZeroSpaceId: string | undefined;
 }
 
-const ChildJourneyPageBanner = ({ journeyId, ...props }: ChildJourneyPageBannerProps) => {
-  const { profile: spaceProfile } = useSpace();
-  const spaceBanner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
+const ChildJourneyPageBanner = ({ journeyId, levelZeroSpaceId, ...props }: ChildJourneyPageBannerProps) => {
+  const { data } = useChildJourneyPageBannerQuery({
+    variables: {
+      level0Space: levelZeroSpaceId!,
+      spaceId: journeyId!,
+    },
+    skip: !journeyId || !levelZeroSpaceId,
+  });
 
   const bannerVisual = useMemo(() => {
-    if (spaceBanner?.uri) {
+    const spaceBanner = data?.lookup.level0Space?.profile.banner;
+    if (data?.lookup.level0Space?.profile.banner?.uri) {
       return spaceBanner;
     }
     return {
       ...spaceBanner,
       uri: defaultVisualUrls[VisualType.Banner],
     };
-  }, [spaceBanner]);
-
-  const { data } = useChildJourneyPageBannerQuery({
-    variables: {
-      spaceId: journeyId!,
-    },
-    skip: !journeyId,
-  });
+  }, [data]);
 
   return (
     <PageBanner

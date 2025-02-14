@@ -7,6 +7,7 @@ import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
 import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
@@ -14,12 +15,13 @@ import { Grid, Typography } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface ChallengeProfileViewProps {
-  subspaceId: string;
+interface SubspaceProfileViewProps {
+  subspaceId: string | undefined;
 }
 
-const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
+const SubspaceProfileView: FC<SubspaceProfileViewProps> = ({ subspaceId }) => {
   const { t } = useTranslation();
+  const ensurePresence = useEnsurePresence();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
@@ -34,21 +36,18 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
     skip: !subspaceId,
   });
 
-  const challenge = subspaceProfile?.lookup.space;
+  const subspace = subspaceProfile?.lookup.space;
 
   const isLoading = isUpdating;
 
-  const onSubmit = async (values: ProfileFormValues) => {
-    const { name: displayName, nameID, tagsets, tagline, references } = values;
+  const onSubmit = (values: ProfileFormValues) => {
+    const { name: displayName, tagsets, tagline, references } = values;
+    const requiredSubspaceId = ensurePresence(subspaceId, 'Subspace ID');
 
-    if (!subspaceId) {
-      throw new Error('Challenge ID is required for update');
-    }
-    updateSubspace({
+    return updateSubspace({
       variables: {
         input: {
-          ID: subspaceId,
-          nameID: nameID,
+          ID: requiredSubspaceId,
           profileData: {
             displayName,
             tagline,
@@ -71,11 +70,9 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
     <Gutters>
       <ProfileForm
         isEdit
-        name={challenge?.profile.displayName}
-        nameID={challenge?.nameID}
-        journeyType="subspace"
-        tagset={challenge?.profile.tagset}
-        profile={challenge?.profile}
+        name={subspace?.profile.displayName}
+        tagset={subspace?.profile.tagset}
+        profile={subspace?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
@@ -86,7 +83,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
         <Typography variant="h4" color="primary.main" mb={1} fontWeight="medium">
           {t('components.visualSegment.title')}
         </Typography>
-        <EditVisualsView visuals={challenge?.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
+        <EditVisualsView visuals={subspace?.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
       </Grid>
     </Gutters>
   );

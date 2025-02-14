@@ -71,7 +71,7 @@ export const useCalloutCreationWithPreviewImages = (
               cardVisualId: whiteboard.profile.visual?.id,
               previewVisualId: whiteboard.profile.preview?.id,
             },
-            result.nameID
+            result.nameID // to name the files uploaded as whiteboard visuals
           );
         }
       }

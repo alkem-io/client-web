@@ -1,61 +1,36 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApolloError, FetchResult } from '@apollo/client';
-import { alpha, Box, Grid } from '@mui/material';
+import { alpha, Box } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
-import { Reference } from '@/core/apollo/generated/graphql-schema';
-import { SectionSpacer } from '@/domain/shared/components/Section/Section';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { Message } from '@/domain/communication/room/models/Message';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
-import PostDashboardTagLabel from './PostDashboardTagLabel';
-import DashboardColumn from './DashboardColumn';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { ShareComponent } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
-import MessagesThread, { MessagesThreadProps } from '@/domain/communication/room/Comments/MessagesThread';
+import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
-import LocationCaption from '@/core/ui/location/LocationCaption';
+import usePost from '../graphql/usePost';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlockBanner from '@/core/ui/content/PageContentBlockBanner';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { times } from 'lodash';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface PostDashboardViewProps {
   mode: 'messages' | 'share';
-  canReadComments: boolean;
-  canPostComments: boolean;
-  canAddReaction: boolean;
-  canDeleteComment: (authorId: string | undefined) => boolean;
-  banner?: string;
-  displayName?: string;
-  description?: string;
-  // TODO: Posts don't have `type` anymore, but don't remove this because CalendarEvents still have type and we use this view to display them
-  type?: string;
-  messages?: Message[];
-  vcInteractions?: MessagesThreadProps['vcInteractions'];
+  postId: string | undefined;
   vcEnabled?: boolean;
-  roomId: string | undefined;
-  tags?: string[];
-  references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
-  location?: { city?: string };
-  bannerOverlayOverride?: ReactNode;
-  creatorAvatar?: string;
-  creatorName?: string;
-  createdDate?: string;
-  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
-  handleDeleteComment: (commentId: string, messageId: string) => void;
-  postUrl: string;
-  loading: boolean;
-  error?: ApolloError;
 }
 
 interface ScrollState {
@@ -73,34 +48,24 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const PostDashboardView = (props: PostDashboardViewProps) => {
+const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) => {
   const { t } = useTranslation();
-  const { loading, mode } = props;
+  const {
+    loading: { loading },
+    actions,
+    post,
+    permissions,
+    comments,
+  } = usePost({
+    postId,
+  });
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
-  const {
-    banner,
-    description,
-    displayName,
-    type,
-    messages = [],
-    vcInteractions = [],
-    vcEnabled = true,
-    roomId,
-    tags = [],
-    references,
-    location,
-  } = props;
-
-  const { creatorName, creatorAvatar, createdDate } = props;
-  const { canReadComments, canDeleteComment, canPostComments } = props;
-  const { postMessage, postReply, handleDeleteComment } = props;
-
-  const deleteComment = (id: string) => (roomId ? handleDeleteComment(roomId, id) : undefined);
+  const deleteComment = (id: string) => (comments.roomId ? actions.deleteMessage(comments.roomId, id) : undefined);
   const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
   const { height: containerHeight = 0 } = useResizeDetector({
@@ -116,68 +81,49 @@ const PostDashboardView = (props: PostDashboardViewProps) => {
         scrollHeight: commentsContainerRef.current.scrollHeight,
       };
     }
-  }, [messages, containerHeight]);
+  }, [comments, containerHeight]);
 
   useEffect(() => {
     if (wasScrolledToBottomRef.current && commentsContainerRef.current) {
       scroller.scrollToBottom({ container: commentsContainerRef.current });
     }
-  }, [messages]);
+  }, [comments]);
 
-  const commentReactionsMutations = useCommentReactionsMutations(roomId);
-  const { canAddReaction } = props;
+  const commentReactionsMutations = useCommentReactionsMutations(comments.roomId);
 
   const handleCommentsScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
-  const bannerOverlay = props.bannerOverlayOverride ?? (
-    <AuthorComponent avatarSrc={creatorAvatar} name={creatorName} createdDate={createdDate} loading={loading} />
-  );
-
   return (
-    <Grid container spacing={2}>
-      <DashboardColumn>
-        <DashboardGenericSection
-          bannerUrl={banner}
-          alwaysShowBanner
-          bannerOverlay={bannerOverlay}
-          headerText={displayName}
-          primaryAction={loading ? <Skeleton width={'30%'} /> : <PostDashboardTagLabel>{type}</PostDashboardTagLabel>}
-        >
-          {loading ? (
-            <>
-              <Skeleton width={'80%'} />
-              <Skeleton width={'70%'} />
-              <Skeleton width={'60%'} />
-            </>
-          ) : (
-            <>
-              <Typography component={WrapperMarkdown}>{description}</Typography>
-              <SectionSpacer half />
-              {location && <LocationCaption {...location} />}
-              <SectionSpacer half />
-              <TagsComponent tags={tags} loading={loading} />
-            </>
-          )}
-        </DashboardGenericSection>
-        {!!references && references.length > 0 && (
-          <DashboardGenericSection headerText={t('common.references')}>
+    <PageContentBlock sx={{ flexDirection: 'row' }}>
+      <PageContentColumn columns={6}>
+        <PageContentBlock>
+          <PageContentBlockBanner bannerUrl={post?.profile.banner?.uri}>
+            <AuthorComponent
+              avatarSrc={post?.createdBy?.profile.avatar?.uri}
+              name={post?.createdBy?.profile.displayName}
+              createdDate={post?.createdDate}
+              loading={loading}
+            />
+          </PageContentBlockBanner>
+          <Gutters>
             {loading ? (
-              <>
-                <Skeleton />
-                <Skeleton />
-                <Skeleton />
-              </>
+              times(3).map(i => <Skeleton key={i} />)
             ) : (
-              <References references={references} noItemsView={<Typography>{t('common.no-references')}</Typography>} />
+              <>
+                <PageContentBlockHeader title={post?.profile.displayName} />
+                <WrapperMarkdown>{post?.profile.description ?? ''}</WrapperMarkdown>
+                <TagsComponent tags={post?.profile.tagset?.tags ?? []} loading={loading} />
+              </>
             )}
-          </DashboardGenericSection>
-        )}
-      </DashboardColumn>
-      {mode === 'messages' && canReadComments && (
-        <DashboardColumn>
-          <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
+          </Gutters>
+        </PageContentBlock>
+        <References references={post?.profile.references} />
+      </PageContentColumn>
+      {mode === 'messages' && permissions.canReadComments && (
+        <PageContentColumn columns={6}>
+          <PageContentBlock title={`${t('common.comments')} (${comments.messages.length})`}>
             <ScrollerWithGradient
               maxHeight={COMMENTS_CONTAINER_HEIGHT}
               minHeight={0}
@@ -188,35 +134,33 @@ const PostDashboardView = (props: PostDashboardViewProps) => {
             >
               <Gutters gap={0}>
                 <MessagesThread
-                  messages={messages}
-                  vcInteractions={vcInteractions}
+                  messages={comments.messages}
+                  vcInteractions={comments.vcInteractions}
                   vcEnabled={vcEnabled}
-                  canPostMessages={canPostComments}
-                  onReply={postReply}
-                  canDeleteMessage={canDeleteComment}
+                  canPostMessages={permissions.canPostComments}
+                  onReply={actions.postReply}
+                  canDeleteMessage={permissions.canDeleteComment}
                   onDeleteMessage={onDeleteComment}
-                  canAddReaction={canAddReaction}
+                  canAddReaction={permissions.canAddReaction}
                   {...commentReactionsMutations}
                 />
               </Gutters>
             </ScrollerWithGradient>
-            <SectionSpacer double />
             <Box>
-              {canPostComments && (
+              {permissions.canPostComments && (
                 <PostMessageToCommentsForm
                   vcEnabled={vcEnabled}
                   placeholder={t('pages.post.dashboard.comment.placeholder')}
-                  onPostComment={postMessage}
+                  onPostComment={actions.postMessage}
                 />
               )}
-              {!canPostComments && (
+              {!permissions.canPostComments && (
                 <Box paddingY={4} display="flex" justifyContent="center">
-                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+                  <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
                 </Box>
               )}
             </Box>
-            <SectionSpacer />
-          </DashboardGenericSection>
+          </PageContentBlock>
           <ConfirmationDialog
             actions={{
               onCancel: () => setCommentToBeDeleted(undefined),
@@ -236,16 +180,20 @@ const PostDashboardView = (props: PostDashboardViewProps) => {
               show: Boolean(commentToBeDeleted),
             }}
           />
-        </DashboardColumn>
+        </PageContentColumn>
       )}
       {mode === 'share' && (
-        <DashboardColumn>
-          <DashboardGenericSection>
-            <ShareComponent url={props.postUrl} entityTypeName="card" />
-          </DashboardGenericSection>
-        </DashboardColumn>
+        <PageContentColumn columns={6}>
+          <PageContentBlock>
+            {loading || !post?.profile.url ? (
+              <Skeleton />
+            ) : (
+              <ShareComponent url={post.profile.url} entityTypeName="card" />
+            )}
+          </PageContentBlock>
+        </PageContentColumn>
       )}
-    </Grid>
+    </PageContentBlock>
   );
 };
 
@@ -254,7 +202,7 @@ export default PostDashboardView;
 type AuthorComponentProps = {
   avatarSrc: string | undefined;
   name: string | undefined;
-  createdDate: string | undefined;
+  createdDate: string | Date | undefined;
   loading?: boolean;
 };
 
