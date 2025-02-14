@@ -58,13 +58,13 @@ const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
 export interface WhiteboardWhiteboardEntities {
   whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
   filesManager: WhiteboardFilesManager;
-  lastSavedDate: Date | undefined;
+  lastSuccessfulSavedDate: Date | undefined;
 }
 
 export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
-  onRemoteSave?: () => void;
+  onRemoteSave?: (error?: string) => void;
 }
 
 export interface WhiteboardWhiteboardEvents {}
@@ -101,7 +101,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
-  const { whiteboard, filesManager, lastSavedDate } = entities;
+  const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
@@ -147,7 +147,7 @@ const CollaborativeExcalidrawWrapper = ({
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
     filesManager,
-    onRemoteSave: () => actions.onRemoteSave?.(),
+    onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
@@ -259,10 +259,10 @@ const CollaborativeExcalidrawWrapper = ({
         <DialogContent>
           {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
           {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
-          {lastSavedDate && (
+          {lastSuccessfulSavedDate && (
             <Text>
               {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                lastSaved: formatTimeElapsed(lastSavedDate, t, 'long'),
+                lastSaved: formatTimeElapsed(lastSuccessfulSavedDate, t, 'long'),
               })}
             </Text>
           )}

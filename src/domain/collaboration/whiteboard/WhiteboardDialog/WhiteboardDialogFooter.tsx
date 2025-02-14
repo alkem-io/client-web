@@ -26,7 +26,9 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface WhiteboardDialogFooterProps {
   whiteboardUrl: string | undefined;
-  lastSavedDate: Date | undefined;
+  lastSuccessfulSavedDate: Date | undefined;
+  lastSaveError: string | undefined;
+  consecutiveSaveErrors: number;
   canUpdateContent: boolean;
   onDelete: () => void;
   canDelete?: boolean;
@@ -55,7 +57,7 @@ enum ReadonlyReason {
 
 const WhiteboardDialogFooter = ({
   whiteboardUrl,
-  lastSavedDate,
+  lastSuccessfulSavedDate,
   canUpdateContent,
   onDelete,
   canDelete,
@@ -185,7 +187,11 @@ const WhiteboardDialogFooter = ({
             {t('pages.whiteboard.restartCollaboration')}
           </Button>
         )}
-        {!readonlyReason && <LastSavedCaption date={lastSavedDate} />}
+        {!readonlyReason && (
+          <>
+            <LastSavedCaption date={lastSuccessfulSavedDate} />
+          </>
+        )}
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
