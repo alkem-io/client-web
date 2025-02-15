@@ -3,7 +3,7 @@ query SubspaceProfileInfo($subspaceId: UUID!) {
     space(ID: $subspaceId) {
       id
       about {
-        ...SpaceAboutDetails
+        ...SpaceAboutContextDetails
         profile {
           id
           displayName

@@ -35,7 +35,7 @@ fragment SpacePage on Space {
   level
   nameID # Used for SpaceEdit Page
   about {
-    ...SpaceAboutDetails
+    ...SpaceAboutContextDetails
     profile {
       id
       url

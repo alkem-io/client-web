@@ -86,11 +86,7 @@ query AccountInformation($accountId: UUID!) {
         spaceListFilter {
           id
           about {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...SpaceAboutLight
           }
         }
         subdomain

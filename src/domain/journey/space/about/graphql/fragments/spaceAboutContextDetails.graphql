@@ -1,4 +1,4 @@
-fragment SpaceAboutDetails on SpaceAbout {
+fragment SpaceAboutContextDetails on SpaceAbout {
   id
   why
   when

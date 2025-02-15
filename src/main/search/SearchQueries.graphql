@@ -80,12 +80,7 @@ fragment PostParent on SearchResultPost {
     level
     visibility
     about {
-      id
-      profile {
-        id
-        url
-        displayName
-      }
+      ...SpaceAboutLightUrl
     }
     settings {
       privacy {
@@ -162,12 +157,7 @@ fragment CalloutParent on SearchResultCallout {
   space {
     id
     about {
-      id
-      profile {
-        id
-        displayName
-        url
-      }
+      ...SpaceAboutLightUrl
     }
     level
   }
@@ -213,12 +203,7 @@ fragment SearchResultSpace on SearchResultSpace {
     id
     level
     about {
-      id
-      profile {
-        id
-        url
-        displayName
-      }
+      ...SpaceAboutLightUrl
     }
     settings {
       privacy {

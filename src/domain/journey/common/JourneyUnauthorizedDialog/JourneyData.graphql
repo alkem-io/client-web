@@ -3,7 +3,7 @@ query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
     space(ID: $spaceId) {
       id
       about {
-        ...SpaceAboutDetails
+        ...SpaceAboutContextDetails
         profile {
           ...ProfileJourneyData
         }

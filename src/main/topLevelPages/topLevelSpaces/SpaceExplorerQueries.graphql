@@ -140,12 +140,7 @@ query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        id
-        profile {
-          id
-          url
-          displayName
-        }
+        ...SpaceAboutLightUrl
       }
     }
   }

@@ -23,12 +23,6 @@ fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
   id
   level
   about {
-    id
-    profile {
-      id
-      displayName
-      tagline
-      url
-    }
+   ...SpaceAboutLightUrl
   }
 }

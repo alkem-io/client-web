@@ -9,13 +9,7 @@ query UserPendingMemberships {
         id
         level
         about {
-          id
-          profile {
-            id
-            displayName
-            tagline
-            url
-          }
+          ...SpaceAboutLightUrl
         }
       }
       application {

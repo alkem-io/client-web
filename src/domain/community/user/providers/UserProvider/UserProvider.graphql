@@ -23,13 +23,7 @@ fragment InvitationData on CommunityInvitationResult {
     id
     level
     about {
-      id
-      profile {
-        id
-        displayName
-        tagline
-        url
-      }
+     ...SpaceAboutLightUrl
     }
   }
   invitation {

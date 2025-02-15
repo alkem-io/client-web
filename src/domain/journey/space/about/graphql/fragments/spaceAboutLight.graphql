@@ -1,0 +1,6 @@
+fragment SpaceAboutLight on SpaceAbout {
+  id
+  profile {
+    displayName
+  }
+}

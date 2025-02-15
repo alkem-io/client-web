@@ -1,0 +1,7 @@
+fragment SpaceAboutLightUrl on SpaceAbout {
+  id
+  profile {
+    displayName
+    url
+  }
+}

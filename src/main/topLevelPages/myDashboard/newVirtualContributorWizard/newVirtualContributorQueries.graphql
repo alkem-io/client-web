@@ -42,12 +42,7 @@ query AllSpaceSubspaces($spaceId: UUID!) {
 fragment spaceProfileCommunityDetails on Space {
   id
   about {
-    id
-    profile {
-      id
-      displayName
-      url
-    }
+    ...SpaceAboutLightUrl
   }
   community {
     id
