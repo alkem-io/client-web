@@ -8,11 +8,7 @@ import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants'
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { ContainerChildProps } from '@/core/container/container';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import {
-  isSocialNetworkSupported,
-  SocialNetworkEnum,
-  toSocialNetworkEnum,
-} from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { SocialNetworkEnum, toSocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import {
   AuthorizationPrivilege,
   RoleSetContributorType,
@@ -22,11 +18,19 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { groupBy, type Dictionary } from 'lodash';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
   socialLinks: SocialLinkItem[];
-  links: string[];
+  links: Dictionary<
+    {
+      __typename?: 'Reference' | undefined;
+      id: string;
+      name: string;
+      uri: string;
+    }[]
+  >;
   capabilities: string[];
   keywords: string[];
   associates: ContributorCardSquareProps[];
@@ -54,6 +58,7 @@ export interface OrganizationPageContainerProps
   > {}
 
 const NO_PRIVILEGES = [];
+const OTHER_LINK_GROUP = 'other';
 
 export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
   const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
@@ -89,8 +94,8 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
   }, [organization]);
 
   const links = useMemo(() => {
-    return (organization?.profile.references ?? []).filter(x => !isSocialNetworkSupported(x.name)).map(s => s.uri);
-  }, [organization]);
+    return groupBy(organization?.profile.references, () => OTHER_LINK_GROUP);
+  }, [organization?.profile.references]);
 
   const keywords = useMemo(
     () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
@@ -168,6 +173,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
     },
     [sendMessageToOrganization, organizationId]
   );
+
   return (
     <>
       {children(
