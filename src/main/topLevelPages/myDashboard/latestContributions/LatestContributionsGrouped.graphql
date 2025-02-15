@@ -10,8 +10,11 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     space {
       id
       ... on Space {
-        profile {
-          ...RecentContributionsSpaceProfile
+        about {
+          id
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
         }
       }
       # ... on RelayPaginatedSpace {

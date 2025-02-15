@@ -49,9 +49,12 @@ fragment CalendarEventInfo on CalendarEvent {
   }
   subspace @include(if: $includeSubspace) {
     id
-    profile {
+    about {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

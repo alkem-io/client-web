@@ -1,7 +1,7 @@
-fragment ContextDetails on Context {
+fragment SpaceAboutDetails on SpaceAbout {
   id
-  vision
-  impact
+  why
+  when
   who
   authorization {
     id

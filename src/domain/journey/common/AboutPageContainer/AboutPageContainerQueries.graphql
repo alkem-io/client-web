@@ -1,15 +1,4 @@
 # context tab fragments
-fragment ContextTab on Context {
-  id
-  authorization {
-    id
-    myPrivileges
-  }
-  vision
-  impact
-  who
-}
-
 fragment MetricsItem on NVP {
   id
   name
@@ -20,19 +9,29 @@ query AboutPageNonMembers($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        url
-        displayName
-        tagline
-        description
-        tagset {
-          ...TagsetDetails
+        who
+        when
+        why
+        authorization {
+          id
+          myPrivileges
         }
-        visuals {
-          ...VisualFull
+        profile {
+          id
+          url
+          displayName
+          tagline
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          visuals {
+            ...VisualFull
+          }
+          url
         }
-        url
       }
       provider {
         ...ContributorDetails
@@ -53,9 +52,6 @@ query AboutPageNonMembers($spaceId: UUID!) {
             myPrivileges
           }
         }
-      }
-      context {
-        ...ContextTab
       }
       collaboration {
         id
@@ -84,12 +80,15 @@ query AboutPageMembers($spaceId: UUID!) {
           id
         }
       }
-      profile {
+      about {
         id
-        references {
-          ...ReferenceDetails
+        profile {
+          id
+          references {
+            ...ReferenceDetails
+          }
+          url
         }
-        url
       }
       authorization {
         id

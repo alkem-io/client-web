@@ -79,10 +79,13 @@ fragment PostParent on SearchResultPost {
     id
     level
     visibility
-    profile {
+    about {
       id
-      url
-      displayName
+      profile {
+        id
+        url
+        displayName
+      }
     }
     settings {
       privacy {
@@ -158,10 +161,13 @@ fragment SearchResultCallout on SearchResultCallout {
 fragment CalloutParent on SearchResultCallout {
   space {
     id
-    profile {
+    about {
       id
-      displayName
-      url
+      profile {
+        id
+        displayName
+        url
+      }
     }
     level
   }
@@ -206,10 +212,13 @@ fragment SearchResultSpace on SearchResultSpace {
   parentSpace {
     id
     level
-    profile {
+    about {
       id
-      url
-      displayName
+      profile {
+        id
+        url
+        displayName
+      }
     }
     settings {
       privacy {
@@ -220,21 +229,21 @@ fragment SearchResultSpace on SearchResultSpace {
   space {
     id
     level
-    profile {
+    about {
       id
-      url
-      displayName
-      tagset {
-        ...TagsetDetails
+      why
+      profile {
+        id
+        url
+        displayName
+        tagset {
+          ...TagsetDetails
+        }
+        tagline
+        visuals {
+          ...VisualUri
+        }
       }
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
     }
     community {
       id

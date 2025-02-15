@@ -8,8 +8,11 @@ query RecentSpaces($limit: Float) {
             mode
           }
         }
-        profile {
-          ...RecentSpaceProfile
+        about {
+          id
+          profile {
+            ...RecentSpaceProfile
+          }
         }
         level
         __typename # do not remove

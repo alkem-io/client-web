@@ -2,12 +2,15 @@ query SearchScopeDetailsSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        displayName
-        avatar: visual(type: AVATAR) {
+        profile {
           id
-          uri
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
         }
       }
       visibility

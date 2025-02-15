@@ -1,8 +1,4 @@
-query LatestContributions(
-  $first: Int!
-  $after: UUID
-  $filter: ActivityFeedQueryArgs
-) {
+query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQueryArgs) {
   activityFeed(after: $after, first: $first, args: $filter) {
     activityFeed {
       id
@@ -15,8 +11,11 @@ query LatestContributions(
       space {
         id
         ... on Space {
-          profile {
-            ...RecentContributionsSpaceProfile
+          about {
+            id
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
           }
         }
         # ... on RelayPaginatedSpace {

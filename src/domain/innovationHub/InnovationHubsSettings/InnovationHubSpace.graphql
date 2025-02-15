@@ -8,8 +8,11 @@ fragment InnovationHubSpace on Space {
       displayName
     }
   }
-  profile {
+  about {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }

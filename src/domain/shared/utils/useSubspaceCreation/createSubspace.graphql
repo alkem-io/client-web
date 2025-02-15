@@ -1,13 +1,16 @@
 mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
   createSubspace(subspaceData: $input) {
     ...SubspaceCard
-    visuals: profile @include(if: $includeVisuals) {
+    about {
       id
-      cardBanner: visual(type: CARD) {
+      visuals: profile @include(if: $includeVisuals) {
         id
-      }
-      avatar: visual(type: AVATAR) {
-        id
+        cardBanner: visual(type: CARD) {
+          id
+        }
+        avatar: visual(type: AVATAR) {
+          id
+        }
       }
     }
   }

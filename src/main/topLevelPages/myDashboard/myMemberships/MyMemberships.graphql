@@ -34,13 +34,16 @@ fragment SpaceMembership on Space {
       ...MyMembershipsRoleSet
     }
   }
-  profile {
+  about {
     id
-    url
-    displayName
-    tagline
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
+    profile {
+      id
+      url
+      displayName
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
     }
   }
 }

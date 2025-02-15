@@ -5,23 +5,23 @@ fragment SubspaceCard on Space {
     name
     value
   }
-  profile {
+  about {
     id
-    url
-    tagline
-    displayName
-    description
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
+    why
+    profile {
+      id
+      url
+      tagline
+      displayName
+      description
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        ...TagsetDetails
+      }
+      url
     }
-    tagset {
-      ...TagsetDetails
-    }
-    url
-  }
-  context {
-    id
-    vision
   }
   community {
     id

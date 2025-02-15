@@ -7,8 +7,11 @@ query PendingMembershipsSpace(
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        ...PendingMembershipsJourneyProfile
+      about {
+        id
+        profile {
+          ...PendingMembershipsJourneyProfile
+        }
       }
       community @include(if: $fetchCommunityGuidelines) {
         id

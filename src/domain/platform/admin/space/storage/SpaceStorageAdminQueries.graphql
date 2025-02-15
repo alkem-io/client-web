@@ -2,9 +2,12 @@ query SpaceStorageAdminPage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
       storageAggregator {
         ...StorageAggregator

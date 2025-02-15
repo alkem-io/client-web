@@ -3,11 +3,14 @@ query Space($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      nameID  # Used for search in space
-      profile {
+      nameID # Used for search in space
+      about {
         id
-        displayName
-        url
+        profile {
+          id
+          displayName
+          url
+        }
       }
       authorization {
         id
@@ -62,34 +65,30 @@ query SpaceProfile($spaceId: UUID!) {
 }
 
 fragment SpaceInfo on Space {
-  profile {
-    id
-    displayName
-    description
-    tagline
-    url
-    tagset {
-      ...TagsetDetails
-    }
-    references {
+  about {
+    ...SpaceAboutDetails
+    profile {
       id
-      name
+      displayName
       description
-      uri
+      tagline
+      url
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        description
+        uri
+      }
+      visuals {
+        ...VisualFull
+      }
+      location {
+        ...fullLocation
+      }
     }
-    visuals {
-      ...VisualFull
-    }
-    location {
-      ...fullLocation
-    }
-  }
-  context {
-    authorization {
-      id
-      myPrivileges
-    }
-    ...ContextDetails
   }
   settings {
     privacy {
@@ -135,9 +134,12 @@ query SpaceUrl($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        url
+        profile {
+          id
+          url
+        }
       }
     }
   }

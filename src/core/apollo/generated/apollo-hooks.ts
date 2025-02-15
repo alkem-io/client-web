@@ -487,8 +487,11 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
   fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     subspace {
       id
-      profile {
-        ...ActivitySubjectProfile
+      about {
+        id
+        profile {
+          ...ActivitySubjectProfile
+        }
       }
     }
   }
@@ -498,8 +501,11 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
   fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     subsubspace {
       id
-      profile {
-        ...ActivitySubjectProfile
+      about {
+        id
+        profile {
+          ...ActivitySubjectProfile
+        }
       }
     }
   }
@@ -1436,11 +1442,14 @@ export const InvitationDataFragmentDoc = gql`
     spacePendingMembershipInfo {
       id
       level
-      profile {
+      about {
         id
-        displayName
-        tagline
-        url
+        profile {
+          id
+          displayName
+          tagline
+          url
+        }
       }
     }
     invitation {
@@ -1467,14 +1476,6 @@ export const EntitlementDetailsFragmentDoc = gql`
     isAvailable
     dataType
     enabled
-  }
-`;
-export const ContextDetailsProviderFragmentDoc = gql`
-  fragment ContextDetailsProvider on Context {
-    id
-    vision
-    impact
-    who
   }
 `;
 export const InnovationHubProfileFragmentDoc = gql`
@@ -1505,9 +1506,12 @@ export const InnovationHubSpaceFragmentDoc = gql`
         displayName
       }
     }
-    profile {
+    about {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -1542,18 +1546,6 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     }
   }
 `;
-export const ContextTabFragmentDoc = gql`
-  fragment ContextTab on Context {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    vision
-    impact
-    who
-  }
-`;
 export const MetricsItemFragmentDoc = gql`
   fragment MetricsItem on NVP {
     id
@@ -1572,14 +1564,6 @@ export const ProfileJourneyDataFragmentDoc = gql`
     description
   }
   ${ReferenceDetailsFragmentDoc}
-`;
-export const ContextJourneyDataFragmentDoc = gql`
-  fragment ContextJourneyData on Context {
-    id
-    vision
-    who
-    impact
-  }
 `;
 export const RoleSetMemberUserFragmentDoc = gql`
   fragment RoleSetMemberUser on User {
@@ -1659,12 +1643,15 @@ export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
   fragment JourneyBreadcrumbsSpace on Space {
     id
     level
-    profile {
+    about {
       id
-      url
-      displayName
-      avatar: visual(type: BANNER) {
-        ...VisualUri
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: BANNER) {
+          ...VisualUri
+        }
       }
     }
   }
@@ -1674,12 +1661,15 @@ export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
   fragment JourneyBreadcrumbsSubpace on Space {
     id
     level
-    profile {
+    about {
       id
-      url
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
       }
     }
   }
@@ -1688,16 +1678,20 @@ export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
 export const SpaceCardFragmentDoc = gql`
   fragment SpaceCard on Space {
     id
-    profile {
+    about {
       id
-      url
-      displayName
-      tagline
-      tagset {
-        ...TagsetDetails
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
+      why
+      profile {
+        id
+        url
+        displayName
+        tagline
+        tagset {
+          ...TagsetDetails
+        }
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
     metrics {
@@ -1711,10 +1705,6 @@ export const SpaceCardFragmentDoc = gql`
         myMembershipStatus
       }
     }
-    context {
-      id
-      vision
-    }
     settings {
       privacy {
         mode
@@ -1725,11 +1715,11 @@ export const SpaceCardFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
-export const ContextDetailsFragmentDoc = gql`
-  fragment ContextDetails on Context {
+export const SpaceAboutDetailsFragmentDoc = gql`
+  fragment SpaceAboutDetails on SpaceAbout {
     id
-    vision
-    impact
+    why
+    when
     who
     authorization {
       id
@@ -1739,34 +1729,30 @@ export const ContextDetailsFragmentDoc = gql`
 `;
 export const SpaceInfoFragmentDoc = gql`
   fragment SpaceInfo on Space {
-    profile {
-      id
-      displayName
-      description
-      tagline
-      url
-      tagset {
-        ...TagsetDetails
-      }
-      references {
+    about {
+      ...SpaceAboutDetails
+      profile {
         id
-        name
+        displayName
         description
-        uri
+        tagline
+        url
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          description
+          uri
+        }
+        visuals {
+          ...VisualFull
+        }
+        location {
+          ...fullLocation
+        }
       }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
-      }
-    }
-    context {
-      authorization {
-        id
-        myPrivileges
-      }
-      ...ContextDetails
     }
     settings {
       privacy {
@@ -1774,10 +1760,10 @@ export const SpaceInfoFragmentDoc = gql`
       }
     }
   }
+  ${SpaceAboutDetailsFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${FullLocationFragmentDoc}
-  ${ContextDetailsFragmentDoc}
 `;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
@@ -1823,6 +1809,22 @@ export const SpacePageFragmentDoc = gql`
     id
     level
     nameID
+    about {
+      ...SpaceAboutDetails
+      profile {
+        id
+        url
+        displayName
+        description
+        tagline
+        visuals {
+          ...VisualUri
+        }
+        tagset {
+          ...TagsetDetails
+        }
+      }
+    }
     provider {
       ...ContributorDetails
     }
@@ -1834,29 +1836,6 @@ export const SpacePageFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-    }
-    profile {
-      id
-      url
-      displayName
-      description
-      tagline
-      visuals {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    context {
-      id
-      vision
-      who
-      impact
-      authorization {
-        id
-        myPrivileges
-      }
     }
     collaboration @include(if: $authorizedReadAccess) {
       id
@@ -1881,9 +1860,10 @@ export const SpacePageFragmentDoc = gql`
       }
     }
   }
-  ${ContributorDetailsFragmentDoc}
+  ${SpaceAboutDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${RoleSetMemberUserFragmentDoc}
@@ -1897,23 +1877,23 @@ export const SubspaceCardFragmentDoc = gql`
       name
       value
     }
-    profile {
+    about {
       id
-      url
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
+      why
+      profile {
+        id
+        url
+        tagline
+        displayName
+        description
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+        tagset {
+          ...TagsetDetails
+        }
+        url
       }
-      tagset {
-        ...TagsetDetails
-      }
-      url
-    }
-    context {
-      id
-      vision
     }
     community {
       id
@@ -1982,25 +1962,32 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
   fragment SubspacePendingMembershipInfo on Space {
     id
     level
-    profile {
+    about {
       id
-      displayName
-      tagline
-      description
-      url
-      tagset {
-        ...TagsetDetails
-      }
-      references {
+      authorization {
         id
-        name
-        uri
+        myPrivileges
       }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
+      profile {
+        id
+        displayName
+        tagline
+        description
+        url
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+        }
+        visuals {
+          ...VisualFull
+        }
+        location {
+          ...fullLocation
+        }
       }
     }
     community {
@@ -2017,13 +2004,6 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
       id
       myPrivileges
     }
-    context {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
@@ -2038,18 +2018,18 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
       myPrivileges
     }
-    profile {
+    about {
       id
-      url
+      why
+      profile {
+        id
+        url
+      }
     }
     metrics {
       id
       name
       value
-    }
-    context {
-      id
-      vision
     }
     community @include(if: $authorizedReadAccessCommunity) {
       id
@@ -2091,10 +2071,13 @@ export const AdminSpaceFragmentDoc = gql`
         displayName
       }
     }
-    profile {
+    about {
       id
-      displayName
-      url
+      profile {
+        id
+        displayName
+        url
+      }
     }
     authorization {
       id
@@ -2528,9 +2511,12 @@ export const CalendarEventInfoFragmentDoc = gql`
     }
     subspace @include(if: $includeSubspace) {
       id
-      profile {
+      about {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -2607,12 +2593,15 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
     space {
       id
       level
-      profile {
+      about {
         id
-        displayName
-        url
-        visual(type: CARD) {
-          ...VisualUri
+        profile {
+          id
+          displayName
+          url
+          visual(type: CARD) {
+            ...VisualUri
+          }
         }
       }
     }
@@ -2646,12 +2635,15 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
     space {
       id
       level
-      profile {
+      about {
         id
-        displayName
-        url
-        visual(type: CARD) {
-          ...VisualUri
+        profile {
+          id
+          displayName
+          url
+          visual(type: CARD) {
+            ...VisualUri
+          }
         }
       }
     }
@@ -2706,10 +2698,13 @@ export const PostParentFragmentDoc = gql`
       id
       level
       visibility
-      profile {
+      about {
         id
-        url
-        displayName
+        profile {
+          id
+          url
+          displayName
+        }
       }
       settings {
         privacy {
@@ -2799,10 +2794,13 @@ export const CalloutParentFragmentDoc = gql`
   fragment CalloutParent on SearchResultCallout {
     space {
       id
-      profile {
+      about {
         id
-        displayName
-        url
+        profile {
+          id
+          displayName
+          url
+        }
       }
       level
     }
@@ -2870,10 +2868,13 @@ export const SearchResultSpaceFragmentDoc = gql`
     parentSpace {
       id
       level
-      profile {
+      about {
         id
-        url
-        displayName
+        profile {
+          id
+          url
+          displayName
+        }
       }
       settings {
         privacy {
@@ -2884,21 +2885,21 @@ export const SearchResultSpaceFragmentDoc = gql`
     space {
       id
       level
-      profile {
+      about {
         id
-        url
-        displayName
-        tagset {
-          ...TagsetDetails
+        why
+        profile {
+          id
+          url
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          tagline
+          visuals {
+            ...VisualUri
+          }
         }
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      context {
-        id
-        vision
       }
       community {
         id
@@ -3075,6 +3076,21 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {
     id
     level
+    about {
+      id
+      profile {
+        id
+        url
+        tagline
+        displayName
+        spaceBanner: visual(type: BANNER) {
+          ...VisualUri
+        }
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
     settings {
       privacy {
         mode
@@ -3090,32 +3106,23 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
         ...MyMembershipsRoleSet
       }
     }
-    profile {
-      id
-      url
-      tagline
-      displayName
-      spaceBanner: visual(type: BANNER) {
-        ...VisualUri
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
   }
-  ${MyMembershipsRoleSetFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
 `;
 export const ExploreSpacesFragmentDoc = gql`
   fragment ExploreSpaces on Space {
     id
     type
-    profile {
+    about {
       id
-      url
-      displayName
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
+      profile {
+        id
+        url
+        displayName
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
     settings {
@@ -3138,11 +3145,14 @@ export const NewMembershipsBasicSpaceFragmentDoc = gql`
   fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
     id
     level
-    profile {
+    about {
       id
-      displayName
-      tagline
-      url
+      profile {
+        id
+        displayName
+        tagline
+        url
+      }
     }
   }
 `;
@@ -3188,13 +3198,16 @@ export const SpaceMembershipFragmentDoc = gql`
         ...MyMembershipsRoleSet
       }
     }
-    profile {
+    about {
       id
-      url
-      displayName
-      tagline
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
+      profile {
+        id
+        url
+        displayName
+        tagline
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
   }
@@ -3227,10 +3240,13 @@ export const ShortAccountItemFragmentDoc = gql`
 export const SpaceProfileCommunityDetailsFragmentDoc = gql`
   fragment spaceProfileCommunityDetails on Space {
     id
-    profile {
+    about {
       id
-      displayName
-      url
+      profile {
+        id
+        displayName
+        url
+      }
     }
     community {
       id
@@ -3263,23 +3279,23 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       myPrivileges
     }
     type
-    profile {
+    about {
       id
-      url
-      tagline
-      displayName
-      type
-      tagset {
+      why
+      profile {
         id
-        tags
+        url
+        tagline
+        displayName
+        type
+        tagset {
+          id
+          tags
+        }
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
     }
     visibility
     community {
@@ -3309,27 +3325,27 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
   fragment SpaceExplorerSubspace on Space {
     id
     type
-    profile {
+    about {
       id
-      url
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      type
-      tagset {
+      why
+      profile {
         id
-        tags
+        url
+        tagline
+        displayName
+        description
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+        type
+        tagset {
+          id
+          tags
+        }
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
       }
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
     }
     community {
       id
@@ -4438,11 +4454,14 @@ export const UserPendingMembershipsDocument = gql`
         spacePendingMembershipInfo {
           id
           level
-          profile {
+          about {
             id
-            displayName
-            tagline
-            url
+            profile {
+              id
+              displayName
+              tagline
+              url
+            }
           }
         }
         application {
@@ -5724,12 +5743,15 @@ export const AccountInformationDocument = gql`
             id
             myPrivileges
           }
-          profile {
-            ...AccountItemProfile
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+          about {
+            id
+            profile {
+              ...AccountItemProfile
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
+              tagline
             }
-            tagline
           }
           license {
             id
@@ -5780,9 +5802,12 @@ export const AccountInformationDocument = gql`
           spaceVisibilityFilter
           spaceListFilter {
             id
-            profile {
+            about {
               id
-              displayName
+              profile {
+                id
+                displayName
+              }
             }
           }
           subdomain
@@ -6783,8 +6808,11 @@ export const ActivityLogOnCollaborationDocument = gql`
       space {
         id
         ... on Space {
-          profile {
-            ...RecentContributionsSpaceProfile
+          about {
+            id
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
           }
         }
       }
@@ -10342,10 +10370,13 @@ export const CommunityUserPrivilegesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
-          displayName
+          profile {
+            id
+            url
+            displayName
+          }
         }
         community {
           id
@@ -10367,10 +10398,13 @@ export const CommunityUserPrivilegesDocument = gql`
     parentSpace: lookup @include(if: $includeParentSpace) {
       space(ID: $parentSpaceId) {
         id
-        profile {
+        about {
           id
-          url
-          displayName
+          profile {
+            id
+            url
+            displayName
+          }
         }
         community {
           id
@@ -10451,10 +10485,13 @@ export const SpaceApplicationDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
-          displayName
+          profile {
+            id
+            url
+            displayName
+          }
         }
         community {
           id
@@ -11720,10 +11757,13 @@ export const AccountResourcesInfoDocument = gql`
         id
         spaces {
           id
-          profile {
-            ...AccountResourceProfile
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+          about {
+            id
+            profile {
+              ...AccountResourceProfile
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
             }
           }
         }
@@ -11759,9 +11799,12 @@ export const AccountResourcesInfoDocument = gql`
           spaceVisibilityFilter
           spaceListFilter {
             id
-            profile {
+            about {
               id
-              displayName
+              profile {
+                id
+                displayName
+              }
             }
           }
           subdomain
@@ -12136,8 +12179,11 @@ export const PendingMembershipsSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          ...PendingMembershipsJourneyProfile
+        about {
+          id
+          profile {
+            ...PendingMembershipsJourneyProfile
+          }
         }
         community @include(if: $fetchCommunityGuidelines) {
           id
@@ -12279,20 +12325,20 @@ export const SpaceContributionDetailsDocument = gql`
       space(ID: $spaceId) {
         id
         level
-        profile {
+        about {
           id
-          url
-          displayName
-          tagline
-          visuals {
-            ...VisualUri
+          profile {
+            id
+            url
+            displayName
+            tagline
+            visuals {
+              ...VisualUri
+            }
+            tagset {
+              ...TagsetDetails
+            }
           }
-          tagset {
-            ...TagsetDetails
-          }
-        }
-        context {
-          id
         }
         community {
           id
@@ -13600,18 +13646,21 @@ export const BodyOfKnowledgeProfileDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
+          profile {
             id
-            uri
-          }
-          cardBanner: visual(type: CARD) {
-            id
-            uri
+            displayName
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            cardBanner: visual(type: CARD) {
+              id
+              uri
+            }
           }
         }
       }
@@ -14594,19 +14643,29 @@ export const AboutPageNonMembersDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
-          displayName
-          tagline
-          description
-          tagset {
-            ...TagsetDetails
+          who
+          when
+          why
+          authorization {
+            id
+            myPrivileges
           }
-          visuals {
-            ...VisualFull
+          profile {
+            id
+            url
+            displayName
+            tagline
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            visuals {
+              ...VisualFull
+            }
+            url
           }
-          url
         }
         provider {
           ...ContributorDetails
@@ -14628,9 +14687,6 @@ export const AboutPageNonMembersDocument = gql`
             }
           }
         }
-        context {
-          ...ContextTab
-        }
         collaboration {
           id
           innovationFlow {
@@ -14651,7 +14707,6 @@ export const AboutPageNonMembersDocument = gql`
   ${VisualFullFragmentDoc}
   ${ContributorDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
-  ${ContextTabFragmentDoc}
 `;
 
 /**
@@ -14717,12 +14772,15 @@ export const AboutPageMembersDocument = gql`
             id
           }
         }
-        profile {
+        about {
           id
-          references {
-            ...ReferenceDetails
+          profile {
+            id
+            references {
+              ...ReferenceDetails
+            }
+            url
           }
-          url
         }
         authorization {
           id
@@ -14859,11 +14917,11 @@ export const JourneyDataDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          ...ProfileJourneyData
-        }
-        context {
-          ...ContextJourneyData
+        about {
+          ...SpaceAboutDetails
+          profile {
+            ...ProfileJourneyData
+          }
         }
         community @include(if: $includeCommunity) {
           ...JourneyCommunity
@@ -14877,8 +14935,8 @@ export const JourneyDataDocument = gql`
       }
     }
   }
+  ${SpaceAboutDetailsFragmentDoc}
   ${ProfileJourneyDataFragmentDoc}
-  ${ContextJourneyDataFragmentDoc}
   ${JourneyCommunityFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContributorDetailsFragmentDoc}
@@ -15006,27 +15064,33 @@ export const ChildJourneyPageBannerDocument = gql`
     lookup {
       level0Space: space(ID: $level0Space) {
         id
-        profile {
+        about {
           id
-          banner: visual(type: BANNER) {
+          profile {
             id
-            uri
+            banner: visual(type: BANNER) {
+              id
+              uri
+            }
           }
         }
       }
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
-          tagline
-          avatar: visual(type: AVATAR) {
+          profile {
             id
-            uri
-          }
-          tagset {
-            id
-            tags
+            displayName
+            tagline
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            tagset {
+              id
+              tags
+            }
           }
         }
         community {
@@ -15317,9 +15381,12 @@ export const SpaceCommunityPageDocument = gql`
           id
           myPrivileges
         }
-        profile {
+        about {
           id
-          url
+          profile {
+            id
+            url
+          }
         }
         provider {
           ...ContributorDetails
@@ -15405,10 +15472,13 @@ export const SpaceDocument = gql`
       space(ID: $spaceId) {
         id
         nameID
-        profile {
+        about {
           id
-          displayName
-          url
+          profile {
+            id
+            displayName
+            url
+          }
         }
         authorization {
           id
@@ -15734,9 +15804,12 @@ export const SpaceUrlDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
+          profile {
+            id
+            url
+          }
         }
       }
     }
@@ -15842,13 +15915,16 @@ export const SpaceDashboardReferencesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          references {
+          profile {
             id
-            name
-            uri
-            description
+            references {
+              id
+              name
+              uri
+              description
+            }
           }
         }
       }
@@ -15979,9 +16055,12 @@ export const CreateSpaceDocument = gql`
   mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
     createSpace(spaceData: $spaceData) {
       id
-      profile {
+      about {
         id
-        url
+        profile {
+          id
+          url
+        }
       }
     }
   }
@@ -16400,29 +16479,29 @@ export const SubspaceProfileInfoDocument = gql`
     lookup {
       space(ID: $subspaceId) {
         id
-        profile {
-          id
-          displayName
-          description
-          tagline
-          tagset {
-            ...TagsetDetails
-          }
-          visuals {
-            ...VisualFull
-          }
-          location {
-            ...fullLocation
-          }
-          references {
+        about {
+          ...SpaceAboutDetails
+          profile {
             id
-            name
+            displayName
             description
-            uri
+            tagline
+            tagset {
+              ...TagsetDetails
+            }
+            visuals {
+              ...VisualFull
+            }
+            location {
+              ...fullLocation
+            }
+            references {
+              id
+              name
+              description
+              uri
+            }
           }
-        }
-        context {
-          ...ContextDetails
         }
         collaboration {
           id
@@ -16436,10 +16515,10 @@ export const SubspaceProfileInfoDocument = gql`
       }
     }
   }
+  ${SpaceAboutDetailsFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${FullLocationFragmentDoc}
-  ${ContextDetailsFragmentDoc}
 `;
 
 /**
@@ -16501,12 +16580,15 @@ export const SubspacesInSpaceDocument = gql`
         id
         subspaces {
           id
-          profile {
+          about {
             id
-            displayName
-            url
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+            profile {
+              id
+              displayName
+              url
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
             }
           }
           level
@@ -16683,9 +16765,12 @@ export const SpaceAccountDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
+          profile {
+            id
+            url
+          }
         }
         activeSubscription {
           name
@@ -16864,9 +16949,12 @@ export const SpaceSubspacesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
         account {
           id
@@ -16891,13 +16979,16 @@ export const SpaceSubspacesDocument = gql`
         }
         subspaces {
           id
-          profile {
+          about {
             id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
             }
           }
         }
@@ -17150,12 +17241,15 @@ export const AdminSpaceSubspacesPageDocument = gql`
         subspaces {
           id
           level
-          profile {
+          about {
             id
-            displayName
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
+            profile {
+              id
+              displayName
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
             }
           }
         }
@@ -17273,20 +17367,26 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
-          displayName
-          avatar: visual(type: CARD) {
+          profile {
             id
-            uri
-            alternativeText
+            url
+            displayName
+            avatar: visual(type: CARD) {
+              id
+              uri
+              alternativeText
+            }
           }
         }
         subspaces {
           id
-          profile {
-            ...SpaceDashboardNavigationProfile
+          about {
+            id
+            profile {
+              ...SpaceDashboardNavigationProfile
+            }
           }
           authorization {
             id
@@ -17377,8 +17477,11 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
               id
               myPrivileges
             }
-            profile {
-              ...SpaceDashboardNavigationProfile
+            about {
+              id
+              profile {
+                ...SpaceDashboardNavigationProfile
+              }
             }
             community {
               id
@@ -18168,9 +18271,12 @@ export const SpaceStorageAdminPageDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
         storageAggregator {
           ...StorageAggregator
@@ -18670,13 +18776,16 @@ export const CreateSubspaceDocument = gql`
   mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
     createSubspace(subspaceData: $input) {
       ...SubspaceCard
-      visuals: profile @include(if: $includeVisuals) {
+      about {
         id
-        cardBanner: visual(type: CARD) {
+        visuals: profile @include(if: $includeVisuals) {
           id
-        }
-        avatar: visual(type: AVATAR) {
-          id
+          cardBanner: visual(type: CARD) {
+            id
+          }
+          avatar: visual(type: AVATAR) {
+            id
+          }
         }
       }
     }
@@ -18730,8 +18839,11 @@ export const JourneyStorageConfigDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          ...ProfileStorageConfig
+        about {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
         }
       }
     }
@@ -22174,12 +22286,15 @@ export const SearchScopeDetailsSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
+          profile {
             id
-            uri
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
           }
         }
         visibility
@@ -22772,8 +22887,11 @@ export const LatestContributionsDocument = gql`
         space {
           id
           ... on Space {
-            profile {
-              ...RecentContributionsSpaceProfile
+            about {
+              id
+              profile {
+                ...RecentContributionsSpaceProfile
+              }
             }
           }
         }
@@ -22913,8 +23031,11 @@ export const LatestContributionsGroupedDocument = gql`
       space {
         id
         ... on Space {
-          profile {
-            ...RecentContributionsSpaceProfile
+          about {
+            id
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
           }
         }
       }
@@ -23032,9 +23153,12 @@ export const LatestContributionsSpacesFlatDocument = gql`
         id
         space {
           id
-          profile {
+          about {
             id
-            displayName
+            profile {
+              id
+              displayName
+            }
           }
         }
       }
@@ -23177,10 +23301,13 @@ export const MyResourcesDocument = gql`
         spaces {
           id
           level
-          profile {
-            ...ShortAccountItem
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+          about {
+            id
+            profile {
+              ...ShortAccountItem
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
             }
           }
         }
@@ -23421,8 +23548,11 @@ export const RecentSpacesDocument = gql`
               mode
             }
           }
-          profile {
-            ...RecentSpaceProfile
+          about {
+            id
+            profile {
+              ...RecentSpaceProfile
+            }
           }
           level
           __typename
@@ -23814,10 +23944,13 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          url
-          displayName
+          profile {
+            id
+            url
+            displayName
+          }
         }
       }
     }

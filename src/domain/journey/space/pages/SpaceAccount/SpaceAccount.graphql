@@ -2,9 +2,12 @@ query SpaceAccount($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        url
+        profile {
+          id
+          url
+        }
       }
       activeSubscription {
         name

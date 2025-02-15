@@ -5,10 +5,13 @@ query MyResources($accountId: UUID!) {
       spaces {
         id
         level
-        profile {
-          ...ShortAccountItem
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
+        about {
+          id
+          profile {
+            ...ShortAccountItem
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
         }
       }

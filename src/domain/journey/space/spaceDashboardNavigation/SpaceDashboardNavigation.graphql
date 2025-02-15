@@ -2,20 +2,26 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        url
-        displayName
-        avatar: visual(type: CARD) {
+        profile {
           id
-          uri
-          alternativeText
+          url
+          displayName
+          avatar: visual(type: CARD) {
+            id
+            uri
+            alternativeText
+          }
         }
       }
       subspaces {
         id
-        profile {
-          ...SpaceDashboardNavigationProfile
+        about {
+          id
+          profile {
+            ...SpaceDashboardNavigationProfile
+          }
         }
         authorization {
           id
@@ -44,8 +50,11 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID!, $challengeIds: [UUI
             id
             myPrivileges
           }
-          profile {
-            ...SpaceDashboardNavigationProfile
+          about {
+            id
+            profile {
+              ...SpaceDashboardNavigationProfile
+            }
           }
           community {
             id

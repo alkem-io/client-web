@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 
 import SaveButton from '@/core/ui/actions/SaveButton';
-import { ContextForm, ContextFormValues } from '@/domain/context/ContextForm';
+import { ContextForm, ContextFormValues } from '@/domain/spaceAbout/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   refetchSubspaceProfileInfoQuery,

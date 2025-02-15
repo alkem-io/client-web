@@ -22,11 +22,14 @@ fragment InvitationData on CommunityInvitationResult {
   spacePendingMembershipInfo {
     id
     level
-    profile {
+    about {
       id
-      displayName
-      tagline
-      url
+      profile {
+        id
+        displayName
+        tagline
+        url
+      }
     }
   }
   invitation {
