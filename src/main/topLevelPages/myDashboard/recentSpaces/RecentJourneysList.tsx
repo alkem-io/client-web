@@ -33,9 +33,9 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
           isPrivate={result.space.settings.privacy?.mode === SpacePrivacyMode.Private}
           journey={{
             profile: {
-              displayName: result.space.profile.displayName,
-              url: result.space.profile.url,
-              cardBanner: result.space.profile.cardBanner,
+              displayName: result.space.about.profile.displayName,
+              url: result.space.about.profile.url,
+              cardBanner: result.space.about.profile.cardBanner,
             },
             level: result.space.level,
           }}

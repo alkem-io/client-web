@@ -29,7 +29,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { loading: isLoadingChallenge, communityId, roleSetId, profile } = useSubSpace();
+  const { loading: isLoadingChallenge, communityId, roleSetId, about: profile } = useSubSpace();
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 

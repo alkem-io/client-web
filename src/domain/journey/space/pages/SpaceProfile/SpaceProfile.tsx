@@ -50,17 +50,17 @@ export const SpaceProfile = () => {
     });
   };
   const space = spaceData?.lookup.space;
-  const visuals = space?.profile.visuals ?? [];
+  const visuals = space?.about.profile.visuals ?? [];
 
   return (
     <PageContentColumn columns={12}>
       <SpaceEditForm
         edit
-        name={space?.profile.displayName}
+        name={space?.about.profile.displayName}
         nameID={spaceNameId}
-        tagset={space?.profile.tagset}
+        tagset={space?.about.profile.tagset}
         context={space?.context}
-        profile={space?.profile}
+        profile={space?.about.profile}
         onSubmit={onSubmit}
         loading={loading}
       />

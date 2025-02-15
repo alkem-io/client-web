@@ -55,9 +55,12 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  profile: {
-    displayName: string;
-    url: string;
+  about: {
+    id: string;
+    profile: {
+      displayName: string;
+      url: string;
+    };
   };
   community: {
     roleSet: {
@@ -166,8 +169,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       variables: {
         spaceData: {
           accountID: myAccountId!,
-          profileData: {
-            displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+          about: {
+            profileData: {
+              displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+            },
           },
           collaborationData: {
             calloutsSetData: {},
@@ -325,7 +330,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             spaceId,
           },
         });
-        const spaceUrl = data?.lookup.space?.profile.url;
+        const spaceUrl = data?.lookup.space?.about.profile.url;
 
         if (spaceUrl) {
           navigate(spaceUrl);

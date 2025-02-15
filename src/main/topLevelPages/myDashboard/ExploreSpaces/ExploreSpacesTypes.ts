@@ -42,11 +42,14 @@ type WithParent<ParentInfo extends {}> = {
 };
 
 interface Space extends Identifiable {
-  profile: {
-    url: string;
-    displayName: string;
-    avatar?: Visual;
-    cardBanner?: Visual;
+  about: {
+    id: string;
+    profile: {
+      url: string;
+      displayName: string;
+      avatar?: Visual;
+      cardBanner?: Visual;
+    };
   };
   level?: SpaceLevel;
 }

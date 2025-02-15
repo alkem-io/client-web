@@ -135,10 +135,10 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const profile = useMemo(() => {
     return {
-      displayName: space?.profile.displayName ?? '',
-      url: space?.profile.url ?? '',
+      displayName: space?.about.profile.displayName ?? '',
+      url: space?.about.profile.url ?? '',
     };
-  }, [space?.profile]);
+  }, [space?.about.profile]);
 
   const loading = loadingSpaceQuery || communityLoading;
   return (

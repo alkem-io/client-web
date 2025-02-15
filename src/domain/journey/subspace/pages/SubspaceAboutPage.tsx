@@ -17,7 +17,7 @@ import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuid
 
 const SubspaceAboutPage = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { communityId, profile } = useSubSpace();
+  const { communityId, about: profile } = useSubSpace();
 
   const backToParentPage = useBackToStaticPath(profile.url);
 

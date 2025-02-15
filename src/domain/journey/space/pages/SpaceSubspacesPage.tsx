@@ -50,7 +50,7 @@ const SpaceSubspacesPage = () => {
         return;
       }
 
-      navigate(result.profile.url);
+      navigate(result.about.profile.url);
     },
     [navigate, createSubspace, spaceId]
   );
@@ -76,9 +76,9 @@ const SpaceSubspacesPage = () => {
               <SubspaceCard
                 displayName={item.profile.displayName}
                 banner={item.profile.cardBanner}
-                tags={item.profile.tagset?.tags!}
-                tagline={item.profile.tagline!}
-                vision={item.context?.vision!}
+                tags={item.about.profile.tagset?.tags!}
+                tagline={item.about.profile.tagline!}
+                vision={item.about.why!}
                 journeyUri={item.profile.url}
                 locked={item.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={visibility}

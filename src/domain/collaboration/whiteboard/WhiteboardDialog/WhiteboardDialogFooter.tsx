@@ -90,7 +90,7 @@ const WhiteboardDialogFooter = ({
       case SpaceLevel.L0:
         return spaceContext.profile;
       case SpaceLevel.L1:
-        return subspaceContext.profile;
+        return subspaceContext.about;
     }
   };
 

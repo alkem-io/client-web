@@ -75,7 +75,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       pageBanner={<ChildJourneyPageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
-        <RouterLink to={entityAttrs.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
+        <RouterLink to={entityAttrs.about.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
           <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
             {t('navigation.admin.settingsMenu.quit')}
           </BackButton>

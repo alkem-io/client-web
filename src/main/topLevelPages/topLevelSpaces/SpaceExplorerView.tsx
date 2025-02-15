@@ -236,11 +236,11 @@ export const SpaceExplorerView = ({
       {hasNoMemberSpaces && (
         <CaptionSmall
           component={RouterLink}
-          to={(authenticated ? welcomeSpace?.profile.url : buildLoginUrl(welcomeSpace?.profile.url)) ?? ''}
+          to={(authenticated ? welcomeSpace?.about.profile.url : buildLoginUrl(welcomeSpace?.about.profile.url)) ?? ''}
           marginX="auto"
           paddingY={gutters()}
         >
-          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.profile.displayName })}
+          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.about.profile.displayName })}
         </CaptionSmall>
       )}
       {searchTerms.length !== 0 && spacesLength === 0 && loadingSearchResults === false && (

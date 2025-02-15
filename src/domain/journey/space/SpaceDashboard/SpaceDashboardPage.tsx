@@ -37,7 +37,7 @@ const SpaceDashboardPage = ({
               spaceId={spaceId}
               collaborationId={collaborationId}
               calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
-              vision={entities.space?.context?.vision}
+              vision={entities.space?.about.why}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
               loading={state.loading}
@@ -51,13 +51,13 @@ const SpaceDashboardPage = ({
               callouts={callouts}
               level={entities.space?.level}
               myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
-              shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
+              shareUpdatesUrl={buildUpdatesUrl(entities.space?.about.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
               communityId={entities.space?.community?.id}
-              shareUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
+              shareUrl={buildUpdatesUrl(entities.space?.about.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog
@@ -71,26 +71,26 @@ const SpaceDashboardPage = ({
                 onClose={backToDashboard}
                 journeyId={spaceId}
                 parentSpaceId={undefined}
-                parentPath={entities.space?.profile.url ?? ''}
+                parentPath={entities.space?.about.profile.url ?? ''}
                 calendarEventId={calendarEventId}
               />
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}
               spaceLevel={SpaceLevel.L0}
-              displayName={entities.space?.profile.displayName}
-              tagline={entities.space?.profile.tagline}
+              displayName={entities.space?.about.profile.displayName}
+              tagline={entities.space?.about.profile.tagline}
               references={entities.references}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               metrics={entities.space?.metrics}
-              description={entities.space?.context?.vision}
-              background={entities.space?.profile.description}
-              who={entities.space?.context?.who}
-              impact={entities.space?.context?.impact}
+              description={entities.space?.about?.why}
+              background={entities.space?.about.profile.description}
+              who={entities.space?.about.who}
+              impact={entities.space?.about.when}
               guidelines={
                 <CommunityGuidelinesBlock
                   communityId={entities.space?.community?.id}
-                  journeyUrl={entities.space?.profile.url}
+                  journeyUrl={entities.space?.about.profile.url}
                 />
               }
               loading={state.loading}
@@ -102,7 +102,7 @@ const SpaceDashboardPage = ({
                   <Close />
                 </IconButton>
               }
-              shareUrl={buildAboutUrl(entities.space?.profile.url)}
+              shareUrl={buildAboutUrl(entities.space?.about.profile.url)}
             />
           </>
         )}

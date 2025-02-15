@@ -20,7 +20,7 @@ const PreJoinParentDialog = ({ open, onClose, onJoin }: PreJoinParentDialogProps
   const { spaceId, spaceLevel } = useUrlResolver();
 
   const { profile: spaceProfile } = useSpace();
-  const { profile: challengeProfile } = useSubSpace();
+  const { about: challengeProfile } = useSubSpace();
 
   const parentCommunityName = spaceId ? challengeProfile.displayName : spaceProfile.displayName;
   const buttonText = t(
