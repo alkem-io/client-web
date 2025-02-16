@@ -1440,6 +1440,7 @@ export const SpaceAboutLightUrlFragmentDoc = gql`
   fragment SpaceAboutLightUrl on SpaceAbout {
     id
     profile {
+      id
       displayName
       url
     }
@@ -1503,6 +1504,7 @@ export const SpaceAboutLightFragmentDoc = gql`
   fragment SpaceAboutLight on SpaceAbout {
     id
     profile {
+      id
       displayName
     }
   }
@@ -1553,13 +1555,6 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
         alternativeText
       }
     }
-  }
-`;
-export const MetricsItemFragmentDoc = gql`
-  fragment MetricsItem on NVP {
-    id
-    name
-    value
   }
 `;
 export const ProfileJourneyDataFragmentDoc = gql`
@@ -1878,6 +1873,41 @@ export const SpacePageFragmentDoc = gql`
   ${RoleSetMemberUserFragmentDoc}
   ${RoleSetMemberOrganizationFragmentDoc}
 `;
+export const MetricsItemFragmentDoc = gql`
+  fragment MetricsItem on NVP {
+    id
+    name
+    value
+  }
+`;
+export const SpaceAboutDetailsFragmentDoc = gql`
+  fragment SpaceAboutDetails on SpaceAbout {
+    id
+    who
+    when
+    why
+    authorization {
+      id
+      myPrivileges
+    }
+    profile {
+      id
+      url
+      displayName
+      tagline
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      visuals {
+        ...VisualFull
+      }
+      url
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
@@ -1953,6 +1983,7 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
     id
     url
     displayName
+    description
     avatar: visual(type: AVATAR) {
       id
       uri
@@ -14612,209 +14643,6 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
   return { query: InnovationHubDocument, variables: variables };
 }
 
-export const AboutPageNonMembersDocument = gql`
-  query AboutPageNonMembers($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        about {
-          id
-          who
-          when
-          why
-          authorization {
-            id
-            myPrivileges
-          }
-          profile {
-            id
-            url
-            displayName
-            tagline
-            description
-            tagset {
-              ...TagsetDetails
-            }
-            visuals {
-              ...VisualFull
-            }
-            url
-          }
-        }
-        provider {
-          ...ContributorDetails
-        }
-        metrics {
-          ...MetricsItem
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          roleSet {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
-          }
-        }
-        collaboration {
-          id
-          innovationFlow {
-            id
-            currentState {
-              displayName
-            }
-            states {
-              displayName
-              description
-            }
-          }
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${ContributorDetailsFragmentDoc}
-  ${MetricsItemFragmentDoc}
-`;
-
-/**
- * __useAboutPageNonMembersQuery__
- *
- * To run a query within a React component, call `useAboutPageNonMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAboutPageNonMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAboutPageNonMembersQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useAboutPageNonMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AboutPageNonMembersQuery,
-    SchemaTypes.AboutPageNonMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
-    AboutPageNonMembersDocument,
-    options
-  );
-}
-
-export function useAboutPageNonMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AboutPageNonMembersQuery,
-    SchemaTypes.AboutPageNonMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
-    AboutPageNonMembersDocument,
-    options
-  );
-}
-
-export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
-export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
-export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AboutPageNonMembersQuery,
-  SchemaTypes.AboutPageNonMembersQueryVariables
->;
-export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPageNonMembersQueryVariables) {
-  return { query: AboutPageNonMembersDocument, variables: variables };
-}
-
-export const AboutPageMembersDocument = gql`
-  query AboutPageMembers($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-          roleSet {
-            id
-          }
-        }
-        about {
-          id
-          profile {
-            id
-            references {
-              ...ReferenceDetails
-            }
-            url
-          }
-        }
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-  ${ReferenceDetailsFragmentDoc}
-`;
-
-/**
- * __useAboutPageMembersQuery__
- *
- * To run a query within a React component, call `useAboutPageMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAboutPageMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAboutPageMembersQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useAboutPageMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
-    AboutPageMembersDocument,
-    options
-  );
-}
-
-export function useAboutPageMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AboutPageMembersQuery,
-    SchemaTypes.AboutPageMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
-    AboutPageMembersDocument,
-    options
-  );
-}
-
-export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
-export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
-export type AboutPageMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AboutPageMembersQuery,
-  SchemaTypes.AboutPageMembersQueryVariables
->;
-export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMembersQueryVariables) {
-  return { query: AboutPageMembersDocument, variables: variables };
-}
-
 export const JourneyCommunityPrivilegesDocument = gql`
   query JourneyCommunityPrivileges($spaceId: UUID!) {
     lookup {
@@ -15956,6 +15784,209 @@ export type SpaceDashboardReferencesQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceDashboardReferencesQuery(variables: SchemaTypes.SpaceDashboardReferencesQueryVariables) {
   return { query: SpaceDashboardReferencesDocument, variables: variables };
+}
+
+export const AboutPageNonMembersDocument = gql`
+  query AboutPageNonMembers($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        about {
+          id
+          who
+          when
+          why
+          authorization {
+            id
+            myPrivileges
+          }
+          profile {
+            id
+            url
+            displayName
+            tagline
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            visuals {
+              ...VisualFull
+            }
+            url
+          }
+        }
+        provider {
+          ...ContributorDetails
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          roleSet {
+            id
+            authorization {
+              id
+              myPrivileges
+            }
+          }
+        }
+        collaboration {
+          id
+          innovationFlow {
+            id
+            currentState {
+              displayName
+            }
+            states {
+              displayName
+              description
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
+  ${MetricsItemFragmentDoc}
+`;
+
+/**
+ * __useAboutPageNonMembersQuery__
+ *
+ * To run a query within a React component, call `useAboutPageNonMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAboutPageNonMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAboutPageNonMembersQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useAboutPageNonMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AboutPageNonMembersQuery,
+    SchemaTypes.AboutPageNonMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
+    AboutPageNonMembersDocument,
+    options
+  );
+}
+
+export function useAboutPageNonMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AboutPageNonMembersQuery,
+    SchemaTypes.AboutPageNonMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
+    AboutPageNonMembersDocument,
+    options
+  );
+}
+
+export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
+export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
+export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AboutPageNonMembersQuery,
+  SchemaTypes.AboutPageNonMembersQueryVariables
+>;
+export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPageNonMembersQueryVariables) {
+  return { query: AboutPageNonMembersDocument, variables: variables };
+}
+
+export const AboutPageMembersDocument = gql`
+  query AboutPageMembers($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        community {
+          id
+          roleSet {
+            id
+          }
+        }
+        about {
+          id
+          profile {
+            id
+            references {
+              ...ReferenceDetails
+            }
+            url
+          }
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+  ${ReferenceDetailsFragmentDoc}
+`;
+
+/**
+ * __useAboutPageMembersQuery__
+ *
+ * To run a query within a React component, call `useAboutPageMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAboutPageMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAboutPageMembersQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useAboutPageMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
+    AboutPageMembersDocument,
+    options
+  );
+}
+
+export function useAboutPageMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AboutPageMembersQuery,
+    SchemaTypes.AboutPageMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
+    AboutPageMembersDocument,
+    options
+  );
+}
+
+export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
+export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
+export type AboutPageMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AboutPageMembersQuery,
+  SchemaTypes.AboutPageMembersQueryVariables
+>;
+export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMembersQueryVariables) {
+  return { query: AboutPageMembersDocument, variables: variables };
 }
 
 export const SpaceSubspaceCardsDocument = gql`
@@ -17333,8 +17364,8 @@ export function refetchAdminSpaceSubspacesPageQuery(variables: SchemaTypes.Admin
   return { query: AdminSpaceSubspacesPageDocument, variables: variables };
 }
 
-export const SpaceDashboardNavigationChallengesDocument = gql`
-  query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
+export const SpaceDashboardNavigationSubspacesDocument = gql`
+  query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -17344,6 +17375,7 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
             id
             url
             displayName
+            description
             avatar: visual(type: CARD) {
               id
               uri
@@ -17378,61 +17410,61 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
 `;
 
 /**
- * __useSpaceDashboardNavigationChallengesQuery__
+ * __useSpaceDashboardNavigationSubspacesQuery__
  *
- * To run a query within a React component, call `useSpaceDashboardNavigationChallengesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceDashboardNavigationChallengesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceDashboardNavigationSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceDashboardNavigationSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceDashboardNavigationChallengesQuery({
+ * const { data, loading, error } = useSpaceDashboardNavigationSubspacesQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSpaceDashboardNavigationChallengesQuery(
+export function useSpaceDashboardNavigationSubspacesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
-  >(SpaceDashboardNavigationChallengesDocument, options);
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
+  >(SpaceDashboardNavigationSubspacesDocument, options);
 }
 
-export function useSpaceDashboardNavigationChallengesLazyQuery(
+export function useSpaceDashboardNavigationSubspacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
-  >(SpaceDashboardNavigationChallengesDocument, options);
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
+  >(SpaceDashboardNavigationSubspacesDocument, options);
 }
 
-export type SpaceDashboardNavigationChallengesQueryHookResult = ReturnType<
-  typeof useSpaceDashboardNavigationChallengesQuery
+export type SpaceDashboardNavigationSubspacesQueryHookResult = ReturnType<
+  typeof useSpaceDashboardNavigationSubspacesQuery
 >;
-export type SpaceDashboardNavigationChallengesLazyQueryHookResult = ReturnType<
-  typeof useSpaceDashboardNavigationChallengesLazyQuery
+export type SpaceDashboardNavigationSubspacesLazyQueryHookResult = ReturnType<
+  typeof useSpaceDashboardNavigationSubspacesLazyQuery
 >;
-export type SpaceDashboardNavigationChallengesQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-  SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+export type SpaceDashboardNavigationSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+  SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
 >;
-export function refetchSpaceDashboardNavigationChallengesQuery(
-  variables: SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+export function refetchSpaceDashboardNavigationSubspacesQuery(
+  variables: SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
 ) {
-  return { query: SpaceDashboardNavigationChallengesDocument, variables: variables };
+  return { query: SpaceDashboardNavigationSubspacesDocument, variables: variables };
 }
 
 export const SpaceDashboardNavigationOpportunitiesDocument = gql`
@@ -18749,19 +18781,27 @@ export const CreateSubspaceDocument = gql`
       ...SubspaceCard
       about {
         id
-        visuals: profile @include(if: $includeVisuals) {
+        profile @include(if: $includeVisuals) {
           id
           cardBanner: visual(type: CARD) {
             id
+            uri
+            name
           }
           avatar: visual(type: AVATAR) {
             id
+            uri
+            name
+          }
+          tagset {
+            ...TagsetDetails
           }
         }
       }
     }
   }
   ${SubspaceCardFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export type CreateSubspaceMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateSubspaceMutation,

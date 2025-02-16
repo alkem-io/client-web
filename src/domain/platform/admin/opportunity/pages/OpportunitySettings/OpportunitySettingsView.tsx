@@ -8,7 +8,7 @@ import { Caption } from '@/core/ui/typography';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   refetchAdminSpaceSubspacesPageQuery,
-  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpacePrivilegesQuery,
@@ -40,7 +40,7 @@ const OpportunitySettingsView = () => {
       refetchAdminSpaceSubspacesPageQuery({
         spaceId,
       }),
-      refetchSpaceDashboardNavigationChallengesQuery({
+      refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
       'SpaceDashboardNavigationOpportunities',

@@ -1215,6 +1215,7 @@ export type CreateProfileDataKeySpecifier = (
   | 'location'
   | 'referencesData'
   | 'tagline'
+  | 'tags'
   | 'tagsets'
   | 'visuals'
   | CreateProfileDataKeySpecifier
@@ -1225,6 +1226,7 @@ export type CreateProfileDataFieldPolicy = {
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   referencesData?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
   visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };

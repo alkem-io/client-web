@@ -48,7 +48,7 @@ export interface SubspacePageLayoutProps {
   spaceReadAccess: SpaceReadAccess;
   spaceLevel: SpaceLevel | undefined;
   journeyPath: JourneyPath | undefined;
-  journeyUrl?: string | undefined; // TODO make required
+  spaceUrl?: string | undefined; // TODO make required
   loading?: boolean;
   unauthorizedDialogDisabled?: boolean;
   welcome?: ReactNode;
@@ -102,7 +102,7 @@ const SubspacePageLayout = ({
   spaceReadAccess,
   journeyPath,
   spaceLevel,
-  journeyUrl,
+  spaceUrl: journeyUrl,
   loading = false,
   unauthorizedDialogDisabled = false,
   welcome,
@@ -273,7 +273,7 @@ const SubspacePageLayout = ({
                 )}
               </TopLevelLayout>
               <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
-                {({ vision, ...props }) => (
+                {({ why: vision, ...props }) => (
                   <JourneyUnauthorizedDialog
                     journeyId={journeyId}
                     parentSpaceId={parentSpaceId}

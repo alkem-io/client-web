@@ -11,7 +11,7 @@ import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
-import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { SpaceEditFormValuesType } from '../spaceEditForm/SpaceEditForm';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -111,7 +111,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
+    tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetsSegmentSchema,
   });
 
@@ -138,16 +138,18 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         spaceData: {
           accountID: accountId,
           nameID: values.nameID,
-          profileData: {
-            displayName: values.name!, // ensured by yup validation
-            tagline: values.tagline!,
+          about: {
+            profileData: {
+              displayName: values.name!, // ensured by yup validation
+              tagline: values.tagline!,
+              tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
+            },
           },
           collaborationData: {
             calloutsSetData: {},
             addCallouts: !addTutorialCallouts,
             addTutorialCallouts,
           },
-          tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
           licensePlanID: planId,
         },
       },
@@ -168,7 +170,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
       });
       notify(t('pages.admin.space.notifications.space-created'), 'success');
 
-      const spaceUrl = newSpace?.createSpace.profile.url;
+      const spaceUrl = newSpace?.createSpace.about.profile.url;
       if (spaceUrl) {
         navigate(spaceUrl);
         return;

@@ -14,10 +14,13 @@ export interface UserAccountProps {
         id: string;
       };
     };
-    profile: {
+    about: {
       id: string;
-      displayName: string;
-      url: string;
+      profile: {
+        id: string;
+        displayName: string;
+        url: string;
+      };
     };
     license: {
       id: string;

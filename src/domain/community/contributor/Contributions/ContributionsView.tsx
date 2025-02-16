@@ -26,10 +26,12 @@ export const ContributionsView = ({ contributions, title }: ContributionViewProp
               return (
                 <JourneyTile
                   journey={{
-                    profile: {
-                      displayName: details.displayName,
-                      url: details.url,
-                      cardBanner: details.banner,
+                    about: {
+                      profile: {
+                        displayName: details.displayName,
+                        url: details.url,
+                        cardBanner: details.banner,
+                      },
                     },
                     level: details.level,
                   }}

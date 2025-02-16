@@ -2,9 +2,9 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Profile, Reference, SpaceAbout, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
-import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
@@ -23,8 +23,8 @@ import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { Caption } from '@/core/ui/typography';
 
 interface SpaceEditFormProps {
-  context?: Omit<Context, 'anonymousReadAccess'>;
-  profile?: Omit<Profile, 'storageBucket' | 'url'>;
+  about?: Omit<SpaceAbout>;
+  profile?: Omit<Profile, 'storageBucket' | 'url'>; // TODO
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -72,7 +72,7 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
+    tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
   });

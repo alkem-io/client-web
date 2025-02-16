@@ -39,23 +39,27 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceLevel: SpaceLevel | undefined;
-  displayName: ReactNode;
-  tagline: ReactNode;
-  references: Reference[] | undefined;
+  about: {
+    why: string | undefined;
+    who: string | undefined;
+    when: string | undefined;
+    profile: {
+      displayName: ReactNode;
+      tagline: ReactNode;
+      description: string | undefined;
+      references: Reference[] | undefined;
+      url?: string;
+    };
+  };
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
-  description: string | undefined;
-  background: string | undefined;
-  who: string | undefined;
-  impact: string | undefined;
   guidelines?: ReactNode;
   loading?: boolean;
   leftColumnChildrenTop?: ReactNode;
   leftColumnChildrenBottom?: ReactNode;
-  shareUrl?: string;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
@@ -86,9 +90,7 @@ const gradient = (theme: Theme) =>
 
 const JourneyAboutDialog = ({
   open,
-  displayName,
-  tagline,
-  references,
+  about,
   ribbon,
   spaceLevel = SpaceLevel.L0,
   leadUsers,
@@ -96,17 +98,12 @@ const JourneyAboutDialog = ({
   provider: host,
   sendMessageToCommunityLeads,
   metrics,
-  description,
-  background,
-  who,
-  impact,
   guidelines,
   loading = false,
   startButton,
   endButton,
   leftColumnChildrenTop,
   leftColumnChildrenBottom,
-  shareUrl,
   virtualContributors,
   hasReadPrivilege,
   hasInvitePrivilege,
@@ -151,6 +148,7 @@ const JourneyAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+  const aboutProfile = about.profile;
 
   return (
     <DialogWithGrid
@@ -178,40 +176,40 @@ const JourneyAboutDialog = ({
           </DialogHeaderItem>
           <DialogHeaderItem order={isMobile ? 1 : 0}>
             {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
-            <PageTitle paddingY={gutters(0.5)}>{displayName}</PageTitle>
+            <PageTitle paddingY={gutters(0.5)}>{aboutProfile.displayName}</PageTitle>
           </DialogHeaderItem>
           <DialogHeaderItem minWidth="30%" align="end">
-            {shareUrl && <ShareButton url={shareUrl} entityTypeName="about" />}
+            {aboutProfile.url && <ShareButton url={aboutProfile.url} entityTypeName="about" />}
             {endButton}
           </DialogHeaderItem>
         </Box>
-        <Tagline textAlign="center">{tagline}</Tagline>
+        <Tagline textAlign="center">{about}</Tagline>
       </Box>
       {ribbon}
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters flexWrap="wrap" flexDirection={isMobile ? 'row' : 'row-reverse'}>
           <PageContentColumn columns={8}>
-            {description && (
+            {aboutProfile.description && (
               <PageContentBlock accent>
-                <WrapperMarkdown>{description}</WrapperMarkdown>
+                <WrapperMarkdown>{aboutProfile.description}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {background && (
+            {about.why && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t(`context.${spaceLevel}.background.title` as const)} />
-                <WrapperMarkdown>{background}</WrapperMarkdown>
+                <WrapperMarkdown>{about.why}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {impact && (
+            {about.when && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t(`context.${spaceLevel}.impact.title` as const)} />
-                <WrapperMarkdown>{impact}</WrapperMarkdown>
+                <WrapperMarkdown>{about.when}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {who && (
+            {about.who && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />
-                <WrapperMarkdown>{who}</WrapperMarkdown>
+                <WrapperMarkdown>{about.who}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {guidelines}
@@ -229,7 +227,7 @@ const JourneyAboutDialog = ({
               </PageContentBlock>
               <PageContentBlock>
                 <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-                <References references={references} />
+                <References references={aboutProfile.references} />
               </PageContentBlock>
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding order={isMobile ? 1 : 0}>

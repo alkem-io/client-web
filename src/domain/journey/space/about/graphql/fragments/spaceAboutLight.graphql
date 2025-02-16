@@ -1,6 +1,7 @@
 fragment SpaceAboutLight on SpaceAbout {
   id
   profile {
+    id
     displayName
   }
 }

@@ -2,13 +2,12 @@ import { PropsWithChildren, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import {
   AuthorizationPrivilege,
-  ContextTabFragment,
   MetricsItemFragment,
-  Profile,
   ReferenceDetailsFragment,
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
+  SpaceAboutContextDetailsFragment,
   Tagset,
 } from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
@@ -28,8 +27,7 @@ interface AboutPagePermissions {
 }
 
 export interface AboutPageContainerEntities {
-  context?: ContextTabFragment;
-  profile: Omit<Profile, 'storageBucket'>;
+  about?: SpaceAboutContextDetailsFragment;
   tagset?: Tagset;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
@@ -70,8 +68,10 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     },
     skip: !journeyId,
   });
-  const nonMemberContext = nonMembersData?.lookup.space?.context;
-  const nonMemberProfile = nonMembersData?.lookup.space?.profile;
+
+  const nonMemberSpace = nonMembersData?.lookup.space;
+  const nonMemberSpaceAbout = nonMemberSpace?.about;
+  const nonMemberSpaceAboutProfile = nonMemberSpaceAbout?.profile;
   const nonMemberCommunity = nonMembersData?.lookup.space?.community;
 
   const canReadCommunity =
@@ -105,7 +105,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     skip: !canReadCommunity,
   });
   const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);
-  const memberProfile = membersData?.lookup.space?.profile;
+  const memberSpaceAbout = membersData?.lookup.space?.about;
 
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
@@ -116,11 +116,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     communityPrivileges?.includes(AuthorizationPrivilege.CommunityAssignVcFromAccount) ||
     false;
 
-  const context = nonMemberContext;
-
-  const nonMemberJourney = nonMembersData?.lookup.space;
-
-  const tagset = nonMemberJourney?.profile?.tagset;
+  const tagset = nonMemberSpaceAbout?.profile?.tagset;
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
@@ -128,9 +124,9 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
 
   const leadUsers = usersByRole[RoleName.Lead];
   const leadOrganizations = organizationsByRole[RoleName.Lead];
-  const references = memberProfile?.references;
+  const references = memberSpaceAbout?.profile.references;
 
-  const metrics = nonMemberJourney?.metrics;
+  const metrics = nonMemberSpace?.metrics;
 
   const memberUsers = usersByRole[RoleName.Member];
   const memberOrganizations = organizationsByRole[RoleName.Member];
@@ -151,24 +147,28 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
 
-  const profile = useMemo(() => {
+  const about = useMemo(() => {
     return {
-      id: nonMemberProfile?.id ?? '',
-      displayName: nonMemberProfile?.displayName ?? '',
-      description: nonMemberProfile?.description,
-      tagset: nonMemberProfile?.tagset,
-      visuals: nonMemberProfile?.visuals ?? [],
-      tagline: nonMemberProfile?.tagline ?? '',
-      url: nonMemberProfile?.url ?? '',
+      about: {
+        id: nonMemberSpaceAbout?.id ?? '',
+        profile: {
+          id: nonMemberSpaceAboutProfile?.id ?? '',
+          displayName: nonMemberSpaceAboutProfile?.displayName ?? '',
+          description: nonMemberSpaceAboutProfile?.description,
+          tagset: nonMemberSpaceAboutProfile?.tagset,
+          visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
+          tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
+          url: nonMemberSpaceAboutProfile?.url ?? '',
+        },
+      },
     };
-  }, [nonMemberProfile]);
+  }, [nonMemberSpaceAboutProfile]);
 
   return (
     <>
       {children(
         {
-          context,
-          profile,
+          about,
           tagset,
           innovationFlow: collaboration?.innovationFlow,
           permissions,

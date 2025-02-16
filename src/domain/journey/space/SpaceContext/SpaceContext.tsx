@@ -35,9 +35,11 @@ interface SpaceContextProps {
   roleSetId: string;
   isPrivate?: boolean;
   permissions: SpacePermissions;
-  profile: {
-    displayName: string;
-    url: string;
+  about: {
+    profile: {
+      displayName: string;
+      url: string;
+    };
   };
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
@@ -52,9 +54,11 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   calloutsSetId: '',
   roleSetId: '',
   isPrivate: undefined,
-  profile: {
-    displayName: '',
-    url: '',
+  about: {
+    profile: {
+      displayName: '',
+      url: '',
+    },
   },
   permissions: {
     canRead: false,
@@ -133,10 +137,14 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     };
   }, [spacePrivileges, canCreateTemplates, communityPrivileges, collaborationPrivileges]);
 
-  const profile = useMemo(() => {
+  const about = useMemo(() => {
     return {
-      displayName: space?.about.profile.displayName ?? '',
-      url: space?.about.profile.url ?? '',
+      about: {
+        profile: {
+          displayName: space?.about.profile.displayName ?? '',
+          url: space?.about.profile.url ?? '',
+        },
+      },
     };
   }, [space?.about.profile]);
 
@@ -146,7 +154,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       value={{
         spaceId,
         spaceNameId,
-        profile,
+        about,
         communityId,
         collaborationId,
         calloutsSetId,

@@ -15,7 +15,7 @@ import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDia
 import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
 import {
   refetchAdminSpaceSubspacesPageQuery,
-  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
@@ -54,10 +54,10 @@ export const OpportunityList: FC = () => {
     subspacesListQuery?.lookup.space?.subspaces?.map(s => ({
       id: s.id,
       profile: {
-        displayName: s.profile.displayName,
-        url: buildSettingsUrl(s.profile.url),
+        displayName: s.about.profile.displayName,
+        url: buildSettingsUrl(s.about.profile.url),
         avatar: {
-          uri: s.profile.cardBanner?.uri ?? '',
+          uri: s.about.profile.cardBanner?.uri ?? '',
         },
       },
       level: s.level,
@@ -71,7 +71,7 @@ export const OpportunityList: FC = () => {
       refetchAdminSpaceSubspacesPageQuery({
         spaceId,
       }),
-      refetchSpaceDashboardNavigationChallengesQuery({
+      refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
       'SpaceDashboardNavigationOpportunities',
@@ -100,21 +100,25 @@ export const OpportunityList: FC = () => {
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
         spaceID: subspaceId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
+        about: {
+          profile: {
+            displayName: value.displayName,
+            tagline: value.tagline,
+            description: value.description ?? '',
+            visuals: value.visuals,
+          },
+          tags: value.tags,
+          why: value.why ?? '',
+        },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
-        visuals: value.visuals,
       });
 
-      if (!result?.profile.url) {
+      if (!result?.about.profile?.url) {
         notify(t('pages.admin.subsubspace.notifications.error-creating-subsubspace'), 'error');
         return;
       }
-      navigate(buildSettingsUrl(result.profile.url));
+      navigate(buildSettingsUrl(result.about.profile.url));
     },
     [navigate, createSubspace, subspaceId]
   );

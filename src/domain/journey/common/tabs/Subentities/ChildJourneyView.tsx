@@ -32,11 +32,13 @@ export interface JourneySubentitiesState {
 }
 
 interface BaseChildEntity extends Identifiable {
-  profile: {
-    displayName: string;
-    url: string;
-    cardBanner?: {
-      uri: string;
+  about: {
+    profile: {
+      displayName: string;
+      url: string;
+      cardBanner?: {
+        uri: string;
+      };
     };
   };
 }
@@ -82,10 +84,10 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
       childEntities
         .map(entity => ({
           id: entity.id,
-          title: entity.profile.displayName,
+          title: entity.about.profile.displayName,
           icon: childEntitiesIcon,
-          uri: entity.profile.url,
-          cardBanner: entity.profile?.cardBanner?.uri || defaultSubspaceAvatar,
+          uri: entity.about.profile.url,
+          cardBanner: entity.about.profile?.cardBanner?.uri || defaultSubspaceAvatar,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]

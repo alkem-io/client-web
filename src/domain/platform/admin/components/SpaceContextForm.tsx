@@ -1,12 +1,16 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { contextSegmentSchema } from './Common/ContextSegment';
+import { spaceAboutSegmentSchema } from './Common/ContextSegment';
 import { SpaceContextSegment } from '../space/SpaceContextSegment';
 
 interface SpaceEditFormProps {
-  context: { impact?: string; vision?: string; who?: string } | undefined;
-  profile: { description?: string } | undefined;
+  about: {
+    when?: string;
+    why?: string;
+    who?: string;
+    profile: { description?: string } | undefined;
+  };
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   isEdit: boolean;
@@ -14,25 +18,25 @@ interface SpaceEditFormProps {
 }
 
 export interface SpaceEditFormValuesType {
-  background: string;
-  impact: string;
-  vision: string;
-  who: string;
+  description: string;
+  when?: string;
+  why?: string;
+  who?: string;
 }
 
-const SpaceEditForm: FC<SpaceEditFormProps> = ({ context, profile, onSubmit, wireSubmit, loading }) => {
+const SpaceEditForm: FC<SpaceEditFormProps> = ({ about, onSubmit, wireSubmit, loading }) => {
   const initialValues: SpaceEditFormValuesType = {
-    background: profile?.description ?? '',
-    impact: context?.impact ?? '',
-    vision: context?.vision ?? '',
-    who: context?.who ?? '',
+    description: about.profile?.description ?? '',
+    when: about?.when ?? '',
+    why: about?.why ?? '',
+    who: about?.who ?? '',
   };
 
   const validationSchema = yup.object().shape({
-    background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
+    description: spaceAboutSegmentSchema.fields?.description || yup.string(),
+    when: spaceAboutSegmentSchema.fields?.when || yup.string(),
+    why: spaceAboutSegmentSchema.fields?.why || yup.string(),
+    who: spaceAboutSegmentSchema.fields?.who || yup.string(),
   });
 
   let isSubmitWired = false;

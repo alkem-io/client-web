@@ -1,45 +1,44 @@
 import { Formik } from 'formik';
 import { ElementType } from 'react';
 import * as yup from 'yup';
-import { Context, Profile } from '@/core/apollo/generated/graphql-schema';
-import { ContextSegmentProps, contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { Profile, SpaceAbout } from '@/core/apollo/generated/graphql-schema';
+import { ContextSegmentProps, spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 
-export interface ContextFormValues {
-  background: string;
-  impact: string;
-  vision: string;
+export interface SpaceAboutFormValues {
+  description: string;
+  when: string;
+  why: string;
   who: string;
 }
 
-type ContextFormProps = {
-  context?: Omit<Context, 'anonymousReadAccess'>;
+type SpaceAboutFormProps = {
+  about?: SpaceAbout;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
-  onSubmit: (formData: ContextFormValues) => void;
+  onSubmit: (formData: SpaceAboutFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextSegment: ElementType<ContextSegmentProps>;
   loading: boolean;
 };
 
-export const ContextForm = ({
-  context,
-  profile,
+export const SpaceAboutForm = ({
+  about,
   onSubmit,
   wireSubmit,
   loading,
   contextSegment: ContextSegment,
-}: ContextFormProps) => {
-  const initialValues: ContextFormValues = {
-    background: profile?.description || '',
-    impact: context?.impact || '',
-    vision: context?.vision || '',
-    who: context?.who || '',
+}: SpaceAboutFormProps) => {
+  const initialValues: SpaceAboutFormValues = {
+    description: about?.profile?.description || '',
+    when: about?.when || '',
+    why: about?.why || '',
+    who: about?.who || '',
   };
 
   const validationSchema = yup.object().shape({
-    background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
+    description: spaceAboutSegmentSchema.fields?.description || yup.string(),
+    when: spaceAboutSegmentSchema.fields?.when || yup.string(),
+    why: spaceAboutSegmentSchema.fields?.why || yup.string(),
+    who: spaceAboutSegmentSchema.fields?.who || yup.string(),
   });
 
   let isSubmitWired = false;

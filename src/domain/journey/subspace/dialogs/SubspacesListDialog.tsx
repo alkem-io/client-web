@@ -44,12 +44,12 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
                         return (
                           <SubspaceCard
                             key={key}
-                            displayName={subspace.profile.displayName}
+                            displayName={subspace.about.profile.displayName}
                             banner={subspace.about.profile.cardBanner}
-                            tags={subspace.profile.tagset?.tags!}
-                            tagline={subspace.profile.tagline!}
+                            tags={subspace.about.profile.tagset?.tags!}
+                            tagline={subspace.about.profile.tagline!}
                             vision={subspace.about.why!}
-                            journeyUri={subspace.profile.url}
+                            journeyUri={subspace.about.profile.url}
                             locked={subspace.settings.privacy?.mode === SpacePrivacyMode.Private}
                             spaceVisibility={visibility}
                             member={

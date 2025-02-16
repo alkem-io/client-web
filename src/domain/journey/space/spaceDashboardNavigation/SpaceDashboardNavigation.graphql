@@ -1,4 +1,4 @@
-query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
+query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
@@ -8,6 +8,7 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
           id
           url
           displayName
+          description
           avatar: visual(type: CARD) {
             id
             uri
@@ -72,6 +73,7 @@ fragment SpaceDashboardNavigationProfile on Profile {
   id
   url
   displayName
+  description
   avatar: visual(type: AVATAR) {
     id
     uri

@@ -33,13 +33,13 @@ export const SpaceContextView = () => {
     return updateSpace({
       variables: {
         input: {
-          context: {
-            impact: values.impact,
-            vision: values.vision,
+          about: {
+            when: values.when,
+            why: values.why,
             who: values.who,
-          },
-          profileData: {
-            description: values.background,
+            profile: {
+              description: values.description,
+            },
           },
           ID: spaceId,
         },
@@ -53,8 +53,7 @@ export const SpaceContextView = () => {
       <Grid container spacing={2}>
         <SpaceContextForm
           isEdit
-          context={space?.context}
-          profile={space?.profile}
+          about={space?.about}
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}
           loading={isLoading}

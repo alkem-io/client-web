@@ -74,7 +74,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   // don't load references without READ privilege on Context
   const { data: referencesData } = useSpaceDashboardReferencesQuery({
     variables: { spaceId: spaceId! }, // having Read privilege implies presence of spaceId
-    skip: !space?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
+    skip: !space?.about?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
 
   const communityReadAccess = (space?.community?.authorization?.myPrivileges ?? []).includes(
@@ -100,7 +100,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     skip: !permissions.spaceReadAccess,
   });
 
-  const references = referencesData?.lookup.space?.profile.references;
+  const references = referencesData?.lookup.space?.about.profile.references;
 
   const communityId = space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';

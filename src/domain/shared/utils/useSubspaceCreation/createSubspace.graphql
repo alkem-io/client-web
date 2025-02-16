@@ -3,13 +3,20 @@ mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean =
     ...SubspaceCard
     about {
       id
-      visuals: profile @include(if: $includeVisuals) {
+      profile @include(if: $includeVisuals) {
         id
         cardBanner: visual(type: CARD) {
           id
+          uri
+          name
         }
         avatar: visual(type: AVATAR) {
           id
+          uri
+          name
+        }
+        tagset {
+          ...TagsetDetails
         }
       }
     }

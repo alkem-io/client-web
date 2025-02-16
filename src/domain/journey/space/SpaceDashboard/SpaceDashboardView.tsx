@@ -160,7 +160,7 @@ const SpaceDashboardView = ({
         <InfoColumn>
           <PageContentBlock accent>
             <JourneyDashboardWelcomeBlock
-              vision={vision}
+              description={vision}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}

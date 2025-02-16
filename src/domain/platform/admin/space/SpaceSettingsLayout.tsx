@@ -83,7 +83,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
-  const profile = spaceData?.lookup.space?.profile;
+  const profile = spaceData?.lookup.space?.about.profile;
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,

@@ -15,10 +15,10 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
   authorized: boolean | undefined;
-  vision: string | undefined;
+  why: string | undefined;
   background: string | undefined;
   who: string | undefined;
-  impact: string | undefined;
+  when: string | undefined;
   loading: boolean;
   error: Error | undefined;
 }
@@ -66,7 +66,7 @@ const JourneyUnauthorizedDialogContainer = ({
       !journeyId || !isUnauthorized || journeyCommunityPrivilegesLoading || Boolean(journeyCommunityPrivilegesError),
   });
 
-  const { profile, context, metrics, community } = journeyDataQueryData?.lookup.space ?? {};
+  const { about, metrics, community } = journeyDataQueryData?.lookup.space ?? {};
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
@@ -82,6 +82,7 @@ const JourneyUnauthorizedDialogContainer = ({
     },
     [sendMessageToCommunityLeads, community]
   );
+  const profile = about?.profile;
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: !isUnauthorized,
@@ -89,9 +90,9 @@ const JourneyUnauthorizedDialogContainer = ({
     displayName: profile?.displayName,
     tagline: profile?.tagline,
     references: profile?.references,
-    vision: context?.vision,
-    who: context?.who,
-    impact: context?.impact,
+    why: about?.why,
+    who: about?.who,
+    when: about?.when,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
     provider: journeyDataQueryData?.lookup.space?.provider,

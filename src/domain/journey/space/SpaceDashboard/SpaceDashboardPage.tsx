@@ -86,7 +86,7 @@ const SpaceDashboardPage = ({
               description={entities.space?.about?.why}
               background={entities.space?.about.profile.description}
               who={entities.space?.about.who}
-              impact={entities.space?.about.when}
+              when={entities.space?.about.when}
               guidelines={
                 <CommunityGuidelinesBlock
                   communityId={entities.space?.community?.id}

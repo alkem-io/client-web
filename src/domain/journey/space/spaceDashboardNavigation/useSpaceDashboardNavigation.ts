@@ -1,6 +1,6 @@
 import {
-  useSpaceDashboardNavigationChallengesQuery,
   useSpaceDashboardNavigationOpportunitiesQuery,
+  useSpaceDashboardNavigationSubspacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   Authorization,
@@ -71,7 +71,7 @@ const useSpaceDashboardNavigation = ({
     data: challengesQueryData,
     loading: challengesQueryLoading,
     refetch: refetchChallenges,
-  } = useSpaceDashboardNavigationChallengesQuery({
+  } = useSpaceDashboardNavigationSubspacesQuery({
     variables: { spaceId: spaceId! },
     skip: skip || !spaceId,
   });

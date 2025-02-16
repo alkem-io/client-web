@@ -33,7 +33,10 @@ export interface AccountResourcesProps {
   id: string;
   spaces: {
     id: string;
-    profile: AccountProfile;
+    about: {
+      id: string;
+      profile: AccountProfile;
+    };
   }[];
   virtualContributors: {
     id: string;
@@ -60,8 +63,10 @@ export interface AccountResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      profile: {
-        displayName: string;
+      about: {
+        profile: {
+          displayName: string;
+        };
       };
     }[];
     subdomain: string;
@@ -97,10 +102,12 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
               <JourneyTile
                 key={contributionItem.id}
                 journey={{
-                  profile: {
-                    displayName: contributionItem.profile.displayName,
-                    url: contributionItem.profile.url,
-                    cardBanner: contributionItem.profile.cardBanner,
+                  about: {
+                    profile: {
+                      displayName: contributionItem.about.profile.displayName,
+                      url: contributionItem.about.profile.url,
+                      cardBanner: contributionItem.about.profile.cardBanner,
+                    },
                   },
                   level: SpaceLevel.L0,
                 }}

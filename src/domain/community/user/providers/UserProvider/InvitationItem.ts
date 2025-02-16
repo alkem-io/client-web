@@ -4,10 +4,12 @@ import { Identifiable } from '@/core/utils/Identifiable';
 export interface InvitationItem extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {
     level: SpaceLevel;
-    profile: {
-      url: string;
-      displayName: string;
-      tagline?: string;
+    about: {
+      profile: {
+        url: string;
+        displayName: string;
+        tagline?: string;
+      };
     };
   };
   invitation: {

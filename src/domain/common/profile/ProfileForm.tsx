@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
-import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
@@ -68,7 +68,7 @@ const ProfileForm = ({
 
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
-    tagline: contextSegmentSchema.fields?.tagline || yup.string(),
+    tagline: spaceAboutSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
   });

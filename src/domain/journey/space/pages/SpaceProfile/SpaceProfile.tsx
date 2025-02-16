@@ -59,7 +59,7 @@ export const SpaceProfile = () => {
         name={space?.about.profile.displayName}
         nameID={spaceNameId}
         tagset={space?.about.profile.tagset}
-        context={space?.context}
+        about={space?.about}
         profile={space?.about.profile}
         onSubmit={onSubmit}
         loading={loading}

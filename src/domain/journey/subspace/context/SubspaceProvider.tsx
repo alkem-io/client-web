@@ -89,17 +89,20 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     [myPrivileges, subspace, canReadCommunity]
   );
 
-  const profile = useMemo(() => {
+  const about = useMemo(() => {
     return {
-      id: subspace?.about.profile.id ?? '',
-      displayName: subspace?.about.profile.displayName || '',
-      description: subspace?.about.profile.description,
-      tagset: subspace?.about.profile.tagset,
-      visuals: subspace?.about.profile.visuals ?? [],
-      tagline: subspace?.about.profile.tagline || '',
-      references: subspace?.about.profile.references ?? [],
-      location: subspace?.about.profile.location,
-      url: subspace?.about.profile.url ?? '',
+      id: subspace?.about.id ?? '',
+      profile: {
+        id: subspace?.about.profile.id ?? '',
+        displayName: subspace?.about.profile.displayName || '',
+        description: subspace?.about.profile.description,
+        tagset: subspace?.about.profile.tagset,
+        visuals: subspace?.about.profile.visuals ?? [],
+        tagline: subspace?.about.profile.tagline || '',
+        references: subspace?.about.profile.references ?? [],
+        location: subspace?.about.profile.location,
+        url: subspace?.about.profile.url ?? '',
+      },
     };
   }, [subspace?.about.profile]);
 
@@ -112,7 +115,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         communityId,
         roleSetId,
         permissions,
-        about: profile,
+        about,
         loading,
         myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
       }}

@@ -76,7 +76,7 @@ export const VCSettingsPage = () => {
             <PageContentBlock>
               <VirtualContributorForm
                 virtualContributor={data?.lookup.virtualContributor}
-                bokProfile={bokProfile?.lookup.space?.profile}
+                bokProfile={bokProfile?.lookup.space?.about.profile}
                 avatar={data?.lookup.virtualContributor.profile.avatar}
                 onSave={handleUpdate}
               />

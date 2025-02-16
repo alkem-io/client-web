@@ -47,7 +47,8 @@ const DashboardSpaces = () => {
           return null;
         }
 
-        const { id, profile } = space;
+        const { id, about } = space;
+        const { profile } = about;
         const { tagline } = profile;
         const hasChildMemberships = childMemberships?.length > 0;
 
@@ -83,18 +84,20 @@ const DashboardSpaces = () => {
                     return null;
                   }
 
-                  const { id, profile, level } = subSpace;
-                  const { url, cardBanner, displayName } = profile;
+                  const { id, about, level } = subSpace;
+                  const { url, cardBanner, displayName } = about.profile;
 
                   return (
                     <JourneyTile
                       key={id}
                       columns={cardColumns}
                       journey={{
-                        profile: {
-                          url,
-                          cardBanner,
-                          displayName,
+                        about: {
+                          profile: {
+                            url,
+                            cardBanner,
+                            displayName,
+                          },
                         },
                         level: level,
                       }}

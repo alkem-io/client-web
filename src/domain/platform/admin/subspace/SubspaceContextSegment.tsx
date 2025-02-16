@@ -5,6 +5,6 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface SubspaceContextSegmentProps extends ContextSegmentProps {}
 
-export const SubspaceContextSegment: FC<SubspaceContextSegmentProps> = ({ ...props }) => {
+export const SubspaceAboutSegment: FC<SubspaceContextSegmentProps> = ({ ...props }) => {
   return <ContextSegment spaceLevel={SpaceLevel.L1} {...props} />;
 };

@@ -118,8 +118,8 @@ export const InvitationHydrator = ({
         ...journey,
         level: invitation.spacePendingMembershipInfo.level,
         profile: {
-          ...invitation.spacePendingMembershipInfo.profile,
-          ...journey?.profile,
+          ...invitation.spacePendingMembershipInfo.about.profile,
+          ...journey?.about.profile,
         },
       },
     };
@@ -165,8 +165,8 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
         ...journey,
         level: application.spacePendingMembershipInfo.level,
         profile: {
-          ...application.spacePendingMembershipInfo.profile,
-          ...journey?.profile,
+          ...application.spacePendingMembershipInfo.about.profile,
+          ...journey?.about.profile,
         },
       },
     };

@@ -6,10 +6,10 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import Gutters from '@/core/ui/grid/Gutters';
 
-export const contextSegmentSchema = yup.object().shape({
-  background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  impact: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+export const spaceAboutSegmentSchema = yup.object().shape({
+  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  when: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  why: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   who: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   tagline: yup.string().max(SMALL_TEXT_LENGTH),
 });
@@ -25,9 +25,9 @@ export const ContextSegment = ({ loading, spaceLevel }: ContextSegmentProps & { 
     <Gutters>
       <FormikMarkdownField
         name="vision"
-        title={t(`context.${spaceLevel}.vision.title` as const)}
-        placeholder={t(`context.${spaceLevel}.vision.title` as const)}
-        helperText={t(`context.${spaceLevel}.vision.description` as const)}
+        title={t(`context.${spaceLevel}.why.title` as const)}
+        placeholder={t(`context.${spaceLevel}.why.title` as const)}
+        helperText={t(`context.${spaceLevel}.why.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}

@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { ContextForm, ContextFormValues } from '@/domain/journey/space/about/SpaceAboutForm';
+import { SpaceAboutForm, SpaceAboutFormValues } from '@/domain/journey/space/about/SpaceAboutForm/SpaceAboutForm';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OpportunityContextSegment } from '@/domain/platform/admin/opportunity/OpportunityContextSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
@@ -29,20 +29,20 @@ const OpportunityContextView = () => {
 
   const opportunity = subspacePrfile?.lookup.space;
 
-  const onSubmit = async (values: ContextFormValues) => {
+  const onSubmit = async (values: SpaceAboutFormValues) => {
     if (!opportunity) {
       throw new TypeError('Opportunity is not loaded');
     }
     await updateSubspace({
       variables: {
         input: {
-          context: {
-            impact: values.impact,
-            vision: values.vision,
+          about: {
+            when: values.when,
+            why: values.why,
             who: values.who,
-          },
-          profileData: {
-            description: values.background,
+            profile: {
+              description: values.description,
+            },
           },
           ID: opportunity.id,
         },
@@ -53,10 +53,9 @@ const OpportunityContextView = () => {
   let submitWired;
   return (
     <Grid container spacing={2}>
-      <ContextForm
+      <SpaceAboutForm
         contextSegment={OpportunityContextSegment}
-        context={opportunity?.context}
-        profile={opportunity?.profile}
+        about={opportunity?.about}
         loading={loading || isUpdating}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

@@ -1,6 +1,7 @@
 fragment SpaceAboutLightUrl on SpaceAbout {
   id
   profile {
+    id
     displayName
     url
   }

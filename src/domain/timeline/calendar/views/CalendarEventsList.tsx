@@ -33,8 +33,10 @@ type CalendarEventsListProps = {
       description?: string;
     };
     subspace?: {
-      profile: {
-        displayName: string;
+      about: {
+        profile: {
+          displayName: string;
+        };
       };
     };
   }[];

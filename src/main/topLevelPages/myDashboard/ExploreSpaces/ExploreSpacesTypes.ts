@@ -69,10 +69,12 @@ export interface ExploreSpacesViewProps {
   }[];
   welcomeSpace?: {
     id: string;
-    profile: {
-      displayName: string;
-      url: string;
-      cardBanner?: Visual;
+    about: {
+      profile: {
+        displayName: string;
+        url: string;
+        cardBanner?: Visual;
+      };
     };
     level: SpaceLevel.L0;
   };

@@ -16,10 +16,12 @@ import { PrivacyIcon } from './PrivacyIcon';
 type JourneyTileProps = {
   journey:
     | {
-        profile: {
-          displayName: string;
-          url: string;
-          cardBanner?: Visual;
+        about: {
+          profile: {
+            displayName: string;
+            url: string;
+            cardBanner?: Visual;
+          };
         };
         level?: SpaceLevel;
       }
@@ -38,7 +40,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
     <GridItem columns={columns}>
       <ElevatedPaper
         component={RouterLink}
-        to={journey?.profile.url ?? ''}
+        to={journey?.about.profile.url ?? ''}
         sx={{
           position: 'relative',
         }}
@@ -53,7 +55,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={journey.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
+              src={journey.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
               variant="square"
             >
@@ -80,7 +82,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
               }}
             >
               <BlockTitle component="div" sx={webkitLineClamp(2)}>
-                {journey.profile.displayName}
+                {journey.about.profile.displayName}
               </BlockTitle>
             </Box>
           </>

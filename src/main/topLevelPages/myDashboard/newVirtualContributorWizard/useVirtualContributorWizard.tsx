@@ -124,11 +124,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
+    const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
 
     return {
       myAccountId: account?.id,
-      allAccountSpaces: account?.spaces ?? [],
-      availableSpaces: account?.spaces?.filter(hasCommunityPrivilege) ?? [],
+      allAccountSpaces: accountSpaces,
+      availableSpaces: accountSpaces.filter(hasCommunityPrivilege),
     };
   }, [data, user, targetAccount]);
 

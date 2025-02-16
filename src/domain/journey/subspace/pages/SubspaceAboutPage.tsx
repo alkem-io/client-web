@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSubSpace } from '../hooks/useSubSpace';
-import AboutPageContainer from '@/domain/journey/common/AboutPageContainer/AboutPageContainer';
+import AboutPageContainer from '@/domain/journey/space/about/AboutPageContainer';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import JourneyAboutDialog from '@/domain/journey/common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
@@ -55,10 +55,10 @@ const SubspaceAboutPage = () => {
             references={references}
             sendMessageToCommunityLeads={sendMessageToCommunityLeads}
             metrics={metrics}
-            description={context?.vision}
+            description={context?.why}
             background={profile?.description}
             who={context?.who}
-            impact={context?.impact}
+            when={context?.impact}
             guidelines={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
             loading={state.loading}
             leadUsers={leadUsers}

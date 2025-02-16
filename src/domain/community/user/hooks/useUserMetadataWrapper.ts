@@ -11,10 +11,12 @@ import { Identifiable } from '@/core/utils/Identifiable';
 export interface PendingApplication extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {
     level: SpaceLevel;
-    profile: {
-      displayName: string;
-      tagline?: string;
-      url: string;
+    about: {
+      profile: {
+        displayName: string;
+        tagline?: string;
+        url: string;
+      };
     };
   };
   application: {

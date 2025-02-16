@@ -66,7 +66,7 @@ const SpacePageLayout = ({
         {children}
       </StorageConfigContextProvider>
       <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={spaceId}>
-        {({ vision, ...props }) => (
+        {({ why: vision, ...props }) => (
           <JourneyUnauthorizedDialog
             description={vision}
             disabled={unauthorizedDialogDisabled}
