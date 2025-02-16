@@ -139,11 +139,9 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const about = useMemo(() => {
     return {
-      about: {
-        profile: {
-          displayName: space?.about.profile.displayName ?? '',
-          url: space?.about.profile.url ?? '',
-        },
+      profile: {
+        displayName: space?.about.profile.displayName ?? '',
+        url: space?.about.profile.url ?? '',
       },
     };
   }, [space?.about.profile]);

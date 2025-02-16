@@ -2,7 +2,13 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, SpaceAbout, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import {
+  Reference,
+  SpaceAboutContextDetailsFragment,
+  SpaceLevel,
+  Tagset,
+  TagsetType,
+} from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
@@ -23,11 +29,8 @@ import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { Caption } from '@/core/ui/typography';
 
 interface SpaceEditFormProps {
-  about?: Omit<SpaceAbout>;
-  profile?: Omit<Profile, 'storageBucket' | 'url'>; // TODO
-  name?: string;
+  about?: SpaceAboutContextDetailsFragment;
   nameID?: string;
-  tagset?: Tagset;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;
   loading: boolean;
@@ -39,11 +42,19 @@ export interface SpaceEditFormValuesType {
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
-  tagsets: Tagset[];
+  tagsets: {
+    id: string;
+    name: string;
+    tags: string[];
+    allowedValues: string[];
+    type: TagsetType;
+  }[];
 }
 
-const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, onSubmit, edit, loading }) => {
+const SpaceEditForm: FC<SpaceEditFormProps> = ({ about, nameID, onSubmit, edit, loading }) => {
   const { t } = useTranslation();
+  const tagset = about?.profile?.tagset;
+  const name = about?.profile?.displayName;
 
   const tagsets = useMemo(() => {
     if (tagset) return [tagset];
@@ -58,15 +69,15 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, 
     ] as Tagset[];
   }, [tagset]);
 
-  const profileId = profile?.id;
+  const profileId = about?.profile?.id;
 
   const initialValues: SpaceEditFormValuesType = {
     name: name ?? '',
     nameID: nameID ?? '',
-    tagline: profile?.tagline ?? '',
-    location: formatLocation(profile?.location) || EmptyLocation,
-    references: profile?.references ?? [],
-    tagsets,
+    tagline: about?.profile?.tagline ?? '',
+    location: formatLocation(about?.profile?.location) || EmptyLocation,
+    references: about?.profile?.references ?? [],
+    tagsets: tagsets ?? [],
   };
 
   const validationSchema = yup.object().shape({

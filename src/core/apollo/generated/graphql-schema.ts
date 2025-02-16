@@ -9144,8 +9144,8 @@ export type AccountInformationQuery = {
               id: string;
               profile: {
                 __typename?: 'Profile';
-                tagline?: string | undefined;
                 id: string;
+                tagline?: string | undefined;
                 displayName: string;
                 description?: string | undefined;
                 url: string;
@@ -19040,8 +19040,9 @@ export type JourneyDataQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              tagline?: string | undefined;
               description?: string | undefined;
+              tagline?: string | undefined;
+              url: string;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -19051,6 +19052,32 @@ export type JourneyDataQuery = {
                     description?: string | undefined;
                   }>
                 | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }>;
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19736,6 +19763,15 @@ export type SpaceProfileQuery = {
               description?: string | undefined;
               tagline?: string | undefined;
               url: string;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
               tagset?:
                 | {
                     __typename?: 'Tagset';
@@ -19746,14 +19782,8 @@ export type SpaceProfileQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    description?: string | undefined;
-                    uri: string;
-                  }>
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
               visuals: Array<{
                 __typename?: 'Visual';
@@ -19768,18 +19798,6 @@ export type SpaceProfileQuery = {
                 minWidth: number;
                 alternativeText?: string | undefined;
               }>;
-              location?:
-                | {
-                    __typename?: 'Location';
-                    id: string;
-                    country?: string | undefined;
-                    city?: string | undefined;
-                    addressLine1?: string | undefined;
-                    addressLine2?: string | undefined;
-                    stateOrProvince?: string | undefined;
-                    postalCode?: string | undefined;
-                  }
-                | undefined;
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19809,6 +19827,9 @@ export type SpaceInfoFragment = {
       description?: string | undefined;
       tagline?: string | undefined;
       url: string;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -19819,8 +19840,8 @@ export type SpaceInfoFragment = {
             type: TagsetType;
           }
         | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
       visuals: Array<{
         __typename?: 'Visual';
@@ -19835,18 +19856,6 @@ export type SpaceInfoFragment = {
         minWidth: number;
         alternativeText?: string | undefined;
       }>;
-      location?:
-        | {
-            __typename?: 'Location';
-            id: string;
-            country?: string | undefined;
-            city?: string | undefined;
-            addressLine1?: string | undefined;
-            addressLine2?: string | undefined;
-            stateOrProvince?: string | undefined;
-            postalCode?: string | undefined;
-          }
-        | undefined;
     };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19967,11 +19976,23 @@ export type SpacePageQuery = {
             profile: {
               __typename?: 'Profile';
               id: string;
-              url: string;
               displayName: string;
               description?: string | undefined;
               tagline?: string | undefined;
-              visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+              url: string;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }>;
               tagset?:
                 | {
                     __typename?: 'Tagset';
@@ -19981,6 +20002,27 @@ export type SpacePageQuery = {
                     allowedValues: Array<string>;
                     type: TagsetType;
                   }
+                | undefined;
+              location?:
+                | {
+                    __typename?: 'Location';
+                    id: string;
+                    city?: string | undefined;
+                    country?: string | undefined;
+                    addressLine1?: string | undefined;
+                    addressLine2?: string | undefined;
+                    stateOrProvince?: string | undefined;
+                    postalCode?: string | undefined;
+                  }
+                | undefined;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
                 | undefined;
             };
             authorization?:
@@ -20223,11 +20265,23 @@ export type SpacePageFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      url: string;
       displayName: string;
       description?: string | undefined;
       tagline?: string | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      url: string;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }>;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -20237,6 +20291,21 @@ export type SpacePageFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }
+        | undefined;
+      location?:
+        | {
+            __typename?: 'Location';
+            id: string;
+            city?: string | undefined;
+            country?: string | undefined;
+            addressLine1?: string | undefined;
+            addressLine2?: string | undefined;
+            stateOrProvince?: string | undefined;
+            postalCode?: string | undefined;
+          }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
     authorization?:
@@ -20630,6 +20699,43 @@ export type SpaceAboutContextDetailsFragment = {
   why?: string | undefined;
   when?: string | undefined;
   who?: string | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline?: string | undefined;
+    url: string;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
+      alternativeText?: string | undefined;
+    }>;
+  };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -20934,6 +21040,9 @@ export type UpdateSpaceMutation = {
         description?: string | undefined;
         tagline?: string | undefined;
         url: string;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -20944,8 +21053,8 @@ export type UpdateSpaceMutation = {
               type: TagsetType;
             }
           | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+        location?:
+          | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
           | undefined;
         visuals: Array<{
           __typename?: 'Visual';
@@ -20960,18 +21069,6 @@ export type UpdateSpaceMutation = {
           minWidth: number;
           alternativeText?: string | undefined;
         }>;
-        location?:
-          | {
-              __typename?: 'Location';
-              id: string;
-              country?: string | undefined;
-              city?: string | undefined;
-              addressLine1?: string | undefined;
-              addressLine2?: string | undefined;
-              stateOrProvince?: string | undefined;
-              postalCode?: string | undefined;
-            }
-          | undefined;
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -21046,6 +21143,7 @@ export type SubspaceProfileInfoQuery = {
               displayName: string;
               description?: string | undefined;
               tagline?: string | undefined;
+              url: string;
               tagset?:
                 | {
                     __typename?: 'Tagset';
@@ -21073,8 +21171,8 @@ export type SubspaceProfileInfoQuery = {
                 | {
                     __typename?: 'Location';
                     id: string;
-                    country?: string | undefined;
                     city?: string | undefined;
+                    country?: string | undefined;
                     addressLine1?: string | undefined;
                     addressLine2?: string | undefined;
                     stateOrProvince?: string | undefined;
@@ -21958,7 +22056,13 @@ export type SubspacePageQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             why?: string | undefined;
-            profile: { __typename?: 'Profile'; id: string; url: string };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              description?: string | undefined;
+            };
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           community?: {
@@ -21997,7 +22101,7 @@ export type SubspacePageSpaceFragment = {
     __typename?: 'SpaceAbout';
     id: string;
     why?: string | undefined;
-    profile: { __typename?: 'Profile'; id: string; url: string };
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   community?: {

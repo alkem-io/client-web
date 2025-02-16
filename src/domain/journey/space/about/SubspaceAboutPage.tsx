@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useSubSpace } from '../hooks/useSubSpace';
-import AboutPageContainer from '@/domain/journey/space/about/AboutPageContainer';
+import { useSubSpace } from '../../subspace/hooks/useSubSpace';
+import AboutPageContainer from '@/domain/journey/space/about/SpaceAboutPageContainer';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import JourneyAboutDialog from '@/domain/journey/common/JourneyAboutDialog/JourneyAboutDialog';
+import SpaceAboutDialog from '@/domain/journey/space/about/SpaceAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
@@ -11,15 +11,14 @@ import ContributorsDialog from '@/domain/community/community/ContributorsDialog/
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import { buildAboutUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 const SubspaceAboutPage = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { communityId, about: profile } = useSubSpace();
+  const { communityId, about } = useSubSpace();
 
-  const backToParentPage = useBackToStaticPath(profile.url);
+  const backToParentPage = useBackToStaticPath(about.profile.url);
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
@@ -32,8 +31,7 @@ const SubspaceAboutPage = () => {
       <AboutPageContainer journeyId={spaceId}>
         {(
           {
-            context,
-            references,
+            about,
             provider,
             leadOrganizations,
             leadUsers,
@@ -47,19 +45,13 @@ const SubspaceAboutPage = () => {
           },
           state
         ) => (
-          <JourneyAboutDialog
+          <SpaceAboutDialog
             open
             spaceLevel={spaceLevel}
-            displayName={profile?.displayName}
-            tagline={profile?.tagline}
-            references={references}
+            about={about}
             sendMessageToCommunityLeads={sendMessageToCommunityLeads}
             metrics={metrics}
-            description={context?.why}
-            background={profile?.description}
-            who={context?.who}
-            when={context?.impact}
-            guidelines={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
+            guidelines={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={about?.profile?.url} />}
             loading={state.loading}
             leadUsers={leadUsers}
             provider={provider}
@@ -69,7 +61,6 @@ const SubspaceAboutPage = () => {
                 <Close />
               </IconButton>
             }
-            shareUrl={buildAboutUrl(profile.url)}
             leftColumnChildrenBottom={
               hasReadPrivilege && (
                 <EntityDashboardContributorsSection

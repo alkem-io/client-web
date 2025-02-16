@@ -5,20 +5,18 @@ import {
   useSendMessageToCommunityLeadsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import { AuthorizationPrivilege, MetricsItemFragment, Reference } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  MetricsItemFragment,
+  SpaceAboutContextDetailsFragment,
+} from '@/core/apollo/generated/graphql-schema';
 import mainQuery from '@/core/apollo/utils/mainQuery';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
-  displayName: string | undefined;
-  tagline: string | undefined;
-  references: Reference[] | undefined;
+  about?: SpaceAboutContextDetailsFragment;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
   authorized: boolean | undefined;
-  why: string | undefined;
-  background: string | undefined;
-  who: string | undefined;
-  when: string | undefined;
   loading: boolean;
   error: Error | undefined;
 }
@@ -66,7 +64,9 @@ const JourneyUnauthorizedDialogContainer = ({
       !journeyId || !isUnauthorized || journeyCommunityPrivilegesLoading || Boolean(journeyCommunityPrivilegesError),
   });
 
-  const { about, metrics, community } = journeyDataQueryData?.lookup.space ?? {};
+  const { metrics, community } = journeyDataQueryData?.lookup.space ?? {};
+
+  const about: SpaceAboutContextDetailsFragment = journeyDataQueryData?.lookup.space?.about!;
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
@@ -82,17 +82,10 @@ const JourneyUnauthorizedDialogContainer = ({
     },
     [sendMessageToCommunityLeads, community]
   );
-  const profile = about?.profile;
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: !isUnauthorized,
-    background: profile?.description,
-    displayName: profile?.displayName,
-    tagline: profile?.tagline,
-    references: profile?.references,
-    why: about?.why,
-    who: about?.who,
-    when: about?.when,
+    about,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
     provider: journeyDataQueryData?.lookup.space?.provider,

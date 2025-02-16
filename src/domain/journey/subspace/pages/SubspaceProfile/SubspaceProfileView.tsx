@@ -48,17 +48,19 @@ const SubspaceProfileView: FC<SubspaceProfileViewProps> = ({ subspaceId }) => {
       variables: {
         input: {
           ID: requiredSubspaceId,
-          profileData: {
-            displayName,
-            tagline,
-            location: formatDatabaseLocation(values.location),
-            tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
-            references: references.map(reference => ({
-              ID: reference.id,
-              name: reference.name,
-              description: reference.description,
-              uri: reference.uri,
-            })),
+          about: {
+            profile: {
+              displayName,
+              tagline,
+              location: formatDatabaseLocation(values.location),
+              tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+              references: references.map(reference => ({
+                ID: reference.id,
+                name: reference.name,
+                description: reference.description,
+                uri: reference.uri,
+              })),
+            },
           },
         },
       },

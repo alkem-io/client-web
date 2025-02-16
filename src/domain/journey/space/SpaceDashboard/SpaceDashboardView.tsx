@@ -45,7 +45,7 @@ type SpaceDashboardViewProps = {
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
-  vision?: string;
+  why?: string;
   communityId?: string;
   organization?: unknown;
   host: ContributorViewProps | undefined;
@@ -74,7 +74,7 @@ const SpaceDashboardView = ({
   level,
   collaborationId,
   calloutsSetId,
-  vision = '',
+  why = '',
   dashboardNavigation,
   dashboardNavigationLoading,
   communityId = '',
@@ -160,7 +160,7 @@ const SpaceDashboardView = ({
         <InfoColumn>
           <PageContentBlock accent>
             <JourneyDashboardWelcomeBlock
-              description={vision}
+              description={why}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}

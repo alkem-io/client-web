@@ -1,4 +1,4 @@
-import SpaceEditForm, { SpaceEditFormValuesType } from '@/domain/journey/space/spaceEditForm/SpaceEditForm';
+import SpaceEditForm, { SpaceEditFormValuesType } from '@/domain/journey/space/about/SpaceEditForm';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -32,17 +32,19 @@ export const SpaceProfile = () => {
     updateSpace({
       variables: {
         input: {
-          profileData: {
-            displayName,
-            tagline,
-            location: formatDatabaseLocation(values.location),
-            references: references?.map(reference => ({
-              ID: reference.id ?? '',
-              name: reference.name,
-              description: reference.description,
-              uri: reference.uri,
-            })),
-            tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+          about: {
+            profile: {
+              displayName,
+              tagline,
+              location: formatDatabaseLocation(values.location),
+              references: references?.map(reference => ({
+                ID: reference.id ?? '',
+                name: reference.name,
+                description: reference.description,
+                uri: reference.uri,
+              })),
+              tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+            },
           },
           ID: spaceId,
         },
@@ -54,16 +56,7 @@ export const SpaceProfile = () => {
 
   return (
     <PageContentColumn columns={12}>
-      <SpaceEditForm
-        edit
-        name={space?.about.profile.displayName}
-        nameID={spaceNameId}
-        tagset={space?.about.profile.tagset}
-        about={space?.about}
-        profile={space?.about.profile}
-        onSubmit={onSubmit}
-        loading={loading}
-      />
+      <SpaceEditForm edit nameID={spaceNameId} about={space?.about} onSubmit={onSubmit} loading={loading} />
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.visuals')} />
         <EditVisualsView visuals={visuals} />

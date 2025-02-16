@@ -722,17 +722,17 @@
         "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
-      "background": {
+      "description": {
         "title": "Background",
         "description": "Give a brief overview of the need for this Space and how it came about.",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
         "description": "What will this Space change? How will people and organizations be affected?",
         "placeholder": ""
       },
-      "vision": {
+      "why": {
         "title": "What is this community about?",
         "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
         "placeholder": ""
@@ -755,21 +755,16 @@
         "placeholder": ""
       },
       "description": {
-        "title": "A description of the subspace that is visible on the subspace dashboard",
-        "description": "",
-        "placeholder": ""
-      },
-      "background": {
         "title": "Current Reality",
         "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Additional context",
         "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
         "placeholder": ""
       },
-      "vision": {
+      "why": {
         "title": "Future Vision",
         "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
         "placeholder": ""
@@ -804,17 +799,17 @@
         "description": "In one sentence, explain what this Subspace is about.",
         "placeholder": ""
       },
-      "background": {
+      "description": {
         "title": "Background",
         "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
         "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
         "placeholder": ""
       },
-      "vision": {
+      "why": {
         "title": "Description",
         "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
         "placeholder": ""

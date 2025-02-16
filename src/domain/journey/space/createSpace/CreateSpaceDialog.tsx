@@ -13,7 +13,7 @@ import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { SpaceEditFormValuesType } from '../spaceEditForm/SpaceEditForm';
+import { SpaceEditFormValuesType } from '../about/SpaceEditForm';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';

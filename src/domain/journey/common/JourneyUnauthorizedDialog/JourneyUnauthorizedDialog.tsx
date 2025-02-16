@@ -10,7 +10,7 @@ import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
+import SpaceAboutDialog, { JourneyAboutDialogProps } from '../../space/about/SpaceAboutDialog';
 import useCanGoBack from '@/core/routing/useCanGoBack';
 
 interface JourneyUnauthorizedDialogProps
@@ -46,7 +46,7 @@ const JourneyUnauthorizedDialog = ({
       (applicationButtonRef.current instanceof HTMLButtonElement && !applicationButtonRef.current.disabled));
 
   return (
-    <JourneyAboutDialog
+    <SpaceAboutDialog
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={

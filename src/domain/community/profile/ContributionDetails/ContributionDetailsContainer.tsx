@@ -63,13 +63,13 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
     if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
       return {
-        displayName: space.profile.displayName!,
-        banner: getVisualByType(VisualName.CARD, space.profile.visuals),
-        tags: space.profile.tagset?.tags ?? [],
-        url: space.profile.url,
+        displayName: space.about.profile.displayName!,
+        banner: getVisualByType(VisualName.CARD, space.about.profile.visuals),
+        tags: space.about.profile.tagset?.tags ?? [],
+        url: space.about.profile.url,
         communityId: space.community?.id,
         roleSetId: space.community?.roleSet.id,
-        tagline: space.profile.tagline ?? '',
+        tagline: space.about.profile.tagline ?? '',
         level: space.level,
       };
     }

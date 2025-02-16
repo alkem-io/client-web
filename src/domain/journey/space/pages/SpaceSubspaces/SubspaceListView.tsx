@@ -7,7 +7,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchDashboardWithMembershipsQuery,
-  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
@@ -95,7 +95,7 @@ export const SubspaceListView = () => {
       refetchAdminSpaceSubspacesPageQuery({
         spaceId,
       }),
-      refetchSpaceDashboardNavigationChallengesQuery({
+      refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
       'SpaceDashboardNavigationOpportunities',
@@ -130,9 +130,9 @@ export const SubspaceListView = () => {
             tagline: value.tagline,
             description: value.description ?? '',
             visuals: value.visuals,
+            tags: value.tags,
           },
           why: value.why,
-          tags: value.tags,
         },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,

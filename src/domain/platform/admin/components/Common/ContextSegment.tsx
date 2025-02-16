@@ -34,18 +34,18 @@ export const ContextSegment = ({ loading, spaceLevel }: ContextSegmentProps & { 
       />
       <FormikMarkdownField
         name="background"
-        title={t(`context.${spaceLevel}.background.title` as const)}
-        placeholder={t(`context.${spaceLevel}.background.title` as const)}
-        helperText={t(`context.${spaceLevel}.background.description` as const)}
+        title={t(`context.${spaceLevel}.description.title` as const)}
+        placeholder={t(`context.${spaceLevel}.description.title` as const)}
+        helperText={t(`context.${spaceLevel}.description.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}
       />
       <FormikMarkdownField
         name="impact"
-        title={t(`context.${spaceLevel}.impact.title` as const)}
-        placeholder={t(`context.${spaceLevel}.impact.title` as const)}
-        helperText={t(`context.${spaceLevel}.impact.description` as const)}
+        title={t(`context.${spaceLevel}.when.title` as const)}
+        placeholder={t(`context.${spaceLevel}.when.title` as const)}
+        helperText={t(`context.${spaceLevel}.when.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}

@@ -37,16 +37,14 @@ fragment SpacePage on Space {
   about {
     ...SpaceAboutContextDetails
     profile {
-      id
-      url
-      displayName
-      description
-      tagline
       visuals {
         ...VisualUri
       }
       tagset {
         ...TagsetDetails
+      }
+      location {
+        ...fullLocation
       }
     }
   }

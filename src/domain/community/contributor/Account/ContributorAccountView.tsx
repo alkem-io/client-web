@@ -76,9 +76,12 @@ export interface AccountTabResourcesProps {
   spaces: {
     id: string;
     level: SpaceLevel;
-    profile: AccountProfile & {
-      cardBanner?: { uri: string };
-      tagline?: string;
+    about: {
+      id: string;
+      profile: AccountProfile & {
+        cardBanner?: { uri: string };
+        tagline?: string;
+      };
     };
     community: {
       id: string;
@@ -116,8 +119,10 @@ export interface AccountTabResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      profile: {
-        displayName: string;
+      about: {
+        profile: {
+          displayName: string;
+        };
       };
     }[];
     subdomain: string;
@@ -520,7 +525,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 account?.spaces.map(space => (
                   <JourneyCardHorizontal
                     key={space.id}
-                    journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
+                    journey={{ profile: space.about.profile, spaceLevel: space.level, community: {} }}
                     size="medium"
                     deepness={0}
                     seamless

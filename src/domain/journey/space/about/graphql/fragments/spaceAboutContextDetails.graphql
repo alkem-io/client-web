@@ -3,6 +3,31 @@ fragment SpaceAboutContextDetails on SpaceAbout {
   why
   when
   who
+  profile {
+    id
+    displayName
+    description
+    tagline
+    url
+    references {
+      ...ReferenceDetails
+    }
+    tagset {
+      id
+      name
+      tags
+      allowedValues
+      type
+    }
+    location {
+      id
+      city
+      country
+    }
+    visuals {
+      ...VisualFull
+    }
+  }
   authorization {
     id
     myPrivileges

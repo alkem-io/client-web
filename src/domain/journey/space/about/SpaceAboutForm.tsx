@@ -1,31 +1,31 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { spaceAboutSegmentSchema } from './Common/ContextSegment';
-import { SpaceContextSegment } from '../space/SpaceContextSegment';
+import { spaceAboutSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
+import { SpaceContextSegment } from '../../../platform/admin/space/SpaceContextSegment';
 
-interface SpaceEditFormProps {
+interface SpaceAboutEditFormProps {
   about: {
     when?: string;
     why?: string;
     who?: string;
-    profile: { description?: string } | undefined;
+    profile?: { description?: string };
   };
-  onSubmit: (formData: SpaceEditFormValuesType) => void;
+  onSubmit: (formData: SpaceAboutEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   isEdit: boolean;
   loading: boolean;
 }
 
-export interface SpaceEditFormValuesType {
+export interface SpaceAboutEditFormValuesType {
   description: string;
   when?: string;
   why?: string;
   who?: string;
 }
 
-const SpaceEditForm: FC<SpaceEditFormProps> = ({ about, onSubmit, wireSubmit, loading }) => {
-  const initialValues: SpaceEditFormValuesType = {
+const SpaceAboutEditForm: FC<SpaceAboutEditFormProps> = ({ about, onSubmit, wireSubmit, loading }) => {
+  const initialValues: SpaceAboutEditFormValuesType = {
     description: about.profile?.description ?? '',
     when: about?.when ?? '',
     why: about?.why ?? '',
@@ -62,4 +62,4 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ about, onSubmit, wireSubmit, lo
   );
 };
 
-export default SpaceEditForm;
+export default SpaceAboutEditForm;

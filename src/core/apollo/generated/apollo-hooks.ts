@@ -1725,38 +1725,43 @@ export const SpaceAboutContextDetailsFragmentDoc = gql`
     why
     when
     who
+    profile {
+      id
+      displayName
+      description
+      tagline
+      url
+      references {
+        ...ReferenceDetails
+      }
+      tagset {
+        id
+        name
+        tags
+        allowedValues
+        type
+      }
+      location {
+        id
+        city
+        country
+      }
+      visuals {
+        ...VisualFull
+      }
+    }
     authorization {
       id
       myPrivileges
     }
   }
+  ${ReferenceDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export const SpaceInfoFragmentDoc = gql`
   fragment SpaceInfo on Space {
     about {
       ...SpaceAboutContextDetails
-      profile {
-        id
-        displayName
-        description
-        tagline
-        url
-        tagset {
-          ...TagsetDetails
-        }
-        references {
-          id
-          name
-          description
-          uri
-        }
-        visuals {
-          ...VisualFull
-        }
-        location {
-          ...fullLocation
-        }
-      }
     }
     settings {
       privacy {
@@ -1765,9 +1770,6 @@ export const SpaceInfoFragmentDoc = gql`
     }
   }
   ${SpaceAboutContextDetailsFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
 `;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
@@ -1816,16 +1818,14 @@ export const SpacePageFragmentDoc = gql`
     about {
       ...SpaceAboutContextDetails
       profile {
-        id
-        url
-        displayName
-        description
-        tagline
         visuals {
           ...VisualUri
         }
         tagset {
           ...TagsetDetails
+        }
+        location {
+          ...fullLocation
         }
       }
     }
@@ -1867,6 +1867,7 @@ export const SpacePageFragmentDoc = gql`
   ${SpaceAboutContextDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContributorDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
@@ -2064,6 +2065,8 @@ export const SubspacePageSpaceFragmentDoc = gql`
       profile {
         id
         url
+        displayName
+        description
       }
     }
     metrics {
@@ -5757,6 +5760,7 @@ export const AccountInformationDocument = gql`
           about {
             id
             profile {
+              id
               ...AccountItemProfile
               cardBanner: visual(type: CARD) {
                 ...VisualUri

@@ -273,11 +273,10 @@ const SubspacePageLayout = ({
                 )}
               </TopLevelLayout>
               <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
-                {({ why: vision, ...props }) => (
+                {({ ...props }) => (
                   <JourneyUnauthorizedDialog
                     journeyId={journeyId}
                     parentSpaceId={parentSpaceId}
-                    description={vision}
                     disabled={unauthorizedDialogDisabled}
                     spaceLevel={spaceLevel}
                     {...props}

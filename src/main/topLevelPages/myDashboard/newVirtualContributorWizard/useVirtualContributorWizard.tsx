@@ -58,6 +58,7 @@ export type SelectableSpace = {
   about: {
     id: string;
     profile: {
+      id: string;
       displayName: string;
       url: string;
     };

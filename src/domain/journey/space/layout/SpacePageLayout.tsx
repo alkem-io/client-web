@@ -14,7 +14,7 @@ import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuid
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutContextDetailsFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpacePageLayoutProps {
@@ -36,7 +36,8 @@ const SpacePageLayout = ({
     },
     skip: !spaceId,
   });
-  const profile = spaceData?.lookup.space?.profile;
+  const about: SpaceAboutContextDetailsFragment = spaceData?.lookup.space?.about!;
+  const profile = spaceData?.lookup.space?.about.profile;
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
@@ -66,9 +67,9 @@ const SpacePageLayout = ({
         {children}
       </StorageConfigContextProvider>
       <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={spaceId}>
-        {({ why: vision, ...props }) => (
+        {({ ...props }) => (
           <JourneyUnauthorizedDialog
-            description={vision}
+            about={about}
             disabled={unauthorizedDialogDisabled}
             leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile?.url} />}
             spaceLevel={SpaceLevel.L0}

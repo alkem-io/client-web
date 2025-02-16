@@ -3,12 +3,10 @@ import { ApolloError } from '@apollo/client';
 import {
   AuthorizationPrivilege,
   MetricsItemFragment,
-  ReferenceDetailsFragment,
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
   SpaceAboutContextDetailsFragment,
-  Tagset,
 } from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '@/core/utils/WithId';
@@ -27,8 +25,7 @@ interface AboutPagePermissions {
 }
 
 export interface AboutPageContainerEntities {
-  about?: SpaceAboutContextDetailsFragment;
-  tagset?: Tagset;
+  about: SpaceAboutContextDetailsFragment;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
@@ -39,7 +36,6 @@ export interface AboutPageContainerEntities {
   leadUsers: ContributorViewProps[] | undefined;
   leadOrganizations: ContributorViewProps[] | undefined;
   provider: ContributorViewProps | undefined;
-  references: ReferenceDetailsFragment[] | undefined;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
@@ -105,7 +101,6 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     skip: !canReadCommunity,
   });
   const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);
-  const memberSpaceAbout = membersData?.lookup.space?.about;
 
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
@@ -116,7 +111,6 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     communityPrivileges?.includes(AuthorizationPrivilege.CommunityAssignVcFromAccount) ||
     false;
 
-  const tagset = nonMemberSpaceAbout?.profile?.tagset;
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
@@ -124,7 +118,6 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
 
   const leadUsers = usersByRole[RoleName.Lead];
   const leadOrganizations = organizationsByRole[RoleName.Lead];
-  const references = memberSpaceAbout?.profile.references;
 
   const metrics = nonMemberSpace?.metrics;
 
@@ -149,17 +142,15 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
 
   const about = useMemo(() => {
     return {
-      about: {
-        id: nonMemberSpaceAbout?.id ?? '',
-        profile: {
-          id: nonMemberSpaceAboutProfile?.id ?? '',
-          displayName: nonMemberSpaceAboutProfile?.displayName ?? '',
-          description: nonMemberSpaceAboutProfile?.description,
-          tagset: nonMemberSpaceAboutProfile?.tagset,
-          visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
-          tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
-          url: nonMemberSpaceAboutProfile?.url ?? '',
-        },
+      id: nonMemberSpaceAbout?.id ?? '',
+      profile: {
+        id: nonMemberSpaceAboutProfile?.id ?? '',
+        displayName: nonMemberSpaceAboutProfile?.displayName ?? '',
+        description: nonMemberSpaceAboutProfile?.description,
+        tagset: nonMemberSpaceAboutProfile?.tagset,
+        visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
+        tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
+        url: nonMemberSpaceAboutProfile?.url ?? '',
       },
     };
   }, [nonMemberSpaceAboutProfile]);
@@ -169,14 +160,12 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
       {children(
         {
           about,
-          tagset,
           innovationFlow: collaboration?.innovationFlow,
           permissions,
           metrics,
           leadUsers,
           leadOrganizations,
           provider,
-          references,
           virtualContributors: publicVirtualContributors,
           hasReadPrivilege,
           hasInvitePrivilege,

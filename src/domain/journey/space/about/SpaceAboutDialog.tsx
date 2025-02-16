@@ -27,7 +27,7 @@ import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import References from '@/domain/shared/components/References/References';
-import { Reference, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutContextDetailsFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -39,18 +39,7 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceLevel: SpaceLevel | undefined;
-  about: {
-    why: string | undefined;
-    who: string | undefined;
-    when: string | undefined;
-    profile: {
-      displayName: ReactNode;
-      tagline: ReactNode;
-      description: string | undefined;
-      references: Reference[] | undefined;
-      url?: string;
-    };
-  };
+  about?: SpaceAboutContextDetailsFragment | undefined;
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;
@@ -88,7 +77,7 @@ const gradient = (theme: Theme) =>
     theme
   )}, rgba(0,0,0,.5) 100%);`;
 
-const JourneyAboutDialog = ({
+const SpaceAboutDialog = ({
   open,
   about,
   ribbon,
@@ -148,7 +137,7 @@ const JourneyAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-  const aboutProfile = about.profile;
+  const aboutProfile = about?.profile;
 
   return (
     <DialogWithGrid
@@ -176,10 +165,10 @@ const JourneyAboutDialog = ({
           </DialogHeaderItem>
           <DialogHeaderItem order={isMobile ? 1 : 0}>
             {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
-            <PageTitle paddingY={gutters(0.5)}>{aboutProfile.displayName}</PageTitle>
+            <PageTitle paddingY={gutters(0.5)}>{aboutProfile?.displayName}</PageTitle>
           </DialogHeaderItem>
           <DialogHeaderItem minWidth="30%" align="end">
-            {aboutProfile.url && <ShareButton url={aboutProfile.url} entityTypeName="about" />}
+            {aboutProfile?.url && <ShareButton url={aboutProfile.url} entityTypeName="about" />}
             {endButton}
           </DialogHeaderItem>
         </Box>
@@ -189,24 +178,24 @@ const JourneyAboutDialog = ({
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters flexWrap="wrap" flexDirection={isMobile ? 'row' : 'row-reverse'}>
           <PageContentColumn columns={8}>
-            {aboutProfile.description && (
+            {aboutProfile?.description && (
               <PageContentBlock accent>
                 <WrapperMarkdown>{aboutProfile.description}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {about.why && (
+            {about?.why && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.background.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.description.title` as const)} />
                 <WrapperMarkdown>{about.why}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {about.when && (
+            {about?.when && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.impact.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.when.title` as const)} />
                 <WrapperMarkdown>{about.when}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {about.who && (
+            {about?.who && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />
                 <WrapperMarkdown>{about.who}</WrapperMarkdown>
@@ -227,7 +216,7 @@ const JourneyAboutDialog = ({
               </PageContentBlock>
               <PageContentBlock>
                 <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-                <References references={aboutProfile.references} />
+                <References references={aboutProfile?.references} />
               </PageContentBlock>
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding order={isMobile ? 1 : 0}>
@@ -299,4 +288,4 @@ const JourneyAboutDialog = ({
   );
 };
 
-export default JourneyAboutDialog;
+export default SpaceAboutDialog;
