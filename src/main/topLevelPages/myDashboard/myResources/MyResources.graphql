@@ -6,10 +6,9 @@ query MyResources($accountId: UUID!) {
         id
         level
         about {
-          id
+          ...SpaceAboutCardBanner
           profile {
-            ...ShortAccountItem
-            cardBanner: visual(type: CARD) {
+            avatar: visual(type: AVATAR) {
               ...VisualUri
             }
           }

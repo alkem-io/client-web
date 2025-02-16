@@ -2,20 +2,12 @@ fragment SubspacePendingMembershipInfo on Space {
   id
   level
   about {
-    id
+    ...SpaceAboutLightUrl
     authorization {
       id
       myPrivileges
     }
     profile {
-      id
-      displayName
-      tagline
-      description
-      url
-      tagset {
-        ...TagsetDetails
-      }
       references {
         id
         name

@@ -10,28 +10,7 @@ query AboutPageNonMembers($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        id
-        who
-        when
-        why
-        authorization {
-          id
-          myPrivileges
-        }
-        profile {
-          id
-          url
-          displayName
-          tagline
-          description
-          tagset {
-            ...TagsetDetails
-          }
-          visuals {
-            ...VisualFull
-          }
-          url
-        }
+        ...SpaceAboutDetails
       }
       provider {
         ...ContributorDetails
@@ -81,13 +60,11 @@ query AboutPageMembers($spaceId: UUID!) {
         }
       }
       about {
-        id
+        ...SpaceAboutLightUrl
         profile {
-          id
           references {
             ...ReferenceDetails
           }
-          url
         }
       }
       authorization {

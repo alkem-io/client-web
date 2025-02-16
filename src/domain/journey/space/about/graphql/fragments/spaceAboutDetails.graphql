@@ -19,6 +19,13 @@ fragment SpaceAboutDetails on SpaceAbout {
     visuals {
       ...VisualFull
     }
-    url
+    references {
+      ...ReferenceDetails
+    }
+    location {
+      id
+      city
+      country
+    }
   }
 }

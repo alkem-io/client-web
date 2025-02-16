@@ -18,15 +18,7 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
     id
     level
     about {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: CARD) {
-          ...VisualUri
-        }
-      }
+      ...SpaceAboutCardBanner
     }
   }
   triggeredBy {
@@ -58,15 +50,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
     id
     level
     about {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: CARD) {
-          ...VisualUri
-        }
-      }
+      ...SpaceAboutCardBanner
     }
   }
   actor {

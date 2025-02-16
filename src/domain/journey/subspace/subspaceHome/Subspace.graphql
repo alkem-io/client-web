@@ -14,14 +14,9 @@ fragment SubspacePageSpace on Space {
     myPrivileges
   }
   about {
-    id
+    ...SpaceAboutLightUrl
     why
-    profile {
-      id
-      url
-      displayName
-      description
-    }
+
   }
   metrics {
     id

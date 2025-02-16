@@ -1,20 +1,8 @@
 fragment SpaceCard on Space {
   id
   about {
-    id
+    ...SpaceAboutCardBanner
     why
-    profile {
-      id
-      url
-      displayName
-      tagline
-      tagset {
-        ...TagsetDetails
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
   }
   metrics {
     name

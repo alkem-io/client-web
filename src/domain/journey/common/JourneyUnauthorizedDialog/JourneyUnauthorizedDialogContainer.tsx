@@ -8,12 +8,12 @@ import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboa
 import {
   AuthorizationPrivilege,
   MetricsItemFragment,
-  SpaceAboutContextDetailsFragment,
+  SpaceAboutDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import mainQuery from '@/core/apollo/utils/mainQuery';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
-  about?: SpaceAboutContextDetailsFragment;
+  about?: SpaceAboutDetailsFragment;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
   authorized: boolean | undefined;
@@ -66,7 +66,7 @@ const JourneyUnauthorizedDialogContainer = ({
 
   const { metrics, community } = journeyDataQueryData?.lookup.space ?? {};
 
-  const about: SpaceAboutContextDetailsFragment = journeyDataQueryData?.lookup.space?.about!;
+  const about: SpaceAboutDetailsFragment = journeyDataQueryData?.lookup.space?.about!;
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(

@@ -27,7 +27,7 @@ import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import References from '@/domain/shared/components/References/References';
-import { SpaceAboutContextDetailsFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutDetailsFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -39,7 +39,7 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceLevel: SpaceLevel | undefined;
-  about?: SpaceAboutContextDetailsFragment | undefined;
+  about?: SpaceAboutDetailsFragment | undefined;
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;

@@ -3,11 +3,7 @@ query SpaceSubspaces($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        id
-        profile {
-          id
-          displayName
-        }
+        ...SpaceAboutLight
       }
       account {
         id
@@ -33,16 +29,7 @@ query SpaceSubspaces($spaceId: UUID!) {
       subspaces {
         id
         about {
-          id
-          profile {
-            id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-          }
+          ...SpaceAboutCardAvatar
         }
       }
     }

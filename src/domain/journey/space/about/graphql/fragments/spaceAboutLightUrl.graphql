@@ -5,6 +5,7 @@ fragment SpaceAboutLightUrl on SpaceAbout {
     displayName
     url
     tagline
+    description
     tagset {
       id
       tags

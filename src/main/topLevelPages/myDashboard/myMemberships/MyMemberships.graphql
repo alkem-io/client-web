@@ -35,15 +35,6 @@ fragment SpaceMembership on Space {
     }
   }
   about {
-    id
-    profile {
-      id
-      url
-      displayName
-      tagline
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
+    ...SpaceAboutCardBanner
   }
 }

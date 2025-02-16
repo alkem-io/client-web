@@ -35,14 +35,8 @@ fragment SpacePage on Space {
   level
   nameID # Used for SpaceEdit Page
   about {
-    ...SpaceAboutContextDetails
+    ...SpaceAboutDetails
     profile {
-      visuals {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
       location {
         ...fullLocation
       }

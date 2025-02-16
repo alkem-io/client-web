@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
   Reference,
-  SpaceAboutContextDetailsFragment,
+  SpaceAboutDetailsFragment,
   SpaceLevel,
   Tagset,
   TagsetType,
@@ -29,7 +29,7 @@ import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { Caption } from '@/core/ui/typography';
 
 interface SpaceEditFormProps {
-  about?: SpaceAboutContextDetailsFragment;
+  about?: SpaceAboutDetailsFragment;
   nameID?: string;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;
@@ -46,8 +46,6 @@ export interface SpaceEditFormValuesType {
     id: string;
     name: string;
     tags: string[];
-    allowedValues: string[];
-    type: TagsetType;
   }[];
 }
 

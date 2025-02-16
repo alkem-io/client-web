@@ -4,7 +4,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Box, Container, Grid } from '@mui/material';
 import SpaceContextForm, { SpaceAboutEditFormValuesType } from '@/domain/journey/space/about/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SpaceAboutContextDetailsFragment } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 
 export const SpaceContextView = () => {
   const notify = useNotification();
@@ -16,7 +16,7 @@ export const SpaceContextView = () => {
     skip: !spaceId,
   });
 
-  const about: SpaceAboutContextDetailsFragment = spaceData?.lookup.space?.about!;
+  const about: SpaceAboutDetailsFragment = spaceData?.lookup.space?.about!;
 
   const [updateSpace, { loading: isUpdatingSpace }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),

@@ -6,7 +6,7 @@ import {
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
-  SpaceAboutContextDetailsFragment,
+  SpaceAboutDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '@/core/utils/WithId';
@@ -25,7 +25,7 @@ interface AboutPagePermissions {
 }
 
 export interface AboutPageContainerEntities {
-  about: SpaceAboutContextDetailsFragment;
+  about: SpaceAboutDetailsFragment;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
@@ -140,7 +140,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
 
-  const about = useMemo(() => {
+  const about: SpaceAboutDetailsFragment = useMemo(() => {
     return {
       id: nonMemberSpaceAbout?.id ?? '',
       profile: {
@@ -148,9 +148,9 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
         displayName: nonMemberSpaceAboutProfile?.displayName ?? '',
         description: nonMemberSpaceAboutProfile?.description,
         tagset: nonMemberSpaceAboutProfile?.tagset,
-        visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
         tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
         url: nonMemberSpaceAboutProfile?.url ?? '',
+        visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
       },
     };
   }, [nonMemberSpaceAboutProfile]);

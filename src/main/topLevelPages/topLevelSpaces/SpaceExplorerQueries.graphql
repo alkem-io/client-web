@@ -64,22 +64,8 @@ fragment SpaceExplorerSpace on Space {
   }
   type
   about {
-    id
     why
-    profile {
-      id
-      url
-      tagline
-      displayName
-      type
-      tagset {
-        id
-        tags
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
+    ...SpaceAboutCardBanner
   }
   visibility
   community {
@@ -100,22 +86,9 @@ fragment SpaceExplorerSubspace on Space {
   id
   type
   about {
-    id
+    ...SpaceAboutCardBanner
     why
     profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      type
-      tagset {
-        id
-        tags
-      }
       avatar: visual(type: AVATAR) {
         ...VisualUri
       }

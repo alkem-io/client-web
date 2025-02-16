@@ -5,12 +5,7 @@ query Space($spaceId: UUID!) {
       id
       nameID # Used for search in space
       about {
-        id
-        profile {
-          id
-          displayName
-          url
-        }
+        ...SpaceAboutLightUrl
       }
       authorization {
         id
@@ -66,7 +61,7 @@ query SpaceProfile($spaceId: UUID!) {
 
 fragment SpaceInfo on Space {
   about {
-    ...SpaceAboutContextDetails
+    ...SpaceAboutDetails
   }
   settings {
     privacy {
@@ -113,11 +108,7 @@ query SpaceUrl($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        id
-        profile {
-          id
-          url
-        }
+        ...SpaceAboutLightUrl
       }
     }
   }
