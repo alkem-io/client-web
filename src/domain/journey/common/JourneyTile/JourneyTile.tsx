@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { Visual } from '@/domain/common/visual/Visual';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import GridItem from '@/core/ui/grid/GridItem';
@@ -10,19 +9,13 @@ import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutCardBannerFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from './PrivacyIcon';
 
 type JourneyTileProps = {
   journey:
     | {
-        about: {
-          profile: {
-            displayName: string;
-            url: string;
-            cardBanner?: Visual;
-          };
-        };
+        about: SpaceAboutCardBannerFragment;
         level?: SpaceLevel;
       }
     | undefined;

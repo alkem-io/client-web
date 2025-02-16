@@ -5,11 +5,14 @@ import {
   useSpaceContributionDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '@/core/container/container';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { RoleSetContributorType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  RoleSetContributorType,
+  RoleName,
+  SpaceLevel,
+  SpaceAboutCardBannerFragment,
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -34,15 +37,8 @@ interface EntityDetailsContainerProps
 }
 
 export interface ContributionDetails {
-  displayName: string;
-  banner?: {
-    uri: string;
-    alternativeText?: string;
-  };
-  tags: string[];
-  url: string;
+  about: SpaceAboutCardBannerFragment;
   roleSetId?: string;
-  tagline: string;
   level: SpaceLevel;
 }
 
@@ -63,13 +59,8 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
     if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
       return {
-        displayName: space.about.profile.displayName!,
-        banner: getVisualByType(VisualName.CARD, space.about.profile.visuals),
-        tags: space.about.profile.tagset?.tags ?? [],
-        url: space.about.profile.url,
-        communityId: space.community?.id,
+        about: space.about,
         roleSetId: space.community?.roleSet.id,
-        tagline: space.about.profile.tagline ?? '',
         level: space.level,
       };
     }

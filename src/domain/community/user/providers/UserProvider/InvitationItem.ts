@@ -1,16 +1,10 @@
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, SpaceAboutLightUrlFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface InvitationItem extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {
     level: SpaceLevel;
-    about: {
-      profile: {
-        url: string;
-        displayName: string;
-        tagline?: string;
-      };
-    };
+    about: SpaceAboutLightUrlFragment;
   };
   invitation: {
     id: string;

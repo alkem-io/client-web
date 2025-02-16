@@ -19,16 +19,9 @@ fragment DashboardSpaceMembership on Space {
   id
   level
   about {
-    id
+    ...SpaceAboutCardBanner
     profile {
-      id
-      url
-      tagline
-      displayName
       spaceBanner: visual(type: BANNER) {
-        ...VisualUri
-      }
-      cardBanner: visual(type: CARD) {
         ...VisualUri
       }
     }

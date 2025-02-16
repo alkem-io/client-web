@@ -3,5 +3,6 @@ fragment SpaceAboutLight on SpaceAbout {
   profile {
     id
     displayName
+    tagline
   }
 }

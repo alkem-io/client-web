@@ -1,7 +1,6 @@
-import { Visual } from '@/domain/common/visual/Visual';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceLevel, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutCardBannerFragment, SpaceLevel, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 
 export interface ExploreSpacesContainerEntities {
   spaces: SpaceWithParent[] | undefined;
@@ -25,11 +24,7 @@ export interface ExploreSpacesContainerProps extends SimpleContainerProps<Explor
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
 
 interface ParentSpace extends Identifiable {
-  profile: {
-    displayName: string;
-    avatar?: Visual;
-    cardBanner?: Visual;
-  };
+  about: SpaceAboutCardBannerFragment;
   settings: {
     privacy?: {
       mode: SpacePrivacyMode;
@@ -42,15 +37,7 @@ type WithParent<ParentInfo extends {}> = {
 };
 
 interface Space extends Identifiable {
-  about: {
-    id: string;
-    profile: {
-      url: string;
-      displayName: string;
-      avatar?: Visual;
-      cardBanner?: Visual;
-    };
-  };
+  about: SpaceAboutCardBannerFragment;
   level?: SpaceLevel;
 }
 
@@ -69,13 +56,7 @@ export interface ExploreSpacesViewProps {
   }[];
   welcomeSpace?: {
     id: string;
-    about: {
-      profile: {
-        displayName: string;
-        url: string;
-        cardBanner?: Visual;
-      };
-    };
+    about: SpaceAboutCardBannerFragment;
     level: SpaceLevel.L0;
   };
   itemsPerRow?: number;

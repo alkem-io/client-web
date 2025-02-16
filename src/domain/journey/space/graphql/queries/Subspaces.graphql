@@ -5,15 +5,7 @@ query SubspacesInSpace($spaceId: UUID!) {
       subspaces {
         id
         about {
-          id
-          profile {
-            id
-            displayName
-            url
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
-            }
-          }
+          ...SpaceAboutCardBanner
         }
         level
       }

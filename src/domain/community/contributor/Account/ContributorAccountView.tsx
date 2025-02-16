@@ -19,6 +19,7 @@ import {
   AuthorizationPrivilege,
   LicenseEntitlement,
   LicenseEntitlementType,
+  SpaceAboutLightFragment,
   SpaceLevel,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -119,11 +120,7 @@ export interface AccountTabResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      about: {
-        profile: {
-          displayName: string;
-        };
-      };
+      about: SpaceAboutLightFragment;
     }[];
     subdomain: string;
   }[];
