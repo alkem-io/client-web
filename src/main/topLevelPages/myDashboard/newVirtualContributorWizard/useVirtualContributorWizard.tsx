@@ -17,6 +17,7 @@ import {
   RoleName,
   CreateCalloutInput,
   CreateVirtualContributorOnAccountMutationVariables,
+  SpaceAboutLightUrlFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -55,14 +56,7 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  about: {
-    id: string;
-    profile: {
-      id: string;
-      displayName: string;
-      url: string;
-    };
-  };
+  about: SpaceAboutLightUrlFragment;
   community: {
     roleSet: {
       id: string;

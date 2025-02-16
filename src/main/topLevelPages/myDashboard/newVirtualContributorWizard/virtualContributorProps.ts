@@ -1,5 +1,9 @@
 import { ComponentType } from 'react';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SpaceAboutLightUrlFragment,
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface UserAccountProps {
   id: string;
@@ -14,14 +18,7 @@ export interface UserAccountProps {
         id: string;
       };
     };
-    about: {
-      id: string;
-      profile: {
-        id: string;
-        displayName: string;
-        url: string;
-      };
-    };
+    about: SpaceAboutLightUrlFragment;
     license: {
       id: string;
       myEntitlements?: LicenseEntitlementType[] | undefined;
