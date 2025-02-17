@@ -36,7 +36,7 @@ type OrganizationPageViewProps = {
 export const OrganizationPageView = ({ entities, accountResources, state: { loading } }: OrganizationPageViewProps) => {
   const { t } = useTranslation();
 
-  const { permissions, socialLinks, links, organization, capabilities, keywords, associates, contributions } = entities;
+  const { permissions, references, organization, capabilities, keywords, associates, contributions } = entities;
 
   const tagsets = useMemo(
     () => [
@@ -56,11 +56,10 @@ export const OrganizationPageView = ({ entities, accountResources, state: { load
         bio: organization?.profile.description,
         verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
         tagsets,
-        socialLinks,
-        links,
+        references,
         location: organization?.profile.location,
       } as OrganizationProfileViewEntity),
-    [organization, tagsets, socialLinks, links, t]
+    [organization, tagsets, references, t]
   );
 
   const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [RoleType.Lead]);
