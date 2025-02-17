@@ -54,7 +54,9 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
     () =>
       items
         ?.filter(
-          link => link.url && (link.type === 'email' ? schemaEmail.isValidSync(link.url) : schema.isValidSync(link.url))
+          link =>
+            link.url &&
+            (link.type === SocialNetworkEnum.email ? schemaEmail.isValidSync(link.url) : schema.isValidSync(link.url))
         )
         .sort((a, b) => SocialNetworksSortOrder[a.type] - SocialNetworksSortOrder[b.type]) || [],
     [items]
