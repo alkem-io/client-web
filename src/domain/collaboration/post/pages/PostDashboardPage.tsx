@@ -10,10 +10,7 @@ export interface PostDashboardPageProps {
 
 const PostDashboardPage = ({ onClose, postId }: PostDashboardPageProps) => (
   <PostLayout currentSection={PostDialogSection.Dashboard} onClose={onClose}>
-    <PostDashboardView
-      mode="messages"
-      postId={postId}
-    />
+    <PostDashboardView mode="messages" postId={postId} />
     <DialogFooter />
   </PostLayout>
 );

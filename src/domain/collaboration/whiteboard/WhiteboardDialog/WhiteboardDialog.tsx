@@ -100,7 +100,9 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
 
   const columns = useGlobalGridColumns();
 
-  const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSaveError, setLastSaveError] = useState<string | undefined>();
+  const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
@@ -109,9 +111,12 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     fetchPolicy: 'network-only',
   });
 
-  if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-    setLastSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
-  }
+  useEffect(() => {
+    // on the initialization of lastSuccessfulSavedDate take the date from the database
+    if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
+      setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
+    }
+  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -250,7 +255,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   return (
     <>
       <CollaborativeExcalidrawWrapper
-        entities={{ whiteboard, filesManager, lastSavedDate }}
+        entities={{ whiteboard, filesManager, lastSuccessfulSavedDate }}
         collabApiRef={collabApiRef}
         options={{
           UIOptions: {
@@ -263,8 +268,15 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
-          onRemoteSave: () => {
-            setLastSavedDate(new Date());
+          onRemoteSave: (error?: string) => {
+            if (error) {
+              setLastSaveError(error);
+              setConsecutiveSaveErrors(count => count + 1);
+            } else {
+              setLastSuccessfulSavedDate(new Date());
+              setLastSaveError(undefined);
+              setConsecutiveSaveErrors(0);
+            }
           },
           onSceneInitChange: setSceneInitialized,
         }}
@@ -308,7 +320,9 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                   collaboratorMode={mode}
                   whiteboardUrl={whiteboard.profile.url}
                   collaboratorModeReason={modeReason}
-                  lastSavedDate={lastSavedDate}
+                  lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+                  lastSaveError={lastSaveError}
+                  consecutiveSaveErrors={consecutiveSaveErrors}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}

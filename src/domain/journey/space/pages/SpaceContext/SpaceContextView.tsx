@@ -12,7 +12,7 @@ export const SpaceContextView = () => {
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId
+    skip: !spaceId,
   });
 
   const [updateSpace, { loading: isUpdatingSpace }] = useUpdateSpaceMutation({

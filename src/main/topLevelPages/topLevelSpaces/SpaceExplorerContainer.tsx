@@ -197,7 +197,6 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
     return flattenedSpaces;
   }, [flattenedSpaces, membershipFilter, shouldSearch]);
 
-
   const provided = {
     spaces: filteredSpaces,
     authenticated: isAuthenticated,

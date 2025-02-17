@@ -27,7 +27,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
   const welcomeSpaceId = resolveSpaceData?.lookupByName.space?.id;
   const { data: welcomeSpaceData } = useWelcomeSpaceQuery({
     variables: {
-      spaceId: welcomeSpaceId!
+      spaceId: welcomeSpaceId!,
     },
     skip: shouldSearch || !welcomeSpaceId,
   });

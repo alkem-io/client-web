@@ -20,9 +20,13 @@ const EntityDashboardContributorsSection = ({
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('contributors-section.title')} />
-      <BlockSectionTitle><EllipsableWithCount count={memberOrganizationsCount}>{t('common.organizations')}</EllipsableWithCount></BlockSectionTitle>
+      <BlockSectionTitle>
+        <EllipsableWithCount count={memberOrganizationsCount}>{t('common.organizations')}</EllipsableWithCount>
+      </BlockSectionTitle>
       <DashboardContributingOrganizations organizations={memberOrganizations} />
-      <BlockSectionTitle><EllipsableWithCount count={memberUsersCount}>{t('common.users')}</EllipsableWithCount></BlockSectionTitle>
+      <BlockSectionTitle>
+        <EllipsableWithCount count={memberUsersCount}>{t('common.users')}</EllipsableWithCount>
+      </BlockSectionTitle>
       <DashboardContributingUsers users={memberUsers} />
       {children}
     </PageContentBlock>

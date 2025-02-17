@@ -70,7 +70,7 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
     setSelectedCredentialMetadata(undefined);
     setVcInteraction(undefined);
     actions.onCancel();
-  }
+  };
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>

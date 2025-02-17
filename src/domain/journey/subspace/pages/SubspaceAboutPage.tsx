@@ -27,7 +27,6 @@ const SubspaceAboutPage = () => {
 
   const { t } = useTranslation();
 
-
   return (
     <>
       <AboutPageContainer journeyId={spaceId}>

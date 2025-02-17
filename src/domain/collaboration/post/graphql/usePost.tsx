@@ -22,37 +22,39 @@ type usePostProvided = {
     canAddReaction: boolean;
   };
 
-  post: {
-    id: string;
-    createdDate: string | Date;
-    profile: {
-      displayName: string;
-      description?: string;
-      url: string;
-      references?: {
+  post:
+    | {
         id: string;
-        name: string;
-        uri: string;
-        description?: string;
-      }[];
-      tagset?: {
-        tags: string[];
-      }
-      banner?: {
-        id: string;
-        uri: string;
-      }
-    };
-    createdBy?: {
-      profile: {
-        displayName: string;
-        avatar?: {
-          id: string;
-          uri: string;
+        createdDate: string | Date;
+        profile: {
+          displayName: string;
+          description?: string;
+          url: string;
+          references?: {
+            id: string;
+            name: string;
+            uri: string;
+            description?: string;
+          }[];
+          tagset?: {
+            tags: string[];
+          };
+          banner?: {
+            id: string;
+            uri: string;
+          };
+        };
+        createdBy?: {
+          profile: {
+            displayName: string;
+            avatar?: {
+              id: string;
+              uri: string;
+            };
+          };
         };
       }
-    }
-  } | undefined;
+    | undefined;
 
   comments: {
     roomId: string | undefined;
@@ -62,7 +64,7 @@ type usePostProvided = {
       threadID: string;
       virtualContributorID: string;
     }[];
-  }
+  };
 
   actions: {
     postMessage: (message: string) => Promise<unknown>;
@@ -125,10 +127,11 @@ const usePost = ({ postId }: usePostProps): usePostProvided => {
   const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
-  const { postMessage, postReply, postingMessage, postingReply, deleteMessage, deletingMessage } = usePostMessageMutations({
-    roomId,
-    isSubscribedToMessages,
-  });
+  const { postMessage, postReply, postingMessage, postingReply, deleteMessage, deletingMessage } =
+    usePostMessageMutations({
+      roomId,
+      isSubscribedToMessages,
+    });
 
   return {
     permissions: {

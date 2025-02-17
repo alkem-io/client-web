@@ -116,7 +116,7 @@ const usePostSettings = ({
   const handleDelete = async (postId: string) => {
     await deletePost({
       variables: {
-        postId
+        postId,
       },
     });
   };

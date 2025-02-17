@@ -16,10 +16,7 @@ const PostSharePage = ({ onClose, postId }: PostSharePageProps) => {
 
   return (
     <PostLayout currentSection={PostDialogSection.Share} onClose={onClose}>
-      <PostDashboardView
-        mode="share"
-        postId={postId}
-      />
+      <PostDashboardView mode="share" postId={postId} />
       <DialogFooter />
     </PostLayout>
   );
