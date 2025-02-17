@@ -1,14 +1,12 @@
 import { ApolloError } from '@apollo/client';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { isSocialLink, SocialLinkItem } from '@/domain/shared/components/SocialLinks/SocialLinks';
 import { useOrganization } from '../hooks/useOrganization';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { ContainerChildProps } from '@/core/container/container';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { SocialNetworkEnum, toSocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import {
   AuthorizationPrivilege,
   RoleSetContributorType,
@@ -18,19 +16,15 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { groupBy, type Dictionary } from 'lodash';
+import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
-  socialLinks: SocialLinkItem[];
-  links: Dictionary<
-    {
-      __typename?: 'Reference' | undefined;
-      id: string;
-      name: string;
-      uri: string;
-    }[]
-  >;
+  references: {
+    id: string;
+    name: string;
+    uri: string;
+  }[];
   capabilities: string[];
   keywords: string[];
   associates: ContributorCardSquareProps[];
@@ -58,7 +52,6 @@ export interface OrganizationPageContainerProps
   > {}
 
 const NO_PRIVILEGES = [];
-const OTHER_LINK_GROUP = 'other';
 
 export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
   const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
@@ -79,22 +72,13 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
     },
     skip: !organizationId || !canReadUsers,
   });
-
-  const socialLinks = useMemo(() => {
-    const result = (organization?.profile.references || [])
-      .map(s => ({
-        type: toSocialNetworkEnum(s.name),
-        url: s.uri,
-      }))
-      .filter(isSocialLink);
-    if (organization?.contactEmail) result.push({ type: SocialNetworkEnum.email, url: organization?.contactEmail });
-    if (organization?.website) result.push({ type: SocialNetworkEnum.website, url: organization?.website });
-
+  const references = useMemo(() => {
+    const result = [...(organization?.profile.references ?? [])];
+    if (organization?.contactEmail)
+      result.push({ id: '_email', name: SocialNetworkEnum.email, uri: organization.contactEmail });
+    if (organization?.website)
+      result.push({ id: '_website', name: SocialNetworkEnum.website, uri: organization.website });
     return result;
-  }, [organization]);
-
-  const links = useMemo(() => {
-    return groupBy(organization?.profile.references, () => OTHER_LINK_GROUP);
   }, [organization?.profile.references]);
 
   const keywords = useMemo(
@@ -180,8 +164,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
         {
           organization,
           permissions,
-          socialLinks,
-          links,
+          references,
           keywords,
           capabilities,
           associates,
