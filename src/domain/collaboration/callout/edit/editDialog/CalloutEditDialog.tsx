@@ -141,7 +141,10 @@ const CalloutEditDialog = ({
         </DialogActions>
         <ConfirmationDialog
           actions={{
-            onConfirm: onClose,
+            onConfirm: () => {
+              setCloseConfirmDialogOpen(false);
+              onClose();
+            },
             onCancel: () => setCloseConfirmDialogOpen(false),
           }}
           options={{
