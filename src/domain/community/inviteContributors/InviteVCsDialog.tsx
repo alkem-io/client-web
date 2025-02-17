@@ -191,12 +191,18 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   }, [virtualContributors]);
 
   const memoizedFilteredOnAccount = useMemo(
-    () => (filter ? onAccount?.filter(acc => acc.profile.displayName.includes(filter)) : undefined),
+    () =>
+      filter
+        ? onAccount?.filter(acc => acc.profile.displayName.toLowerCase().includes(filter.toLowerCase()))
+        : undefined,
     [filter, onAccount]
   );
 
   const memoizedFilteredInLibrary = useMemo(
-    () => (filter ? inLibrary?.filter(lib => lib.profile.displayName.includes(filter)) : undefined),
+    () =>
+      filter
+        ? inLibrary?.filter(lib => lib.profile.displayName.toLowerCase().includes(filter.toLowerCase()))
+        : undefined,
     [filter, inLibrary]
   );
 
