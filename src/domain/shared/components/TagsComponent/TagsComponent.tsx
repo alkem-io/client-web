@@ -42,9 +42,9 @@ const TagsComponent = ({
   variant = 'outlined',
   selectedVariant = 'filled',
   height,
-  hideNoTagsMessage,
   canShowAll = false,
   selectedIndexes = [],
+  hideNoTagsMessage = false,
   onClickTag,
   ...tagsContainerProps
 }: TagsComponentProps) => {

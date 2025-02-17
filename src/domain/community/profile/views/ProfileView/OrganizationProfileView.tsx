@@ -76,22 +76,28 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
           <Gutters>
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Gutters>
+
           {entity.tagsets
             ?.filter(t => t.tags.length > 0)
-            .map((tagset, i) => (
-              <Gutters key={i}>
-                <BlockTitle>{tagset.name}</BlockTitle>
-                <TagsComponent tags={tagset.tags} count={5} />
-              </Gutters>
-            ))}
-          <Gutters fullHeight>
-            <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
-            <References
-              references={links[OTHER_LINK_GROUP]}
-              noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
-            />
-            <SocialLinks items={socialLinks} />
-          </Gutters>
+            .map((tagset, i) =>
+              tagset.tags.length > 0 ? (
+                <Gutters key={i}>
+                  <BlockTitle>{tagset.name}</BlockTitle>
+                  <TagsComponent tags={tagset.tags} count={5} />
+                </Gutters>
+              ) : null
+            )}
+
+          {Number(links[OTHER_LINK_GROUP].length) > 0 && (
+            <Gutters fullHeight>
+              <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+              <References
+                references={links[OTHER_LINK_GROUP]}
+                noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+              />
+              <SocialLinks items={socialLinks} />
+            </Gutters>
+          )}
         </Grid>
       </CardContent>
     </PageContentBlock>
