@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 interface UserPageLayoutProps {}
 
 const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
-  const { userId } = useUrlResolver();
+  const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { user, loading } = useUserMetadata(userId);
 
   const { t } = useTranslation();
@@ -25,7 +25,7 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
             {t('pages.contributors.shortName')}
           </BreadcrumbsItem>
           <BreadcrumbsItem
-            loading={loading || !user}
+            loading={urlResolverLoading || loading || !user}
             avatar={user?.user.profile.avatar}
             iconComponent={AssignmentIndOutlined}
             uri={user?.user.profile.url}

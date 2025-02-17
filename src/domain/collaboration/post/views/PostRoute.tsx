@@ -14,16 +14,14 @@ export interface PostRouteProps {
 const PostRoute = ({ parentPagePath }: PostRouteProps) => {
   const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
   const onClose = () => backToExplore();
+  // TODO: loading?
   const { postId, calloutsSetId, calloutId } = useUrlResolver();
 
   return (
     <Routes>
       <Route path="/" element={<PostLayoutHolder />}>
         <Route index element={<Navigate replace to={PostDialogSection.Dashboard} state={{ keepScroll: true }} />} />
-        <Route
-          path={PostDialogSection.Dashboard}
-          element={<PostDashboardPage postId={postId} onClose={onClose} />}
-        />
+        <Route path={PostDialogSection.Dashboard} element={<PostDashboardPage postId={postId} onClose={onClose} />} />
         <Route
           path={PostDialogSection.Share}
           element={<PostSharePage calloutId={calloutId} postId={postId} onClose={onClose} />}

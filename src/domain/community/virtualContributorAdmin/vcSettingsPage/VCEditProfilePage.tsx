@@ -19,7 +19,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading } = useVirtualContributorQuery({
     variables: {
@@ -53,7 +53,7 @@ export const VCSettingsPage = () => {
     });
   };
 
-  if (loading) {
+  if (urlResolverLoading || loading) {
     return (
       <Loading
         text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.settings.title') })}

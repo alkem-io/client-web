@@ -48,7 +48,15 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { spaceId, levelZeroSpaceId, parentSpaceId, calloutId, spaceLevel, journeyPath } = useUrlResolver();
+  const {
+    spaceId,
+    levelZeroSpaceId,
+    parentSpaceId,
+    calloutId,
+    spaceLevel,
+    journeyPath,
+    loading: urlResolverLoading,
+  } = useUrlResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
@@ -106,7 +114,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
 
   const spaceReadAccess = useCanReadSpace({ spaceId });
 
-  if (isCalloutLoading && !typedCalloutDetails) {
+  if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
     return (
       <PageLayout
         spaceReadAccess={spaceReadAccess}

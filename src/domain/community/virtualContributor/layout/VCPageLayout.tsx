@@ -12,7 +12,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 interface VCPageLayoutProps {}
 
 const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
   const { data, loading } = useVirtualContributorQuery({
     variables: { id: vcId! },
     skip: !vcId,
@@ -29,7 +29,7 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
             {t('pages.contributors.shortName')}
           </BreadcrumbsItem>
           <BreadcrumbsItem
-            loading={loading}
+            loading={urlResolverLoading || loading}
             avatar={vc?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
             uri={vc?.profile.url ?? ''}

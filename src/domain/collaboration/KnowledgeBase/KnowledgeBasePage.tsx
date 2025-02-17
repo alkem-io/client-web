@@ -16,6 +16,7 @@ import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const KnowledgeBasePage = () => {
+  // TODO: loading before retrieving the collaborationId
   const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
 
   const { t } = useTranslation();

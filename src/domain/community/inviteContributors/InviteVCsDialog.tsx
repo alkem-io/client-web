@@ -28,7 +28,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, spaceLevel } = useUrlResolver();
+  const { spaceId, spaceLevel, loading: urlResolverLoading } = useUrlResolver();
   const { roleSetId } = useSpace();
 
   const { virtualContributors } = useRoleSetManager({
@@ -151,7 +151,9 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const showOnAccount = onAccount && onAccount.length > 0 && !availableVCsLoading;
+  const isLoading = availableVCsLoading || urlResolverLoading;
+
+  const showOnAccount = onAccount && onAccount.length > 0 && !isLoading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -170,8 +172,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     </>
   );
 
-  const isEmpty =
-    (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !availableVCsLoading;
+  const isEmpty = (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !isLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -203,7 +204,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               />
             </Gutters>
           )}
-          {availableVCsLoading ? (
+          {isLoading ? (
             <Loading />
           ) : (
             <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
