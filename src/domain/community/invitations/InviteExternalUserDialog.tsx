@@ -41,7 +41,7 @@ const InviteExternalUserDialog = ({
   const [handleSendMessage, isLoading, error] = useLoadingState(
     async (values: InviteExternalUserData, formikHelpers: FormikHelpers<InviteExternalUserData>) => {
       try {
-        await onInviteUser(values);
+        await onInviteUser({ ...values, email: values.email.trim() });
 
         if (!error) {
           setMessageSent(true);
