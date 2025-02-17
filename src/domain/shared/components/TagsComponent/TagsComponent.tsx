@@ -20,6 +20,7 @@ export interface TagsComponentProps extends BoxProps {
   selectedVariant?: ChipProps['variant'];
   selectedIndexes?: number[];
   canShowAll?: boolean;
+  hideNoTagsMessage?: boolean;
   onClickTag?: (tag: string, index: number) => void;
 }
 
@@ -41,6 +42,7 @@ const TagsComponent = ({
   variant = 'outlined',
   selectedVariant = 'filled',
   height,
+  hideNoTagsMessage,
   canShowAll = false,
   selectedIndexes = [],
   onClickTag,
@@ -108,7 +110,7 @@ const TagsComponent = ({
     );
   }
 
-  if (tags.length === 0) {
+  if (tags.length === 0 && !hideNoTagsMessage) {
     return (
       <Box {...tagsContainerProps}>
         <CardText color="neutral.main">{t('components.tags-component.no-tags')}</CardText>
