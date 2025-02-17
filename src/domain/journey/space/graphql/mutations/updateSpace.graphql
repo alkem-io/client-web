@@ -1,5 +1,5 @@
 mutation updateSpace($input: UpdateSpaceInput!) {
   updateSpace(spaceData: $input) {
-    ...SpaceDetails
+    ...SpaceInfo
   }
 }

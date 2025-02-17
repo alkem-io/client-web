@@ -42,16 +42,14 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
         ...callout.framing.profile,
         ...calloutDetails.framing.profile,
       },
-      whiteboard: calloutDetails.framing.whiteboard
-        ? { ...calloutDetails.framing.whiteboard, calloutNameId: callout.nameID }
-        : undefined,
+      whiteboard: calloutDetails.framing.whiteboard,
     };
 
     return {
       ...callout,
       ...calloutDetails,
       framing,
-      comments: calloutDetails.comments ? { ...calloutDetails.comments, calloutNameId: callout.nameID } : undefined,
+      comments: calloutDetails.comments,
       contributions: calloutDetails.contributions ?? [],
     };
   }, [callout, loading, data?.lookup.callout]);

@@ -37,8 +37,8 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
               url: result.space.profile.url,
               cardBanner: result.space.profile.cardBanner,
             },
+            level: result.space.level,
           }}
-          journeyTypeName="space"
         />
       ))}
 

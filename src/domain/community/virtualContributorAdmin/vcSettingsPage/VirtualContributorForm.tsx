@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Tagset, UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
-import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -27,7 +27,6 @@ import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/P
 
 type VirtualContributorProps = {
   id: string;
-  nameID: string;
   account?: {
     host?: {
       profile: {
@@ -49,7 +48,6 @@ type VirtualContributorProps = {
 
 type VirtualContributorFromProps = {
   name: string;
-  nameID: string;
   description: string;
   tagline?: string;
   tagsets?: Tagset[];
@@ -79,7 +77,6 @@ export const VirtualContributorForm = ({
   const isMobile = cols < 5;
 
   const {
-    nameID,
     profile: { id: vcProfileId, displayName, description, tagline, tagsets, references: vcReferences },
     account,
   } = virtualContributor;
@@ -89,7 +86,6 @@ export const VirtualContributorForm = ({
   const initialValues: VirtualContributorFromProps = useMemo(
     () => ({
       name: displayName,
-      nameID: nameID,
       description: description ?? '',
       tagline: tagline,
       tagsets: tagsets,
@@ -97,12 +93,11 @@ export const VirtualContributorForm = ({
       subSpaceName: subSpaceName ?? '',
       references: vcReferences ?? [],
     }),
-    [displayName, nameID, description, tagline, tagsets, account, subSpaceName, vcReferences]
+    [displayName, description, tagline, tagsets, account, subSpaceName, vcReferences]
   );
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
-    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
 
@@ -190,7 +185,7 @@ export const VirtualContributorForm = ({
                   </GridItem>
                   <GridItem columns={isMobile ? cols : 8}>
                     <Gutters>
-                      <NameSegment disabled required />
+                      <FormikInputField name="name" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
                       {keywordsTagsetWrapped ? (
                         <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />

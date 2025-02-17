@@ -7,7 +7,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 import VCPageBanner from './VCPageBanner';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface VCPageLayoutProps {}
 

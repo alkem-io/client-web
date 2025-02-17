@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { Caption } from '@/core/ui/typography';
@@ -20,10 +20,9 @@ import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import PageContent from '@/core/ui/content/PageContent';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 
-const errorColor = '#940000';
-
 const OpportunitySettingsView = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { subspaceId } = useSubSpace();
   const { spaceNameId, spaceId } = useSpace();
   const notify = useNotification();
@@ -46,8 +45,8 @@ const OpportunitySettingsView = () => {
       }),
       'SpaceDashboardNavigationOpportunities',
     ],
-    onCompleted: data => {
-      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
+    onCompleted: () => {
+      notify(t('pages.admin.space.notifications.space-removed'), 'success');
       navigate(`/${spaceNameId}`, { replace: true });
     },
   });
@@ -64,9 +63,7 @@ const OpportunitySettingsView = () => {
   const handleDelete = () => {
     return deleteOpportunity({
       variables: {
-        input: {
-          ID: subspaceId,
-        },
+        spaceId: subspaceId,
       },
     });
   };
@@ -74,8 +71,8 @@ const OpportunitySettingsView = () => {
   return (
     <PageContent background="transparent">
       {canDelete && (
-        <PageContentBlock sx={{ borderColor: errorColor }}>
-          <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteEntity.title')} />
+        <PageContentBlock sx={{ borderColor: theme.palette.error.main }}>
+          <PageContentBlockHeader sx={{ color: theme.palette.error.main }} title={t('components.deleteEntity.title')} />
           <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
             <DeleteIcon />
             <Caption>{t('components.deleteEntity.description', { entity: t('common.subspace') })}</Caption>

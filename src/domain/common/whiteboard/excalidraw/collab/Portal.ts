@@ -37,7 +37,7 @@ interface SocketEventHandlers {
 }
 
 class Portal {
-  onRemoteSave: () => void;
+  onRemoteSave: (error?: string) => void;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
@@ -88,6 +88,7 @@ class Portal {
       });
 
       this.socket.on('room-saved', () => this.onRemoteSave());
+      this.socket.on('room-not-saved', ({ error }) => this.onRemoteSave(error));
 
       this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
 

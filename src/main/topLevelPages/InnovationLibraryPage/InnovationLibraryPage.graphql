@@ -34,7 +34,6 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
       }
       innovationPacks {
         id
-        nameID
         profile {
           id
           displayName

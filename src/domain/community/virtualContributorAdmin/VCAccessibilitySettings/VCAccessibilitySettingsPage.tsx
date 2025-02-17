@@ -18,7 +18,7 @@ import { AiPersonaBodyOfKnowledgeType, SearchVisibility } from '@/core/apollo/ge
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Box, Tooltip } from '@mui/material';
 

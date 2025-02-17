@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -22,6 +22,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { compact } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
+import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -33,11 +34,6 @@ export interface SpaceExplorerViewProps {
   hasMore: boolean | undefined;
   fetchMore: () => Promise<void>;
   authenticated: boolean;
-  welcomeSpace?: {
-    displayName: string;
-    url: string;
-  };
-  fetchWelcomeSpace?: (args: { variables: { spaceNameId: string } }) => void;
   loadingSearchResults?: boolean | null;
 }
 
@@ -119,11 +115,21 @@ export const SpaceExplorerView = ({
   fetchMore,
   hasMore,
   authenticated,
-  welcomeSpace,
-  fetchWelcomeSpace,
   loadingSearchResults = null,
 }: SpaceExplorerViewProps) => {
   const { t } = useTranslation();
+  const spaceNameId = t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId');
+  const { data: spaceIdData } = useSpaceUrlResolverQuery({
+    variables: { spaceNameId: spaceNameId },
+    skip: !spaceNameId,
+  });
+  const welcomeSpaceId = spaceIdData?.lookupByName.space?.id;
+
+  const { data: spaceExplorerData } = useSpaceExplorerWelcomeSpaceQuery({
+    variables: { spaceId: welcomeSpaceId! },
+    skip: !welcomeSpaceId,
+  });
+  const welcomeSpace = spaceExplorerData?.lookup.space;
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -193,14 +199,6 @@ export const SpaceExplorerView = ({
     return vs;
   }, [visibleSpaces, shouldDisplayPrivacyInfo]);
 
-  useEffect(() => {
-    if (hasNoMemberSpaces) {
-      fetchWelcomeSpace?.({
-        variables: { spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId') },
-      });
-    }
-  }, [hasNoMemberSpaces]);
-
   const getGridItemStyle = useGridItem();
 
   const spacesLength = spaces?.length ?? 0;
@@ -238,11 +236,11 @@ export const SpaceExplorerView = ({
       {hasNoMemberSpaces && (
         <CaptionSmall
           component={RouterLink}
-          to={(authenticated ? welcomeSpace?.url : buildLoginUrl(welcomeSpace?.url)) ?? ''}
+          to={(authenticated ? welcomeSpace?.profile.url : buildLoginUrl(welcomeSpace?.profile.url)) ?? ''}
           marginX="auto"
           paddingY={gutters()}
         >
-          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.displayName })}
+          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.profile.displayName })}
         </CaptionSmall>
       )}
       {searchTerms.length !== 0 && spacesLength === 0 && loadingSearchResults === false && (

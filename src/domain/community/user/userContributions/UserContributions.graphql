@@ -3,11 +3,9 @@ query UserContributions($userId: UUID!) {
     id
     spaces {
       id
-      nameID
       roles
       subspaces {
         id
-        nameID
         type
         level
         roles

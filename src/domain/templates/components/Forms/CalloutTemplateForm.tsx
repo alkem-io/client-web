@@ -8,7 +8,7 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { RadioButtonOption } from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';

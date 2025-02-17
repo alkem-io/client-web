@@ -10,7 +10,6 @@ import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-s
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
 
@@ -74,7 +73,6 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
                 callouts={callouts}
                 canCreateCallout={canCreateCallout}
                 loading={calloutsSetLoading}
-                journeyTypeName={KnowledgeBaseCalloutsSetType}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 groupName={CalloutGroupName.Knowledge}

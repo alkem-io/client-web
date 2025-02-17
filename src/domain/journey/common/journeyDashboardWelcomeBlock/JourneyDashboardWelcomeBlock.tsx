@@ -9,9 +9,10 @@ import { ContributorViewProps } from '@/domain/community/community/EntityDashboa
 import { MessageReceiverChipData } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface JourneyDashboardWelcomeBlockProps {
-  journeyTypeName: 'space' | 'subspace';
+  level: SpaceLevel | undefined;
   vision: string;
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
@@ -23,7 +24,7 @@ export interface JourneyDashboardWelcomeBlockProps {
 const JourneyDashboardWelcomeBlock = ({
   leadUsers,
   leadOrganizations,
-  journeyTypeName,
+  level,
   onContactLeadUser,
   onContactLeadOrganization,
   vision,
@@ -33,6 +34,7 @@ const JourneyDashboardWelcomeBlock = ({
     () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
     [leadOrganizations, leadUsers]
   );
+  const spaceLevel = !level ? SpaceLevel.L0 : level;
 
   return (
     <>
@@ -40,7 +42,7 @@ const JourneyDashboardWelcomeBlock = ({
         maxHeight={gutters(11)}
         overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
       >
-        {member && <DashboardMemberIcon journeyTypeName={journeyTypeName} />}
+        {member && <DashboardMemberIcon level={spaceLevel} />}
         <WrapperMarkdown disableParagraphPadding>{vision}</WrapperMarkdown>
       </OverflowGradient>
       {leadUsers && leadUsers.length > 0 && (

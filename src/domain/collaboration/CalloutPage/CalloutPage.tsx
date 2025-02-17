@@ -1,8 +1,7 @@
 import React, { ReactElement, ReactNode, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCalloutDetails } from '../calloutsSet/useCallouts/useCallouts';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -19,18 +18,16 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type CalloutLocation = {
-  journeyTypeName: JourneyTypeName;
   parentPagePath: string;
 };
 
 export interface CalloutPageProps {
-  journeyTypeName: JourneyTypeName;
   renderPage: (calloutGroupName?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
@@ -44,15 +41,14 @@ export interface LocationStateCachedCallout extends NavigationState {
 
 /**
  *
- * @param journeyTypeName
  * @param parentRoute
  * @param renderPage - defines what page is to be rendered behind the Callout dialog
  * @param children - Typical usage for the children fn is to render nested dialog/routes
  *                   (such as routes for Post/Whiteboard dialogs).
  * @constructor
  */
-const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { calloutId, journeyId, parentSpaceId, journeyPath } = useRouteResolver();
+const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) => {
+  const { spaceId, levelZeroSpaceId, parentSpaceId, calloutId, spaceLevel, journeyPath } = useUrlResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
@@ -82,33 +78,41 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     }
 
     const draft = callout.visibility === CalloutVisibility.Draft;
-    const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+    const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
-    return {
+    const result: TypedCalloutDetails = {
       ...callout,
+      authorization: {
+        myPrivileges: callout.authorization?.myPrivileges,
+      },
       draft,
       editable,
-      comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
+      movable: false,
+      canSaveAsTemplate: false,
+      entitledToSaveAsTemplate: false,
+      flowStates: [],
       groupName: getCalloutGroupNameValue(
         callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
       ),
-      // TODO: Try to remove this `as unknown`
-    } as unknown as TypedCalloutDetails;
+    };
+    return result;
   }, [callout, locationState]);
 
   const backOrElse = useBackToPath();
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const PageLayout = usePageLayoutByEntity(journeyTypeName);
+  const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
 
-  const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
+  const spaceReadAccess = useCanReadSpace({ spaceId });
 
   if (isCalloutLoading && !typedCalloutDetails) {
     return (
       <PageLayout
         spaceReadAccess={spaceReadAccess}
-        journeyId={journeyId}
+        journeyId={spaceId}
+        levelZeroSpaceId={levelZeroSpaceId}
+        spaceLevel={spaceLevel}
         journeyPath={journeyPath}
         parentSpaceId={parentSpaceId}
         currentSection={EntityPageSection.Contribute}
@@ -163,7 +167,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCalloutDetails}
-          journeyTypeName={journeyTypeName}
           contributionsCount={typedCalloutDetails.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
@@ -173,7 +176,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           expanded
         />
       </DialogWithGrid>
-      {children?.({ parentPagePath, journeyTypeName })}
+      {children?.({ parentPagePath })}
     </>
   );
 };
