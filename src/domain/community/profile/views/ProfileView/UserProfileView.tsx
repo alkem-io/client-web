@@ -50,12 +50,12 @@ export const UserProfileView = ({ entities: { userMetadata } }: UserProfileViewP
 
       <Grid item>
         <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
-        <TagsWithOffset tags={keywords} />
+        <TagsWithOffset tags={keywords} hideNoTagsMessage />
       </Grid>
 
       <Grid item>
         <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
-        <TagsWithOffset tags={skills} />
+        <TagsWithOffset tags={skills} hideNoTagsMessage />
       </Grid>
 
       <Grid item container direction="column">
