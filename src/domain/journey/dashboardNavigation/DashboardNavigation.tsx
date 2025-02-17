@@ -20,6 +20,8 @@ import { GUTTER_PX } from '@/core/ui/grid/constants';
 import { findCurrentPath } from './utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { debounce, difference } from 'lodash';
+import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface DashboardNavigationProps {
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -31,6 +33,7 @@ export interface DashboardNavigationProps {
   onCreateSubspace?: (parent: Identifiable) => void;
   compact?: boolean;
   onCurrentItemNotFound?: () => void;
+  level?: SpaceLevel;
 }
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
@@ -49,6 +52,7 @@ const DashboardNavigation = ({
   onCreateSubspace,
   compact = false,
   onCurrentItemNotFound = () => {},
+  level = SpaceLevel.L0,
 }: DashboardNavigationProps) => {
   const { t } = useTranslation();
 
@@ -72,7 +76,8 @@ const DashboardNavigation = ({
 
   const tooltipPlacement = isMobile ? 'left' : 'right';
 
-  // TODO receive journeyPath as argument
+  // TODO: receive journeyPath as argument, revise the currentLevel && isTopLevel logic!
+  // TODO: simplify the logic here and in the DashboardNavigationItemView
   const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;
   const isTopLevel = currentLevel === 0;
@@ -184,6 +189,13 @@ const DashboardNavigation = ({
 
   const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
+  const hasCreate =
+    !compact &&
+    Boolean(onCreateSubspace) &&
+    level === SpaceLevel.L1 &&
+    Boolean(currentItemId) &&
+    dashboardNavigationRoot?.canCreateSubspace;
+
   return (
     <PageContentBlock disablePadding disableGap>
       {!compact && (
@@ -209,6 +221,11 @@ const DashboardNavigation = ({
               sx={{ padding: gutters() }}
             />
           </RouterLink>
+          <Box>
+            {hasCreate && (
+              <DashboardAddButton level={1} onClick={() => onCreateSubspace?.({ id: currentItemId ?? '' })} />
+            )}
+          </Box>
         </Collapse>
       )}
       <Box height={viewportSnap.height} overflow="hidden" sx={{ transition: 'height 0.3s ease-in-out' }}>
@@ -221,17 +238,17 @@ const DashboardNavigation = ({
           }}
         >
           {dashboardNavigationRoot && (
-            <DashboardNavigationItemView
-              ref={itemRef}
-              currentPath={pathToItem}
-              tooltipPlacement={tooltipPlacement}
-              onToggle={adjustViewport}
-              compact={compact}
-              onCreateSubspace={onCreateSubspace}
-              itemProps={itemProps}
-              {...dashboardNavigationRoot}
-              {...getItemProps(dashboardNavigationRoot)}
-            />
+            <>
+              <DashboardNavigationItemView
+                ref={itemRef}
+                tooltipPlacement={tooltipPlacement}
+                onToggle={adjustViewport}
+                compact={compact}
+                itemProps={itemProps}
+                {...dashboardNavigationRoot}
+                {...getItemProps(dashboardNavigationRoot)}
+              />
+            </>
           )}
         </Box>
       </Box>
