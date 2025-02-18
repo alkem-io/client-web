@@ -1071,7 +1071,8 @@
         },
         "emptyMessage": "No available Virtual Contributors"
       },
-      "successfullyAdded": "{{contributor}} added successfully"
+      "successfullyAdded": "{{contributor}} added successfully",
+      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
     },
     "confirmation-dialog": {
       "delete-comment": {

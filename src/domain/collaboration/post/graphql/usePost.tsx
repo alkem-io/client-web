@@ -128,10 +128,7 @@ const usePost = ({ postId }: usePostProps): usePostProvided => {
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
   const { postMessage, postReply, postingMessage, postingReply, deleteMessage, deletingMessage } =
-    usePostMessageMutations({
-      roomId,
-      isSubscribedToMessages,
-    });
+    usePostMessageMutations({ roomId, isSubscribedToMessages });
 
   return {
     permissions: {
