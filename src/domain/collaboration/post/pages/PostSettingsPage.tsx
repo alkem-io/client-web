@@ -222,7 +222,10 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
         />
         <ConfirmationDialog
           actions={{
-            onConfirm: onClose,
+            onConfirm: () => {
+              setCloseConfirmDialogOpen(false);
+              onClose();
+            },
             onCancel: () => setCloseConfirmDialogOpen(false),
           }}
           options={{
