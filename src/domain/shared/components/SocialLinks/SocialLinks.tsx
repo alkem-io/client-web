@@ -61,6 +61,11 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
         .sort((a, b) => SocialNetworksSortOrder[a.type] - SocialNetworksSortOrder[b.type]) || [],
     [items]
   );
+
+  if (!items || items.length === 0) {
+    return null;
+  }
+
   return (
     <Box>
       {title && (

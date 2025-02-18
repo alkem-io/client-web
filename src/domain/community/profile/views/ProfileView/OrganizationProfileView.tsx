@@ -1,4 +1,4 @@
-import { groupBy } from 'lodash';
+import { groupBy, isEmpty } from 'lodash';
 import { Box, CardContent, Grid, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
@@ -50,11 +50,13 @@ const OTHER_LINK_GROUP = 'other';
 export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps) => {
   const { t } = useTranslation();
 
-  const links = useMemo(() => {
-    return groupBy(entity.references, reference =>
-      isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
-    );
-  }, [entity.references]);
+  const links = useMemo(
+    () =>
+      groupBy(entity.references, reference =>
+        isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
+      ),
+    [entity.references]
+  );
 
   const socialLinks = links[SOCIAL_LINK_GROUP]?.map(s => ({
     type: s.name as SocialNetworkEnum,
@@ -88,13 +90,15 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
               ) : null
             )}
 
-          {Number(links[OTHER_LINK_GROUP].length) > 0 && (
+          {!isEmpty(links) && (
             <Gutters fullHeight>
               <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+
               <References
                 references={links[OTHER_LINK_GROUP]}
                 noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
               />
+
               <SocialLinks items={socialLinks} />
             </Gutters>
           )}
