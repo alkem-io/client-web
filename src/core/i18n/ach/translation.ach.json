@@ -1071,7 +1071,8 @@
         },
         "emptyMessage": "crwdns18830:0crwdne18830:0"
       },
-      "successfullyAdded": "crwdns18832:0{{contributor}}crwdne18832:0"
+      "successfullyAdded": "crwdns18832:0{{contributor}}crwdne18832:0",
+      "vcFetchErrorMessage": "crwdns28954:0crwdne28954:0"
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -2394,22 +2395,22 @@
               "url": "crwdns20224:0crwdne20224:0"
             },
             {
-              "title": "crwdns20226:0crwdne20226:0",
+              "title": "crwdns28956:0crwdne28956:0",
               "description": "crwdns20228:0crwdne20228:0",
               "imageUrl": "crwdns20230:0crwdne20230:0",
-              "url": "crwdns20232:0crwdne20232:0"
+              "url": "crwdns28958:0crwdne28958:0"
             },
             {
-              "title": "crwdns20234:0crwdne20234:0",
-              "description": "crwdns20236:0crwdne20236:0",
-              "imageUrl": "crwdns20238:0crwdne20238:0",
-              "url": "crwdns20240:0crwdne20240:0"
+              "title": "crwdns28960:0crwdne28960:0",
+              "description": "crwdns28962:0crwdne28962:0",
+              "imageUrl": "crwdns28964:0crwdne28964:0",
+              "url": "crwdns28966:0crwdne28966:0"
             },
             {
-              "title": "crwdns20242:0crwdne20242:0",
-              "description": "crwdns20244:0crwdne20244:0",
-              "imageUrl": "crwdns20246:0crwdne20246:0",
-              "url": "crwdns20248:0crwdne20248:0"
+              "title": "crwdns28968:0crwdne28968:0",
+              "description": "crwdns28970:0crwdne28970:0",
+              "imageUrl": "crwdns28972:0crwdne28972:0",
+              "url": "crwdns28974:0crwdne28974:0"
             },
             {
               "title": "crwdns20250:0crwdne20250:0",
