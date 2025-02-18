@@ -27,7 +27,7 @@ import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import References from '@/domain/shared/components/References/References';
-import { SpaceAboutDetailsFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -35,11 +35,12 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import Loading from '@/core/ui/loading/Loading';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceLevel: SpaceLevel | undefined;
-  about?: SpaceAboutDetailsFragment | undefined;
+  about?: SpaceAboutDetailsModel | undefined;
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;

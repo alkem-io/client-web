@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import { ElementType } from 'react';
 import * as yup from 'yup';
 import { ContextSegmentProps, spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
-import { SpaceAboutDetailsFragment } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutDetailsModel } from '../model/SpaceAboutFull.model';
 
 export interface SpaceAboutFormValues {
   description: string;
@@ -12,7 +12,7 @@ export interface SpaceAboutFormValues {
 }
 
 type SpaceAboutFormProps = {
-  about?: SpaceAboutDetailsFragment;
+  about?: SpaceAboutDetailsModel;
   onSubmit: (formData: SpaceAboutFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextSegment: ElementType<ContextSegmentProps>;

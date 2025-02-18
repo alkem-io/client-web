@@ -7,7 +7,6 @@ import {
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
-  SpaceAboutDetailsFragment,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
@@ -16,10 +15,11 @@ import useSpaceDashboardNavigation, {
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
-  about: SpaceAboutDetailsFragment | undefined;
+  about: SpaceAboutDetailsModel | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   isPrivate: boolean | undefined;
   permissions: {
@@ -114,7 +114,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     groupNames: [CalloutGroupName.Home],
   });
 
-  const about: SpaceAboutDetailsFragment = space?.about!;
+  const about: SpaceAboutDetailsModel = space?.about!;
 
   return (
     <>

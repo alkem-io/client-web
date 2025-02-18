@@ -2,13 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import {
-  Reference,
-  SpaceAboutDetailsFragment,
-  SpaceLevel,
-  Tagset,
-  TagsetType,
-} from '@/core/apollo/generated/graphql-schema';
+import { Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
@@ -27,9 +21,10 @@ import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { Caption } from '@/core/ui/typography';
+import { SpaceAboutDetailsModel } from '../model/SpaceAboutFull.model';
 
 interface SpaceEditFormProps {
-  about?: SpaceAboutDetailsFragment;
+  about?: SpaceAboutDetailsModel;
   nameID?: string;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;

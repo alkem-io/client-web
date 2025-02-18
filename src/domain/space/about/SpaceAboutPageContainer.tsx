@@ -6,7 +6,6 @@ import {
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
-  SpaceAboutDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '@/core/utils/WithId';
@@ -19,13 +18,14 @@ import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/Inn
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
 
 interface AboutPagePermissions {
   canReadCommunity: boolean;
 }
 
 export interface AboutPageContainerEntities {
-  about: SpaceAboutDetailsFragment;
+  about: SpaceAboutDetailsModel;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
@@ -140,7 +140,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
 
-  const about: SpaceAboutDetailsFragment = useMemo(() => {
+  const about: SpaceAboutDetailsModel = useMemo(() => {
     return {
       id: nonMemberSpaceAbout?.id ?? '',
       profile: {

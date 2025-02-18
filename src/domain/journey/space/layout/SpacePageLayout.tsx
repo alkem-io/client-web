@@ -14,8 +14,9 @@ import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuid
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
-import { SpaceAboutDetailsFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -36,7 +37,7 @@ const SpacePageLayout = ({
     },
     skip: !spaceId,
   });
-  const about: SpaceAboutDetailsFragment = spaceData?.lookup.space?.about!;
+  const about: SpaceAboutDetailsModel = spaceData?.lookup.space?.about!;
   const profile = spaceData?.lookup.space?.about.profile;
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
