@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 
 import SaveButton from '@/core/ui/actions/SaveButton';
-import { SpaceAboutForm, SpaceAboutFormValues } from '@/domain/journey/space/about/SpaceAboutForm/SpaceAboutForm';
+import { SpaceAboutForm, SpaceAboutFormValues } from '@/domain/space/about/settings/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   refetchSubspaceProfileInfoQuery,

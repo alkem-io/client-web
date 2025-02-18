@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { SpaceAboutForm, SpaceAboutFormValues } from '@/domain/journey/space/about/SpaceAboutForm/SpaceAboutForm';
+import { SpaceAboutForm, SpaceAboutFormValues } from '@/domain/space/about/settings/SpaceAboutForm';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OpportunityContextSegment } from '@/domain/platform/admin/opportunity/OpportunityContextSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';

@@ -9,7 +9,7 @@ import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import SpaceAboutDialog from '@/domain/journey/space/about/SpaceAboutDialog';
+import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';

@@ -1,4 +1,4 @@
-import SpaceEditForm, { SpaceEditFormValuesType } from '@/domain/journey/space/about/SpaceEditForm';
+import SpaceEditForm, { SpaceEditFormValuesType } from '@/domain/space/about/settings/SpaceEditForm';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useNotification } from '@/core/ui/notifications/useNotification';

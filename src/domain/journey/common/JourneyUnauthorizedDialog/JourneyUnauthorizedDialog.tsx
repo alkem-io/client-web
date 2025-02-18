@@ -10,7 +10,7 @@ import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import SpaceAboutDialog, { JourneyAboutDialogProps } from '../../space/about/SpaceAboutDialog';
+import SpaceAboutDialog, { JourneyAboutDialogProps } from '../../../space/about/SpaceAboutDialog';
 import useCanGoBack from '@/core/routing/useCanGoBack';
 
 interface JourneyUnauthorizedDialogProps

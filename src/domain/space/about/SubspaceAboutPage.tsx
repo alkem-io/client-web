@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useSubSpace } from '../../subspace/hooks/useSubSpace';
-import AboutPageContainer from '@/domain/journey/space/about/SpaceAboutPageContainer';
+import { useSubSpace } from '../../journey/subspace/hooks/useSubSpace';
+import AboutPageContainer from '@/domain/space/about/SpaceAboutPageContainer';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import SpaceAboutDialog from '@/domain/journey/space/about/SpaceAboutDialog';
+import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';

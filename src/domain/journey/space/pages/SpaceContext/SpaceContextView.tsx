@@ -2,7 +2,7 @@ import SaveButton from '@/core/ui/actions/SaveButton';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Box, Container, Grid } from '@mui/material';
-import SpaceContextForm, { SpaceAboutEditFormValuesType } from '@/domain/journey/space/about/SpaceAboutForm';
+import SpaceContextForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm2';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 

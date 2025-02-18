@@ -6,7 +6,7 @@ import SubspaceProvider from '../context/SubspaceProvider';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
-import SubspaceAboutPage from '../../space/about/SubspaceAboutPage';
+import SubspaceAboutPage from '../../../space/about/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
