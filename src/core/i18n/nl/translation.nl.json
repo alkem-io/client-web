@@ -1071,7 +1071,8 @@
         },
         "emptyMessage": "Geen beschikbare Virtual Contributors"
       },
-      "successfullyAdded": "{{contributor}} succesvol toegevoegd"
+      "successfullyAdded": "{{contributor}} succesvol toegevoegd",
+      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -2394,22 +2395,22 @@
               "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
-              "title": "💭 Neem een kijkje in de FAQ",
+              "title": "💭 Have a look at the documentation",
               "description": "Vind een antwoord op de veelgestelde vragen",
               "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
-              "url": "https://welcome.alkem.io/faq/"
+              "url": "https://alkem.io/docs"
             },
             {
-              "title": "⚒️ Een nieuwe Space starten",
-              "description": "Een plek om met elkaar aan de slag te gaan",
+              "title": "📑 Read more about Alkemio's Space structure",
+              "description": "To help you get started smoothly on the platform",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://alkem.io/docs/structure/space"
+            },
+            {
+              "title": "⚒️ Start a new Space",
+              "description": "To gather contributors for your envisioned change",
               "imageUrl": "/my-dashboard/tipsntricks-space.webp",
               "url": "https://welcome.alkem.io/want-to-own-space/"
-            },
-            {
-              "title": "📑 Lees meer over de kernconcepten",
-              "description": "Voor een soepele start op het platform",
-              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
-              "url": "https://welcome.alkem.io/help/key-concepts/"
             },
             {
               "title": "💬 Aangedreven door Generatieve AI",
