@@ -7,8 +7,8 @@ import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
-  SpaceAboutCardAvatarFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
 import { keyBy } from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
 
@@ -41,7 +41,7 @@ export interface DashboardNavigationItem {
 const getDashboardNavigationItemProps = (
   space: {
     id: string;
-    about: SpaceAboutCardAvatarFragment;
+    about: SpaceAboutLightModel;
     roleSet?: MyMembershipsRoleSetFragment;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];

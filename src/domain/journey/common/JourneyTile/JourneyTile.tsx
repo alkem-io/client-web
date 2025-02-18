@@ -9,13 +9,14 @@ import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
-import { SpaceAboutCardBannerFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from './PrivacyIcon';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
 
 type JourneyTileProps = {
   journey:
     | {
-        about: SpaceAboutCardBannerFragment;
+        about: SpaceAboutLightModel;
         level?: SpaceLevel;
       }
     | undefined;

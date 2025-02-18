@@ -6,17 +6,13 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { PendingApplication } from '../user';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import {
-  CommunityGuidelinesSummaryFragment,
-  SpaceAboutCardBannerFragment,
-  SpaceLevel,
-  VisualType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityGuidelinesSummaryFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
 
 export interface SpaceDetails {
-  about: SpaceAboutCardBannerFragment;
+  about: SpaceAboutLightModel;
   level: SpaceLevel;
 }
 

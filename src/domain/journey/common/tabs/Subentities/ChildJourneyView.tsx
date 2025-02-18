@@ -24,7 +24,8 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import SearchField from '@/core/ui/search/SearchField';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
-import { SpaceAboutCardBannerFragment, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -32,7 +33,7 @@ export interface JourneySubentitiesState {
 }
 
 interface BaseChildEntity extends Identifiable {
-  about: SpaceAboutCardBannerFragment;
+  about: SpaceAboutLightModel;
 }
 
 export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {

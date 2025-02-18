@@ -7,12 +7,8 @@ import {
 import { ContainerChildProps } from '@/core/container/container';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import {
-  RoleSetContributorType,
-  RoleName,
-  SpaceLevel,
-  SpaceAboutCardBannerFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -37,7 +33,7 @@ interface EntityDetailsContainerProps
 }
 
 export interface ContributionDetails {
-  about: SpaceAboutCardBannerFragment;
+  about: SpaceAboutLightModel;
   roleSetId?: string;
   level: SpaceLevel;
 }
