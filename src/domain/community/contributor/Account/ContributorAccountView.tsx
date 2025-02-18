@@ -19,7 +19,6 @@ import {
   AuthorizationPrivilege,
   LicenseEntitlement,
   LicenseEntitlementType,
-  SpaceAboutLightFragment,
   SpaceLevel,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -47,6 +46,7 @@ import { IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import useNavigate from '@/core/routing/useNavigate';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
 
 const enum Entities {
   Space = 'Space',
@@ -120,7 +120,7 @@ export interface AccountTabResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      about: SpaceAboutLightFragment;
+      about: SpaceAboutMinimalModel;
     }[];
     subdomain: string;
   }[];

@@ -21,7 +21,8 @@ import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
 import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
-import { SpaceAboutLightFragment, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
 
 export interface Space extends Identifiable {
   id: string;
@@ -31,7 +32,7 @@ export interface Space extends Identifiable {
     };
   };
   visibility: SpaceVisibility;
-  about: SpaceAboutLightFragment;
+  about: SpaceAboutMinimalModel;
 }
 
 interface InnovationHubSpacesFieldProps {

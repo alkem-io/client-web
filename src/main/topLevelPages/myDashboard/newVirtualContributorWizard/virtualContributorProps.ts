@@ -1,9 +1,6 @@
 import { ComponentType } from 'react';
-import {
-  AuthorizationPrivilege,
-  LicenseEntitlementType,
-  SpaceAboutLightUrlFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
 
 export interface UserAccountProps {
   id: string;
@@ -18,7 +15,7 @@ export interface UserAccountProps {
         id: string;
       };
     };
-    about: SpaceAboutLightUrlFragment;
+    about: SpaceAboutMinimalModel;
     license: {
       id: string;
       myEntitlements?: LicenseEntitlementType[] | undefined;

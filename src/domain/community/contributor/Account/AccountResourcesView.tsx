@@ -4,7 +4,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
-import { SpaceAboutLightFragment, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import { Button, Theme, useMediaQuery } from '@mui/material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
 
 const VISIBLE_SPACE_LIMIT = 6;
 
@@ -61,7 +62,7 @@ export interface AccountResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      about: SpaceAboutLightFragment;
+      about: SpaceAboutMinimalModel;
     }[];
     subdomain: string;
   }[];
