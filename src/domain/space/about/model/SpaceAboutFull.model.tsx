@@ -19,6 +19,7 @@ export type SpaceAboutDetailsModel = {
       id: string;
       name: string;
       tags: string[];
+      // TODO: these should not be part of the basic About model type
       allowedValues: string[];
       type: TagsetType;
     };
@@ -26,13 +27,14 @@ export type SpaceAboutDetailsModel = {
       id: string;
       uri: string;
       name: string;
+      alternativeText?: string;
+      // TODO: these should not be part of the basic About model type
       allowedTypes: string[];
       aspectRatio: number;
       maxHeight: number;
       maxWidth: number;
       minHeight: number;
       minWidth: number;
-      alternativeText?: string;
     }[];
     references?: {
       id: string;
