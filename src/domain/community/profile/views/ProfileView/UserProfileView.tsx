@@ -1,4 +1,5 @@
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { gutters } from '@/core/ui/grid/utils';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import { UserMetadata } from '@/domain/community/user/hooks/useUserMetadataWrapper';
@@ -49,16 +50,16 @@ export const UserProfileView = ({ entities: { userMetadata } }: UserProfileViewP
 
       <Grid item>
         <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
-        <TagsWithOffset tags={keywords} />
+        <TagsWithOffset tags={keywords} hideNoTagsMessage />
       </Grid>
 
       <Grid item>
         <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
-        <TagsWithOffset tags={skills} />
+        <TagsWithOffset tags={skills} hideNoTagsMessage />
       </Grid>
 
       <Grid item container direction="column">
-        <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+        <BlockSectionTitle mb={gutters()}>{t('components.profile.fields.links.title')}</BlockSectionTitle>
         <References
           references={links[OTHER_LINK_GROUP]}
           noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}

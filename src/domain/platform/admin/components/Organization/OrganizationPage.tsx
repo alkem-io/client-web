@@ -62,10 +62,10 @@ const OrganizationPage = ({ title, mode }: Props) => {
 
       const input: CreateOrganizationInput = {
         nameID,
-        contactEmail: contactEmail,
-        domain: domain,
-        legalEntityName: legalEntityName,
-        website: website,
+        contactEmail,
+        domain,
+        legalEntityName,
+        website,
         profileData: {
           displayName: profileData.displayName,
           description: profileData.description,
@@ -74,11 +74,7 @@ const OrganizationPage = ({ title, mode }: Props) => {
         },
       };
 
-      createOrganization({
-        variables: {
-          input,
-        },
-      });
+      createOrganization({ variables: { input } });
     }
 
     if (mode === EditMode.edit) {
@@ -111,10 +107,10 @@ const OrganizationPage = ({ title, mode }: Props) => {
       const input: UpdateOrganizationInput = {
         ID: orgID,
         nameID,
-        contactEmail: contactEmail,
-        domain: domain,
-        legalEntityName: legalEntityName,
-        website: website,
+        contactEmail,
+        domain,
+        legalEntityName,
+        website,
         profileData: {
           displayName: profileData?.displayName,
           description: profileData?.description,
@@ -123,16 +119,12 @@ const OrganizationPage = ({ title, mode }: Props) => {
             city: profileData?.location?.city,
             country: profileData?.location?.country,
           },
-          references: references,
+          references,
           tagsets: profileData?.tagsets?.filter(t => t.ID).map(({ ID, tags }) => ({ ID, tags })),
         },
       };
 
-      updateOrganization({
-        variables: {
-          input,
-        },
-      });
+      updateOrganization({ variables: { input } });
     }
   };
 

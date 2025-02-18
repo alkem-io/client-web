@@ -55,10 +55,10 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
   };
 
   // Memoize the virtual contributors list (already members)
-  const virtualContributors = useMemo(() => {
-    const roleSet = roleSetData?.lookup.roleSet;
-    return roleSet?.memberVirtualContributors ?? [];
-  }, [roleSetData]);
+  const virtualContributors = useMemo(
+    () => roleSetData?.lookup.roleSet?.memberVirtualContributors ?? [],
+    [roleSetData]
+  );
 
   const {
     findAvailableVirtualContributorsForRoleSet,
