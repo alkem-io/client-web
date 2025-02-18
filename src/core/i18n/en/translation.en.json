@@ -2385,22 +2385,22 @@
               "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
-              "title": "💭 Have a look at the FAQ",
+              "title": "💭 Have a look at the documentation",
               "description": "To find answers to your most urgent questions",
               "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
-              "url": "https://welcome.alkem.io/faq/"
+              "url": "https://alkem.io/docs"
             },
+            {
+              "title": "📑 Read more about Alkemio's Space structure",
+              "description": "To help you get started smoothly on the platform",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://alkem.io/docs/structure/space"
+            },            
             {
               "title": "⚒️ Start a new Space",
               "description": "To gather contributors for your envisioned change",
               "imageUrl": "/my-dashboard/tipsntricks-space.webp",
               "url": "https://welcome.alkem.io/want-to-own-space/"
-            },
-            {
-              "title": "📑 Read more about the Key concepts",
-              "description": "To help you get started smoothly on the platform",
-              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
-              "url": "https://welcome.alkem.io/help/key-concepts/"
             },
             {
               "title": "💬 Powered by Generative AI",
