@@ -54,7 +54,11 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
-    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    contributorTypes: [
+      RoleSetContributorType.User,
+      RoleSetContributorType.Organization,
+      RoleSetContributorType.Virtual,
+    ],
     fetchContributors: true,
     fetchRoleDefinitions: true,
     onChange: () => refetchAvailableContributors(),

@@ -1,12 +1,20 @@
-import { Box, CardContent, Grid, Link, styled } from '@mui/material';
+import { groupBy } from 'lodash';
+import { Box, CardContent, Grid, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import OrganizationVerifiedStatus from '@/domain/community/contributor/organization/OrganizationVerifiedStatus';
 import { Location } from '@/core/apollo/generated/graphql-schema';
-import { BlockTitle } from '@/core/ui/typography';
+import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Gutters from '@/core/ui/grid/Gutters';
+import References from '@/domain/shared/components/References/References';
+import { useMemo } from 'react';
+import {
+  isSocialNetworkSupported,
+  SocialNetworkEnum,
+} from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import SocialLinks from '@/domain/shared/components/SocialLinks/SocialLinks';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -15,7 +23,11 @@ export interface OrganizationProfileViewEntity {
   location?: Location;
   bio?: string;
   tagsets: { name: string; tags: string[] }[];
-  links: string[];
+  references: {
+    id: string;
+    name: string;
+    uri: string;
+  }[];
   verified?: boolean;
 }
 
@@ -32,8 +44,22 @@ const VerifiedBadge = styled(Box)(({ theme }) => ({
   top: theme.spacing(0),
 }));
 
+const SOCIAL_LINK_GROUP = 'social';
+const OTHER_LINK_GROUP = 'other';
+
 export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps) => {
   const { t } = useTranslation();
+
+  const links = useMemo(() => {
+    return groupBy(entity.references, reference =>
+      isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
+    );
+  }, [entity.references]);
+
+  const socialLinks = links[SOCIAL_LINK_GROUP]?.map(s => ({
+    type: s.name as SocialNetworkEnum,
+    url: s.uri,
+  }));
 
   return (
     <PageContentBlock>
@@ -58,19 +84,14 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
                 <TagsComponent tags={tagset.tags} count={5} />
               </Gutters>
             ))}
-
-          {entity.links && entity.links.length ? (
-            <Grid item container direction="column">
-              <BlockTitle>{t('components.profile.fields.links.title')}</BlockTitle>
-              {entity.links?.map((l, i) => (
-                <Link key={i} href={l} target="_blank">
-                  {l}
-                </Link>
-              ))}
-            </Grid>
-          ) : (
-            <></>
-          )}
+          <Gutters fullHeight>
+            <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+            <References
+              references={links[OTHER_LINK_GROUP]}
+              noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+            />
+            <SocialLinks items={socialLinks} />
+          </Gutters>
         </Grid>
       </CardContent>
     </PageContentBlock>
