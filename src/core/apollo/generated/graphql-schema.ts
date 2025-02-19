@@ -7235,6 +7235,7 @@ export enum UrlType {
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
   Discussion = 'DISCUSSION',
   Documentation = 'DOCUMENTATION',
+  Flow = 'FLOW',
   Forum = 'FORUM',
   Home = 'HOME',
   InnovationHub = 'INNOVATION_HUB',
@@ -16720,7 +16721,9 @@ export type OrganizationInfoFragment = {
           type: TagsetType;
         }>
       | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
     location?:
       | {
           __typename?: 'Location';
@@ -16777,7 +16780,15 @@ export type OrganizationInfoQuery = {
                   type: TagsetType;
                 }>
               | undefined;
-            references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
             location?:
               | {
                   __typename?: 'Location';
@@ -21515,6 +21526,9 @@ export type SpaceDashboardNavigationChallengesQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -21549,54 +21563,6 @@ export type SpaceDashboardNavigationChallengesQuery = {
                 myRoles: Array<RoleName>;
               };
             };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type SpaceDashboardNavigationOpportunitiesQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-  challengeIds: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type SpaceDashboardNavigationOpportunitiesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          subspaces: Array<{
-            __typename?: 'Space';
-            id: string;
-            subspaces: Array<{
-              __typename?: 'Space';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                url: string;
-                displayName: string;
-                avatar?:
-                  | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-                  | undefined;
-              };
-              community: {
-                __typename?: 'Community';
-                id: string;
-                roleSet: {
-                  __typename?: 'RoleSet';
-                  id: string;
-                  myMembershipStatus?: CommunityMembershipStatus | undefined;
-                  myRoles: Array<RoleName>;
-                };
-              };
-            }>;
           }>;
         }
       | undefined;

@@ -28,7 +28,7 @@ import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
 
-export const DiscussionPage = ({ discussionId }: { discussionId: string | undefined }) => {
+export const DiscussionPage = ({ discussionId, loading }: { discussionId: string | undefined; loading: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
@@ -158,7 +158,7 @@ export const DiscussionPage = ({ discussionId }: { discussionId: string | undefi
             </BackButton>
           }
         >
-          {loadingDiscussion || !discussion ? (
+          {loading || loadingDiscussion || !discussion ? (
             <Skeleton />
           ) : (
             <DiscussionView

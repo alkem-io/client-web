@@ -1,11 +1,8 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
-import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { TopLevelRoutePath } from '../TopLevelRoutePath';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -55,6 +52,7 @@ export type UrlResolverContextValue = {
   // Innovation Hubs
   innovationHubId: string | undefined;
 
+  setUrlParams: (url: string) => void;
   loading: boolean;
 };
 
@@ -81,36 +79,10 @@ const emptyResult: UrlResolverContextValue = {
   templatesSetId: undefined,
   templateId: undefined,
   innovationHubId: undefined,
+  setUrlParams: () => {
+    console.error('setUrlParams not implemented');
+  },
   loading: true,
-};
-
-const NOT_RESOLVABLE_URLS = [
-  ...Object.values(IdentityRoutes),
-  'docs',
-  'dev',
-  'home', // Nothing to resolve on home
-  TopLevelRoutePath.InnovationLibrary,
-];
-
-/**
- * Filter urls that shouldn't be resolved by the server anyway
- * @param url
- * @returns boolean for skip, true if shouldn't be resolved
- */
-const isNotResolvableUrl = (url: string) => {
-  if (!url) {
-    return true;
-  }
-  try {
-    const { pathname } = new URL(url);
-    if (NOT_RESOLVABLE_URLS.some(route => pathname.match(`^/${route}(/|$)`))) {
-      return true;
-    }
-    return false;
-  } catch (e) {
-    // Invalid url
-    return true;
-  }
 };
 
 /**
@@ -136,17 +108,10 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
-  const [currentUrl, setCurrentUrl] = useState(window.location.href);
-  // Store the result of the URL resolver query in a state to avoid screen shaking
-  const [value, setValue] = useState<UrlResolverContextValue>(emptyResult);
-
-  const location = useLocation();
-  useEffect(() => {
-    setCurrentUrl(window.location.href);
-  }, [location]);
+  const [queryUrl, setQueryUrl] = useState<string>();
 
   /**
-   * Default Apollo's cache behaviour will store the result of the URL resolver queries based on the Id of the space returned
+   * Default Apollo's cache behavior will store the result of the URL resolver queries based on the Id of the space returned
    * And will fill the gaps of missing Ids when the user navigates to a different URL
    * for example:
    *   - for a Url like /space/spaceNameId/settings/templates
@@ -158,15 +123,23 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
    *      but the cache is returning the previous value { spaceId: 1234, templateId: 5678 },
    *      completing that null templateId which is wrong
    *
-   * To avoid this, we are have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
+   * To avoid this, we have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
    * This way, the cache will store the entire result of the query based on the URL, and will not try to merge the results of different queries.
    */
   const { data: urlResolverData, loading: urlResolverLoading } = useUrlResolverQuery({
     variables: {
-      url: currentUrl,
+      url: queryUrl!,
     },
-    skip: isNotResolvableUrl(currentUrl),
+    skip: !queryUrl,
   });
+
+  const setUrlParams = (url: string) => {
+    setQueryUrl(url);
+  };
+
+  const emptyWithSetParams = { ...emptyResult, setUrlParams }; // add the setUrlParams function for the initial state
+  // Store the result of the URL resolver query in a state to avoid screen shaking
+  const [value, setValue] = useState<UrlResolverContextValue>(emptyWithSetParams);
 
   const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
     if (urlResolverData?.urlResolver.type) {
@@ -234,13 +207,13 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
         // Forum:
         discussionId: data.discussionId,
-
+        setUrlParams: setUrlParams,
         loading: urlResolverLoading,
       };
     } else {
       return undefined;
     }
-  }, [currentUrl, urlResolverData, urlResolverLoading]);
+  }, [urlResolverData, urlResolverLoading]);
 
   useEffect(() => {
     if (resolvingResult) {

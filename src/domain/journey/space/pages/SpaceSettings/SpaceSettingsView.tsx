@@ -99,7 +99,6 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
       refetchSpaceDashboardNavigationChallengesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => {

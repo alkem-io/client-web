@@ -74,7 +74,7 @@ const NO_PRIVILEGES = [];
 
 const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isAuthenticated } = useUserContext();
-  const { levelZeroSpaceId } = useUrlResolver();
+  const { levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
 
   const { data, loading: loadingSpaceQuery } = useSpaceQuery({
@@ -138,7 +138,7 @@ const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
     };
   }, [space?.profile]);
 
-  const loading = loadingSpaceQuery || communityLoading;
+  const loading = urlResolverLoading || loadingSpaceQuery || communityLoading;
   return (
     <SpaceContext.Provider
       value={{

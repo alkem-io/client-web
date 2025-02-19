@@ -24,6 +24,7 @@ export interface OrganizationContainerEntities {
     id: string;
     name: string;
     uri: string;
+    description?: string;
   }[];
   capabilities: string[];
   keywords: string[];
