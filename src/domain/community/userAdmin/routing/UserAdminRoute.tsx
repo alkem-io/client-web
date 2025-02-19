@@ -10,6 +10,7 @@ import UserAdminNotificationsPage from '../tabs/UserAdminNotificationsPage';
 import UserAdminOrganizationsPage from '../tabs/UserAdminOrganizationsPage';
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import UserAdminSettingsPage from '../tabs/UserAdminSettingsPage';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export const UserAdminRoute = () => {
   const { isFeatureEnabled } = useConfig();
@@ -33,4 +34,4 @@ export const UserAdminRoute = () => {
   );
 };
 
-export default UserAdminRoute;
+export default withUrlResolverParams(UserAdminRoute);

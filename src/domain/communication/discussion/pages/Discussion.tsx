@@ -1,5 +1,6 @@
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import DiscussionPage from './DiscussionPage';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export const Discussion = () => {
   const { discussionId, loading } = useUrlResolver();
@@ -7,4 +8,4 @@ export const Discussion = () => {
   return <DiscussionPage discussionId={discussionId} loading={loading} />;
 };
 
-export default Discussion;
+export default withUrlResolverParams(Discussion);

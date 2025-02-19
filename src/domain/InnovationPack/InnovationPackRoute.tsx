@@ -4,6 +4,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
 import AdminInnovationPackPage from './admin/AdminInnovationPackPage';
 import { nameOfUrl } from '@/main/routing/urlParams';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const InnovationPackRoute = () => (
   <Routes>
@@ -22,4 +23,4 @@ const InnovationPackRoute = () => (
     </Route>
   </Routes>
 );
-export default InnovationPackRoute;
+export default withUrlResolverParams(InnovationPackRoute);

@@ -7,6 +7,7 @@ import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCallou
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
@@ -44,4 +45,4 @@ const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
   return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
-export default SpaceCalloutPage;
+export default withUrlResolverParams(SpaceCalloutPage);

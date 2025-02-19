@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import WhiteboardPage from '../EntityWhiteboardPage/WhiteboardPage';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export interface WhiteboardRouteProps {
   parentPagePath: string;
@@ -13,4 +14,4 @@ const WhiteboardRoute = ({ parentPagePath }: WhiteboardRouteProps) => {
   );
 };
 
-export default WhiteboardRoute;
+export default withUrlResolverParams(WhiteboardRoute);

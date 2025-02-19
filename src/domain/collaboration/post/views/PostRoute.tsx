@@ -6,6 +6,7 @@ import PostSharePage from '../pages/PostSharePage';
 import { PostDialogSection } from './PostDialogSection';
 import { PostLayoutHolder } from './PostLayoutWithOutlet';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export interface PostRouteProps {
   parentPagePath: string;
@@ -37,4 +38,4 @@ const PostRoute = ({ parentPagePath }: PostRouteProps) => {
   );
 };
 
-export default PostRoute;
+export default withUrlResolverParams(PostRoute);
