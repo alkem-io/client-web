@@ -31,6 +31,7 @@ fragment OrganizationInfo on Organization {
       id
       name
       uri
+      description
     }
     location {
       ...fullLocation

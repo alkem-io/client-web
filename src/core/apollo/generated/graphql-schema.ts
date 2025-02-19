@@ -7235,6 +7235,7 @@ export enum UrlType {
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
   Discussion = 'DISCUSSION',
   Documentation = 'DOCUMENTATION',
+  Flow = 'FLOW',
   Forum = 'FORUM',
   Home = 'HOME',
   InnovationHub = 'INNOVATION_HUB',
@@ -16720,7 +16721,9 @@ export type OrganizationInfoFragment = {
           type: TagsetType;
         }>
       | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
     location?:
       | {
           __typename?: 'Location';
@@ -16777,7 +16780,15 @@ export type OrganizationInfoQuery = {
                   type: TagsetType;
                 }>
               | undefined;
-            references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
             location?:
               | {
                   __typename?: 'Location';
