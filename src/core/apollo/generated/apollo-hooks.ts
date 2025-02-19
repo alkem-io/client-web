@@ -1237,6 +1237,7 @@ export const OrganizationInfoFragmentDoc = gql`
         id
         name
         uri
+        description
       }
       location {
         ...fullLocation
