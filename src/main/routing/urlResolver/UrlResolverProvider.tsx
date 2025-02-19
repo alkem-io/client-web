@@ -111,7 +111,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   const [queryUrl, setQueryUrl] = useState<string>();
 
   /**
-   * Default Apollo's cache behaviour will store the result of the URL resolver queries based on the Id of the space returned
+   * Default Apollo's cache behavior will store the result of the URL resolver queries based on the Id of the space returned
    * And will fill the gaps of missing Ids when the user navigates to a different URL
    * for example:
    *   - for a Url like /space/spaceNameId/settings/templates

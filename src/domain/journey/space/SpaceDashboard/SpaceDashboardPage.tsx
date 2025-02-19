@@ -25,7 +25,7 @@ const SpaceDashboardPage = ({
   const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
-  // TODO: loading?
+
   const { spaceId, collaborationId, journeyPath, calendarEventId } = useUrlResolver();
 
   return (

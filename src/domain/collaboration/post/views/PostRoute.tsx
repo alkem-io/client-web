@@ -14,7 +14,7 @@ export interface PostRouteProps {
 const PostRoute = ({ parentPagePath }: PostRouteProps) => {
   const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
   const onClose = () => backToExplore();
-  // TODO: loading?
+
   const { postId, calloutsSetId, calloutId } = useUrlResolver();
 
   return (

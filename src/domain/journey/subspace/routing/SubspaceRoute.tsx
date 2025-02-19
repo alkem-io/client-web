@@ -14,9 +14,11 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const SubspaceRoute = () => {
   const { spaceId } = useUrlResolver();
+  const SubSubspaceRoute = withUrlResolverParams(SubspaceRoute);
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
@@ -56,7 +58,7 @@ const SubspaceRoute = () => {
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
             <SubspaceProvider>
-              <SubspaceRoute />
+              <SubSubspaceRoute />
             </SubspaceProvider>
           }
         />
