@@ -32,7 +32,7 @@ import {
 import 'react-chat-widget-react-18/lib/styles.css';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../domain/community/user';
+import { useUserContext } from '@/domain/community/user';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetMenu from './ChatWidgetMenu';
@@ -171,8 +171,9 @@ const Loading = () => {
 
 const ChatWidget = () => {
   const { t } = useTranslation();
+  const [firstOpen, setFirstOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication();
+  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { user } = useUserContext();
   const userId = user?.user.id;
 
@@ -227,6 +228,13 @@ const ChatWidget = () => {
     setChatToggleTime(Date.now()); // Force a re-render
   };
 
+  const onWidgetContainerClick = () => {
+    if (!firstOpen) {
+      // load the room on first open
+      setFirstOpen(true);
+    }
+  };
+
   useEffect(() => {
     dropMessages();
     if (messages && messages.length > 0) {
@@ -261,7 +269,7 @@ const ChatWidget = () => {
 
   return (
     <>
-      <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')}>
+      <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')} onClick={onWidgetContainerClick}>
         <Widget
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
