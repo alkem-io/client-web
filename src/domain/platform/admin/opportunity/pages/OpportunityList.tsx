@@ -74,7 +74,6 @@ export const OpportunityList: FC = () => {
       refetchSpaceDashboardNavigationChallengesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.subsubspace.notifications.subsubspace-removed'), 'success'),

@@ -98,7 +98,6 @@ export const SubspaceListView = () => {
       refetchSpaceDashboardNavigationChallengesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.subspace.notifications.subspace-removed'), 'success'),

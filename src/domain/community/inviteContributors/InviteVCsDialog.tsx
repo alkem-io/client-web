@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
 import { debounce } from 'lodash';
-
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
@@ -29,7 +28,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, spaceLevel } = useUrlResolver();
+  const { spaceId, spaceLevel, loading: urlResolverLoading } = useUrlResolver();
   const { roleSetId } = useSpace();
 
   const { virtualContributors } = useRoleSetManager({
@@ -131,7 +130,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !availableVCsLoading;
+  const isLoading = availableVCsLoading || urlResolverLoading;
+  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !isLoading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -221,7 +221,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const isEmpty =
     (!availableOnAccount || availableOnAccount.length === 0) &&
     (!availableInLibrary || availableInLibrary.length === 0) &&
-    !availableVCsLoading;
+    !isLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -262,7 +262,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
             </Gutters>
           )}
 
-          {availableVCsLoading ? (
+          {isLoading ? (
             <Loading />
           ) : (
             <InviteContributorsList

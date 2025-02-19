@@ -1,4 +1,4 @@
-import { ExpandMore, HelpOutlineOutlined, UnfoldLess, UnfoldMore } from '@mui/icons-material';
+import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
 import { Box, Button, Collapse, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -20,6 +20,8 @@ import { GUTTER_PX } from '@/core/ui/grid/constants';
 import { findCurrentPath } from './utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { debounce, difference } from 'lodash';
+import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface DashboardNavigationProps {
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -31,6 +33,7 @@ export interface DashboardNavigationProps {
   onCreateSubspace?: (parent: Identifiable) => void;
   compact?: boolean;
   onCurrentItemNotFound?: () => void;
+  level?: SpaceLevel;
 }
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
@@ -49,10 +52,11 @@ const DashboardNavigation = ({
   onCreateSubspace,
   compact = false,
   onCurrentItemNotFound = () => {},
+  level = SpaceLevel.L0,
 }: DashboardNavigationProps) => {
   const { t } = useTranslation();
 
-  const [isSnapped, setIsSnapped] = useState(true);
+  const [isSnapped] = useState(false);
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
 
@@ -72,7 +76,8 @@ const DashboardNavigation = ({
 
   const tooltipPlacement = isMobile ? 'left' : 'right';
 
-  // TODO receive journeyPath as argument
+  // TODO: receive journeyPath as argument, revise the currentLevel && isTopLevel logic!
+  // TODO: simplify the logic here and in the DashboardNavigationItemView
   const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;
   const isTopLevel = currentLevel === 0;
@@ -184,6 +189,19 @@ const DashboardNavigation = ({
 
   const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
+  const hasCreate =
+    !compact &&
+    Boolean(onCreateSubspace) &&
+    level === SpaceLevel.L1 &&
+    Boolean(currentItemId) &&
+    dashboardNavigationRoot?.canCreateSubspace;
+
+  // do not show the block as L2 subspaces doesn't have subspaces
+  // do not show if there are no children and the navigation is compact
+  if (level === SpaceLevel.L2 || (!dashboardNavigationRoot?.children?.length && compact)) {
+    return <Box />; // Box because of cut drop shadow on the buttons above
+  }
+
   return (
     <PageContentBlock disablePadding disableGap>
       {!compact && (
@@ -209,6 +227,11 @@ const DashboardNavigation = ({
               sx={{ padding: gutters() }}
             />
           </RouterLink>
+          <Box>
+            {hasCreate && (
+              <DashboardAddButton level={1} onClick={() => onCreateSubspace?.({ id: currentItemId ?? '' })} />
+            )}
+          </Box>
         </Collapse>
       )}
       <Box height={viewportSnap.height} overflow="hidden" sx={{ transition: 'height 0.3s ease-in-out' }}>
@@ -223,11 +246,9 @@ const DashboardNavigation = ({
           {dashboardNavigationRoot && (
             <DashboardNavigationItemView
               ref={itemRef}
-              currentPath={pathToItem}
               tooltipPlacement={tooltipPlacement}
               onToggle={adjustViewport}
               compact={compact}
-              onCreateSubspace={onCreateSubspace}
               itemProps={itemProps}
               {...dashboardNavigationRoot}
               {...getItemProps(dashboardNavigationRoot)}
@@ -235,18 +256,6 @@ const DashboardNavigation = ({
           )}
         </Box>
       </Box>
-      {!isTopLevel && (
-        <Actions padding={1} justifyContent="center">
-          <Button
-            startIcon={compact ? undefined : isSnapped ? <UnfoldMore /> : <UnfoldLess />}
-            onClick={() => setIsSnapped(isExpanded => !isExpanded)}
-            sx={{ textTransform: 'none', minWidth: 0, padding: 0.8 }}
-          >
-            {compact && (isSnapped ? <UnfoldMore /> : <UnfoldLess />)}
-            {!compact && t(`components.dashboardNavigation.${isSnapped ? 'expand' : 'collapse'}` as const)}
-          </Button>
-        </Actions>
-      )}
       {isTopLevel &&
         (showAll ? (
           <Box height={gutters(0.5)} />

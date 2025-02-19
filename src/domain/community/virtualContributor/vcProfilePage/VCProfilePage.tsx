@@ -28,7 +28,7 @@ type VCProfilePageProps = {
 
 export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading, error } = useVirtualContributorQuery({
     variables: {
@@ -49,7 +49,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
 
   useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges);
 
-  if (loading || !vcId) {
+  if (urlResolverLoading || loading || !vcId) {
     return (
       <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );

@@ -10,7 +10,7 @@ import useAccountResources from '@/domain/community/contributor/useAccountResour
 import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export const UserProfilePage = () => {
-  const { userId } = useUrlResolver();
+  const { userId, loading: urlResolverLoading } = useUrlResolver();
 
   const { user: userMetadata, loading } = useUserMetadata(userId);
 
@@ -25,7 +25,7 @@ export const UserProfilePage = () => {
 
   const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
 
-  if (loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
+  if (urlResolverLoading || loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
 
   if (!userMetadata) {
     return (

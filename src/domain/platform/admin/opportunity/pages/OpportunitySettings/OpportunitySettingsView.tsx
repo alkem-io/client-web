@@ -43,7 +43,6 @@ const OpportunitySettingsView = () => {
       refetchSpaceDashboardNavigationChallengesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     onCompleted: () => {
       notify(t('pages.admin.space.notifications.space-removed'), 'success');
