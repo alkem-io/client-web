@@ -62,7 +62,7 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
     [items]
   );
 
-  if (!items || items.length === 0) {
+  if (!filteredSortedItems.length) {
     return null;
   }
 
