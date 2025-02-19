@@ -22,8 +22,10 @@ export interface EventCardHeaderProps {
           displayName: string;
         };
         subspace?: {
-          profile: {
-            displayName: string;
+          about: {
+            profile: {
+              displayName: string;
+            };
           };
         };
       }
@@ -73,7 +75,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
                   <SubspaceIcon2 fill="primary" sx={{ maxHeight: gutters(0.7), maxWidth: gutters(0.7) }} />
                 }
               >
-                {event.subspace.profile.displayName}
+                {event.subspace.about.profile.displayName}
               </CardHeaderDetail>
             )}
           </>

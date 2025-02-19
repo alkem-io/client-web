@@ -20,23 +20,27 @@ import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
 interface SubspaceCreationInput {
   spaceID: string;
-  displayName: string;
-  tagline: string;
-  background?: string;
-  vision?: string;
-  tags: string[];
+  about: {
+    profile: {
+      displayName: string;
+      tagline: string;
+      description?: string;
+      visuals: {
+        avatar: {
+          file: File | undefined;
+          altText?: string;
+        };
+        cardBanner: {
+          file: File | undefined;
+          altText?: string;
+        };
+      };
+      tags: string[];
+    };
+    why?: string;
+  };
   addTutorialCallouts: boolean;
   collaborationTemplateId?: string;
-  visuals: {
-    avatar: {
-      file: File | undefined;
-      altText?: string;
-    };
-    cardBanner: {
-      file: File | undefined;
-      altText?: string;
-    };
-  };
 }
 
 export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptions = {}) => {
@@ -89,21 +93,22 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   // add useCallback
   const createSubspace = useCallback(
     async (value: SubspaceCreationInput) => {
-      const includeVisuals = Boolean(value.visuals.cardBanner.file) || Boolean(value.visuals.avatar.file);
+      const includeVisuals =
+        Boolean(value.about.profile.visuals.cardBanner.file) || Boolean(value.about.profile.visuals.avatar.file);
 
       const { data } = await createSubspaceLazy({
         variables: {
           input: {
             spaceID: value.spaceID,
-            context: {
-              vision: value.vision,
+            about: {
+              why: value.about.why,
+              profileData: {
+                displayName: value.about.profile.displayName,
+                tagline: value.about.profile.tagline,
+                description: value.about.profile.description,
+                tags: value.about.profile.tags,
+              },
             },
-            profileData: {
-              displayName: value.displayName,
-              tagline: value.tagline,
-              description: value.background,
-            },
-            tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
               addCallouts: true, // Always add Callouts from the template
@@ -123,22 +128,31 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
                 value: '',
               },
             ],
-            profile: {
+            about: {
               id: '',
-              displayName: value.displayName ?? '',
-              tagline: value.tagline,
-              url: '',
-              cardBanner: {
+              why: value.about.why,
+              profile: {
                 id: '',
-                uri: '',
-                name: '',
-              },
-              tagset: {
-                id: '-1',
-                name: DEFAULT_TAGSET,
-                tags: value.tags ?? [],
-                allowedValues: [],
-                type: TagsetType.Freeform,
+                displayName: value.about.profile.displayName ?? '',
+                tagline: value.about.profile.tagline,
+                url: '',
+                cardBanner: {
+                  id: '',
+                  uri: '',
+                  name: '',
+                },
+                avatar: {
+                  id: '',
+                  uri: '',
+                  name: '',
+                },
+                tagset: {
+                  id: '-1',
+                  name: DEFAULT_TAGSET,
+                  tags: value.about.profile.tags ?? [],
+                  allowedValues: [],
+                  type: TagsetType.Freeform,
+                },
               },
             },
             community: {
@@ -148,22 +162,10 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
                 myMembershipStatus: CommunityMembershipStatus.Member,
               },
             },
-            context: {
-              id: '',
-              vision: value.vision,
-            },
+
             settings: {
               privacy: {
                 mode: SpacePrivacyMode.Public,
-              },
-            },
-            visuals: {
-              id: '',
-              cardBanner: {
-                id: '',
-              },
-              avatar: {
-                id: '',
               },
             },
           },
@@ -171,27 +173,27 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
       });
       try {
         const uploadPromises: Promise<unknown>[] = [];
-        if (value.visuals.avatar.file && data?.createSubspace.visuals.avatar?.id) {
+        if (value.about.profile.visuals.avatar.file && data?.createSubspace.about.profile?.avatar?.id) {
           uploadPromises.push(
             uploadVisual({
               variables: {
-                file: value.visuals.avatar.file,
+                file: value.about.profile.visuals.avatar.file,
                 uploadData: {
-                  visualID: data.createSubspace.visuals.avatar.id,
-                  alternativeText: value.visuals.avatar.altText,
+                  visualID: data.createSubspace.about.profile.avatar?.id || '',
+                  alternativeText: value.about.profile.visuals.avatar.altText,
                 },
               },
             })
           );
         }
-        if (value.visuals.cardBanner.file && data?.createSubspace.visuals.cardBanner?.id) {
+        if (value.about.profile.visuals.cardBanner.file && data?.createSubspace.about.profile?.cardBanner?.id) {
           uploadPromises.push(
             uploadVisual({
               variables: {
-                file: value.visuals.cardBanner.file,
+                file: value.about.profile.visuals.cardBanner.file,
                 uploadData: {
-                  visualID: data.createSubspace.visuals.cardBanner.id,
-                  alternativeText: value.visuals.cardBanner.altText,
+                  visualID: data.createSubspace.about.profile?.cardBanner?.id || '',
+                  alternativeText: value.about.profile.visuals.cardBanner.altText,
                 },
               },
             })

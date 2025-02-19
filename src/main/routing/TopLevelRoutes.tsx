@@ -41,7 +41,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/space/routing/SpaceRoute'));
+const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();

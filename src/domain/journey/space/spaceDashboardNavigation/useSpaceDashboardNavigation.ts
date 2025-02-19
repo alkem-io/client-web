@@ -1,14 +1,14 @@
 import {
-  useSpaceDashboardNavigationChallengesQuery,
   useSpaceDashboardNavigationOpportunitiesQuery,
+  useSpaceDashboardNavigationSubspacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   Authorization,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
-  SpaceDashboardNavigationProfileFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
 import { keyBy } from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
 
@@ -39,9 +39,9 @@ export interface DashboardNavigationItem {
 }
 
 const getDashboardNavigationItemProps = (
-  journey: {
+  space: {
     id: string;
-    profile: SpaceDashboardNavigationProfileFragment;
+    about: SpaceAboutLightModel;
     roleSet?: MyMembershipsRoleSetFragment;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
@@ -50,13 +50,13 @@ const getDashboardNavigationItemProps = (
   disabled?: boolean
 ): DashboardNavigationItem => {
   return {
-    id: journey.id,
-    url: journey.profile.url,
-    displayName: journey.profile.displayName,
-    avatar: journey.profile.avatar,
+    id: space.id,
+    url: space.about.profile.url,
+    displayName: space.about.profile.displayName,
+    avatar: space.about.profile.avatar,
     private: disabled,
-    member: journey.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
-    canCreateSubspace: journey.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
+    member: space.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
+    canCreateSubspace: space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };
 
@@ -71,7 +71,7 @@ const useSpaceDashboardNavigation = ({
     data: challengesQueryData,
     loading: challengesQueryLoading,
     refetch: refetchChallenges,
-  } = useSpaceDashboardNavigationChallengesQuery({
+  } = useSpaceDashboardNavigationSubspacesQuery({
     variables: { spaceId: spaceId! },
     skip: skip || !spaceId,
   });

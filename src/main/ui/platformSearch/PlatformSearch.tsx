@@ -29,7 +29,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
   ({ onExpand, compact, children }, forwardedRef) => {
     const { t } = useTranslation();
 
-    const { spaceNameId, profile } = useSpace();
+    const { spaceNameId, about } = useSpace();
 
     const searchOptions = useMemo<Partial<SelectOption<SearchScope>>[] | undefined>(() => {
       if (!spaceNameId) {
@@ -39,14 +39,14 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
       return [
         {
           value: SearchScope.Space,
-          label: t('components.search.scope.space', profile),
+          label: t('components.search.scope.space', about.profile),
         },
         {
           value: SearchScope.Platform,
           label: t('components.search.scope.platform'),
         },
       ];
-    }, [t, profile]);
+    }, [t, about.profile]);
 
     const defaultSearchOption = spaceNameId ? SearchScope.Space : SearchScope.Platform;
 

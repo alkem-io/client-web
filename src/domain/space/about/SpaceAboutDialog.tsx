@@ -27,7 +27,7 @@ import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import References from '@/domain/shared/components/References/References';
-import { Reference, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -35,27 +35,21 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import Loading from '@/core/ui/loading/Loading';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceLevel: SpaceLevel | undefined;
-  displayName: ReactNode;
-  tagline: ReactNode;
-  references: Reference[] | undefined;
+  about?: SpaceAboutDetailsModel | undefined;
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
-  description: string | undefined;
-  background: string | undefined;
-  who: string | undefined;
-  impact: string | undefined;
   guidelines?: ReactNode;
   loading?: boolean;
   leftColumnChildrenTop?: ReactNode;
   leftColumnChildrenBottom?: ReactNode;
-  shareUrl?: string;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
@@ -84,11 +78,9 @@ const gradient = (theme: Theme) =>
     theme
   )}, rgba(0,0,0,.5) 100%);`;
 
-const JourneyAboutDialog = ({
+const SpaceAboutDialog = ({
   open,
-  displayName,
-  tagline,
-  references,
+  about,
   ribbon,
   spaceLevel = SpaceLevel.L0,
   leadUsers,
@@ -96,17 +88,12 @@ const JourneyAboutDialog = ({
   provider: host,
   sendMessageToCommunityLeads,
   metrics,
-  description,
-  background,
-  who,
-  impact,
   guidelines,
   loading = false,
   startButton,
   endButton,
   leftColumnChildrenTop,
   leftColumnChildrenBottom,
-  shareUrl,
   virtualContributors,
   hasReadPrivilege,
   hasInvitePrivilege,
@@ -151,6 +138,7 @@ const JourneyAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+  const aboutProfile = about?.profile;
 
   return (
     <DialogWithGrid
@@ -178,40 +166,40 @@ const JourneyAboutDialog = ({
           </DialogHeaderItem>
           <DialogHeaderItem order={isMobile ? 1 : 0}>
             {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
-            <PageTitle paddingY={gutters(0.5)}>{displayName}</PageTitle>
+            <PageTitle paddingY={gutters(0.5)}>{aboutProfile?.displayName}</PageTitle>
           </DialogHeaderItem>
           <DialogHeaderItem minWidth="30%" align="end">
-            {shareUrl && <ShareButton url={shareUrl} entityTypeName="about" />}
+            {aboutProfile?.url && <ShareButton url={aboutProfile.url} entityTypeName="about" />}
             {endButton}
           </DialogHeaderItem>
         </Box>
-        <Tagline textAlign="center">{tagline}</Tagline>
+        <Tagline textAlign="center">{about}</Tagline>
       </Box>
       {ribbon}
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters flexWrap="wrap" flexDirection={isMobile ? 'row' : 'row-reverse'}>
           <PageContentColumn columns={8}>
-            {description && (
+            {aboutProfile?.description && (
               <PageContentBlock accent>
-                <WrapperMarkdown>{description}</WrapperMarkdown>
+                <WrapperMarkdown>{aboutProfile.description}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {background && (
+            {about?.why && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.background.title` as const)} />
-                <WrapperMarkdown>{background}</WrapperMarkdown>
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.description.title` as const)} />
+                <WrapperMarkdown>{about.why}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {impact && (
+            {about?.when && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.impact.title` as const)} />
-                <WrapperMarkdown>{impact}</WrapperMarkdown>
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.when.title` as const)} />
+                <WrapperMarkdown>{about.when}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {who && (
+            {about?.who && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />
-                <WrapperMarkdown>{who}</WrapperMarkdown>
+                <WrapperMarkdown>{about.who}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {guidelines}
@@ -229,7 +217,7 @@ const JourneyAboutDialog = ({
               </PageContentBlock>
               <PageContentBlock>
                 <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-                <References references={references} />
+                <References references={aboutProfile?.references} />
               </PageContentBlock>
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding order={isMobile ? 1 : 0}>
@@ -301,4 +289,4 @@ const JourneyAboutDialog = ({
   );
 };
 
-export default JourneyAboutDialog;
+export default SpaceAboutDialog;

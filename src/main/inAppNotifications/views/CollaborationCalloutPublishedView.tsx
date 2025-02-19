@@ -25,7 +25,7 @@ export const CollaborationCalloutPublishedView = ({
     const spaceLevel = space?.level ?? SpaceLevel.L0;
     const notificationTextValues = {
       defaultValue: '',
-      spaceName: space?.profile?.displayName,
+      spaceName: space?.about.profile?.displayName,
       spaceType: t(`common.space-level.${spaceLevel}`),
       calloutName: callout?.framing?.profile?.displayName,
       calloutType: calloutType,
@@ -37,7 +37,7 @@ export const CollaborationCalloutPublishedView = ({
       type,
       state,
       space: {
-        avatarUrl: space?.profile?.visual?.uri ?? '',
+        avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {
         url: callout?.framing?.profile?.url ?? '',

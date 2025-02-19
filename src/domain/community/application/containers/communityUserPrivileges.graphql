@@ -6,10 +6,13 @@ query CommunityUserPrivileges(
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        url
-        displayName
+        profile {
+          id
+          url
+          displayName
+        }
       }
       community {
         id
@@ -31,10 +34,13 @@ query CommunityUserPrivileges(
   parentSpace: lookup @include(if: $includeParentSpace) {
     space(ID: $parentSpaceId) {
       id
-      profile {
+      about {
         id
-        url
-        displayName
+        profile {
+          id
+          url
+          displayName
+        }
       }
       community {
         id

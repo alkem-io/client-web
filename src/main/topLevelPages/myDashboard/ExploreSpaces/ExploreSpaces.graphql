@@ -33,12 +33,15 @@ query WelcomeSpace($spaceId: UUID!) {
 fragment ExploreSpaces on Space {
   id
   type
-  profile {
+  about {
     id
-    url
-    displayName
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
+    profile {
+      id
+      url
+      displayName
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
     }
   }
   settings {

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceSubspacesPageQuery,
-  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
@@ -80,7 +80,9 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const { subspaceId } = useSubSpace();
   const {
     spaceId,
-    profile: { url: levelZeroSpaceUrl },
+    about: {
+      profile: { url: levelZeroSpaceUrl },
+    },
   } = useSpace();
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
@@ -96,7 +98,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
       refetchAdminSpaceSubspacesPageQuery({
         spaceId,
       }),
-      refetchSpaceDashboardNavigationChallengesQuery({
+      refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
       'SpaceDashboardNavigationOpportunities',

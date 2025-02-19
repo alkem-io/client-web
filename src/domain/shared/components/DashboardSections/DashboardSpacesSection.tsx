@@ -13,16 +13,18 @@ import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
 export interface SpaceAttrs extends Identifiable {
-  context?: { vision?: string };
-  profile: {
-    url: string;
-    displayName: string;
-    tagline?: string;
-    tagset?: {
-      id: string;
-      tags?: string[];
+  about: {
+    why?: string;
+    profile: {
+      url: string;
+      displayName: string;
+      tagline?: string;
+      tagset?: {
+        id: string;
+        tags?: string[];
+      };
+      cardBanner?: Visual;
     };
-    cardBanner?: Visual;
   };
   visibility: SpaceVisibility;
   provider?: {
@@ -66,14 +68,14 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
         {spaces.map(space => (
           <SpaceCard
             key={space.id}
-            banner={space.profile.cardBanner}
+            banner={space.about.profile.cardBanner}
             spaceId={space.id}
-            displayName={space.profile.displayName}
-            journeyUri={space.profile.url}
-            vision={space.context?.vision!}
+            displayName={space.about.profile.displayName}
+            journeyUri={space.about.profile.url}
+            vision={space.about?.why!}
             membersCount={getMetricCount(space.metrics, MetricType.Member)}
-            tagline={space.profile.tagline!}
-            tags={space.profile.tagset?.tags!}
+            tagline={space.about.profile.tagline!}
+            tags={space.about.profile.tagset?.tags!}
             spaceVisibility={space.visibility}
             {...getSpaceCardProps?.(space)}
           />

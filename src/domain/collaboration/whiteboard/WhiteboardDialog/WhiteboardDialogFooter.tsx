@@ -88,9 +88,9 @@ const WhiteboardDialogFooter = ({
   const getJourneyProfile = () => {
     switch (spaceLevel) {
       case SpaceLevel.L0:
-        return spaceContext.profile;
+        return spaceContext.about.profile;
       case SpaceLevel.L1:
-        return subspaceContext.profile;
+        return subspaceContext.about.profile;
     }
   };
 

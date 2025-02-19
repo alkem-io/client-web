@@ -145,7 +145,7 @@ const SpaceCommunityPage = () => {
                   showInviteOption={hasInvitePrivilege}
                 />
               )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.profile.url} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
             </InfoColumn>
             <ContentColumn>
               <RoleSetContributorsBlockWide

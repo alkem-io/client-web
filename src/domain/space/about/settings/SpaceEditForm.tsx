@@ -2,9 +2,9 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
-import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
@@ -21,13 +21,11 @@ import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { Caption } from '@/core/ui/typography';
+import { SpaceAboutDetailsModel } from '../model/SpaceAboutFull.model';
 
 interface SpaceEditFormProps {
-  context?: Omit<Context, 'anonymousReadAccess'>;
-  profile?: Omit<Profile, 'storageBucket' | 'url'>;
-  name?: string;
+  about?: SpaceAboutDetailsModel;
   nameID?: string;
-  tagset?: Tagset;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;
   loading: boolean;
@@ -39,11 +37,17 @@ export interface SpaceEditFormValuesType {
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
-  tagsets: Tagset[];
+  tagsets: {
+    id: string;
+    name: string;
+    tags: string[];
+  }[];
 }
 
-const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, onSubmit, edit, loading }) => {
+const SpaceEditForm: FC<SpaceEditFormProps> = ({ about, nameID, onSubmit, edit, loading }) => {
   const { t } = useTranslation();
+  const tagset = about?.profile?.tagset;
+  const name = about?.profile?.displayName;
 
   const tagsets = useMemo(() => {
     if (tagset) return [tagset];
@@ -58,21 +62,21 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, 
     ] as Tagset[];
   }, [tagset]);
 
-  const profileId = profile?.id;
+  const profileId = about?.profile?.id;
 
   const initialValues: SpaceEditFormValuesType = {
     name: name ?? '',
     nameID: nameID ?? '',
-    tagline: profile?.tagline ?? '',
-    location: formatLocation(profile?.location) || EmptyLocation,
-    references: profile?.references ?? [],
-    tagsets,
+    tagline: about?.profile?.tagline ?? '',
+    location: formatLocation(about?.profile?.location) || EmptyLocation,
+    references: about?.profile?.references ?? [],
+    tagsets: tagsets ?? [],
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
+    tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
   });

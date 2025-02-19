@@ -2,8 +2,9 @@ import SaveButton from '@/core/ui/actions/SaveButton';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Box, Container, Grid } from '@mui/material';
-import SpaceContextForm, { SpaceEditFormValuesType } from '@/domain/platform/admin/components/SpaceContextForm';
+import SpaceContextForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm2';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
 
 export const SpaceContextView = () => {
   const notify = useNotification();
@@ -15,6 +16,8 @@ export const SpaceContextView = () => {
     skip: !spaceId,
   });
 
+  const about: SpaceAboutDetailsModel = spaceData?.lookup.space?.about!;
+
   const [updateSpace, { loading: isUpdatingSpace }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
@@ -25,7 +28,7 @@ export const SpaceContextView = () => {
     notify(message, 'success');
   };
 
-  const onSubmit = (values: SpaceEditFormValuesType) => {
+  const onSubmit = (values: SpaceAboutEditFormValuesType) => {
     if (!spaceId) {
       notify('Space ID is missing', 'error');
       return;
@@ -33,28 +36,26 @@ export const SpaceContextView = () => {
     return updateSpace({
       variables: {
         input: {
-          context: {
-            impact: values.impact,
-            vision: values.vision,
+          about: {
+            when: values.when,
+            why: values.why,
             who: values.who,
-          },
-          profileData: {
-            description: values.background,
+            profile: {
+              description: values.description,
+            },
           },
           ID: spaceId,
         },
       },
     });
   };
-  const space = spaceData?.lookup.space;
   let submitWired;
   return (
     <Container maxWidth="xl">
       <Grid container spacing={2}>
         <SpaceContextForm
           isEdit
-          context={space?.context}
-          profile={space?.profile}
+          about={about}
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}
           loading={isLoading}
