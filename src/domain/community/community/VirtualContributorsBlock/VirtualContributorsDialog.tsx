@@ -39,13 +39,13 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
   ) => <ListItemButton component={RouterLink} {...props} />;
 
   const [filter, setFilter] = useState<string>('');
-  const filterVCs = (virtualContributor: VirtualContributorProps) => {
-    const lowerCaseFilter = filter.toLowerCase();
-    return virtualContributor.profile.displayName.toLowerCase().includes(lowerCaseFilter);
-  };
   const filteredVCs = useMemo(
     () =>
-      (virtualContributors && filter.length > 0 ? virtualContributors.filter(filterVCs) : virtualContributors) ?? [],
+      (virtualContributors.length > 0 && filter.length > 0
+        ? virtualContributors.filter((virtualContributor: VirtualContributorProps) =>
+            virtualContributor.profile.displayName.toLowerCase().includes(filter.toLowerCase())
+          )
+        : virtualContributors) ?? [],
     [virtualContributors, filter]
   );
 
