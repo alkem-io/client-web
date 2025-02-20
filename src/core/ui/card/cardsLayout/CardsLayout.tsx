@@ -1,10 +1,11 @@
-import { cloneElement, FC, ReactElement, ReactNode, useMemo } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import { Box, BoxProps } from '@mui/material';
+import { FC, ReactElement, ReactNode, cloneElement, useMemo } from 'react';
 
-export interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
+export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
+  extends Omit<PageContentBlockGridProps, 'children'> {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
@@ -55,7 +56,7 @@ export const CardLayoutContainer: FC<CardLayoutContainerProps> = props => {
   return <PageContentBlockGrid cards {...props} />;
 };
 
-interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow'> {
+interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow' | 'children'> {
   flexBasis?: '25%' | '33%' | '50%';
 }
 

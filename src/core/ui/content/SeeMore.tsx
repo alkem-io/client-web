@@ -18,7 +18,7 @@ const SeeMore = ({ label = 'buttons.see-all', subject, to, onClick, sx }: SeeMor
 
   return (
     <CaptionSmall component={to ? RouterLink : ButtonBase} to={to} textAlign="right" onClick={onClick} sx={sx}>
-      {t(label, { subject })}
+      <>{t(label, { subject })}</>
     </CaptionSmall>
   );
 };

@@ -19,7 +19,7 @@ export interface FormikSelectValue {
   icon?: React.ReactElement;
 }
 
-export interface FormikSelectProps extends SelectProps {
+type FormikSelectProps = {
   title?: string;
   name: string;
   required?: boolean;
@@ -28,7 +28,7 @@ export interface FormikSelectProps extends SelectProps {
   placeholder?: string;
   endAdornment?: React.ReactNode;
   helpText?: string;
-}
+} & SelectProps;
 
 export const FormikSelect = ({
   title,
@@ -85,7 +85,9 @@ export const FormikSelect = ({
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
+      <FormHelperText sx={{ color: 'red' }}>
+        <>{helperText}</>
+      </FormHelperText>
     </FormControl>
   );
 };

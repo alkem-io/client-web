@@ -1,6 +1,6 @@
 import Image from '@/core/ui/image/Image';
 import { Box, Paper, Skeleton, styled } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC, PropsWithChildren, useState } from 'react';
 import SectionSpacer from './SectionSpacer';
 
 const BannerContainer = styled(Box)(({ theme }) => ({
@@ -9,7 +9,7 @@ const BannerContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.neutralMedium.light,
 }));
 
-export interface SectionProps {
+export interface SectionProps extends PropsWithChildren {
   bannerUrl?: string;
   alwaysShowBanner?: boolean;
   bannerOverlay?: React.ReactNode;

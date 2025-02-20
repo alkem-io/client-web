@@ -1,5 +1,5 @@
 import { Session } from '@ory/kratos-client';
-import React, { FC } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import { useWhoami } from '../hooks/useWhoami';
 
 export interface AuthContext {
@@ -15,7 +15,7 @@ const AuthenticationContext = React.createContext<AuthContext>({
   verified: false,
 });
 
-const AuthenticationProvider: FC = ({ children }) => {
+const AuthenticationProvider: FC<PropsWithChildren> = ({ children }) => {
   const { session, isAuthenticated, loading, verified } = useWhoami();
 
   return (
@@ -32,4 +32,4 @@ const AuthenticationProvider: FC = ({ children }) => {
   );
 };
 
-export { AuthenticationProvider, AuthenticationContext };
+export { AuthenticationContext, AuthenticationProvider };

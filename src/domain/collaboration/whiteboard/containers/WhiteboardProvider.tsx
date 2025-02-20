@@ -1,10 +1,10 @@
-import React, { PropsWithChildren } from 'react';
 import { useWhiteboardFromCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  WhiteboardDetailsFragment,
   CollaborationWithWhiteboardDetailsFragment,
+  WhiteboardDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import React from 'react';
 
 interface WhiteboardProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
@@ -20,7 +20,7 @@ export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardProvider = ({ children }: PropsWithChildren<WhiteboardProviderProps>) => {
+const WhiteboardProvider = ({ children }: WhiteboardProviderProps) => {
   const { calloutId, contributionId } = useUrlResolver();
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, contributionId: contributionId! },
