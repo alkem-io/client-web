@@ -62,7 +62,7 @@ export const UserProfileView = ({ entities: { userMetadata } }: UserProfileViewP
         </Grid>
       )}
 
-      {Number(links[OTHER_LINK_GROUP].length) > 0 && (
+      {Number(links[OTHER_LINK_GROUP]?.length) > 0 && (
         <Grid item container direction="column">
           <BlockSectionTitle mb={gutters()}>{t('components.profile.fields.links.title')}</BlockSectionTitle>
           <References
