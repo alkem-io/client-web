@@ -48,7 +48,9 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   const getItemContent = (item: MenuOptionProps) => (
     <>
       {item.icon && <item.icon fontSize="small" sx={{ color: 'neutral.light' }} />}
-      <Caption paddingLeft={gutters()}>{getTranslationByKey(item.label)}</Caption>
+      <Caption paddingLeft={gutters()}>
+        <>{getTranslationByKey(item.label)}</>
+      </Caption>
     </>
   );
 
