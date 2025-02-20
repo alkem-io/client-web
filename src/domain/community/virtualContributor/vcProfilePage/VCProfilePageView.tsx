@@ -33,6 +33,7 @@ export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfil
   return (
     <PageContent>
       <PageContentColumn columns={4}>
+        {/* Description block --START-- */}
         <PageContentBlock disableGap>
           <ProfileDetail
             title={t('components.profile.fields.description.title')}
@@ -49,14 +50,38 @@ export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfil
             />
           </Gutters>
         </PageContentBlock>
+        {/* Description block --END-- */}
 
+        {/* Host block --START-- */}
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
           <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
         </PageContentBlock>
+        {/* Host block --END-- */}
+
+        {/* TO BE UPDATED --START-- */}
+        <PageContentBlock>
+          <h1>References</h1>
+          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
+          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
+        </PageContentBlock>
+
+        <PageContentBlock>
+          <h1>Body of Knowledge</h1>
+          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
+          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
+        </PageContentBlock>
+
+        <PageContentBlock>
+          <h1>Body of Knowledge</h1>
+          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
+          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
+        </PageContentBlock>
+        {/* TO BE UPDATED --END-- */}
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
+        {/* <VCProfileContentView /> Е ДЯСНАТА ЧАСТ НА VC СТРАНИЦАТА */}
         <VCProfileContentView virtualContributor={virtualContributor} {...pageProps} />
       </PageContentColumn>
     </PageContent>
