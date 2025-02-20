@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { useField } from 'formik';
-import { FormikInputProps } from '../FormikInputProps';
 import { DatePicker, DatePickerProps, LocalizationProvider } from '@mui/lab';
 import { TextField } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useField } from 'formik';
+import { useState } from 'react';
+import { FormikInputProps } from '../FormikInputProps';
 
-interface FormikDatePickerProps extends FormikInputProps, Partial<DatePickerProps> {}
+interface FormikDatePickerProps extends FormikInputProps, Partial<DatePickerProps<Date>> {}
 
 const FormikDatePicker = ({ name, ...datePickerProps }: FormikDatePickerProps) => {
   const [field, , helpers] = useField(name);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleChange: DatePickerProps['onChange'] = date => {
+  const handleChange: DatePickerProps<Date>['onChange'] = date => {
     helpers.setValue(date);
   };
 

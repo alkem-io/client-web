@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Dialog, DialogActions, Button, DialogContent, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Trans, useTranslation } from 'react-i18next';
+import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, Text } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
-import Gutters from '@/core/ui/grid/Gutters';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface ApplyCollaborationTemplateDialogProps {
   open: boolean;
@@ -72,8 +72,12 @@ const ApplyCollaborationTemplateDialog: React.FC<ApplyCollaborationTemplateDialo
                   control={<Radio />}
                   label={
                     <>
-                      <Text sx={{ fontWeight: 'bold' }}>{t(option.titleKey)}</Text>
-                      <Caption>{t(option.descriptionKey)}</Caption>
+                      <Text sx={{ fontWeight: 'bold' }}>
+                        <>{t(option.titleKey)}</>
+                      </Text>
+                      <Caption>
+                        <>{t(option.descriptionKey)}</>
+                      </Caption>
                     </>
                   }
                 />

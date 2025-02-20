@@ -1,30 +1,30 @@
+import {
+  OrganizationContributorFragment,
+  RoleSetContributorType,
+  UserContributorFragment,
+} from '@/core/apollo/generated/graphql-schema';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { Identifiable } from '@/core/utils/Identifiable';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import { Box, Grid } from '@mui/material';
+import { times } from 'lodash';
 import { ComponentType, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid } from '@mui/material';
-import { noop, times } from 'lodash';
 import ContributorCardSquare, {
   ContributorCardSkeleton,
   ContributorCardSquareProps,
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
 import {
   PaginatedResult,
-  VirtualContributors,
   VirtualContributor,
+  VirtualContributors,
 } from '../contributor/ContributorsSearch/ContributorsSearchContainer';
-import {
-  RoleSetContributorType,
-  OrganizationContributorFragment,
-  UserContributorFragment,
-} from '@/core/apollo/generated/graphql-schema';
-import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import GridItem from '@/core/ui/grid/GridItem';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import { Identifiable } from '@/core/utils/Identifiable';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 32;
@@ -172,7 +172,7 @@ const ContributorsView = ({
           items={vcs?.items?.map(vcToContributorCard)}
           cardComponent={ContributorCardSquare}
           loading={vcs?.loading}
-          loader={noop}
+          loader={undefined}
         />
       </PageContentBlock>
       <PageContentBlock columns={12}>
