@@ -1,5 +1,6 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
@@ -132,6 +133,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     },
     skip: !queryUrl,
   });
+
+  if (!urlResolverLoading && urlResolverData?.urlResolver.isError) {
+    throw new NotFoundError(urlResolverData?.urlResolver.errorMessage);
+  }
 
   const setUrlParams = (url: string) => {
     setQueryUrl(url);

@@ -8,7 +8,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 /**
  * children will have the virtual contributor data available if it is loaded
@@ -47,7 +47,13 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     skip: !data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
   });
 
-  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges);
+  useRestrictedRedirect(
+    { data, error, skip: urlResolverLoading || loading },
+    data => data.lookup.virtualContributor?.authorization?.myPrivileges,
+    {
+      requiredPrivilege: AuthorizationPrivilege.ReadAbout,
+    }
+  );
 
   if (urlResolverLoading || loading || !vcId) {
     return (
