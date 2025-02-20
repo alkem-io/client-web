@@ -32,9 +32,13 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
 
   const { t } = useTranslation();
 
-  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges, {
-    requiredPrivilege: AuthorizationPrivilege.Update,
-  });
+  useRestrictedRedirect(
+    { data, error, skip: urlResolverLoading || loading },
+    data => data.lookup.virtualContributor?.authorization?.myPrivileges,
+    {
+      requiredPrivilege: AuthorizationPrivilege.Update,
+    }
+  );
 
   return (
     <EntitySettingsLayout

@@ -47,7 +47,10 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     skip: !data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
   });
 
-  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges);
+  useRestrictedRedirect(
+    { data, error, skip: urlResolverLoading || loading },
+    data => data.lookup.virtualContributor?.authorization?.myPrivileges
+  );
 
   if (urlResolverLoading || loading || !vcId) {
     return (
