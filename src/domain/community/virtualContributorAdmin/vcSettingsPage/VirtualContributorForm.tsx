@@ -24,6 +24,7 @@ import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 
 type VirtualContributorProps = {
   id: string;
@@ -77,9 +78,12 @@ export const VirtualContributorForm = ({
   const isMobile = cols < 5;
 
   const {
+    id: vcId,
     profile: { id: vcProfileId, displayName, description, tagline, tagsets, references: vcReferences },
     account,
   } = virtualContributor;
+
+  const { refetch: refetchVC } = useVirtualContributorQuery({ variables: { id: vcId! }, skip: !vcId });
 
   const { displayName: subSpaceName } = bokProfile ?? {};
 
@@ -193,9 +197,9 @@ export const VirtualContributorForm = ({
 
                       <ProfileReferenceSegment
                         fullWidth
-                        compactMode
                         profileId={vcProfileId}
                         references={references ?? []}
+                        onRemoveCb={() => refetchVC()}
                       />
 
                       {hostDisplayName && <HostFields />}
