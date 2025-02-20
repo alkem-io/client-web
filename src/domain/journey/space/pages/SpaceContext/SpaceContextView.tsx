@@ -37,7 +37,6 @@ export const SpaceContextView = () => {
       variables: {
         input: {
           about: {
-            when: values.when,
             why: values.why,
             who: values.who,
             profile: {

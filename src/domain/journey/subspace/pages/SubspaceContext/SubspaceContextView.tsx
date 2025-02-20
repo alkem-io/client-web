@@ -40,7 +40,6 @@ const ChallengeContextView = () => {
         input: {
           ID: requiredSpaceId,
           about: {
-            when: values.when,
             why: values.why,
             who: values.who,
             profile: {

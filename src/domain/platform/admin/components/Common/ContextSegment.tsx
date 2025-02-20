@@ -41,15 +41,7 @@ export const ContextSegment = ({ loading, spaceLevel }: ContextSegmentProps & { 
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}
       />
-      <FormikMarkdownField
-        name="impact"
-        title={t(`context.${spaceLevel}.when.title` as const)}
-        placeholder={t(`context.${spaceLevel}.when.title` as const)}
-        helperText={t(`context.${spaceLevel}.when.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
-      />
+
       <FormikMarkdownField
         name="who"
         title={t(`context.${spaceLevel}.who.title` as const)}
