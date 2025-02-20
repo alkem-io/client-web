@@ -21,7 +21,11 @@ export const VCSettingsPage = () => {
   const notify = useNotification();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { data, loading } = useVirtualContributorQuery({
+  const {
+    data,
+    loading,
+    refetch: refetchVC,
+  } = useVirtualContributorQuery({
     variables: {
       id: vcId!,
     },
@@ -49,6 +53,8 @@ export const VCSettingsPage = () => {
       },
       onCompleted: () => {
         notify(t('pages.virtualContributorProfile.success', { entity: t('common.profile') }), 'success');
+
+        refetchVC(); // Re-fetch so the VC profile will be updated when the user goes back to it.
       },
     });
   };

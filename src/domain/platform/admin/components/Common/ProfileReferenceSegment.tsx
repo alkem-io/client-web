@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
 import { Reference } from '@/domain/common/profile/Profile';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
@@ -7,9 +6,17 @@ import { useTranslation } from 'react-i18next';
 
 interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
   profileId?: string;
+  onAddCb?: () => void; // Added for additional flexibility in the add handler without affecting the actual add.
+  onRemoveCb?: () => void; // Added for additional flexibility in the remove handler without affecting the actual remove.
 }
 
-export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ profileId, readOnly, ...rest }) => {
+export const ProfileReferenceSegment = ({
+  profileId,
+  readOnly,
+  onAddCb,
+  onRemoveCb,
+  ...rest
+}: ProfileReferenceSegmentProps) => {
   const { t } = useTranslation();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
@@ -23,6 +30,8 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
         description: '',
         uri: '',
       });
+
+      onAddCb?.();
     }
   };
 
@@ -31,6 +40,7 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
     setRemove(removeFn);
     if (ref.id) {
       deleteReference(ref.id);
+      onRemoveCb?.();
     }
   };
 
