@@ -190,12 +190,6 @@ const SpaceAboutDialog = ({
                 <WrapperMarkdown>{about.why}</WrapperMarkdown>
               </PageContentBlock>
             )}
-            {about?.when && (
-              <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.when.title` as const)} />
-                <WrapperMarkdown>{about.when}</WrapperMarkdown>
-              </PageContentBlock>
-            )}
             {about?.who && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />

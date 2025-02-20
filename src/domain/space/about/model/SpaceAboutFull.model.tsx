@@ -3,7 +3,6 @@ import { AuthorizationPrivilege, TagsetType } from '@/core/apollo/generated/grap
 export type SpaceAboutDetailsModel = {
   id: string;
   who?: string;
-  when?: string;
   why?: string;
   authorization?: {
     id: string;

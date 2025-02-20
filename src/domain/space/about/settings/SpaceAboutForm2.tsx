@@ -6,7 +6,6 @@ import { SpaceContextSegment } from '../../../platform/admin/space/SpaceContextS
 
 interface SpaceAboutEditFormProps {
   about: {
-    when?: string;
     why?: string;
     who?: string;
     profile?: { description?: string };
@@ -19,7 +18,6 @@ interface SpaceAboutEditFormProps {
 
 export interface SpaceAboutEditFormValuesType {
   description: string;
-  when?: string;
   why?: string;
   who?: string;
 }
@@ -27,14 +25,12 @@ export interface SpaceAboutEditFormValuesType {
 const SpaceAboutEditForm: FC<SpaceAboutEditFormProps> = ({ about, onSubmit, wireSubmit, loading }) => {
   const initialValues: SpaceAboutEditFormValuesType = {
     description: about.profile?.description ?? '',
-    when: about?.when ?? '',
     why: about?.why ?? '',
     who: about?.who ?? '',
   };
 
   const validationSchema = yup.object().shape({
     description: spaceAboutSegmentSchema.fields?.description || yup.string(),
-    when: spaceAboutSegmentSchema.fields?.when || yup.string(),
     why: spaceAboutSegmentSchema.fields?.why || yup.string(),
     who: spaceAboutSegmentSchema.fields?.who || yup.string(),
   });

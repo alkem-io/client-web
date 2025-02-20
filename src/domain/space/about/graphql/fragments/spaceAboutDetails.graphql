@@ -1,7 +1,6 @@
 fragment SpaceAboutDetails on SpaceAbout {
   id
   who
-  when
   why
   authorization {
     id
