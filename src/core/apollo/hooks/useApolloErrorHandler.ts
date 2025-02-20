@@ -1,11 +1,11 @@
 import { Severity } from '@/core/state/global/notifications/notificationMachine';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ApolloError } from '@apollo/client';
-import { GraphQLError } from 'graphql';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) => {
+const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
   const code = error.extensions?.code as string;
   const meta = { code, message };
@@ -47,7 +47,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
   const handleGraphQLErrors = (error: ApolloError) => {
     const graphqlErrors = error.graphQLErrors;
 
-    graphqlErrors.forEach((error: GraphQLError) => {
+    graphqlErrors.forEach((error: GraphQLFormattedError) => {
       const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
     });
