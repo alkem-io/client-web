@@ -46,6 +46,8 @@ query UrlResolver($url: String!) {
       }
     }
     innovationHubId
+    isError
+    errorMessage
   }
 }
 
