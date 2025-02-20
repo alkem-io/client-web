@@ -21788,6 +21788,8 @@ export const UrlResolverDocument = gql`
         }
       }
       innovationHubId
+      isError
+      errorMessage
     }
   }
 `;
