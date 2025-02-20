@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import PostRoute from '@/domain/collaboration/post/views/PostRoute';
 import WhiteboardRoute from '@/domain/collaboration/whiteboard/views/WhiteboardRoute';
 import { nameOfUrl } from '@/main/routing/urlParams';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export interface CalloutRouteProps {
   parentPagePath: string;
@@ -17,4 +18,4 @@ const CalloutRoute = ({ parentPagePath }: CalloutRouteProps) => (
   </Routes>
 );
 
-export default CalloutRoute;
+export default withUrlResolverParams(CalloutRoute);

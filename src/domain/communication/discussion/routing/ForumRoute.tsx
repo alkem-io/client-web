@@ -6,6 +6,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import LastReleaseDiscussion from '../pages/LastReleaseDiscussion';
 import Discussion from '../pages/Discussion';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export const ForumRoute = () => (
   <Routes>
@@ -41,4 +42,4 @@ export const ForumRoute = () => (
   </Routes>
 );
 
-export default ForumRoute;
+export default withUrlResolverParams(ForumRoute);

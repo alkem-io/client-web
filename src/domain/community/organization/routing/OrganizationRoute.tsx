@@ -7,12 +7,13 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import { OrganizationProvider } from '../../contributor/organization/context/OrganizationProvider';
 import { Outlet } from 'react-router-dom';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
-const OrganizationProviderWithOutlet = () => (
+const OrganizationProviderWithOutlet = withUrlResolverParams(() => (
   <OrganizationProvider>
     <Outlet />
   </OrganizationProvider>
-);
+));
 
 const OrganizationRoute = () => (
   <Routes>
@@ -33,4 +34,4 @@ const OrganizationRoute = () => (
   </Routes>
 );
 
-export default OrganizationRoute;
+export default withUrlResolverParams(OrganizationRoute);

@@ -14,6 +14,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const SubspaceRoute = () => {
   const { spaceId } = useUrlResolver();
@@ -56,7 +57,7 @@ const SubspaceRoute = () => {
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
             <SubspaceProvider>
-              <SubspaceRoute />
+              <SubSubspaceRoute />
             </SubspaceProvider>
           }
         />
@@ -66,4 +67,6 @@ const SubspaceRoute = () => {
   );
 };
 
-export default SubspaceRoute;
+const SubSubspaceRoute = withUrlResolverParams(SubspaceRoute);
+
+export default withUrlResolverParams(SubspaceRoute);

@@ -4,6 +4,7 @@ import InnovationHubSettingsPage from './InnovationHubSettingsPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const InnovationHubsRoutes = () => (
   <StorageConfigContextProvider locationType="platform">
@@ -16,4 +17,4 @@ const InnovationHubsRoutes = () => (
   </StorageConfigContextProvider>
 );
 
-export default InnovationHubsRoutes;
+export default withUrlResolverParams(InnovationHubsRoutes);

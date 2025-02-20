@@ -1,6 +1,7 @@
 import { useEffect, ComponentType } from 'react';
 import { useLocation } from 'react-router-dom';
 import useUrlResolver from './useUrlResolver';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 
 /**
  * Higher-Order Component (HOC) that updates the UrlResolverProvider with URL parameters.
@@ -11,17 +12,18 @@ import useUrlResolver from './useUrlResolver';
  * @param WrappedComponent - The component to be wrapped by this HOC.
  * @returns A new component that wraps the given component and updates the UrlResolverProvider with URL parameters.
  *
- * */
+ */
 const withUrlResolverParams = <P extends object>(WrappedComponent: ComponentType<P>) => {
   return (props: P) => {
     const { setUrlParams } = useUrlResolver();
     const location = useLocation();
-    //const urlParams = useUrlParams();
+    const urlParams = useUrlParams();
 
     useEffect(() => {
-      // don't change the *, this is the wildcard for rest of the URL (must be skipped)
-      // const { '*': _, ...filteredUrlParams } = urlParams;
-      setUrlParams(document.location.href);
+      // The * comes from the react router, this is the wildcard for rest of the URL and must be skipped here
+      const { '*': _, ...filteredUrlParams } = urlParams;
+      console.log('>>>>> url changed effect:', document.location.href, filteredUrlParams);
+      setUrlParams(document.location.href, filteredUrlParams);
     }, [location]);
 
     return <WrappedComponent {...props} />;

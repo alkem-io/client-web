@@ -6,6 +6,7 @@ import VCSettingsRoute from '../virtualContributorAdmin/VCSettingsRoute';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import VCKnowledgeBaseRoute from './knowledgeBase/VCKnowledgeBaseRoute';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 export const VCRoute = () => (
   <Routes>
@@ -18,4 +19,4 @@ export const VCRoute = () => (
   </Routes>
 );
 
-export default VCRoute;
+export default withUrlResolverParams(VCRoute);

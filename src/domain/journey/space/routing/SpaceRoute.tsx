@@ -17,6 +17,7 @@ import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import React, { Suspense } from 'react';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 
@@ -68,4 +69,4 @@ const SpaceRoute = () => {
   );
 };
 
-export default SpaceRoute;
+export default withUrlResolverParams(SpaceRoute);
