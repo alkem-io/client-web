@@ -58,12 +58,18 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
   myPrivileges: AuthorizationPrivilege[] | undefined;
   roleNames: RoleName[] | undefined;
 
+  /**
+   * fetchContributors param should be true for these to be available
+   */
   users: RoleSetMemberUserFragmentWithRoles[];
   organizations: RoleSetMemberOrganizationFragmentWithRoles[];
   virtualContributors: RoleSetMemberVirtualContributorFragmentWithRoles[];
   usersByRole: PartialRecord<RoleName, RoleSetMemberUserFragmentWithRoles[]>;
   organizationsByRole: PartialRecord<RoleName, RoleSetMemberOrganizationFragmentWithRoles[]>;
   virtualContributorsByRole: PartialRecord<RoleName, RoleSetMemberVirtualContributorFragmentWithRoles[]>;
+  /**
+   * fetchRoleDefinitions param should be true for this to be available
+   */
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
   refetch: () => Promise<unknown>;
   loading: boolean;
