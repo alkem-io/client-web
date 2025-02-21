@@ -1243,6 +1243,7 @@ export const OrganizationInfoFragmentDoc = gql`
         id
         name
         uri
+        description
       }
       location {
         ...fullLocation
@@ -1696,7 +1697,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
   fragment SpaceAboutDetails on SpaceAbout {
     id
     who
-    when
     why
     authorization {
       id
@@ -13550,6 +13550,12 @@ export const UpdateVirtualContributorDocument = gql`
         }
         displayName
         description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }

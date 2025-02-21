@@ -167,6 +167,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
                 <>
                   <Outline
                     currentItemId={spaceId}
+                    level={level}
                     dashboardNavigation={dashboardNavigation.dashboardNavigation}
                     onCreateSubspace={openCreateSubspace}
                     onCurrentItemNotFound={dashboardNavigation.refetch}

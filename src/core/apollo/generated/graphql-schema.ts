@@ -5958,8 +5958,6 @@ export type SpaceAbout = {
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-  /** When is this happening? */
-  when?: Maybe<Scalars['Markdown']>;
   /** Who should get involved in this challenge */
   who?: Maybe<Scalars['Markdown']>;
   /** The goal that is being pursued */
@@ -7076,8 +7074,10 @@ export type UrlResolverQueryResultVirtualContributor = {
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
+  errorMessage: Scalars['String'];
   innovationHubId?: Maybe<Scalars['UUID']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
+  isError: Scalars['Boolean'];
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
@@ -7100,6 +7100,7 @@ export enum UrlType {
   InnovationHub = 'INNOVATION_HUB',
   InnovationLibrary = 'INNOVATION_LIBRARY',
   InnovationPacks = 'INNOVATION_PACKS',
+  NotAuthorized = 'NOT_AUTHORIZED',
   Organization = 'ORGANIZATION',
   Space = 'SPACE',
   SpaceExplorer = 'SPACE_EXPLORER',
@@ -16734,7 +16735,9 @@ export type OrganizationInfoFragment = {
           type: TagsetType;
         }>
       | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
     location?:
       | {
           __typename?: 'Location';
@@ -16791,7 +16794,15 @@ export type OrganizationInfoQuery = {
                   type: TagsetType;
                 }>
               | undefined;
-            references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
             location?:
               | {
                   __typename?: 'Location';
@@ -18384,6 +18395,9 @@ export type UpdateVirtualContributorMutation = {
             type: TagsetType;
           }>
         | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
     };
   };
 };
@@ -19122,7 +19136,6 @@ export type JourneyDataQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             who?: string | undefined;
-            when?: string | undefined;
             why?: string | undefined;
             profile: {
               __typename?: 'Profile';
@@ -19838,7 +19851,6 @@ export type SpaceProfileQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             who?: string | undefined;
-            when?: string | undefined;
             why?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19902,7 +19914,6 @@ export type SpaceInfoFragment = {
     __typename?: 'SpaceAbout';
     id: string;
     who?: string | undefined;
-    when?: string | undefined;
     why?: string | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20063,7 +20074,6 @@ export type SpacePageQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             who?: string | undefined;
-            when?: string | undefined;
             why?: string | undefined;
             profile: {
               __typename?: 'Profile';
@@ -20352,7 +20362,6 @@ export type SpacePageFragment = {
     __typename?: 'SpaceAbout';
     id: string;
     who?: string | undefined;
-    when?: string | undefined;
     why?: string | undefined;
     profile: {
       __typename?: 'Profile';
@@ -20799,7 +20808,6 @@ export type UpdateSpaceMutation = {
       __typename?: 'SpaceAbout';
       id: string;
       who?: string | undefined;
-      when?: string | undefined;
       why?: string | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20903,7 +20911,6 @@ export type SubspaceProfileInfoQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             who?: string | undefined;
-            when?: string | undefined;
             why?: string | undefined;
             profile: {
               __typename?: 'Profile';
@@ -22728,7 +22735,6 @@ export type AboutPageNonMembersQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             who?: string | undefined;
-            when?: string | undefined;
             why?: string | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22956,7 +22962,6 @@ export type SpaceAboutDetailsFragment = {
   __typename?: 'SpaceAbout';
   id: string;
   who?: string | undefined;
-  when?: string | undefined;
   why?: string | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }

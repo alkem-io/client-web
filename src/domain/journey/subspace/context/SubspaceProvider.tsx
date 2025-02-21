@@ -57,7 +57,7 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
 interface SubspaceProviderProps {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
-  const { spaceId } = useUrlResolver();
+  const { spaceId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading } = useSubspacePendingMembershipInfoQuery({
     variables: { subspaceId: spaceId! },
@@ -116,7 +116,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         roleSetId,
         permissions,
         about,
-        loading,
+        loading: loading || urlResolverLoading,
         myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
       }}
     >

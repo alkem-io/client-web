@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceRoute from '@/domain/journey/subspace/routing/SubspaceRoute';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSubspacesPage from '../../journey/space/pages/SpaceSubspacesPage';
 import { routes } from './spaceRoutes';
@@ -16,6 +15,10 @@ import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRo
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import React, { Suspense } from 'react';
+
+const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 
 const SpaceRoute = () => {
   const { spaceNameId } = useUrlParams();
@@ -54,7 +57,9 @@ const SpaceRoute = () => {
         path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
         element={
           <SubspaceProvider>
-            <SubspaceRoute />
+            <Suspense fallback={null}>
+              <SubspaceRoute />
+            </Suspense>
           </SubspaceProvider>
         }
       />

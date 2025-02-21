@@ -2,7 +2,7 @@ import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { spaceIconByLevel } from '../SpaceIcon/SpaceIcon';
+import { spaceLevelIcon } from '../SpaceIcon/SpaceIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
@@ -42,8 +42,7 @@ const DetailedActivityDescription = ({
     const mergedValues = { ...values };
     const mergedComponents = { ...components };
 
-    const time = formatTimeElapsed(createdDate, t);
-    mergedValues['time'] = time;
+    mergedValues['time'] = formatTimeElapsed(createdDate, t);
 
     if (author) {
       mergedValues['user'] = author.displayName;
@@ -71,7 +70,7 @@ const DetailedActivityDescription = ({
       mergedValues['journeyDisplayName'] = truncatedParentName;
     }
 
-    const JourneyIcon = spaceLevel ? spaceIconByLevel[spaceLevel] : undefined;
+    const JourneyIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
     if (JourneyIcon) {
       mergedComponents['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
       mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;

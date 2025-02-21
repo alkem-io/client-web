@@ -43,7 +43,6 @@ const OpportunitySettingsView = () => {
       refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     onCompleted: () => {
       notify(t('pages.admin.space.notifications.space-removed'), 'success');

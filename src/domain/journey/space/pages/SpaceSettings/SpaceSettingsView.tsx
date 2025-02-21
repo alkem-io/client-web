@@ -101,7 +101,6 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
       refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => {
@@ -234,7 +233,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
         await updateSpaceSettings({
           variables: {
             settingsData: {
-              spaceID: spaceId,
+              spaceID: subspaceId,
               settings: settingsVariable,
             },
           },
