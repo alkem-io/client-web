@@ -5,6 +5,7 @@ import ForumPage from '../pages/ForumPage';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import LastReleaseDiscussion from '../pages/LastReleaseDiscussion';
 import Discussion from '../pages/Discussion';
+import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 
 export const ForumRoute = () => (
   <Routes>
@@ -12,13 +13,22 @@ export const ForumRoute = () => (
       <Route index element={<ForumPage />} />
       <Route path="/new" element={<ForumPage dialog="new" />} />
       <Route path={`discussion/:${nameOfUrl.discussionNameId}`} element={<Discussion />} />
-      <Route path={'/releases'} element={<ForumPage />} />
+      <Route path={'/releases'} element={<ForumPage categorySelected={ForumDiscussionCategory.Releases} />} />
       <Route path={'/releases/latest'} element={<LastReleaseDiscussion />} />
-      <Route path={'/platform-functionalities'} element={<ForumPage />} />
-      <Route path={'/community-building'} element={<ForumPage />} />
-      <Route path={'/challenge-centric'} element={<ForumPage />} />
-      <Route path={'/help'} element={<ForumPage />} />
-      <Route path={'/other'} element={<ForumPage />} />
+      <Route
+        path={'/platform-functionalities'}
+        element={<ForumPage categorySelected={ForumDiscussionCategory.PlatformFunctionalities} />}
+      />
+      <Route
+        path={'/community-building'}
+        element={<ForumPage categorySelected={ForumDiscussionCategory.CommunityBuilding} />}
+      />
+      <Route
+        path={'/challenge-centric'}
+        element={<ForumPage categorySelected={ForumDiscussionCategory.ChallengeCentric} />}
+      />
+      <Route path={'/help'} element={<ForumPage categorySelected={ForumDiscussionCategory.Help} />} />
+      <Route path={'/other'} element={<ForumPage categorySelected={ForumDiscussionCategory.Other} />} />
       <Route
         path="*"
         element={

@@ -269,10 +269,10 @@ export const mapTagsetsToUpdateTagsets = (
       }
     | undefined
 ): UpdateTagsetInput[] | undefined => {
-  if (profile?.defaultTagset && (profile?.defaultTagset.id || profile?.defaultTagset.ID)) {
+  if (profile?.defaultTagset) {
     return [
       {
-        ID: profile.defaultTagset.id ?? profile.defaultTagset.ID!, // ensured by the previous if
+        ID: profile.defaultTagset.id ?? profile.defaultTagset.ID ?? '',
         tags: profile.defaultTagset.tags ?? [],
       },
     ];

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { CalloutsSetParentType, KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
 import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
@@ -17,7 +16,6 @@ export interface WhiteboardNavigationMethods {
 }
 
 export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
-  journeyTypeName: CalloutsSetParentType;
   whiteboard: WhiteboardDetails | undefined;
   authorization: { myPrivileges?: AuthorizationPrivilege[] } | undefined;
   whiteboardShareUrl: string;
@@ -31,7 +29,6 @@ const WhiteboardView = ({
   whiteboardId,
   whiteboard,
   authorization,
-  journeyTypeName,
   backToWhiteboards,
   loadingWhiteboards,
   whiteboardShareUrl,
@@ -83,15 +80,11 @@ const WhiteboardView = ({
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
-            headerActions: journeyTypeName !== KnowledgeBaseCalloutsSetType && (
+            headerActions: (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
                   {hasUpdatePrivileges && (
-                    <WhiteboardShareSettings
-                      createdBy={whiteboard?.createdBy}
-                      journeyTypeName={journeyTypeName}
-                      {...contentUpdatePolicyProvided}
-                    />
+                    <WhiteboardShareSettings createdBy={whiteboard?.createdBy} {...contentUpdatePolicyProvided} />
                   )}
                 </ShareButton>
                 <FullscreenButton />

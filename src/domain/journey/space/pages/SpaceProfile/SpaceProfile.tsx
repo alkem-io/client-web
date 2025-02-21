@@ -1,5 +1,5 @@
 import SpaceEditForm, { SpaceEditFormValuesType } from '@/domain/journey/space/spaceEditForm/SpaceEditForm';
-import { useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
@@ -10,10 +10,15 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 
 export const SpaceProfile = () => {
-  const { spaceNameId, ...space } = useSpace();
+  const { spaceId, spaceNameId } = useSpace();
   const notify = useNotification();
   const { t } = useTranslation();
-
+  const { data: spaceData } = useSpaceProfileQuery({
+    variables: {
+      spaceId,
+    },
+    skip: !spaceId,
+  });
   const [updateSpace, { loading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
@@ -39,23 +44,23 @@ export const SpaceProfile = () => {
             })),
             tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
           },
-          ID: space.spaceId,
+          ID: spaceId,
         },
       },
     });
   };
-
-  const visuals = space.profile.visuals ?? [];
+  const space = spaceData?.lookup.space;
+  const visuals = space?.profile.visuals ?? [];
 
   return (
     <PageContentColumn columns={12}>
       <SpaceEditForm
         edit
-        name={space.profile.displayName}
+        name={space?.profile.displayName}
         nameID={spaceNameId}
-        tagset={space.profile.tagset}
-        context={space.context}
-        profile={space.profile}
+        tagset={space?.profile.tagset}
+        context={space?.context}
+        profile={space?.profile}
         onSubmit={onSubmit}
         loading={loading}
       />

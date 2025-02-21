@@ -1,7 +1,8 @@
+import { DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { useTranslation } from 'react-i18next';
 import NegativeButton from '../button/NegativeButton';
-import { DialogActions, DialogContent, DialogTitle } from '../dialog/deprecated';
+import DialogHeader from '../dialog/DialogHeader';
 
 type RelationRemoveModalProps = {
   show: boolean;
@@ -17,9 +18,7 @@ const RemoveModal = ({ show, text, onCancel, title, onConfirm }: RelationRemoveM
 
   return (
     <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="remove-dialog-title">
-      <DialogTitle id="remove-dialog-title" onClose={onCancel}>
-        {title || defaultTitle}
-      </DialogTitle>
+      <DialogHeader onClose={onCancel} title={title || defaultTitle} />
       <DialogContent dividers>{text}</DialogContent>
       <DialogActions>
         <NegativeButton onClick={onConfirm}>{t('buttons.remove')}</NegativeButton>

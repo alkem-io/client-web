@@ -1,0 +1,57 @@
+query Post(
+  $postId: UUID!
+) {
+  lookup {
+    post(ID: $postId) {
+      id
+      createdDate
+      authorization {
+        id
+        myPrivileges
+      }
+      profile {
+        id
+        displayName
+        description
+        url
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          ...ReferenceDetails
+        }
+        banner: visual(type: BANNER) {
+          ...VisualUri
+        }
+      }
+      createdBy {
+        id
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+        }
+      }
+      comments {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        messages {
+          ...MessageDetails
+        }
+        vcInteractions {
+          id
+          threadID
+          virtualContributorID
+        }
+      }
+    }
+  }
+}

@@ -14,6 +14,7 @@ import { JourneyCardBanner } from './Banner';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
+import { SpaceIcon } from '../../space/icon/SpaceIcon';
 
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -32,7 +33,7 @@ export interface JourneyCardProps extends ContributeCardProps {
 }
 
 const JourneyCard = ({
-  iconComponent: Icon,
+  iconComponent: Icon = SpaceIcon,
   header,
   banner,
   tags,

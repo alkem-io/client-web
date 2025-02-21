@@ -10,10 +10,8 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
-import { getURLPath } from '@/core/utils/links';
 
 interface Entity extends Identifiable {
-  nameID?: string;
   email?: string;
   profile: {
     displayName: string;
@@ -45,12 +43,7 @@ const initialState: GridInitialState = {
   },
 };
 
-const CommunityAddMembersDialog = ({
-  onClose,
-  onAdd,
-  fetchAvailableEntities,
-  allowSearchByURL = false,
-}: CommunityAddMembersDialogProps) => {
+const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: CommunityAddMembersDialogProps) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>();
   const [availableEntities, setData] = useState<Entity[]>();
@@ -66,18 +59,6 @@ const CommunityAddMembersDialog = ({
 
   const parseAndSetFilter = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let filterValue = event.target.value;
-
-    const urlNameId = getURLPath(filterValue)?.split('/')[2];
-
-    // in case of a URL value split the pathname, extract the nameID, map it to displayName and apply filter
-    if (allowSearchByURL && urlNameId) {
-      const allEntities = await fetchAvailableEntities?.();
-
-      filterValue =
-        allEntities?.filter(entity => entity.nameID === urlNameId).map(entity => entity.profile.displayName)?.[0] ||
-        filterValue;
-    }
-
     setFilter(filterValue);
   };
 

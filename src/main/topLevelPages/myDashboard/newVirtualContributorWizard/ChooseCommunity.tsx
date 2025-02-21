@@ -104,7 +104,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
             </Button>
             <LoadingButton
               variant="contained"
-              disabled={loading || (!hasAvailableSpaces && !values.spaceId)}
+              disabled={loading || (hasAvailableSpaces && !values.spaceId)}
               loading={loading}
               onClick={() => onCreate(values)}
             >

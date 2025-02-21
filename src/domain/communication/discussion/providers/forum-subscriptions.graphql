@@ -1,7 +1,6 @@
 subscription forumDiscussionUpdated($forumID: UUID!) {
   forumDiscussionUpdated(forumID: $forumID) {
     id
-    nameID
     profile {
       id
       displayName

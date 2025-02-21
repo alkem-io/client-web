@@ -3,39 +3,33 @@ import { DialogContent } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
-import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsAdmin/InnovationHubForm';
+import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
 import { useCreateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
 import { InnovationHubType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useUserContext } from '@/domain/community/user';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 type CreateInnovationHubDialogProps = {
   accountId: string | undefined;
-  accountHostName: string | undefined;
   open: boolean | undefined;
   onClose?: () => void;
 };
 
-const CreateInnovationHubDialog = ({
-  accountId,
-  accountHostName = '',
-  open = false,
-  onClose,
-}: CreateInnovationHubDialogProps) => {
+const CreateInnovationHubDialog = ({ accountId, open = false, onClose }: CreateInnovationHubDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { user } = useUserContext();
-  const userId = user?.user.id;
+  const ensurePresence = useEnsurePresence();
 
   const [createInnovationHub, { loading }] = useCreateInnovationHubMutation();
 
   const handleSubmit = async (formData: InnovationHubFormValues) => {
+    const requiredAccountId = ensurePresence(accountId);
+
     await createInnovationHub({
       variables: {
         hubData: {
-          accountID: formData.accountId,
-          nameID: formData.nameID,
+          accountID: requiredAccountId,
           subdomain: formData.subdomain,
           profileData: {
             displayName: formData.profile.displayName,
@@ -54,7 +48,7 @@ const CreateInnovationHubDialog = ({
     });
   };
 
-  if (!accountId || !userId) {
+  if (!accountId) {
     return null;
   }
 
@@ -66,12 +60,7 @@ const CreateInnovationHubDialog = ({
         </DialogHeader>
         <DialogContent>
           <StorageConfigContextProvider accountId={accountId} locationType="account">
-            <InnovationHubForm
-              isNew
-              accounts={[{ id: accountId, name: accountHostName }]}
-              onSubmit={handleSubmit}
-              loading={loading}
-            />
+            <InnovationHubForm isNew onSubmit={handleSubmit} loading={loading} />
           </StorageConfigContextProvider>
         </DialogContent>
       </DialogWithGrid>

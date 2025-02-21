@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useMemo, useState, useEffect } from 'react';
 import { debounce } from 'lodash';
+import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
@@ -15,26 +17,27 @@ import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileC
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import SearchField from '@/core/ui/search/SearchField';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, roleSetId } = useSpace();
-  const { spaceLevel } = useRouteResolver();
+  const { spaceId, spaceLevel, loading: urlResolverLoading } = useUrlResolver();
+  const { roleSetId } = useSpace();
 
-  const { virtualContributors } = useRoleSetAdmin({
+  const { virtualContributors } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.Virtual],
+    fetchContributors: true,
   });
 
-  // data
   const {
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
@@ -45,38 +48,19 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     availableVCsLoading,
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
-  // state
-  const [onAccount, setOnAccount] = useState<ContributorProps[]>();
-  const [inLibrary, setInLibrary] = useState<ContributorProps[]>();
+  const [filter, setFilter] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [isFilterPristine, setIsFilterPristine] = useState(true);
+  const [onAccount, setOnAccount] = useState<ContributorProps[]>([]);
+  const [inLibrary, setInLibrary] = useState<ContributorProps[]>([]);
+  const [filteredOnAccount, setFilteredOnAccount] = useState<ContributorProps[]>();
+  const [filteredInLibrary, setFilteredInLibrary] = useState<ContributorProps[]>();
   const [openPreviewDialog, setOpenPreviewDialog] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
   const [action, setAction] = useState<'add' | 'invite'>();
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
-
-  const fetchVCs = async () => {
-    let acc = await getAvailableVirtualContributors('', false);
-    setOnAccount(acc);
-
-    let lib = await getAvailableVirtualContributorsInLibrary('');
-    setInLibrary(lib);
-  };
-
-  const memoizedFetchVCs = useCallback(fetchVCs, [
-    getAvailableVirtualContributors,
-    getAvailableVirtualContributorsInLibrary,
-  ]);
-
-  // debounce as we could have multiple changes in a short period of time
-  const debouncedFetchVCs = debounce(fetchVCs, 100);
-
-  const memoizedDebouncedFetchVCs = useCallback(debouncedFetchVCs, [memoizedFetchVCs]);
-
-  // on memberVCs change, update the lists of VCs
-  useEffect(() => {
-    memoizedDebouncedFetchVCs();
-  }, [virtualContributors]); // do not add memoizedDebouncedFetchVCs in the dependencies
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);
@@ -110,7 +94,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   };
 
   const getContributorById = (id: string) => {
-    return onAccount?.find(c => c.id === id) || inLibrary?.find(c => c.id === id);
+    return (
+      (filteredOnAccount ?? onAccount)?.find(c => c.id === id) ||
+      (filteredInLibrary ?? inLibrary)?.find(c => c.id === id)
+    );
   };
 
   const onAddClick = async () => {
@@ -143,7 +130,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const showOnAccount = onAccount && onAccount.length > 0 && !availableVCsLoading;
+  const isLoading = availableVCsLoading || urlResolverLoading;
+  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !isLoading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -154,6 +142,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {t('common.add')}
         </Button>
       )}
+
       {action === 'invite' && (
         <Button variant="contained" disabled={!availableActions} onClick={onInviteClick}>
           {t('buttons.invite')}
@@ -162,26 +151,124 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     </>
   );
 
+  const debouncedSetFilter = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFilter(value);
+      }, 300),
+    []
+  );
+
+  // When `inputValue` changes, we update `filter` with delay. Do not use debouncing directly on the `onChange` prop since it will apply the delay
+  // on every key press, which will cause the input to lag.
+  useEffect(() => {
+    debouncedSetFilter(inputValue);
+
+    return () => {
+      debouncedSetFilter.cancel();
+    };
+  }, [inputValue, debouncedSetFilter]);
+
+  useEffect(() => {
+    const fetchVirtualContributors = async () => {
+      try {
+        const [accountVCs, libraryVCs] = await Promise.all([
+          getAvailableVirtualContributors(undefined, false),
+          getAvailableVirtualContributorsInLibrary(undefined),
+        ]);
+
+        const accountVCIds = new Set(accountVCs.map(vc => vc.id));
+        const filteredLibraryVCs = libraryVCs?.filter(vc => !accountVCIds.has(vc.id));
+
+        setOnAccount(accountVCs);
+        setInLibrary(filteredLibraryVCs);
+      } catch (error) {
+        notify(t('components.inviteContributorsDialog.vcFetchErrorMessage'), 'error');
+      }
+    };
+
+    fetchVirtualContributors();
+  }, [virtualContributors]);
+
+  const memoizedFilteredOnAccount = useMemo(
+    () =>
+      filter
+        ? onAccount?.filter(acc => acc.profile.displayName.toLowerCase().includes(filter.toLowerCase()))
+        : undefined,
+    [filter, onAccount]
+  );
+
+  const memoizedFilteredInLibrary = useMemo(
+    () =>
+      filter
+        ? inLibrary?.filter(lib => lib.profile.displayName.toLowerCase().includes(filter.toLowerCase()))
+        : undefined,
+    [filter, inLibrary]
+  );
+
+  useEffect(() => {
+    if (filter) {
+      setFilteredOnAccount(memoizedFilteredOnAccount);
+      setFilteredInLibrary(memoizedFilteredInLibrary);
+    } else if (!isFilterPristine) {
+      setFilteredOnAccount(undefined);
+      setFilteredInLibrary(undefined);
+    }
+  }, [filter, isFilterPristine, memoizedFilteredOnAccount, memoizedFilteredInLibrary]);
+
+  const availableOnAccount = onAccount ?? filteredOnAccount;
+  const availableInLibrary = inLibrary ?? filteredInLibrary;
   const isEmpty =
-    (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !availableVCsLoading;
+    (!availableOnAccount || availableOnAccount.length === 0) &&
+    (!availableInLibrary || availableInLibrary.length === 0) &&
+    !isLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
+      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+
       <DialogContent>
+        <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
+          <SearchField
+            value={inputValue}
+            sx={{ maxWidth: 400, marginLeft: 'auto' }}
+            placeholder={t('community.virtualContributors.searchVC')}
+            onChange={event => {
+              setInputValue(event.target.value);
+              isFilterPristine && setIsFilterPristine(false);
+            }}
+          />
+        </Gutters>
+
         <Gutters disablePadding disableGap>
           {showOnAccount && (
-            <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.onAccount.title')} />
+            <PageContentBlockHeader
+              variant="caption"
+              title={t('components.inviteContributorsDialog.vcs.onAccount.title')}
+            />
           )}
-          {showOnAccount && <InviteContributorsList contributors={onAccount} onCardClick={onAccountContributorClick} />}
+          {showOnAccount && (
+            <InviteContributorsList
+              contributors={filteredOnAccount ?? onAccount}
+              onCardClick={onAccountContributorClick}
+            />
+          )}
           {showOnAccount && (
             <Gutters disableGap disablePadding paddingTop={gutters()}>
-              <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.inLibrary.title')} />
+              <PageContentBlockHeader
+                variant="caption"
+                title={t('components.inviteContributorsDialog.vcs.inLibrary.title')}
+              />
             </Gutters>
           )}
-          {availableVCsLoading ? (
+
+          {isLoading ? (
             <Loading />
           ) : (
-            <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
+            <InviteContributorsList
+              contributors={filteredInLibrary ?? inLibrary}
+              onCardClick={onLibraryContributorClick}
+            />
           )}
           {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
         </Gutters>

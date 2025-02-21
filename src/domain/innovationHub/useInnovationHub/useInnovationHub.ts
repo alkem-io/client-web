@@ -11,6 +11,7 @@ const useInnovationHub = () => {
     variables: {
       subdomain,
     },
+    skip: !subdomain,
   });
 
   const innovationHub = useInnovationHubAttrs(innovationHubData?.platform.innovationHub);

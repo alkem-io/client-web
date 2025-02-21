@@ -1,4 +1,4 @@
-import { Box, BoxProps, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, SvgIconProps, TypographyProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { cloneElement, ReactElement, ReactNode } from 'react';
 import { BlockTitle } from '../typography';
@@ -6,9 +6,16 @@ import { BlockTitle } from '../typography';
 type BlockTitleWithIconProps = {
   title: ReactNode;
   icon?: ReactElement<SvgIconProps>;
+  variant?: TypographyProps['variant'];
 };
 
-const BlockTitleWithIcon = ({ title, icon, children, ...props }: BlockTitleWithIconProps & Omit<BoxProps, 'title'>) => (
+const BlockTitleWithIcon = ({
+  title,
+  icon,
+  variant = 'h3',
+  children,
+  ...props
+}: BlockTitleWithIconProps & Omit<BoxProps, 'title'>) => (
   <Box
     flexGrow={1}
     flexShrink={1}
@@ -19,7 +26,11 @@ const BlockTitleWithIcon = ({ title, icon, children, ...props }: BlockTitleWithI
     {...props}
   >
     {icon && cloneElement(icon, { fontSize: 'small' })}
-    {title && <BlockTitle noWrap>{title}</BlockTitle>}
+    {title && (
+      <BlockTitle variant={variant} noWrap>
+        {title}
+      </BlockTitle>
+    )}
     {children}
   </Box>
 );

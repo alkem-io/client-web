@@ -12,10 +12,11 @@ import SubspaceContributorsDialogContent from '@/domain/community/community/enti
 import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '@/main/routing/urlBuilders';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 const SubspaceAboutPage = () => {
+  const { spaceId, spaceLevel } = useUrlResolver();
   const { communityId, profile } = useSubSpace();
 
   const backToParentPage = useBackToStaticPath(profile.url);
@@ -26,11 +27,9 @@ const SubspaceAboutPage = () => {
 
   const { t } = useTranslation();
 
-  const { journeyId, spaceLevel } = useRouteResolver();
-
   return (
     <>
-      <AboutPageContainer journeyId={journeyId}>
+      <AboutPageContainer journeyId={spaceId}>
         {(
           {
             context,

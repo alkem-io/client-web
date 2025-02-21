@@ -24,6 +24,7 @@ mutation CreateTemplate(
     }
   ) {
     id
+    nameID  # Used to name the files uploaded as whiteboard visuals
     profile @include(if: $includeProfileVisuals) {
       id
       cardVisual: visual(type: CARD) {
@@ -71,6 +72,7 @@ mutation UpdateTemplate(
     }
   ) {
     id
+    nameID  # Used to name the files uploaded as whiteboard visuals
     profile @include(if: $includeProfileVisuals) {
       id
       cardVisual: visual(type: CARD) {

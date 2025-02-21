@@ -64,7 +64,6 @@ const LinkCollectionCallout = ({
   onExpand,
   onCollapse,
   onCalloutUpdate,
-  journeyTypeName,
   ...calloutLayoutProps
 }: LinkCollectionCalloutProps) => {
   const { t } = useTranslation();
@@ -225,7 +224,6 @@ const LinkCollectionCallout = ({
       <CalloutSettingsContainer
         callout={callout}
         items={{ links: sortedFormatedLinks }}
-        journeyTypeName={journeyTypeName}
         expanded={expanded}
         onExpand={onExpand}
         {...calloutLayoutProps}

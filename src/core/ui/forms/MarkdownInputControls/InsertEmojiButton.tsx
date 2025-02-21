@@ -1,12 +1,12 @@
-import { IconButton, IconButtonProps } from '@mui/material';
 import { Editor } from '@tiptap/react';
 import { useRef, useState } from 'react';
 import { EmojiEmotionsOutlined } from '@mui/icons-material';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EmojiSelector from '../emoji/EmojiSelector';
 import { useTranslation } from 'react-i18next';
+import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
-interface InsertEmojiButtonProps extends IconButtonProps {
+interface InsertEmojiButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
@@ -47,15 +47,15 @@ const InsertEmojiButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
 
   return (
     <>
-      <IconButton
+      <MarkdownInputToolbarButton
         ref={buttonRef}
         onClick={openDialog}
         disabled={isDisabled}
-        aria-label={t('components.wysiwyg-editor.toolbar.emoji.emoji')}
+        tooltip={t('components.wysiwyg-editor.toolbar.emoji.emoji')}
         {...buttonProps}
       >
         <EmojiEmotionsOutlined />
-      </IconButton>
+      </MarkdownInputToolbarButton>
       <EmojiSelector
         open={isDialogOpen}
         onClose={closeDialog}

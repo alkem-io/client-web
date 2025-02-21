@@ -5,7 +5,6 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 type OrganizationPageBannerProps = {
   organization:
     | (Identifiable & {
-        nameID: string;
         profile: ProfilePageBannerProps['profile'] & { url: string };
       })
     | undefined;

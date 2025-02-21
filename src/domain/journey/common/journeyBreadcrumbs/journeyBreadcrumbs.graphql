@@ -1,18 +1,19 @@
 query JourneyBreadcrumbsSpace(
-  $spaceNameId: UUID_NAMEID!
-  $subspaceLevel1NameId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-  $subspaceLevel2NameId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-  $includeSubspaceLevel1: Boolean = false
-  $includeSubspaceLevel2: Boolean = false
-  $visualType: VisualType! = AVATAR
+  $spaceId: UUID!,
+  $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000",
+  $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000",
+  $includeSubspaceL1: Boolean = false,
+  $includeSubspaceL2: Boolean = false,
 ) {
-  space(ID: $spaceNameId) {
-    ...JourneyBreadcrumbsSpace
-    subspace(ID: $subspaceLevel1NameId) @include(if: $includeSubspaceLevel1) {
+  lookup {
+    space(ID: $spaceId) {
       ...JourneyBreadcrumbsSpace
-      subspace(ID: $subspaceLevel2NameId) @include(if: $includeSubspaceLevel2) {
-        ...JourneyBreadcrumbsSpace
-      }
+    }
+    subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
+      ...JourneyBreadcrumbsSubpace
+    }
+    subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
+      ...JourneyBreadcrumbsSubpace
     }
   }
 }
@@ -24,8 +25,19 @@ fragment JourneyBreadcrumbsSpace on Space {
     id
     url
     displayName
-    avatar: visual(type: $visualType) {
-      id
+    avatar: visual(type: BANNER) {
+      ...VisualUri
+    }
+  }
+}
+fragment JourneyBreadcrumbsSubpace on Space {
+  id
+  level
+  profile {
+    id
+    url
+    displayName
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
   }

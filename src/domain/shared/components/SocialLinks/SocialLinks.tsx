@@ -1,12 +1,11 @@
-import { Box, Link, SvgIconProps } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
-import React, { FC, useMemo } from 'react';
-import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { Box, Link, SvgIconProps, Typography } from '@mui/material';
+import { FC, useMemo } from 'react';
+import * as yup from 'yup';
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
-import * as yup from 'yup';
+import { SocialNetworkEnum, SocialNetworksSortOrder } from './models/SocialNetworks';
 
 interface SocialLinksProps {
   title?: string;
@@ -48,21 +47,31 @@ export interface SocialLinkItem {
 }
 
 const schema = yup.string().url();
+const schemaEmail = yup.string().email();
 
 export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) => {
   const filteredSortedItems = useMemo(
     () =>
       items
-        ?.filter(i => schema.isValidSync(i.url) && i.url)
-        .sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type]) || [],
+        ?.filter(
+          link =>
+            link.url &&
+            (link.type === SocialNetworkEnum.email ? schemaEmail.isValidSync(link.url) : schema.isValidSync(link.url))
+        )
+        .sort((a, b) => SocialNetworksSortOrder[a.type] - SocialNetworksSortOrder[b.type]) || [],
     [items]
   );
+
+  if (!filteredSortedItems.length) {
+    return null;
+  }
+
   return (
     <Box>
       {title && (
-        <WrapperTypography color="primary" weight="boldLight">
+        <Typography color="primary.main" fontWeight="bold" fontSize={16}>
           {title}
-        </WrapperTypography>
+        </Typography>
       )}
 
       {filteredSortedItems.map((item, i) => (

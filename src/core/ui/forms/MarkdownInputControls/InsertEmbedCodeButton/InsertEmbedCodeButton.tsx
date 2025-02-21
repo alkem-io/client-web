@@ -3,7 +3,7 @@ import { useRef, useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import { Editor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, IconButtonProps, styled } from '@mui/material';
+import { Button, styled } from '@mui/material';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SmartScreenOutlinedIcon from '@mui/icons-material/SmartScreenOutlined';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
@@ -15,8 +15,9 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from '../MarkdownInputToolbarButton';
 
-interface InsertEmbedCodeButtonProps extends IconButtonProps {
+interface InsertEmbedCodeButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
@@ -78,7 +79,7 @@ export const InsertEmbedCodeButton = ({
   `
   );
 
-  const handleOnIconButtonClick = () => {
+  const handleOnClick = () => {
     setIsDialogOpen(true);
   };
 
@@ -128,20 +129,20 @@ export const InsertEmbedCodeButton = ({
     }, 10);
   }, [textareaRef?.current, isDialogOpen]);
 
-  const isIconButtonDisabled = !editor || !editor.can().insertContent('');
+  const isDisabled = !editor || !editor.can().insertContent('');
   const initialValues = useMemo(() => ({ src: '' }), []);
 
   return (
     <>
-      <IconButton
+      <MarkdownInputToolbarButton
         ref={buttonRef}
-        disabled={isIconButtonDisabled}
-        onClick={handleOnIconButtonClick}
-        aria-label={t('components.wysiwyg-editor.toolbar.embed.video')}
+        disabled={isDisabled}
+        onClick={handleOnClick}
+        tooltip={t('components.wysiwyg-editor.toolbar.embed.video')}
         {...buttonProps}
       >
         <SmartScreenOutlinedIcon />
-      </IconButton>
+      </MarkdownInputToolbarButton>
 
       <DialogWithGrid open={isDialogOpen} onClose={handleOnCloseDialog}>
         <DialogHeader title={t('components.wysiwyg-editor.embed.dialogTitle')} onClose={handleOnCloseDialog} />

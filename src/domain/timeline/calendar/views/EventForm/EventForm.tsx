@@ -16,8 +16,8 @@ import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSeg
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalendarEventFormData } from '@/domain/timeline/calendar/CalendarEventsContainer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import { EventFormProps } from './EventForm.model';
+import SaveButton from '@/core/ui/actions/SaveButton';
 
 type DateType = Date | undefined;
 
@@ -136,11 +136,9 @@ const EventForm = ({
           </Gutters>
         </Form>
       </DialogContent>
-      <Actions justifyContent="space-between" padding={gutters()}>
+      <Actions padding={gutters()}>
         {actions}
-        <LoadingButton variant="contained" disabled={!isValid} loading={isSubmitting} onClick={() => handleSubmit()}>
-          {t('buttons.save')}
-        </LoadingButton>
+        <SaveButton variant="contained" disabled={!isValid} loading={isSubmitting} onClick={handleSubmit} />
       </Actions>
     </>
   );

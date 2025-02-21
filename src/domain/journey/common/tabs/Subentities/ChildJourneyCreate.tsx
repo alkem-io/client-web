@@ -3,24 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import getJourneyChildrenTranslation from '@/domain/journey/subspace/getJourneyChildrenTranslation';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 interface ChildJourneyCreateProps {
   canCreateSubentity: boolean;
+  level: SpaceLevel;
   onCreateSubentity?: () => void;
-  journeyTypeName: JourneyTypeName;
 }
 
-const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSubentity }: ChildJourneyCreateProps) => {
+const ChildJourneyCreate = ({ canCreateSubentity, onCreateSubentity, level }: ChildJourneyCreateProps) => {
   const { t } = useTranslation();
+
+  const spaceType = t(`common.space-level.${level}`);
 
   return (
     <PageContentBlock accent>
       <WrapperMarkdown>
         {t('pages.generic.sections.subEntities.description', {
-          entities: getJourneyChildrenTranslation(t, journeyTypeName),
+          entities: spaceType,
         })}
       </WrapperMarkdown>
       {canCreateSubentity && (

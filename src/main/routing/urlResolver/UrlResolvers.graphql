@@ -1,0 +1,72 @@
+query UrlResolver($url: String!) {
+  urlResolver(url: $url) {
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+      collaboration {
+        id
+        calloutsSet {
+          id
+          calloutId
+          contributionId
+          postId
+          whiteboardId
+        }
+      }
+      calendar {
+        id
+        calendarEventId
+      }
+      templatesSet {
+        id
+        templateId
+      }
+      parentSpaces
+    }
+    organizationId
+    userId
+    virtualContributor {
+      id
+      calloutsSet {
+        id
+        calloutId
+        contributionId
+        postId
+        # whiteboardId  # VCs still don't have whiteboards
+      }
+    }
+    discussionId
+    innovationPack {
+      id
+      templatesSet {
+        id
+        templateId
+      }
+    }
+    innovationHubId
+  }
+}
+
+# Needed for search and for resolving the welcome-space id
+# We are not using the subspace resolving anymore but leave it for now, it should be the way to resolve a subspace anyway
+query SpaceUrlResolver(
+  $spaceNameId: NameID!
+  $subspaceL1NameId: NameID = "nameid"
+  $subspaceL2NameId: NameID = "nameid"
+  $includeSubspaceL1: Boolean = false
+  $includeSubspaceL2: Boolean = false
+) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
+      id
+      subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
+        id
+        subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
+          id
+        }
+      }
+    }
+  }
+}

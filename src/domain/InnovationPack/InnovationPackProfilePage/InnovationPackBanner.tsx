@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { Box, styled } from '@mui/material';
-import hexToRGBA from '@/core/utils/hexToRGBA';
+import { alpha, Box, styled } from '@mui/material';
 import PageContent from '@/core/ui/content/PageContent';
 import { PageTitle, Tagline } from '@/core/ui/typography';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
@@ -17,7 +16,7 @@ function gradientBuilder(
 ) {
   return (
     `linear-gradient(${angle}deg, ` +
-    steps.map(step => hexToRGBA(step.color, step.opacity) + ` ${step.position}%`).join(', ') +
+    steps.map(step => alpha(step.color, step.opacity) + ` ${step.position}%`).join(', ') +
     `), url('${backgroundImageUrl}'), ` +
     `${failsafeBackgroundColor}`
   );

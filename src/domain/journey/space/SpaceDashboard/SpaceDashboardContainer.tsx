@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback } from 'react';
 import { useSpace } from '../SpaceContext/useSpace';
 import { useUserContext } from '@/domain/community/user';
@@ -45,7 +44,6 @@ export interface SpaceContainerActions {}
 
 export interface SpaceContainerState {
   loading: boolean;
-  error?: ApolloError;
 }
 
 export interface SpacePageContainerProps
@@ -56,14 +54,14 @@ export interface SpacePageContainerProps
 const NO_PRIVILEGES = [];
 
 export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, children }) => {
-  const { loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
+  const { loading: loadingSpace, permissions: spacePermissions, isPrivate } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
   const { data: spaceData, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
       authorizedReadAccess: spacePermissions.canRead,
-      authorizedReadAccessCommunity: spacePermissions.communityReadAccess,
+      authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
     skip: !spaceId,
@@ -144,7 +142,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
           callouts,
         },
         {
-          error,
           loading: loadingSpaceQuery || loadingSpace || dashboardNavigationLoading,
         },
         {}

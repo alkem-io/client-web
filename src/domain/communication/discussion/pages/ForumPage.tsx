@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
@@ -61,27 +60,17 @@ enum DiscussionCategoryPlatform {
   OTHER = 'other',
 }
 
-export const ForumPage = ({ dialog }: { dialog?: 'new' }) => {
+export const ForumPage = ({
+  dialog,
+  categorySelected = ALL_CATEGORIES,
+}: {
+  dialog?: 'new';
+  categorySelected?: DiscussionCategoryExt;
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
 
-  const { pathname } = useLocation();
-  const initialPathname = useRef(pathname);
-
-  const path = pathname.substring(pathname.lastIndexOf('/') + 1);
-  const category = (Object.keys(DiscussionCategoryPlatform)[
-    Object.values(DiscussionCategoryPlatform).indexOf(path as unknown as DiscussionCategoryPlatform)
-  ] ?? ALL_CATEGORIES) as DiscussionCategoryExt;
-
-  useEffect(() => {
-    if (pathname !== initialPathname.current) {
-      setCategorySelected(category as DiscussionCategoryExt);
-      initialPathname.current = pathname;
-    }
-  }, [pathname]);
-
-  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(category || ALL_CATEGORIES);
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   useSubscriptionToForum(data, data => data?.platform.forum, subscribeToMore);
 

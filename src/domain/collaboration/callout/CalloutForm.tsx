@@ -4,6 +4,7 @@ import {
   CalloutGroupName,
   CalloutState,
   CalloutType,
+  SpaceLevel,
   Tagset,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -31,11 +32,10 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
-import { JourneyCalloutGroupNameOptions } from '../calloutsSet/CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type FormValueType = {
   displayName: string;
@@ -88,7 +88,6 @@ export interface CalloutFormProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
-  journeyTypeName: CalloutsSetParentType;
   temporaryLocation?: boolean;
   disableRichMedia?: boolean; // images, videos, iframe, etc.
   disablePostResponses?: boolean;
@@ -101,13 +100,15 @@ const CalloutForm = ({
   canChangeCalloutLocation,
   onChange,
   onStatusChanged,
-  journeyTypeName,
   children,
   temporaryLocation = false,
   disableRichMedia,
   disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
+  // Note that we can also have callouts on a VC Knowledge Base, so don't tie this component to spaces
+  const { spaceLevel } = useUrlResolver();
+  const isL0Space = spaceLevel === SpaceLevel.L0;
 
   const tagsets: Tagset[] = useMemo(
     () => [
@@ -178,7 +179,11 @@ const CalloutForm = ({
   };
 
   const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
-    const locations = JourneyCalloutGroupNameOptions[journeyTypeName];
+    const locations = [CalloutGroupName.Home];
+    if (isL0Space) {
+      // Add in additional groups
+      locations.push(...[CalloutGroupName.Community, CalloutGroupName.Subspaces, CalloutGroupName.Knowledge]);
+    }
 
     if (editMode) {
       return locations.map(key => ({
@@ -255,7 +260,7 @@ const CalloutForm = ({
             {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplateSelector name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
-            {formConfiguration.locationChange && journeyTypeName === 'space' && (
+            {formConfiguration.locationChange && isL0Space && (
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"

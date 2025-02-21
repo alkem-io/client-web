@@ -11,15 +11,16 @@ import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
   unauthorizedDialogDisabled?: boolean;
-  journeyPath: JourneyPath;
+  journeyPath: JourneyPath | undefined;
 }
 
 const SpacePageLayout = ({
@@ -28,13 +29,19 @@ const SpacePageLayout = ({
   journeyPath,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceId, communityId, profile, loading } = useSpace();
+  const { spaceId, communityId, loading } = useSpace();
+  const { data: spaceData } = useSpaceProfileQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+  const profile = spaceData?.lookup.space?.profile;
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
-    journeyTypeName: 'space',
   });
 
   const spaceReadAccess = useCanReadSpace({ spaceId });
@@ -45,13 +52,12 @@ const SpacePageLayout = ({
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} />}
       pageBanner={
         <SpacePageBanner
-          title={profile.displayName}
+          title={profile?.displayName}
           tagline={profile?.tagline}
           loading={loading}
           bannerUrl={visual?.uri}
           bannerAltText={visual?.alternativeText}
           ribbon={ribbon}
-          journeyTypeName="space"
         />
       }
       tabsComponent={SpaceTabs}
@@ -64,7 +70,7 @@ const SpacePageLayout = ({
           <JourneyUnauthorizedDialog
             description={vision}
             disabled={unauthorizedDialogDisabled}
-            leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
+            leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile?.url} />}
             spaceLevel={SpaceLevel.L0}
             journeyId={spaceId}
             {...props}

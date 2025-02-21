@@ -1,20 +1,19 @@
-import { PropsWithChildren, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import Button from '@mui/material/Button';
-import { LoadingButton } from '@mui/lab';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { Formik } from 'formik';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Actions } from '@/core/ui/actions/Actions';
-import { BlockTitle, Text } from '@/core/ui/typography/components';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import FormRow from '@/core/ui/forms/FormRow';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
-import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockTitle, Text } from '@/core/ui/typography/components';
+import { LoadingButton } from '@mui/lab';
+import { Box, DialogContent } from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import { Formik } from 'formik';
+import { PropsWithChildren, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export type CalloutSummaryFields = {
   framing: {

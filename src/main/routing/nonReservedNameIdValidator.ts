@@ -1,4 +1,4 @@
-import { nameIdValidator } from '@/core/ui/forms/validator';
+import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
 import { reservedTopLevelRoutePaths } from './TopLevelRoutePath';
 
 const nonReservedNameIdValidator = nameIdValidator.test({

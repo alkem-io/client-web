@@ -1,6 +1,5 @@
 fragment CommunityPageMembers on User {
   id
-  nameID
   email
   profile {
     id

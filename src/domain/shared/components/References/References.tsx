@@ -17,6 +17,10 @@ interface ReferencesProps {
 }
 
 const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact }) => {
+  if (!references || references.length === 0) {
+    return null;
+  }
+
   if (compact) {
     if (references && references.length > 0) {
       return (

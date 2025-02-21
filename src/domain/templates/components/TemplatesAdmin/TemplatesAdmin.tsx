@@ -19,6 +19,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '@/core/routing/useBackToPath';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -34,7 +35,6 @@ import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
-import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 
@@ -89,15 +89,19 @@ const TemplatesAdmin = ({
   const { uploadVisuals } = useUploadWhiteboardVisuals();
   const handlePreviewTemplates = async (
     values: AnyTemplateFormSubmittedValues,
-    mutationResult?: { cardVisual?: { id: string }; previewVisual?: { id: string } }
+    mutationResult?: { profile?: { cardVisual?: { id: string }; previewVisual?: { id: string } }; nameID: string }
   ) => {
     const whiteboardTemplate = values as WhiteboardTemplateFormSubmittedValues;
     const previewImages = whiteboardTemplate.whiteboardPreviewImages;
     if (mutationResult && previewImages) {
-      await uploadVisuals(previewImages, {
-        cardVisualId: mutationResult.cardVisual?.id,
-        previewVisualId: mutationResult.previewVisual?.id,
-      });
+      await uploadVisuals(
+        previewImages,
+        {
+          cardVisualId: mutationResult.profile?.cardVisual?.id,
+          previewVisualId: mutationResult.profile?.previewVisual?.id,
+        },
+        mutationResult.nameID // To upload the screenshots with the whiteboard nameId
+      );
     }
   };
 
@@ -162,7 +166,7 @@ const TemplatesAdmin = ({
 
     if (updateTemplateVariables.includeProfileVisuals) {
       // Handle the visual in a special way with the preview images
-      await handlePreviewTemplates(values, result.data?.updateTemplate.profile);
+      await handlePreviewTemplates(values, result.data?.updateTemplate);
     }
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
@@ -202,7 +206,7 @@ const TemplatesAdmin = ({
     });
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(values, result.data?.createTemplate.profile);
+      handlePreviewTemplates(values, result.data?.createTemplate);
     }
     setCreatingTemplateType(undefined);
   };

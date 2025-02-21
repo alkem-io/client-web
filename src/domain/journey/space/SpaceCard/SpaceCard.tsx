@@ -10,8 +10,7 @@ import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCa
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 
-export interface SpaceCardProps
-  extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
+export interface SpaceCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion'> {
   tagline: string;
   spaceId?: string;
   displayName: string;

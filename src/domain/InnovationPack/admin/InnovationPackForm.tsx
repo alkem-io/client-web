@@ -8,7 +8,7 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
-import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -16,9 +16,9 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 
 export interface InnovationPackFormValues {
-  nameID: string;
   profile: {
     displayName: string;
     description: string;
@@ -31,7 +31,6 @@ export interface InnovationPackFormValues {
 
 type InnovationPackFormProps = {
   isNew?: boolean;
-  nameID?: string;
   profile?: {
     id?: string;
     displayName?: string;
@@ -50,7 +49,6 @@ type InnovationPackFormProps = {
  */
 const InnovationPackForm = ({
   isNew = false,
-  nameID,
   profile,
   listedInStore,
   searchVisibility,
@@ -63,7 +61,6 @@ const InnovationPackForm = ({
   const profileId = profile?.id ?? '';
 
   const initialValues: InnovationPackFormValues = {
-    nameID: nameID ?? '',
     profile: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
@@ -77,7 +74,6 @@ const InnovationPackForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     profile: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
@@ -90,10 +86,10 @@ const InnovationPackForm = ({
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values: { profile }, handleSubmit }) => {
+      {({ values: { profile }, handleSubmit, isValid }) => {
         return (
           <Gutters disablePadding>
-            <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
+            <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} required />
             {!isNew && (
               <>
                 <TextField
@@ -137,7 +133,7 @@ const InnovationPackForm = ({
               <BlockSectionTitle>{t('pages.admin.innovation-packs.save-new-for-details')}</BlockSectionTitle>
             )}
             <Box display="flex" justifyContent="flex-end">
-              <SaveButton loading={loading} onClick={() => handleSubmit()} />
+              <SaveButton loading={loading} onClick={() => handleSubmit()} disabled={!isValid} />
             </Box>
           </Gutters>
         );

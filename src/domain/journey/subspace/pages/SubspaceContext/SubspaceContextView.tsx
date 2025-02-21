@@ -3,41 +3,42 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { ContextForm, ContextFormValues } from '@/domain/context/ContextForm';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   refetchSubspaceProfileInfoQuery,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SubspaceContextSegment } from '@/domain/platform/admin/subspace/SubspaceContextSegment';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 const ChallengeContextView = () => {
   const notify = useNotification();
+  const ensurePresence = useEnsurePresence();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { subSpaceId: challengeId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: challengeId! })],
+    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: spaceId! })],
     awaitRefetchQueries: true,
   });
 
   const { data: subspaceProfile, loading } = useSubspaceProfileInfoQuery({
-    variables: { subspaceId: challengeId! },
-    skip: !challengeId,
+    variables: { subspaceId: spaceId! },
+    skip: !spaceId,
   });
 
   const challenge = subspaceProfile?.lookup.space;
 
-  const onSubmit = async (values: ContextFormValues) => {
-    if (!challengeId) {
-      throw new Error('Challenge ID is required for updating challenge');
-    }
-    updateSubspace({
+  const onSubmit = (values: ContextFormValues) => {
+    const requiredSpaceId = ensurePresence(spaceId);
+
+    return updateSubspace({
       variables: {
         input: {
-          ID: challengeId,
+          ID: requiredSpaceId,
           context: {
             impact: values.impact,
             vision: values.vision,

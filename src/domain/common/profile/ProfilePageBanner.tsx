@@ -14,10 +14,7 @@ import { Location } from '@/core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
-
-const banner: Visual = {
-  uri: '/alkemio-banner/global-banner.svg',
-};
+import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
 
 export interface ProfilePageBannerProps {
   entityId: string | undefined;
@@ -85,7 +82,7 @@ const ProfilePageBanner = ({
   return (
     <>
       <PageBanner
-        banner={banner}
+        banner={defaultPageBanner}
         cardComponent={PageBannerCardWithVisual}
         visual={
           <Avatar

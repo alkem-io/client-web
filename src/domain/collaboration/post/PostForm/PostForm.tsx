@@ -10,7 +10,7 @@ import { Post, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
 import { Reference } from '@/domain/common/profile/Profile';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';

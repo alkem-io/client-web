@@ -14,11 +14,11 @@ import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
-import { usePendingInvitationsCountQuery } from '@/core/apollo/generated/apollo-hooks';
 import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
+import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 
 /**
  * DashboardMenu Component
@@ -35,10 +35,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   const { items, loading: itemsConfigLoading } = useHomeMenuItems();
   const { setOpenDialog } = usePendingMembershipsDialog();
 
-  const { data: invitesData } = usePendingInvitationsCountQuery({
-    fetchPolicy: 'network-only',
-  });
-  const pendingInvitationsCount = invitesData?.me?.communityInvitations?.length ?? 0;
+  const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
   const changeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     setActivityEnabled(event.target.checked);

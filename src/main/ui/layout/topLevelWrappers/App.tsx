@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useUserContext } from '@/domain/community/user';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
-import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
 import CookieConsent from '@/main/cookies/CookieConsent';
@@ -15,7 +15,9 @@ const App = () => {
 
   useUserScope(user);
 
-  const { services } = useServerMetadata();
+  const {
+    serverMetadata: { services },
+  } = useConfig();
 
   useEffect(() => {
     if (services.length) {

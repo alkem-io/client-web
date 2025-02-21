@@ -24,7 +24,7 @@ interface PostCalloutProps extends BaseCalloutViewProps {
   posts: PostCardPost[] | undefined;
   loading: boolean;
   creatingPost: boolean;
-  onCreatePost: (post: CreatePostInput) => Promise<{ nameID: string } | undefined>;
+  onCreatePost: (post: CreatePostInput) => Promise<unknown>;
 }
 
 const PostCallout = forwardRef<Element, PostCalloutProps>(

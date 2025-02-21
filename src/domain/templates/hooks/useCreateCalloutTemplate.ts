@@ -1,21 +1,21 @@
 import { useCallback } from 'react';
 import { CalloutTemplateFormSubmittedValues } from '../components/Forms/CalloutTemplateForm';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useCreateTemplateMutation, useSpaceTemplatesSetIdLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { toCreateTemplateMutationVariables } from '../components/Forms/common/mappings';
 
 export interface CalloutCreationUtils {
-  handleCreateCalloutTemplate: (values: CalloutTemplateFormSubmittedValues, spaceNameId: string) => Promise<unknown>;
+  handleCreateCalloutTemplate: (values: CalloutTemplateFormSubmittedValues, targetSpaceId: string) => Promise<unknown>;
 }
 
 export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
   const [createCalloutTemplate] = useCreateTemplateMutation();
-  const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
+  const [fetchTemplatesSetId] = useSpaceTemplatesManagerLazyQuery();
 
   const handleCreateCalloutTemplate = useCallback(
-    async (values: CalloutTemplateFormSubmittedValues, spaceNameId: string) => {
-      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceNameId } });
-      const templatesSetId = templatesData?.space.templatesManager?.templatesSet?.id;
+    async (values: CalloutTemplateFormSubmittedValues, targetSpaceId: string) => {
+      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceId: targetSpaceId } });
+      const templatesSetId = templatesData?.lookup.space?.templatesManager?.templatesSet?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');
       }

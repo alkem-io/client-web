@@ -13,7 +13,6 @@ import { Settings } from '@mui/icons-material';
 interface InnovationPackProfileLayoutProps {
   innovationPack:
     | (Identifiable & {
-        nameID: string;
         profile: ProfilePageBannerProps['profile'];
         provider: {
           profile: {

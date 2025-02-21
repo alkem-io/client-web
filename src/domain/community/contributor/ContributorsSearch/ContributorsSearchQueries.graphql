@@ -49,7 +49,6 @@ fragment OrganizationContributorPaginated on PaginatedOrganization {
 
 fragment OrganizationContributor on Organization {
   id
-  nameID
   metrics {
     id
     name
@@ -81,7 +80,6 @@ fragment UserContributorPaginated on PaginatedUsers {
 
 fragment UserContributor on User {
   id
-  nameID
   isContactable
   userProfile: profile {
     id

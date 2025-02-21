@@ -2,6 +2,7 @@ query SpaceSubspaceCards($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      level
       subspaces {
         ...SubspaceCard
       }

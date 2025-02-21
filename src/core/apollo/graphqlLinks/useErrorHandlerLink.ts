@@ -3,13 +3,18 @@ import { ApolloError } from '@apollo/client';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
+// Don't report these errors in the bottom right corner
+const EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS = [
+  AlkemioGraphqlErrorCode.FORBIDDEN,
+  AlkemioGraphqlErrorCode.URL_RESOLVER_ERROR,
+];
+
 export const useErrorHandlerLink = () => {
   const handleError = useApolloErrorHandler();
 
   return onError(({ graphQLErrors, networkError }) => {
-    // dont report the forbidden errors
     const nonForbiddenGraphqlErrors = graphQLErrors?.filter(
-      x => x.extensions.code !== AlkemioGraphqlErrorCode.FORBIDDEN
+      x => !EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS.includes(x.extensions.code as AlkemioGraphqlErrorCode)
     );
     handleError(
       new ApolloError({

@@ -1,38 +1,36 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Formik } from 'formik';
-import { FormikProps } from 'formik/dist/types';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import { Identifiable } from '@/core/utils/Identifiable';
+import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
-import Dialog from '@mui/material/Dialog';
-import { makeStyles } from '@mui/styles';
-import Loading from '@/core/ui/loading/Loading';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { Actions } from '@/core/ui/actions/Actions';
-import { gutters } from '@/core/ui/grid/utils';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import mergeWhiteboard from '../utils/mergeWhiteboard';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import { Box, Button, DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import { Formik } from 'formik';
+import { FormikProps } from 'formik/dist/types';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
+  generateWhiteboardPreviewImages,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
+import mergeWhiteboard from '../utils/mergeWhiteboard';
+import whiteboardSchema from '../validation/whiteboardSchema';
 import { WhiteboardDetails } from './WhiteboardDialog';
-import { Identifiable } from '@/core/utils/Identifiable';
-import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -67,29 +65,6 @@ type SingleUserWhiteboardDialogProps = {
   };
 };
 
-const useStyles = makeStyles(theme => ({
-  dialogRoot: {
-    height: '85vh',
-  },
-  dialogTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: `${theme.spacing(0)} ${theme.spacing(1)}`,
-    zIndex: 2,
-  },
-  dialogContent: {
-    padding: theme.spacing(2),
-    paddingTop: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dialogFullscreen: {
-    height: '100%',
-    maxHeight: '100%',
-  },
-}));
-
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
 const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: SingleUserWhiteboardDialogProps) => {
@@ -97,8 +72,6 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const notify = useNotification();
   const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
-
-  const styles = useStyles();
 
   const getExcalidrawStateFromApi = () => {
     if (!excalidrawAPI) {
@@ -214,9 +187,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
       aria-labelledby="whiteboard-dialog"
       maxWidth={false}
       fullWidth
-      classes={{
-        paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
-      }}
+      sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
       onClose={onClose}
       fullScreen={options.fullscreen}
     >
@@ -246,7 +217,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
               )}
               <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
             </DialogHeader>
-            <DialogContent classes={{ root: styles.dialogContent }}>
+            <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               {!state?.loadingWhiteboardContent && whiteboard && (
                 <ExcalidrawWrapper
                   entities={{

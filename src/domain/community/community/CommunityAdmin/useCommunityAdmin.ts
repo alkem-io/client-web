@@ -1,33 +1,24 @@
 import { useMemo } from 'react';
-import {
-  useAssignRoleToUserMutation,
-  useAssignRoleToOrganizationMutation,
-  useRemoveRoleFromUserMutation,
-  useRemoveRoleFromOrganizationMutation,
-  useCommunityProviderDetailsQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useCommunityProviderDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   RoleName,
+  RoleSetContributorType,
   RoleSetMemberOrganizationFragment,
   RoleSetMemberUserFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useInviteContributors from '../../../access/_removeMe/useInviteContributors';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import useRoleSetApplicationsAndInvitations, {
   InviteContributorsData,
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
-// TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
   roleSetId: string;
   spaceId?: string;
-  challengeId?: string;
-  opportunityId?: string;
-  spaceLevel: SpaceLevel | undefined;
+  spaceLevel?: SpaceLevel;
 }
 
 export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
@@ -42,22 +33,35 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isFacilitating: boolean;
 }
 
-const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useCommunityAdminParams) => {
-  const journeyTypeName = getJourneyTypeName({
-    spaceNameId: spaceId,
-    challengeNameId: challengeId,
-    opportunityNameId: opportunityId,
-  })!;
+const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
   const { data: communityProviderData, loading: loadingCommunityProvider } = useCommunityProviderDetailsQuery({
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId || journeyTypeName !== 'space',
+    skip: !spaceId || spaceLevel !== SpaceLevel.L0,
   });
 
-  const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetAdmin({
+  const {
+    users,
+    organizations,
+    virtualContributors,
+    rolesDefinitions,
+    assignRoleToUser,
+    removeRoleFromUser,
+    assignRoleToOrganization,
+    removeRoleFromOrganization,
+    loading,
+  } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
+    contributorTypes: [
+      RoleSetContributorType.User,
+      RoleSetContributorType.Organization,
+      RoleSetContributorType.Virtual,
+    ],
+    fetchContributors: true,
+    fetchRoleDefinitions: true,
+    onChange: () => refetchAvailableContributors(),
   });
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
@@ -113,6 +117,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     findAvailableOrganizationsForRoleSet,
   } = useRoleSetAvailableContributors({
     roleSetId,
+    filterCurrentMembers: [...communityUsers, ...communityOrganizations],
   });
 
   const getAvailableUsers = async (filter: string | undefined) => {
@@ -125,137 +130,22 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   };
 
   // Adding new members:
-  const [addUserToCommunity] = useAssignRoleToUserMutation();
-  const handleAddUser = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await addUserToCommunity({
-      variables: {
-        roleSetId,
-        contributorId: memberId,
-        role: RoleName.Member,
-      },
-    });
-    await refetchAvailableContributors();
-    return refetch();
-  };
+  const onAddUser = (memberId: string) => assignRoleToUser(memberId, RoleName.Member);
 
-  const [addOrganizationToCommunity] = useAssignRoleToOrganizationMutation();
-  const handleAddOrganization = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await addOrganizationToCommunity({
-      variables: {
-        roleSetId,
-        contributorId: memberId,
-        role: RoleName.Member,
-      },
-    });
-    await refetchAvailableContributors();
-    return refetch();
-  };
+  const onRemoveUser = (memberId: string) => removeRoleFromUser(memberId, RoleName.Member);
 
-  // Mutations:
+  const onUserLeadChange = (memberId: string, isLead: boolean) =>
+    isLead ? assignRoleToUser(memberId, RoleName.Lead) : removeRoleFromUser(memberId, RoleName.Lead);
 
-  const [assignRoleToUser] = useAssignRoleToUserMutation();
-  const [removeRoleFromUser] = useRemoveRoleFromUserMutation();
-  const handleUserLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!roleSetId) {
-      return;
-    }
-    if (isLead) {
-      await assignRoleToUser({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    } else {
-      await removeRoleFromUser({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    }
-    return refetch();
-  };
+  const onRemoveOrganization = (memberId: string) => removeRoleFromOrganization(memberId, RoleName.Member);
 
-  const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
-    if (!roleSetId) {
-      return;
-    }
-    if (isAdmin) {
-      await assignRoleToUser({
-        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
-      });
-    } else {
-      await removeRoleFromUser({
-        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
-      });
-    }
-    return refetch();
-  };
+  const onUserAuthorizationChange = (memberId: string, isAdmin: boolean) =>
+    isAdmin ? assignRoleToUser(memberId, RoleName.Admin) : removeRoleFromUser(memberId, RoleName.Admin);
 
-  const [removeUserAsCommunityMember] = useRemoveRoleFromUserMutation();
-  const handleRemoveUser = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await removeUserAsCommunityMember({
-      variables: {
-        contributorId: memberId,
-        roleSetId,
-        role: RoleName.Member,
-      },
-    });
-    return refetch();
-  };
+  const onAddOrganization = (memberId: string) => assignRoleToOrganization(memberId, RoleName.Member);
 
-  const [assignOrganizationAsCommunityLead] = useAssignRoleToOrganizationMutation();
-  const [removeOrganizationAsCommunityLeadMutation] = useRemoveRoleFromOrganizationMutation();
-  const onOrganizationLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!roleSetId) {
-      return;
-    }
-    if (isLead) {
-      await assignOrganizationAsCommunityLead({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    } else {
-      await removeOrganizationAsCommunityLeadMutation({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    }
-    return refetch();
-  };
-
-  const [removeOrganizationAsCommunityMember] = useRemoveRoleFromOrganizationMutation();
-  const handleRemoveOrganization = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await removeOrganizationAsCommunityMember({
-      variables: {
-        contributorId: memberId,
-        roleSetId,
-        role: RoleName.Member,
-      },
-    });
-    return refetch();
-  };
+  const onOrganizationLeadChange = (memberId: string, isLead: boolean) =>
+    isLead ? assignRoleToOrganization(memberId, RoleName.Lead) : removeRoleFromOrganization(memberId, RoleName.Lead);
 
   const {
     applications,
@@ -289,17 +179,17 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     platformInvitations,
     onApplicationStateChange: applicationStateChange,
     onInvitationStateChange: invitationStateChange,
-    onUserLeadChange: handleUserLeadChange,
-    onUserAuthorizationChange: handleUserAuthorizationChange,
-    onOrganizationLeadChange: onOrganizationLeadChange,
-    onAddUser: handleAddUser,
-    onAddOrganization: handleAddOrganization,
-    onAddVirtualContributor,
-    onRemoveUser: handleRemoveUser,
-    onRemoveOrganization: handleRemoveOrganization,
-    onRemoveVirtualContributor,
     onDeleteInvitation: deleteInvitation,
     onDeletePlatformInvitation: deletePlatformInvitation,
+    onUserLeadChange,
+    onUserAuthorizationChange,
+    onOrganizationLeadChange,
+    onAddUser,
+    onAddOrganization,
+    onAddVirtualContributor,
+    onRemoveUser,
+    onRemoveOrganization,
+    onRemoveVirtualContributor,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,

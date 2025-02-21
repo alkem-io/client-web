@@ -1,7 +1,7 @@
 mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
   updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId, visibility: $visibility }) {
     id
-    nameID
+    nameID  # Used for the space form
     visibility
   }
 }

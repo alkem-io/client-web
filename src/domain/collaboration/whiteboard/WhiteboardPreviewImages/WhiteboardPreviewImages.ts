@@ -86,7 +86,7 @@ export const useUploadWhiteboardVisuals = () => {
     uploadVisuals: async (
       previewImages: WhiteboardPreviewImage[] | undefined,
       visualsIds: VisualsIds,
-      whiteboardNameId?: string
+      whiteboardNameId: string = 'whiteboard'
     ) => {
       if (visualsIds.cardVisualId) {
         const previewImage = previewImages?.find(pi => pi.visualType === VisualType.Card);

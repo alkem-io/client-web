@@ -10,7 +10,7 @@ const ChallengeCalloutPage = (props: JourneyCalloutDialogProps) => {
 
   const getPageRoute = () => profile.url;
 
-  return <CalloutPage journeyTypeName="subspace" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default ChallengeCalloutPage;

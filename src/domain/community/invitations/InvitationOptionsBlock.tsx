@@ -24,7 +24,7 @@ type InvitationOptionsBlockProps = {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
-  spaceId: string | undefined;
+  parentSpaceId: string | undefined;
   isSubspace?: boolean;
 };
 
@@ -42,7 +42,7 @@ const InvitationOptionsBlock = ({
   currentApplicationsUserIds,
   currentInvitationsUserIds,
   currentMembersIds,
-  spaceId,
+  parentSpaceId,
   isSubspace = false,
 }: InvitationOptionsBlockProps) => {
   const [currentInvitation, setCurrentInvitation] = useState<UserInvite>();
@@ -53,11 +53,12 @@ const InvitationOptionsBlock = ({
 
   const { data, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId: spaceId!,
+      spaceId: parentSpaceId!,
     },
-    skip: !spaceId,
+    skip: !parentSpaceId,
   });
 
+  // setting of the parent
   const allowSubspaceAdminsToInviteMembers = data?.lookup.space?.settings.membership.allowSubspaceAdminsToInviteMembers;
   const showInviteBlock = isSubspace ? allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
 

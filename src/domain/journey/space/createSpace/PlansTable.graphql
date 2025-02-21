@@ -1,0 +1,46 @@
+query PlansTable {
+  platform {
+    id
+    licensingFramework {
+      id
+      plans {
+        id
+        name
+        enabled
+        sortOrder
+        pricePerMonth
+        isFree
+        trialEnabled
+        requiresPaymentMethod
+        requiresContactSupport
+        type
+      }
+    }
+  }
+}
+
+query AccountPlanAvailability($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      license {
+        id
+        availableEntitlements
+      }
+    }
+  }
+}
+
+query ContactSupportLocation {
+  platform {
+    configuration {
+      locations {
+        contactsupport
+      }
+    }
+  }
+}

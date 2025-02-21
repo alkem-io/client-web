@@ -1,16 +1,16 @@
 /**
  * @jest-environment jsdom
  */
-import Loading from './Loading';
-import WrapperTypography from '../typography/deprecated/WrapperTypography';
 import { render, screen } from '@/main/test/testUtils';
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
+import { Caption } from '../typography';
+import Loading from './Loading';
 
 describe('Loading component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
   test.skip('render correctly WrapperTypography component', () => {
     // arrange
-    const { asFragment } = render(<WrapperTypography variant="caption" color="primary" />);
+    const { asFragment } = render(<Caption textTransform="uppercase" fontWeight="medium" color="primary.main" />);
 
     // act
     const html = asFragment();

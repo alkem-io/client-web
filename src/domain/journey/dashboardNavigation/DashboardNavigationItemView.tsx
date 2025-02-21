@@ -8,19 +8,14 @@ import JourneyAvatar from '../common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
 import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { last } from 'lodash';
-import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
 
 export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];
-  currentPath: string[];
   subspaceOfCurrent?: boolean;
   level?: number;
   onClick?: MouseEventHandler;
   onToggle?: (isExpanded: boolean) => void;
   compact?: boolean;
-  onCreateSubspace?: (parent: Identifiable) => void;
   itemProps?:
     | Partial<DashboardNavigationItemViewProps>
     | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);
@@ -44,14 +39,10 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
       avatar,
       private: isPrivate = false,
       tooltipPlacement,
-      currentPath,
-      subspaceOfCurrent = false,
       level = 0,
       onClick,
       onToggle,
       compact = false,
-      canCreateSubspace = false,
-      onCreateSubspace,
       itemProps = () => ({}),
     },
     ref
@@ -59,10 +50,6 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
     const [isExpanded, setIsExpanded] = useState(true);
 
     const { t } = useTranslation();
-
-    const current = last(currentPath);
-
-    const isCurrent = current === id;
 
     const preventDefault = (event: React.MouseEvent) => {
       event.stopPropagation();
@@ -77,10 +64,6 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
     const hostContainerRef = useRef<HTMLDivElement>();
 
     const childrenContainerRef = useRef<HTMLDivElement>();
-
-    const includesCurrentItem = currentPath.includes(id);
-
-    const expandable = !compact && !includesCurrentItem;
 
     useImperativeHandle(
       ref,
@@ -101,7 +84,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
             const hostBounds = hostContainerRef.current?.getBoundingClientRect();
             const top = hostBounds?.top;
 
-            if (!isExpanded && expandable) {
+            if (!isExpanded) {
               return {
                 top,
                 height: hostBounds?.height,
@@ -118,91 +101,81 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
           getChildrenDimensions,
         };
       },
-      [id, isExpanded, expandable, level]
+      [id, isExpanded, level]
     );
 
     const hasChildren = children && children.length > 0;
 
-    const hasCreateButton = !compact && canCreateSubspace && level === 1 && !!onCreateSubspace;
-
     const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
-
-    if (compact && !(includesCurrentItem || subspaceOfCurrent)) {
-      return null;
-    }
 
     return (
       <>
-        <BadgeCardView
-          ref={hostContainerRef}
-          component={RouterLink}
-          to={url ?? ''}
-          keepScroll
-          visual={
-            <Tooltip
-              open={compact ? undefined : false}
-              title={<Caption>{displayName}</Caption>}
-              placement={tooltipPlacement}
-              arrow
-            >
-              <JourneyAvatar src={avatar?.uri} size="medium" />
-            </Tooltip>
-          }
-          visualRight={
-            isPrivate ? (
+        {!hasChildren ? (
+          <BadgeCardView
+            ref={hostContainerRef}
+            component={RouterLink}
+            to={url ?? ''}
+            keepScroll
+            visual={
               <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+                open={compact ? undefined : false}
+                title={<Caption>{displayName}</Caption>}
                 placement={tooltipPlacement}
                 arrow
               >
-                <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
-                  <LockOutlined />
-                </IconButton>
+                <JourneyAvatar src={avatar?.uri} size="medium" />
               </Tooltip>
-            ) : (
-              hasChildren &&
-              expandable && (
-                <IconButton
-                  onClick={toggleExpand}
-                  aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+            }
+            visualRight={
+              isPrivate ? (
+                <Tooltip
+                  title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+                  placement={tooltipPlacement}
+                  arrow
                 >
-                  {isExpanded ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
+                  <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
+                    <LockOutlined />
+                  </IconButton>
+                </Tooltip>
+              ) : (
+                hasChildren && (
+                  <IconButton
+                    onClick={toggleExpand}
+                    aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+                  >
+                    {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                )
               )
-            )
-          }
-          padding
-          square
-          sx={{
-            ...getIndentStyle(level, compact),
-            backgroundColor: isCurrent ? 'highlight.main' : undefined,
-          }}
-          onClick={onClick}
-        >
-          {!compact && <Caption>{displayName}</Caption>}
-        </BadgeCardView>
-        {(hasChildren || hasCreateButton) && (
+            }
+            padding
+            square
+            sx={{
+              ...getIndentStyle(level, compact),
+            }}
+            onClick={onClick}
+          >
+            {!compact && <Caption>{displayName}</Caption>}
+          </BadgeCardView>
+        ) : (
           // If items lose expandability, we can safely remove the callbacks.
           <Collapse
-            in={isExpanded || !expandable}
+            in={isExpanded}
             onEntering={() => onToggle?.(isExpanded)}
             onEntered={() => onToggle?.(isExpanded)}
             onExiting={() => onToggle?.(isExpanded)}
             onExited={() => onToggle?.(isExpanded)}
           >
             <Box ref={childrenContainerRef}>
-              {hasCreateButton && <DashboardAddButton level={level + 1} onClick={() => onCreateSubspace?.({ id })} />}
               {children?.map(child => (
                 <DashboardNavigationItemView
                   key={child.id}
                   ref={ref}
                   level={level + 1}
                   tooltipPlacement={tooltipPlacement}
-                  currentPath={currentPath}
-                  subspaceOfCurrent={subspaceOfCurrent || isCurrent}
+                  subspaceOfCurrent
                   compact={compact}
                   itemProps={itemProps}
-                  onCreateSubspace={onCreateSubspace}
                   onToggle={onToggle}
                   {...child}
                   {...getItemProps(child)}

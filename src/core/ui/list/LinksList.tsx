@@ -1,21 +1,11 @@
-import { ReactNode, useState } from 'react';
-import { styled } from '@mui/styles';
-import { Box, Collapse, List as MuiList, ListItem as MuiListItem, Skeleton } from '@mui/material';
-import { BlockSectionTitle, CaptionSmall } from '../typography';
-import RouterLink from '../link/RouterLink';
-import { gutters } from '../grid/utils';
-import { times } from 'lodash';
-import CardExpandButton from '../card/CardExpandButton';
 import Avatar from '@/core/ui/avatar/Avatar';
-
-const List = styled(MuiList)(() => ({ padding: 0 }));
-
-const ListItem = styled(MuiListItem)(({ theme }) => ({
-  height: gutters(2)(theme),
-  gap: theme.spacing(1),
-  display: 'flex',
-  alignItems: 'center',
-})) as typeof MuiListItem;
+import { Box, Collapse, List, ListItem, Skeleton } from '@mui/material';
+import { times } from 'lodash';
+import { ReactNode, useState } from 'react';
+import CardExpandButton from '../card/CardExpandButton';
+import { gutters } from '../grid/utils';
+import RouterLink from '../link/RouterLink';
+import { BlockSectionTitle, CaptionSmall } from '../typography';
 
 interface Item {
   id: string;
@@ -32,22 +22,31 @@ export interface LinksListProps {
 }
 
 const COLLAPSED_LIST_ITEM_LIMIT = 5;
+const listItemStyles = {
+  height: gutters(2),
+  gap: 1,
+  display: 'flex',
+  alignItems: 'center',
+} as const;
 
 const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const handleExpand = () => setIsExpanded(!isExpanded);
 
   return (
-    <List>
-      {loading && times(3, i => <ListItem key={i} component={Skeleton} />)}
+    <List sx={{ p: 0 }}>
+      {loading && times(3, i => <ListItem key={i} component={Skeleton} sx={listItemStyles} />)}
       {!loading && items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
       {!loading &&
         items.length > 0 &&
         items.slice(0, COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-          <ListItem key={item.id} component={RouterLink} to={item.uri} sx={{ marginTop: gutters(0.5) }}>
+          <ListItem
+            key={item.id}
+            component={RouterLink}
+            to={item.uri}
+            sx={{ ...listItemStyles, marginTop: gutters(0.5) }}
+          >
             <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
             <BlockSectionTitle minWidth={0} noWrap>
@@ -58,7 +57,12 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
       {!loading && items.length > COLLAPSED_LIST_ITEM_LIMIT && (
         <Collapse in={isExpanded}>
           {items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-            <ListItem key={item.id} component={RouterLink} to={item.uri} sx={{ marginTop: gutters(0.5) }}>
+            <ListItem
+              key={item.id}
+              component={RouterLink}
+              to={item.uri}
+              sx={{ ...listItemStyles, marginTop: gutters(0.5) }}
+            >
               <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
               <BlockSectionTitle minWidth={0} noWrap>

@@ -56,7 +56,7 @@ const AuthorizationPoliciesPage = () => {
     <TopLevelLayout
       header={
         <>
-          <SpacePageBanner title={t('common.administration')} journeyTypeName="admin" />
+          <SpacePageBanner title={t('common.administration')} />
           <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>
             {adminTabs.map(tab => {
               return (

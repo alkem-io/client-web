@@ -11,7 +11,6 @@ import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks'
 import { AuthorizationPrivilege, DocumentDataFragment } from '@/core/apollo/generated/graphql-schema';
 import { formatFileSize } from '@/core/utils/Storage';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { times } from 'lodash';
@@ -121,9 +120,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
         headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
         minWidth: 150,
         renderCell: ({ row }: RenderParams) =>
-          row.uplodadedBy ? (
-            <RouterLink to={buildUserProfileUrl(row.uplodadedBy.nameId)}>{row.uplodadedBy.displayName}</RouterLink>
-          ) : undefined,
+          row.uplodadedBy ? <RouterLink to={row.uplodadedBy.url}>{row.uplodadedBy.displayName}</RouterLink> : undefined,
         valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
         sortable: false,
         filterable: false,

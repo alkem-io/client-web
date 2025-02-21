@@ -8,6 +8,7 @@ import { NavigateOptions } from 'react-router/lib/hooks';
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;
   error?: ApolloError;
+  skip?: boolean;
 }
 
 interface PrivilegesReader<Data> {
@@ -23,7 +24,7 @@ const DEFAULT_NAVIGATE_OPTIONS: NavigateOptions = {
 };
 
 const useRestrictedRedirect = <Data extends {}>(
-  { data, error }: RestrictedRedirectQueryResponse<Data>,
+  { data, error, skip = false }: RestrictedRedirectQueryResponse<Data>,
   readPrivileges: PrivilegesReader<Data>,
   {
     requiredPrivilege = AuthorizationPrivilege.Read,
@@ -36,6 +37,10 @@ const useRestrictedRedirect = <Data extends {}>(
   const redirectUrl = `/restricted?origin=${encodeURI(pathname)}`;
 
   useEffect(() => {
+    if (skip) {
+      return;
+    }
+
     if (error && isApolloForbiddenError(error)) {
       navigate(redirectUrl, navigateOptions);
     }
@@ -43,7 +48,7 @@ const useRestrictedRedirect = <Data extends {}>(
     if (data && !readPrivileges(data)?.includes(requiredPrivilege)) {
       navigate(redirectUrl, navigateOptions);
     }
-  }, [data, error]);
+  }, [data, error, skip]);
 };
 
 export default useRestrictedRedirect;

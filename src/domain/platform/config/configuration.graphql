@@ -8,6 +8,12 @@ query configuration {
         iframeAllowedUrls
       }
     }
+    metadata {
+      services {
+        name
+        version
+      }
+    }
   }
 }
 

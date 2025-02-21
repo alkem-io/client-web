@@ -1,8 +1,8 @@
-import React, { FC, useMemo } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { MetricItem } from '../utils/useMetricsItems';
 import CircleTag from '@/core/ui/tags/CircleTag';
+import { Grid, Typography } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
+import { FC, ReactNode, useMemo } from 'react';
+import { MetricItem } from '../utils/useMetricsItems';
 
 export interface MetricViewProps {
   activity: MetricItem[];
@@ -48,9 +48,7 @@ const ActivityView: FC<MetricViewProps> = ({ activity, loading }) => {
 export default ActivityView;
 
 const MetricViewColumn = ({ metric }: { metric: MetricItem[] }) => {
-  if (!metric.length) {
-    return null;
-  }
+  if (!metric.length) return null;
 
   return (
     <Grid container item xs={6} spacing={1}>
@@ -63,13 +61,13 @@ const MetricViewColumn = ({ metric }: { metric: MetricItem[] }) => {
   );
 };
 
-const MetricViewItem = ({ text, count }) => (
+const MetricViewItem = ({ text, count }: { text: ReactNode; count: number }) => (
   <Grid item container alignItems="center" justifyContent="space-between">
     <Grid item>
       <Typography>{text}</Typography>
     </Grid>
     <Grid item>
-      <CircleTag text={count} color="primary" size="small" />
+      <CircleTag count={count} />
     </Grid>
   </Grid>
 );

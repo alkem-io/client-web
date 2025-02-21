@@ -7,7 +7,7 @@ export enum SocialNetworkEnum {
   email = 'email',
 }
 
-export const SocianNetworksSortOrder = Object.keys(SocialNetworkEnum).reduce<Record<string, number>>(
+export const SocialNetworksSortOrder = Object.keys(SocialNetworkEnum).reduce<Record<string, number>>(
   (prev, cur, index) => {
     prev[cur] = index;
     return prev;

@@ -11,6 +11,8 @@ import React, {
   useState,
 } from 'react';
 
+const isDev = import.meta.env.MODE === 'development';
+
 type LayoutState<P> = {
   component: ComponentType<P>;
   props: P;
@@ -25,7 +27,11 @@ const createLayoutHolder = () => {
   const LayoutContext = createContext<LayoutContext>({
     layout: undefined,
     setLayout: () => {
-      throw new Error('Not within the LayoutHolder.');
+      if (isDev) {
+        console.error('Not within the LayoutHolder.');
+      } else {
+        throw new Error('Not within the LayoutHolder.');
+      }
     },
   });
 

@@ -1,22 +1,18 @@
-import React, { FC } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material';
+import { FC } from 'react';
 
-const useMainStyles = makeStyles(theme => ({
-  backdrop: {
-    backgroundColor: theme.palette.background.paper,
-    opacity: 0.5,
-    filter: `blur(${theme.spacing(0.5)})`,
-    '-webkit-filter': `blur(${theme.spacing(0.5)})`,
-    '-moz-filter': `blur(${theme.spacing(0.5)})`,
-    '-o-filter': `blur(${theme.spacing(0.5)})`,
-    '-ms-filter': `blur(${theme.spacing(0.5)})`,
-  },
+const Backdrop = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  opacity: 0.5,
+  filter: `blur(${theme.spacing(0.5)})`,
+  '-webkit-filter': `blur(${theme.spacing(0.5)})`,
+  '-moz-filter': `blur(${theme.spacing(0.5)})`,
+  '-o-filter': `blur(${theme.spacing(0.5)})`,
+  '-ms-filter': `blur(${theme.spacing(0.5)})`,
 }));
 
 export const WrapperBackdrop: FC = ({ children }) => {
-  const styles = useMainStyles();
-
-  return <div className={styles.backdrop}>{children}</div>;
+  return <Backdrop>{children}</Backdrop>;
 };
 
 export default WrapperBackdrop;

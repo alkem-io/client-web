@@ -5,6 +5,7 @@ export enum TopLevelRoutePath {
   Organization = 'organization',
   InnovationLibrary = 'innovation-library',
   InnovationPacks = 'innovation-packs',
+  InnovationHubs = 'innovation-hubs',
   CreateSpace = 'create-space',
   Home = 'home',
   Spaces = 'spaces',

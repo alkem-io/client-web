@@ -3,10 +3,11 @@ import React, { FC } from 'react';
 import useSubSpaceCreatedSubscription from '../hooks/useSubSpaceCreatedSubscription';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '@/core/container/container';
-import { SubspaceCardFragment } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SubspaceCardFragment } from '@/core/apollo/generated/graphql-schema';
 
 export interface SubspaceCardContainerEntities {
   subspaces: SubspaceCardFragment[];
+  level: SpaceLevel;
 }
 
 export interface SubspaceCardContainerActions {}
@@ -28,10 +29,12 @@ export const SubspacesContainer: FC<SubspacesContainerProps> = ({ spaceId, child
   });
 
   useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
+  const space = data?.lookup.space;
 
-  const subspaces = data?.lookup.space?.subspaces ?? [];
+  const subspaces = space?.subspaces ?? [];
+  const level = space?.level ?? SpaceLevel.L0;
 
-  return <>{children({ subspaces }, { loading, error }, {})}</>;
+  return <>{children({ subspaces, level }, { loading, error }, {})}</>;
 };
 
 export default SubspacesContainer;

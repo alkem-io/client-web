@@ -1,5 +1,5 @@
 import { ButtonProps, createTheme, ThemeProvider } from '@mui/material';
-import { PaletteOptions, ThemeOptions } from '@mui/material/styles';
+import { PaletteOptions, Theme, ThemeOptions } from '@mui/material/styles';
 import { ComponentType, PropsWithChildren, ReactNode } from 'react';
 
 type ButtonStylingProps<ChildProps extends Pick<ButtonProps, 'startIcon'>> = ChildProps & {
@@ -16,7 +16,9 @@ const ButtonStyling = <ChildProps extends Pick<ButtonProps, 'startIcon'>>({
 }: PropsWithChildren<ButtonStylingProps<ChildProps>>) => {
   return (
     <ThemeProvider
-      theme={theme => createTheme({ ...theme, ...styles, palette: { ...theme.palette, ...styles?.palette } })}
+      theme={theme =>
+        createTheme({ ...(theme as Theme), ...styles, palette: { ...(theme as Theme).palette, ...styles?.palette } })
+      }
     >
       <Button startIcon={icon} {...(buttonProps as ChildProps)} />
     </ThemeProvider>

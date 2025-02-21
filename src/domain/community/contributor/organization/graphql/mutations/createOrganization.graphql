@@ -1,7 +1,6 @@
 mutation createOrganization($input: CreateOrganizationInput!) {
   createOrganization(organizationData: $input) {
     id
-    nameID
     profile {
       id
       displayName

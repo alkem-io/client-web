@@ -44,11 +44,3 @@ export const isFileAttachmentUrl = (link: string) => {
   }
   return path.startsWith(PRIVATE_STORAGE_ROOT_PATH);
 };
-
-export const getURLPath = (link: string) => {
-  try {
-    return new URL(link).pathname;
-  } catch (e) {
-    return null;
-  }
-};

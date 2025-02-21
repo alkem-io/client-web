@@ -45,7 +45,7 @@ export const ActivityContainer = ({ spaceId, children }: PropsWithChildren<Activ
     variables: {
       spaceId: spaceId!,
       authorizedReadAccess: spacePermissions.canRead,
-      authorizedReadAccessCommunity: spacePermissions.communityReadAccess,
+      authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
     skip: !spaceId,

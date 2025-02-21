@@ -1,17 +1,23 @@
-import { CircularProgress } from '@mui/material';
-import WrapperTypography from '../typography/deprecated/WrapperTypography';
-import { useLoadingStyles } from './Loading.styles';
+import { Box, CircularProgress } from '@mui/material';
+import { Caption } from '../typography';
 
 export const Loading = ({ text = 'Loading' }: { text?: string }) => {
-  const styles = useLoadingStyles();
-
   return (
-    <div className={styles.container}>
-      <CircularProgress className={styles.spinner} />
-      <WrapperTypography variant="caption" color="primary" className={styles.text}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        gap: 2,
+      }}
+    >
+      <CircularProgress sx={{ color: 'primary.main' }} />
+      <Caption textTransform="uppercase" fontWeight="medium" color="primary.main">
         {text}
-      </WrapperTypography>
-    </div>
+      </Caption>
+    </Box>
   );
 };
 

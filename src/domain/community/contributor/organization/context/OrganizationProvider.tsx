@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useOrganizationInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';

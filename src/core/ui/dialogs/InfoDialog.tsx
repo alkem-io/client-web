@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
-import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
-import { DialogContent } from '../dialog/deprecated';
-import DialogHeader from '../dialog/DialogHeader';
-import { BlockTitle } from '../typography';
+import { DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import { ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
+import DialogHeader from '../dialog/DialogHeader';
 import { gutters } from '../grid/utils';
+import { BlockTitle } from '../typography';
 
 // could be merged with ConfirmationDialog
 // however there's no need of this entities, actions, etc. structure

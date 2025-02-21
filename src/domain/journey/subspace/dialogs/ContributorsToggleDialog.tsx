@@ -12,7 +12,7 @@ import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/
 import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -36,10 +36,11 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 
-  const { usersByRole, organizationsByRole, virtualContributorsByRole } = useRoleSetAdmin({
+  const { usersByRole, organizationsByRole, virtualContributorsByRole } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member] ?? [];
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];

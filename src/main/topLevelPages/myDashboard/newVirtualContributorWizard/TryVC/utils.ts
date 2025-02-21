@@ -1,7 +1,7 @@
 const VC_CREATION_CACHE_KEY = 'TRYVC';
 
-export const addVCCreationCache = (nameId: string) => {
-  localStorage.setItem(VC_CREATION_CACHE_KEY, nameId);
+export const addVCCreationCache = (vcId: string) => {
+  localStorage.setItem(VC_CREATION_CACHE_KEY, vcId);
 };
 
 export const getVCCreationCache = () => {

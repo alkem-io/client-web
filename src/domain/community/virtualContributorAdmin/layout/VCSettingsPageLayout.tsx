@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,7 @@ const tabs = [SettingsSection.MyProfile, SettingsSection.Membership, SettingsSec
 );
 
 const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading, error } = useVirtualContributorQuery({
     variables: { id: vcId! },
@@ -32,9 +32,13 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
 
   const { t } = useTranslation();
 
-  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges, {
-    requiredPrivilege: AuthorizationPrivilege.Update,
-  });
+  useRestrictedRedirect(
+    { data, error, skip: urlResolverLoading || loading },
+    data => data.lookup.virtualContributor?.authorization?.myPrivileges,
+    {
+      requiredPrivilege: AuthorizationPrivilege.Update,
+    }
+  );
 
   return (
     <EntitySettingsLayout
@@ -44,7 +48,7 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
             {t('pages.contributors.shortName')}
           </BreadcrumbsItem>
           <BreadcrumbsItem
-            loading={loading}
+            loading={urlResolverLoading || loading}
             avatar={data?.lookup.virtualContributor?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
             uri={data?.lookup.virtualContributor?.profile.url ?? ''}

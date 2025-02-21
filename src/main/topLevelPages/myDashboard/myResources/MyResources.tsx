@@ -43,9 +43,9 @@ const MyResources = () => {
       {spaces.map(space => (
         <JourneyCardHorizontal
           key={space.id}
-          journeyTypeName={undefined}
-          journey={{ profile: space.profile, community: {} }}
+          journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
           size="small"
+          deepness={0}
           seamless
           sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
           disableHoverState

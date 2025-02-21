@@ -1,6 +1,5 @@
 fragment ContributorDetails on Contributor {
   id
-  nameID
   profile {
     id
     displayName

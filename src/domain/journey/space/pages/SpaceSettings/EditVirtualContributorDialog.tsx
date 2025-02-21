@@ -9,7 +9,6 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 export interface VirtualContributorUpdateFormValues {
   id: string;
   bodyOfKnowledgeID?: string;
-  nameID: string;
   profile: {
     id: string;
     url: string;

@@ -12,18 +12,30 @@ import VerifyRoute from './VerifyRoute';
 import SignUp from '../pages/SignUp';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 
+export enum IdentityRoutes {
+  Login = 'login',
+  Logout = 'logout',
+  Registration = 'registration',
+  SignUp = 'sign_up',
+  Verify = 'verify',
+  Recovery = 'recovery',
+  Required = 'required',
+  Error = 'error',
+  Settings = 'settings',
+}
+
 export const IdentityRoute = () => {
   return (
     <>
-      <Route path="login/*" element={<LoginRoute />} />
-      <Route path="logout" element={<LogoutRoute />} />
-      <Route path="registration/*" element={<RegistrationRoute />} />
-      <Route path="verify/*" element={<VerifyRoute />} />
-      <Route path="recovery" element={<RecoveryRoute />} />
-      <Route path="required" element={<AuthRequiredPage />} />
-      <Route path="error" element={<ErrorRoute />} />
+      <Route path={`${IdentityRoutes.Login}/*`} element={<LoginRoute />} />
+      <Route path={`${IdentityRoutes.Logout}`} element={<LogoutRoute />} />
+      <Route path={`${IdentityRoutes.Registration}/*`} element={<RegistrationRoute />} />
+      <Route path={`${IdentityRoutes.Verify}/*`} element={<VerifyRoute />} />
+      <Route path={`${IdentityRoutes.Recovery}`} element={<RecoveryRoute />} />
+      <Route path={`${IdentityRoutes.Required}`} element={<AuthRequiredPage />} />
+      <Route path={`${IdentityRoutes.Error}`} element={<ErrorRoute />} />
       <Route
-        path="settings"
+        path={`${IdentityRoutes.Settings}`}
         element={
           <NoIdentityRedirect>
             <SettingsRoute />
@@ -32,7 +44,7 @@ export const IdentityRoute = () => {
       />
       <Route path="*" element={<Error404 />} />
       <Route
-        path="sign_up"
+        path={`${IdentityRoutes.SignUp}`}
         element={
           <NotAuthenticatedRoute>
             <SignUp />

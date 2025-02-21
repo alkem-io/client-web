@@ -17,7 +17,6 @@ const SKELETON_COUNT = 3;
 interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlowDragNDropEditorProps, 'children'> {
   callouts: {
     id: string;
-    nameID: string;
     type: CalloutType;
     activity: number;
     profile: {

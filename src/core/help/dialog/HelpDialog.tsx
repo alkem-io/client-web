@@ -1,18 +1,16 @@
-import { Trans, useTranslation } from 'react-i18next';
-import { Box, Grid, Link, styled } from '@mui/material';
-import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { buildWelcomeSpaceUrl } from '@/main/routing/urlBuilders';
+import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+import { Box, DialogContent, Grid, Link, styled } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface HelpDialogProps {
   open: boolean;
@@ -50,9 +48,10 @@ const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
 const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   const { t } = useTranslation();
 
-  const { locations } = useConfig();
-
-  const { services } = useServerMetadata();
+  const {
+    locations,
+    serverMetadata: { services },
+  } = useConfig();
 
   const handleClose = () => (onClose ? onClose() : undefined);
 

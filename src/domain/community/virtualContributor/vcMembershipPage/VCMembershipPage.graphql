@@ -11,10 +11,8 @@ query VCMemberships($virtualContributorId: UUID!) {
   rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
     spaces {
       id
-      nameID
       subspaces {
         id
-        nameID
         level
       }
     }

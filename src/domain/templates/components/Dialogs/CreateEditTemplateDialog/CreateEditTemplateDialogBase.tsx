@@ -1,13 +1,14 @@
 import React, { ReactNode } from 'react';
-import { Button, DialogActions, DialogContent } from '@mui/material';
+import { DialogActions, DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik/dist/types';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
-import DeleteButton from '@/domain/shared/components/DeleteButton';
+import DeleteButton from '@/core/ui/actions/DeleteButton';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { ArrowBack, Delete, SaveOutlined } from '@mui/icons-material';
+import { SaveOutlined } from '@mui/icons-material';
+import BackButton from '@/core/ui/actions/BackButton';
 
 interface TemplateDialogBaseProps<Values extends {}> {
   open: boolean;
@@ -43,12 +44,8 @@ const CreateEditTemplateDialogBase = <InitialValues extends {}>({
           actions: formik => (
             <DialogFooter>
               <DialogActions>
-                {editMode && onDelete && <DeleteButton onClick={onDelete} startIcon={<Delete />} />}
-                {editMode && onCancel && (
-                  <Button variant="outlined" onClick={onCancel} startIcon={<ArrowBack />}>
-                    {t('buttons.cancel')}
-                  </Button>
-                )}
+                {editMode && onDelete && <DeleteButton onClick={onDelete} />}
+                {editMode && onCancel && <BackButton onClick={onCancel}>{t('buttons.cancel')}</BackButton>}
                 <FormikSubmitButtonPure
                   variant="contained"
                   formik={formik}

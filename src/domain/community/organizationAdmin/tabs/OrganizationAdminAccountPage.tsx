@@ -3,7 +3,7 @@ import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {

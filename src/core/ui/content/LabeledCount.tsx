@@ -1,5 +1,5 @@
-import { Box, Skeleton } from '@mui/material';
 import OrganizationVerifiedStatus from '@/domain/community/contributor/organization/OrganizationVerifiedStatus';
+import { Box, Skeleton } from '@mui/material';
 import CircleTag from '../tags/CircleTag';
 import { Caption } from '../typography';
 
@@ -16,10 +16,10 @@ const LabeledCount = ({ label, count, loading, verified }: LabeledCountProps) =>
       <Caption sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : label}</Caption>
       {loading ? (
         <Skeleton variant="circular">
-          <CircleTag text={`${count}`} color="primary" size="small" />
+          <CircleTag count={count} />
         </Skeleton>
       ) : (
-        <CircleTag text={`${count}`} color="primary" size="small" />
+        <CircleTag count={count} />
       )}
     </Box>
     {loading ? (

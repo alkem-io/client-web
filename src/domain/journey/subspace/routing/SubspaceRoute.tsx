@@ -3,7 +3,6 @@ import { Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceProvider from '../context/SubspaceProvider';
-import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
@@ -11,16 +10,16 @@ import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
 
 const SubspaceRoute = () => {
-  const { journeyId } = useRouteResolver();
+  const { spaceId } = useUrlResolver();
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <Routes>
         <Route index element={<SubspaceHomePage />} />
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
@@ -57,9 +56,7 @@ const SubspaceRoute = () => {
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
             <SubspaceProvider>
-              <CommunityContextProvider>
-                <SubspaceRoute />
-              </CommunityContextProvider>
+              <SubspaceRoute />
             </SubspaceProvider>
           }
         />

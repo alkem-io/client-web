@@ -1,41 +1,42 @@
-query SpaceSubspaces($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
+query SpaceSubspaces($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      displayName
-    }
-    account {
-      id
-      authorization {
-        myPrivileges
-      }
-      virtualContributors {
+      profile {
         id
-        nameID
+        displayName
+      }
+      account {
+        id
+        authorization {
+          myPrivileges
+        }
+        virtualContributors {
+          id
+          profile {
+            id
+            displayName
+            tagline
+            url
+            tagsets {
+              ...TagsetDetails
+            }
+            avatar: visual(type: AVATAR) {
+              ...VisualFull
+            }
+          }
+        }
+      }
+      subspaces {
+        id
         profile {
           id
           displayName
           tagline
           url
-          tagsets {
-            ...TagsetDetails
-          }
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualUri
           }
-        }
-      }
-    }
-    subspaces {
-      id
-      profile {
-        id
-        displayName
-        tagline
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
         }
       }
     }

@@ -1,12 +1,11 @@
-import { Button, FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
+import RemoveModal from '@/core/ui/dialogs/RemoveModal';
+import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
+import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
 import Delete from '@mui/icons-material/Delete';
+import { Button, FormControl, IconButton, InputLabel, List, OutlinedInput } from '@mui/material';
+import { omit } from 'lodash';
 import React, { ComponentType, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import SearchableListIconButton from '@/domain/shared/components/SearchableList/SearchableListIconButton';
-import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
-import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
-import { omit } from 'lodash';
 
 const MAX_ITEMS_LIMIT = 1000;
 
@@ -72,7 +71,7 @@ export const SearchableTable = <
     }
   };
 
-  const openModal = (e: Event, item: Item): void => {
+  const openModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: Item): void => {
     e.preventDefault();
     setModalOpened(true);
     setItemToRemove(item);
@@ -114,13 +113,13 @@ export const SearchableTable = <
               primary={item.value}
               icon={
                 onDelete && (
-                  <SearchableListIconButton
+                  <IconButton
                     onClick={e => openModal(e, item)}
-                    size="large"
                     aria-label={t('buttons.delete')}
+                    sx={{ px: '6px', py: '1px', '&:hover, &:focus': { bgcolor: 'transparent' } }}
                   >
                     <Delete color="error" fontSize="large" />
-                  </SearchableListIconButton>
+                  </IconButton>
                 )
               }
               {...omit(item, 'id', 'url', 'value')}

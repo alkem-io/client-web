@@ -1,10 +1,9 @@
-import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import useNavigate from '@/core/routing/useNavigate';
-import { BackdropProps } from './BackdropWithMessage';
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import useNavigate from '@/core/routing/useNavigate';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled(Box)(() => ({
   position: 'relative',
@@ -54,12 +53,13 @@ const ButtonsWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-interface ImageBackdropProps extends BackdropProps {
+interface ImageBackdropProps {
   src: string;
   backdropMessage: 'private' | 'authentication' | 'login'; // translation: components.backdrop.*
   blockName: 'users-contributing' | 'all-contributing-users'; // translation: common.block.*
   messageSx?: TypographyProps['sx'];
   imageSx?: BoxProps['sx'];
+  show?: boolean;
 }
 
 const ImageBackdrop: FC<ImageBackdropProps> = ({

@@ -1,11 +1,10 @@
 import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import spaceIcon from '../JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '../SpaceIcon/SpaceIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
@@ -14,7 +13,7 @@ export interface ActivityDescriptionProps {
   createdDate: Date | string;
   journeyDisplayName?: string; // Callout name or Journey name
   journeyUrl?: string;
-  journeyTypeName: JourneyTypeName | undefined;
+  spaceLevel?: SpaceLevel;
   author?: {
     displayName?: string;
     url?: string;
@@ -30,7 +29,7 @@ const DetailedActivityDescription = ({
   createdDate,
   journeyDisplayName,
   journeyUrl,
-  journeyTypeName,
+  spaceLevel,
   author,
   values = {},
   components = {},
@@ -43,8 +42,7 @@ const DetailedActivityDescription = ({
     const mergedValues = { ...values };
     const mergedComponents = { ...components };
 
-    const time = formatTimeElapsed(createdDate, t);
-    mergedValues['time'] = time;
+    mergedValues['time'] = formatTimeElapsed(createdDate, t);
 
     if (author) {
       mergedValues['user'] = author.displayName;
@@ -72,14 +70,10 @@ const DetailedActivityDescription = ({
       mergedValues['journeyDisplayName'] = truncatedParentName;
     }
 
-    const JourneyIcon = journeyTypeName ? spaceIcon[journeyTypeName] : undefined;
+    const JourneyIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
     if (JourneyIcon) {
       mergedComponents['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
       mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;
-    }
-
-    if (journeyTypeName) {
-      mergedValues['journeyType'] = t(`common.${journeyTypeName}` as const);
     }
 
     mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} /> : <span />;
@@ -88,17 +82,7 @@ const DetailedActivityDescription = ({
       values: mergedValues,
       components: mergedComponents,
     };
-  }, [
-    createdDate,
-    t,
-    author,
-    author?.displayName,
-    author?.url,
-    journeyDisplayName,
-    journeyTypeName,
-    journeyUrl,
-    i18nKey,
-  ]);
+  }, [createdDate, t, author, author?.displayName, author?.url, journeyDisplayName, spaceLevel, journeyUrl, i18nKey]);
 
   return (
     <>

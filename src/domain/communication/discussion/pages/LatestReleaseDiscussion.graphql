@@ -3,7 +3,6 @@ query latestReleaseDiscussion {
     id
     latestReleaseDiscussion {
       id
-      nameID
     }
   }
 }

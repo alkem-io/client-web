@@ -1,10 +1,9 @@
-import { Button, Grid } from '@mui/material';
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button, Grid, Typography } from '@mui/material';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ListPageProps {
   title?: string;
@@ -19,7 +18,11 @@ export const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, childr
       {(title || newLink) && (
         <Grid container item xs={10} paddingX={gutters(1)}>
           <Grid item xs={10}>
-            {title && <WrapperTypography variant="h3">{title}</WrapperTypography>}
+            {title && (
+              <Typography variant="h3" mb={1} fontWeight="medium">
+                {title}
+              </Typography>
+            )}
           </Grid>
           <Grid container item justifyContent="flex-end" xs={2}>
             {newLink && (

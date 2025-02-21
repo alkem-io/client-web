@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { getGlobalErrorSetter } from './GlobalErrorContext';
 
 type ImportFunc<T> = () => Promise<{ default: React.ComponentType<T> }>;
@@ -12,11 +12,14 @@ export class LazyLoadError extends Error {
 }
 
 export const lazyWithGlobalErrorHandler = <T>(
-  importFunc: ImportFunc<T>
+  importFunc: ImportFunc<T>,
+  hoc?: (component: ComponentType<T>) => ComponentType<T>
 ): React.LazyExoticComponent<React.ComponentType<T>> => {
   return React.lazy(async () => {
     try {
-      return await importFunc();
+      const module = await importFunc();
+      const Component = module.default;
+      return { default: hoc ? hoc(Component) : Component };
     } catch (error) {
       const setError = getGlobalErrorSetter();
       const originalError: Error =

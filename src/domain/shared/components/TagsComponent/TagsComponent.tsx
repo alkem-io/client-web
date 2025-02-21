@@ -17,8 +17,11 @@ export interface TagsComponentProps extends BoxProps {
   color?: ChipProps['color'];
   size?: ChipProps['size'];
   variant?: ChipProps['variant'];
+  selectedVariant?: ChipProps['variant'];
+  selectedIndexes?: number[];
   canShowAll?: boolean;
-  onClickTag?: (tag: string) => void;
+  hideNoTagsMessage?: boolean;
+  onClickTag?: (tag: string, index: number) => void;
 }
 
 const getDefaultTagsContainerProps = (hasHeight?: boolean): Partial<BoxProps> => ({
@@ -37,8 +40,11 @@ const TagsComponent = ({
   color,
   size = 'small',
   variant = 'outlined',
+  selectedVariant = 'filled',
   height,
   canShowAll = false,
+  selectedIndexes = [],
+  hideNoTagsMessage = false,
   onClickTag,
   ...tagsContainerProps
 }: TagsComponentProps) => {
@@ -56,13 +62,13 @@ const TagsComponent = ({
           label={item}
           color={color}
           size={size}
-          variant={variant}
+          variant={selectedIndexes.includes(i) ? selectedVariant : variant}
           sx={{ maxWidth: '100%' }}
-          onClick={onClickTag ? () => onClickTag(item) : undefined}
+          onClick={onClickTag ? () => onClickTag(item, i) : undefined}
         />
       </Tooltip>
     ),
-    [color, size, variant]
+    [color, size, variant, selectedIndexes, selectedVariant]
   );
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -104,7 +110,7 @@ const TagsComponent = ({
     );
   }
 
-  if (tags.length === 0) {
+  if (tags.length === 0 && !hideNoTagsMessage) {
     return (
       <Box {...tagsContainerProps}>
         <CardText color="neutral.main">{t('components.tags-component.no-tags')}</CardText>

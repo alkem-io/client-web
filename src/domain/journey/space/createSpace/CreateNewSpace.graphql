@@ -1,5 +1,9 @@
 mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
   createSpace(spaceData: $spaceData) {
     id
+    profile {
+      id
+      url # Used to redirect to the new space
+    }
   }
 }

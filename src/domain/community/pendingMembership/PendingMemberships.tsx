@@ -38,10 +38,14 @@ interface UsePendingMembershipsProvided {
   invitations: InvitationItem[] | undefined;
 }
 
-export const usePendingMemberships = (): UsePendingMembershipsProvided => {
+type PendingMembershipsProps = {
+  skip: boolean;
+};
+
+export const usePendingMemberships = ({ skip = false }: PendingMembershipsProps): UsePendingMembershipsProvided => {
   const { isAuthenticated } = useAuthenticationContext();
   const { data } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated,
+    skip: !isAuthenticated || skip,
   });
 
   return {

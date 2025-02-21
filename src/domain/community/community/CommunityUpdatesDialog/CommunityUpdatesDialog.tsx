@@ -1,11 +1,10 @@
-import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
-import { Box, Button, DialogActions } from '@mui/material';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import { useTranslation } from 'react-i18next';
+import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 
 export interface CommunityUpdatesDialogProps {
   open: boolean;

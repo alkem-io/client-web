@@ -56,7 +56,7 @@ const PageBannerCardWithVisual = ({
           </Caption>
 
           <RowContainer>
-            <TagsComponent tags={tags} color="primary" minHeight={gutters()} variant="filled" />
+            {tags.length > 0 && <TagsComponent tags={tags} color="primary" minHeight={gutters()} variant="filled" />}
           </RowContainer>
         </Box>
       </BadgeCardView>

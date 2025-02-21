@@ -65,6 +65,13 @@ export const FormikMarkdownField = ({
 }: MarkdownFieldProps) => {
   const tErr = useValidationMessageTranslation();
   const { t } = useTranslation();
+
+  // Usually store a reference to the child in a Ref, but in this case we need state
+  // cause label's presence/position depends on the presence of this ref.
+  const [inputElement, setInputElement] = useState<MarkdownInputRefApi | null>(null);
+
+  const inputElementRef = useRef<MarkdownInputRefApi | null>(null);
+
   const validate = () => {
     const characterCount = inputElementRef.current?.value?.length ?? 0;
     const isAboveCharacterLimit = maxLength && characterCount > maxLength;
@@ -104,15 +111,13 @@ export const FormikMarkdownField = ({
     helper.setTouched(true);
   }, [helper]);
 
-  // Usually store a reference to the child in a Ref, but in this case we need state
-  // cause label's presence/position depends on the presence of this ref.
-  const [inputElement, setInputElement] = useState<MarkdownInputRefApi | null>(null);
-  const inputElementRef = useRef<MarkdownInputRefApi | null>(null);
-
-  const inputRef = useCallback((nextInputElement: MarkdownInputRefApi | null) => {
-    inputElementRef.current = nextInputElement;
-    setInputElement(nextInputElement);
-  }, []);
+  const inputRef = useCallback(
+    (nextInputElement: MarkdownInputRefApi | null) => {
+      inputElementRef.current = nextInputElement;
+      setInputElement(nextInputElement);
+    },
+    [inputElementRef]
+  );
 
   const focusInput = () => {
     inputElement?.focus();

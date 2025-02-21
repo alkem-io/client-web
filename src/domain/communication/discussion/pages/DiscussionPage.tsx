@@ -19,7 +19,6 @@ import { Skeleton } from '@mui/material';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BackButton from '@/core/ui/actions/BackButton';
-import { useLocation } from 'react-router-dom';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { ForumOutlined } from '@mui/icons-material';
@@ -29,16 +28,16 @@ import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
 
-export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string }) => {
+export const DiscussionPage = ({ discussionId, loading }: { discussionId: string | undefined; loading: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
-      discussionId: discussionNameId!,
+      discussionId: discussionId!,
     },
-    skip: !discussionNameId,
+    skip: !discussionId,
   });
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.forum.discussion?.comments.id);
@@ -112,7 +111,7 @@ export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string 
   const [deleteComment] = useRemoveMessageOnRoomMutation({
     refetchQueries: [
       refetchPlatformDiscussionQuery({
-        discussionId: discussionNameId!,
+        discussionId: discussionId!,
       }),
     ],
   });
@@ -137,8 +136,6 @@ export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string 
     setDeleteDiscussionId(undefined);
   };
 
-  const { pathname } = useLocation();
-
   return (
     <StorageConfigContextProvider locationType="platform">
       <TopLevelPageLayout
@@ -150,9 +147,7 @@ export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string 
             <BreadcrumbsItem uri="/forum" iconComponent={ForumOutlined}>
               {t('pages.forum.shortName')}
             </BreadcrumbsItem>
-            <BreadcrumbsItem uri={pathname} iconComponent={ForumOutlined}>
-              {discussion?.title}
-            </BreadcrumbsItem>
+            <BreadcrumbsItem iconComponent={ForumOutlined}>{discussion?.title}</BreadcrumbsItem>
           </TopLevelPageBreadcrumbs>
         }
       >
@@ -163,7 +158,7 @@ export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string 
             </BackButton>
           }
         >
-          {loadingDiscussion || !discussion ? (
+          {loading || loadingDiscussion || !discussion ? (
             <Skeleton />
           ) : (
             <DiscussionView
