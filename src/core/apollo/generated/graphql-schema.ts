@@ -18356,6 +18356,9 @@ export type UpdateVirtualContributorMutation = {
             type: TagsetType;
           }>
         | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
     };
   };
 };
