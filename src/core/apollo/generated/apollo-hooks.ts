@@ -13692,6 +13692,12 @@ export const UpdateVirtualContributorDocument = gql`
         }
         displayName
         description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }
@@ -17274,10 +17280,6 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        authorization {
-          id
-          myPrivileges
-        }
         profile {
           ...SpaceDashboardNavigationProfile
         }
@@ -21788,8 +21790,6 @@ export const UrlResolverDocument = gql`
         }
       }
       innovationHubId
-      isError
-      errorMessage
     }
   }
 `;

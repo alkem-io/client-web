@@ -7217,10 +7217,8 @@ export type UrlResolverQueryResultVirtualContributor = {
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
-  errorMessage: Scalars['String'];
   innovationHubId?: Maybe<Scalars['UUID']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
-  isError: Scalars['Boolean'];
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
@@ -18356,6 +18354,9 @@ export type UpdateVirtualContributorMutation = {
             type: TagsetType;
           }>
         | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
     };
   };
 };
@@ -21529,9 +21530,6 @@ export type SpaceDashboardNavigationChallengesQuery = {
       | {
           __typename?: 'Space';
           id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -26422,8 +26420,6 @@ export type UrlResolverQuery = {
     userId?: string | undefined;
     discussionId?: string | undefined;
     innovationHubId?: string | undefined;
-    isError: boolean;
-    errorMessage: string;
     space?:
       | {
           __typename?: 'UrlResolverQueryResultSpace';

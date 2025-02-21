@@ -17,7 +17,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -36,8 +37,10 @@ export const referenceSegmentValidationObject = yup.object().shape({
   name: yup
     .string()
     .min(3, MessageWithPayload('forms.validations.minLength'))
-    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+    .required('forms.validations.required'),
+  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')).url(),
+  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH), // It's not markdown in the client but it's a TEXT column in the DB
 });
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 

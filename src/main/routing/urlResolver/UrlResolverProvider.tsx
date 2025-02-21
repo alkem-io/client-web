@@ -1,5 +1,6 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
@@ -127,15 +128,18 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
    * To avoid this, we have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
    * This way, the cache will store the entire result of the query based on the URL, and will not try to merge the results of different queries.
    */
-  const { data: urlResolverData, loading: urlResolverLoading } = useUrlResolverQuery({
+  const {
+    data: urlResolverData,
+    error,
+    loading: urlResolverLoading,
+  } = useUrlResolverQuery({
     variables: {
       url: queryUrl!,
     },
     skip: !queryUrl,
   });
-
-  if (!urlResolverLoading && urlResolverData?.urlResolver.isError) {
-    throw new NotFoundError(urlResolverData?.urlResolver.errorMessage);
+  if (!urlResolverLoading && error && isUrlResolverError(error)) {
+    throw new NotFoundError();
   }
 
   const setUrlParams = (url: string) => {
