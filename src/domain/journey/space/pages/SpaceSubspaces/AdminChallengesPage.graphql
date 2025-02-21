@@ -5,13 +5,8 @@ query AdminSpaceSubspacesPage($spaceId: UUID!) {
       subspaces {
         id
         level
-        profile {
-          id
-          displayName
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
+        about {
+          ...SpaceAboutCardAvatar
         }
       }
       templatesManager {

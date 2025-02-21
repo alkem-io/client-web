@@ -7,7 +7,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchDashboardWithMembershipsQuery,
-  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
@@ -76,10 +76,10 @@ export const SubspaceListView = () => {
       data?.lookup.space?.subspaces?.map(s => ({
         id: s.id,
         profile: {
-          displayName: s.profile.displayName,
-          url: buildSettingsUrl(s.profile.url),
+          displayName: s.about.profile.displayName,
+          url: buildSettingsUrl(s.about.profile.url),
           avatar: {
-            uri: s.profile.avatar?.uri ?? '',
+            uri: s.about.profile.avatar?.uri ?? '',
           },
         },
         level: s.level,
@@ -95,7 +95,7 @@ export const SubspaceListView = () => {
       refetchAdminSpaceSubspacesPageQuery({
         spaceId,
       }),
-      refetchSpaceDashboardNavigationChallengesQuery({
+      refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
     ],
@@ -123,20 +123,24 @@ export const SubspaceListView = () => {
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
         spaceID: spaceId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
+        about: {
+          profile: {
+            displayName: value.displayName,
+            tagline: value.tagline,
+            description: value.description ?? '',
+            visuals: value.visuals,
+            tags: value.tags,
+          },
+          why: value.why,
+        },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
-        visuals: value.visuals,
       });
 
       if (!result) {
         return;
       }
-      navigate(buildSettingsUrl(result.profile.url));
+      navigate(buildSettingsUrl(result.about.profile?.url!));
     },
     [navigate, createSubspace, spaceId]
   );

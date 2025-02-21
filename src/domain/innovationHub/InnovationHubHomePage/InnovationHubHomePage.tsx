@@ -55,13 +55,13 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
               <SpaceCard
-                banner={space.profile.cardBanner}
-                displayName={space.profile.displayName!}
-                vision={space.context?.vision!}
+                banner={space.about.profile.cardBanner}
+                displayName={space.about.profile.displayName!}
+                vision={space.about.why!}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                tagline={space.profile.tagline!}
-                tags={space.profile.tagset?.tags ?? []}
-                journeyUri={space.profile.url}
+                tagline={space.about.profile.tagline!}
+                tags={space.about.profile.tagset?.tags ?? []}
+                journeyUri={space.about.profile.url}
                 member={isMember(space)}
                 spaceVisibility={space.visibility}
               />

@@ -48,17 +48,19 @@ const SubspaceProfileView: FC<SubspaceProfileViewProps> = ({ subspaceId }) => {
       variables: {
         input: {
           ID: requiredSubspaceId,
-          profileData: {
-            displayName,
-            tagline,
-            location: formatDatabaseLocation(values.location),
-            tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
-            references: references.map(reference => ({
-              ID: reference.id,
-              name: reference.name,
-              description: reference.description,
-              uri: reference.uri,
-            })),
+          about: {
+            profile: {
+              displayName,
+              tagline,
+              location: formatDatabaseLocation(values.location),
+              tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+              references: references.map(reference => ({
+                ID: reference.id,
+                name: reference.name,
+                description: reference.description,
+                uri: reference.uri,
+              })),
+            },
           },
         },
       },
@@ -70,9 +72,9 @@ const SubspaceProfileView: FC<SubspaceProfileViewProps> = ({ subspaceId }) => {
     <Gutters>
       <ProfileForm
         isEdit
-        name={subspace?.profile.displayName}
-        tagset={subspace?.profile.tagset}
-        profile={subspace?.profile}
+        name={subspace?.about.profile.displayName}
+        tagset={subspace?.about.profile.tagset}
+        profile={subspace?.about.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
@@ -83,7 +85,7 @@ const SubspaceProfileView: FC<SubspaceProfileViewProps> = ({ subspaceId }) => {
         <Typography variant="h4" color="primary.main" mb={1} fontWeight="medium">
           {t('components.visualSegment.title')}
         </Typography>
-        <EditVisualsView visuals={subspace?.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
+        <EditVisualsView visuals={subspace?.about.profile.visuals} visualTypes={[VisualType.Avatar, VisualType.Card]} />
       </Grid>
     </Gutters>
   );

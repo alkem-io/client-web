@@ -40,7 +40,7 @@ export const useJourneyBreadcrumbs = ({ journeyPath = [], loading = false }: Use
     }
 
     return pathSpaces.slice(0, currentJourneyIndex + 1).map(space => {
-      const profile = space.profile;
+      const profile = space.about.profile;
       const displayName = profile.displayName!;
       const journeyUri = profile.url!;
       return {

@@ -83,7 +83,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
     const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
       spaceMemberships?.map(space => ({
         value: space.id,
-        label: space.profile.displayName,
+        label: space.about.profile.displayName,
       })) ?? [];
 
     spaces?.unshift({
@@ -100,7 +100,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
         <ActivityViewChooser
           key={activity.id}
           activity={activity as ActivityLogResultType}
-          avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+          avatarUrl={activity.space?.about.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
         />
       ));
     }

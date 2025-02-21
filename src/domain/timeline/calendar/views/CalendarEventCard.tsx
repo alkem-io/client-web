@@ -14,6 +14,13 @@ export interface CalendarEventCardProps {
       url: string;
       description?: string;
     };
+    subspace?: {
+      about: {
+        profile: {
+          displayName: string;
+        };
+      };
+    };
   };
   highlighted?: boolean;
   onClick: (event: { profile: { url: string } }) => void;

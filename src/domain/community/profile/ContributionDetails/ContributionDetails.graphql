@@ -3,20 +3,20 @@ query SpaceContributionDetails($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       level
-      profile {
+      about {
         id
-        url
-        displayName
-        tagline
-        visuals {
-          ...VisualUri
+        profile {
+          id
+          url
+          displayName
+          tagline
+          visuals {
+            ...VisualUri
+          }
+          tagset {
+            ...TagsetDetails
+          }
         }
-        tagset {
-          ...TagsetDetails
-        }
-      }
-      context {
-        id
       }
       community {
         id

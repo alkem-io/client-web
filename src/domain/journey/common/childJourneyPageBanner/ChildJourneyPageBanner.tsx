@@ -20,8 +20,8 @@ const ChildJourneyPageBanner = ({ journeyId, levelZeroSpaceId, ...props }: Child
   });
 
   const bannerVisual = useMemo(() => {
-    const spaceBanner = data?.lookup.level0Space?.profile.banner;
-    if (data?.lookup.level0Space?.profile.banner?.uri) {
+    const spaceBanner = data?.lookup.level0Space?.about.profile.banner;
+    if (data?.lookup.level0Space?.about.profile.banner?.uri) {
       return spaceBanner;
     }
     return {
@@ -34,10 +34,10 @@ const ChildJourneyPageBanner = ({ journeyId, levelZeroSpaceId, ...props }: Child
     <PageBanner
       banner={bannerVisual}
       cardComponent={JourneyPageBannerCard}
-      displayName={data?.lookup.space?.profile.displayName ?? ''}
-      tagline={data?.lookup.space?.profile.tagline ?? ''}
-      avatar={data?.lookup.space?.profile.avatar}
-      tags={data?.lookup.space?.profile.tagset?.tags}
+      displayName={data?.lookup.space?.about.profile.displayName ?? ''}
+      tagline={data?.lookup.space?.about.profile.tagline ?? ''}
+      avatar={data?.lookup.space?.about.profile.avatar}
+      tags={data?.lookup.space?.about.profile.tagset?.tags}
       {...props}
     />
   );

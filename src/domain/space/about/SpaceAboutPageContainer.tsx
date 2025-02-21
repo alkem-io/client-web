@@ -2,14 +2,10 @@ import { PropsWithChildren, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import {
   AuthorizationPrivilege,
-  ContextTabFragment,
   MetricsItemFragment,
-  Profile,
-  ReferenceDetailsFragment,
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
-  Tagset,
 } from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '@/core/utils/WithId';
@@ -22,15 +18,14 @@ import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/Inn
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
 
 interface AboutPagePermissions {
   canReadCommunity: boolean;
 }
 
 export interface AboutPageContainerEntities {
-  context?: ContextTabFragment;
-  profile: Omit<Profile, 'storageBucket'>;
-  tagset?: Tagset;
+  about: SpaceAboutDetailsModel;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
@@ -41,7 +36,6 @@ export interface AboutPageContainerEntities {
   leadUsers: ContributorViewProps[] | undefined;
   leadOrganizations: ContributorViewProps[] | undefined;
   provider: ContributorViewProps | undefined;
-  references: ReferenceDetailsFragment[] | undefined;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
@@ -70,8 +64,10 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     },
     skip: !journeyId,
   });
-  const nonMemberContext = nonMembersData?.lookup.space?.context;
-  const nonMemberProfile = nonMembersData?.lookup.space?.profile;
+
+  const nonMemberSpace = nonMembersData?.lookup.space;
+  const nonMemberSpaceAbout = nonMemberSpace?.about;
+  const nonMemberSpaceAboutProfile = nonMemberSpaceAbout?.profile;
   const nonMemberCommunity = nonMembersData?.lookup.space?.community;
 
   const canReadCommunity =
@@ -105,7 +101,6 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     skip: !canReadCommunity,
   });
   const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);
-  const memberProfile = membersData?.lookup.space?.profile;
 
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
@@ -116,11 +111,6 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     communityPrivileges?.includes(AuthorizationPrivilege.CommunityAssignVcFromAccount) ||
     false;
 
-  const context = nonMemberContext;
-
-  const nonMemberJourney = nonMembersData?.lookup.space;
-
-  const tagset = nonMemberJourney?.profile?.tagset;
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
@@ -128,9 +118,8 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
 
   const leadUsers = usersByRole[RoleName.Lead];
   const leadOrganizations = organizationsByRole[RoleName.Lead];
-  const references = memberProfile?.references;
 
-  const metrics = nonMemberJourney?.metrics;
+  const metrics = nonMemberSpace?.metrics;
 
   const memberUsers = usersByRole[RoleName.Member];
   const memberOrganizations = organizationsByRole[RoleName.Member];
@@ -151,32 +140,32 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
 
-  const profile = useMemo(() => {
+  const about: SpaceAboutDetailsModel = useMemo(() => {
     return {
-      id: nonMemberProfile?.id ?? '',
-      displayName: nonMemberProfile?.displayName ?? '',
-      description: nonMemberProfile?.description,
-      tagset: nonMemberProfile?.tagset,
-      visuals: nonMemberProfile?.visuals ?? [],
-      tagline: nonMemberProfile?.tagline ?? '',
-      url: nonMemberProfile?.url ?? '',
+      id: nonMemberSpaceAbout?.id ?? '',
+      profile: {
+        id: nonMemberSpaceAboutProfile?.id ?? '',
+        displayName: nonMemberSpaceAboutProfile?.displayName ?? '',
+        description: nonMemberSpaceAboutProfile?.description,
+        tagset: nonMemberSpaceAboutProfile?.tagset,
+        tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
+        url: nonMemberSpaceAboutProfile?.url ?? '',
+        visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
+      },
     };
-  }, [nonMemberProfile]);
+  }, [nonMemberSpaceAboutProfile]);
 
   return (
     <>
       {children(
         {
-          context,
-          profile,
-          tagset,
+          about,
           innovationFlow: collaboration?.innovationFlow,
           permissions,
           metrics,
           leadUsers,
           leadOrganizations,
           provider,
-          references,
           virtualContributors: publicVirtualContributors,
           hasReadPrivilege,
           hasInvitePrivilege,

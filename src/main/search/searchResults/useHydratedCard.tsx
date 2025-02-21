@@ -87,10 +87,10 @@ const hydrateSpaceCard = (
   >
 ) => {
   const space = data.space;
-  const tagline = space.profile?.tagline ?? '';
-  const name = space.profile.displayName;
+  const tagline = space.about.profile?.tagline ?? '';
+  const name = space.about.profile.displayName;
   const tags = data.terms; // TODO: add terms field to journey card
-  const vision = space.context?.vision ?? '';
+  const vision = space.about.why ?? '';
 
   const isMember = space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -109,10 +109,10 @@ const hydrateSpaceCard = (
     return (
       <CardParentJourneySegment
         iconComponent={parentIcon}
-        parentJourneyUri={data.parentSpace?.profile.url ?? ''}
+        parentJourneyUri={data.parentSpace?.about.profile.url ?? ''}
         locked={data.parentSpace?.settings.privacy?.mode === SpacePrivacyMode.Private}
       >
-        {data.parentSpace?.profile.displayName}
+        {data.parentSpace?.about.profile.displayName}
       </CardParentJourneySegment>
     );
   };
@@ -120,11 +120,11 @@ const hydrateSpaceCard = (
   return (
     <SearchBaseJourneyCard
       spaceLevel={space.level}
-      banner={getVisualByType(VisualName.CARD, space.profile.visuals)}
+      banner={getVisualByType(VisualName.CARD, space.about.profile.visuals)}
       member={isMember}
       displayName={name}
       tagline={tagline}
-      journeyUri={space.profile.url}
+      journeyUri={space.about.profile.url}
       tags={tags}
       matchedTerms
       vision={vision}
@@ -146,9 +146,9 @@ const getContributionParentInformation = (
   data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
 ): ContributionParentInformation => {
   return {
-    displayName: data.space.profile.displayName,
+    displayName: data.space.about.profile.displayName,
     locked: data.space?.settings.privacy?.mode === SpacePrivacyMode.Private,
-    url: data.space.profile.url,
+    url: data.space.about.profile.url,
     icon: spaceLevelIcon[data.space.level] ?? SpaceIcon,
   };
 };

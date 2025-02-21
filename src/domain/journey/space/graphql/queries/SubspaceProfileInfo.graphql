@@ -2,29 +2,29 @@ query SubspaceProfileInfo($subspaceId: UUID!) {
   lookup {
     space(ID: $subspaceId) {
       id
-      profile {
-        id
-        displayName
-        description
-        tagline
-        tagset {
-          ...TagsetDetails
-        }
-        visuals {
-          ...VisualFull
-        }
-        location {
-          ...fullLocation
-        }
-        references {
+      about {
+        ...SpaceAboutDetails
+        profile {
           id
-          name
+          displayName
           description
-          uri
+          tagline
+          tagset {
+            ...TagsetDetails
+          }
+          visuals {
+            ...VisualFull
+          }
+          location {
+            ...fullLocation
+          }
+          references {
+            id
+            name
+            description
+            uri
+          }
         }
-      }
-      context {
-        ...ContextDetails
       }
       collaboration {
         id

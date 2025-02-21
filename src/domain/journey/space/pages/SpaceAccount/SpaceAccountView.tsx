@@ -184,7 +184,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ spaceId }) => {
           <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding>
               <BlockTitle>{t('common.url')}</BlockTitle>
-              <Caption>{space.profile.url}</Caption>
+              <Caption>{space.about.profile.url}</Caption>
             </Gutters>
             <Gutters disablePadding>
               <BlockTitle>{t('common.visibility')}</BlockTitle>
