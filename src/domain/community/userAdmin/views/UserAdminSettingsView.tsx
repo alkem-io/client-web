@@ -6,7 +6,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography/components';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useUserMetadata } from '@/domain/community/user/hooks/useUserMetadata';
 
 const defaultUserSettings = {

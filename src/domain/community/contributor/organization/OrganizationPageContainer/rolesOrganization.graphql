@@ -2,13 +2,11 @@ query rolesOrganization($organizationId: UUID!) {
   rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {
-      nameID
       id
       roles
       displayName
       visibility
       subspaces {
-        nameID
         id
         displayName
         roles

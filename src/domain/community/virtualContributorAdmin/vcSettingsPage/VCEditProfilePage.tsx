@@ -14,12 +14,12 @@ import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading } = useVirtualContributorQuery({
     variables: {
@@ -53,7 +53,7 @@ export const VCSettingsPage = () => {
     });
   };
 
-  if (loading) {
+  if (urlResolverLoading || loading) {
     return (
       <Loading
         text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.settings.title') })}

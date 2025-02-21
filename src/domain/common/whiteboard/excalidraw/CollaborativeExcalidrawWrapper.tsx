@@ -1,33 +1,31 @@
+import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Loading from '@/core/ui/loading/Loading';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption, Text } from '@/core/ui/typography';
+import { Identifiable } from '@/core/utils/Identifiable';
+import useOnlineStatus from '@/core/utils/onlineStatus';
+import Reconnectable from '@/core/utils/reconnectable';
+import { useTick } from '@/core/utils/time/tick';
+import { useUserContext } from '@/domain/community/user';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import type {
   AppState,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import { makeStyles } from '@mui/styles';
-import { debounce, merge } from 'lodash';
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { useUserContext } from '@/domain/community/user';
-import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
-import Dialog from '@mui/material/Dialog';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { Caption, Text } from '@/core/ui/typography';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { Box, Button, DialogActions } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
-import useOnlineStatus from '@/core/utils/onlineStatus';
-import Reconnectable from '@/core/utils/reconnectable';
-import { useTick } from '@/core/utils/time/tick';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import { debounce, merge } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
-import Loading from '@/core/ui/loading/Loading';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 
 const FILE_IMPORT_ENABLED = true;
@@ -41,48 +39,32 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
 
 const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
   const { t } = useTranslation();
-  const styles = useActorWhiteboardStyles();
 
   return enabled ? (
-    <Box className={styles.loadingScene}>
+    <Box
+      sx={theme => ({
+        position: 'absolute',
+        width: 1,
+        height: 1,
+        zIndex: `${theme.zIndex.modal + 2} !important`,
+        backgroundColor: theme.palette.background.paper,
+      })}
+    >
       <Loading text={t('pages.whiteboard.loadingScene')} />
     </Box>
   ) : null;
 });
 
-const useActorWhiteboardStyles = makeStyles(theme => ({
-  container: {
-    height: '100%',
-    flexGrow: 1,
-    position: 'relative',
-  },
-  loadingScene: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    zIndex: `${theme.zIndex.modal + 2} !important`,
-    backgroundColor: theme.palette.background.paper,
-  },
-  '@global': {
-    '.excalidraw-modal-container': {
-      zIndex: `${theme.zIndex.modal + 1} !important`,
-    },
-  },
-  excalidrawAlkemioBackground: {
-    background: `${theme.palette.primary.dark} !important`,
-  },
-}));
-
 export interface WhiteboardWhiteboardEntities {
   whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
   filesManager: WhiteboardFilesManager;
-  lastSavedDate: Date | undefined;
+  lastSuccessfulSavedDate: Date | undefined;
 }
 
 export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
-  onRemoteSave?: () => void;
+  onRemoteSave?: (error?: string) => void;
 }
 
 export interface WhiteboardWhiteboardEvents {}
@@ -119,12 +101,10 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
-  const { whiteboard, filesManager, lastSavedDate } = entities;
+  const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
-
-  const styles = useActorWhiteboardStyles();
 
   const { user } = useUserContext();
   const username = user?.user.profile.displayName ?? 'User';
@@ -167,7 +147,7 @@ const CollaborativeExcalidrawWrapper = ({
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
     filesManager,
-    onRemoteSave: () => actions.onRemoteSave?.(),
+    onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
@@ -237,7 +217,7 @@ const CollaborativeExcalidrawWrapper = ({
   const { t } = useTranslation();
 
   const children = (
-    <div className={styles.container}>
+    <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
       <Suspense fallback={<Loading />}>
         <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
@@ -261,7 +241,7 @@ const CollaborativeExcalidrawWrapper = ({
           />
         )}
       </Suspense>
-    </div>
+    </Box>
   );
 
   return (
@@ -279,10 +259,10 @@ const CollaborativeExcalidrawWrapper = ({
         <DialogContent>
           {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
           {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
-          {lastSavedDate && (
+          {lastSuccessfulSavedDate && (
             <Text>
               {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                lastSaved: formatTimeElapsed(lastSavedDate, t, 'long'),
+                lastSaved: formatTimeElapsed(lastSuccessfulSavedDate, t, 'long'),
               })}
             </Text>
           )}

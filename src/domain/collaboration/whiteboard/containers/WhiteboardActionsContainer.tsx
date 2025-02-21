@@ -92,7 +92,7 @@ const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardAc
           cardVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.visual?.id,
           previewVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.preview?.id,
         },
-        whiteboardContribution.whiteboard?.nameID
+        result.data?.createContributionOnCallout.whiteboard?.nameID
       );
       return {
         success: !result.errors || result.errors.length === 0,

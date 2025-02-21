@@ -1,8 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
-import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceRoute from '@/domain/journey/subspace/routing/SubspaceRoute';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
 import { routes } from '../routes/spaceRoutes';
@@ -12,11 +10,15 @@ import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
-import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowedgeBasePage';
-import { SpaceRoute as SpaceSettingsRoute } from '@/domain/journey/settings/routes/SpaceRoute';
+import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
+import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import React, { Suspense } from 'react';
+
+const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 
 const SpaceRoute = () => {
   const { spaceNameId } = useUrlParams();
@@ -55,9 +57,9 @@ const SpaceRoute = () => {
         path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
         element={
           <SubspaceProvider>
-            <CommunityContextProvider>
+            <Suspense fallback={null}>
               <SubspaceRoute />
-            </CommunityContextProvider>
+            </Suspense>
           </SubspaceProvider>
         }
       />

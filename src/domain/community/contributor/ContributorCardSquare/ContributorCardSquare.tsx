@@ -1,20 +1,18 @@
-import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
-import ConditionalLink from '@/core/ui/link/ConditionalLink';
-import UserCard from '@/domain/community/user/userCard/UserCard';
-import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
-import { useTranslation } from 'react-i18next';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import GridProvider from '@/core/ui/grid/GridProvider';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import Avatar from '@/core/ui/avatar/Avatar';
+import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
+import ConditionalLink from '@/core/ui/link/ConditionalLink';
+import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
+import UserCard from '@/domain/community/user/userCard/UserCard';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
+import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type ContributorCardTooltip = {
   tags: string[];
@@ -35,37 +33,9 @@ export interface ContributorCardSquareProps {
   roleName?: ReactNode;
 }
 
-const useStyles = makeStyles(_ =>
-  createStyles({
-    avatar: {
-      height: '100%',
-      width: '100%',
-      '& > img': {
-        objectFit: 'contain',
-      },
-    },
-    wrapper: {
-      minHeight: 64,
-      minWidth: 64,
-      aspectRatio: '1/1',
-    },
-    text: {
-      fontSize: 10,
-    },
-    tooltip: {
-      background: 'transparent',
-    },
-    skeleton: {
-      minHeight: 64,
-      minWidth: 64,
-    },
-  })
-);
-
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
-  const styles = useStyles();
   const { id, displayName, avatar, avatarAltText, url, tooltip, isContactable, roleName, contributorType } = props;
   const { t } = useTranslation();
   const [sendMessageToUser] = useSendMessageToUserMutation();
@@ -127,23 +97,23 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
                 </Box>
               </GridProvider>
             }
-            classes={{ tooltip: styles.tooltip }}
+            componentsProps={{ tooltip: { sx: { bgcolor: 'transparent' } } }}
           >
             <Box>{children}</Box>
           </Tooltip>
         ) : (
           <>{children}</>
         ),
-    [displayName, avatar, tooltip, styles.tooltip, isContactable]
+    [displayName, avatar, tooltip, isContactable]
   );
 
   return (
     <>
       <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
         <ElevatedPaper>
-          <Box className={styles.wrapper}>
+          <Box sx={{ minHeight: 64, minWidth: 64, aspectRatio: '1/1' }}>
             <TooltipElement>
-              <Avatar variant="rounded" className={styles.avatar} src={avatar}>
+              <Avatar variant="rounded" src={avatar} sx={{ height: 1, width: 1 }}>
                 {displayName[0]}
               </Avatar>
             </TooltipElement>
@@ -162,11 +132,10 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
 };
 
 export const ContributorCardSkeleton = () => {
-  const styles = useStyles();
   return (
-    <Box className={styles.wrapper}>
-      <Avatar variant="rounded" className={styles.avatar}>
-        <Skeleton variant="rectangular" className={styles.skeleton} />
+    <Box sx={{ minHeight: 64, minWidth: 64, aspectRatio: '1/1' }}>
+      <Avatar variant="rounded" sx={{ height: 1, width: 1 }}>
+        <Skeleton variant="rectangular" sx={{ minHeight: 64, minWidth: 64 }} />
       </Avatar>
     </Box>
   );

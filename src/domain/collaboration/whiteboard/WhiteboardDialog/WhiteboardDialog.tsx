@@ -1,41 +1,39 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Formik } from 'formik';
-import { FormikProps } from 'formik/dist/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
-import Dialog from '@mui/material/Dialog';
-import { makeStyles } from '@mui/styles';
-import Loading from '@/core/ui/loading/Loading';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import whiteboardSchema from '../validation/whiteboardSchema';
-import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import mergeWhiteboard from '../utils/mergeWhiteboard';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import {
-  generateWhiteboardPreviewImages,
-  PreviewImageDimensions,
-  WhiteboardPreviewImage,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { CollabAPI } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import WhiteboardDialogFooter from './WhiteboardDialogFooter';
-import { useLocation } from 'react-router-dom';
-import WhiteboardDisplayName from './WhiteboardDisplayName';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { useGlobalGridColumns } from '@/core/ui/grid/constants';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { useGlobalGridColumns } from '@/core/ui/grid/constants';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Identifiable } from '@/core/utils/Identifiable';
+import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
+import { CollabAPI } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
+import { DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import { Formik } from 'formik';
+import { FormikProps } from 'formik/dist/types';
+import { useTranslation } from 'react-i18next';
+import {
+  PreviewImageDimensions,
+  WhiteboardPreviewImage,
+  generateWhiteboardPreviewImages,
+} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import mergeWhiteboard from '../utils/mergeWhiteboard';
+import whiteboardSchema from '../validation/whiteboardSchema';
+import WhiteboardDialogFooter from './WhiteboardDialogFooter';
+import WhiteboardDisplayName from './WhiteboardDisplayName';
 
 export interface WhiteboardDetails {
   id: string;
-  nameID: string;
+  nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
   contentUpdatePolicy?: ContentUpdatePolicy;
   profile: {
     id: string;
@@ -89,22 +87,6 @@ interface WhiteboardDialogProps {
   };
 }
 
-const useStyles = makeStyles(theme => ({
-  dialogRoot: {
-    height: '85vh',
-  },
-  dialogTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: `${theme.spacing(0)} ${theme.spacing(1)}`,
-    zIndex: 2,
-  },
-  dialogFullscreen: {
-    height: '100%',
-    maxHeight: '100%',
-  },
-}));
-
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
 const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialogProps) => {
@@ -112,18 +94,15 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   const notify = useNotification();
   const { whiteboard } = entities;
 
-  const { pathname } = useLocation();
-
-  const initialPathname = useRef(pathname).current;
-
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
 
-  const styles = useStyles();
   const columns = useGlobalGridColumns();
 
-  const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
+  const [lastSaveError, setLastSaveError] = useState<string | undefined>();
+  const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
@@ -132,9 +111,12 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     fetchPolicy: 'network-only',
   });
 
-  if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-    setLastSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
-  }
+  useEffect(() => {
+    // on the initialization of lastSuccessfulSavedDate take the date from the database
+    if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
+      setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
+    }
+  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -257,12 +239,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   );
 
   useEffect(() => {
-    if (pathname !== initialPathname) {
-      onClose();
-    }
-  }, [pathname]);
-
-  useEffect(() => {
     formikRef.current?.resetForm({
       values: initialValues,
     });
@@ -279,7 +255,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   return (
     <>
       <CollaborativeExcalidrawWrapper
-        entities={{ whiteboard, filesManager, lastSavedDate }}
+        entities={{ whiteboard, filesManager, lastSuccessfulSavedDate }}
         collabApiRef={collabApiRef}
         options={{
           UIOptions: {
@@ -292,8 +268,15 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
-          onRemoteSave: () => {
-            setLastSavedDate(new Date());
+          onRemoteSave: (error?: string) => {
+            if (error) {
+              setLastSaveError(error);
+              setConsecutiveSaveErrors(count => count + 1);
+            } else {
+              setLastSuccessfulSavedDate(new Date());
+              setLastSaveError(undefined);
+              setConsecutiveSaveErrors(0);
+            }
           },
           onSceneInitChange: setSceneInitialized,
         }}
@@ -311,9 +294,7 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                 aria-labelledby="whiteboard-dialog"
                 maxWidth={false}
                 fullWidth
-                classes={{
-                  paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
-                }}
+                sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
                 onClose={onClose}
                 fullScreen={options.fullscreen || columns <= 4}
               >
@@ -337,8 +318,11 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                 <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
+                  whiteboardUrl={whiteboard.profile.url}
                   collaboratorModeReason={modeReason}
-                  lastSavedDate={lastSavedDate}
+                  lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+                  lastSaveError={lastSaveError}
+                  consecutiveSaveErrors={consecutiveSaveErrors}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}

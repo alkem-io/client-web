@@ -7,7 +7,7 @@ import {
   useCreateSubspaceMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   CommunityMembershipStatus,
@@ -40,7 +40,7 @@ interface SubspaceCreationInput {
 }
 
 export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptions = {}) => {
-  const { spaceId } = useSpace();
+  const { spaceId } = useUrlResolver();
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);

@@ -99,7 +99,6 @@ query AvailableVirtualContributors(
 
 fragment VirtualContributorFull on VirtualContributor {
   id
-  nameID
   profile {
     id
     displayName

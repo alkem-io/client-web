@@ -19,7 +19,7 @@ import {
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
-  useSpaceTemplatesSetIdQuery,
+  useSpaceTemplatesManagerQuery,
   useSubspacesInSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
@@ -36,7 +36,7 @@ import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/u
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { spaceId, spaceNameId } = useSpace();
+  const { spaceId } = useSpace();
   const { subspaceId } = useSubSpace();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -60,6 +60,7 @@ export const OpportunityList: FC = () => {
           uri: s.profile.cardBanner?.uri ?? '',
         },
       },
+      level: s.level,
     })) || [];
 
   const [deleteOpportunity] = useDeleteSpaceMutation({
@@ -73,7 +74,6 @@ export const OpportunityList: FC = () => {
       refetchSpaceDashboardNavigationChallengesQuery({
         spaceId,
       }),
-      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.subsubspace.notifications.subsubspace-removed'), 'success'),
@@ -82,9 +82,7 @@ export const OpportunityList: FC = () => {
   const handleDelete = (item: SearchableListItem) => {
     return deleteOpportunity({
       variables: {
-        input: {
-          ID: item.id,
-        },
+        spaceId: item.id,
       },
     });
   };
@@ -121,17 +119,18 @@ export const OpportunityList: FC = () => {
   );
 
   // check for TemplateCreation privileges
-  const { data: templateData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId },
-    skip: !spaceNameId,
+  const { data: templateData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId },
+    skip: !spaceId,
   });
 
-  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSetPrivileges =
+    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceNameId);
+    await handleCreateCollaborationTemplate(values, spaceId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedItem(undefined);
   };
@@ -199,7 +198,7 @@ export const OpportunityList: FC = () => {
           {t('buttons.create')}
         </Button>
         <Gutters disablePadding>
-          <SearchableList data={subsubspaces} getActions={getActions} journeyTypeName="subsubspace" />
+          <SearchableList data={subsubspaces} getActions={getActions} />
         </Gutters>
       </Box>
       <JourneyCreationDialog

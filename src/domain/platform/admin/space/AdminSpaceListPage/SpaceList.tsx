@@ -80,16 +80,13 @@ export const SpaceList: FC = () => {
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],
     awaitRefetchQueries: true,
-    onCompleted: data =>
-      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success'),
+    onCompleted: () => notify(t('pages.admin.space.notifications.space-removed'), 'success'),
   });
 
   const handleDelete = (item: SearchableTableItem) => {
     deleteSpace({
       variables: {
-        input: {
-          ID: item.id,
-        },
+        spaceId: item.id,
       },
     });
   };

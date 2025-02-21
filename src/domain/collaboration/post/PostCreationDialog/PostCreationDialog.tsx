@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
 import { CalloutType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export type PostCreationType = Partial<CreatePostInput>;
 export type PostCreationOutput = CreatePostInput;
@@ -14,7 +15,7 @@ export type PostCreationDialogProps = {
   open: boolean;
   postNames: string[];
   onClose: () => void;
-  onCreate: (post: PostCreationOutput) => Promise<{ nameID: string } | undefined>;
+  onCreate: (post: PostCreationOutput) => Promise<unknown>;
   calloutDisplayName: string;
   calloutId: string;
   defaultDescription?: string;
@@ -36,11 +37,16 @@ const PostCreationDialog = ({
   const [post, setPost] = useState<PostCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
   const CalloutIcon = calloutIcons[CalloutType.PostCollection];
+  const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
 
   const handleClose = () => {
     setPost({});
     onClose();
   };
+
+  const onCloseClick = useCallback(() => {
+    setCloseConfirmDialogOpen(true);
+  }, []);
 
   const handleCreate = async () => {
     await onCreate({
@@ -67,7 +73,7 @@ const PostCreationDialog = ({
   const renderButtons = () => {
     return (
       <>
-        <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
+        <Button onClick={onCloseClick}>{t('buttons.cancel')}</Button>
         <Button onClick={handleCreate} variant="contained" disabled={!isFormValid || creating}>
           {t('buttons.create')}
         </Button>
@@ -76,13 +82,12 @@ const PostCreationDialog = ({
   };
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="post-creation-title">
-      <DialogHeader onClose={handleClose}>
-        <Box display="flex" alignItems="center">
-          <CalloutIcon sx={{ marginRight: 1 }} />
-          {t('components.post-creation.title', { calloutDisplayName: calloutDisplayName })}
-        </Box>
-      </DialogHeader>
+    <DialogWithGrid open={open} columns={8} aria-labelledby="post-creation-title">
+      <DialogHeader
+        icon={<CalloutIcon sx={{ marginRight: 1 }} />}
+        title={t('components.post-creation.title', { calloutDisplayName: calloutDisplayName })}
+        onClose={onCloseClick}
+      />
       <DialogContent>
         <Box marginBottom={2} marginTop={2}>
           <PostForm
@@ -95,9 +100,26 @@ const PostCreationDialog = ({
             disableRichMedia={disableRichMedia}
           />
         </Box>
+        <ConfirmationDialog
+          actions={{
+            onConfirm: () => {
+              setCloseConfirmDialogOpen(false);
+              handleClose();
+            },
+            onCancel: () => setCloseConfirmDialogOpen(false),
+          }}
+          options={{
+            show: closeConfirmDialogOpen,
+          }}
+          entities={{
+            titleId: 'post-edit.closeConfirm.title',
+            contentId: 'post-edit.closeConfirm.description',
+            confirmButtonTextId: 'buttons.yes-close',
+          }}
+        />
       </DialogContent>
       <DialogActions>{renderButtons()}</DialogActions>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

@@ -44,7 +44,7 @@ type CollabState = {
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;
   username: string;
-  onRemoteSave: () => void; // The client has received a room saved event
+  onRemoteSave: (error?: string) => void; // The client has received a room saved event
   filesManager: WhiteboardFilesManager;
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;

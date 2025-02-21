@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Tagset, UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
-import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -20,12 +20,13 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../../virtualContributor/components/BasicSpaceCard';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 
 type VirtualContributorProps = {
   id: string;
-  nameID: string;
   account?: {
     host?: {
       profile: {
@@ -41,17 +42,18 @@ type VirtualContributorProps = {
     tagsets?: Tagset[] | undefined;
     url: string;
     avatar?: Visual | undefined;
+    references?: Reference[];
   };
 };
 
 type VirtualContributorFromProps = {
   name: string;
-  nameID: string;
   description: string;
   tagline?: string;
   tagsets?: Tagset[];
   hostDisplayName: string;
   subSpaceName: string;
+  references?: Reference[];
 };
 
 type Props = {
@@ -75,8 +77,7 @@ export const VirtualContributorForm = ({
   const isMobile = cols < 5;
 
   const {
-    nameID,
-    profile: { displayName, description, tagline, tagsets },
+    profile: { id: vcProfileId, displayName, description, tagline, tagsets, references: vcReferences },
     account,
   } = virtualContributor;
 
@@ -85,19 +86,18 @@ export const VirtualContributorForm = ({
   const initialValues: VirtualContributorFromProps = useMemo(
     () => ({
       name: displayName,
-      nameID: nameID,
       description: description ?? '',
       tagline: tagline,
       tagsets: tagsets,
       hostDisplayName: account?.host?.profile.displayName ?? '',
       subSpaceName: subSpaceName ?? '',
+      references: vcReferences ?? [],
     }),
-    [displayName, nameID, description, tagline, tagsets, account, subSpaceName]
+    [displayName, description, tagline, tagsets, account, subSpaceName, vcReferences]
   );
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
-    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
 
@@ -133,6 +133,12 @@ export const VirtualContributorForm = ({
           ID: r.id,
           tags: r.tags ?? [],
         })),
+        references: otherData?.references?.map(r => ({
+          ID: r.id,
+          name: r.name,
+          uri: r.uri,
+          description: r.description,
+        })),
       },
       ...otherData,
     };
@@ -161,7 +167,7 @@ export const VirtualContributorForm = ({
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ values: { hostDisplayName }, handleSubmit }) => {
+        {({ values: { references, hostDisplayName }, handleSubmit }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <GridContainer>
@@ -179,11 +185,19 @@ export const VirtualContributorForm = ({
                   </GridItem>
                   <GridItem columns={isMobile ? cols : 8}>
                     <Gutters>
-                      <NameSegment disabled required />
+                      <FormikInputField name="name" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
                       {keywordsTagsetWrapped ? (
                         <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />
                       ) : null}
+
+                      <ProfileReferenceSegment
+                        fullWidth
+                        compactMode
+                        profileId={vcProfileId}
+                        references={references ?? []}
+                      />
+
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
                         {hasBackNavigation && (
