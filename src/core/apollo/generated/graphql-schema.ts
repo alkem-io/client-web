@@ -7217,10 +7217,8 @@ export type UrlResolverQueryResultVirtualContributor = {
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
-  errorMessage: Scalars['String'];
   innovationHubId?: Maybe<Scalars['UUID']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
-  isError: Scalars['Boolean'];
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
@@ -26422,8 +26420,6 @@ export type UrlResolverQuery = {
     userId?: string | undefined;
     discussionId?: string | undefined;
     innovationHubId?: string | undefined;
-    isError: boolean;
-    errorMessage: string;
     space?:
       | {
           __typename?: 'UrlResolverQueryResultSpace';
