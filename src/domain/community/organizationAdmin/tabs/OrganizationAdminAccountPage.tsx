@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { FC } from 'react';
+import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {
   const { organizationId } = useUrlResolver();

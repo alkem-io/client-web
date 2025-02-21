@@ -2,10 +2,10 @@ import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, Grid, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface ListPageProps {
+interface ListPageProps extends PropsWithChildren {
   title?: string;
   newLink?: string;
 }

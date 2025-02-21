@@ -1,5 +1,6 @@
 import { Message } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
+import Avatar from '@/core/ui/avatar/Avatar';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
@@ -24,11 +25,11 @@ import {
   Grid,
   GridProps,
   IconButton,
+  Link,
   Skeleton,
   Tooltip,
   Typography,
   alpha,
-  Link,
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
@@ -37,7 +38,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import Avatar from '@/core/ui/avatar/Avatar';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
 
@@ -214,7 +214,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                       </Link>
                     )
                   }
-                  title={member?.displayName || m.sender}
+                  title={member?.displayName || m.sender?.profile.displayName}
                   subheader={new Date(m.timestamp).toLocaleString()}
                   action={
                     canEdit ? (

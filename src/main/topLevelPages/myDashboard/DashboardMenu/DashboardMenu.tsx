@@ -1,24 +1,24 @@
-import React from 'react';
-import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
-import { useDashboardContext } from '../DashboardContext';
-import { Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import { useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { useHomeMenuItems } from './useHomeMenuItems';
-import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import { Caption } from '@/core/ui/typography';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
-import BadgeCounter from '@/core/ui/icon/BadgeCounter';
-import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
-import { Menu as MenuIcon } from '@mui/icons-material';
-import Gutters from '@/core/ui/grid/Gutters';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDashboardContext } from '../DashboardContext';
+import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
+import { useHomeMenuItems } from './useHomeMenuItems';
 
 /**
  * DashboardMenu Component
@@ -48,7 +48,9 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   const getItemContent = (item: MenuOptionProps) => (
     <>
       {item.icon && <item.icon fontSize="small" sx={{ color: 'neutral.light' }} />}
-      <Caption paddingLeft={gutters()}>{getTranslationByKey(item.label)}</Caption>
+      <Caption paddingLeft={gutters()}>
+        <>{getTranslationByKey(item.label)}</>
+      </Caption>
     </>
   );
 
@@ -93,7 +95,11 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
           <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
             <FormControlLabel
               key={index}
-              label={<Caption paddingLeft={gutters(0.5)}>{getTranslationByKey(item.label)}</Caption>}
+              label={
+                <Caption paddingLeft={gutters(0.5)}>
+                  <>{getTranslationByKey(item.label)}</>
+                </Caption>
+              }
               control={<Switch size="small" name="view" checked={activityEnabled} onChange={changeView} />}
             />
           </ListItem>

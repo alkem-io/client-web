@@ -1,3 +1,8 @@
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
+import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
+import { gutters } from '@/core/ui/grid/utils';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import SendIcon from '@mui/icons-material/Send';
@@ -14,14 +19,9 @@ import {
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
-import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
-import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
-import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
+import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
+import { CursorPositionInMarkdown, MentionMatch, findCursorPositionInMarkdown } from './utils';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
 
@@ -240,7 +240,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             </Box>
           )}
           <FormHelperText error={isError} sx={{ order: compactMode ? 1 : 0 }}>
-            {helperText}
+            <>{helperText}</>
           </FormHelperText>
         </CharacterCounter>
       </FormGroup>

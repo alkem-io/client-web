@@ -1,5 +1,5 @@
 import { styled } from '@mui/material';
-import { FC } from 'react';
+import { FC, PropsWithChildren } from 'react';
 
 const Backdrop = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -11,7 +11,7 @@ const Backdrop = styled('div')(({ theme }) => ({
   '-ms-filter': `blur(${theme.spacing(0.5)})`,
 }));
 
-export const WrapperBackdrop: FC = ({ children }) => {
+export const WrapperBackdrop: FC<PropsWithChildren> = ({ children }) => {
   return <Backdrop>{children}</Backdrop>;
 };
 

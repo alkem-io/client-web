@@ -1,9 +1,9 @@
-import { PropsWithChildren } from 'react';
-import TabDescriptionHeader from '@/domain/shared/layout/TabDescriptionHeader/TabDescriptionHeader';
-import { useTranslation } from 'react-i18next';
-import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
+import TabDescriptionHeader from '@/domain/shared/layout/TabDescriptionHeader/TabDescriptionHeader';
+import { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SettingsPageContentProps<Section extends string | number> {
   currentSection: Section;
@@ -38,7 +38,9 @@ const SettingsPageContent = <Section extends string | number>({
       <PageContentColumn columns={12}>
         {tabDescriptionText && (
           <PageContentBlockSeamless row justifyContent="center">
-            <TabDescriptionHeader>{tabDescriptionText}</TabDescriptionHeader>
+            <TabDescriptionHeader>
+              <>{tabDescriptionText}</>
+            </TabDescriptionHeader>
           </PageContentBlockSeamless>
         )}
         <PageContentBlockSeamless disablePadding>{children}</PageContentBlockSeamless>

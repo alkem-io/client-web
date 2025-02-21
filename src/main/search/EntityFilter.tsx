@@ -1,4 +1,8 @@
-import { FC, useRef, useState } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { BlockTitle } from '@/core/ui/typography';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import {
   Box,
   Checkbox,
@@ -10,13 +14,9 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BlockTitle } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
 import { FilterConfig, FilterDefinition } from './Filter';
-import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 
 interface EntityFilterProps {
   title?: string;
@@ -63,7 +63,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
               onClick={() => handleChange(key)}
               disabled={config[key].disabled}
             >
-              {t(config[key].title)}
+              <>{t(config[key].title)}</>
             </MenuItem>
           ))}
         </Menu>
@@ -90,7 +90,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
                       sx={{ marginRight: gutters(0.5) }}
                     />
                   }
-                  label={t(config[key].title)}
+                  label={String(t(config[key].title))}
                 />
               ))}
             </FormGroup>

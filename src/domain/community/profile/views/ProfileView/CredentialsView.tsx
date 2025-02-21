@@ -1,9 +1,9 @@
-import { Grid, Skeleton } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
 import CredentialCard from '@/domain/agent/credential/CredentialCard';
 import CredentialProfileCard, { ProfileCardProps } from '@/domain/agent/credential/CredentialProfileCard';
-import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
 import UserCredentialsContainer from '@/domain/agent/credential/verifiedCredentials/UserCredentialsContainer';
+import { Grid, Skeleton } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
@@ -36,7 +36,10 @@ export const CredentialsView = ({ userID, loading, ...rest }: CredentialsViewPro
   const { t } = useTranslation();
   return (
     <UserCredentialsContainer userID={userID}>
-      {({ verifiedCredentials, credentialMetadata }, { getCredentialMetadataLoading, getUserCredentialsLoading }) => (
+      {({
+        entities: { verifiedCredentials, credentialMetadata },
+        state: { getCredentialMetadataLoading, getUserCredentialsLoading },
+      }) => (
         <CredentialProfileCard {...rest}>
           <CardLayoutContainer>
             {getUserCredentialsLoading && getCredentialMetadataLoading && (

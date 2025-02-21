@@ -1,9 +1,9 @@
-import React, { FC, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Link, styled, Typography } from '@mui/material';
 import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { Box, Button, Link, Typography, styled } from '@mui/material';
+import { FC, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const FullscreenBox = styled(Box)(() => ({
   display: 'flex',
@@ -23,9 +23,7 @@ const ButtonBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-interface ErrorDisplayProps {}
-
-export const ErrorDisplay: FC<ErrorDisplayProps> = () => {
+export const ErrorDisplay: FC = () => {
   const { t } = useTranslation();
   const { locations } = useConfig();
   const supportLink = locations?.support;
@@ -43,7 +41,7 @@ export const ErrorDisplay: FC<ErrorDisplayProps> = () => {
               {t('components.error-display.buttons.take-me-home')}
             </Button>
             <Button onClick={handleReload}>{t('components.error-display.buttons.reload')}</Button>
-            <Link component={Button} href={supportLink} target="_blank">
+            <Link href={supportLink} target="_blank">
               {t('components.error-display.buttons.contact-support')}
             </Link>
           </ButtonBox>

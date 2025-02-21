@@ -1,4 +1,3 @@
-import React, { PropsWithChildren, useCallback } from 'react';
 import {
   refetchSpaceCalendarEventsQuery,
   useCreateCalendarEventMutation,
@@ -12,9 +11,10 @@ import {
   CalendarEventInfoFragment,
   Profile,
 } from '@/core/apollo/generated/graphql-schema';
+import { isSameDay } from '@/core/utils/time/utils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { isSameDay } from '@/core/utils/time/utils';
+import React, { useCallback } from 'react';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -66,11 +66,7 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer = ({
-  journeyId,
-  parentSpaceId,
-  children,
-}: PropsWithChildren<CalendarEventsContainerProps>) => {
+export const CalendarEventsContainer = ({ journeyId, parentSpaceId, children }: CalendarEventsContainerProps) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentSpaceId) },
     skip: !journeyId,

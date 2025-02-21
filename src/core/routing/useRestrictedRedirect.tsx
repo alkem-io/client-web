@@ -1,9 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../apollo/generated/graphql-schema';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, NavigateOptions } from 'react-router-dom';
 import { useEffect } from 'react';
 import { isApolloForbiddenError } from '../apollo/hooks/useApolloErrorHandler';
-import { NavigateOptions } from 'react-router/lib/hooks';
 
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;

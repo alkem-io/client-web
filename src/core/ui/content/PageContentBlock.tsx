@@ -1,4 +1,4 @@
-import { ComponentType, ForwardedRef, forwardRef } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 import { Paper, PaperProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
@@ -25,7 +25,8 @@ const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(({ ac
       <BasePageContentBlock
         ref={ref}
         padding={theme => `calc(${gutters()(theme)} - ${borderWidth})`}
-        component={OutlinedPaper as ComponentType<PaperProps>}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        component={OutlinedPaper as any}
         {...props}
       />
     </SwapColors>
