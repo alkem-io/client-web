@@ -49,7 +49,7 @@ const createUseSubscriptionToSubEntityHook =
       updateQuery: (prev, { subscriptionData }) => {
         return produce(prev, next => {
           const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
-          options.updateSubEntity(nextSubEntity, subscriptionData.data);
+          options.updateSubEntity(nextSubEntity, subscriptionData.data as SubEntitySubscription);
         });
       },
       ...subscriptionOptions,
