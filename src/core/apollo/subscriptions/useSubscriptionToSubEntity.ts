@@ -1,4 +1,4 @@
-import { TypedDocumentNode } from '@apollo/client';
+import { OperationVariables, TypedDocumentNode } from '@apollo/client';
 import produce from 'immer';
 import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMore';
 
@@ -28,7 +28,7 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  */
 // todo rename createUseSubscriptionToParentQuery
 const createUseSubscriptionToSubEntityHook =
-  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables = undefined>(
+  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables extends OperationVariables>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
   <QueryData>(

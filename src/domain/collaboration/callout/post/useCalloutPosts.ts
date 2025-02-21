@@ -46,6 +46,7 @@ export const useCalloutPosts = ({ calloutId, skip = false }: UsePostDataHookProp
 
   const callout = data?.lookup.callout;
 
+  // @ts-ignore react-18
   const subscription = useCalloutPostCreatedSubscription(data, data => data?.lookup.callout, subscribeToMore, {
     variables: { calloutId },
   });

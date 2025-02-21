@@ -28,6 +28,7 @@ export const SubspacesContainer: FC<SubspacesContainerProps> = ({ spaceId, child
     skip: !spaceId,
   });
 
+  // @ts-ignore react-18
   useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
   const space = data?.lookup.space;
 

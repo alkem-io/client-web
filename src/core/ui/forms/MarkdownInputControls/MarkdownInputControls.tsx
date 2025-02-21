@@ -36,7 +36,7 @@ type MarkdownInputControlsProps = {
 
 interface ControlsButtonProps extends MarkdownInputToolbarButtonProps {
   editor: Editor | null;
-  //@ts-ignore react-18
+  // @ts-ignore react-18
   command: (commandsChain: ChainedCommands) => ChainedCommands;
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
 }
