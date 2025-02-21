@@ -231,7 +231,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
         await updateSpaceSettings({
           variables: {
             settingsData: {
-              spaceID: spaceId,
+              spaceID: subspaceId,
               settings: settingsVariable,
             },
           },
