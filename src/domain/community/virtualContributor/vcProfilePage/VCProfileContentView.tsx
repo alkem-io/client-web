@@ -2,7 +2,16 @@ import { PropsWithChildren } from 'react';
 
 import { Caption } from '@/core/ui/typography';
 import CheckIcon from '@mui/icons-material/Check';
+import PublicIcon from '@mui/icons-material/Public';
 import RemoveIcon from '@mui/icons-material/Remove';
+import StorageIcon from '@mui/icons-material/Storage';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import SettingsAccessibilityOutlinedIcon from '@mui/icons-material/SettingsAccessibilityOutlined';
 import useNavigate from '@/core/routing/useNavigate';
 // import { Button } from '@mui/material';
 // import BookIcon from '@mui/icons-material/Book';
@@ -29,6 +38,8 @@ import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledge
 // import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
+
+import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
 
 const SectionTitle = ({ children }) => {
   return (
@@ -82,9 +93,52 @@ export const VCProfileContentView = ({
   const { sections } = useTemporaryHardCodedVCProfilePageData();
   console.log('sections', sections);
 
+  const renderCellIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'functionalCapabilities': {
+        return <SettingsAccessibilityOutlinedIcon fontSize="large" />;
+      }
+
+      case 'cloudUpload':
+        return <CloudUploadOutlinedIcon fontSize="large" />;
+
+      case 'shieldPerson':
+        return <AdminPanelSettingsOutlinedIcon fontSize="large" />;
+
+      case 'settingsMotion':
+        return <SettingsMotionModeIcon />;
+
+      case 'database':
+        return <StorageIcon fontSize="large" />;
+
+      case 'knowledge':
+        return <SchoolOutlinedIcon fontSize="large" />;
+
+      case 'globe':
+        return <PublicIcon fontSize="large" />;
+
+      case 'location':
+        return <PinDropOutlinedIcon fontSize="large" />;
+
+      case 'techReferences':
+        return <AdminPanelSettingsOutlinedIcon fontSize="large" />;
+
+      case 'check':
+        return <TaskAltOutlinedIcon />;
+
+      case 'exclamation':
+        return <ErrorOutlineIcon />;
+
+      default: {
+        return null;
+      }
+    }
+  };
+
   return (
     <>
-      {/* <PageContentBlock>
+      {/*
+      <PageContentBlock>
         {!isExternal && (
           <>
             <SectionTitle>
@@ -157,7 +211,8 @@ export const VCProfileContentView = ({
             components={{ ul: <ul />, li: <li /> }}
           />
         </SectionContent>
-      </PageContentBlock> */}
+      </PageContentBlock>
+      */}
 
       {/* TO BE UPDATED --START-- */}
       {/* <PageContentBlock>
@@ -185,34 +240,38 @@ export const VCProfileContentView = ({
           <SectionWrapper>
             {sections.functionality.cells.map((cell, idx) => (
               <SectionItem key={idx}>
-                <Caption fontWeight={700} textAlign="center" padding={gutters(1)}>
+                <Gutters disablePadding alignItems="center" paddingBottom={gutters(1)}>
+                  {renderCellIcon(cell.icon)}
+                </Gutters>
+
+                <Caption fontWeight={700} textAlign="center" sx={{ marginBottom: gutters(1) }}>
                   {cell.title}
                 </Caption>
 
                 {cell?.bullets?.map((bullet, idx) => (
-                  <Gutters key={idx} disableGap disablePadding paddingLeft={gutters(1.5)}>
+                  <Gutters key={idx} disablePadding paddingLeft={gutters(1.2)}>
                     <Gutters
-                      disableGap
                       disablePadding
+                      position="relative"
                       flexDirection="row"
                       alignItems="start"
-                      //  columnGap={1}
-                      position="relative"
+                      marginTop={gutters(0.5)}
                     >
                       {bullet.icon ? (
                         <CheckIcon fontSize="small" sx={{ position: 'absolute', left: -24 }} />
                       ) : (
                         <RemoveIcon fontSize="small" sx={{ position: 'absolute', left: -24 }} />
                       )}
+
                       <Caption>{bullet.text}</Caption>
                     </Gutters>
                   </Gutters>
                 ))}
 
                 {cell.description && (
-                  <Gutters disableGap disablePadding paddingLeft={gutters(1.5)}>
-                    <Caption>
-                      {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server! */}
+                  <Gutters disableGap disablePadding>
+                    <Caption sx={{ textAlign: 'center' }}>
+                      {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server and use Trans! */}
                       <span dangerouslySetInnerHTML={{ __html: cell.description }} />
                     </Caption>
                   </Gutters>
@@ -225,28 +284,39 @@ export const VCProfileContentView = ({
 
       <PageContentBlock data-attr="TEST-SECTION-WRAPPER">
         <Gutters disablePadding>
-          <Gutters disablePadding>
-            <SectionTitle>AI Engine</SectionTitle>
+          <SectionTitle>{sections.aiEngine.title}</SectionTitle>
 
-            <SectionWrapper>
-              <SectionItem>1sdasdasdadasdssa</SectionItem>
+          <SectionWrapper>
+            {sections.aiEngine.cells.map((cell, idx) => (
+              <SectionItem key={idx}>
+                <Gutters disablePadding alignItems="center" paddingBottom={gutters(1)}>
+                  {renderCellIcon(cell.icon)}
+                </Gutters>
 
-              <SectionItem>21312321321312321</SectionItem>
+                <Caption fontWeight={700} textAlign="center" sx={{ marginBottom: gutters(1) }}>
+                  {cell.title}
+                </Caption>
 
-              <SectionItem>dasdadsdsadsa</SectionItem>
-
-              <SectionItem>1sdasdasdadasdssa</SectionItem>
-
-              <SectionItem>21312321321312321</SectionItem>
-
-              <SectionItem>dasdadsdsadsa</SectionItem>
-            </SectionWrapper>
-          </Gutters>
+                {cell.description && (
+                  <Gutters disableGap disablePadding>
+                    <Caption sx={{ textAlign: 'center' }}>{cell.description}</Caption>
+                  </Gutters>
+                )}
+              </SectionItem>
+            ))}
+          </SectionWrapper>
         </Gutters>
       </PageContentBlock>
 
       <PageContentBlock data-attr="TEST-SECTION-WRAPPER">
-        <SectionTitle>Monitoring by Alkemio</SectionTitle>
+        <SectionTitle>{sections.monitoring.title}</SectionTitle>
+
+        <Gutters disableGap disablePadding>
+          <Caption>
+            {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server and use Trans! */}
+            <span dangerouslySetInnerHTML={{ __html: sections.monitoring.description }} />
+          </Caption>
+        </Gutters>
       </PageContentBlock>
 
       {openKnowledgeBaseDialog && (
@@ -276,12 +346,9 @@ function SectionItem({ children }: PropsWithChildren<{}>) {
     <Gutters
       disableGap
       sx={theme => ({
-        flex: 1,
-        minWidth: 270,
+        flex: '1 1 270px',
         borderRadius: 1,
         border: `1px solid ${theme.palette.divider}`,
-        display: 'grid',
-        placeContent: 'center',
       })}
     >
       {children}
