@@ -4,7 +4,7 @@
     "intro": "Hallo, dit is de automatische begeleidingschat van Alkemio. Het kan je antwoorden geven op basis van Alkemio's documentatie. Waar ben je naar op zoek?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its profile!"
+      "content": "Gebruik de Alkemio help chat om antwoorden te krijgen op je vragen over het platform. Deze __AI-aangedreven persoonlijke assistent__ stelt je in staat om als het ware te communiceren met de inhoud van de Alkemio documentatie. In de antwoorden wordt verwezen naar de pagina waarop het antwoord gevonden is, waar je eventueel meer kan lezen.\n\nMeer informatie? Klik [hier](https://alkem.io/vc/guidance) voor het profiel van de Virtual Contributor Alkemio Help."
     },
     "feedback": {
       "message": "Is dit antwoord relevant?",
@@ -210,7 +210,7 @@
     "space-level": {
       "L0": "Space",
       "L1": "Subspace",
-      "L2": "Subsubspace"
+      "L2": "Subspace"
     },
     "account": "Account",
     "all": "Alles",
@@ -719,33 +719,33 @@
     "L0": {
       "tagline": {
         "title": "Tagline",
-        "description": "Explain in one sentence what this Space is about.",
+        "description": "Leg in één zin uit waar deze Space over gaat.",
         "placeholder": ""
       },
       "background": {
-        "title": "Background",
-        "description": "Give a brief overview of the need for this Space and how it came about.",
+        "title": "Achtergrond",
+        "description": "Geef een korte omschrijving waar de behoefte voor deze Space vandaan komt en hoe de Space is ontstaan.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "What will this Space change? How will people and organizations be affected?",
+        "description": "Wat zal deze Space veranderen? Wat is de impact voor individuen en organisaties?",
         "placeholder": ""
       },
       "vision": {
-        "title": "What is this community about?",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
+        "title": "Waar gaat deze community over?",
+        "description": "Let op, deze informatie wordt ook gebruikt voor de beschrijving op het Dashboard",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should be involved?",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Wie moeten erbij betrokken worden?",
+        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
         "placeholder": ""
       }
     },
     "L1": {
       "displayName": {
-        "title": "Title *",
+        "title": "Titel *",
         "description": "",
         "placeholder": ""
       },
@@ -755,85 +755,85 @@
         "placeholder": ""
       },
       "description": {
-        "title": "A description of the subspace that is visible on the subspace dashboard",
+        "title": "Een beschrijving van de subspace",
         "description": "",
         "placeholder": ""
       },
       "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+        "title": "Huidige Realiteit",
+        "description": "Schets een beeld van de huidige status van deze Subspace. Denk aan de 'wat, waar, wanneer en wie'.",
         "placeholder": ""
       },
       "impact": {
-        "title": "Additional context",
-        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
+        "title": "Aanvullende informatie",
+        "description": "Geef een korte beschrijving van hoe deze Subspace in het grotere plaatje past. Wat is de impact?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
+        "title": "Toekomstvisie",
+        "description": "Let op, deze informatie wordt ook gebruikt voor de beschrijving van deze Subspace",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Wie moeten hierbij betrokken worden?",
+        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
         "placeholder": ""
       },
       "tags": {
-        "title": "Tags",
+        "title": "Labels",
         "description": "",
         "placeholder": "",
-        "tooltip": "Tags"
+        "tooltip": "Labels"
       },
       "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
+        "title": "Voeg tutorials toe"
       },
       "template": {
         "title": "Template:",
-        "defaultTemplate": "Default Alkemio template for subspaces"
+        "defaultTemplate": "Standaard Alkemio template voor Subspaces"
       }
     },
     "L2": {
       "displayName": {
-        "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "title": "Titel",
+        "description": "Probeer het kort, beschrijvend en pakkend te houden",
         "placeholder": ""
       },
       "tagline": {
         "title": "Tagline",
-        "description": "In one sentence, explain what this Subspace is about.",
+        "description": "Leg in één zin uit waar deze Subspace over gaat.",
         "placeholder": ""
       },
       "background": {
-        "title": "Background",
-        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
+        "title": "Achtergrond",
+        "description": "Geef een korte omschrijving van hoe de Subspace is ontstaan en hoe het past in het grotere plaatje.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
+        "description": "Wat gaat deze Subspace veranderen? Hoe worden mensen en organisaties er goed of slecht door beïnvloed?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
+        "title": "Beschrijving",
+        "description": "Beschrijf het idee en de impact ervan op de Subspace.",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Subspace.",
+        "title": "Wie is erbij betrokken?",
+        "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Subspace.",
         "placeholder": ""
       },
       "tags": {
-        "title": "Tags",
-        "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
+        "title": "Labels",
+        "description": "Vul de meest belangrijke woorden voor deze Subspace in die ervoor zorgen dat de Subspace opvalt en makkelijk te vinden is.",
         "placeholder": ""
       },
       "addCallouts": {
-        "title": "Add default template's collaboration tools"
+        "title": "Voeg de standaard samenwerkingstools van de template toe"
       },
       "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
+        "title": "Voeg tutorials toe"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -889,8 +889,8 @@
         "title": "Subspace URL",
         "description": "Voer de URL in van de Subspace die u wilt kopiëren als template.",
         "use": "Gebruik deze Space",
-        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
-        "invalidUrl": "The url is not recognized as a Space URL.",
+        "urlRequired": "Plak hier de URL van de Subspace die je wil kopiëren als Template.",
+        "invalidUrl": "De url wordt niet herkend als een Space-URL.",
         "spaceNotFoundError": "Space niet gevonden",
         "collaborationNotFoundError": "Samenwerking niet gevonden",
         "selectAnother": "Update Samenwerking vanuit een andere Space"
@@ -934,8 +934,8 @@
       "editableBy": {
         "title": "Dit whiteboard kan bewerkt worden door:",
         "options": {
-          "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
-          "ADMINS": "The owner and the admins and leads of this (sub)space",
+          "CONTRIBUTORS": "Iedereen die kan bijdragen in deze (Sub)Space",
+          "ADMINS": "De eigenaar en de beheerders van deze (Sub)Space",
           "OWNER": "De eigenaar van dit whiteboard"
         }
       }
@@ -1061,10 +1061,10 @@
       "inviteToRole": "Uitgenodigd als: "
     },
     "inviteContributorsDialog": {
-      "title": "Virtual Contributors Store",
+      "title": "Virtual Contributors Bibliotheek",
       "vcs": {
         "onAccount": {
-          "title": "Virtual Contributors linked to this Space's account"
+          "title": "Virtual Contributors gekoppeld aan het account van deze Space"
         },
         "inLibrary": {
           "title": "Andere Virtual Contributors"
@@ -1120,7 +1120,7 @@
         "list.outdent": "Inspringing verwijderen",
         "remove.remove": "Verwijderen",
         "embed.video": "Video of andere Media insluiten",
-        "horizontal.line": "Insert horizontal line"
+        "horizontal.line": "Horizontale lijn invoegen"
       },
       "image": {
         "dialogHeader": "Afbeelding invoegen"
@@ -1171,8 +1171,8 @@
     "activity-log-section": {
       "title": "Recente bijdragen",
       "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
+      "activity-join-error-message": "Om recente bijdragen te zien, wordt lid van deze {{spaceType}} als je nog geen lid bent.",
+      "activity-sign-in-and-join-error-message": "Om recente bijdragen te zien, log in en wordt lid van deze {{spaceType}} als je nog geen lid bent."
     },
     "activityLogView": {
       "description": {
@@ -1702,9 +1702,9 @@
       "emptyInbox": "Geen openstaande uitnodigingen"
     },
     "spaceWelcomeDialog": {
-      "title": "🎉 Your Space is Ready!",
-      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and settings.<br>📝 <b>Add content</b> - Create whiteboards, posts, and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the Space Settings.<br>📚 <b>Need help?</b> Tutorials are available in your Space if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
-      "button": "Get Started"
+      "title": "🎉 Je Space is klaar!",
+      "description": "Maak het nu eigen:<br>⚙️ <b>Stel het in</b> – Pas je structuur en instellingen aan.<br>📝 <b>Voeg inhoud toe</b> toe - Maak whiteboards, posts en meer.<br>🤝 <b>Nodig bijdragers uit</b> – Je kunt de uitnodigingen vinden in de Space Instellingen.<br>📚 <b>Hulp nodig?</b> Tutorials zijn beschikbaar in jouw Space als je ervoor kiest deze toe te voegen bij het aanmaken van de Space.<br/><br/>✨ Wil je meer functies? Upgrade naar <b>Plus of Premium</b> op elk moment - neem <contact>contact op met ons team</contact>!",
+      "button": "Aan de slag"
     }
   },
   "navigation": {
@@ -1898,10 +1898,10 @@
               "titleWithDaysLeft": "Gratis Proefperiode - {{daysLeft}} dagen over",
               "description": "Klik hier om uw volledige {{planName}} abonnement in te stellen"
             },
-            "externalSubExists": "This account already has an existing Wingback account",
-            "addExternalSub": "Create a Wingback account",
-            "externalSubAdded": "Successfully created a Wingback account",
-            "externalSubErrored": "An error occurred while creating the Wingback account",
+            "externalSubExists": "Dit account heeft al een bestaand Wingback account",
+            "addExternalSub": "Maak een Wingback account aan",
+            "externalSubAdded": "Met succes een Wingback account aangemaakt",
+            "externalSubErrored": "Er is een fout opgetreden tijdens het maken van een Wingback account",
             "yourLicense": "Je huidige licentie:",
             "changeLicense": "Wijzig de Space licentie",
             "changeLicense_description": "Neem contact op met het Alkemio team om de licentie te veranderen.",
@@ -2035,7 +2035,7 @@
         "notifications": {
           "space-created": "Space succesvol aangemaakt.",
           "errorCreatingSpace": "Er is een fout opgetreden tijdens het maken van de Space.",
-          "space-removed": "Space removed successfully."
+          "space-removed": "Space succesvol verwijderd."
         },
         "settings": {
           "savedSuccessfully": "Instellingen succesvol opgeslagen",
@@ -2281,7 +2281,7 @@
         },
         "recentJourneys": {
           "seeMore": "Verken al je Spaces",
-          "seeMoreSubspaces": "See all Subspaces I'm a member of"
+          "seeMoreSubspaces": "Verken alle Subspaces waar ik lid van ben"
         },
         "campaignBlock": {
           "createYourVCButton": "Maak je Virtual Contributor!",
@@ -2559,8 +2559,8 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
-        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "Je moet lid zijn van {{spaceType}} om dit whiteboard te kunnen bewerken. <journeylink>Klik hier om je aan te melden</journeylink>",
+        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{spaceType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
       },
       "readonlyDialog": {
         "title": "Alleen bekijken modus",
@@ -3217,7 +3217,7 @@
       "title": "Kies een (Sub)Space",
       "description": "Welke Space of Subspace wil je tot leven brengen met de Virtual Contributor? Hieronder kun je kiezen uit alle Spaces en Subspaces waar je de host van bent.",
       "label": "(Sub)Space",
-      "noSpaces": "You need to be an admin of a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
+      "noSpaces": "Je moet beheerder zijn van een Space om verder te kunnen gaan met deze optie. Om een Virtual Contributor te maken zonder een Space, ga een stap terug en volg de stappen van de \"Geschreven tekst\" optie."
     },
     "chooseCommunity": {
       "title": "Hallo, {{vcName}}!",
