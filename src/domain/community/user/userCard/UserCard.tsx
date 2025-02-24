@@ -26,6 +26,7 @@ export interface UserCardProps {
   city?: string;
   country?: string;
   loading?: boolean;
+  isExpandable?: boolean;
   isContactable?: boolean;
   onContact?: () => void;
   onCardClick?: () => void;
@@ -44,6 +45,7 @@ const UserCard = ({
   isContactable = true,
   onContact,
   onCardClick = noop,
+  isExpandable = true,
 }: UserCardProps) => {
   const { t } = useTranslation();
   const location = [city, country].filter(x => !!x).join(', ');
@@ -109,13 +111,21 @@ const UserCard = ({
         </BadgeCardView>
       </Box>
 
-      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }}>
+      {isExpandable ? (
+        <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }}>
+          <ExpandableCardFooter
+            expanded={isExpanded}
+            expandable={tags.length > 0}
+            tags={<TagsComponent tags={tags} loading={loading} />}
+          />
+        </Box>
+      ) : (
         <ExpandableCardFooter
-          expanded={isExpanded}
           expandable={false}
+          expanded={isExpanded}
           tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage />}
         />
-      </Box>
+      )}
     </ContributeCard>
   );
 };
