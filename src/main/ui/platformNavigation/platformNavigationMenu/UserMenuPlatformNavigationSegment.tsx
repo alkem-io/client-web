@@ -10,7 +10,7 @@ const UserMenuPlatformNavigationSegment = () => {
     <>
       {PLATFORM_NAVIGATION_MENU_ITEMS.map(({ label, ...props }) => (
         <NavigatableMenuItem key={props.route} {...props}>
-          {t(label)}
+          <>{t(label)}</>
         </NavigatableMenuItem>
       ))}
     </>

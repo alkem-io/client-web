@@ -1,15 +1,15 @@
-import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
   useSpaceContributionDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ContainerChildProps } from '@/core/container/container';
+import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { RoleSetContributorType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useCallback, useMemo } from 'react';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -46,7 +46,7 @@ export interface ContributionDetails {
   level: SpaceLevel;
 }
 
-const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<EntityDetailsContainerProps>) => {
+const ContributionDetailsContainer = ({ entities, children }: EntityDetailsContainerProps) => {
   const { spaceID, spaceLevel, contributorType, contributorId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
