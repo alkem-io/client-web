@@ -9,25 +9,25 @@ import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSet
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, spaceLevel, loading } = useUrlResolver();
+  const { spaceLevel, loading } = useUrlResolver();
 
   switch (spaceLevel) {
     case SpaceLevel.L0:
       return (
         <SpaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {!spaceId || loading ? <Skeleton /> : <SpaceSettingsView spaceId={spaceId} spaceLevel={spaceLevel} />}
+          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
         </SpaceSettingsLayout>
       );
     case SpaceLevel.L1:
       return (
         <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {!spaceId || loading ? <Skeleton /> : <SpaceSettingsView spaceId={spaceId} spaceLevel={spaceLevel} />}
+          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
         </SubspaceSettingsLayout>
       );
     case SpaceLevel.L2:
       return (
         <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {!spaceId || loading ? <Skeleton /> : <SpaceSettingsView spaceId={spaceId} spaceLevel={spaceLevel} />}
+          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
         </SubspaceSettingsLayout>
       );
     default:
