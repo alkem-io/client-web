@@ -1960,6 +1960,7 @@ export type LookupMyPrivilegesQueryResultsFieldPolicy = {
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupQueryResultsKeySpecifier = (
+  | 'about'
   | 'account'
   | 'application'
   | 'authorizationPolicy'
@@ -1971,7 +1972,6 @@ export type LookupQueryResultsKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'communityGuidelines'
-  | 'context'
   | 'document'
   | 'innovationFlow'
   | 'innovationHub'
@@ -1997,6 +1997,7 @@ export type LookupQueryResultsKeySpecifier = (
   | LookupQueryResultsKeySpecifier
 )[];
 export type LookupQueryResultsFieldPolicy = {
+  about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2008,7 +2009,6 @@ export type LookupQueryResultsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
-  context?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3804,10 +3804,8 @@ export type UrlResolverQueryResultVirtualContributorFieldPolicy = {
 };
 export type UrlResolverQueryResultsKeySpecifier = (
   | 'discussionId'
-  | 'errorMessage'
   | 'innovationHubId'
   | 'innovationPack'
-  | 'isError'
   | 'organizationId'
   | 'space'
   | 'type'
@@ -3817,10 +3815,8 @@ export type UrlResolverQueryResultsKeySpecifier = (
 )[];
 export type UrlResolverQueryResultsFieldPolicy = {
   discussionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  errorMessage?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubId?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
-  isError?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

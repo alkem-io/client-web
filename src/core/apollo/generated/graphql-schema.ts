@@ -1943,7 +1943,7 @@ export type CreateSpaceAboutInput = {
 };
 
 export type CreateSpaceOnAccountInput = {
-  about?: InputMaybe<CreateSpaceAboutInput>;
+  about: CreateSpaceAboutInput;
   /** The Account where the Space is to be created. */
   accountID: Scalars['UUID'];
   collaborationData: CreateCollaborationOnSpaceInput;
@@ -1955,7 +1955,7 @@ export type CreateSpaceOnAccountInput = {
 };
 
 export type CreateSubspaceInput = {
-  about?: InputMaybe<CreateSpaceAboutInput>;
+  about: CreateSpaceAboutInput;
   collaborationData: CreateCollaborationOnSpaceInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -3228,6 +3228,8 @@ export type LookupMyPrivilegesQueryResultsWhiteboardArgs = {
 
 export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
+  /** Lookup the specified SpaceAbout */
+  about?: Maybe<SpaceAbout>;
   /** Lookup the specified Account */
   account?: Maybe<Account>;
   /** Lookup the specified Application */
@@ -3250,8 +3252,6 @@ export type LookupQueryResults = {
   community?: Maybe<Community>;
   /** Lookup the specified Community guidelines */
   communityGuidelines?: Maybe<CommunityGuidelines>;
-  /** Lookup the specified SpaceAbout */
-  context?: Maybe<SpaceAbout>;
   /** Lookup the specified Document */
   document?: Maybe<Document>;
   /** Lookup the specified InnovationFlow */
@@ -3298,6 +3298,10 @@ export type LookupQueryResults = {
   whiteboard?: Maybe<Whiteboard>;
 };
 
+export type LookupQueryResultsAboutArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type LookupQueryResultsAccountArgs = {
   ID: Scalars['UUID'];
 };
@@ -3340,10 +3344,6 @@ export type LookupQueryResultsCommunityArgs = {
 };
 
 export type LookupQueryResultsCommunityGuidelinesArgs = {
-  ID: Scalars['UUID'];
-};
-
-export type LookupQueryResultsContextArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -7074,10 +7074,8 @@ export type UrlResolverQueryResultVirtualContributor = {
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
   discussionId?: Maybe<Scalars['UUID']>;
-  errorMessage: Scalars['String'];
   innovationHubId?: Maybe<Scalars['UUID']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
-  isError: Scalars['Boolean'];
   organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
