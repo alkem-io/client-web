@@ -9,7 +9,7 @@ import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphq
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
-  const { spaceId } = useUrlResolver();
+  const { spaceId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
@@ -35,7 +35,7 @@ const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogCon
       organizationsCount={memberOrganizations?.length}
       usersCount={memberUsers?.length}
       noOrganizationsView={<NoOrganizations type={'member'} />}
-      loading={loading}
+      loading={urlResolverLoading || loading}
     />
   );
 };

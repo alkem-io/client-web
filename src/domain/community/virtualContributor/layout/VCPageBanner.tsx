@@ -5,7 +5,7 @@ import { buildSettingsProfileUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const VCPageBanner = () => {
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading } = useVirtualContributorQuery({
     variables: { id: vcId! },
@@ -21,7 +21,7 @@ const VCPageBanner = () => {
       entityId={vc?.id}
       profile={profile}
       settingsUri={hasSettingsAccess && profile?.url ? buildSettingsProfileUrl(profile.url) : undefined}
-      loading={loading}
+      loading={urlResolverLoading || loading}
     />
   );
 };

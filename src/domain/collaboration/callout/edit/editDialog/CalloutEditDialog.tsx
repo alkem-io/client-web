@@ -7,7 +7,8 @@ import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { LoadingButton } from '@mui/lab';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import DeleteButton from '@/core/ui/actions/DeleteButton';
 import { DialogActions, DialogContent } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -119,29 +120,16 @@ const CalloutEditDialog = ({
             />
           </StorageConfigContextProvider>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between' }}>
-          <LoadingButton
-            loading={loading}
-            disabled={loading}
-            variant="outlined"
-            onClick={() => onDelete(callout)}
-            aria-label={t('buttons.delete')}
-          >
-            {t('buttons.delete')}
-          </LoadingButton>
-          <LoadingButton
-            loading={loading}
-            disabled={!valid || loading}
-            variant="contained"
-            onClick={handleSave}
-            aria-label={t('buttons.save')}
-          >
-            {t('buttons.save')}
-          </LoadingButton>
+        <DialogActions>
+          <DeleteButton loading={loading} disabled={loading} onClick={() => onDelete(callout)} />
+          <SaveButton loading={loading} disabled={!valid || loading} onClick={handleSave} />
         </DialogActions>
         <ConfirmationDialog
           actions={{
-            onConfirm: onClose,
+            onConfirm: () => {
+              setCloseConfirmDialogOpen(false);
+              onClose();
+            },
             onCancel: () => setCloseConfirmDialogOpen(false),
           }}
           options={{

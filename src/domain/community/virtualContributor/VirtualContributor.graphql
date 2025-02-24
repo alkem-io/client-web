@@ -129,6 +129,12 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
       }
       displayName
       description
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
 }

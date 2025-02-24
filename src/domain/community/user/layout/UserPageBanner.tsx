@@ -8,7 +8,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const UserPageBanner = () => {
   const { user: currentUser } = useUserContext();
-  const { userId } = useUrlResolver();
+  const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { user, loading } = useUserMetadata(userId);
 
   const isCurrentUser = useMemo(() => user?.user.id === currentUser?.user.id, [user, currentUser]);
@@ -41,7 +41,7 @@ const UserPageBanner = () => {
       profile={profile}
       onSendMessage={handleSendMessage}
       settingsUri={user && isCurrentUser ? buildSettingsUrl(user.user.profile.url) : undefined}
-      loading={loading}
+      loading={loading || urlResolverLoading}
     />
   );
 };

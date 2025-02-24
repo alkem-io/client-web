@@ -114,11 +114,7 @@ const usePostSettings = ({
   });
 
   const handleDelete = async (postId: string) => {
-    await deletePost({
-      variables: {
-        postId,
-      },
-    });
+    await deletePost({ variables: { postId } });
   };
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {

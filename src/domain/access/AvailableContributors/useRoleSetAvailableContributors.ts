@@ -247,8 +247,8 @@ const useRoleSetAvailableContributors = ({
     // Results for Space Level - on Account if !all (filter in the query)
     if (spaceLevel === SpaceLevel.L0) {
       return mockPaginatedResponse(
-        (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
-          vc => filterByName(vc, filter) && filterExistingVcs(vc)
+        (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(vc =>
+          filterByName(vc, filter)
         ),
         refetch
       );

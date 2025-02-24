@@ -45,7 +45,8 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
     skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
 
-  const collaboration = data?.lookup.space?.collaboration;
+  const space = data?.lookup.space;
+  const collaboration = space?.collaboration;
   const collaborationId = collaboration?.id;
 
   const innovationFlow = useInnovationFlowStates({ collaborationId });
@@ -54,7 +55,7 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
     collaborationId,
   });
 
-  const community = data?.lookup.space?.community;
+  const community = space?.community;
   const communityReadAccess = (community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const { organizations, users } = useRoleSetManager({
@@ -67,10 +68,10 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
   return (
     <>
       {children({
-        level: data?.lookup.space?.level,
+        level: space?.level,
         innovationFlow,
         callouts,
-        subspace: data?.lookup.space,
+        subspace: space,
         spaceReadAccess,
         communityReadAccess,
         communityId: community?.id,

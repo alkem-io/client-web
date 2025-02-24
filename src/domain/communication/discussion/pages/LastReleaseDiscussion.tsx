@@ -14,7 +14,7 @@ export const LastReleaseDiscussion = () => {
     throw new Error('No release discussions found');
   }
 
-  return <DiscussionPage discussionId={lastReleaseDiscussionId!} />;
+  return <DiscussionPage discussionId={lastReleaseDiscussionId!} loading={loading} />;
 };
 
 export default LastReleaseDiscussion;
