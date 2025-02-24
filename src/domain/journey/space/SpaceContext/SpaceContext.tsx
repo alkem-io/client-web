@@ -1,4 +1,3 @@
-import React, { FC, useMemo } from 'react';
 import {
   useSpaceCommunityIdsQuery,
   useSpaceQuery,
@@ -12,6 +11,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -74,11 +74,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   loading: false,
 });
 
-interface SpaceProviderProps {}
-
 const NO_PRIVILEGES = [];
 
-const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
+const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isAuthenticated } = useUserContext();
   const { levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
@@ -169,4 +167,4 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   );
 };
 
-export { SpaceContextProvider, SpaceContext };
+export { SpaceContext, SpaceContextProvider };

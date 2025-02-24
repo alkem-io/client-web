@@ -173,7 +173,7 @@ const SpaceAboutDialog = ({
             {endButton}
           </DialogHeaderItem>
         </Box>
-        <Tagline textAlign="center">{about}</Tagline>
+        <Tagline textAlign="center">{about?.profile.tagline}</Tagline>
       </Box>
       {ribbon}
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>

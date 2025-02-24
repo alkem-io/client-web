@@ -1,21 +1,22 @@
 import React, { FC, useCallback } from 'react';
-import { useSpace } from '../SpaceContext/useSpace';
-import { useUserContext } from '@/domain/community/user';
-import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
+
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { useUserContext } from '@/domain/community/user';
+import { useSpace } from '../SpaceContext/useSpace';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
+import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;

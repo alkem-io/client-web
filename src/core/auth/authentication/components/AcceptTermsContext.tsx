@@ -1,6 +1,6 @@
-import { createContext, FC, useContext } from 'react';
+import { createContext, FC, PropsWithChildren, useContext } from 'react';
 
-interface AcceptTermsContextProps {
+interface AcceptTermsContextProps extends PropsWithChildren {
   hasAcceptedTerms: boolean;
 }
 

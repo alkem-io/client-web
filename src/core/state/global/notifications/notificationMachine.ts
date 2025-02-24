@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { v4 } from 'uuid';
 import { assign, createMachine } from 'xstate';
 
 export type Severity = 'info' | 'warning' | 'error' | 'success';
 
-export type Notification = {
+type Notification = {
   id: string;
   severity: Severity;
   message: string;
@@ -19,10 +20,22 @@ export type NotificationsEvent =
   | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
   | { type: typeof CLEAR_NOTIFICATION; payload: { id: string } };
 
-export const notificationMachine = createMachine<NotificationsContext, NotificationsEvent>({
+export const notificationMachine = createMachine<
+  NotificationsContext,
+  NotificationsEvent,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>({
   id: 'notification',
   initial: 'active',
-  predictableActionArguments: true,
   context: {
     notifications: [],
   },
@@ -31,7 +44,10 @@ export const notificationMachine = createMachine<NotificationsContext, Notificat
       on: {
         PUSH: {
           actions: assign({
-            notifications: (context, event) => [
+            notifications: (
+              context: NotificationsContext,
+              event: { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
+            ) => [
               ...context.notifications,
               { id: v4(), message: event.payload.message, severity: event.payload.severity || 'info' },
             ],
@@ -39,7 +55,10 @@ export const notificationMachine = createMachine<NotificationsContext, Notificat
         },
         CLEAR: {
           actions: assign({
-            notifications: (context, event) => context.notifications.filter(x => x.id !== event.payload.id),
+            notifications: (
+              context: NotificationsContext,
+              event: { type: typeof CLEAR_NOTIFICATION; payload: { id: string } }
+            ) => context.notifications.filter(x => x.id !== event.payload.id),
           }),
         },
       },

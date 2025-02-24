@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -6,7 +6,7 @@ import {
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
 
 interface SubspacePermissions {
   canUpdate: boolean;
@@ -54,7 +54,7 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
   myMembershipStatus: undefined,
 });
 
-interface SubspaceProviderProps {}
+interface SubspaceProviderProps extends PropsWithChildren {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { spaceId, loading: urlResolverLoading } = useUrlResolver();

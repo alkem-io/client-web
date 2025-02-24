@@ -1,22 +1,22 @@
-import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
-import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
-import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import BackButton from '@/core/ui/actions/BackButton';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import { FC, PropsWithChildren, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
+import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
 
-interface SubspaceSettingsLayoutProps {
+interface SubspaceSettingsLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 }

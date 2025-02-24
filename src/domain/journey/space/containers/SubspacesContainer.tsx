@@ -1,9 +1,9 @@
-import { ApolloError } from '@apollo/client';
-import React, { FC } from 'react';
-import useSubSpaceCreatedSubscription from '../hooks/useSubSpaceCreatedSubscription';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import { SpaceLevel, SubspaceCardFragment } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
+import { ApolloError } from '@apollo/client';
+import { FC } from 'react';
+import useSubSpaceCreatedSubscription from '../hooks/useSubSpaceCreatedSubscription';
 
 export interface SubspaceCardContainerEntities {
   subspaces: SubspaceCardFragment[];
@@ -28,6 +28,7 @@ export const SubspacesContainer: FC<SubspacesContainerProps> = ({ spaceId, child
     skip: !spaceId,
   });
 
+  // @ts-ignore react-18
   useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
   const space = data?.lookup.space;
 

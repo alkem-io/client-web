@@ -17,7 +17,7 @@ export interface Options<TVariables> {
   variables?: TVariables;
 }
 
-const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables = undefined>(
+const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables extends OperationVariables>(
   subscribeToMore: SubscribeToMore<QueryData>,
   options: SubscribeToMoreOptions<QueryData, SubscriptionVariables, SubscriptionData> & Options<SubscriptionVariables>
 ) => {

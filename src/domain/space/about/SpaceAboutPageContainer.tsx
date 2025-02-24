@@ -1,5 +1,4 @@
-import { PropsWithChildren, useMemo } from 'react';
-import { ApolloError } from '@apollo/client';
+import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   MetricsItemFragment,
@@ -7,18 +6,19 @@ import {
   RoleSetContributorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { WithId } from '@/core/utils/WithId';
-import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
 import { ContainerChildProps } from '@/core/container/container';
-import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '@/core/apollo/generated/apollo-hooks';
-import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
-import { MetricType } from '@/domain/platform/metrics/MetricType';
+import { WithId } from '@/core/utils/WithId';
 import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
+import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { MetricType } from '@/domain/platform/metrics/MetricType';
+import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { ApolloError } from '@apollo/client';
+import { useMemo } from 'react';
 
 interface AboutPagePermissions {
   canReadCommunity: boolean;
@@ -53,7 +53,7 @@ export interface AboutPageContainerProps
   journeyId: string | undefined;
 }
 
-const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPageContainerProps>) => {
+const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) => {
   const {
     data: nonMembersData,
     loading: nonMembersDataLoading,

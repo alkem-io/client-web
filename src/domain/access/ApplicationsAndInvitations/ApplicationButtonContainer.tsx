@@ -1,5 +1,3 @@
-import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
-import { useUserContext } from '@/domain/community/user';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinRoleSetMutation,
@@ -8,31 +6,22 @@ import {
   useUserPendingMembershipsQuery,
   useUserProfileLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useTranslation } from 'react-i18next';
+import { useUserContext } from '@/domain/community/user';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
-import { PropsWithChildren } from 'react';
+import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
 
-interface ApplicationContainerEntities {
-  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>;
-}
-
-interface ApplicationContainerActions {}
-
-interface ApplicationContainerState {
-  loading: boolean;
-}
-
-export interface ApplicationButtonContainerProps
-  extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
+export interface ApplicationButtonContainerProps {
   parentSpaceId?: string;
   journeyId?: string;
   loading?: boolean;
   onJoin?: (params: { communityId: string }) => void;
+  children: (props: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>, loading: boolean) => ReactNode;
 }
 
 export const ApplicationButtonContainer = ({
@@ -41,7 +30,7 @@ export const ApplicationButtonContainer = ({
   loading: loadingParams = false,
   onJoin,
   children,
-}: PropsWithChildren<ApplicationButtonContainerProps>) => {
+}: ApplicationButtonContainerProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
@@ -187,17 +176,7 @@ export const ApplicationButtonContainer = ({
     loading,
   };
 
-  return (
-    <>
-      {children(
-        {
-          applicationButtonProps,
-        },
-        { loading },
-        {}
-      )}
-    </>
-  );
+  return <>{children(applicationButtonProps, loading)}</>;
 };
 
 export default ApplicationButtonContainer;
