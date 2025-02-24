@@ -1,14 +1,5 @@
 export const useTemporaryHardCodedVCProfilePageData = () => {
   return {
-    // WIP ~ #7170 - Виж от къде можеш да ги вземеш
-    references: [],
-
-    // WIP ~ #7170 - Виж от къде можеш да го вземеш
-    bodyOfKnowledge: {},
-
-    // WIP ~ #7170 - Виж от къде можеш да го вземеш
-    bodyOfKnowledgeFromSpace: {},
-
     sections: {
       functionality: {
         title: 'Functionality',
@@ -98,7 +89,9 @@ export const useTemporaryHardCodedVCProfilePageData = () => {
             icon: 'techReferences',
             title: 'Technical References',
             description: 'Access to detailed information on the underlying models specifications',
+            buttonIcon: 'launch',
             buttonText: 'SEE DOCUMENTATION',
+            to: 'https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/tree/main',
           },
         ],
       },

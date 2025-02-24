@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { groupBy } from 'lodash';
+import { Button, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -11,18 +12,31 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { type VCProfilePageViewProps } from './model';
 import VCProfileContentView from './VCProfileContentView';
 import Gutters from '@/core/ui/grid/Gutters';
-import { CardText, BlockSectionTitle } from '@/core/ui/typography';
+import { CardText, Caption } from '@/core/ui/typography';
 import References from '@/domain/shared/components/References/References';
 import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { gutters } from '@/core/ui/grid/utils';
+import useNavigate from '@/core/routing/useNavigate';
+import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
+import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
+import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
+const bokVisitButtonStyles = { width: 'fit-content', marginTop: gutters(1) };
 
-export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfilePageViewProps) => {
+export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePageViewProps) => {
+  const navigate = useNavigate();
+
   const { t } = useTranslation();
 
+  const { hasReadAccess, knowledgeBaseDescription } = useKnowledgeBase({ id: virtualContributor?.id });
+
   const references = virtualContributor?.profile?.references;
+  const vcType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
+  const isExternal = vcType === AiPersonaBodyOfKnowledgeType.None;
+  const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+  const hasKnowledgeBase = vcType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
 
   const links = useMemo(() => {
     return groupBy(references, reference =>
@@ -30,19 +44,51 @@ export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfil
     );
   }, [references]);
 
+  const onClickHandleKnowledgeBase = useCallback(() => {
+    if (virtualContributor) {
+      navigate(`${virtualContributor.profile.url}/${KNOWLEDGE_BASE_PATH}`);
+    }
+  }, [navigate, virtualContributor]);
+
+  const renderBokVisitButton = useCallback(
+    () =>
+      hasReadAccess ? (
+        <Button color="primary" variant="outlined" sx={bokVisitButtonStyles} onClick={onClickHandleKnowledgeBase}>
+          {t('buttons.visit')}
+        </Button>
+      ) : (
+        <Tooltip title={t('components.profile.fields.bodyOfKnowledge.privateBokTooltip')} placement="bottom-start">
+          <Gutters disableGap disablePadding>
+            <Button disabled color="primary" variant="outlined" sx={bokVisitButtonStyles}>
+              {t('buttons.visit')}
+            </Button>
+          </Gutters>
+        </Tooltip>
+      ),
+    [hasReadAccess, t, onClickHandleKnowledgeBase]
+  );
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        {/* Description block --START-- */}
         <PageContentBlock disableGap>
           <ProfileDetail
             title={t('components.profile.fields.description.title')}
             value={virtualContributor?.profile?.description ?? ''}
             aria-label="description"
           />
+        </PageContentBlock>
 
-          <Gutters disableGap disablePadding sx={{ marginTop: gutters(1) }}>
-            <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
+          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
+        </PageContentBlock>
+
+        <PageContentBlock>
+          <Gutters disableGap disablePadding>
+            <Gutters disableGap disablePadding marginBottom={gutters(1)}>
+              <ProfileDetail title={t('components.profile.fields.references.title')} aria-label="references" />
+            </Gutters>
 
             <References
               references={links[OTHER_LINK_GROUP]}
@@ -50,39 +96,70 @@ export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfil
             />
           </Gutters>
         </PageContentBlock>
-        {/* Description block --END-- */}
 
-        {/* Host block --START-- */}
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
-        </PageContentBlock>
-        {/* Host block --END-- */}
+        {hasKnowledgeBase && (
+          <PageContentBlock>
+            <Gutters disableGap disablePadding>
+              <Gutters disableGap disablePadding>
+                <ProfileDetail
+                  title={t('components.profile.fields.bodyOfKnowledge.title')}
+                  value={knowledgeBaseDescription}
+                  aria-label="body-of-knowledge"
+                />
 
-        {/* TO BE UPDATED --START-- */}
-        <PageContentBlock>
-          <h1>References</h1>
-          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
-        </PageContentBlock>
+                {renderBokVisitButton()}
+              </Gutters>
+            </Gutters>
+          </PageContentBlock>
+        )}
 
-        <PageContentBlock>
-          <h1>Body of Knowledge</h1>
-          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
-        </PageContentBlock>
+        {hasSpaceKnowledge && (
+          <PageContentBlock>
+            <Gutters disableGap disablePadding>
+              <Gutters disableGap disablePadding>
+                <ProfileDetail
+                  title={t('components.profile.fields.bodyOfKnowledge.title')}
+                  value={virtualContributor?.aiPersona?.bodyOfKnowledge || ''}
+                  aria-label="body-of-knowledge"
+                />
 
-        <PageContentBlock>
-          <h1>Body of Knowledge</h1>
-          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
-        </PageContentBlock>
-        {/* TO BE UPDATED --END-- */}
+                <Caption sx={{ marginTop: gutters(1) }}>
+                  {t('components.profile.fields.bodyOfKnowledge.spaceBokDescription', {
+                    vcName: virtualContributor?.profile?.displayName,
+                  })}
+                </Caption>
+
+                <Gutters disableGap disablePadding paddingTop={1}>
+                  <ContributorCardHorizontal profile={rest?.bokProfile} seamless />
+                </Gutters>
+              </Gutters>
+            </Gutters>
+          </PageContentBlock>
+        )}
+
+        {isExternal && (
+          <PageContentBlock>
+            <Gutters disableGap disablePadding>
+              <Gutters disableGap disablePadding>
+                <ProfileDetail
+                  title={t('components.profile.fields.bodyOfKnowledge.title')}
+                  value={
+                    rest?.bokProfile?.displayName
+                      ? t('components.profile.fields.bodyOfKnowledge.externalVCDescription', {
+                          engineName: rest.bokProfile.displayName,
+                        })
+                      : t('components.profile.fields.bodyOfKnowledge.externalVCDescriptionNA')
+                  }
+                  aria-label="body-of-knowledge"
+                />
+              </Gutters>
+            </Gutters>
+          </PageContentBlock>
+        )}
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        {/* <VCProfileContentView /> Е ДЯСНАТА ЧАСТ НА VC СТРАНИЦАТА */}
-        <VCProfileContentView virtualContributor={virtualContributor} {...pageProps} />
+        <VCProfileContentView virtualContributor={virtualContributor} {...rest} />
       </PageContentColumn>
     </PageContent>
   );
