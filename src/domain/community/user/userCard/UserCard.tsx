@@ -108,15 +108,14 @@ const UserCard = ({
           )}
         </BadgeCardView>
       </Box>
-      {tags && tags.length > 0 && (
-        <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
-          <ExpandableCardFooter
-            expanded={isExpanded}
-            expandable={tags.length > 0}
-            tags={<TagsComponent tags={tags} loading={loading} />}
-          />
-        </Box>
-      )}
+
+      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }}>
+        <ExpandableCardFooter
+          expanded={isExpanded}
+          expandable={false}
+          tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage />}
+        />
+      </Box>
     </ContributeCard>
   );
 };
