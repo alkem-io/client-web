@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, createContext, useState } from 'react';
+import { FC, useEffect, useMemo, createContext } from 'react';
 import {
   refetchUserProviderQuery,
   useCreateUserNewRegistrationMutation,
@@ -8,7 +8,7 @@ import {
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { toUserMetadata, UserMetadata } from '@/domain/community/user';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -35,8 +35,6 @@ const UserContext = createContext<UserContextValue>({
 });
 
 const UserProvider: FC = ({ children }) => {
-  const [hasCreatedUser, setHasCreatedUser] = useState(false);
-
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
   const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
@@ -53,11 +51,10 @@ const UserProvider: FC = ({ children }) => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && !loadingMe && !user && !hasCreatedUser) {
+    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser) {
       createUserProfile();
-      setHasCreatedUser(true);
     }
-  }, [user, loadingMe, createUserProfile, isAuthenticated, hasCreatedUser]);
+  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser]);
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 
