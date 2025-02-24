@@ -83,7 +83,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
 
   return (
     <>
-      <PageContentBlock data-attr="FUNCTIONALITY-SECTION-WRAPPER">
+      <PageContentBlock>
         <Gutters disablePadding>
           <SectionTitle>{sections.functionality.title}</SectionTitle>
 
@@ -132,7 +132,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
         </Gutters>
       </PageContentBlock>
 
-      <PageContentBlock data-attr="AI-ENGINE-SECTION-WRAPPER_TEST">
+      <PageContentBlock>
         <Gutters disablePadding>
           <SectionTitle>{sections.aiEngine.title}</SectionTitle>
 
@@ -178,7 +178,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
         </Gutters>
       </PageContentBlock>
 
-      <PageContentBlock data-attr="MONITORING-SECTION-WRAPPER_TEST">
+      <PageContentBlock>
         <SectionTitle>{sections.monitoring.title}</SectionTitle>
 
         <Gutters disableGap disablePadding>

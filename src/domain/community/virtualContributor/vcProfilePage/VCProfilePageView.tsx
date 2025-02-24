@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 import { groupBy } from 'lodash';
 import { Button, Tooltip } from '@mui/material';
@@ -12,7 +12,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { type VCProfilePageViewProps } from './model';
 import VCProfileContentView from './VCProfileContentView';
 import Gutters from '@/core/ui/grid/Gutters';
-import { CardText, Caption } from '@/core/ui/typography';
+import { Caption, CardText } from '@/core/ui/typography';
 import References from '@/domain/shared/components/References/References';
 import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { gutters } from '@/core/ui/grid/utils';
