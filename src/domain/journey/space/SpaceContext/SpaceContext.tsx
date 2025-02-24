@@ -135,6 +135,7 @@ const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
     };
   }, [spacePrivileges, canCreateTemplates, communityPrivileges, collaborationPrivileges]);
 
+  // TODO: expose only profile? revise the props used from About
   const about = useMemo(() => {
     return {
       profile: {

@@ -6,7 +6,7 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 
 const SpaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
-    <SpaceSettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
+    <SpaceSettingsLayout currentTab={SettingsSection.About} tabRoutePrefix={routePrefix}>
       <SpaceProfile />
     </SpaceSettingsLayout>
   );

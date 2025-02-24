@@ -87,8 +87,9 @@ const hydrateSpaceCard = (
   >
 ) => {
   const space = data.space;
-  const tagline = space.about.profile?.tagline ?? '';
-  const name = space.about.profile.displayName;
+  const spaceProfile = space.about.profile;
+  const tagline = spaceProfile?.tagline ?? '';
+  const name = spaceProfile.displayName;
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = space.about.why ?? '';
 
@@ -120,11 +121,11 @@ const hydrateSpaceCard = (
   return (
     <SearchBaseJourneyCard
       spaceLevel={space.level}
-      banner={getVisualByType(VisualName.CARD, space.about.profile.visuals)}
+      banner={getVisualByType(VisualName.CARD, spaceProfile.visuals)}
       member={isMember}
       displayName={name}
       tagline={tagline}
-      journeyUri={space.about.profile.url}
+      journeyUri={spaceProfile.url}
       tags={tags}
       matchedTerms
       vision={vision}

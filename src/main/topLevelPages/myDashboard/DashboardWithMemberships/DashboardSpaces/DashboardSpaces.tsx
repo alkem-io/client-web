@@ -47,9 +47,12 @@ const DashboardSpaces = () => {
           return null;
         }
 
-        const { id, about } = space;
-        const { profile } = about;
-        const { tagline } = profile;
+        const {
+          id,
+          about: {
+            profile: { tagline, ...profile },
+          },
+        } = space;
         const hasChildMemberships = childMemberships?.length > 0;
 
         return (

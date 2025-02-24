@@ -8,6 +8,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
+import SpaceContextView from './SpaceContextView';
 
 export const SpaceProfile = () => {
   const { spaceId, spaceNameId } = useSpace();
@@ -57,6 +58,10 @@ export const SpaceProfile = () => {
   return (
     <PageContentColumn columns={12}>
       <SpaceEditForm edit nameID={spaceNameId} about={space?.about} onSubmit={onSubmit} loading={loading} />
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('common.description')} />
+        <SpaceContextView />
+      </PageContentBlock>
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.visuals')} />
         <EditVisualsView visuals={visuals} />

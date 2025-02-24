@@ -24,7 +24,7 @@ export interface SpaceAboutEditFormValuesType {
 
 const SpaceAboutEditForm: FC<SpaceAboutEditFormProps> = ({ about, onSubmit, wireSubmit, loading }) => {
   const initialValues: SpaceAboutEditFormValuesType = {
-    description: about.profile?.description ?? '',
+    description: about?.profile?.description ?? '',
     why: about?.why ?? '',
     who: about?.who ?? '',
   };

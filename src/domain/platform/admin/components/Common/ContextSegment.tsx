@@ -24,19 +24,19 @@ export const ContextSegment = ({ loading, spaceLevel }: ContextSegmentProps & { 
   return (
     <Gutters>
       <FormikMarkdownField
-        name="vision"
-        title={t(`context.${spaceLevel}.why.title` as const)}
-        placeholder={t(`context.${spaceLevel}.why.title` as const)}
-        helperText={t(`context.${spaceLevel}.why.description` as const)}
+        name="description"
+        title={t(`context.${spaceLevel}.description.title` as const)}
+        placeholder={t(`context.${spaceLevel}.description.title` as const)}
+        helperText={t(`context.${spaceLevel}.description.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}
       />
       <FormikMarkdownField
-        name="background"
-        title={t(`context.${spaceLevel}.description.title` as const)}
-        placeholder={t(`context.${spaceLevel}.description.title` as const)}
-        helperText={t(`context.${spaceLevel}.description.description` as const)}
+        name="why"
+        title={t(`context.${spaceLevel}.why.title` as const)}
+        placeholder={t(`context.${spaceLevel}.why.title` as const)}
+        helperText={t(`context.${spaceLevel}.why.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
         loading={loading}

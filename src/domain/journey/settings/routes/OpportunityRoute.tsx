@@ -3,7 +3,6 @@ import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import AdminOpportunityCommunityPage from '@/domain/journey/opportunity/pages/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '@/domain/platform/admin/opportunity/pages/OpportunityCommunications/OpportunityCommunicationsPage';
-import OpportunityContextPage from '@/domain/platform/admin/opportunity/pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '@/domain/platform/admin/opportunity/pages/OpportunityProfile/OpportunityProfilePage';
 import OpportunitySettingsPage from '@/domain/platform/admin/opportunity/pages/OpportunitySettings/OpportunitySettingsPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -16,9 +15,8 @@ export const OpportunityRoute = () => {
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
       <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
         <Routes>
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<OpportunityProfilePage />} />
-          <Route path="context" element={<OpportunityContextPage />} />
+          <Route index element={<Navigate to="about" replace />} />
+          <Route path="about" element={<OpportunityProfilePage />} />
           <Route
             path="communications"
             element={<OpportunityCommunicationsPage communityId={subspace?.community?.id} />}

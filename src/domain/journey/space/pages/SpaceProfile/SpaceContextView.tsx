@@ -1,7 +1,7 @@
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Box, Container, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import SpaceContextForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm2';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
@@ -50,7 +50,7 @@ export const SpaceContextView = () => {
   };
   let submitWired;
   return (
-    <Container maxWidth="xl">
+    <>
       <Grid container spacing={2}>
         <SpaceContextForm
           isEdit
@@ -60,10 +60,10 @@ export const SpaceContextView = () => {
           loading={isLoading}
         />
       </Grid>
-      <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
+      <Grid container item justifyContent={'flex-end'}>
         <SaveButton loading={isLoading} onClick={() => submitWired()} />
-      </Box>
-    </Container>
+      </Grid>
+    </>
   );
 };
 

@@ -171,28 +171,28 @@ export const SpaceExplorerView = ({
       if (!space) {
         return;
       }
+      const {
+        id,
+        about: { profile },
+      } = space;
 
       vs.push(
         <SpaceSubspaceCard
-          key={space.id}
-          tagline={space.about.profile?.tagline ?? ''}
-          displayName={space.about.profile?.displayName}
+          key={id}
+          tagline={profile?.tagline ?? ''}
+          displayName={profile?.displayName}
           vision={space.about.why ?? ''}
-          journeyUri={space.about.profile?.url}
-          type={space.about.profile?.type!}
-          banner={space.about.profile?.cardBanner}
+          journeyUri={profile?.url}
+          type={profile?.type!}
+          banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space.about) ?? []}
-          tags={
-            space.matchedTerms ?? space.about.profile?.tagset?.tags.length
-              ? space.about.profile?.tagset?.tags
-              : undefined
-          }
+          tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
           spaceDisplayName={space.parent?.about.profile?.displayName}
           matchedTerms={!!space.matchedTerms}
           label={
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
-                type={space.about.profile?.type!}
+                type={profile?.type!}
                 member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
               />

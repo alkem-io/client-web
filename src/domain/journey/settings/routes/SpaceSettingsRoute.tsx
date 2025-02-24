@@ -7,7 +7,6 @@ import SpaceCommunicationsPage from '@/domain/journey/space/pages/SpaceCommunica
 import SpaceProfilePage from '@/domain/journey/space/pages/SpaceProfile/SpaceProfilePage';
 import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
 import SpaceTemplatesAdminRoutes from '@/domain/platform/admin/space/SpaceTemplatesAdminRoutes';
-import SpaceContextPage from '@/domain/journey/space/pages/SpaceContext/SpaceContextPage';
 import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage from '@/domain/journey/space/pages/AdminSpaceCommunityPage';
@@ -23,11 +22,10 @@ const SpaceSettingsRoute: FC = () => {
     <NonSpaceAdminRedirect spaceId={spaceId}>
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
         <Routes>
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<SpaceProfilePage />} />
+          <Route index element={<Navigate to="about" replace />} />
+          <Route path="about" element={<SpaceProfilePage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="account" element={<SpaceAccountPage />} />
-          <Route path="context" element={<SpaceContextPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage />} />
           <Route path="communications" element={<SpaceCommunicationsPage communityId={communityId} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
