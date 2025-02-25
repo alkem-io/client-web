@@ -1,15 +1,19 @@
 import React, { FC } from 'react';
-import SpaceProfile from './SpaceProfile';
+import SpaceAbout from './SpaceAbout';
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import Loading from '@/core/ui/loading/Loading';
 
-const SpaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const SpaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { spaceId, loading } = useUrlResolver();
+
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.About} tabRoutePrefix={routePrefix}>
-      <SpaceProfile />
+      {loading ? <Loading /> : <SpaceAbout spaceId={spaceId} />}
     </SpaceSettingsLayout>
   );
 };
 
-export default SpaceProfilePage;
+export default SpaceAboutPage;

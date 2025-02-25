@@ -13,7 +13,6 @@ import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { SpaceEditFormValuesType } from '../../../space/about/settings/SpaceEditForm';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -37,7 +36,15 @@ import { addSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/journey/space/createSpace/useSpacePlans';
 import { LoadingButton } from '@mui/lab';
 
-interface FormValues extends SpaceEditFormValuesType {
+interface FormValues {
+  name: string;
+  nameID: string;
+  tagline: string;
+  tagsets: {
+    id: string;
+    name: string;
+    tags: string[];
+  }[];
   licensePlanId: string;
 }
 

@@ -19845,6 +19845,7 @@ export type SpaceProfileQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -20887,90 +20888,6 @@ export type SpaceApplicationTemplateQuery = {
                 }>;
               };
             };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SubspaceProfileInfoQueryVariables = Exact<{
-  subspaceId: Scalars['UUID'];
-}>;
-
-export type SubspaceProfileInfoQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            who?: string | undefined;
-            why?: string | undefined;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagline?: string | undefined;
-              url: string;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
-              location?:
-                | {
-                    __typename?: 'Location';
-                    id: string;
-                    city?: string | undefined;
-                    country?: string | undefined;
-                    addressLine1?: string | undefined;
-                    addressLine2?: string | undefined;
-                    stateOrProvince?: string | undefined;
-                    postalCode?: string | undefined;
-                  }
-                | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    description?: string | undefined;
-                    uri: string;
-                  }>
-                | undefined;
-            };
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
-          collaboration: {
-            __typename?: 'Collaboration';
-            id: string;
-            innovationFlow: { __typename?: 'InnovationFlow'; id: string };
-            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
         }
       | undefined;

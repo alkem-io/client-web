@@ -1,6 +1,4 @@
-import SpaceEditForm, { SpaceEditFormValuesType } from '@/domain/space/about/settings/SpaceEditForm';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
@@ -9,9 +7,17 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import SpaceContextView from './SpaceContextView';
+import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import { Actions } from '@/core/ui/actions/Actions';
+import React from 'react';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 
-export const SpaceProfile = () => {
-  const { spaceId, spaceNameId } = useSpace();
+type Props = {
+  spaceId: string | undefined;
+};
+
+export const SpaceAbout = ({ spaceId = '' }: Props) => {
   const notify = useNotification();
   const { t } = useTranslation();
   const { data: spaceData } = useSpaceProfileQuery({
@@ -28,7 +34,7 @@ export const SpaceProfile = () => {
     notify(message, 'success');
   };
 
-  const onSubmit = async (values: SpaceEditFormValuesType) => {
+  const onSubmit = async (values: ProfileFormValues) => {
     const { name: displayName, tagline, tagsets, references } = values;
     updateSpace({
       variables: {
@@ -54,20 +60,36 @@ export const SpaceProfile = () => {
   };
   const space = spaceData?.lookup.space;
   const visuals = space?.about.profile.visuals ?? [];
+  let submitWired;
 
   return (
     <PageContentColumn columns={12}>
-      <SpaceEditForm edit nameID={spaceNameId} about={space?.about} onSubmit={onSubmit} loading={loading} />
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('components.editSpaceForm.about')} />
+        <ProfileForm
+          name={space?.about.profile.displayName}
+          tagset={space?.about.profile.tagset}
+          profile={space?.about.profile}
+          onSubmit={onSubmit}
+          wireSubmit={submit => (submitWired = submit)}
+        />
+        <Actions justifyContent={'flex-end'}>
+          <SaveButton loading={loading} onClick={() => submitWired()} />
+        </Actions>
+      </PageContentBlock>
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.description')} />
         <SpaceContextView />
       </PageContentBlock>
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.visuals')} />
-        <EditVisualsView visuals={visuals} />
+        <EditVisualsView
+          visuals={visuals}
+          visualTypes={space?.level === SpaceLevel.L0 ? undefined : [VisualType.Avatar, VisualType.Card]}
+        />
       </PageContentBlock>
     </PageContentColumn>
   );
 };
 
-export default SpaceProfile;
+export default SpaceAbout;

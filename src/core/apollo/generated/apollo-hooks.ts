@@ -15225,6 +15225,7 @@ export const SpaceProfileDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        level
         ...SpaceInfo
       }
     }
@@ -16074,105 +16075,6 @@ export type SpaceApplicationTemplateQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceApplicationTemplateQuery(variables: SchemaTypes.SpaceApplicationTemplateQueryVariables) {
   return { query: SpaceApplicationTemplateDocument, variables: variables };
-}
-
-export const SubspaceProfileInfoDocument = gql`
-  query SubspaceProfileInfo($subspaceId: UUID!) {
-    lookup {
-      space(ID: $subspaceId) {
-        id
-        about {
-          ...SpaceAboutDetails
-          profile {
-            id
-            displayName
-            description
-            tagline
-            tagset {
-              ...TagsetDetails
-            }
-            visuals {
-              ...VisualFull
-            }
-            location {
-              ...fullLocation
-            }
-            references {
-              id
-              name
-              description
-              uri
-            }
-          }
-        }
-        collaboration {
-          id
-          innovationFlow {
-            id
-          }
-          calloutsSet {
-            id
-          }
-        }
-      }
-    }
-  }
-  ${SpaceAboutDetailsFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-`;
-
-/**
- * __useSubspaceProfileInfoQuery__
- *
- * To run a query within a React component, call `useSubspaceProfileInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useSubspaceProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSubspaceProfileInfoQuery({
- *   variables: {
- *      subspaceId: // value for 'subspaceId'
- *   },
- * });
- */
-export function useSubspaceProfileInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SubspaceProfileInfoQuery,
-    SchemaTypes.SubspaceProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SubspaceProfileInfoQuery, SchemaTypes.SubspaceProfileInfoQueryVariables>(
-    SubspaceProfileInfoDocument,
-    options
-  );
-}
-
-export function useSubspaceProfileInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SubspaceProfileInfoQuery,
-    SchemaTypes.SubspaceProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SubspaceProfileInfoQuery, SchemaTypes.SubspaceProfileInfoQueryVariables>(
-    SubspaceProfileInfoDocument,
-    options
-  );
-}
-
-export type SubspaceProfileInfoQueryHookResult = ReturnType<typeof useSubspaceProfileInfoQuery>;
-export type SubspaceProfileInfoLazyQueryHookResult = ReturnType<typeof useSubspaceProfileInfoLazyQuery>;
-export type SubspaceProfileInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.SubspaceProfileInfoQuery,
-  SchemaTypes.SubspaceProfileInfoQueryVariables
->;
-export function refetchSubspaceProfileInfoQuery(variables: SchemaTypes.SubspaceProfileInfoQueryVariables) {
-  return { query: SubspaceProfileInfoDocument, variables: variables };
 }
 
 export const SubspacesInSpaceDocument = gql`

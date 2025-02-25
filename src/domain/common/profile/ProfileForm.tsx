@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
@@ -13,8 +13,6 @@ import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { BlockSectionTitle } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
 import { DEFAULT_TAGSET } from '../tags/tagset.constants';
 
 export interface ProfileFormValues {
@@ -32,7 +30,7 @@ type ProfileFormProps = {
   onSubmit: (formData: ProfileFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
-  isEdit: boolean;
+  spaceLevel?: SpaceLevel;
 };
 
 const ProfileForm = ({
@@ -41,8 +39,8 @@ const ProfileForm = ({
   tagset,
   onSubmit,
   wireSubmit,
-  isEdit,
   contextOnly = false,
+  spaceLevel = SpaceLevel.L0,
 }: ProfileFormProps) => {
   const { t } = useTranslation();
   const tagsets = useMemo(() => {
@@ -75,9 +73,6 @@ const ProfileForm = ({
 
   let isSubmitWired = false;
 
-  // TODO: why is this needed on a profile?
-  const spaceLevel = SpaceLevel.L0;
-
   return (
     <Formik
       initialValues={initialValues}
@@ -95,24 +90,18 @@ const ProfileForm = ({
         }
 
         return (
-          <Gutters>
+          <>
             <FormikInputField name="name" title={t('components.nameSegment.name')} required />
-            <LocationSegment
-              disabled={!isEdit}
-              cols={2}
-              cityFieldName="location.city"
-              countryFieldName="location.country"
-            />
             <FormikInputField
               name={'tagline'}
               title={t(`context.${spaceLevel}.tagline.title` as const)}
               rows={3}
               maxLength={SMALL_TEXT_LENGTH}
             />
-            <BlockSectionTitle color={'primary'}>{t('common.tags')}</BlockSectionTitle>
-            <TagsetSegment tagsets={tagsets} />
+            <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
+            <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
-          </Gutters>
+          </>
         );
       }}
     </Formik>

@@ -4,7 +4,7 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '@/domain/journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
-import SpaceProfilePage from '@/domain/journey/space/pages/SpaceProfile/SpaceProfilePage';
+import SpaceAboutPage from '@/domain/journey/space/pages/SpaceAbout/SpaceAboutPage';
 import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
 import SpaceTemplatesAdminRoutes from '@/domain/platform/admin/space/SpaceTemplatesAdminRoutes';
 import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceStorageAdminPage';
@@ -23,7 +23,7 @@ const SpaceSettingsRoute: FC = () => {
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
-          <Route path="about" element={<SpaceProfilePage />} />
+          <Route path="about" element={<SpaceAboutPage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="account" element={<SpaceAccountPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage />} />

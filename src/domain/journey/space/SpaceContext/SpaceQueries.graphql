@@ -54,6 +54,7 @@ query SpaceProfile($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      level
       ...SpaceInfo
     }
   }
