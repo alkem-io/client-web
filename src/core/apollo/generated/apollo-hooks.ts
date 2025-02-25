@@ -18410,12 +18410,7 @@ export const AboutPageMembersDocument = gql`
           }
         }
         about {
-          ...SpaceAboutLightUrl
-          profile {
-            references {
-              ...ReferenceDetails
-            }
-          }
+          ...SpaceAboutDetails
         }
         authorization {
           id
@@ -18424,8 +18419,7 @@ export const AboutPageMembersDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
-  ${ReferenceDetailsFragmentDoc}
+  ${SpaceAboutDetailsFragmentDoc}
 `;
 
 /**

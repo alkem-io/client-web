@@ -4,7 +4,7 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '@/domain/journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
-import SpaceAboutPage from '@/domain/journey/space/pages/SpaceAbout/SpaceAboutPage';
+import SpaceAboutPage from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutPage';
 import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
 import SpaceTemplatesAdminRoutes from '@/domain/platform/admin/space/SpaceTemplatesAdminRoutes';
 import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceStorageAdminPage';

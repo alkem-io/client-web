@@ -17,7 +17,7 @@ type Props = {
   spaceId: string | undefined;
 };
 
-export const SpaceAbout = ({ spaceId = '' }: Props) => {
+export const SpaceAboutEdit = ({ spaceId = '' }: Props) => {
   const notify = useNotification();
   const { t } = useTranslation();
   const { data: spaceData } = useSpaceProfileQuery({
@@ -92,4 +92,4 @@ export const SpaceAbout = ({ spaceId = '' }: Props) => {
   );
 };
 
-export default SpaceAbout;
+export default SpaceAboutEdit;

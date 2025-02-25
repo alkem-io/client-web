@@ -30,6 +30,8 @@ import References from '@/domain/shared/components/References/References';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
+import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import Loading from '@/core/ui/loading/Loading';
@@ -139,7 +141,7 @@ const SpaceAboutDialog = ({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
   const aboutProfile = about?.profile;
-
+  console.log('!!!:', about);
   return (
     <DialogWithGrid
       open={open}
@@ -180,19 +182,29 @@ const SpaceAboutDialog = ({
         <Gutters flexWrap="wrap" flexDirection={isMobile ? 'row' : 'row-reverse'}>
           <PageContentColumn columns={8}>
             {aboutProfile?.description && (
-              <PageContentBlock accent>
+              <PageContentBlock>
+                <PageContentBlockHeader
+                  icon={<InfoOutlinedIcon />}
+                  title={t(`context.${spaceLevel}.description.title`)}
+                />
                 <WrapperMarkdown>{aboutProfile.description}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {about?.why && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.description.title` as const)} />
+                <PageContentBlockHeader
+                  icon={<FlagCircleOutlinedIcon />}
+                  title={t(`context.${spaceLevel}.why.title` as const)}
+                />
                 <WrapperMarkdown>{about.why}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {about?.who && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />
+                <PageContentBlockHeader
+                  icon={<SupervisedUserCircleOutlinedIcon />}
+                  title={t(`context.${spaceLevel}.who.title` as const)}
+                />
                 <WrapperMarkdown>{about.who}</WrapperMarkdown>
               </PageContentBlock>
             )}

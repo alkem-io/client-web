@@ -22820,13 +22820,41 @@ export type AboutPageMembersQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            who?: string | undefined;
+            why?: string | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
-              displayName: string;
               url: string;
+              displayName: string;
               tagline?: string | undefined;
               description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }>;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -22836,7 +22864,9 @@ export type AboutPageMembersQuery = {
                     description?: string | undefined;
                   }>
                 | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
             };
           };
           authorization?:

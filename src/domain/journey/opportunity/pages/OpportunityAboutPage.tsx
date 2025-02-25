@@ -3,14 +3,14 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
-import SpaceAbout from '@/domain/journey/space/pages/SpaceAbout/SpaceAbout';
+import SpaceAboutEdit from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutEdit';
 
 const OpportunityAboutPage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { spaceId, loading } = useUrlResolver();
 
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.About} tabRoutePrefix={routePrefix}>
-      {loading ? <Loading /> : <SpaceAbout spaceId={spaceId} />}
+      {loading ? <Loading /> : <SpaceAboutEdit spaceId={spaceId} />}
     </SubspaceSettingsLayout>
   );
 };

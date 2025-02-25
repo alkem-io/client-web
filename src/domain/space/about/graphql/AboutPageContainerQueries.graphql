@@ -60,12 +60,7 @@ query AboutPageMembers($spaceId: UUID!) {
         }
       }
       about {
-        ...SpaceAboutLightUrl
-        profile {
-          references {
-            ...ReferenceDetails
-          }
-        }
+        ...SpaceAboutDetails
       }
       authorization {
         id

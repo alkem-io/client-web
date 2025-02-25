@@ -4,7 +4,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import SpaceAbout from '@/domain/journey/space/pages/SpaceAbout/SpaceAbout';
+import SpaceAboutEdit from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutEdit';
 import Loading from '@/core/ui/loading/Loading';
 
 const SubspaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
@@ -12,7 +12,7 @@ const SubspaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
 
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.About} tabRoutePrefix={routePrefix}>
-      {loading ? <Loading /> : <SpaceAbout spaceId={spaceId} />}
+      {loading ? <Loading /> : <SpaceAboutEdit spaceId={spaceId} />}
     </SubspaceSettingsLayout>
   );
 };

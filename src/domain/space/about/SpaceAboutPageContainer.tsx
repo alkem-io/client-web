@@ -143,6 +143,8 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
   const about: SpaceAboutDetailsModel = useMemo(() => {
     return {
       id: nonMemberSpaceAbout?.id ?? '',
+      why: nonMemberSpaceAbout?.why ?? '',
+      who: nonMemberSpaceAbout?.who ?? '',
       profile: {
         id: nonMemberSpaceAboutProfile?.id ?? '',
         displayName: nonMemberSpaceAboutProfile?.displayName ?? '',

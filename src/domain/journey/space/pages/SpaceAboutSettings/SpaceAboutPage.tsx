@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import SpaceAbout from './SpaceAbout';
+import SpaceAboutEdit from './SpaceAboutEdit';
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
@@ -11,7 +11,7 @@ const SpaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
 
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.About} tabRoutePrefix={routePrefix}>
-      {loading ? <Loading /> : <SpaceAbout spaceId={spaceId} />}
+      {loading ? <Loading /> : <SpaceAboutEdit spaceId={spaceId} />}
     </SpaceSettingsLayout>
   );
 };
