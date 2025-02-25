@@ -22,35 +22,39 @@ export const ContextSegment = ({ loading, spaceLevel }: ContextSegmentProps & { 
   const { t } = useTranslation();
 
   return (
-    <Gutters>
-      <FormikMarkdownField
-        name="description"
-        title={t(`context.${spaceLevel}.description.title` as const)}
-        placeholder={t(`context.${spaceLevel}.description.title` as const)}
-        helperText={t(`context.${spaceLevel}.description.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
-      />
-      <FormikMarkdownField
-        name="why"
-        title={t(`context.${spaceLevel}.why.title` as const)}
-        placeholder={t(`context.${spaceLevel}.why.title` as const)}
-        helperText={t(`context.${spaceLevel}.why.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
-      />
+    <Gutters disablePadding>
+      <Gutters disableGap disablePadding>
+        <FormikMarkdownField
+          name="description"
+          title={t(`context.${spaceLevel}.description.title` as const)}
+          placeholder={t(`context.${spaceLevel}.description.title` as const)}
+          helperText={t(`context.${spaceLevel}.description.description` as const)}
+          rows={10}
+          maxLength={MARKDOWN_TEXT_LENGTH}
+          loading={loading}
+        />
+      </Gutters>
+      <Gutters row disablePadding>
+        <FormikMarkdownField
+          name="why"
+          title={t(`context.${spaceLevel}.why.title` as const)}
+          placeholder={t(`context.${spaceLevel}.why.title` as const)}
+          helperText={t(`context.${spaceLevel}.why.description` as const)}
+          rows={10}
+          maxLength={MARKDOWN_TEXT_LENGTH}
+          loading={loading}
+        />
 
-      <FormikMarkdownField
-        name="who"
-        title={t(`context.${spaceLevel}.who.title` as const)}
-        placeholder={t(`context.${spaceLevel}.who.title` as const)}
-        helperText={t(`context.${spaceLevel}.who.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
-      />
+        <FormikMarkdownField
+          name="who"
+          title={t(`context.${spaceLevel}.who.title` as const)}
+          placeholder={t(`context.${spaceLevel}.who.title` as const)}
+          helperText={t(`context.${spaceLevel}.who.description` as const)}
+          rows={10}
+          maxLength={MARKDOWN_TEXT_LENGTH}
+          loading={loading}
+        />
+      </Gutters>
     </Gutters>
   );
 };

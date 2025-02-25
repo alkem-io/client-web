@@ -1,14 +1,14 @@
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Grid } from '@mui/material';
-import SpaceContextForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm2';
+import SpaceAboutForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
+import { Actions } from '@/core/ui/actions/Actions';
 
 export const SpaceContextView = () => {
   const notify = useNotification();
-  const { spaceId } = useUrlResolver();
+  const { spaceId, spaceLevel } = useUrlResolver();
   const { data: spaceData } = useSpaceProfileQuery({
     variables: {
       spaceId: spaceId!,
@@ -49,20 +49,20 @@ export const SpaceContextView = () => {
     });
   };
   let submitWired;
+
   return (
     <>
-      <Grid container spacing={2}>
-        <SpaceContextForm
-          isEdit
-          about={about}
-          onSubmit={onSubmit}
-          wireSubmit={submit => (submitWired = submit)}
-          loading={isLoading}
-        />
-      </Grid>
-      <Grid container item justifyContent={'flex-end'}>
+      <SpaceAboutForm
+        isEdit
+        spaceLevel={spaceLevel}
+        about={about}
+        onSubmit={onSubmit}
+        wireSubmit={submit => (submitWired = submit)}
+        loading={isLoading}
+      />
+      <Actions justifyContent={'flex-end'}>
         <SaveButton loading={isLoading} onClick={() => submitWired()} />
-      </Grid>
+      </Actions>
     </>
   );
 };

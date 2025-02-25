@@ -1,34 +1,33 @@
 import { Formik } from 'formik';
-import { ElementType } from 'react';
+import React, { FC } from 'react';
 import * as yup from 'yup';
-import { ContextSegmentProps, spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
-import { SpaceAboutDetailsModel } from '../model/SpaceAboutFull.model';
+import { ContextSegment, spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-export interface SpaceAboutFormValues {
-  description: string;
-  why: string;
-  who: string;
+interface SpaceAboutFormProps {
+  about: {
+    why?: string;
+    who?: string;
+    profile?: { description?: string };
+  };
+  onSubmit: (formData: SpaceAboutEditFormValuesType) => void;
+  wireSubmit: (setter: () => void) => void;
+  isEdit: boolean;
+  loading: boolean;
+  spaceLevel?: SpaceLevel;
 }
 
-type SpaceAboutFormProps = {
-  about?: SpaceAboutDetailsModel;
-  onSubmit: (formData: SpaceAboutFormValues) => void;
-  wireSubmit: (setter: () => void) => void;
-  contextSegment: ElementType<ContextSegmentProps>;
-  loading: boolean;
-};
+export interface SpaceAboutEditFormValuesType {
+  description: string;
+  why?: string;
+  who?: string;
+}
 
-export const SpaceAboutForm = ({
-  about,
-  onSubmit,
-  wireSubmit,
-  loading,
-  contextSegment: ContextSegment,
-}: SpaceAboutFormProps) => {
-  const initialValues: SpaceAboutFormValues = {
-    description: about?.profile?.description || '',
-    why: about?.why || '',
-    who: about?.who || '',
+const SpaceAboutForm: FC<SpaceAboutFormProps> = ({ about, onSubmit, wireSubmit, loading, spaceLevel }) => {
+  const initialValues: SpaceAboutEditFormValuesType = {
+    description: about?.profile?.description ?? '',
+    why: about?.why ?? '',
+    who: about?.who ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -49,14 +48,15 @@ export const SpaceAboutForm = ({
       }}
     >
       {({ handleSubmit }) => {
-        // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
         }
 
-        return <ContextSegment loading={loading} />;
+        return <ContextSegment loading={loading} spaceLevel={spaceLevel ?? SpaceLevel.L0} />;
       }}
     </Formik>
   );
 };
+
+export default SpaceAboutForm;

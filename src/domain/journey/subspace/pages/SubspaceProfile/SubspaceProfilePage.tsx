@@ -5,7 +5,6 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import SubspaceProfileView from './SubspaceProfileView';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import ChallengeContextView from '@/domain/journey/subspace/pages/SubspaceContext/SubspaceContextView';
 
 const SubspaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId } = useUrlResolver();
@@ -13,7 +12,6 @@ const SubspaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => 
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.About} tabRoutePrefix={routePrefix}>
       <SubspaceProfileView subspaceId={spaceId} />
-      <ChallengeContextView />
     </SubspaceSettingsLayout>
   );
 };

@@ -724,23 +724,23 @@
         "placeholder": ""
       },
       "description": {
-        "title": "Background",
-        "description": "Give a brief overview of the need for this Space and how it came about.",
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
       "when": {
         "title": "Impact",
-        "description": "What will this Space change? How will people and organizations be affected?",
+        "description": "",
         "placeholder": ""
       },
       "why": {
-        "title": "What is this community about?",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should be involved?",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       }
     },
@@ -756,23 +756,23 @@
         "placeholder": ""
       },
       "description": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
       "when": {
-        "title": "Additional context",
-        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
+        "title": "Impact",
+        "description": "",
         "placeholder": ""
       },
       "why": {
-        "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -801,23 +801,23 @@
         "placeholder": ""
       },
       "description": {
-        "title": "Background",
-        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
       "when": {
         "title": "Impact",
-        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
       "why": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Subspace.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
