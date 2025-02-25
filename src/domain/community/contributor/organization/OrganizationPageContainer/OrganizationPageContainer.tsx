@@ -1,22 +1,22 @@
-import { ApolloError } from '@apollo/client';
-import { PropsWithChildren, useCallback, useMemo } from 'react';
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { useOrganization } from '../hooks/useOrganization';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
-import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
-import { ContainerChildProps } from '@/core/container/container';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import {
   AuthorizationPrivilege,
-  RoleSetContributorType,
   OrganizationInfoFragment,
-  SpaceLevel,
   RoleName,
+  RoleSetContributorType,
+  SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
+import { ContainerChildProps } from '@/core/container/container';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { ApolloError } from '@apollo/client';
+import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useOrganization } from '../hooks/useOrganization';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -54,7 +54,7 @@ export interface OrganizationPageContainerProps
 
 const NO_PRIVILEGES = [];
 
-export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
+export const OrganizationPageContainer = ({ children }: OrganizationPageContainerProps) => {
   const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
 
   const { t } = useTranslation();

@@ -1,56 +1,23 @@
-import { useInterpret } from '@xstate/react';
-import { FC, createContext, useMemo } from 'react';
-import { Interpreter } from 'xstate';
+import { useActorRef } from '@xstate/react';
+import { FC, PropsWithChildren, createContext } from 'react';
+import { Actor, StateMachine } from 'xstate';
 import {
-  notificationMachine,
   NotificationsContext,
   NotificationsEvent,
+  notificationMachine,
 } from './global/notifications/notificationMachine';
-import {
-  LoginNavigationContext,
-  LoginNavigationEvent,
-  loginNavigationMachine,
-  LoginNavigationState,
-} from './global/ui/loginNavigationMachine';
-import {
-  UserSegmentContext,
-  UserSegmentEvent,
-  userSegmentMachine,
-  UserSegmentState,
-} from './global/ui/userSegmentMachine';
 
-// TODO replace any with correct types below
 interface GlobalStateContextProps {
-  ui: {
+  notificationsService: Actor<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    loginNavigationService: Interpreter<LoginNavigationContext, any, LoginNavigationEvent, LoginNavigationState>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    userSegmentService: Interpreter<UserSegmentContext, any, UserSegmentEvent, UserSegmentState>;
-  };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  notificationsService: Interpreter<NotificationsContext, any, NotificationsEvent>;
+    StateMachine<NotificationsContext, NotificationsEvent, any, any, any, any, any, any, any, any, any, any, any, any>
+  >;
 }
 
 export const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
 
-export const GlobalStateProvider: FC = ({ children }) => {
-  const loginNavigationService = useInterpret(loginNavigationMachine);
-  const userSegmentService = useInterpret(userSegmentMachine);
-  const notificationsService = useInterpret(notificationMachine);
+export const GlobalStateProvider: FC<PropsWithChildren> = ({ children }) => {
+  const notificationsService = useActorRef(notificationMachine);
 
-  const ui = useMemo(
-    () => ({ loginNavigationService, userSegmentService }),
-    [loginNavigationService, userSegmentService]
-  );
-
-  return (
-    <GlobalStateContext.Provider
-      value={{
-        ui: ui,
-        notificationsService,
-      }}
-    >
-      {children}
-    </GlobalStateContext.Provider>
-  );
+  return <GlobalStateContext.Provider value={{ notificationsService }}>{children}</GlobalStateContext.Provider>;
 };

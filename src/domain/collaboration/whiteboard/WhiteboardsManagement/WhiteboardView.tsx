@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
-import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
-import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { ReactNode } from 'react';
+import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
+import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
@@ -62,7 +62,7 @@ const WhiteboardView = ({
 
   return (
     <WhiteboardActionsContainer>
-      {(_, actionsState, actions) => (
+      {({ state: actionsState, actions }) => (
         <WhiteboardDialog
           entities={{
             whiteboard,
