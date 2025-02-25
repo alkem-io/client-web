@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -10,6 +10,7 @@ import {
   useAllSpaceSubspacesLazyQuery,
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
+  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -35,6 +36,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { addVCCreationCache } from './TryVC/utils';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
+import { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
@@ -83,9 +85,32 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [accountName, setAccountName] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
-  const [createdVc, setCreatedVc] = useState<{ id: string; profile: { url: string } } | undefined>(undefined);
+  const [createdVc, setCreatedVc] = useState<
+    { id: string; profile: { url: string; avatar: { id: string } } } | undefined
+  >();
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
+
+  const [visual, setVisual] = useState<VisualWithAltText>();
+
+  const [uploadVisual] = useUploadVisualMutation({
+    onError: () => notify(t('components.visual-upload.error'), 'error'),
+    onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
+  });
+
+  useEffect(() => {
+    if (visual?.file && createdVc?.profile?.avatar?.id) {
+      uploadVisual({
+        variables: {
+          file: visual.file,
+          uploadData: {
+            visualID: createdVc.profile.avatar.id,
+            alternativeText: visual.altText,
+          },
+        },
+      });
+    }
+  }, [virtualContributorInput, createdVc, uploadVisual]);
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -419,7 +444,15 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
-    setCreatedVc(createdVCData);
+    setCreatedVc({
+      id: createdVCData.id,
+      profile: {
+        url: createdVCData.profile.url,
+        avatar: {
+          id: createdVCData.profile.avatar?.id || '',
+        },
+      },
+    });
 
     if (hasDocuments) {
       const createdLinkCollection = createdVCData.knowledgeBase?.calloutsSet?.callouts?.find(
@@ -548,6 +581,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
                 onStepSelection('existingKnowledge', values);
               }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
+              getVisual={setVisual}
             />
           )}
           {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}
