@@ -2,7 +2,6 @@ query VirtualContributor($id: UUID!) {
   lookup {
     virtualContributor(ID: $id) {
       id
-      nameID
       authorization {
         id
         myPrivileges
@@ -52,6 +51,12 @@ query VirtualContributor($id: UUID!) {
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }
@@ -71,6 +76,12 @@ query VirtualContributorProfile($id: UUID!) {
         url
         avatar: visual(type: AVATAR) {
           ...VisualFull
+        }
+        references {
+          id
+          name
+          uri
+          description
         }
       }
     }
@@ -118,6 +129,12 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
       }
       displayName
       description
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
 }
@@ -141,6 +158,12 @@ mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributo
       }
       displayName
       description
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
 }

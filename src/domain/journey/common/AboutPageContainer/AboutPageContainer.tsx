@@ -21,10 +21,10 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 interface AboutPagePermissions {
-  communityReadAccess: boolean;
+  canReadCommunity: boolean;
 }
 
 export interface AboutPageContainerEntities {
@@ -74,7 +74,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const nonMemberProfile = nonMembersData?.lookup.space?.profile;
   const nonMemberCommunity = nonMembersData?.lookup.space?.community;
 
-  const communityReadAccess =
+  const canReadCommunity =
     nonMemberCommunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
   const {
@@ -85,7 +85,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     variables: {
       spaceId: journeyId!,
     },
-    skip: nonMembersDataLoading || !journeyId || !communityReadAccess,
+    skip: nonMembersDataLoading || !journeyId || !canReadCommunity,
   });
 
   const {
@@ -93,7 +93,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     organizationsByRole,
     virtualContributors,
     myPrivileges: communityPrivileges,
-  } = useRoleSetAdmin({
+  } = useRoleSetManager({
     roleSetId: membersData?.lookup.space?.community.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
@@ -101,7 +101,8 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
       RoleSetContributorType.Organization,
       RoleSetContributorType.Virtual,
     ],
-    skip: !communityReadAccess,
+    fetchContributors: true,
+    skip: !canReadCommunity,
   });
   const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);
   const memberProfile = membersData?.lookup.space?.profile;
@@ -144,7 +145,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   );
 
   const permissions: AboutPagePermissions = {
-    communityReadAccess,
+    canReadCommunity,
   };
 
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;

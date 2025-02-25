@@ -2200,9 +2200,9 @@ export type MutationKeySpecifier = (
   | 'cleanupCollections'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
+  | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createActor'
   | 'createActorGroup'
-  | 'createCallout'
   | 'createCalloutOnCalloutsSet'
   | 'createChatGuidanceRoom'
   | 'createContributionOnCallout'
@@ -2280,6 +2280,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUser'
+  | 'transferCallout'
   | 'transferInnovationHubToAccount'
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
@@ -2371,9 +2372,9 @@ export type MutationFieldPolicy = {
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  createCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createChatGuidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2451,6 +2452,7 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2656,6 +2658,7 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'authorization'
+  | 'chatGuidanceVirtualContributor'
   | 'configuration'
   | 'createdDate'
   | 'forum'
@@ -2674,6 +2677,7 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  chatGuidanceVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   forum?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2912,11 +2916,11 @@ export type QueryKeySpecifier = (
   | 'rolesUser'
   | 'rolesVirtualContributor'
   | 'search'
-  | 'space'
   | 'spaces'
   | 'spacesPaginated'
   | 'task'
   | 'tasks'
+  | 'urlResolver'
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
@@ -2949,11 +2953,11 @@ export type QueryFieldPolicy = {
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spacesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   task?: FieldPolicy<any> | FieldReadFunction<any>;
   tasks?: FieldPolicy<any> | FieldReadFunction<any>;
+  urlResolver?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3016,7 +3020,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'settings'
   | 'storageAggregator'
   | 'subscriptions'
-  | 'subspace'
+  | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
   | 'type'
@@ -3044,7 +3048,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3403,7 +3407,7 @@ export type SpaceKeySpecifier = (
   | 'settings'
   | 'storageAggregator'
   | 'subscriptions'
-  | 'subspace'
+  | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
   | 'type'
@@ -3431,7 +3435,7 @@ export type SpaceFieldPolicy = {
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3789,6 +3793,108 @@ export type TimelineFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultCalendarKeySpecifier = (
+  | 'calendarEventId'
+  | 'id'
+  | UrlResolverQueryResultCalendarKeySpecifier
+)[];
+export type UrlResolverQueryResultCalendarFieldPolicy = {
+  calendarEventId?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
+  | 'calloutId'
+  | 'contributionId'
+  | 'id'
+  | 'postId'
+  | 'type'
+  | 'whiteboardId'
+  | UrlResolverQueryResultCalloutsSetKeySpecifier
+)[];
+export type UrlResolverQueryResultCalloutsSetFieldPolicy = {
+  calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  postId?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultCollaborationKeySpecifier = (
+  | 'calloutsSet'
+  | 'id'
+  | UrlResolverQueryResultCollaborationKeySpecifier
+)[];
+export type UrlResolverQueryResultCollaborationFieldPolicy = {
+  calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultInnovationPackKeySpecifier = (
+  | 'id'
+  | 'templatesSet'
+  | UrlResolverQueryResultInnovationPackKeySpecifier
+)[];
+export type UrlResolverQueryResultInnovationPackFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultSpaceKeySpecifier = (
+  | 'calendar'
+  | 'collaboration'
+  | 'id'
+  | 'level'
+  | 'levelZeroSpaceID'
+  | 'parentSpaces'
+  | 'templatesSet'
+  | UrlResolverQueryResultSpaceKeySpecifier
+)[];
+export type UrlResolverQueryResultSpaceFieldPolicy = {
+  calendar?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultTemplatesSetKeySpecifier = (
+  | 'id'
+  | 'templateId'
+  | UrlResolverQueryResultTemplatesSetKeySpecifier
+)[];
+export type UrlResolverQueryResultTemplatesSetFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultVirtualContributorKeySpecifier = (
+  | 'calloutsSet'
+  | 'id'
+  | UrlResolverQueryResultVirtualContributorKeySpecifier
+)[];
+export type UrlResolverQueryResultVirtualContributorFieldPolicy = {
+  calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultsKeySpecifier = (
+  | 'discussionId'
+  | 'innovationHubId'
+  | 'innovationPack'
+  | 'organizationId'
+  | 'space'
+  | 'type'
+  | 'userId'
+  | 'virtualContributor'
+  | UrlResolverQueryResultsKeySpecifier
+)[];
+export type UrlResolverQueryResultsFieldPolicy = {
+  discussionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHubId?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  userId?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserKeySpecifier = (
   | 'account'
@@ -4998,6 +5104,59 @@ export type StrictTypedTypePolicies = {
   Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
+  };
+  UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultCalendarKeySpecifier
+      | (() => undefined | UrlResolverQueryResultCalendarKeySpecifier);
+    fields?: UrlResolverQueryResultCalendarFieldPolicy;
+  };
+  UrlResolverQueryResultCalloutsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultCalloutsSetKeySpecifier
+      | (() => undefined | UrlResolverQueryResultCalloutsSetKeySpecifier);
+    fields?: UrlResolverQueryResultCalloutsSetFieldPolicy;
+  };
+  UrlResolverQueryResultCollaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultCollaborationKeySpecifier
+      | (() => undefined | UrlResolverQueryResultCollaborationKeySpecifier);
+    fields?: UrlResolverQueryResultCollaborationFieldPolicy;
+  };
+  UrlResolverQueryResultInnovationPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultInnovationPackKeySpecifier
+      | (() => undefined | UrlResolverQueryResultInnovationPackKeySpecifier);
+    fields?: UrlResolverQueryResultInnovationPackFieldPolicy;
+  };
+  UrlResolverQueryResultSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultSpaceKeySpecifier
+      | (() => undefined | UrlResolverQueryResultSpaceKeySpecifier);
+    fields?: UrlResolverQueryResultSpaceFieldPolicy;
+  };
+  UrlResolverQueryResultTemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultTemplatesSetKeySpecifier
+      | (() => undefined | UrlResolverQueryResultTemplatesSetKeySpecifier);
+    fields?: UrlResolverQueryResultTemplatesSetFieldPolicy;
+  };
+  UrlResolverQueryResultVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultVirtualContributorKeySpecifier
+      | (() => undefined | UrlResolverQueryResultVirtualContributorKeySpecifier);
+    fields?: UrlResolverQueryResultVirtualContributorFieldPolicy;
+  };
+  UrlResolverQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UrlResolverQueryResultsKeySpecifier | (() => undefined | UrlResolverQueryResultsKeySpecifier);
+    fields?: UrlResolverQueryResultsFieldPolicy;
   };
   User?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier);

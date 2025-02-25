@@ -12,10 +12,7 @@ export const buildSettingsProfileUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/profile`;
 };
 
-const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
-export const buildVCKnowledgeBaseUrl = (vcNameId: string) => `${buildVCProfileUrl(vcNameId)}/${KNOWLEDGE_BASE_PATH}`;
-
-export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
+export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
   const fullReturnUrl = isAbsoluteUrl(returnUrl) ? returnUrl : `${origin}${returnUrl}`;

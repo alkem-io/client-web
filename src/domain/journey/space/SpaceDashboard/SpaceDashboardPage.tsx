@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { useParams, useResolvedPath } from 'react-router-dom';
+import { useResolvedPath } from 'react-router-dom';
 import SpaceDashboardContainer from './SpaceDashboardContainer';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
@@ -14,7 +14,7 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildAboutUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
@@ -23,11 +23,10 @@ const SpaceDashboardPage = ({
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
   const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
-  const { calendarEventNameId } = useParams();
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceId, collaborationId, journeyPath } = useRouteResolver();
+  const { spaceId, collaborationId, journeyPath, calendarEventId } = useUrlResolver();
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
@@ -50,7 +49,7 @@ const SpaceDashboardPage = ({
               leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []}
               host={entities.provider}
               callouts={callouts}
-              journeyTypeName="space"
+              level={entities.space?.level}
               myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
               shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />
@@ -73,7 +72,7 @@ const SpaceDashboardPage = ({
                 journeyId={spaceId}
                 parentSpaceId={undefined}
                 parentPath={entities.space?.profile.url ?? ''}
-                calendarEventNameId={calendarEventNameId}
+                calendarEventId={calendarEventId}
               />
             )}
             <JourneyAboutDialog

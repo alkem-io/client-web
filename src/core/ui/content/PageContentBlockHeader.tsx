@@ -1,4 +1,4 @@
-import { Box, BoxProps, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, SvgIconProps, TypographyProps } from '@mui/material';
 import { CaptionSmall } from '../typography';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
@@ -14,12 +14,14 @@ export interface PageContentBlockHeaderProps {
   actions?: ReactNode;
   disclaimer?: ReactNode;
   fullWidth?: boolean;
+  variant?: TypographyProps['variant'];
 }
 
 const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
   title,
   icon,
   actions,
+  variant,
   disclaimer,
   fullWidth,
   children,
@@ -47,7 +49,7 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
         justifyContent="space-between"
         flexWrap="wrap"
       >
-        <BlockTitleWithIcon title={title} icon={icon} />
+        <BlockTitleWithIcon title={title} icon={icon} variant={variant} />
         {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
         {children}
       </Box>

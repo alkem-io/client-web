@@ -6,7 +6,6 @@ import {
   UpdateOrganizationInput,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import Section, { Header } from '@/core/ui/content/deprecated/Section';
 import { EditMode } from '@/core/ui/forms/editMode';
 import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -16,7 +15,7 @@ import { formatLocation } from '@/domain/common/location/LocationUtils';
 import { Tagset, UpdateTagset } from '@/domain/common/profile/Profile';
 import { OrganizationInput } from '@/domain/community/contributor/organization/OrganizationInput';
 import { OrgVerificationLifecycleEvents } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
-import { Button, Grid } from '@mui/material';
+import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +26,11 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContent from '@/core/ui/content/PageContent';
+import { gutters } from '@/core/ui/grid/utils';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 const EmptyOrganization: Omit<Organization, 'authorization' | 'agent' | 'roleSet'> = {
   id: '',
@@ -218,11 +222,9 @@ export const OrganizationForm: FC<Props> = ({
   const handleBack = () => navigate(-1);
 
   const backButton = (
-    <Grid item>
-      <Button variant="outlined" onClick={handleBack}>
-        {t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
-      </Button>
-    </Grid>
+    <Button variant="outlined" onClick={handleBack}>
+      {t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+    </Button>
   );
 
   if (!currentOrganization && editMode !== EditMode.new) {
@@ -244,8 +246,8 @@ export const OrganizationForm: FC<Props> = ({
           {({ values: { references, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section
-                  avatar={
+                <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
+                  <PageContentColumn columns={4} justifyContent="end">
                     <VisualUpload
                       visual={visual}
                       altText={t('visuals-alt-text.avatar.contributor.text', {
@@ -253,43 +255,42 @@ export const OrganizationForm: FC<Props> = ({
                         altText: visual?.alternativeText,
                       })}
                     />
-                  }
-                >
-                  <Header text={title} />
-                  <Gutters disablePadding>
-                    <NameSegment disabled={isEditMode} required={!isEditMode} />
-                    {!isCreateMode && (
-                      <>
-                        <ProfileSegment disabled={isReadOnlyMode} />
-                        <OrganizationSegment disabled={isReadOnlyMode} />
-                        <LocationSegment
-                          disabled={isReadOnlyMode}
-                          cityFieldName="location.city"
-                          countryFieldName="location.country"
-                        />
-
-                        <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
-                        {isEditMode && (
-                          <ProfileReferenceSegment
-                            references={references}
-                            readOnly={isReadOnlyMode}
-                            profileId={profileId}
+                  </PageContentColumn>
+                  <PageContentColumn columns={6}>
+                    <Gutters disablePadding>
+                      <PageContentBlockHeader title={title} />
+                      <NameSegment disabled={isEditMode} required={!isEditMode} />
+                      {!isCreateMode && (
+                        <>
+                          <ProfileSegment disabled={isReadOnlyMode} />
+                          <OrganizationSegment disabled={isReadOnlyMode} />
+                          <LocationSegment
+                            disabled={isReadOnlyMode}
+                            cityFieldName="location.city"
+                            countryFieldName="location.country"
                           />
-                        )}
-                      </>
-                    )}
-                    {!isReadOnlyMode && (
-                      <Grid container item justifyContent={'flex-end'} spacing={2}>
-                        {backButton}
-                        <Grid item>
-                          <Button variant="outlined" type="submit">
+
+                          <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+                          {isEditMode && (
+                            <ProfileReferenceSegment
+                              references={references}
+                              readOnly={isReadOnlyMode}
+                              profileId={profileId}
+                            />
+                          )}
+                        </>
+                      )}
+                      {!isReadOnlyMode && (
+                        <Actions justifyContent="end">
+                          {backButton}
+                          <Button variant="contained" type="submit">
                             {t('buttons.save')}
                           </Button>
-                        </Grid>
-                      </Grid>
-                    )}
-                  </Gutters>
-                </Section>
+                        </Actions>
+                      )}
+                    </Gutters>
+                  </PageContentColumn>
+                </PageContent>
               </Form>
             );
           }}

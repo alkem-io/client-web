@@ -10,7 +10,6 @@ import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-s
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
 
@@ -18,11 +17,12 @@ type KnowledgeBaseDialogProps = {
   onClose: () => void;
   title: string;
   id: string;
+  placeholder: string;
 };
 
 const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
-const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) => {
+const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
   const { t } = useTranslation();
   const {
     calloutsSetId,
@@ -37,6 +37,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
     ingestKnowledge,
     ingestLoading,
     hasReadAccess,
+
     loadingPrivileges,
   } = useKnowledgeBase({ id });
 
@@ -60,9 +61,9 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
         ) : (
           <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
             <Gutters disablePadding>
-              {(knowledgeBaseDescription || canCreateCallout) && (
+              {(placeholder || knowledgeBaseDescription || canCreateCallout) && (
                 <DescriptionComponent
-                  description={knowledgeBaseDescription}
+                  description={knowledgeBaseDescription || placeholder}
                   canEdit={canCreateCallout}
                   onUpdate={updateDescription}
                 />
@@ -72,7 +73,6 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
                 callouts={callouts}
                 canCreateCallout={canCreateCallout}
                 loading={calloutsSetLoading}
-                journeyTypeName={KnowledgeBaseCalloutsSetType}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 groupName={CalloutGroupName.Knowledge}

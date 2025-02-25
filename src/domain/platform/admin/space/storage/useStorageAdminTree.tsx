@@ -28,7 +28,7 @@ export interface StorageAdminTreeItem {
   childItems?: StorageAdminTreeItem[];
   // Documents only
   size: number;
-  uplodadedBy?: { nameId: string; displayName: string };
+  uplodadedBy?: { url: string; displayName: string };
   uploadedAt?: Date;
   url: string | undefined;
   // UI:
@@ -73,7 +73,7 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
   size: document.size,
   uplodadedBy: document.createdBy
     ? {
-        nameId: document.createdBy.nameID,
+        url: document.createdBy.profile.url,
         displayName: document.createdBy.profile.displayName,
       }
     : undefined,

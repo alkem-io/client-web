@@ -1,0 +1,19 @@
+query SubspacesInSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      subspaces {
+        id
+        profile {
+          id
+          displayName
+          url
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+        level
+      }
+    }
+  }
+}

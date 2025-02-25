@@ -350,13 +350,13 @@ Pseudocode example:
 ```jsx
 const SpaceDashboardPage = () => {
   return (
-    <JourneyLayout journeyTypeName="space">
+    <JourneyLayout level={SpaceLevel.L0}>
       {' '}
       // broader naming
       <SpaceDashboardContainer>
         {' '}
         // specific to the entity/page
-        <JourneyDashboardView journeyTypeName="space" /> // generic entity yet specific to the page
+        <JourneyDashboardView level={SpaceLevel.L0} /> // generic entity yet specific to the page
       </SpaceDashboardContainer>
     </JourneyLayout>
   );

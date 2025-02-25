@@ -3,44 +3,35 @@ import SpaceSettingsView from './SpaceSettingsView';
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Skeleton } from '@mui/material';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { journeyId, journeyTypeName, loading } = useRouteResolver();
+  const { spaceLevel, loading } = useUrlResolver();
 
-  switch (journeyTypeName) {
-    case 'space':
+  switch (spaceLevel) {
+    case SpaceLevel.L0:
       return (
         <SpaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {!journeyId || loading ? (
-            <Skeleton />
-          ) : (
-            <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} />
-          )}
+          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
         </SpaceSettingsLayout>
       );
-    case 'subspace':
+    case SpaceLevel.L1:
       return (
         <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {!journeyId || loading ? (
-            <Skeleton />
-          ) : (
-            <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} />
-          )}
+          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
         </SubspaceSettingsLayout>
       );
-    case 'subsubspace':
+    case SpaceLevel.L2:
       return (
         <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {!journeyId || loading ? (
-            <Skeleton />
-          ) : (
-            <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} />
-          )}
+          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
         </SubspaceSettingsLayout>
       );
+    default:
+      return null;
   }
 };
 

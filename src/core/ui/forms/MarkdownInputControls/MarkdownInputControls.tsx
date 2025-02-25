@@ -13,7 +13,7 @@ import {
   Title,
   Undo,
 } from '@mui/icons-material';
-import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
+import { Collapse, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
@@ -22,6 +22,8 @@ import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
 import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeButton';
 import produce from 'immer';
+import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
+import { useTranslation } from 'react-i18next';
 
 type MarkdownInputControlsProps = {
   editor: Editor | null;
@@ -32,7 +34,7 @@ type MarkdownInputControlsProps = {
   temporaryLocation?: boolean;
 };
 
-interface ControlsButtonProps extends IconButtonProps {
+interface ControlsButtonProps extends MarkdownInputToolbarButtonProps {
   editor: Editor | null;
   command: (commandsChain: ChainedCommands) => ChainedCommands;
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
@@ -43,6 +45,7 @@ const sanitizeUrl = (url: string): string => {
     const parsedUrl = new URL(url);
     const allowedProtocols = ['http:', 'https:'];
     // 'javascript:' is used to prevent XSS attacks by blocking dangerous protocols
+    // eslint-disable-next-line no-script-url
     const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
 
     if (!allowedProtocols.includes(parsedUrl.protocol) || dangerousProtocols.some(p => url.toLowerCase().includes(p))) {
@@ -142,7 +145,7 @@ const ControlsButton = memo(
     }, [editor]);
 
     return (
-      <IconButton
+      <MarkdownInputToolbarButton
         onClick={() => editor && command(editor.chain().focus()).run()}
         disabled={state.disabled}
         color={state.active ? 'secondary' : undefined}
@@ -165,7 +168,7 @@ const MarkdownInputControls = memo(
       ref
     ) => {
       const [isVisible, setIsVisible] = useState(visible);
-
+      const { t } = useTranslation();
       useEffect(() => {
         if (visible) {
           setTimeout(() => {
@@ -179,22 +182,41 @@ const MarkdownInputControls = memo(
       return (
         <Collapse in={isVisible} ref={ref}>
           <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
-            <ControlsButton editor={editor} command={e => e.undo()}>
+            <ControlsButton
+              editor={editor}
+              command={e => e.undo()}
+              tooltip={t('components.wysiwyg-editor.toolbar.history.undo')}
+            >
               <Undo />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.redo()}>
+            <ControlsButton
+              editor={editor}
+              command={e => e.redo()}
+              tooltip={t('components.wysiwyg-editor.toolbar.history.redo')}
+            >
               <Redo />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.toggleBold()} specs="bold">
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleBold()}
+              specs="bold"
+              tooltip={t('components.wysiwyg-editor.toolbar.inline.bold')}
+            >
               <FormatBold />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleItalic()}
+              specs="italic"
+              tooltip={t('components.wysiwyg-editor.toolbar.inline.italic')}
+            >
               <FormatItalic />
             </ControlsButton>
             <ControlsButton
               editor={editor}
               command={e => e.toggleHeading({ level: 1 })}
               specs={['heading', { level: 1 }]}
+              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h1')}
             >
               <Title fontSize="large" />
             </ControlsButton>
@@ -202,6 +224,7 @@ const MarkdownInputControls = memo(
               editor={editor}
               command={e => e.toggleHeading({ level: 2 })}
               specs={['heading', { level: 2 }]}
+              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h2')}
             >
               <Title />
             </ControlsButton>
@@ -209,37 +232,62 @@ const MarkdownInputControls = memo(
               editor={editor}
               command={e => e.toggleHeading({ level: 3 })}
               specs={['heading', { level: 3 }]}
+              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h3')}
             >
               <Title fontSize="small" />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.toggleBulletList()} specs="bulletList">
+            tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h1')}
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleBulletList()}
+              specs="bulletList"
+              tooltip={t('components.wysiwyg-editor.toolbar.list.unordered')}
+            >
               <FormatListBulleted />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.toggleOrderedList()} specs="orderedList">
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleOrderedList()}
+              specs="orderedList"
+              tooltip={t('components.wysiwyg-editor.toolbar.list.ordered')}
+            >
               <FormatListNumbered />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleBlockquote()}
+              specs="blockquote"
+              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.blockquote')}
+            >
               <FormatQuoteOutlined />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
+            <ControlsButton
+              editor={editor}
+              command={e => e.toggleCodeBlock()}
+              specs="codeBlock"
+              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.code')}
+            >
               <Code />
             </ControlsButton>
-            <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
+            <ControlsButton
+              editor={editor}
+              command={e => e.setHorizontalRule()}
+              tooltip={t('components.wysiwyg-editor.toolbar.horizontal.line')}
+            >
               <HorizontalRuleOutlined />
             </ControlsButton>
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
             {!hideImageOptions && (
-              <>
-                <InsertImageButton
-                  editor={editor}
-                  onDialogOpen={onDialogOpen}
-                  onDialogClose={onDialogClose}
-                  temporaryLocation={temporaryLocation}
-                />
-                <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-              </>
+              <InsertImageButton
+                editor={editor}
+                onDialogOpen={onDialogOpen}
+                onDialogClose={onDialogClose}
+                temporaryLocation={temporaryLocation}
+              />
             )}
-
+            {!hideImageOptions && ( // Don't join these two, they throw a warning about MUI Tabs component not accepting React Fragments
+              <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            )}
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>
         </Collapse>

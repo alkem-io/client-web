@@ -7,15 +7,14 @@ import CommunityUsers from '@/domain/community/community/CommunityAdmin/Communit
 import useCommunityAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useSubSpace } from '../../subspace/hooks/useSubSpace';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, roleSetId, opportunityId } = useOpportunity();
-
+  const { loading: isLoadingChallenge, roleSetId } = useSubSpace();
   const { spaceId } = useSpace();
 
   const {
@@ -40,7 +39,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useCommunityAdmin({ spaceId, opportunityId, roleSetId, spaceLevel: SpaceLevel.L2 });
+  } = useCommunityAdmin({ spaceId, roleSetId, spaceLevel: SpaceLevel.L2 });
 
   if (!spaceId || isLoadingChallenge) {
     return null;

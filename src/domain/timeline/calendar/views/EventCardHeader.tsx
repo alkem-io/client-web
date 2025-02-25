@@ -9,7 +9,7 @@ import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 
 export interface EventCardHeaderProps {
   event:

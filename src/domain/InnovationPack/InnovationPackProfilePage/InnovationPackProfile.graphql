@@ -2,7 +2,6 @@ query InnovationPackProfilePage($innovationPackId: UUID!) {
   lookup {
     innovationPack(ID: $innovationPackId) {
       id
-      nameID
       authorization {
         id
         myPrivileges

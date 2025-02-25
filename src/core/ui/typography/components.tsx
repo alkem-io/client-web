@@ -1,11 +1,6 @@
 import { lighten, Typography, TypographyProps } from '@mui/material';
 import provideStaticProps from '@/core/utils/provideStaticProps';
 
-/**
- * @deprecated - the platform header is Alkemio logo
- */
-export const PlatformTitle = provideStaticProps(Typography, { variant: 'h1' }) as typeof Typography;
-
 export const PageTitle = provideStaticProps(Typography, { variant: 'h2' }) as typeof Typography;
 
 export const BlockTitle = provideStaticProps(Typography, { variant: 'h3' }) as typeof Typography;
