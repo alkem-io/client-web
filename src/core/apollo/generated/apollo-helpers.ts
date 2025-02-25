@@ -3360,21 +3360,6 @@ export type SearchResultUserFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchResultUserGroupKeySpecifier = (
-  | 'id'
-  | 'score'
-  | 'terms'
-  | 'type'
-  | 'userGroup'
-  | SearchResultUserGroupKeySpecifier
-)[];
-export type SearchResultUserGroupFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  terms?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4994,10 +4979,6 @@ export type StrictTypedTypePolicies = {
   SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
     fields?: SearchResultUserFieldPolicy;
-  };
-  SearchResultUserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultUserGroupKeySpecifier | (() => undefined | SearchResultUserGroupKeySpecifier);
-    fields?: SearchResultUserGroupFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);

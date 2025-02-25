@@ -53,8 +53,6 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
   | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Subspace, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Challenge, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Opportunity, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>;
 
 interface SearchViewProps {
@@ -74,8 +72,6 @@ const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultTyp
   journeyResults: [
     SearchResultType.Space,
     SearchResultType.Subspace,
-    SearchResultType.Challenge,
-    SearchResultType.Opportunity,
   ],
   calloutResults: [SearchResultType.Callout],
   contributionResults: [SearchResultType.Post],
@@ -158,7 +154,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       searchData: {
         terms: termsFromUrl,
         tagsetNames,
-        typesFilter: filters,
+        categories: filters,
         searchInSpaceFilter: spaceId,
       },
     },

@@ -5872,15 +5872,25 @@ export type RoomSendMessageReplyInput = {
   threadID: Scalars['MessageID'];
 };
 
+/** The category in which to search. A category may include a couple of entity types, e.g. "responses" include posts, whiteboard, etc. */
+export enum SearchCategory {
+  CollaborationTools = 'COLLABORATION_TOOLS',
+  Contributors = 'CONTRIBUTORS',
+  Responses = 'RESPONSES',
+  Spaces = 'SPACES',
+}
+
 export type SearchInput = {
+  /** Restrict the search to only the specified categories. Default is all. */
+  categories?: InputMaybe<Array<SearchCategory>>;
   /** Restrict the search to only the specified Space. Default is all Spaces. */
   searchInSpaceFilter?: InputMaybe<Scalars['UUID']>;
   /** Expand the search to includes Tagsets with the provided names. Max 2. */
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Space. Max 5. */
   terms: Array<Scalars['String']>;
-  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, callout. Default is all. */
-  typesFilter?: InputMaybe<Array<Scalars['String']>>;
+  /** Restrict the search to only the specified entity types. Default is all. */
+  types?: InputMaybe<Array<SearchResultTypes>>;
 };
 
 export type SearchResult = {
@@ -5955,14 +5965,22 @@ export type SearchResultSpace = SearchResult & {
 
 export enum SearchResultType {
   Callout = 'CALLOUT',
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
   Space = 'SPACE',
   Subspace = 'SUBSPACE',
   User = 'USER',
-  Usergroup = 'USERGROUP',
+  Whiteboard = 'WHITEBOARD',
+}
+
+/** The different types of available search results. */
+export enum SearchResultTypes {
+  Callout = 'CALLOUT',
+  Organization = 'ORGANIZATION',
+  Post = 'POST',
+  Space = 'SPACE',
+  Subspace = 'SUBSPACE',
+  User = 'USER',
   Whiteboard = 'WHITEBOARD',
 }
 
@@ -5977,19 +5995,6 @@ export type SearchResultUser = SearchResult & {
   type: SearchResultType;
   /** The User that was found. */
   user: User;
-};
-
-export type SearchResultUserGroup = SearchResult & {
-  __typename?: 'SearchResultUserGroup';
-  id: Scalars['UUID'];
-  /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float'];
-  /** The terms that were matched for this result */
-  terms: Array<Scalars['String']>;
-  /** The type of returned result for this search. */
-  type: SearchResultType;
-  /** The User Group that was found. */
-  userGroup: UserGroup;
 };
 
 export enum SearchVisibility {
@@ -26580,13 +26585,6 @@ export type SearchQuery = {
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
-      | {
-          __typename?: 'SearchResultUserGroup';
-          id: string;
-          score: number;
-          terms: Array<string>;
-          type: SearchResultType;
-        }
     >;
     calloutResults: Array<
       | {
@@ -26652,13 +26650,6 @@ export type SearchQuery = {
       | { __typename?: 'SearchResultPost'; id: string; score: number; terms: Array<string>; type: SearchResultType }
       | { __typename?: 'SearchResultSpace'; id: string; score: number; terms: Array<string>; type: SearchResultType }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
-      | {
-          __typename?: 'SearchResultUserGroup';
-          id: string;
-          score: number;
-          terms: Array<string>;
-          type: SearchResultType;
-        }
     >;
     contributorResults: Array<
       | { __typename?: 'SearchResultCallout'; id: string; score: number; terms: Array<string>; type: SearchResultType }
@@ -26728,13 +26719,6 @@ export type SearchQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           };
-        }
-      | {
-          __typename?: 'SearchResultUserGroup';
-          id: string;
-          score: number;
-          terms: Array<string>;
-          type: SearchResultType;
         }
     >;
     contributionResults: Array<
@@ -26806,13 +26790,6 @@ export type SearchQuery = {
         }
       | { __typename?: 'SearchResultSpace'; id: string; score: number; terms: Array<string>; type: SearchResultType }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
-      | {
-          __typename?: 'SearchResultUserGroup';
-          id: string;
-          score: number;
-          terms: Array<string>;
-          type: SearchResultType;
-        }
     >;
   };
 };
@@ -27765,7 +27742,6 @@ export type ExploreSpacesSearchQuery = {
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType }
-      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType }
     >;
   };
 };
@@ -29355,7 +29331,6 @@ export type SpaceExplorerSearchQuery = {
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
     >;
   };
 };
