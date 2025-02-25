@@ -5,11 +5,12 @@ import SpaceAboutForm, { SpaceAboutEditFormValuesType } from '@/domain/space/abo
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
 import { Actions } from '@/core/ui/actions/Actions';
+import Loading from '@/core/ui/loading/Loading';
 
 export const SpaceContextView = () => {
   const notify = useNotification();
-  const { spaceId, spaceLevel } = useUrlResolver();
-  const { data: spaceData } = useSpaceProfileQuery({
+  const { spaceId, spaceLevel, loading: resolverLoading } = useUrlResolver();
+  const { data: spaceData, loading: spaceDataLoading } = useSpaceProfileQuery({
     variables: {
       spaceId: spaceId!,
     },
@@ -18,11 +19,13 @@ export const SpaceContextView = () => {
 
   const about: SpaceAboutDetailsModel = spaceData?.lookup.space?.about!;
 
-  const [updateSpace, { loading: isUpdatingSpace }] = useUpdateSpaceMutation({
+  const [updateSpace, { loading: isLoading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
 
-  const isLoading = isUpdatingSpace;
+  if (resolverLoading || spaceDataLoading) {
+    return <Loading />;
+  }
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
