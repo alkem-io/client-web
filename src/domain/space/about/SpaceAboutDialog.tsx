@@ -37,7 +37,7 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import Loading from '@/core/ui/loading/Loading';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
+import { SpaceAboutDetailsModel } from './model/spaceAboutFull.model';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;

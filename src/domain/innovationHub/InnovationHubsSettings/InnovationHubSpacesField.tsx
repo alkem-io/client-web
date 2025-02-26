@@ -22,7 +22,7 @@ import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 export interface Space extends Identifiable {
   id: string;

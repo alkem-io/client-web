@@ -1,7 +1,7 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceLevel, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface ExploreSpacesContainerEntities {
   spaces: SpaceWithParent[] | undefined;

@@ -12,7 +12,7 @@ import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/Inn
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { SpaceAboutDetailsModel } from './model/SpaceAboutFull.model';
+import { SpaceAboutDetailsModel } from './model/spaceAboutFull.model';
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { MetricType } from '@/domain/platform/metrics/MetricType';

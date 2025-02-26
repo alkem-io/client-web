@@ -11,7 +11,7 @@ import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from './PrivacyIcon';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 type JourneyTileProps = {
   journey:

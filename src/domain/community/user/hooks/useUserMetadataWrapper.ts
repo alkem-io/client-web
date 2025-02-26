@@ -7,7 +7,7 @@ import {
   UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 export interface PendingApplication extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {

@@ -5,7 +5,7 @@ import {
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useCallback, useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {

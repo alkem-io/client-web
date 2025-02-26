@@ -7,7 +7,7 @@ import {
 import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { AuthorizationPrivilege, MetricsItemFragment } from '@/core/apollo/generated/graphql-schema';
 import mainQuery from '@/core/apollo/utils/mainQuery';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
 
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   about?: SpaceAboutDetailsModel;

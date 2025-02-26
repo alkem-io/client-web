@@ -15,7 +15,7 @@ import useSpaceDashboardNavigation, {
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpaceContainerEntities {

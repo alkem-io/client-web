@@ -16,7 +16,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/SpaceAboutFull.model';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;

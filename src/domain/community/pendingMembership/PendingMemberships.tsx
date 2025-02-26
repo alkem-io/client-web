@@ -9,7 +9,7 @@ import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { CommunityGuidelinesSummaryFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface SpaceDetails {
   about: SpaceAboutLightModel;

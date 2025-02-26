@@ -40,7 +40,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
 import TryVcInfo from './TryVC/TryVcInfo';
-import { SpaceAboutMinimalModel } from '@/domain/space/about/model/SpaceAboutMinimal.model';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const steps = {
   initial: 'initial',

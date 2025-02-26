@@ -7,7 +7,7 @@ import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/gene
 import { ContainerChildProps } from '@/core/container/container';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/SpaceAboutLight.model';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useCallback, useMemo } from 'react';
 
 export interface EntityDetailsContainerEntities {
