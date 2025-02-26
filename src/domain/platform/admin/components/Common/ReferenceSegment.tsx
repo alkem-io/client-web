@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Box, BoxProps, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { FieldArray } from 'formik';
+import { FieldArray, useFormikContext } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -57,6 +57,7 @@ export const ReferenceSegment = ({
   ...props
 }: ReferenceSegmentProps) => {
   const { t } = useTranslation();
+  const { setFieldValue, touched } = useFormikContext();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
   const breakpoint = useCurrentBreakpoint();
@@ -80,6 +81,12 @@ export const ReferenceSegment = ({
       });
     }
     push({ name: '', uri: '' });
+  };
+
+  const onFileUploaded = (referenceIndex: number, fileName: string) => {
+    if (!touched?.[fieldName]?.[referenceIndex]?.name) {
+      setFieldValue(`${fieldName}.${referenceIndex}.name`, fileName);
+    }
   };
 
   return (
@@ -122,6 +129,7 @@ export const ReferenceSegment = ({
                       readOnly={readOnly}
                       disabled={disabled || isRemoving(index)}
                       entityID={attachment.id}
+                      onChange={fileName => onFileUploaded(index, fileName)}
                       helperText={tLinks('components.referenceSegment.url-helper-text', {
                         terms: {
                           href: locations?.terms,
