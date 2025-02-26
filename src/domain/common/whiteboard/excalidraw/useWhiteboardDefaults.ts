@@ -8,7 +8,7 @@ const useWhiteboardDefaults = (): {
   const theme = useTheme();
   return {
     // Do not change this zoomToFit value, it is deprecated and will be removed in a future release of the Excalidraw library,
-    // setting it to true causes issues (an infinite loading spinner in Excalidraw)
+    // setting it to true causes issues (an infinite loading spinner in Excalidraw) (for more details see #7752)
     zoomToFit: false, // requires @alkemio/excalidraw-fork@0.15.2-alkemio-1 or higher
 
     appState: {
