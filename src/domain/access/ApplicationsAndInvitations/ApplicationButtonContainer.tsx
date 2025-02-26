@@ -91,9 +91,9 @@ export const ApplicationButtonContainer = ({
   const space = _communityPrivileges?.lookup.space;
   const parentSpace = _communityPrivileges?.parentSpace?.space;
 
-  const applyUrl = space?.profile.url;
-  const challengeName = space?.profile.displayName;
-  const spaceName = parentSpace?.profile.displayName;
+  const applyUrl = space?.about.profile.url;
+  const challengeName = space?.about.profile.displayName;
+  const spaceName = parentSpace?.about.profile.displayName;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinRoleSetMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
@@ -112,7 +112,7 @@ export const ApplicationButtonContainer = ({
   const isChildJourney = !!parentSpaceId;
   const isParentMember = parentSpace?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = parentSpace?.profile.url;
+  const parentUrl = parentSpace?.about.profile.url;
 
   const rolesetPrivileges = space?.community?.roleSet?.authorization?.myPrivileges ?? [];
 

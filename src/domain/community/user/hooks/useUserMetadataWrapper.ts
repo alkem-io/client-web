@@ -7,15 +7,12 @@ import {
   UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 export interface PendingApplication extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {
     level: SpaceLevel;
-    profile: {
-      displayName: string;
-      tagline?: string;
-      url: string;
-    };
+    about: SpaceAboutMinimalModel;
   };
   application: {
     createdDate: Date | string;

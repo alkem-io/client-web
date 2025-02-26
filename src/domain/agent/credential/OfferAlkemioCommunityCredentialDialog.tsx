@@ -91,7 +91,10 @@ const OfferAlkemioCommunityCredentialDialog = ({
                         onClick={() => setSelectedContribution(details)}
                         selected={details === selectedContribution}
                       >
-                        <ListItemText primary={details?.displayName} secondary={details?.tagline} />
+                        <ListItemText
+                          primary={details?.about.profile.displayName}
+                          secondary={details?.about.profile.tagline}
+                        />
                       </ListItemButton>
                     )}
                   </ContributionDetailsContainer>

@@ -51,7 +51,7 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
       },
     });
 
-    return data?.lookup?.space?.profile;
+    return data?.lookup?.space?.about.profile;
   };
 
   // Memoize the virtual contributors list (already members)

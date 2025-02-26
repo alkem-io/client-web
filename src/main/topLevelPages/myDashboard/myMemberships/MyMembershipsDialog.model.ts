@@ -14,13 +14,14 @@ export type MembershipProps = {
   space: {
     id: string;
     level: SpaceLevel;
-    profile: {
-      url: string;
-      displayName: string;
-
-      avatar?: Visual;
-      tagline?: string;
-      cardBanner?: Visual;
+    about: {
+      profile: {
+        url: string;
+        displayName: string;
+        avatar?: Visual;
+        tagline?: string;
+        cardBanner?: Visual;
+      };
     };
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];

@@ -8,21 +8,12 @@ query RecentSpaces($limit: Float) {
             mode
           }
         }
-        profile {
-          ...RecentSpaceProfile
+        about {
+          ...SpaceAboutCardBanner
         }
         level
         __typename # do not remove
       }
     }
-  }
-}
-
-fragment RecentSpaceProfile on Profile {
-  id
-  url
-  displayName
-  cardBanner: visual(type: CARD) {
-    ...VisualUri
   }
 }

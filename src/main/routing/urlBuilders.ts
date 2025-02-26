@@ -9,7 +9,7 @@ export const buildSettingsUrl = (entityUrl: string) => {
 };
 
 export const buildSettingsProfileUrl = (entityUrl: string) => {
-  return `${entityUrl}/settings/profile`;
+  return `${entityUrl}/settings/about`;
 };
 
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;

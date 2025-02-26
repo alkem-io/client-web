@@ -12,8 +12,8 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     space {
       id
       ... on Space {
-        profile {
-          ...RecentContributionsSpaceProfile
+        about {
+          ...SpaceAboutCardBanner
         }
       }
       # ... on RelayPaginatedSpace {

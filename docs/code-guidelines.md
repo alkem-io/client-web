@@ -22,13 +22,16 @@ All new code should be put under `src/core`, `src/domain` or `src/main`.
 
 As some similar entities of the App domain can reuse common components (but still specific to the union of those entities),
 instead of choosing locations such as `common` or `shared`, please pick a common term for those entities. For example,
-Space, Challenge and Opportunity are referred to using the common term Journey. Components that are reused for all 3 of those
-should be placed under `domain/journey`.
+Space, Templates, Admin etc. Components that are reused for all 3 of those
+should be placed under the corresponding folder.
 
 ### Filename case
 
-Files and folders are named using _camelCase_ or _PascalCase_.
 Folder names are always _camelCase_.
+Files and folders are named using _camelCase_ or _PascalCase_.
+For Class/Component/GraphQL use _PascalCase_ (main export => filename).
+For hooks, utils, etc. use _camelCase_.
+For models (domain types/interfaces) use _camelCase_ + .model.ts. This could be used for constants, context and more.
 
 A file usually inherits the name of its main exported constant. If the constant is a React component named `ComponentName`,
 one can expect the file to be named `ComponentName.tsx`.
@@ -217,7 +220,7 @@ const LogLevel = {
   ERROR: 'ERROR',
 } as const;
 
-type LogLevel = typeof LogLevel[keyof typeof LogLevel];
+type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
 ```
 
 **Conclusion**: Although enums provide a structured way to represent constants, their runtime quirks and incompatibilities with TypeScript’s structural typing system make them less desirable for modern codebases. Using constant objects (as const) is a cleaner, safer, and more predictable alternative.

@@ -37,7 +37,7 @@ const PendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      journeyUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.profile.url,
+      journeyUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
     });
   };
 
@@ -129,12 +129,14 @@ const PendingMembershipsDialog = () => {
                       hydratedApplication && (
                         <JourneyCard
                           iconComponent={spaceIconByLevel[hydratedApplication.space.level]}
-                          header={hydratedApplication.space.profile.displayName}
-                          tags={hydratedApplication.space.profile.tagset?.tags ?? []}
-                          banner={hydratedApplication.space.profile.visual}
-                          journeyUri={hydratedApplication.space.profile.url}
+                          header={hydratedApplication.space.about.profile.displayName}
+                          tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
+                          banner={hydratedApplication.space.about.profile.cardBanner}
+                          journeyUri={hydratedApplication.space.about.profile.url}
                         >
-                          <JourneyCardTagline>{hydratedApplication.space.profile.tagline ?? ''}</JourneyCardTagline>
+                          <JourneyCardTagline>
+                            {hydratedApplication.space.about.profile.tagline ?? ''}
+                          </JourneyCardTagline>
                         </JourneyCard>
                       )
                     }

@@ -49,7 +49,9 @@ const TemplateTypePermissions = {
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, routePrefix }) => {
   const { templateId, loading: resolvingTemplate } = useUrlResolver();
   const {
-    profile: { url: spaceUrl },
+    about: {
+      profile: { url: spaceUrl },
+    },
   } = useSpace();
 
   const { data, loading: loadingSpace } = useSpaceTemplatesManagerQuery({

@@ -5,22 +5,14 @@ import {
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { PendingApplication } from '../user';
-import { Visual } from '@/domain/common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { CommunityGuidelinesSummaryFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface SpaceDetails {
-  profile: {
-    displayName: string;
-    tagline?: string;
-    url: string;
-    tagset?: {
-      tags: string[];
-    };
-    visual?: Visual | undefined;
-  };
+  about: SpaceAboutLightModel;
   level: SpaceLevel;
 }
 
@@ -66,32 +58,22 @@ type InvitationHydratorProps = {
 } & (
   | {
       withJourneyDetails?: false;
-      visualType?: VisualType;
     }
   | {
       withJourneyDetails: true;
-      visualType: VisualType;
     }
 );
 
 export const InvitationHydrator = ({
   invitation,
-  withJourneyDetails = false,
-  // This fallback is for Typescript only,
-  // visualType is either required when withJourneyDetails is true or not used otherwise.
-  visualType = VisualType.Avatar,
+
   withCommunityGuidelines = false,
   children,
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: invitation.spacePendingMembershipInfo.id,
-      fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
-      visualType:
-        invitation.spacePendingMembershipInfo.level === SpaceLevel.L0 && visualType === VisualType.Avatar
-          ? VisualType.Card
-          : visualType, // Spaces don't have avatars
     },
   });
 
@@ -117,9 +99,9 @@ export const InvitationHydrator = ({
         ...invitation.spacePendingMembershipInfo,
         ...journey,
         level: invitation.spacePendingMembershipInfo.level,
-        profile: {
-          ...invitation.spacePendingMembershipInfo.profile,
-          ...journey?.profile,
+        about: {
+          ...invitation.spacePendingMembershipInfo.about,
+          ...journey?.about,
         },
       },
     };
@@ -140,15 +122,10 @@ interface ApplicationHydratorProps {
   children: (provided: ApplicationHydratorProvided) => ReactNode;
 }
 
-export const ApplicationHydrator = ({ application, visualType, children }: ApplicationHydratorProps) => {
+export const ApplicationHydrator = ({ application, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: application.spacePendingMembershipInfo.id,
-      fetchDetails: true,
-      visualType:
-        application.spacePendingMembershipInfo.level === SpaceLevel.L0 && visualType === VisualType.Avatar
-          ? VisualType.Card
-          : visualType, // Spaces don't have avatars
     },
   });
 
@@ -164,9 +141,9 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
         ...application.spacePendingMembershipInfo,
         ...journey,
         level: application.spacePendingMembershipInfo.level,
-        profile: {
-          ...application.spacePendingMembershipInfo.profile,
-          ...journey?.profile,
+        about: {
+          ...application.spacePendingMembershipInfo.about,
+          ...journey?.about,
         },
       },
     };

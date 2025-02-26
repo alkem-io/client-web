@@ -35,9 +35,11 @@ interface SpaceContextProps {
   roleSetId: string;
   isPrivate?: boolean;
   permissions: SpacePermissions;
-  profile: {
-    displayName: string;
-    url: string;
+  about: {
+    profile: {
+      displayName: string;
+      url: string;
+    };
   };
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
@@ -52,9 +54,11 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   calloutsSetId: '',
   roleSetId: '',
   isPrivate: undefined,
-  profile: {
-    displayName: '',
-    url: '',
+  about: {
+    profile: {
+      displayName: '',
+      url: '',
+    },
   },
   permissions: {
     canRead: false,
@@ -131,12 +135,15 @@ const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
     };
   }, [spacePrivileges, canCreateTemplates, communityPrivileges, collaborationPrivileges]);
 
-  const profile = useMemo(() => {
+  // TODO: expose only profile? revise the props used from About
+  const about = useMemo(() => {
     return {
-      displayName: space?.profile.displayName ?? '',
-      url: space?.profile.url ?? '',
+      profile: {
+        displayName: space?.about.profile.displayName ?? '',
+        url: space?.about.profile.url ?? '',
+      },
     };
-  }, [space?.profile]);
+  }, [space?.about.profile]);
 
   const loading = urlResolverLoading || loadingSpaceQuery || communityLoading;
   return (
@@ -144,7 +151,7 @@ const SpaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
       value={{
         spaceId,
         spaceNameId,
-        profile,
+        about,
         communityId,
         collaborationId,
         calloutsSetId,
