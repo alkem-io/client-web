@@ -6,10 +6,8 @@ import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
-import EntityDashboardContributorsSection from '@/domain/community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
-import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
@@ -29,22 +27,7 @@ const SubspaceAboutPage = () => {
   return (
     <>
       <AboutPageContainer journeyId={spaceId}>
-        {(
-          {
-            about,
-            provider,
-            leadOrganizations,
-            leadUsers,
-            metrics,
-            memberUsers,
-            memberUsersCount,
-            memberOrganizations,
-            memberOrganizationsCount,
-            virtualContributors,
-            hasReadPrivilege,
-          },
-          state
-        ) => (
+        {({ about, provider, leadOrganizations, leadUsers, metrics, hasReadPrivilege }, state) => (
           <SpaceAboutDialog
             open
             spaceLevel={spaceLevel}
@@ -61,19 +44,6 @@ const SubspaceAboutPage = () => {
                 <Close />
               </IconButton>
             }
-            leftColumnChildrenBottom={
-              hasReadPrivilege && (
-                <EntityDashboardContributorsSection
-                  memberUsers={memberUsers}
-                  memberUsersCount={memberUsersCount}
-                  memberOrganizations={memberOrganizations}
-                  memberOrganizationsCount={memberOrganizationsCount}
-                >
-                  <SeeMore subject={t('common.contributors')} onClick={() => setIsContributorsDialogOpen(true)} />
-                </EntityDashboardContributorsSection>
-              )
-            }
-            virtualContributors={virtualContributors}
             hasReadPrivilege={hasReadPrivilege}
           />
         )}
