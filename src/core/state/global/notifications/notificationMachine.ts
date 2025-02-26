@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { v4 } from 'uuid';
 import { assign, createMachine } from 'xstate';
 
@@ -20,34 +19,24 @@ export type NotificationsEvent =
   | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
   | { type: typeof CLEAR_NOTIFICATION; payload: { id: string } };
 
-export const notificationMachine = createMachine<
-  NotificationsContext,
-  NotificationsEvent,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->({
+type NotificationMachineTypes = {
+  context: NotificationsContext;
+  events: NotificationsEvent;
+};
+
+export const notificationMachine = createMachine({
   id: 'notification',
   initial: 'active',
   context: {
     notifications: [],
   },
+  types: {} as NotificationMachineTypes,
   states: {
     active: {
       on: {
         PUSH: {
           actions: assign({
-            notifications: (
-              context: NotificationsContext,
-              event: { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
-            ) => [
+            notifications: ({ context, event }) => [
               ...context.notifications,
               { id: v4(), message: event.payload.message, severity: event.payload.severity || 'info' },
             ],
@@ -55,10 +44,7 @@ export const notificationMachine = createMachine<
         },
         CLEAR: {
           actions: assign({
-            notifications: (
-              context: NotificationsContext,
-              event: { type: typeof CLEAR_NOTIFICATION; payload: { id: string } }
-            ) => context.notifications.filter(x => x.id !== event.payload.id),
+            notifications: ({ context, event }) => context.notifications.filter(x => x.id !== event.payload.id),
           }),
         },
       },

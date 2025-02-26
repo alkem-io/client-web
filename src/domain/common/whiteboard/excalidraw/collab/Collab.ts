@@ -130,7 +130,7 @@ class Collab {
   private handleCloseConnection = () => {
     this.setCollaborators([]);
     this.onCloseConnection();
-    this.portal.sceneInitilized = false;
+    this.portal.sceneInitialized = false;
     this.onSceneInitChange(false);
   };
 
@@ -184,7 +184,7 @@ class Collab {
           },
           {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
-              if (!this.portal.sceneInitilized) {
+              if (!this.portal.sceneInitialized) {
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
                   {
@@ -197,7 +197,7 @@ class Collab {
                   await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
                 }
                 this.excalidrawAPI.zoomToFit();
-                this.portal.sceneInitilized = true;
+                this.portal.sceneInitialized = true;
                 this.onSceneInitChange(true);
               }
             },
@@ -216,7 +216,7 @@ class Collab {
                 return;
               }
               // do not handled mouse location until socket is initialized - this may improve loading times
-              if (isMouseLocationPayload(data) && this.portal.sceneInitilized) {
+              if (isMouseLocationPayload(data) && this.portal.sceneInitialized) {
                 const { pointer, button, username, selectedElementIds, socketId } = data.payload;
                 this.updateCollaborator(socketId, {
                   pointer,
