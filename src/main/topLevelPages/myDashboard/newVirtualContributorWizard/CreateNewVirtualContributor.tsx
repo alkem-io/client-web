@@ -25,7 +25,7 @@ import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/cor
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
-  getVisual: (visuals: VisualWithAltText) => void;
+  getVisual: (visual: VisualWithAltText) => void;
   onCreateKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
@@ -91,12 +91,6 @@ const CreateNewVirtualContributor = ({
 }: CreateNewVirtualContributorProps) => {
   const [vcAvatar, setVcAvatar] = useState<VisualWithAltText>();
 
-  useEffect(() => {
-    if (vcAvatar) {
-      getVisual(vcAvatar);
-    }
-  }, [vcAvatar]);
-
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -124,11 +118,8 @@ const CreateNewVirtualContributor = ({
 
   const handleSubmit = (values: VirtualContributorFromProps) => {
     const name = values.name.trim();
-    const newValues = {
-      ...values,
-      name,
-      // ...vcAvatar
-    };
+    const newValues = { ...values, name };
+
     switch (source) {
       case VCSourceOptions.WRITTEN_KNOWLEDGE:
         onCreateKnowledge(newValues);
@@ -141,6 +132,12 @@ const CreateNewVirtualContributor = ({
         break;
     }
   };
+
+  useEffect(() => {
+    if (vcAvatar) {
+      getVisual(vcAvatar);
+    }
+  }, [vcAvatar]);
 
   return (
     <>
@@ -165,7 +162,6 @@ const CreateNewVirtualContributor = ({
                       <Form noValidate>
                         <GridItem columns={isMobile ? cols : 8}>
                           <Gutters disablePadding>
-                            {/* WIP ~ #6695 ⬇️⬇️⬇️ */}
                             <Gutters disablePadding flexDirection="row">
                               <FormikVisualUpload
                                 flex={1}
@@ -189,7 +185,6 @@ const CreateNewVirtualContributor = ({
                                 />
                               </Gutters>
                             </Gutters>
-                            {/* WIP ~ #6695 ⬆️⬆️⬆️ */}
 
                             <FormikMarkdownField
                               name="description"

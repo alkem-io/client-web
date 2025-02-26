@@ -98,20 +98,6 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
 
-  useEffect(() => {
-    if (visual?.file && createdVc?.profile?.avatar?.id) {
-      uploadVisual({
-        variables: {
-          file: visual.file,
-          uploadData: {
-            visualID: createdVc.profile.avatar.id,
-            alternativeText: visual.altText,
-          },
-        },
-      });
-    }
-  }, [virtualContributorInput, createdVc, uploadVisual]);
-
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
     setAccountName(accountName);
@@ -628,6 +614,20 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     getSelectableSpaces,
     availableExistingSpaces,
   ]);
+
+  useEffect(() => {
+    if (visual?.file && createdVc?.profile?.avatar?.id) {
+      uploadVisual({
+        variables: {
+          file: visual.file,
+          uploadData: {
+            visualID: createdVc.profile.avatar.id,
+            alternativeText: visual.altText,
+          },
+        },
+      });
+    }
+  }, [virtualContributorInput, createdVc, uploadVisual]);
 
   return {
     startWizard,

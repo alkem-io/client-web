@@ -48,7 +48,6 @@ const VisualUpload = ({ visual, height = DEFAULT_SIZE, altText }: VisualUploadPr
   });
   const [dialogOpened, setDialogOpened] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
-  console.log('selectedFile', selectedFile);
 
   const handleVisualUpload = useCallback(
     async (file: File, altText: string) => {
