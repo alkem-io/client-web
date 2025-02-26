@@ -7,11 +7,11 @@ const useInnovationHub = () => {
 
   const subdomain = import.meta.env.MODE === 'development' ? params.get('subdomain') ?? undefined : undefined;
 
+  // Subdomain can come from a query url param or from the current domain (server will handle, so we can send subdomain=undefined)
   const { data: innovationHubData, loading: innovationHubLoading } = useInnovationHubQuery({
     variables: {
       subdomain,
     },
-    skip: !subdomain,
   });
 
   const innovationHub = useInnovationHubAttrs(innovationHubData?.platform.innovationHub);

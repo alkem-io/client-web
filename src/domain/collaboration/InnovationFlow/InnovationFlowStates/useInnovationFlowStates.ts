@@ -23,8 +23,8 @@ const useInnovationFlowStates = ({
   const innovationFlow = data?.lookup.collaboration?.innovationFlow;
 
   const currentInnovationFlowState = innovationFlow?.currentState.displayName;
-  const myPrivilleges = innovationFlow?.authorization?.myPrivileges;
-  const canEditInnovationFlow = myPrivilleges?.includes(AuthorizationPrivilege.Update);
+  const myPrivileges = innovationFlow?.authorization?.myPrivileges;
+  const canEditInnovationFlow = myPrivileges?.includes(AuthorizationPrivilege.Update);
 
   return {
     innovationFlowStates: innovationFlow?.states,
