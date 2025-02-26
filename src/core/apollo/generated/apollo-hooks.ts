@@ -17034,6 +17034,9 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       profile {
         id
         url
+        avatar: visual(type: AVATAR) {
+          id
+        }
       }
       knowledgeBase {
         id

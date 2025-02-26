@@ -4,6 +4,9 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
     profile {
       id
       url
+      avatar: visual(type: AVATAR) {
+        id
+      }
     }
     knowledgeBase {
       id
@@ -27,5 +30,5 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
 mutation DeleteVirtualContributorOnAccount($virtualContributorData: DeleteVirtualContributorInput!) {
   deleteVirtualContributor(deleteData: $virtualContributorData) {
     id
-	}
+  }
 }
