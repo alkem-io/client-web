@@ -49,7 +49,7 @@ const JourneyUnauthorizedDialog = ({
     <SpaceAboutDialog
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
-      endButton={
+      applyButton={
         <ApplicationButtonContainer parentSpaceId={parentSpaceId} journeyId={journeyId} loading={loading}>
           {(applicationButtonProps, applicationButtonLoading) => (
             <ApplicationButton

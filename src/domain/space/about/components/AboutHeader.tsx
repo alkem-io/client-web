@@ -1,13 +1,12 @@
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, Theme, useMediaQuery } from '@mui/material';
 import { ReactNode } from 'react';
 import { PageTitle, Tagline } from '@/core/ui/typography';
-import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import Loading from '@/core/ui/loading/Loading';
-import { SpaceAboutDetailsModel } from '../model/spaceAboutFull.model';
 
 export interface AboutHeaderProps {
-  about?: SpaceAboutDetailsModel | undefined;
+  title?: string;
+  tagline?: string;
   startIcon?: ReactNode;
   endButton?: ReactNode;
   loading?: boolean;
@@ -21,12 +20,8 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
   return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
 };
 
-const AboutHeader = ({ about, loading = false, endButton, startIcon }: AboutHeaderProps) => {
-  const breakpoint = useCurrentBreakpoint();
-
-  const isMobile = breakpoint === 'xs';
-
-  const aboutProfile = about?.profile;
+const AboutHeader = ({ title, tagline, endButton, loading = false, startIcon }: AboutHeaderProps) => {
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
     <Box padding={gutters()}>
@@ -46,13 +41,13 @@ const AboutHeader = ({ about, loading = false, endButton, startIcon }: AboutHead
           {startIcon}
         </DialogHeaderItem>
         <DialogHeaderItem order={isMobile ? 1 : 0}>
-          <PageTitle paddingY={gutters(0.5)}>{aboutProfile?.displayName}</PageTitle>
+          <PageTitle paddingY={gutters(0.5)}>{title}</PageTitle>
         </DialogHeaderItem>
         <DialogHeaderItem minWidth="30%" align="end">
           {endButton}
         </DialogHeaderItem>
       </Box>
-      <Tagline textAlign="center">{about?.profile.tagline}</Tagline>
+      <Tagline textAlign="center">{tagline}</Tagline>
     </Box>
   );
 };

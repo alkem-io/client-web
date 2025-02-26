@@ -35,6 +35,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   ribbon?: ReactNode;
   startButton?: ReactNode;
   endButton?: ReactNode;
+  applyButton?: ReactNode;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
   guidelines?: ReactNode;
@@ -63,6 +64,7 @@ const SpaceAboutDialog = ({
   loading = false,
   startButton,
   endButton,
+  applyButton,
   leftColumnChildrenTop,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
@@ -95,7 +97,13 @@ const SpaceAboutDialog = ({
       sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
     >
-      <AboutHeader about={about} loading={loading} startIcon={startButton} endButton={endButton} />
+      <AboutHeader
+        title={aboutProfile?.displayName}
+        tagline={aboutProfile?.tagline}
+        loading={loading}
+        startIcon={startButton}
+        endButton={endButton}
+      />
       {ribbon}
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters>
@@ -110,6 +118,11 @@ const SpaceAboutDialog = ({
                   onEditClick={() => openEditDialog('description')}
                 />
               </PageContentBlock>
+              {applyButton && (
+                <Box display="flex" justifyContent="center" width="100%">
+                  {applyButton}
+                </Box>
+              )}
             </PageContentColumn>
             <PageContentColumn columns={4}>
               <EntityDashboardLeadsSection
