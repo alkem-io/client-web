@@ -62,17 +62,14 @@ interface SearchViewProps {
 }
 
 interface SearchViewSections {
-  journeyResults?: SearchResultMetaType[];
+  spaceResults?: SearchResultMetaType[];
   calloutResults?: SearchResultMetaType[];
   contributionResults?: SearchResultMetaType[];
   contributorResults?: SearchResultMetaType[];
 }
 
 const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultType[]> = {
-  journeyResults: [
-    SearchResultType.Space,
-    SearchResultType.Subspace,
-  ],
+  spaceResults: [SearchResultType.Space, SearchResultType.Subspace],
   calloutResults: [SearchResultType.Callout],
   contributionResults: [SearchResultType.Post],
   contributorResults: [SearchResultType.User, SearchResultType.Organization],
@@ -154,7 +151,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       searchData: {
         terms: termsFromUrl,
         tagsetNames,
-        categories: filters,
+        types: filters,
         searchInSpaceFilter: spaceId,
       },
     },
@@ -164,10 +161,10 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
 
-  const { journeyResultsCount, calloutResultsCount, contributorResultsCount, contributionResultsCount } =
+  const { spaceResultsCount, calloutResultsCount, contributorResultsCount, contributionResultsCount } =
     data?.search ?? {};
 
-  const { journeyResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
+  const { spaceResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
     () =>
       groupBy(results, ({ type }) => {
         return findKey(searchResultSectionTypes, types => types.includes(type));
@@ -217,9 +214,9 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         <SearchResultSection
           title={journeyFilterTitle}
           filterTitle={t('pages.search.filter.type.journey')}
-          count={journeyResultsCount}
+          count={spaceResultsCount}
           filterConfig={journeyFilterConfig}
-          results={journeyResults}
+          results={spaceResults}
           currentFilter={journeyFilter}
           onFilterChange={setJourneyFilter}
           loading={isSearching}
@@ -270,7 +267,7 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     return [];
   }
 
-  const journeyResults = (query.search.journeyResults || [])
+  const spaceResults = (query.search.spaceResults || [])
     .map<SearchResultMetaType>(
       ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
       []
@@ -296,5 +293,5 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     []
   );
 
-  return calloutResults.concat(contributorResults).concat(journeyResults).concat(contributionResults);
+  return calloutResults.concat(contributorResults).concat(spaceResults).concat(contributionResults);
 };

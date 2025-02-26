@@ -1,23 +1,19 @@
 query search($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    journeyResults {
+    spaceResults {
       id
       score
       terms
       type
-      ... on SearchResultSpace {
-        ...SearchResultSpace
-      }
+      ...SearchResultSpace
     }
-    journeyResultsCount
+    spaceResultsCount
     calloutResults {
       id
       score
       terms
       type
-      ... on SearchResultCallout {
-        ...SearchResultCallout
-      }
+      ...SearchResultCallout
     }
     calloutResultsCount
     contributorResults {

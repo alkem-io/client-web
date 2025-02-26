@@ -1499,9 +1499,8 @@ export type ISearchResultsKeySpecifier = (
   | 'contributionResultsCount'
   | 'contributorResults'
   | 'contributorResultsCount'
-  | 'groupResults'
-  | 'journeyResults'
-  | 'journeyResultsCount'
+  | 'spaceResults'
+  | 'spaceResultsCount'
   | ISearchResultsKeySpecifier
 )[];
 export type ISearchResultsFieldPolicy = {
@@ -1511,9 +1510,8 @@ export type ISearchResultsFieldPolicy = {
   contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  groupResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationKeySpecifier = (
   | 'category'
@@ -1615,6 +1613,7 @@ export type InnovationFlowKeySpecifier = (
   | 'currentState'
   | 'id'
   | 'profile'
+  | 'settings'
   | 'states'
   | 'updatedDate'
   | InnovationFlowKeySpecifier
@@ -1625,8 +1624,18 @@ export type InnovationFlowFieldPolicy = {
   currentState?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   states?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InnovationFlowSettingsKeySpecifier = (
+  | 'maximumNumberOfStates'
+  | 'minimumNumberOfStates'
+  | InnovationFlowSettingsKeySpecifier
+)[];
+export type InnovationFlowSettingsFieldPolicy = {
+  maximumNumberOfStates?: FieldPolicy<any> | FieldReadFunction<any>;
+  minimumNumberOfStates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowStateKeySpecifier = ('description' | 'displayName' | InnovationFlowStateKeySpecifier)[];
 export type InnovationFlowStateFieldPolicy = {
@@ -4647,6 +4656,10 @@ export type StrictTypedTypePolicies = {
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);
     fields?: InnovationFlowFieldPolicy;
+  };
+  InnovationFlowSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InnovationFlowSettingsKeySpecifier | (() => undefined | InnovationFlowSettingsKeySpecifier);
+    fields?: InnovationFlowSettingsFieldPolicy;
   };
   InnovationFlowState?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowStateKeySpecifier | (() => undefined | InnovationFlowStateKeySpecifier);
