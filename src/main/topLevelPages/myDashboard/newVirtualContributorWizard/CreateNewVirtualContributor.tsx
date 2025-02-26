@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -25,7 +25,7 @@ import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/cor
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
-  getVisual: (visual: VisualWithAltText) => void;
+  onChangeAvatar: (visual: VisualWithAltText) => void;
   onCreateKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
@@ -48,7 +48,6 @@ export interface VirtualContributorFromProps {
   };
   engine: AiPersonaEngine;
   bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-  avatar?: VisualWithAltText;
 }
 
 const BigButton = ({
@@ -87,10 +86,8 @@ const CreateNewVirtualContributor = ({
   onUseExistingKnowledge,
   onUseExternal,
   loading,
-  getVisual,
+  onChangeAvatar,
 }: CreateNewVirtualContributorProps) => {
-  const [vcAvatar, setVcAvatar] = useState<VisualWithAltText>();
-
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -133,12 +130,6 @@ const CreateNewVirtualContributor = ({
     }
   };
 
-  useEffect(() => {
-    if (vcAvatar) {
-      getVisual(vcAvatar);
-    }
-  }, [vcAvatar]);
-
   return (
     <>
       <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
@@ -167,10 +158,10 @@ const CreateNewVirtualContributor = ({
                                 flex={1}
                                 name="visuals.avatar"
                                 visualType={VisualType.Avatar}
-                                getNewAvatar={setVcAvatar}
+                                onChangeAvatar={onChangeAvatar}
                               />
 
-                              <Gutters disablePadding width="100%">
+                              <Gutters disablePadding flex={2}>
                                 <FormikInputField
                                   name="name"
                                   title={t('components.nameSegment.name')}

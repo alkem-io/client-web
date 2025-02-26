@@ -41,7 +41,7 @@ export interface FormikAvatarUploadProps extends BoxProps {
   visualType: VisualType;
   height?: number;
   altText?: string;
-  getNewAvatar?: (avatar: VisualWithAltText) => void;
+  onChangeAvatar?: (avatar: VisualWithAltText) => void;
 }
 
 /**
@@ -53,7 +53,7 @@ const FormikAvatarUpload = ({
   visualType,
   height = DEFAULT_SIZE,
   altText,
-  getNewAvatar,
+  onChangeAvatar,
   ...containerProps
 }: FormikAvatarUploadProps) => {
   const { t } = useTranslation();
@@ -94,7 +94,7 @@ const FormikAvatarUpload = ({
     helpers.setValue({ file, altText });
     setCropDialogOpened(false);
 
-    getNewAvatar?.({ file, altText });
+    onChangeAvatar?.({ file, altText });
   };
 
   const width = height * aspectRatio;

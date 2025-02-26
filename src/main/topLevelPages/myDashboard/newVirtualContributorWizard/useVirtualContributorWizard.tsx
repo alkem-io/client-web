@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -86,7 +86,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
   const [createdVc, setCreatedVc] = useState<
-    { id: string; profile: { url: string; avatar: { id: string } } } | undefined
+    { id: string; profile: { url: string; avatar?: { id: string } } } | undefined
   >();
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
@@ -430,15 +430,19 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
-    setCreatedVc({
-      id: createdVCData.id,
-      profile: {
-        url: createdVCData.profile.url,
-        avatar: {
-          id: createdVCData.profile.avatar?.id || '',
+    if (visual?.file && createdVCData?.profile?.avatar?.id) {
+      await uploadVisual({
+        variables: {
+          file: visual.file,
+          uploadData: {
+            visualID: createdVCData.profile.avatar.id,
+            alternativeText: visual.altText,
+          },
         },
-      },
-    });
+      });
+    }
+
+    setCreatedVc(createdVCData);
 
     if (hasDocuments) {
       const createdLinkCollection = createdVCData.knowledgeBase?.calloutsSet?.callouts?.find(
@@ -567,7 +571,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
                 onStepSelection('existingKnowledge', values);
               }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
-              getVisual={setVisual}
+              onChangeAvatar={setVisual}
             />
           )}
           {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}
@@ -614,20 +618,6 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     getSelectableSpaces,
     availableExistingSpaces,
   ]);
-
-  useEffect(() => {
-    if (visual?.file && createdVc?.profile?.avatar?.id) {
-      uploadVisual({
-        variables: {
-          file: visual.file,
-          uploadData: {
-            visualID: createdVc.profile.avatar.id,
-            alternativeText: visual.altText,
-          },
-        },
-      });
-    }
-  }, [virtualContributorInput, createdVc, uploadVisual]);
 
   return {
     startWizard,
