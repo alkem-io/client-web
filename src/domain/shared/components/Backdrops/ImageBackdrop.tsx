@@ -2,7 +2,7 @@ import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/
 import useNavigate from '@/core/routing/useNavigate';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
-import { FC } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Root = styled(Box)(() => ({
@@ -53,7 +53,7 @@ const ButtonsWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-interface ImageBackdropProps {
+interface ImageBackdropProps extends PropsWithChildren {
   src: string;
   backdropMessage: 'private' | 'authentication' | 'login'; // translation: components.backdrop.*
   blockName: 'users-contributing' | 'all-contributing-users'; // translation: common.block.*

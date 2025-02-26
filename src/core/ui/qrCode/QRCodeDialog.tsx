@@ -42,9 +42,9 @@ const QRCodeDialog = ({ entities, actions, options, state }: QRCodeDialogProps) 
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
-      <DialogHeader onClose={actions.onCancel} title={title} />
+      <DialogHeader onClose={actions.onCancel} title={String(title)} />
       <DialogContent sx={{ display: 'flex', flexFlow: 'column nowrap' }}>
-        {content}
+        <>{content}</>
         {state?.isLoading && <Loading text="Generating credential request" />}
         {!state?.isLoading && entities.qrCodeJwt && (
           <QRCode qrCodeJwt={entities.qrCodeJwt} qrCodeImg={entities.qrCodeImg} sx={{ flexGrow: 1 }} />

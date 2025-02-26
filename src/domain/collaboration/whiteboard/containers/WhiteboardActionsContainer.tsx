@@ -1,15 +1,15 @@
-import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
   useUpdateWhiteboardMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import { CreateContributionOnCalloutInput } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { useCallback, useMemo } from 'react';
+import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface WhiteboardWithPreviewVisuals {
   nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals
@@ -46,10 +46,12 @@ export interface WhiteboardActionsContainerState {
   uploadingVisuals?: boolean;
 }
 
-export interface WhiteboardActionsContainerProps
-  extends ContainerChildProps<{}, IWhiteboardActions, WhiteboardActionsContainerState> {}
+interface WhiteboardChildProps {
+  state: WhiteboardActionsContainerState;
+  actions: IWhiteboardActions;
+}
 
-const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardActionsContainerProps>) => {
+const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<WhiteboardChildProps>) => {
   const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
@@ -176,16 +178,15 @@ const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardAc
 
   return (
     <>
-      {children(
-        {},
-        {
+      {children({
+        state: {
           creatingWhiteboard,
           deletingWhiteboard,
           updatingWhiteboard,
           uploadingVisuals,
         },
-        actions
-      )}
+        actions,
+      })}
     </>
   );
 };

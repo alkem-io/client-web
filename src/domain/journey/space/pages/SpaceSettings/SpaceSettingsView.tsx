@@ -46,7 +46,6 @@ import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { noop } from 'lodash';
 
 type SpaceSettingsViewProps = {
-  spaceId: string; // TODO: The idea is to just pass isSubspace as a boolean here
   spaceLevel: SpaceLevel;
 };
 
@@ -82,6 +81,10 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
     spaceId,
     profile: { url: levelZeroSpaceUrl },
   } = useSpace();
+
+  // TODO: flaky logic here. We already faced a couple of bugs related to this multiple spaceIds logic.
+  // It's better to use the URL resolver getting the spaceId (+ parent or levelZero if needed)
+  const currentSpaceId = isSubspace ? subspaceId : spaceId;
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -133,8 +136,9 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId,
+      spaceId: currentSpaceId,
     },
+    skip: !currentSpaceId,
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
