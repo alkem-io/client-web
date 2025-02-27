@@ -1301,6 +1301,7 @@
     "visual-upload": {
       "loading": "crwdns19120:0crwdne19120:0",
       "success": "crwdns19122:0crwdne19122:0",
+      "error": "crwdns36652:0crwdne36652:0",
       "upload-hover": "crwdns19124:0crwdne19124:0",
       "no-data": "crwdns19126:0crwdne19126:0"
     },
