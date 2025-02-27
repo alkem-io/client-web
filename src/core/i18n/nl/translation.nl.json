@@ -320,6 +320,7 @@
     "dashboard": "Dashboard",
     "contribute": "Draag bij",
     "context": "Context",
+    "index": "Profiel",
     "community": "Community",
     "library": "Bibliotheek",
     "templateLibrary": "Template Bibliotheek",
@@ -722,24 +723,24 @@
         "description": "Leg in één zin uit waar deze Space over gaat.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Achtergrond",
-        "description": "Geef een korte omschrijving waar de behoefte voor deze Space vandaan komt en hoe de Space is ontstaan.",
+      "description": {
+        "title": "Wat",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "Wat zal deze Space veranderen? Wat is de impact voor individuen en organisaties?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "Waar gaat deze community over?",
-        "description": "Let op, deze informatie wordt ook gebruikt voor de beschrijving op het Dashboard",
+      "why": {
+        "title": "Waarom",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie moeten erbij betrokken worden?",
-        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
+        "title": "Wie",
+        "description": "",
         "placeholder": ""
       }
     },
@@ -755,28 +756,23 @@
         "placeholder": ""
       },
       "description": {
-        "title": "Een beschrijving van de subspace",
+        "title": "Wat",
         "description": "",
         "placeholder": ""
       },
-      "background": {
-        "title": "Huidige Realiteit",
-        "description": "Schets een beeld van de huidige status van deze Subspace. Denk aan de 'wat, waar, wanneer en wie'.",
+      "when": {
+        "title": "Impact",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
-        "title": "Aanvullende informatie",
-        "description": "Geef een korte beschrijving van hoe deze Subspace in het grotere plaatje past. Wat is de impact?",
-        "placeholder": ""
-      },
-      "vision": {
-        "title": "Toekomstvisie",
-        "description": "Let op, deze informatie wordt ook gebruikt voor de beschrijving van deze Subspace",
+      "why": {
+        "title": "Waarom",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie moeten hierbij betrokken worden?",
-        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
+        "title": "Wie",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -804,24 +800,24 @@
         "description": "Leg in één zin uit waar deze Subspace over gaat.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Achtergrond",
-        "description": "Geef een korte omschrijving van hoe de Subspace is ontstaan en hoe het past in het grotere plaatje.",
+      "description": {
+        "title": "Wat",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "Wat gaat deze Subspace veranderen? Hoe worden mensen en organisaties er goed of slecht door beïnvloed?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "Beschrijving",
-        "description": "Beschrijf het idee en de impact ervan op de Subspace.",
+      "why": {
+        "title": "Waarom",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie is erbij betrokken?",
-        "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Subspace.",
+        "title": "Wie",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -1419,7 +1415,7 @@
         "select": "Selecteer een host"
       },
       "read-access": "Sta niet-leden van de Space toe om de inhoud van de Subspace te zien",
-      "about": "Meer informatie over deze Space",
+      "about": "Details",
       "visibility": "Deze Space is momenteel in <strong>{{visibility}}</strong> modus",
       "readOnly": "Neem hier contact op met het Alkemio team als je informatie wilt wijzigen."
     },
@@ -1825,6 +1821,9 @@
         "sections": {
           "profile": {
             "description": "Hier kan je het profiel aanpassen voor deze {{entity}}."
+          },
+          "about": {
+            "description": "Hier kun je het openbare profiel voor deze {{entity}} aanpassen. Deze informatie is ook zichtbaar voor niet-leden."
           },
           "context": {
             "description": "Hier kan je de context aanpassen voor deze {{entity}}."
