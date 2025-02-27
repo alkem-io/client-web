@@ -1,13 +1,13 @@
-import { MouseEventHandler, useEffect, useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, DialogContent } from '@mui/material';
+import { Button, Tooltip, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
+import Gutters from '@/core/ui/grid/Gutters';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -26,7 +26,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface WhiteboardDialogFooterProps {
   whiteboardUrl: string | undefined;
-  lastSuccessfulSavedDate: Date | undefined;
   lastSaveError: string | undefined;
   consecutiveSaveErrors: number;
   canUpdateContent: boolean;
@@ -57,7 +56,6 @@ enum ReadonlyReason {
 
 const WhiteboardDialogFooter = ({
   whiteboardUrl,
-  lastSuccessfulSavedDate,
   canUpdateContent,
   onDelete,
   canDelete,
@@ -187,11 +185,27 @@ const WhiteboardDialogFooter = ({
             {t('pages.whiteboard.restartCollaboration')}
           </Button>
         )}
+
         {!readonlyReason && (
-          <>
-            <LastSavedCaption date={lastSuccessfulSavedDate} />
-          </>
+          <Tooltip title={t('tooltips.whiteboard.validServerConnection')} placement="top">
+            <Gutters
+              disableGap
+              disablePadding
+              sx={theme => ({
+                position: 'absolute',
+                left: 10,
+                bottom: 10,
+
+                width: 10,
+                height: 10,
+                borderRadius: 1,
+                cursor: 'pointer',
+                backgroundColor: theme.palette.success.main,
+              })}
+            />
+          </Tooltip>
         )}
+
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
@@ -210,25 +224,3 @@ const WhiteboardDialogFooter = ({
 };
 
 export default WhiteboardDialogFooter;
-
-const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
-  const { t } = useTranslation();
-
-  // Re-rendering every second
-  const [formattedTime, setFormattedTime] = useState<string>();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFormattedTime(date && formatTimeElapsed(date, t, 'long'));
-    }, 500);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [date]);
-
-  if (!date) {
-    return null;
-  }
-
-  return <Caption>{t('common.last-saved', { datetime: formattedTime })}</Caption>;
-};

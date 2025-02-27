@@ -178,7 +178,12 @@
   },
   "tooltips": {
     "click-more-info": "Click for more information",
-    "click-delete": "Click to delete"
+    "click-delete": "Click to delete",
+    "whiteboard": {
+      "validServerConnection": "server connection: Valid",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>"
+    }
   },
   "topBar": {
     "sign-in": "Log In | Sign Up"
@@ -307,7 +312,6 @@
     "field-required": "This field is required",
     "field-min-length": "This field must be minimum of {{min}} characters",
     "field-max-length": "This field must be maximum of {{max}} characters",
-    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
