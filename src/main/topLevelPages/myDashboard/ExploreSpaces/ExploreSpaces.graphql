@@ -1,6 +1,6 @@
 query ExploreSpacesSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    journeyResults {
+    spaceResults {
       id
       type
       ... on SearchResultSpace {
