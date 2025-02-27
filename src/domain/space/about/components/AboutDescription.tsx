@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { PropsWithChildren, ReactElement } from 'react';
 import { Box, Grid, SvgIconProps } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
@@ -13,10 +13,10 @@ import { EditOutlined } from '@mui/icons-material';
 import { noop } from 'lodash';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
-export interface AboutDescriptionProps {
+export interface AboutDescriptionProps extends PropsWithChildren {
   title?: string;
   titleIcon?: ReactElement<SvgIconProps>;
-  description: string | undefined;
+  description?: string;
   spaceLevel?: SpaceLevel;
   loading?: boolean;
   member?: false;
@@ -33,6 +33,7 @@ const AboutDescription = ({
   title,
   titleIcon,
   description,
+  children,
   spaceLevel = SpaceLevel.L0,
   loading = false,
   member = false,
@@ -68,6 +69,7 @@ const AboutDescription = ({
         />
       )}
       {description && <WrapperMarkdown>{description}</WrapperMarkdown>}
+      {children}
 
       {(location || metrics) && (
         <Grid container spacing={1}>
