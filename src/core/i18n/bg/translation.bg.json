@@ -1301,6 +1301,7 @@
     "visual-upload": {
       "loading": "Изображението зарежда",
       "success": "Изображението е качено успешно",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Качи изображение",
       "no-data": "Не е зададено"
     },
