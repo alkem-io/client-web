@@ -2566,15 +2566,25 @@ export type InnovationFlow = {
   id: Scalars['UUID'];
   /** The Profile for this InnovationFlow. */
   profile: Profile;
+  /** The settings for this InnovationFlow. */
+  settings: InnovationFlowSettings;
   /** The set of States in use in this Flow. */
   states: Array<InnovationFlowState>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type InnovationFlowSettings = {
+  __typename?: 'InnovationFlowSettings';
+  /** The maximum number of allowed states. */
+  maximumNumberOfStates: Scalars['Float'];
+  /** The minimum number of allowed states */
+  minimumNumberOfStates: Scalars['Float'];
+};
+
 export type InnovationFlowState = {
   __typename?: 'InnovationFlowState';
-  /** The explation text to clarify the state. */
+  /** The explanation text to clarify the state. */
   description: Scalars['Markdown'];
   /** The display name for the State */
   displayName: Scalars['String'];
@@ -8252,10 +8262,8 @@ export type UserPendingMembershipsQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            url: string;
             tagline?: string | undefined;
-            description?: string | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            url: string;
           };
         };
       };
@@ -9160,12 +9168,11 @@ export type AccountInformationQuery = {
               id: string;
               profile: {
                 __typename?: 'Profile';
-                tagline?: string | undefined;
                 id: string;
                 displayName: string;
                 url: string;
+                tagline?: string | undefined;
                 cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             };
             license: {
@@ -15972,7 +15979,13 @@ export type CommunityUserPrivilegesQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
           };
           community: {
             __typename?: 'Community';
@@ -16001,7 +16014,13 @@ export type CommunityUserPrivilegesQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
           };
           community: {
             __typename?: 'Community';
@@ -16038,7 +16057,13 @@ export type SpaceApplicationQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
           };
           community: {
             __typename?: 'Community';
@@ -22968,6 +22993,18 @@ export type SpaceAboutLightUrlFragment = {
     description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   };
+};
+
+export type SpaceAboutMinimalFragment = {
+  __typename?: 'SpaceAbout';
+  id: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+};
+
+export type SpaceAboutMinimalUrlFragment = {
+  __typename?: 'SpaceAbout';
+  id: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
 };
 
 export type JourneyStorageConfigQueryVariables = Exact<{

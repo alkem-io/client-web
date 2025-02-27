@@ -27,8 +27,11 @@ query AccountInformation($accountId: UUID!) {
           myPrivileges
         }
         about {
-          ...SpaceAboutCardAvatar
+          id
           profile {
+            id
+            displayName
+            url
             cardBanner: visual(type: CARD) {
               ...VisualUri
             }

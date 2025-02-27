@@ -7,12 +7,7 @@ query CommunityUserPrivileges(
     space(ID: $spaceId) {
       id
       about {
-        id
-        profile {
-          id
-          url
-          displayName
-        }
+        ...SpaceAboutMinimalUrl
       }
       community {
         id
@@ -35,12 +30,7 @@ query CommunityUserPrivileges(
     space(ID: $parentSpaceId) {
       id
       about {
-        id
-        profile {
-          id
-          url
-          displayName
-        }
+        ...SpaceAboutMinimalUrl
       }
       community {
         id

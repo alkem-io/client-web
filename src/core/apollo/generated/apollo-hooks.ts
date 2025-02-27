@@ -2183,6 +2183,27 @@ export const SpaceAboutLightFragmentDoc = gql`
     }
   }
 `;
+export const SpaceAboutMinimalFragmentDoc = gql`
+  fragment SpaceAboutMinimal on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      tagline
+    }
+  }
+`;
+export const SpaceAboutMinimalUrlFragmentDoc = gql`
+  fragment SpaceAboutMinimalUrl on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      tagline
+      url
+    }
+  }
+`;
 export const ProfileStorageConfigFragmentDoc = gql`
   fragment ProfileStorageConfig on Profile {
     id
@@ -4283,7 +4304,7 @@ export const UserPendingMembershipsDocument = gql`
           id
           level
           about {
-            ...SpaceAboutLightUrl
+            ...SpaceAboutMinimalUrl
           }
         }
         application {
@@ -4298,7 +4319,7 @@ export const UserPendingMembershipsDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutMinimalUrlFragmentDoc}
   ${InvitationDataFragmentDoc}
 `;
 
@@ -5567,8 +5588,11 @@ export const AccountInformationDocument = gql`
             myPrivileges
           }
           about {
-            ...SpaceAboutCardAvatar
+            id
             profile {
+              id
+              displayName
+              url
               cardBanner: visual(type: CARD) {
                 ...VisualUri
               }
@@ -5633,7 +5657,6 @@ export const AccountInformationDocument = gql`
       }
     }
   }
-  ${SpaceAboutCardAvatarFragmentDoc}
   ${VisualUriFragmentDoc}
   ${EntitlementDetailsFragmentDoc}
   ${AccountItemProfileFragmentDoc}
@@ -10188,12 +10211,7 @@ export const CommunityUserPrivilegesDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          id
-          profile {
-            id
-            url
-            displayName
-          }
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10216,12 +10234,7 @@ export const CommunityUserPrivilegesDocument = gql`
       space(ID: $parentSpaceId) {
         id
         about {
-          id
-          profile {
-            id
-            url
-            displayName
-          }
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10241,6 +10254,7 @@ export const CommunityUserPrivilegesDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 
 /**
@@ -10303,12 +10317,7 @@ export const SpaceApplicationDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          id
-          profile {
-            id
-            url
-            displayName
-          }
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10322,6 +10331,7 @@ export const SpaceApplicationDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
   ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 

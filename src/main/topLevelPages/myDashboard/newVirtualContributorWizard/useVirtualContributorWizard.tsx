@@ -40,7 +40,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
 import TryVcInfo from './TryVC/TryVcInfo';
-import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const steps = {
   initial: 'initial',
@@ -56,7 +56,7 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  about: SpaceAboutMinimalModel;
+  about: SpaceAboutMinimalUrlModel;
   community: {
     roleSet: {
       id: string;
