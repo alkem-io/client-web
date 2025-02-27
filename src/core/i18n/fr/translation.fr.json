@@ -1301,6 +1301,7 @@
     "visual-upload": {
       "loading": "Chargement de l'image",
       "success": "Image ajoutée avec succès",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Importer l'image",
       "no-data": "Pas encore défini"
     },
