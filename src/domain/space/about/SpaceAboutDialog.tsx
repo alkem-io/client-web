@@ -2,12 +2,12 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import { gutters } from '@/core/ui/grid/utils';
 import { Box, Link, Tooltip } from '@mui/material';
-import { ReactNode } from 'react';
+import { MouseEventHandler, ReactNode, useRef } from 'react';
 import { Caption } from '@/core/ui/typography';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
 import { Theme } from '@mui/material/styles';
@@ -18,6 +18,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
+import LockOutlined from '@mui/icons-material/LockOutlined';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { SpaceAboutDetailsModel } from './model/spaceAboutFull.model';
@@ -25,20 +26,22 @@ import AboutHeader from '@/domain/space/about/components/AboutHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import AboutDescription from '@/domain/space/about/components/AboutDescription';
 import Loading from '@/core/ui/loading/Loading';
+import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import RouterLink from '@/core/ui/link/RouterLink';
+import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 
-export interface JourneyAboutDialogProps extends EntityDashboardLeads {
+export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
+  spaceId?: string;
   spaceLevel: SpaceLevel | undefined;
   about?: SpaceAboutDetailsModel | undefined;
   ribbon?: ReactNode;
-  startButton?: ReactNode;
   endButton?: ReactNode;
-  applyButton?: ReactNode;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
   guidelines?: ReactNode;
   loading?: boolean;
-  leftColumnChildrenTop?: ReactNode;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
@@ -51,6 +54,7 @@ const gradient = (theme: Theme) =>
 
 const SpaceAboutDialog = ({
   open,
+  spaceId,
   about,
   ribbon,
   spaceLevel = SpaceLevel.L0,
@@ -60,12 +64,11 @@ const SpaceAboutDialog = ({
   metrics,
   guidelines,
   loading = false,
-  startButton,
   endButton,
-  applyButton,
-  leftColumnChildrenTop,
-}: JourneyAboutDialogProps) => {
+}: SpaceAboutDialogProps) => {
   const { t } = useTranslation();
+
+  const spaceReadAccess = useCanReadSpace({ spaceId });
 
   const isSpace = spaceLevel === SpaceLevel.L0;
   const leadOrganizationsHeader = isSpace
@@ -76,6 +79,8 @@ const SpaceAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+  const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
+
   const aboutProfile = about?.profile;
 
   const openEditDialog = (section: string) => {
@@ -83,15 +88,22 @@ const SpaceAboutDialog = ({
     // TODO: implement edit dialog
   };
 
-  const hasLeads = leadOrganizations?.length || leadUsers?.length;
+  const hasLeads = Boolean(leadOrganizations?.length || leadUsers?.length);
+
+  const handleLearnWhyClick: MouseEventHandler = event => {
+    event.preventDefault();
+    applicationButtonRef.current?.click();
+  };
 
   const renderHost = () => {
     if (!host) {
       return null;
     }
+
     if (loading) {
       return <Loading />;
     }
+
     return (
       <EntityDashboardLeadsSection
         organizationsHeader={t('pages.space.sections.dashboard.organization')}
@@ -125,7 +137,7 @@ const SpaceAboutDialog = ({
       </EntityDashboardLeadsSection>
     );
   };
-
+  console.log('!!!', spaceId, spaceReadAccess);
   return (
     <DialogWithGrid
       open={open}
@@ -138,7 +150,28 @@ const SpaceAboutDialog = ({
         title={aboutProfile?.displayName}
         tagline={aboutProfile?.tagline}
         loading={loading}
-        startIcon={startButton}
+        startIcon={
+          !spaceReadAccess.canReadSpace && (
+            <Tooltip
+              arrow
+              placement="top"
+              title={
+                <Caption>
+                  <Trans
+                    i18nKey={'components.journeyUnauthorizedDialog.message'}
+                    components={{
+                      apply: (
+                        <RouterLink to="" sx={{ color: 'white' }} underline="always" onClick={handleLearnWhyClick} />
+                      ),
+                    }}
+                  />
+                </Caption>
+              }
+            >
+              <LockOutlined color="primary" fontSize="small" />
+            </Tooltip>
+          )
+        }
         endButton={endButton}
       />
       {ribbon}
@@ -155,12 +188,27 @@ const SpaceAboutDialog = ({
                   onEditClick={() => openEditDialog('description')}
                 />
               </PageContentBlock>
-              {applyButton && (
-                <Box display="flex" justifyContent="center" width="100%">
-                  {applyButton}
-                </Box>
-              )}
+              <Box display="flex" justifyContent="center" width="100%">
+                <ApplicationButtonContainer journeyId={spaceId}>
+                  {(applicationButtonProps, loading) => {
+                    if (loading || applicationButtonProps.isMember) {
+                      return null;
+                    }
+
+                    return (
+                      <ApplicationButton
+                        ref={applicationButtonRef}
+                        {...applicationButtonProps}
+                        loading={loading}
+                        journeyId={spaceId}
+                        spaceLevel={spaceLevel}
+                      />
+                    );
+                  }}
+                </ApplicationButtonContainer>
+              </Box>
             </PageContentColumn>
+
             <PageContentColumn columns={4}>
               {hasLeads ? (
                 <EntityDashboardLeadsSection
@@ -173,6 +221,7 @@ const SpaceAboutDialog = ({
                 renderHost()
               )}
             </PageContentColumn>
+
             {about?.why && (
               <PageContentBlock>
                 <AboutDescription
@@ -184,6 +233,7 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
             )}
+
             {about?.who && (
               <PageContentBlock>
                 <AboutDescription
@@ -195,19 +245,21 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
             )}
+
             {guidelines}
-            <PageContentBlockSeamless disablePadding order={1}>
-              {leftColumnChildrenTop}
-              <PageContentBlock>
-                <AboutDescription
-                  title={t('components.referenceSegment.title')}
-                  loading={loading}
-                  onEditClick={() => openEditDialog('references')}
-                >
+
+            <PageContentBlock>
+              <AboutDescription
+                title={t('components.referenceSegment.title')}
+                loading={loading}
+                onEditClick={() => openEditDialog('references')}
+              >
+                <Box paddingTop={gutters(1)}>
                   <References references={aboutProfile?.references} />
-                </AboutDescription>
-              </PageContentBlock>
-            </PageContentBlockSeamless>
+                </Box>
+              </AboutDescription>
+            </PageContentBlock>
+
             {hasLeads && <PageContentBlockSeamless disablePadding>{renderHost()}</PageContentBlockSeamless>}
           </PageContentColumn>
         </Gutters>

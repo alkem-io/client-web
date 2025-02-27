@@ -39,6 +39,7 @@ export interface AboutPageContainerEntities {
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
+  spaceId: string | undefined;
 }
 
 export interface AboutPageContainerActions {}
@@ -161,6 +162,7 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
     <>
       {children(
         {
+          spaceId: journeyId,
           about,
           innovationFlow: collaboration?.innovationFlow,
           permissions,

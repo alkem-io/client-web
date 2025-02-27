@@ -77,6 +77,7 @@ const SpaceDashboardPage = ({
             )}
             <SpaceAboutDialog
               open={dialog === 'about'}
+              spaceId={spaceId}
               spaceLevel={SpaceLevel.L0}
               about={about}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}

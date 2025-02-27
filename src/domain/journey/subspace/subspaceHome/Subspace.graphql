@@ -16,7 +16,6 @@ fragment SubspacePageSpace on Space {
   about {
     ...SpaceAboutLightUrl
     why
-
   }
   metrics {
     id
