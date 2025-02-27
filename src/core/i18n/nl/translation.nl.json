@@ -1301,6 +1301,7 @@
     "visual-upload": {
       "loading": "Afbeelding aan het laden",
       "success": "Afbeelding succesvol geupload",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Upload afbeelding",
       "no-data": "Nog niet ingesteld"
     },
