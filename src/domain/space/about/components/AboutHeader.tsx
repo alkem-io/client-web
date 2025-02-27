@@ -1,8 +1,7 @@
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, BoxProps, Theme, useMediaQuery } from '@mui/material';
+import { Box, Theme, useMediaQuery } from '@mui/material';
 import { ReactNode } from 'react';
 import { PageTitle, Tagline } from '@/core/ui/typography';
-import Loading from '@/core/ui/loading/Loading';
 
 export interface AboutHeaderProps {
   title?: string;
@@ -11,14 +10,6 @@ export interface AboutHeaderProps {
   endButton?: ReactNode;
   loading?: boolean;
 }
-
-interface DialogHeaderItemProps extends BoxProps {
-  align?: 'start' | 'end' | 'center';
-}
-
-const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps) => {
-  return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
-};
 
 const AboutHeader = ({ title, tagline, endButton, loading = false, startIcon }: AboutHeaderProps) => {
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
@@ -32,22 +23,19 @@ const AboutHeader = ({ title, tagline, endButton, loading = false, startIcon }: 
         alignItems="start"
         flexWrap={isMobile ? 'wrap' : 'nowrap'}
       >
-        {loading && (
-          <Box position="absolute">
-            <Loading text="" />
-          </Box>
+        {!loading && (
+          <>
+            <Box display="flex" flexGrow={1} flexDirection="column" justifyContent="center" alignItems="center">
+              <Box display="flex" alignItems="center" sx={{ gap: startIcon ? gutters(0.5) : 0 }}>
+                <Box>{startIcon}</Box>
+                <PageTitle paddingY={gutters(0.5)}>{title}</PageTitle>
+              </Box>
+              <Tagline textAlign="center">{tagline}</Tagline>
+            </Box>
+            <Box sx={{ position: 'absolute', top: gutters(0.5), right: gutters(0.5) }}>{endButton}</Box>
+          </>
         )}
-        <DialogHeaderItem minWidth="30%" align="start">
-          {startIcon}
-        </DialogHeaderItem>
-        <DialogHeaderItem order={isMobile ? 1 : 0}>
-          <PageTitle paddingY={gutters(0.5)}>{title}</PageTitle>
-        </DialogHeaderItem>
-        <DialogHeaderItem minWidth="30%" align="end">
-          {endButton}
-        </DialogHeaderItem>
       </Box>
-      <Tagline textAlign="center">{tagline}</Tagline>
     </Box>
   );
 };

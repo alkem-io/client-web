@@ -30,6 +30,7 @@ const SubspaceAboutPage = () => {
         {({ about, provider, leadOrganizations, leadUsers, metrics, hasReadPrivilege }, state) => (
           <SpaceAboutDialog
             open
+            spaceId={spaceId}
             spaceLevel={spaceLevel}
             about={about}
             sendMessageToCommunityLeads={sendMessageToCommunityLeads}
