@@ -1,3 +1,4 @@
+import { useActorRef } from '@xstate/react';
 import { PropsWithChildren, createContext } from 'react';
 import { Actor, StateMachine } from 'xstate';
 
@@ -6,7 +7,6 @@ import {
   NotificationsContext,
   NotificationsEvent,
 } from './global/notifications/notificationMachine';
-import { useActorRef } from '@xstate/react';
 
 // TODO replace any with correct types below
 interface GlobalStateContextProps {

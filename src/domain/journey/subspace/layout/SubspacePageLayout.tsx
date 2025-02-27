@@ -62,7 +62,7 @@ const {
   createLayout,
 } = createLayoutHolder();
 
-export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren<{}>) => {
+export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren) => {
   return <>{children}</>;
 });
 
