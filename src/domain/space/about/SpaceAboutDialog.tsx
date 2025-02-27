@@ -29,7 +29,7 @@ import Loading from '@/core/ui/loading/Loading';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import RouterLink from '@/core/ui/link/RouterLink';
-import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
+import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 
 export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
