@@ -1301,6 +1301,7 @@
     "visual-upload": {
       "loading": "Bildladeverhalten",
       "success": "Foto wurde erfolgreich hochgeladen",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Bild hochladen",
       "no-data": "Noch nicht festgelegt"
     },
