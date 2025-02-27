@@ -11,13 +11,11 @@ query ChallengeExplorerPage {
 
 query SpaceExplorerSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    journeyResults {
+    spaceResults {
       id
       type
       terms
-      ... on SearchResultSpace {
-        ...SpaceExplorerSearchSpace
-      }
+      ...SpaceExplorerSearchSpace
     }
   }
 }
