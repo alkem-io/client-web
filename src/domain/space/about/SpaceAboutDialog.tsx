@@ -6,14 +6,11 @@ import { ReactNode } from 'react';
 import { Caption } from '@/core/ui/typography';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
 import { Theme } from '@mui/material/styles';
-import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import References from '@/domain/shared/components/References/References';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -27,6 +24,7 @@ import { SpaceAboutDetailsModel } from './model/spaceAboutFull.model';
 import AboutHeader from '@/domain/space/about/components/AboutHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import AboutDescription from '@/domain/space/about/components/AboutDescription';
+import Loading from '@/core/ui/loading/Loading';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -75,10 +73,6 @@ const SpaceAboutDialog = ({
     : 'community.leading-organizations';
   const leadUsersHeader = 'community.leads';
 
-  const breakpoint = useCurrentBreakpoint();
-
-  const isMobile = breakpoint === 'xs';
-
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
@@ -87,6 +81,49 @@ const SpaceAboutDialog = ({
   const openEditDialog = (section: string) => {
     console.log(section);
     // TODO: implement edit dialog
+  };
+
+  const hasLeads = leadOrganizations?.length || leadUsers?.length;
+
+  const renderHost = () => {
+    if (!host) {
+      return null;
+    }
+    if (loading) {
+      return <Loading />;
+    }
+    return (
+      <EntityDashboardLeadsSection
+        organizationsHeader={t('pages.space.sections.dashboard.organization')}
+        organizationsHeaderIcon={
+          <Tooltip title={t('pages.space.sections.dashboard.hostTooltip')} arrow>
+            <InfoOutlinedIcon color="primary" />
+          </Tooltip>
+        }
+        leadOrganizations={host && [host]}
+        leadUsers={undefined}
+      >
+        {host && (
+          <Caption
+            component={Link}
+            onClick={() =>
+              sendMessage('organization', {
+                id: host.id,
+                displayName: host.profile.displayName,
+                avatarUri: host.profile.avatar?.uri,
+                country: host.profile.location?.country,
+                city: host.profile.location?.city,
+              })
+            }
+            sx={{ cursor: 'pointer' }}
+          >
+            <MailOutlineIcon color="primary" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
+            {t('pages.space.sections.dashboard.hostContact')}
+          </Caption>
+        )}
+        {directMessageDialog}
+      </EntityDashboardLeadsSection>
+    );
   };
 
   return (
@@ -125,12 +162,16 @@ const SpaceAboutDialog = ({
               )}
             </PageContentColumn>
             <PageContentColumn columns={4}>
-              <EntityDashboardLeadsSection
-                organizationsHeader={t(leadOrganizationsHeader)}
-                usersHeader={t(leadUsersHeader)}
-                leadUsers={leadUsers}
-                leadOrganizations={leadOrganizations}
-              />
+              {hasLeads ? (
+                <EntityDashboardLeadsSection
+                  organizationsHeader={t(leadOrganizationsHeader)}
+                  usersHeader={t(leadUsersHeader)}
+                  leadUsers={leadUsers}
+                  leadOrganizations={leadOrganizations}
+                />
+              ) : (
+                renderHost()
+              )}
             </PageContentColumn>
             {about?.why && (
               <PageContentBlock>
@@ -145,57 +186,29 @@ const SpaceAboutDialog = ({
             )}
             {about?.who && (
               <PageContentBlock>
-                <PageContentBlockHeader
-                  icon={<SupervisedUserCircleOutlinedIcon />}
+                <AboutDescription
                   title={t(`context.${spaceLevel}.who.title` as const)}
+                  titleIcon={<SupervisedUserCircleOutlinedIcon />}
+                  description={about.who}
+                  loading={loading}
+                  onEditClick={() => openEditDialog('who')}
                 />
-                <WrapperMarkdown>{about.who}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {guidelines}
-          </PageContentColumn>
-          <PageContentColumn columns={8}>
             <PageContentBlockSeamless disablePadding order={1}>
               {leftColumnChildrenTop}
               <PageContentBlock>
-                <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-                <References references={aboutProfile?.references} />
+                <AboutDescription
+                  title={t('components.referenceSegment.title')}
+                  loading={loading}
+                  onEditClick={() => openEditDialog('references')}
+                >
+                  <References references={aboutProfile?.references} />
+                </AboutDescription>
               </PageContentBlock>
             </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding order={isMobile ? 1 : 0}>
-              {host && (
-                <EntityDashboardLeadsSection
-                  organizationsHeader={t('pages.space.sections.dashboard.organization')}
-                  organizationsHeaderIcon={
-                    <Tooltip title={t('pages.space.sections.dashboard.hostTooltip')} arrow>
-                      <InfoOutlinedIcon color="primary" />
-                    </Tooltip>
-                  }
-                  leadOrganizations={host && [host]}
-                  leadUsers={undefined}
-                >
-                  {host && (
-                    <Caption
-                      component={Link}
-                      onClick={() =>
-                        sendMessage('organization', {
-                          id: host.id,
-                          displayName: host.profile.displayName,
-                          avatarUri: host.profile.avatar?.uri,
-                          country: host.profile.location?.country,
-                          city: host.profile.location?.city,
-                        })
-                      }
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <MailOutlineIcon color="primary" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />
-                      {t('pages.space.sections.dashboard.hostContact')}
-                    </Caption>
-                  )}
-                  {directMessageDialog}
-                </EntityDashboardLeadsSection>
-              )}
-            </PageContentBlockSeamless>
+            {hasLeads && <PageContentBlockSeamless disablePadding>{renderHost()}</PageContentBlockSeamless>}
           </PageContentColumn>
         </Gutters>
       </Box>
