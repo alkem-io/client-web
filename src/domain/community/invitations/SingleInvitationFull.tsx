@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
-import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Theme, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
@@ -54,12 +54,12 @@ const SingleInvitationFull = ({
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
-        journey: invitation?.space.profile.displayName,
+        journey: invitation?.space.about.profile.displayName,
       });
     }
 
     return t('community.pendingMembership.invitationDialog.title', {
-      journey: invitation?.space.profile.displayName,
+      journey: invitation?.space.about.profile.displayName,
     });
   };
 
@@ -74,12 +74,7 @@ const SingleInvitationFull = ({
   return (
     <>
       {invitation && (
-        <InvitationHydrator
-          invitation={invitation}
-          withJourneyDetails
-          withCommunityGuidelines
-          visualType={VisualType.Card}
-        >
+        <InvitationHydrator invitation={invitation} withCommunityGuidelines>
           {({ invitation, communityGuidelines }) =>
             invitation && (
               <>
@@ -94,19 +89,19 @@ const SingleInvitationFull = ({
                 >
                   <JourneyCard
                     iconComponent={spaceIconByLevel[invitation.space.level]}
-                    header={invitation.space.profile.displayName}
-                    tags={invitation.space.profile.tagset?.tags ?? []}
-                    banner={invitation.space.profile.visual}
-                    journeyUri={invitation.space.profile.url}
+                    header={invitation.space.about.profile.displayName}
+                    tags={invitation.space.about.profile.tagset?.tags ?? []}
+                    banner={invitation.space.about.profile.cardBanner}
+                    journeyUri={invitation.space.about.profile.url}
                   >
-                    <JourneyCardTagline>{invitation.space.profile.tagline ?? ''}</JourneyCardTagline>
+                    <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
                   </JourneyCard>
                   <Gutters disablePadding>
                     <Caption>
                       <DetailedActivityDescription
                         i18nKey="community.pendingMembership.invitationTitle"
-                        journeyDisplayName={invitation.space.profile.displayName}
-                        journeyUrl={invitation.space.profile.url}
+                        journeyDisplayName={invitation.space.about.profile.displayName}
+                        journeyUrl={invitation.space.about.profile.url}
                         spaceLevel={invitation.space.level}
                         createdDate={invitation.invitation.createdDate}
                         author={{ displayName: invitation.userDisplayName }}
@@ -145,7 +140,7 @@ const SingleInvitationFull = ({
                   </LoadingButton>
                   <LoadingButton
                     startIcon={<CheckOutlined />}
-                    onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.profile.url)}
+                    onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.about.profile.url)}
                     variant="contained"
                     loading={accepting}
                     disabled={updating && !accepting}

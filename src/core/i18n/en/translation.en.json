@@ -320,6 +320,7 @@
     "dashboard": "Dashboard",
     "contribute": "Contribute",
     "context": "Context",
+    "index": "Profile",
     "community": "Community",
     "library": "Library",
     "templateLibrary": "Template Library",
@@ -722,24 +723,24 @@
         "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Background",
-        "description": "Give a brief overview of the need for this Space and how it came about.",
+      "description": {
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "What will this Space change? How will people and organizations be affected?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "What is this community about?",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should be involved?",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       }
     },
@@ -755,28 +756,23 @@
         "placeholder": ""
       },
       "description": {
-        "title": "A description of the subspace that is visible on the subspace dashboard",
+        "title": "What",
         "description": "",
         "placeholder": ""
       },
-      "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+      "when": {
+        "title": "Impact",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
-        "title": "Additional context",
-        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
-        "placeholder": ""
-      },
-      "vision": {
-        "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -804,24 +800,24 @@
         "description": "In one sentence, explain what this Subspace is about.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Background",
-        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
+      "description": {
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Subspace.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -1419,7 +1415,7 @@
         "select": "Select a host"
       },
       "read-access": "Allow read access for non-space members to Subspaces",
-      "about": "About this Space",
+      "about": "Details",
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
@@ -1824,6 +1820,9 @@
       "generic": {
         "sections": {
           "profile": {
+            "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
+          },
+          "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
           "context": {

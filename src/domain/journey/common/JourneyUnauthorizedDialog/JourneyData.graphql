@@ -2,11 +2,13 @@ query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        ...ProfileJourneyData
-      }
-      context {
-        ...ContextJourneyData
+      about {
+        ...SpaceAboutDetails
+        profile {
+          references {
+            ...ReferenceDetails
+          }
+        }
       }
       community @include(if: $includeCommunity) {
         ...JourneyCommunity
@@ -19,23 +21,6 @@ query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
       }
     }
   }
-}
-
-fragment ProfileJourneyData on Profile {
-  id
-  displayName
-  tagline
-  references {
-    ...ReferenceDetails
-  }
-  description
-}
-
-fragment ContextJourneyData on Context {
-  id
-  vision
-  who
-  impact
 }
 
 fragment JourneyCommunity on Community {

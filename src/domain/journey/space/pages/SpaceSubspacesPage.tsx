@@ -36,21 +36,25 @@ const SpaceSubspacesPage = () => {
       }
       const result = await createSubspace({
         spaceID: spaceId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
+        about: {
+          profile: {
+            displayName: value.displayName,
+            description: value.description,
+            tagline: value.tagline,
+            visuals: value.visuals,
+            tags: value.tags,
+          },
+          why: value.why,
+        },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
-        visuals: value.visuals,
       });
 
       if (!result) {
         return;
       }
 
-      navigate(result.profile.url);
+      navigate(result.about.profile?.url!);
     },
     [navigate, createSubspace, spaceId]
   );
@@ -74,12 +78,12 @@ const SpaceSubspacesPage = () => {
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={item => (
               <SubspaceCard
-                displayName={item.profile.displayName}
-                banner={item.profile.cardBanner}
-                tags={item.profile.tagset?.tags!}
-                tagline={item.profile.tagline!}
-                vision={item.context?.vision!}
-                journeyUri={item.profile.url}
+                displayName={item.about.profile.displayName}
+                banner={item.about.profile.cardBanner}
+                tags={item.about.profile.tagset?.tags!}
+                tagline={item.about.profile.tagline!}
+                vision={item.about.why!}
+                journeyUri={item.about.profile.url}
                 locked={item.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={visibility}
                 member={item.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}

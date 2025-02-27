@@ -1,0 +1,30 @@
+fragment SpaceAboutDetails on SpaceAbout {
+  id
+  who
+  why
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    url
+    displayName
+    tagline
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visuals {
+      ...VisualFull
+    }
+    references {
+      ...ReferenceDetails
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
+}

@@ -10,25 +10,10 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     space {
       id
       ... on Space {
-        profile {
-          ...RecentContributionsSpaceProfile
+        about {
+         ...SpaceAboutCardAvatar
         }
       }
-      # ... on RelayPaginatedSpace {
-      #   profile {
-      #     ...RecentContributionsSpaceProfile
-      #   }
-      # }
-      # ... on subspace {
-      #   profile {
-      #     ...RecentContributionsChildJourneyProfile
-      #   }
-      # }
-      # ... on Opportunity {
-      #   profile {
-      #     ...RecentContributionsChildJourneyProfile
-      #   }
-      # }
     }
     ... on ActivityLogEntryMemberJoined {
       ...ActivityLogMemberJoined
@@ -69,25 +54,4 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
   }
 }
 
-fragment RecentContributionsJourneyProfile on Profile {
-  id
-  url
-  displayName
-  type
-}
 
-fragment RecentContributionsSpaceProfile on Profile {
-  ...RecentContributionsJourneyProfile
-  avatar: visual(type: CARD) {
-    id
-    uri
-  }
-}
-
-fragment RecentContributionsChildJourneyProfile on Profile {
-  ...RecentContributionsJourneyProfile
-  avatar: visual(type: AVATAR) {
-    id
-    uri
-  }
-}

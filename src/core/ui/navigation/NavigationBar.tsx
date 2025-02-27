@@ -39,7 +39,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
 export const NAVIGATION_CONTENT_HEIGHT_GUTTERS = 3;
 export const NAVIGATION_CONTAINER_HEIGHT_GUTTERS = NAVIGATION_CONTENT_HEIGHT_GUTTERS + 1;
 
-const NavigationBar = ({ children }: PropsWithChildren<{}>) => {
+const NavigationBar = ({ children }: PropsWithChildren) => {
   const scrollTop = useScrollTop();
 
   const hasScrolledUp = useScrolledUp();

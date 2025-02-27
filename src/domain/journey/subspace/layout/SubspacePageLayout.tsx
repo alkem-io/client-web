@@ -48,7 +48,7 @@ export interface SubspacePageLayoutProps {
   spaceReadAccess: SpaceReadAccess;
   spaceLevel: SpaceLevel | undefined;
   journeyPath: JourneyPath | undefined;
-  journeyUrl?: string | undefined; // TODO make required
+  spaceUrl?: string | undefined; // TODO make required
   loading?: boolean;
   unauthorizedDialogDisabled?: boolean;
   welcome?: ReactNode;
@@ -62,7 +62,7 @@ const {
   createLayout,
 } = createLayoutHolder();
 
-export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren<{}>) => {
+export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren) => {
   return <>{children}</>;
 });
 
@@ -102,7 +102,7 @@ const SubspacePageLayout = ({
   spaceReadAccess,
   journeyPath,
   spaceLevel,
-  journeyUrl,
+  spaceUrl: journeyUrl,
   loading = false,
   unauthorizedDialogDisabled = false,
   welcome,
@@ -273,11 +273,10 @@ const SubspacePageLayout = ({
                 )}
               </TopLevelLayout>
               <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
-                {({ vision, ...props }) => (
+                {({ ...props }) => (
                   <JourneyUnauthorizedDialog
                     journeyId={journeyId}
                     parentSpaceId={parentSpaceId}
-                    description={vision}
                     disabled={unauthorizedDialogDisabled}
                     spaceLevel={spaceLevel}
                     {...props}

@@ -16,6 +16,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { ValueType } from '@/core/utils/filtering/filterFn';
 import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { ApolloError } from '@apollo/client';
@@ -32,13 +33,7 @@ export interface JourneySubentitiesState {
 }
 
 interface BaseChildEntity extends Identifiable {
-  profile: {
-    displayName: string;
-    url: string;
-    cardBanner?: {
-      uri: string;
-    };
-  };
+  about: SpaceAboutLightModel;
 }
 
 export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
@@ -82,10 +77,10 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
       childEntities
         .map(entity => ({
           id: entity.id,
-          title: entity.profile.displayName,
+          title: entity.about.profile.displayName,
           icon: childEntitiesIcon,
-          uri: entity.profile.url,
-          cardBanner: entity.profile?.cardBanner?.uri || defaultSubspaceAvatar,
+          uri: entity.about.profile.url,
+          cardBanner: entity.about.profile?.cardBanner?.uri || defaultSubspaceAvatar,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]

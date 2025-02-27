@@ -8,7 +8,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import { FC, PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,14 +29,9 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const tabs = useMemo(() => {
     const tabs: TabDefinition<SettingsSection>[] = [
       {
-        section: SettingsSection.Profile,
-        route: 'profile',
+        section: SettingsSection.About,
+        route: 'about',
         icon: PeopleOutlinedIcon,
-      },
-      {
-        section: SettingsSection.Context,
-        route: 'context',
-        icon: ListOutlinedIcon,
       },
       {
         section: SettingsSection.Community,
@@ -75,7 +69,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       pageBanner={<ChildJourneyPageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
-        <RouterLink to={entityAttrs.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
+        <RouterLink to={entityAttrs.about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
           <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
             {t('navigation.admin.settingsMenu.quit')}
           </BackButton>

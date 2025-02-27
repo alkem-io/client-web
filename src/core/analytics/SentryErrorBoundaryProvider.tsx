@@ -2,9 +2,9 @@ import sentryBootstrap from '@/core/logging/sentry/bootstrap';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import * as Sentry from '@sentry/react';
-import { FC, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
-const SentryErrorBoundaryProvider: FC<PropsWithChildren> = ({ children }) => {
+const SentryErrorBoundaryProvider = ({ children }: PropsWithChildren) => {
   const { sentry } = useConfig();
   sentryBootstrap(sentry?.enabled, sentry?.endpoint, sentry?.environment);
 

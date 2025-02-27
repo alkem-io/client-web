@@ -1,14 +1,14 @@
-query PendingMembershipsSpace(
-  $spaceId: UUID!
-  $fetchDetails: Boolean! = false
-  $visualType: VisualType!
-  $fetchCommunityGuidelines: Boolean! = false
-) {
+query PendingMembershipsSpace($spaceId: UUID!, $fetchCommunityGuidelines: Boolean! = false) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        ...PendingMembershipsJourneyProfile
+      about {
+        ...SpaceAboutCardBanner
+        profile {
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
+        }
       }
       community @include(if: $fetchCommunityGuidelines) {
         id
@@ -28,23 +28,6 @@ query PendingMembershipsUser($userId: UUID!) {
         id
         displayName
       }
-    }
-  }
-}
-
-fragment PendingMembershipsJourneyProfile on Profile {
-  id
-  url
-  displayName
-  visual(type: $visualType) {
-    id
-    uri
-  }
-  ... on Profile @include(if: $fetchDetails) {
-    tagline
-    tagset {
-      id
-      tags
     }
   }
 }
