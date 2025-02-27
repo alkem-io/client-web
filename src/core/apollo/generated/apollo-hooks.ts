@@ -17283,6 +17283,10 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           ...SpaceDashboardNavigationProfile
         }
