@@ -18719,7 +18719,13 @@ export type CreateInnovationHubMutation = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
           };
         }>
       | undefined;
@@ -18790,7 +18796,13 @@ export type UpdateInnovationHubMutation = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
           };
         }>
       | undefined;
@@ -18820,7 +18832,7 @@ export type InnovationHubAvailableSpacesQuery = {
     about: {
       __typename?: 'SpaceAbout';
       id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
     };
   }>;
 };
@@ -18840,7 +18852,7 @@ export type InnovationHubSpaceFragment = {
   about: {
     __typename?: 'SpaceAbout';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
   };
 };
 
@@ -18950,7 +18962,13 @@ export type InnovationHubSettingsQuery = {
                 about: {
                   __typename?: 'SpaceAbout';
                   id: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline?: string | undefined;
+                    url: string;
+                  };
                 };
               }>
             | undefined;
@@ -19017,7 +19035,13 @@ export type InnovationHubSettingsFragment = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline?: string | undefined;
+            url: string;
+          };
         };
       }>
     | undefined;

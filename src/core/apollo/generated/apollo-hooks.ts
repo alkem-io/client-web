@@ -1484,16 +1484,6 @@ export const InnovationHubProfileFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
-export const SpaceAboutMinimalFragmentDoc = gql`
-  fragment SpaceAboutMinimal on SpaceAbout {
-    id
-    profile {
-      id
-      displayName
-      tagline
-    }
-  }
-`;
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
@@ -1506,10 +1496,10 @@ export const InnovationHubSpaceFragmentDoc = gql`
       }
     }
     about {
-      ...SpaceAboutMinimal
+      ...SpaceAboutMinimalUrl
     }
   }
-  ${SpaceAboutMinimalFragmentDoc}
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 export const InnovationHubSettingsFragmentDoc = gql`
   fragment InnovationHubSettings on InnovationHub {
@@ -2185,6 +2175,16 @@ export const SpaceAboutCardAvatarFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const SpaceAboutMinimalFragmentDoc = gql`
+  fragment SpaceAboutMinimal on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      tagline
+    }
+  }
 `;
 export const ProfileStorageConfigFragmentDoc = gql`
   fragment ProfileStorageConfig on Profile {
