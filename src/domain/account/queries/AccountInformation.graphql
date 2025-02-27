@@ -27,8 +27,11 @@ query AccountInformation($accountId: UUID!) {
           myPrivileges
         }
         about {
-          ...SpaceAboutCardAvatar
+          id
           profile {
+            id
+            displayName
+            url
             cardBanner: visual(type: CARD) {
               ...VisualUri
             }
@@ -85,7 +88,7 @@ query AccountInformation($accountId: UUID!) {
         spaceListFilter {
           id
           about {
-            ...SpaceAboutLightUrl
+            ...SpaceAboutLight
           }
         }
         subdomain

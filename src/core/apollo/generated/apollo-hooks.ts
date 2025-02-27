@@ -1419,19 +1419,14 @@ export const MyPrivilegesFragmentDoc = gql`
     myPrivileges
   }
 `;
-export const SpaceAboutLightUrlFragmentDoc = gql`
-  fragment SpaceAboutLightUrl on SpaceAbout {
+export const SpaceAboutMinimalUrlFragmentDoc = gql`
+  fragment SpaceAboutMinimalUrl on SpaceAbout {
     id
     profile {
       id
       displayName
-      url
       tagline
-      description
-      tagset {
-        id
-        tags
-      }
+      url
     }
   }
 `;
@@ -1442,7 +1437,7 @@ export const InvitationDataFragmentDoc = gql`
       id
       level
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutMinimalUrl
       }
     }
     invitation {
@@ -1459,7 +1454,7 @@ export const InvitationDataFragmentDoc = gql`
       contributorType
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 export const EntitlementDetailsFragmentDoc = gql`
   fragment EntitlementDetails on LicenseEntitlement {
@@ -1501,10 +1496,10 @@ export const InnovationHubSpaceFragmentDoc = gql`
       }
     }
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutMinimalUrl
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 export const InnovationHubSettingsFragmentDoc = gql`
   fragment InnovationHubSettings on InnovationHub {
@@ -1903,23 +1898,10 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
     id
     level
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutDetails
       authorization {
         id
         myPrivileges
-      }
-      profile {
-        references {
-          id
-          name
-          uri
-        }
-        visuals {
-          ...VisualFull
-        }
-        location {
-          ...fullLocation
-        }
       }
     }
     community {
@@ -1937,10 +1919,31 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
       myPrivileges
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
+  ${SpaceAboutDetailsFragmentDoc}
   ${MyMembershipsRoleSetFragmentDoc}
+`;
+export const SpaceAboutLightFragmentDoc = gql`
+  fragment SpaceAboutLight on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      tagline
+      description
+      tagset {
+        id
+        tags
+      }
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
 `;
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
@@ -1951,7 +1954,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       myPrivileges
     }
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutLight
       why
     }
     metrics {
@@ -1983,7 +1986,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -2001,14 +2004,14 @@ export const AdminSpaceFragmentDoc = gql`
       }
     }
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutLight
     }
     authorization {
       id
       myPrivileges
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const StorageAggregatorParentFragmentDoc = gql`
   fragment StorageAggregatorParent on StorageAggregatorParent {
@@ -2173,8 +2176,8 @@ export const SpaceAboutCardAvatarFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const SpaceAboutLightFragmentDoc = gql`
-  fragment SpaceAboutLight on SpaceAbout {
+export const SpaceAboutMinimalFragmentDoc = gql`
+  fragment SpaceAboutMinimal on SpaceAbout {
     id
     profile {
       id
@@ -2468,12 +2471,12 @@ export const CalendarEventInfoFragmentDoc = gql`
     subspace @include(if: $includeSubspace) {
       id
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
     }
   }
   ${EventProfileFragmentDoc}
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const CollaborationTimelineInfoFragmentDoc = gql`
   fragment CollaborationTimelineInfo on Collaboration {
@@ -2638,7 +2641,7 @@ export const PostParentFragmentDoc = gql`
       level
       visibility
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
       settings {
         privacy {
@@ -2658,7 +2661,7 @@ export const PostParentFragmentDoc = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const SearchResultPostFragmentDoc = gql`
   fragment SearchResultPost on SearchResultPost {
@@ -2730,12 +2733,12 @@ export const CalloutParentFragmentDoc = gql`
     space {
       id
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
       level
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const SearchResultCalloutFragmentDoc = gql`
   fragment SearchResultCallout on SearchResultCallout {
@@ -2800,7 +2803,7 @@ export const SearchResultSpaceFragmentDoc = gql`
       id
       level
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
       settings {
         privacy {
@@ -2842,7 +2845,7 @@ export const SearchResultSpaceFragmentDoc = gql`
       visibility
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
@@ -3110,7 +3113,7 @@ export const SpaceProfileCommunityDetailsFragmentDoc = gql`
   fragment spaceProfileCommunityDetails on Space {
     id
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutLight
     }
     community {
       id
@@ -3123,7 +3126,7 @@ export const SpaceProfileCommunityDetailsFragmentDoc = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const SpaceExplorerSpaceFragmentDoc = gql`
   fragment SpaceExplorerSpace on Space {
@@ -4283,7 +4286,7 @@ export const UserPendingMembershipsDocument = gql`
           id
           level
           about {
-            ...SpaceAboutLightUrl
+            ...SpaceAboutMinimalUrl
           }
         }
         application {
@@ -4298,7 +4301,7 @@ export const UserPendingMembershipsDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutMinimalUrlFragmentDoc}
   ${InvitationDataFragmentDoc}
 `;
 
@@ -5567,8 +5570,11 @@ export const AccountInformationDocument = gql`
             myPrivileges
           }
           about {
-            ...SpaceAboutCardAvatar
+            id
             profile {
+              id
+              displayName
+              url
               cardBanner: visual(type: CARD) {
                 ...VisualUri
               }
@@ -5625,7 +5631,7 @@ export const AccountInformationDocument = gql`
           spaceListFilter {
             id
             about {
-              ...SpaceAboutLightUrl
+              ...SpaceAboutLight
             }
           }
           subdomain
@@ -5633,11 +5639,10 @@ export const AccountInformationDocument = gql`
       }
     }
   }
-  ${SpaceAboutCardAvatarFragmentDoc}
   ${VisualUriFragmentDoc}
   ${EntitlementDetailsFragmentDoc}
   ${AccountItemProfileFragmentDoc}
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -10188,12 +10193,7 @@ export const CommunityUserPrivilegesDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          id
-          profile {
-            id
-            url
-            displayName
-          }
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10216,12 +10216,7 @@ export const CommunityUserPrivilegesDocument = gql`
       space(ID: $parentSpaceId) {
         id
         about {
-          id
-          profile {
-            id
-            url
-            displayName
-          }
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10241,6 +10236,7 @@ export const CommunityUserPrivilegesDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 
 /**
@@ -10303,12 +10299,7 @@ export const SpaceApplicationDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          id
-          profile {
-            id
-            url
-            displayName
-          }
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10322,6 +10313,7 @@ export const SpaceApplicationDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
   ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
@@ -11617,7 +11609,7 @@ export const AccountResourcesInfoDocument = gql`
           spaceListFilter {
             id
             about {
-              ...SpaceAboutLightUrl
+              ...SpaceAboutLight
             }
           }
           subdomain
@@ -11627,7 +11619,7 @@ export const AccountResourcesInfoDocument = gql`
   }
   ${AccountResourceProfileFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -13457,25 +13449,12 @@ export const BodyOfKnowledgeProfileDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          id
-          profile {
-            id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-            cardBanner: visual(type: CARD) {
-              id
-              uri
-            }
-          }
+          ...SpaceAboutLight
         }
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -14997,7 +14976,7 @@ export const SpaceCommunityPageDocument = gql`
           myPrivileges
         }
         about {
-          ...SpaceAboutLightUrl
+          ...SpaceAboutLight
         }
         provider {
           ...ContributorDetails
@@ -15021,7 +15000,7 @@ export const SpaceCommunityPageDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
   ${ContributorDetailsFragmentDoc}
 `;
 
@@ -15085,7 +15064,7 @@ export const SpaceDocument = gql`
         id
         nameID
         about {
-          ...SpaceAboutLightUrl
+          ...SpaceAboutLight
         }
         authorization {
           id
@@ -15110,7 +15089,7 @@ export const SpaceDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -15414,12 +15393,12 @@ export const SpaceUrlDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          ...SpaceAboutLightUrl
+          ...SpaceAboutLight
         }
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -15662,11 +15641,11 @@ export const CreateSpaceDocument = gql`
     createSpace(spaceData: $spaceData) {
       id
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export type CreateSpaceMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateSpaceMutation,
@@ -16262,7 +16241,7 @@ export const SpaceAccountDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          ...SpaceAboutLightUrl
+          ...SpaceAboutLight
         }
         activeSubscription {
           name
@@ -16318,7 +16297,7 @@ export const SpaceAccountDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
@@ -16443,7 +16422,7 @@ export const SpaceSubspacesDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          ...SpaceAboutLight
+          ...SpaceAboutMinimal
         }
         account {
           id
@@ -16475,7 +16454,7 @@ export const SpaceSubspacesDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightFragmentDoc}
+  ${SpaceAboutMinimalFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${SpaceAboutCardAvatarFragmentDoc}
@@ -16599,6 +16578,9 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       profile {
         id
         url
+        avatar: visual(type: AVATAR) {
+          id
+        }
       }
       knowledgeBase {
         id
@@ -16840,6 +16822,10 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         about {
           ...SpaceAboutCardBanner
         }
@@ -17730,7 +17716,7 @@ export const SpaceStorageAdminPageDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          ...SpaceAboutLight
+          ...SpaceAboutMinimal
         }
         storageAggregator {
           ...StorageAggregator
@@ -17738,7 +17724,7 @@ export const SpaceStorageAdminPageDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightFragmentDoc}
+  ${SpaceAboutMinimalFragmentDoc}
   ${StorageAggregatorFragmentDoc}
 `;
 
@@ -22444,7 +22430,7 @@ export const PendingInvitationsDocument = gql`
           id
           level
           about {
-            ...SpaceAboutLightUrl
+            ...SpaceAboutLight
           }
         }
         invitation {
@@ -22460,7 +22446,7 @@ export const PendingInvitationsDocument = gql`
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -22795,13 +22781,13 @@ export const LatestContributionsSpacesFlatDocument = gql`
         space {
           id
           about {
-            ...SpaceAboutLightUrl
+            ...SpaceAboutLight
           }
         }
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -23580,12 +23566,12 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
       space(ID: $spaceId) {
         id
         about {
-          ...SpaceAboutLightUrl
+          ...SpaceAboutLight
         }
       }
     }
   }
-  ${SpaceAboutLightUrlFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**

@@ -5,7 +5,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import usePlatformOrigin from './usePlatformOrigin';
 
-const NonIdentity = ({ children }: PropsWithChildren<{}>) => {
+const NonIdentity = ({ children }: PropsWithChildren) => {
   const config = useConfig();
 
   const platformOrigin = usePlatformOrigin();

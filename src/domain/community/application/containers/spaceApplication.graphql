@@ -3,12 +3,7 @@ query SpaceApplication($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        id
-        profile {
-          id
-          url
-          displayName
-        }
+        ...SpaceAboutMinimalUrl
       }
       community {
         id

@@ -17,7 +17,7 @@ import { Button, Theme, useMediaQuery } from '@mui/material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const VISIBLE_SPACE_LIMIT = 6;
 
@@ -39,9 +39,7 @@ export interface AccountResourcesProps {
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile & {
-      tagline?: string;
-    };
+    profile: AccountProfile;
   }[];
   innovationPacks: {
     id: string;
@@ -62,7 +60,7 @@ export interface AccountResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      about: SpaceAboutMinimalModel;
+      about: SpaceAboutMinimalUrlModel;
     }[];
     subdomain: string;
   }[];

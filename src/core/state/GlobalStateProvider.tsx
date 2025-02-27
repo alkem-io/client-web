@@ -1,13 +1,16 @@
 import { useActorRef } from '@xstate/react';
-import { FC, PropsWithChildren, createContext } from 'react';
+import { PropsWithChildren, createContext } from 'react';
 import { Actor, StateMachine } from 'xstate';
+
 import {
+  notificationMachine,
   NotificationsContext,
   NotificationsEvent,
-  notificationMachine,
 } from './global/notifications/notificationMachine';
 
+// TODO replace any with correct types below
 interface GlobalStateContextProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notificationsService: Actor<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     StateMachine<NotificationsContext, NotificationsEvent, any, any, any, any, any, any, any, any, any, any, any, any>
@@ -16,8 +19,16 @@ interface GlobalStateContextProps {
 
 export const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
 
-export const GlobalStateProvider: FC<PropsWithChildren> = ({ children }) => {
+export const GlobalStateProvider = ({ children }: PropsWithChildren) => {
   const notificationsService = useActorRef(notificationMachine);
 
-  return <GlobalStateContext.Provider value={{ notificationsService }}>{children}</GlobalStateContext.Provider>;
+  return (
+    <GlobalStateContext.Provider
+      value={{
+        notificationsService,
+      }}
+    >
+      {children}
+    </GlobalStateContext.Provider>
+  );
 };

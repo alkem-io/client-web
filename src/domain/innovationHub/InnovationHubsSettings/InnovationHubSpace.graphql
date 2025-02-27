@@ -9,6 +9,6 @@ fragment InnovationHubSpace on Space {
     }
   }
   about {
-    ...SpaceAboutLightUrl
+    ...SpaceAboutMinimalUrl
   }
 }

@@ -50,7 +50,7 @@ fragment CalendarEventInfo on CalendarEvent {
   subspace @include(if: $includeSubspace) {
     id
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutLight
     }
   }
 }

@@ -46,7 +46,7 @@ import { IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import useNavigate from '@/core/routing/useNavigate';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceAboutMinimalModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const enum Entities {
   Space = 'Space',
@@ -120,7 +120,7 @@ export interface AccountTabResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      about: SpaceAboutMinimalModel;
+      about: SpaceAboutMinimalUrlModel;
     }[];
     subdomain: string;
   }[];

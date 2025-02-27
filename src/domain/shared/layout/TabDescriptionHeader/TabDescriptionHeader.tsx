@@ -1,5 +1,5 @@
 import { Caption } from '@/core/ui/typography';
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 const splitIntoLines = (text: ReactNode, namespace?: string) => {
   if (Array.isArray(text)) {
@@ -12,7 +12,7 @@ const splitIntoLines = (text: ReactNode, namespace?: string) => {
   return <Caption key={namespace}>{lines[0]}</Caption>;
 };
 
-const TabDescriptionHeader: FC<PropsWithChildren> = ({ children }) => {
+const TabDescriptionHeader = ({ children }: PropsWithChildren) => {
   return <>{splitIntoLines(children)}</>;
 };
 

@@ -239,7 +239,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
                       required
                       control={<Checkbox />}
                       label={
-                        <Caption>
+                        <Caption display="inline">
                           <Trans
                             i18nKey="createSpace.terms.checkboxLabel"
                             components={{
