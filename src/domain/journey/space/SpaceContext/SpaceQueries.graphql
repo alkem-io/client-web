@@ -5,7 +5,7 @@ query Space($spaceId: UUID!) {
       id
       nameID # Used for search in space
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
       authorization {
         id
@@ -109,7 +109,7 @@ query SpaceUrl($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
     }
   }

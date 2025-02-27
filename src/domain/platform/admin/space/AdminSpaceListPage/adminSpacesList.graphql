@@ -19,7 +19,7 @@ fragment AdminSpace on Space {
     }
   }
   about {
-    ...SpaceAboutLightUrl
+    ...SpaceAboutLight
   }
   authorization {
     id

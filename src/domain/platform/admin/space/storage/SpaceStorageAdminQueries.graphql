@@ -3,7 +3,7 @@ query SpaceStorageAdminPage($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        ...SpaceAboutLight
+        ...SpaceAboutMinimal
       }
       storageAggregator {
         ...StorageAggregator

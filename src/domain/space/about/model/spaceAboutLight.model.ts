@@ -5,6 +5,7 @@ export type SpaceAboutLightModel = {
     displayName: string;
     tagline?: string;
     url: string;
+    description?: string;
     tagset?: {
       tags: string[];
     };

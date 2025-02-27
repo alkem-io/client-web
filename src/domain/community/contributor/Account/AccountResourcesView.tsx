@@ -39,9 +39,7 @@ export interface AccountResourcesProps {
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile & {
-      tagline?: string;
-    };
+    profile: AccountProfile;
   }[];
   innovationPacks: {
     id: string;

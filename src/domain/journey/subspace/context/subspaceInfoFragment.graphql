@@ -2,24 +2,24 @@ fragment SubspacePendingMembershipInfo on Space {
   id
   level
   about {
-    ...SpaceAboutLightUrl
+    ...SpaceAboutDetails
     authorization {
       id
       myPrivileges
     }
-    profile {
-      references {
-        id
-        name
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
-      }
-    }
+    # profile {
+    #   references {
+    #     id
+    #     name
+    #     uri
+    #   }
+    #   visuals {
+    #     ...VisualFull
+    #   }
+    #   location {
+    #     ...fullLocation
+    #   }
+    # }
   }
   community {
     id

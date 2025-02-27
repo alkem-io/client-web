@@ -14,7 +14,7 @@ fragment SubspacePageSpace on Space {
     myPrivileges
   }
   about {
-    ...SpaceAboutLightUrl
+    ...SpaceAboutLight
     why
 
   }

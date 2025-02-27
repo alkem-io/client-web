@@ -23,7 +23,7 @@ fragment InvitationData on CommunityInvitationResult {
     id
     level
     about {
-     ...SpaceAboutLightUrl
+     ...SpaceAboutMinimalUrl
     }
   }
   invitation {

@@ -3,7 +3,7 @@ query SpaceAccount($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        ...SpaceAboutLightUrl
+        ...SpaceAboutLight
       }
       activeSubscription {
         name

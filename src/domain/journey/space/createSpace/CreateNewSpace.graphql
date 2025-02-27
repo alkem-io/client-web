@@ -2,7 +2,7 @@ mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
   createSpace(spaceData: $spaceData) {
     id
     about {
-      ...SpaceAboutLightUrl
+      ...SpaceAboutLight
     }
   }
 }

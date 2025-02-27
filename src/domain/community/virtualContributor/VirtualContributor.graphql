@@ -93,21 +93,7 @@ query BodyOfKnowledgeProfile($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
-        id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
-          cardBanner: visual(type: CARD) {
-            id
-            uri
-          }
-        }
+        ...SpaceAboutLight
       }
     }
   }

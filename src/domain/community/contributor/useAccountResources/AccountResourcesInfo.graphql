@@ -47,7 +47,7 @@ query AccountResourcesInfo($accountId: UUID!) {
         spaceListFilter {
           id
           about {
-            ...SpaceAboutLightUrl
+            ...SpaceAboutLight
           }
         }
         subdomain
