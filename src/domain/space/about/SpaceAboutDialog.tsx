@@ -141,7 +141,7 @@ const SpaceAboutDialog = ({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
   const aboutProfile = about?.profile;
-  console.log('!!!:', about);
+
   return (
     <DialogWithGrid
       open={open}
