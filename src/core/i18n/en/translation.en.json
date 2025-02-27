@@ -1301,6 +1301,7 @@
     "visual-upload": {
       "loading": "Image is loading",
       "success": "Image uploaded successfully",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Upload image",
       "no-data": "Not yet set"
     },
@@ -1590,6 +1591,16 @@
         },
         "website": {
           "title": "Website"
+        },
+        "references": {
+          "title": "References"
+        },
+        "bodyOfKnowledge": {
+          "title": "Body of Knowledge",
+          "privateBokTooltip": "This Body of Knowledge is private",
+          "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:",
+          "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible.",
+          "externalVCDescriptionNA": "This Virtual Contributor utilizes an external AI engine. No data at the moment."
         }
       }
     },
