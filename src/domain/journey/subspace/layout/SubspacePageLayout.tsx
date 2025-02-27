@@ -19,7 +19,7 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import unwrapFragment from '@/core/ui/utils/unwrapFragment';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
+import { SpaceReadAccess } from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';

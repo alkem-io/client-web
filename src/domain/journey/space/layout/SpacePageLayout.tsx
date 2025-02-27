@@ -11,7 +11,7 @@ import SpacePageBanner from './SpacePageBanner';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
+import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import useNavigate from '@/core/routing/useNavigate';
 import { useLocation } from 'react-router-dom';
 
