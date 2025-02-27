@@ -2,6 +2,10 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       about {
         ...SpaceAboutCardBanner
       }

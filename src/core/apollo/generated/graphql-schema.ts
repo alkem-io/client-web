@@ -21306,7 +21306,12 @@ export type CreateVirtualContributorOnAccountMutation = {
   createVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; url: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string } | undefined;
+    };
     knowledgeBase?:
       | {
           __typename?: 'KnowledgeBase';
@@ -21480,6 +21485,9 @@ export type SpaceDashboardNavigationSubspacesQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           about: {
             __typename?: 'SpaceAbout';
             id: string;

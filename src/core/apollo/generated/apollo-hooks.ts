@@ -16609,6 +16609,9 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       profile {
         id
         url
+        avatar: visual(type: AVATAR) {
+          id
+        }
       }
       knowledgeBase {
         id
@@ -16850,6 +16853,10 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         about {
           ...SpaceAboutCardBanner
         }

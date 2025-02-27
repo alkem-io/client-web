@@ -31,16 +31,17 @@ const FormikAvatarUploadSkeleton = ({ height = DEFAULT_SIZE, ...containerProps }
   );
 };
 
-interface VisualWithAltText {
+export type VisualWithAltText = {
   file: File;
   altText?: string;
-}
+};
 
 export interface FormikAvatarUploadProps extends BoxProps {
   name: string;
   visualType: VisualType;
   height?: number;
   altText?: string;
+  onChangeAvatar?: (avatar: VisualWithAltText) => void;
 }
 
 /**
@@ -52,6 +53,7 @@ const FormikAvatarUpload = ({
   visualType,
   height = DEFAULT_SIZE,
   altText,
+  onChangeAvatar,
   ...containerProps
 }: FormikAvatarUploadProps) => {
   const { t } = useTranslation();
@@ -91,6 +93,8 @@ const FormikAvatarUpload = ({
   const handleVisualReady = (file: File, altText: string) => {
     helpers.setValue({ file, altText });
     setCropDialogOpened(false);
+
+    onChangeAvatar?.({ file, altText });
   };
 
   const width = height * aspectRatio;
