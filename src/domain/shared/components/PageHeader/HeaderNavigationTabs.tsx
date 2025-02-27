@@ -51,6 +51,9 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     marginLeft: '30%',
     marginRight: '30%',
   },
+  '.MuiTabs-scrollButtons': {
+    display: 'none',
+  },
 }));
 
 export interface NavigationTabsProps extends TabsProps {

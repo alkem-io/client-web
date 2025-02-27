@@ -11,7 +11,7 @@ export class LazyLoadError extends Error {
   }
 }
 
-export const lazyWithGlobalErrorHandler = <T>(
+export const lazyWithGlobalErrorHandler = <T extends object>(
   importFunc: ImportFunc<T>,
   hoc?: (component: ComponentType<T>) => ComponentType<T>
 ): React.LazyExoticComponent<React.ComponentType<T>> => {

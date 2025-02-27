@@ -6,7 +6,7 @@ type UserCardData = {
   id: string;
   profile: {
     displayName: string;
-    visual?: { uri: string };
+    avatar?: { uri: string };
     location?: { city?: string; country?: string };
     url?: string;
     tagsets?: { tags: string[] }[];
@@ -24,7 +24,7 @@ const useUserCardProps = (data: UserCardData[] | undefined): (Identifiable & Use
       id: user.id,
       tags: user.profile.tagsets?.flatMap(x => x.tags),
       displayName: user.profile.displayName,
-      avatarSrc: user.profile.visual?.uri,
+      avatarSrc: user.profile.avatar?.uri,
       city: user.profile.location?.city,
       country: user.profile.location?.country,
       url: user.profile.url,

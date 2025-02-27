@@ -1,26 +1,27 @@
-import React, { ReactNode } from 'react';
-import { DialogActions, DialogContent } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { FormikProps } from 'formik/dist/types';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import BackButton from '@/core/ui/actions/BackButton';
+import DeleteButton from '@/core/ui/actions/DeleteButton';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
-import DeleteButton from '@/core/ui/actions/DeleteButton';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { SaveOutlined } from '@mui/icons-material';
-import BackButton from '@/core/ui/actions/BackButton';
+import { DialogActions, DialogContent } from '@mui/material';
+import { FormikProps } from 'formik/dist/types';
+import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 
-interface TemplateDialogBaseProps<Values extends {}> {
+interface TemplateDialogBaseProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onCancel?: () => void;
   editMode?: boolean;
   templateType: TemplateType;
   onDelete?: () => void;
-  children?: (props: { actions: (formik: FormikProps<Values>) => ReactNode }) => ReactNode;
+  children?: (props: { actions: (formik: FormikProps<AnyTemplateFormSubmittedValues>) => ReactNode }) => ReactNode;
 }
 
-const CreateEditTemplateDialogBase = <InitialValues extends {}>({
+const CreateEditTemplateDialogBase = ({
   open,
   onClose,
   onCancel,
@@ -28,7 +29,7 @@ const CreateEditTemplateDialogBase = <InitialValues extends {}>({
   editMode,
   templateType,
   onDelete,
-}: TemplateDialogBaseProps<InitialValues>) => {
+}: TemplateDialogBaseProps) => {
   const { t } = useTranslation();
 
   const titleLabel = editMode ? 'common.edit-entity' : 'common.create-new-entity';

@@ -1,15 +1,15 @@
+import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import { styled } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { ComponentType } from 'react';
+import { ComponentType, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardContributingUsers, {
   DashboardContributingUsersProps,
 } from '../EntityDashboardContributorsSection/DashboardContributingUsers';
 import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
-import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 
 export interface RoleSetContributorTypesViewProps extends ContributingOrganizationsProps {
   loading?: boolean;
@@ -19,7 +19,7 @@ export interface RoleSetContributorTypesViewProps extends ContributingOrganizati
   usersComponent?: ComponentType<DashboardContributingUsersProps>;
 }
 
-const SubSectionHeading = styled(props => <Typography variant="h3" {...props} />)(({ theme }) => ({
+const SubSectionHeading = styled((props: PropsWithChildren) => <Typography variant="h3" {...props} />)(({ theme }) => ({
   paddingTop: theme.spacing(2),
   paddingBottom: theme.spacing(2),
 }));
