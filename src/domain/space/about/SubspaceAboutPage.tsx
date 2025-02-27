@@ -10,7 +10,6 @@ import ContributorsDialog from '@/domain/community/community/ContributorsDialog/
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 const SubspaceAboutPage = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
@@ -35,7 +34,7 @@ const SubspaceAboutPage = () => {
             about={about}
             sendMessageToCommunityLeads={sendMessageToCommunityLeads}
             metrics={metrics}
-            guidelines={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={about?.profile?.url} />}
+            communityId={communityId}
             loading={state.loading}
             leadUsers={leadUsers}
             provider={provider}

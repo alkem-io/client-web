@@ -30,17 +30,17 @@ import ApplicationButton from '@/domain/community/application/applicationButton/
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import RouterLink from '@/core/ui/link/RouterLink';
 import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
+import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceId?: string;
+  communityId?: string;
   spaceLevel: SpaceLevel | undefined;
   about?: SpaceAboutDetailsModel | undefined;
-  ribbon?: ReactNode;
   endButton?: ReactNode;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
-  guidelines?: ReactNode;
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
@@ -55,14 +55,13 @@ const gradient = (theme: Theme) =>
 const SpaceAboutDialog = ({
   open,
   spaceId,
-  about,
-  ribbon,
+  communityId,
   spaceLevel = SpaceLevel.L0,
+  about,
   leadUsers,
   leadOrganizations,
   provider: host,
   metrics,
-  guidelines,
   loading = false,
   endButton,
 }: SpaceAboutDialogProps) => {
@@ -137,7 +136,7 @@ const SpaceAboutDialog = ({
       </EntityDashboardLeadsSection>
     );
   };
-  console.log('!!!', spaceId, spaceReadAccess);
+
   return (
     <DialogWithGrid
       open={open}
@@ -174,7 +173,6 @@ const SpaceAboutDialog = ({
         }
         endButton={endButton}
       />
-      {ribbon}
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters>
           <PageContentColumn columns={8}>
@@ -246,7 +244,7 @@ const SpaceAboutDialog = ({
               </PageContentBlock>
             )}
 
-            {guidelines}
+            {communityId && <CommunityGuidelinesBlock communityId={communityId} journeyUrl={aboutProfile?.url} />}
 
             <PageContentBlock>
               <AboutDescription

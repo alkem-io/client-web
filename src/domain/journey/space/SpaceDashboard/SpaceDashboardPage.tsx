@@ -15,7 +15,6 @@ import { Close } from '@mui/icons-material';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceDashboardPage = ({
@@ -82,12 +81,7 @@ const SpaceDashboardPage = ({
               about={about}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               metrics={entities.space?.metrics}
-              guidelines={
-                <CommunityGuidelinesBlock
-                  communityId={entities.space?.community?.id}
-                  journeyUrl={entities.space?.about.profile.url}
-                />
-              }
+              communityId={entities.space?.community?.id}
               loading={state.loading}
               leadUsers={entities.space?.community?.roleSet?.leadUsers}
               provider={entities.provider}
