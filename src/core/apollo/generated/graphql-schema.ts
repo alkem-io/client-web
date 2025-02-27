@@ -20992,6 +20992,28 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type SpaceTabsQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type SpaceTabsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type SpaceAccountQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;

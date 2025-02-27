@@ -2036,6 +2036,9 @@
             "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
         },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
+        },
         "community": {
           "preferences": {
             "title": "Membership",
@@ -2458,6 +2461,13 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Hosted by",
           "hostTooltip": "The host is the organization responsible for the creation of the Space.",
