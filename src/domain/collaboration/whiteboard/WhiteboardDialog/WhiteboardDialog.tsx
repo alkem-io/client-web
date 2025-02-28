@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -61,6 +60,8 @@ interface WhiteboardDialogProps {
   entities: {
     whiteboard: WhiteboardDetails | undefined;
   };
+  consecutiveSaveErrors: number;
+  lastSuccessfulSavedDate: Date | undefined;
   actions: {
     onCancel: () => void;
     onUpdate: (
@@ -69,6 +70,8 @@ interface WhiteboardDialogProps {
     ) => Promise<{ success: boolean; errors?: string[] }>;
     onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
     onDelete: (whiteboard: Identifiable) => Promise<void>;
+    setLastSuccessfulSavedDate: (date: Date) => void;
+    setConsecutiveSaveErrors: (count: number) => void;
   };
   options: {
     show: boolean;
@@ -89,7 +92,14 @@ interface WhiteboardDialogProps {
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialogProps) => {
+const WhiteboardDialog = ({
+  entities,
+  actions,
+  options,
+  state,
+  consecutiveSaveErrors,
+  lastSuccessfulSavedDate,
+}: WhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
@@ -100,23 +110,8 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
 
   const columns = useGlobalGridColumns();
 
-  const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [lastSaveError, setLastSaveError] = useState<string | undefined>();
-  const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
   const [isSceneInitialized, setSceneInitialized] = useState(false);
-
-  const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
-    variables: { whiteboardId: whiteboard?.id! },
-    skip: !whiteboard?.id,
-    fetchPolicy: 'network-only',
-  });
-
-  useEffect(() => {
-    // on the initialization of lastSuccessfulSavedDate take the date from the database
-    if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-      setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
-    }
-  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -271,11 +266,11 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
           onRemoteSave: (error?: string) => {
             if (error) {
               setLastSaveError(error);
-              setConsecutiveSaveErrors(count => count + 1);
+              actions.setConsecutiveSaveErrors?.(consecutiveSaveErrors + 1);
             } else {
-              setLastSuccessfulSavedDate(new Date());
+              actions.setLastSuccessfulSavedDate?.(new Date());
               setLastSaveError(undefined);
-              setConsecutiveSaveErrors(0);
+              actions.setConsecutiveSaveErrors?.(0);
             }
           },
           onSceneInitChange: setSceneInitialized,
@@ -320,7 +315,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
                   collaboratorMode={mode}
                   whiteboardUrl={whiteboard.profile.url}
                   collaboratorModeReason={modeReason}
-                  lastSuccessfulSavedDate={lastSuccessfulSavedDate}
                   lastSaveError={lastSaveError}
                   consecutiveSaveErrors={consecutiveSaveErrors}
                   onDelete={() => setDeleteDialogOpen(true)}
