@@ -89,7 +89,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
 
-  const [visual, setVisual] = useState<VisualWithAltText>();
+  const [avatar, setAvatar] = useState<VisualWithAltText>();
 
   const [uploadVisual] = useUploadVisualMutation({
     onError: () => notify(t('components.visual-upload.error'), 'error'),
@@ -431,13 +431,13 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
-    if (visual?.file && createdVCData?.profile?.avatar?.id) {
+    if (avatar?.file && createdVCData?.profile?.avatar?.id) {
       await uploadVisual({
         variables: {
-          file: visual.file,
+          file: avatar.file,
           uploadData: {
             visualID: createdVCData.profile.avatar.id,
-            alternativeText: visual.altText,
+            alternativeText: avatar.altText,
           },
         },
       });
@@ -509,6 +509,18 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         return;
       }
 
+      if (avatar?.file && createdVC?.profile?.avatar?.id) {
+        await uploadVisual({
+          variables: {
+            file: avatar.file,
+            uploadData: {
+              visualID: createdVC.profile.avatar.id,
+              alternativeText: avatar.altText,
+            },
+          },
+        });
+      }
+
       // Refresh explicitly the ingestion
       refreshIngestion(createdVC.id);
 
@@ -547,6 +559,18 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         accountId: myAccountId,
       });
 
+      if (avatar?.file && createdVc?.profile?.avatar?.id) {
+        await uploadVisual({
+          variables: {
+            file: avatar.file,
+            uploadData: {
+              visualID: createdVc.profile.avatar.id,
+              alternativeText: avatar.altText,
+            },
+          },
+        });
+      }
+
       // navigate to VC page
       if (createdVc) {
         navigate(createdVc.profile.url);
@@ -572,7 +596,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
                 onStepSelection('existingKnowledge', values);
               }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
-              onChangeAvatar={setVisual}
+              onChangeAvatar={setAvatar}
             />
           )}
           {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}
