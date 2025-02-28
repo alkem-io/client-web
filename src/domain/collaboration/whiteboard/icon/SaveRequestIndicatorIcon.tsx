@@ -36,10 +36,10 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
     };
   }, [date]);
 
-  const savedText = t('tooltips.whiteboard.last-saved', { datetime: formattedTime });
+  const savedText = t('pages.whiteboard.last-saved', { datetime: formattedTime });
   const unsavedText = (
     <Trans
-      i18nKey="tooltips.whiteboard.unsuccessful-save"
+      i18nKey="pages.whiteboard.unsuccessful-save"
       components={{ p: <p />, strong: <strong /> }}
       values={{ datetime: formattedTime, warningMessage: isOpen ? '' : t('common.warning') + ':' }}
     />
