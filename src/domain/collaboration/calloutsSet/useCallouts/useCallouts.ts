@@ -16,7 +16,7 @@ import {
   CalloutContribution,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
-import { groupBy } from 'lodash';
+import { cloneDeep, groupBy } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
 import useInnovationFlowStates, {
   INNOVATION_FLOW_STATES_TAGSET_NAME,
@@ -146,7 +146,8 @@ const useCallouts = ({
   const callouts = useMemo(
     () =>
       calloutsSet?.callouts
-        ?.filter(callout => {
+        ?.map(cloneDeep) // Clone to be able to modify the callouts
+        .filter(callout => {
           //!! Added client side filtering for group-names filtering by flow-state
           if (!groupNames || groupNames.length === 0) {
             return true;
@@ -156,52 +157,36 @@ const useCallouts = ({
           }
           const validStates = innovationFlowStates.map(state => state.displayName);
 
-          // Get the flow state of the callout
+          // Get the flow-state of the callout
           const [calloutFlowState] =
             callout.framing.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.tags ??
             [];
+          // Get the group-name tagset of the callout
+          const calloutGroupNameTagset = callout.framing.profile.tagsets?.find(
+            tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
+          );
+
+          const groupNameToFlowStateMap = {
+            [CalloutGroupName.Home]: validStates[0],
+            [CalloutGroupName.Community]: validStates[1],
+            [CalloutGroupName.Subspaces]: validStates[2],
+            [CalloutGroupName.Knowledge]: validStates[3],
+            [CalloutGroupName.Custom]: validStates[4],
+            [CalloutGroupName.Contribute]: validStates[5],
+          };
+
           for (const groupName of groupNames) {
-            switch (groupName) {
-              case CalloutGroupName.Home: {
-                if (calloutFlowState === validStates[0]) {
-                  return true;
-                }
-                break;
+            if (groupNameToFlowStateMap[groupName] === calloutFlowState) {
+              if (calloutGroupNameTagset) {
+                // Overwrite the group-name tagset with the one from the groupNames, HACK B-)
+                calloutGroupNameTagset.tags = [groupName];
               }
-              case CalloutGroupName.Community: {
-                if (calloutFlowState === validStates[1]) {
-                  return true;
-                }
-                break;
-              }
-              case CalloutGroupName.Subspaces: {
-                if (calloutFlowState === validStates[2]) {
-                  return true;
-                }
-                break;
-              }
-              case CalloutGroupName.Knowledge: {
-                if (calloutFlowState === validStates[3]) {
-                  return true;
-                }
-                break;
-              }
-              case CalloutGroupName.Custom: {
-                if (calloutFlowState === validStates[4]) {
-                  return true;
-                }
-                break;
-              }
-              case CalloutGroupName.Contribute: {
-                if (calloutFlowState === validStates[5]) {
-                  return true;
-                }
-                break;
-              }
+              return true;
             }
           }
           return false;
         })
+
         .map(({ authorization, ...callout }) => {
           const draft = callout?.visibility === CalloutVisibility.Draft;
           const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
