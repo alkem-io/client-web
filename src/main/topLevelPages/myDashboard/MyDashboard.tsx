@@ -1,25 +1,28 @@
 import React, { Suspense } from 'react';
 import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { DashboardProvider } from './DashboardContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { useUserContext } from '@/domain/community/user';
 
 const MyDashboardUnauthenticated = lazyWithGlobalErrorHandler(() => import('./MyDashboardUnauthenticated'));
 const MyDashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithMemberships'));
 const MyDashboardWithoutMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithoutMemberships'));
 
 export const MyDashboard = () => {
-  const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
+  const { user, isAuthenticated, loading: isLoadingAuthentication } = useUserContext();
+  const hasNotAuthorized = !isAuthenticated || !user;
 
-  const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery();
+  const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery({
+    skip: hasNotAuthorized,
+  });
   const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsFlat.length;
 
-  if (areSpacesLoading) {
+  if (areSpacesLoading || (isLoadingAuthentication && hasNotAuthorized)) {
     return <Loading />;
   }
 
-  if (!isAuthenticated && !isLoadingAuthentication) {
+  if (!isLoadingAuthentication && hasNotAuthorized) {
     return (
       <Suspense fallback={<Loading />}>
         <MyDashboardUnauthenticated />
