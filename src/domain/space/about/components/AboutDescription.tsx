@@ -1,5 +1,5 @@
 import { PropsWithChildren, ReactElement } from 'react';
-import { Box, Grid, SvgIconProps } from '@mui/material';
+import { Box, Grid, IconButton, SvgIconProps } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -26,6 +26,7 @@ export interface AboutDescriptionProps extends PropsWithChildren {
   };
   metrics?: Metric[] | undefined;
   canEdit?: boolean;
+  iconColor?: string;
   onEditClick?: () => void;
 }
 
@@ -40,6 +41,7 @@ const AboutDescription = ({
   location,
   metrics,
   canEdit = false,
+  iconColor = 'primary',
   onEditClick = noop,
 }: AboutDescriptionProps) => {
   const metricsItems = useMetricsItems(metrics, SpaceMetrics);
@@ -58,12 +60,17 @@ const AboutDescription = ({
           title={title}
           actions={
             <>
-              {canEdit && (
-                <Box onClick={onEditClick} paddingLeft={0.5} paddingBottom={1} sx={{ float: 'right' }}>
-                  <EditOutlined />
+              {member && (
+                // negative margins because of the positioning of custom icon and IconButton
+                <Box sx={{ mt: '12px', mr: '-4px' }}>
+                  <DashboardMemberIcon level={spaceLevel} />
                 </Box>
               )}
-              {member && <DashboardMemberIcon level={spaceLevel} />}
+              {canEdit && (
+                <IconButton onClick={onEditClick} sx={{ mr: '-8px', color: iconColor }}>
+                  <EditOutlined />
+                </IconButton>
+              )}
             </>
           }
         />

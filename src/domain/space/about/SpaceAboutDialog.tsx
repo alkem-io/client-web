@@ -42,6 +42,7 @@ export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
+  hasEditPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
   onClose: () => void;
 }
@@ -64,6 +65,7 @@ const SpaceAboutDialog = ({
   loading = false,
   onClose,
   hasReadPrivilege,
+  hasEditPrivilege = false,
 }: SpaceAboutDialogProps) => {
   const { t } = useTranslation();
 
@@ -181,6 +183,8 @@ const SpaceAboutDialog = ({
                   loading={loading}
                   location={aboutProfile?.location}
                   metrics={metrics}
+                  iconColor="white"
+                  canEdit={hasEditPrivilege}
                   onEditClick={() => openEditDialog('description')}
                 />
               </PageContentBlock>
@@ -225,6 +229,7 @@ const SpaceAboutDialog = ({
                   titleIcon={<FlagCircleOutlinedIcon />}
                   description={about.why}
                   loading={loading}
+                  canEdit={hasEditPrivilege}
                   onEditClick={() => openEditDialog('why')}
                 />
               </PageContentBlock>
@@ -237,6 +242,7 @@ const SpaceAboutDialog = ({
                   titleIcon={<SupervisedUserCircleOutlinedIcon />}
                   description={about.who}
                   loading={loading}
+                  canEdit={hasEditPrivilege}
                   onEditClick={() => openEditDialog('who')}
                 />
               </PageContentBlock>
@@ -248,6 +254,7 @@ const SpaceAboutDialog = ({
               <AboutDescription
                 title={t('components.referenceSegment.title')}
                 loading={loading}
+                canEdit={hasEditPrivilege}
                 onEditClick={() => openEditDialog('references')}
               >
                 <Box paddingTop={gutters(1)}>

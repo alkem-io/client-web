@@ -21,7 +21,7 @@ const SubspaceAboutPage = () => {
   return (
     <>
       <AboutPageContainer journeyId={spaceId}>
-        {({ about, provider, leadOrganizations, leadUsers, metrics, hasReadPrivilege }, state) => (
+        {({ about, provider, leadOrganizations, leadUsers, metrics, hasReadPrivilege, hasEditPrivilege }, state) => (
           <SpaceAboutDialog
             open
             spaceId={spaceId}
@@ -36,6 +36,7 @@ const SubspaceAboutPage = () => {
             leadOrganizations={leadOrganizations}
             onClose={backToParentPage}
             hasReadPrivilege={hasReadPrivilege}
+            hasEditPrivilege={hasEditPrivilege}
           />
         )}
       </AboutPageContainer>
