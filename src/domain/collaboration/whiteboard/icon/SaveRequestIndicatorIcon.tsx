@@ -15,7 +15,7 @@ type SaveRequestIndicatorIconProps = {
   date: Date | undefined;
 };
 
-export const SaveRequestIndicatorIcon = ({ date, isSaved = true }: SaveRequestIndicatorIconProps) => {
+export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicatorIconProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formattedTime, setFormattedTime] = useState<string>();
 
@@ -80,11 +80,11 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved = true }: SaveRequestIn
       ) : (
         <IconButton>
           {isSaved ? (
-            <Tooltip placement="top" title={savedText} onClick={handleMessageOpen}>
+            <Tooltip placement="bottom" title={savedText} onClick={handleMessageOpen}>
               <CloudDone />
             </Tooltip>
           ) : (
-            <Tooltip placement="top" title={unsavedText} onClick={handleMessageOpen}>
+            <Tooltip placement="bottom" title={unsavedText} onClick={handleMessageOpen}>
               <CloudOff sx={theme => ({ color: theme.palette.error.main })} />
             </Tooltip>
           )}

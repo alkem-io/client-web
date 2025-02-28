@@ -1,11 +1,10 @@
 import { MouseEventHandler, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, Tooltip, DialogContent } from '@mui/material';
+import { Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
-import Gutters from '@/core/ui/grid/Gutters';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
@@ -184,26 +183,6 @@ const WhiteboardDialogFooter = ({
           <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
             {t('pages.whiteboard.restartCollaboration')}
           </Button>
-        )}
-
-        {!readonlyReason && (
-          <Tooltip title={t('tooltips.whiteboard.validServerConnection')} placement="top">
-            <Gutters
-              disableGap
-              disablePadding
-              sx={theme => ({
-                position: 'absolute',
-                left: 10,
-                bottom: 10,
-
-                width: 10,
-                height: 10,
-                borderRadius: 1,
-                cursor: 'pointer',
-                backgroundColor: theme.palette.success.main,
-              })}
-            />
-          </Tooltip>
         )}
 
         {directMessageDialog}
