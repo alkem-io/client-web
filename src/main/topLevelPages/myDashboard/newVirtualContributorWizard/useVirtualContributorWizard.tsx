@@ -96,6 +96,20 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
 
+  const uploadAvatar = useCallback(async (avatar: VisualWithAltText | undefined, visualID: string | undefined) => {
+    if (avatar?.file && visualID) {
+      await uploadVisual({
+        variables: {
+          file: avatar?.file,
+          uploadData: {
+            visualID,
+            alternativeText: avatar.altText,
+          },
+        },
+      });
+    }
+  }, []);
+
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
     setAccountName(accountName);
@@ -431,17 +445,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
-    if (avatar?.file && createdVCData?.profile?.avatar?.id) {
-      await uploadVisual({
-        variables: {
-          file: avatar.file,
-          uploadData: {
-            visualID: createdVCData.profile.avatar.id,
-            alternativeText: avatar.altText,
-          },
-        },
-      });
-    }
+    await uploadAvatar(avatar, createdVCData?.profile?.avatar?.id);
 
     setCreatedVc(createdVCData);
 
@@ -509,17 +513,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         return;
       }
 
-      if (avatar?.file && createdVC?.profile?.avatar?.id) {
-        await uploadVisual({
-          variables: {
-            file: avatar.file,
-            uploadData: {
-              visualID: createdVC.profile.avatar.id,
-              alternativeText: avatar.altText,
-            },
-          },
-        });
-      }
+      await uploadAvatar(avatar, createdVC?.profile?.avatar?.id);
 
       // Refresh explicitly the ingestion
       refreshIngestion(createdVC.id);
@@ -559,17 +553,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         accountId: myAccountId,
       });
 
-      if (avatar?.file && createdVc?.profile?.avatar?.id) {
-        await uploadVisual({
-          variables: {
-            file: avatar.file,
-            uploadData: {
-              visualID: createdVc.profile.avatar.id,
-              alternativeText: avatar.altText,
-            },
-          },
-        });
-      }
+      await uploadAvatar(avatar, createdVc?.profile?.avatar?.id);
 
       // navigate to VC page
       if (createdVc) {
