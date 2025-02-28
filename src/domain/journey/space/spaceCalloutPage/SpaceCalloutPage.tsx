@@ -16,6 +16,9 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
       return EntityPageSection.Community;
     case CalloutGroupName.Subspaces:
       return EntityPageSection.Subspaces;
+    // case CalloutGroupName.Contribute: // In the past there was a tab called contribute ! remove?!
+    case CalloutGroupName.Custom:
+      return EntityPageSection.Custom;
     default:
       return EntityPageSection.KnowledgeBase;
   }
@@ -29,8 +32,10 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <SpaceSubspacesPage />;
     case CalloutGroupName.Community:
       return <SpaceCommunityPage />;
+    case CalloutGroupName.Custom: // There was a tab called contribute
+      return <KnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />;
     default:
-      return <KnowledgeBasePage />;
+      return <KnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
   }
 };
 

@@ -1123,6 +1123,7 @@ export type CalloutGroup = {
 export enum CalloutGroupName {
   Community = 'COMMUNITY',
   Contribute = 'CONTRIBUTE',
+  Custom = 'CUSTOM',
   Home = 'HOME',
   Knowledge = 'KNOWLEDGE',
   Subspaces = 'SUBSPACES',
@@ -1185,6 +1186,7 @@ export type CalloutsSetCalloutsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
+  states?: InputMaybe<Array<Scalars['String']>>;
   tagsets?: InputMaybe<Array<TagsetArgs>>;
   types?: InputMaybe<Array<CalloutType>>;
 };
@@ -20987,6 +20989,28 @@ export type BannerInnovationHubQuery = {
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceTabsQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type SpaceTabsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
         }
       | undefined;
   };

@@ -16235,6 +16235,63 @@ export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerIn
   return { query: BannerInnovationHubDocument, variables: variables };
 }
 
+export const SpaceTabsDocument = gql`
+  query SpaceTabs($collaborationId: UUID!) {
+    lookup {
+      collaboration(ID: $collaborationId) {
+        id
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceTabsQuery__
+ *
+ * To run a query within a React component, call `useSpaceTabsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceTabsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceTabsQuery({
+ *   variables: {
+ *      collaborationId: // value for 'collaborationId'
+ *   },
+ * });
+ */
+export function useSpaceTabsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>(SpaceTabsDocument, options);
+}
+
+export function useSpaceTabsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>(
+    SpaceTabsDocument,
+    options
+  );
+}
+
+export type SpaceTabsQueryHookResult = ReturnType<typeof useSpaceTabsQuery>;
+export type SpaceTabsLazyQueryHookResult = ReturnType<typeof useSpaceTabsLazyQuery>;
+export type SpaceTabsQueryResult = Apollo.QueryResult<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>;
+export function refetchSpaceTabsQuery(variables: SchemaTypes.SpaceTabsQueryVariables) {
+  return { query: SpaceTabsDocument, variables: variables };
+}
+
 export const SpaceAccountDocument = gql`
   query SpaceAccount($spaceId: UUID!) {
     lookup {

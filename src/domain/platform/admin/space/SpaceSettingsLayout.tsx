@@ -10,6 +10,8 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/journey/space/layout/SpaceTabs';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
@@ -31,7 +33,12 @@ const tabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.About,
     route: 'about',
-    icon: PeopleOutlinedIcon,
+    icon: AssignmentIndOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Layout,
+    route: 'layout',
+    icon: DashboardOutlinedIcon,
   },
   {
     section: SettingsSection.Community,

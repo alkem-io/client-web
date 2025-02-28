@@ -15,7 +15,11 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
-const KnowledgeBasePage = () => {
+type KnowledgeBasePageProps = {
+  calloutsFlowState: EntityPageSection;
+};
+
+const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
   const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
 
   const { t } = useTranslation();
@@ -33,14 +37,15 @@ const KnowledgeBasePage = () => {
   };
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={calloutsFlowState}>
       <KnowledgeBaseContainer collaborationId={collaborationId}>
         {({
           callouts: {
             loading,
             canReadCalloutsSet: canReadCallout,
             canCreateCallout,
-            groupedCallouts,
+            callouts: allCallouts,
+            // groupedCallouts,
             onCalloutsSortOrderUpdate,
             refetchCallout,
           },
@@ -52,7 +57,8 @@ const KnowledgeBasePage = () => {
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
                   <PageContentBlock>
                     <CalloutsList
-                      callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                      // callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                      callouts={allCallouts}
                       emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
                         entities: t('common.callouts'),
                       })}
@@ -63,7 +69,8 @@ const KnowledgeBasePage = () => {
                 <ContentColumn>
                   <CalloutsGroupView
                     calloutsSetId={calloutsSetId}
-                    callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                    // callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                    callouts={allCallouts}
                     canCreateCallout={canCreateCallout}
                     loading={loading}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}

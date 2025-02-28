@@ -52,6 +52,7 @@ const useCalloutsOnCollaboration = ({
     onCalloutsSortOrderUpdate,
   } = useCallouts({
     calloutsSetId,
+    collaborationId,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
     groupNames,

@@ -15,7 +15,6 @@ import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import Loading from '@/core/ui/loading/Loading';
 
 const SubspaceRoute = () => {
   const { spaceId, spaceLevel, loading } = useUrlResolver();
@@ -23,7 +22,7 @@ const SubspaceRoute = () => {
   // This avoids race conditions when the url has just changed from space to a subspace,
   // react router gets to execute this but the urlResolver is not yet done resolving
   if (spaceLevel === SpaceLevel.L0 || loading) {
-    return <Loading />;
+    return null;
   }
 
   return (

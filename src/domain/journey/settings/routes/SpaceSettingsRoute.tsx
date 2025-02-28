@@ -13,6 +13,7 @@ import AdminSpaceCommunityPage from '@/domain/journey/space/pages/AdminSpaceComm
 import SpaceAccountPage from '@/domain/journey/space/pages/SpaceAccount/SpaceAccountPage';
 import ChallengesRoute from '@/domain/platform/admin/subspace/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import SpaceLayoutSettingsPage from '../../space/pages/SpaceLayoutSettings/SpaceLayoutSettingsPage';
 
 const SpaceSettingsRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -24,6 +25,7 @@ const SpaceSettingsRoute: FC = () => {
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<SpaceAboutPage />} />
+          <Route path="layout" element={<SpaceLayoutSettingsPage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="account" element={<SpaceAccountPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage />} />
