@@ -1123,6 +1123,7 @@ export type CalloutGroup = {
 export enum CalloutGroupName {
   Community = 'COMMUNITY',
   Contribute = 'CONTRIBUTE',
+  Custom = 'CUSTOM',
   Home = 'HOME',
   Knowledge = 'KNOWLEDGE',
   Subspaces = 'SUBSPACES',
@@ -1185,6 +1186,7 @@ export type CalloutsSetCalloutsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
+  states?: InputMaybe<Array<Scalars['String']>>;
   tagsets?: InputMaybe<Array<TagsetArgs>>;
   types?: InputMaybe<Array<CalloutType>>;
 };

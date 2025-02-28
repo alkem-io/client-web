@@ -1,23 +1,39 @@
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { useSpace } from '../../SpaceContext/useSpace';
+import InnovationFlowCollaborationToolsBlock from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowCollaborationToolsBlock';
+import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { useTranslation } from 'react-i18next';
 
-type Props = {
-  spaceId: string | undefined;
-};
+export const SpaceLayoutSettingsEdit = () => {
+  const { collaborationId } = useSpace();
+  const filterCalloutGroups = undefined;
 
-export const SpaceLayoutSettingsEdit = ({ spaceId = '' }: Props) => {
-  const { t } = useTranslation();
-  const notify = useNotification();
-
+  const { data, actions, state } = useInnovationFlowSettings({
+    collaborationId,
+    filterCalloutGroups,
+    skip: !collaborationId,
+  });
+  const { innovationFlow, callouts } = data;
 
   return (
     <PageContentColumn columns={12}>
       <PageContentBlock>
-        <PageContentBlockHeader title={t('components.editSpaceForm.about')} />
-        <p>Layout</p>
+        {/* TODO: Translate */}
+        <PageContentBlockHeader title="Set the tab names" />
+        <InnovationFlowCollaborationToolsBlock
+          callouts={callouts}
+          loading={state.loading}
+          innovationFlowStates={innovationFlow?.states}
+          currentState={innovationFlow?.currentState.displayName}
+          onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
+          onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
+          onUpdateCalloutFlowState={actions.updateCalloutFlowState}
+          onCreateFlowState={(state, options) => actions.createState(state, options.after)}
+          onEditFlowState={actions.editState}
+          onDeleteFlowState={actions.deleteState}
+          disableStateNumberChange
+        />
       </PageContentBlock>
     </PageContentColumn>
   );

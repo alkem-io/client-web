@@ -18,7 +18,9 @@ import {
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import useInnovationFlowStates, {
+  INNOVATION_FLOW_STATES_TAGSET_NAME,
+} from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
@@ -67,6 +69,7 @@ export type TypedCalloutDetails = TypedCallout &
 
 interface UseCalloutsParams {
   calloutsSetId: string | undefined;
+  collaborationId?: string; // Do not leave this, this is a hack
   groupNames?: CalloutGroupName[];
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
@@ -88,7 +91,7 @@ export interface UseCalloutsProvided {
 }
 
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
-const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
+const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group'; // what to do with this ?
 
 /**
  * If you need Callouts without a group, don't specify groupNames at all.
@@ -96,6 +99,7 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
 
 const useCallouts = ({
   calloutsSetId,
+  collaborationId,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
   groupNames,
@@ -106,9 +110,11 @@ const useCallouts = ({
     loading: authorizationLoading,
   } = useCalloutsSetAuthorization({ calloutsSetId });
 
+  const { innovationFlowStates } = useInnovationFlowStates({ collaborationId });
+
   const variables = {
     calloutsSetId: calloutsSetId!,
-    groups: groupNames,
+    // groups: groupNames, // Disabled group-names server side filtering for now
   } as const;
 
   const {
@@ -139,35 +145,92 @@ const useCallouts = ({
 
   const callouts = useMemo(
     () =>
-      calloutsSet?.callouts?.map(({ authorization, ...callout }) => {
-        const draft = callout?.visibility === CalloutVisibility.Draft;
-        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-        const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-        const innovationFlowTagset = callout.framing.profile.tagsets?.find(
-          tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
-        );
-        const groupNameTagset = callout.framing.profile.tagsets?.find(
-          tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
-        );
-        const flowStates = innovationFlowTagset?.tags;
+      calloutsSet?.callouts
+        ?.filter(callout => {
+          //!! Added client side filtering for group-names filtering by flow-state
+          if (!groupNames || groupNames.length === 0) {
+            return true;
+          }
+          if (!innovationFlowStates) {
+            return false;
+          }
+          const validStates = innovationFlowStates.map(state => state.displayName);
 
-        const result: TypedCallout = {
-          ...callout,
-          framing: {
-            profile: callout.framing.profile,
-          },
-          authorization,
-          draft,
-          editable,
-          movable,
-          canSaveAsTemplate,
-          entitledToSaveAsTemplate,
-          flowStates,
-          groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
-        };
-        return result;
-      }),
-    [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate]
+          // Get the flow state of the callout
+          const [calloutFlowState] =
+            callout.framing.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.tags ??
+            [];
+          for (const groupName of groupNames) {
+            switch (groupName) {
+              case CalloutGroupName.Home: {
+                if (calloutFlowState === validStates[0]) {
+                  return true;
+                }
+                break;
+              }
+              case CalloutGroupName.Community: {
+                if (calloutFlowState === validStates[1]) {
+                  return true;
+                }
+                break;
+              }
+              case CalloutGroupName.Subspaces: {
+                if (calloutFlowState === validStates[2]) {
+                  return true;
+                }
+                break;
+              }
+              case CalloutGroupName.Knowledge: {
+                if (calloutFlowState === validStates[3]) {
+                  return true;
+                }
+                break;
+              }
+              case CalloutGroupName.Custom: {
+                if (calloutFlowState === validStates[4]) {
+                  return true;
+                }
+                break;
+              }
+              case CalloutGroupName.Contribute: {
+                if (calloutFlowState === validStates[5]) {
+                  return true;
+                }
+                break;
+              }
+            }
+          }
+          return false;
+        })
+        .map(({ authorization, ...callout }) => {
+          const draft = callout?.visibility === CalloutVisibility.Draft;
+          const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+          const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+          const innovationFlowTagset = callout.framing.profile.tagsets?.find(
+            tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
+          );
+          const groupNameTagset = callout.framing.profile.tagsets?.find(
+            tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
+          );
+          const flowStates = innovationFlowTagset?.tags;
+
+          const result: TypedCallout = {
+            ...callout,
+            framing: {
+              profile: callout.framing.profile,
+            },
+            authorization,
+            draft,
+            editable,
+            movable,
+            canSaveAsTemplate,
+            entitledToSaveAsTemplate,
+            flowStates,
+            groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
+          };
+          return result;
+        }),
+    [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate, innovationFlowStates]
   );
 
   const submitCalloutsSortOrder = useCallback(

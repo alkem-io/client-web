@@ -17,6 +17,7 @@ import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import React, { Suspense } from 'react';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 
@@ -43,7 +44,11 @@ const SpaceRoute = () => {
       <Route path={routes.Community} element={<SpaceCommunityPage />} />
       <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
       <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
-      <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage />} />
+      <Route
+        path={routes.KnowledgeBase}
+        element={<KnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
+      />
+      <Route path={routes.Custom} element={<KnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
       <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
       <Route
         path="*"

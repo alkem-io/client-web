@@ -37,6 +37,10 @@ export interface InnovationFlowDragNDropEditorProps {
   ) => Promise<unknown> | void;
   onEditFlowState: (oldState: InnovationFlowState, newState: InnovationFlowState) => Promise<unknown> | void;
   onDeleteFlowState: (state: string) => Promise<unknown> | void;
+  /**
+   * Prevents the user from changing the number of states, adding or removing
+   */
+  disableStateNumberChange?: boolean;
 }
 
 const AddButton = (props: IconButtonProps) => {
@@ -66,6 +70,7 @@ const InnovationFlowDragNDropEditor = ({
   onCreateFlowState,
   onEditFlowState,
   onDeleteFlowState,
+  disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
 
@@ -103,7 +108,12 @@ const InnovationFlowDragNDropEditor = ({
             <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
               <Box display="flex" flexDirection="row" gap={gutters()} alignItems="stretch">
                 {innovationFlowStates?.map((state, index) => (
-                  <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
+                  <Draggable
+                    key={state.displayName}
+                    draggableId={state.displayName}
+                    index={index}
+                    isDragDisabled={disableStateNumberChange}
+                  >
                     {parentProvider => {
                       const isCurrentState = currentState === state.displayName;
                       return (
@@ -146,10 +156,12 @@ const InnovationFlowDragNDropEditor = ({
                   </Draggable>
                 ))}
                 {parentDroppableProvided.placeholder}
-                <AddButton
-                  onClick={() => setCreateFlowState({ last: true })}
-                  disabled={(innovationFlowStates ?? [])?.length >= MAX_INNOVATIONFLOW_STATES}
-                />
+                {!disableStateNumberChange && (
+                  <AddButton
+                    onClick={() => setCreateFlowState({ last: true })}
+                    disabled={(innovationFlowStates ?? [])?.length >= MAX_INNOVATIONFLOW_STATES}
+                  />
+                )}
               </Box>
             </Box>
           )}
