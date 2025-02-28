@@ -2,7 +2,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import { gutters } from '@/core/ui/grid/utils';
 import { Box, Link, Tooltip } from '@mui/material';
-import { MouseEventHandler, ReactNode, useRef } from 'react';
+import { MouseEventHandler, useRef } from 'react';
 import { Caption } from '@/core/ui/typography';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -29,7 +29,6 @@ import Loading from '@/core/ui/loading/Loading';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import RouterLink from '@/core/ui/link/RouterLink';
-import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 export interface SpaceAboutDialogProps extends EntityDashboardLeads {
@@ -38,13 +37,13 @@ export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   communityId?: string;
   spaceLevel: SpaceLevel | undefined;
   about?: SpaceAboutDetailsModel | undefined;
-  endButton?: ReactNode;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
+  onClose: () => void;
 }
 
 const gradient = (theme: Theme) =>
@@ -63,11 +62,10 @@ const SpaceAboutDialog = ({
   provider: host,
   metrics,
   loading = false,
-  endButton,
+  onClose,
+  hasReadPrivilege,
 }: SpaceAboutDialogProps) => {
   const { t } = useTranslation();
-
-  const spaceReadAccess = useCanReadSpace({ spaceId });
 
   const isSpace = spaceLevel === SpaceLevel.L0;
   const leadOrganizationsHeader = isSpace
@@ -149,8 +147,9 @@ const SpaceAboutDialog = ({
         title={aboutProfile?.displayName}
         tagline={aboutProfile?.tagline}
         loading={loading}
+        onClose={onClose}
         startIcon={
-          !spaceReadAccess.canReadSpace && (
+          !hasReadPrivilege && (
             <Tooltip
               arrow
               placement="top"
@@ -171,7 +170,6 @@ const SpaceAboutDialog = ({
             </Tooltip>
           )
         }
-        endButton={endButton}
       />
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters>

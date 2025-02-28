@@ -10,17 +10,13 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import { IconButton } from '@mui/material';
-import { Close } from '@mui/icons-material';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceDashboardPage = ({
   dialog,
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
-  const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
@@ -86,11 +82,8 @@ const SpaceDashboardPage = ({
               leadUsers={entities.space?.community?.roleSet?.leadUsers}
               provider={entities.provider}
               leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
-              endButton={
-                <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
-                  <Close />
-                </IconButton>
-              }
+              onClose={backToDashboard}
+              hasReadPrivilege={entities.permissions?.spaceReadAccess}
             />
           </>
         )}

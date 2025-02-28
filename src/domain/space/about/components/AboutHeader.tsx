@@ -1,17 +1,21 @@
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, Theme, useMediaQuery } from '@mui/material';
+import { Box, IconButton, Theme, useMediaQuery } from '@mui/material';
 import { ReactNode } from 'react';
 import { PageTitle, Tagline } from '@/core/ui/typography';
+import { Close } from '@mui/icons-material';
+import { noop } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 export interface AboutHeaderProps {
   title?: string;
   tagline?: string;
   startIcon?: ReactNode;
-  endButton?: ReactNode;
   loading?: boolean;
+  onClose?: () => void;
 }
 
-const AboutHeader = ({ title, tagline, endButton, loading = false, startIcon }: AboutHeaderProps) => {
+const AboutHeader = ({ title, tagline, loading = false, startIcon, onClose = noop }: AboutHeaderProps) => {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
@@ -32,7 +36,11 @@ const AboutHeader = ({ title, tagline, endButton, loading = false, startIcon }: 
               </Box>
               <Tagline textAlign="center">{tagline}</Tagline>
             </Box>
-            <Box sx={{ position: 'absolute', top: gutters(0.5), right: gutters(0.5) }}>{endButton}</Box>
+            <Box sx={{ position: 'absolute', top: gutters(0.5), right: gutters(0.5) }}>
+              <IconButton onClick={onClose} aria-label={t('buttons.close')}>
+                <Close />
+              </IconButton>
+            </Box>
           </>
         )}
       </Box>
