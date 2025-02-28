@@ -3,11 +3,6 @@ import { MetricsItemSpec } from '@/domain/platform/metrics/utils/useMetricsItems
 
 const SpaceMetrics: MetricsItemSpec[] = [
   {
-    label: 'common.subspaces',
-    type: MetricType.Subspace,
-    color: 'neutral',
-  },
-  {
     label: 'common.members',
     type: MetricType.Member,
     color: 'neutralMedium',

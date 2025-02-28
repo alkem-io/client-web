@@ -1532,80 +1532,6 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     }
   }
 `;
-export const RoleSetMemberUserFragmentDoc = gql`
-  fragment RoleSetMemberUser on User {
-    id
-    isContactable
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      url
-    }
-    email
-    firstName
-    lastName
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const RoleSetMemberOrganizationFragmentDoc = gql`
-  fragment RoleSetMemberOrganization on Organization {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        country
-        city
-      }
-      url
-    }
-    verification {
-      id
-      status
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const JourneyCommunityFragmentDoc = gql`
-  fragment JourneyCommunity on Community {
-    id
-    roleSet {
-      leadUsers: usersInRole(role: LEAD) {
-        ...RoleSetMemberUser
-      }
-      leadOrganizations: organizationsInRole(role: LEAD) {
-        ...RoleSetMemberOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
-`;
 export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
   fragment JourneyBreadcrumbsSpace on Space {
     id
@@ -1774,6 +1700,61 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
       }
     }
   }
+`;
+export const RoleSetMemberUserFragmentDoc = gql`
+  fragment RoleSetMemberUser on User {
+    id
+    isContactable
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+    }
+    email
+    firstName
+    lastName
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleSetMemberOrganizationFragmentDoc = gql`
+  fragment RoleSetMemberOrganization on Organization {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
+      url
+    }
+    verification {
+      id
+      status
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
@@ -14433,226 +14414,6 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
   return { query: InnovationHubDocument, variables: variables };
 }
 
-export const JourneyCommunityPrivilegesDocument = gql`
-  query JourneyCommunityPrivileges($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useJourneyCommunityPrivilegesQuery__
- *
- * To run a query within a React component, call `useJourneyCommunityPrivilegesQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyCommunityPrivilegesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useJourneyCommunityPrivilegesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >(JourneyCommunityPrivilegesDocument, options);
-}
-
-export function useJourneyCommunityPrivilegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >(JourneyCommunityPrivilegesDocument, options);
-}
-
-export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
-export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
-export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyCommunityPrivilegesQuery,
-  SchemaTypes.JourneyCommunityPrivilegesQueryVariables
->;
-export function refetchJourneyCommunityPrivilegesQuery(
-  variables: SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-) {
-  return { query: JourneyCommunityPrivilegesDocument, variables: variables };
-}
-
-export const JourneyDataDocument = gql`
-  query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        about {
-          ...SpaceAboutDetails
-          profile {
-            references {
-              ...ReferenceDetails
-            }
-          }
-        }
-        community @include(if: $includeCommunity) {
-          ...JourneyCommunity
-        }
-        metrics {
-          ...MetricsItem
-        }
-        provider {
-          ...ContributorDetails
-        }
-      }
-    }
-  }
-  ${SpaceAboutDetailsFragmentDoc}
-  ${ReferenceDetailsFragmentDoc}
-  ${JourneyCommunityFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${ContributorDetailsFragmentDoc}
-`;
-
-/**
- * __useJourneyDataQuery__
- *
- * To run a query within a React component, call `useJourneyDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyDataQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      includeCommunity: // value for 'includeCommunity'
- *   },
- * });
- */
-export function useJourneyDataQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>(
-    JourneyDataDocument,
-    options
-  );
-}
-
-export function useJourneyDataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>(
-    JourneyDataDocument,
-    options
-  );
-}
-
-export type JourneyDataQueryHookResult = ReturnType<typeof useJourneyDataQuery>;
-export type JourneyDataLazyQueryHookResult = ReturnType<typeof useJourneyDataLazyQuery>;
-export type JourneyDataQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyDataQuery,
-  SchemaTypes.JourneyDataQueryVariables
->;
-export function refetchJourneyDataQuery(variables: SchemaTypes.JourneyDataQueryVariables) {
-  return { query: JourneyDataDocument, variables: variables };
-}
-
-export const JourneyPrivilegesDocument = gql`
-  query JourneyPrivileges($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useJourneyPrivilegesQuery__
- *
- * To run a query within a React component, call `useJourneyPrivilegesQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyPrivilegesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useJourneyPrivilegesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>(
-    JourneyPrivilegesDocument,
-    options
-  );
-}
-
-export function useJourneyPrivilegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyPrivilegesQuery,
-    SchemaTypes.JourneyPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>(
-    JourneyPrivilegesDocument,
-    options
-  );
-}
-
-export type JourneyPrivilegesQueryHookResult = ReturnType<typeof useJourneyPrivilegesQuery>;
-export type JourneyPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyPrivilegesLazyQuery>;
-export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyPrivilegesQuery,
-  SchemaTypes.JourneyPrivilegesQueryVariables
->;
-export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPrivilegesQueryVariables) {
-  return { query: JourneyPrivilegesDocument, variables: variables };
-}
-
 export const ChildJourneyPageBannerDocument = gql`
   query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
     lookup {
@@ -15977,6 +15738,81 @@ export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateSpaceMutation,
   SchemaTypes.UpdateSpaceMutationVariables
 >;
+export const SpaceAndCommunityPrivilegesDocument = gql`
+  query SpaceAndCommunityPrivileges($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceAndCommunityPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useSpaceAndCommunityPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceAndCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceAndCommunityPrivilegesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceAndCommunityPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >(SpaceAndCommunityPrivilegesDocument, options);
+}
+
+export function useSpaceAndCommunityPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >(SpaceAndCommunityPrivilegesDocument, options);
+}
+
+export type SpaceAndCommunityPrivilegesQueryHookResult = ReturnType<typeof useSpaceAndCommunityPrivilegesQuery>;
+export type SpaceAndCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useSpaceAndCommunityPrivilegesLazyQuery>;
+export type SpaceAndCommunityPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+  SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+>;
+export function refetchSpaceAndCommunityPrivilegesQuery(
+  variables: SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+) {
+  return { query: SpaceAndCommunityPrivilegesDocument, variables: variables };
+}
+
 export const SpaceApplicationTemplateDocument = gql`
   query SpaceApplicationTemplate($spaceId: UUID!) {
     lookup {

@@ -11,7 +11,7 @@ import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
-import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
+import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';

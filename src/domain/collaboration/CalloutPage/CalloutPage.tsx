@@ -19,7 +19,7 @@ import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
-import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
+import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
