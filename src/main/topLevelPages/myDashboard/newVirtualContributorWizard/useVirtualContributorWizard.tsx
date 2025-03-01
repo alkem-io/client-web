@@ -255,6 +255,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             },
             profile: {
               displayName: values.name,
+              description: values.description,
             },
           },
         },
@@ -263,9 +264,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       if (values.externalConfig) {
         variables.virtualContributorData.aiPersona.aiPersonaService!.externalConfig = values.externalConfig;
       }
-      const { data } = await createVirtualContributor({
-        variables,
-      });
+      const { data } = await createVirtualContributor({ variables });
 
       if (data?.createVirtualContributor?.id) {
         notify(

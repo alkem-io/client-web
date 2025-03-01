@@ -16431,6 +16431,7 @@ export const CreateVirtualContributorOnAccountDocument = gql`
               profile {
                 id
                 displayName
+                description
               }
             }
           }

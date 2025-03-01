@@ -144,7 +144,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
                   value={
-                    rest?.bokProfile?.displayName
+                    rest?.bokProfile?.displayName.length
                       ? t('components.profile.fields.bodyOfKnowledge.externalVCDescription', {
                           engineName: rest.bokProfile.displayName,
                         })

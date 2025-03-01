@@ -20999,7 +20999,7 @@ export type CreateVirtualContributorOnAccountMutation = {
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               };
             }>;
           };

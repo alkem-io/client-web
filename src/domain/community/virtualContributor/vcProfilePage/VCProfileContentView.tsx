@@ -22,6 +22,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { type VCProfilePageViewProps } from './model';
 import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 import Gutters from '@/core/ui/grid/Gutters';
+import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
 import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
 
@@ -30,6 +31,9 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
   const navigate = useNavigate();
 
   const vcProfile = virtualContributor?.profile;
+  const vcType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
+  const isExternal = vcType === AiPersonaBodyOfKnowledgeType.None;
+  const isAlkemioBok = vcType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
   const name = vcProfile?.displayName || t('pages.virtualContributorProfile.defaultName');
 
   const onCloseKnowledgeBase = () => {
@@ -38,7 +42,9 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
     }
   };
 
-  const { sections } = useTemporaryHardCodedVCProfilePageData();
+  const { sections } = useTemporaryHardCodedVCProfilePageData(
+    isExternal ? 'external' : isAlkemioBok ? 'alkemio' : 'externalAssistant'
+  );
 
   const renderCellIcon = (iconName: string) => {
     switch (iconName) {
