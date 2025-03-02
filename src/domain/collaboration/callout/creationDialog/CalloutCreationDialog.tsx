@@ -44,7 +44,6 @@ export interface CalloutCreationDialogProps {
   onClose: () => void;
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
-  groupName: string;
   flowState?: string;
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
@@ -56,7 +55,6 @@ const CalloutCreationDialog = ({
   onClose,
   onCreateCallout,
   loading,
-  groupName,
   flowState,
   availableCalloutTypes,
   disableRichMedia,
@@ -118,6 +116,9 @@ const CalloutCreationDialog = ({
       let result: Identifiable | undefined;
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
+          classification: {
+            tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+          },
           framing: {
             profile: {
               displayName: callout.displayName!,
@@ -127,7 +128,6 @@ const CalloutCreationDialog = ({
                 uri: ref.uri,
                 description: ref.description,
               })),
-              tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
             whiteboard: callout.type === CalloutType.Whiteboard && callout.whiteboard ? callout.whiteboard : undefined,
             tags: callout.tags ?? [],
@@ -141,7 +141,6 @@ const CalloutCreationDialog = ({
           contributionPolicy: {
             state: callout.state!,
           },
-          groupName,
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };

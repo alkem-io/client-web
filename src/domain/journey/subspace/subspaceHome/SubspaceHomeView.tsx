@@ -136,7 +136,6 @@ const SubspaceHomeView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        groupName={flowStates[0]}
         flowState={selectedInnovationFlowState}
       />
     </>

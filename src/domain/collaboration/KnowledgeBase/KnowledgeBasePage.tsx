@@ -85,7 +85,6 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
               onClose={handleCreateCalloutClosed}
               onCreateCallout={handleCreateCallout}
               loading={loadingCalloutCreation}
-              groupName={SpaceTab.KNOWLEDGE}
             />
           </>
         )}

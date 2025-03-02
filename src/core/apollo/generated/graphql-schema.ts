@@ -999,8 +999,8 @@ export type Callout = {
   activity: Scalars['Float'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Classification associated with this Callout. */
-  classification: Classification;
+  /** The comments for this Callout. */
+  classification?: Maybe<Classification>;
   /** The comments for this Callout. */
   comments?: Maybe<Room>;
   /** The Contribution Defaults for this Callout. */
@@ -6539,6 +6539,7 @@ export type UpdateCalloutContributionPolicyInput = {
 
 export type UpdateCalloutEntityInput = {
   ID: Scalars['UUID'];
+  classification?: InputMaybe<UpdateClassificationInput>;
   contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
   contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
   framing?: InputMaybe<UpdateCalloutFramingInput>;
@@ -6579,6 +6580,10 @@ export type UpdateCalloutsSortOrderInput = {
   /** The IDs of the callouts to update the sort order on */
   calloutIDs: Array<Scalars['UUID']>;
   calloutsSetID: Scalars['UUID'];
+};
+
+export type UpdateClassificationInput = {
+  tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateClassificationSelectTagsetValueInput = {
@@ -9417,20 +9422,22 @@ export type CalloutPageCalloutQuery = {
           sortOrder: number;
           activity: number;
           visibility: CalloutVisibility;
-          classification: {
-            __typename?: 'Classification';
-            id: string;
-            flowState?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                flowState?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              }
+            | undefined;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -9802,20 +9809,22 @@ export type InnovationFlowSettingsQuery = {
               type: CalloutType;
               activity: number;
               sortOrder: number;
-              classification: {
-                __typename?: 'Classification';
-                id: string;
-                flowState?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
+              classification?:
+                | {
+                    __typename?: 'Classification';
+                    id: string;
+                    flowState?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  }
+                | undefined;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -9988,20 +9997,22 @@ export type InnovationFlowCollaborationFragment = {
       type: CalloutType;
       activity: number;
       sortOrder: number;
-      classification: {
-        __typename?: 'Classification';
-        id: string;
-        flowState?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            flowState?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          }
+        | undefined;
       framing: {
         __typename?: 'CalloutFraming';
         id: string;
@@ -10023,20 +10034,22 @@ export type UpdateCalloutFlowStateMutation = {
     __typename?: 'Callout';
     id: string;
     sortOrder: number;
-    classification: {
-      __typename?: 'Classification';
-      id: string;
-      flowState?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          flowState?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -11439,20 +11452,22 @@ export type UpdateCalloutMutation = {
     id: string;
     type: CalloutType;
     visibility: CalloutVisibility;
-    classification: {
-      __typename?: 'Classification';
-      id: string;
-      flowState?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          flowState?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        }
+      | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -11540,20 +11555,22 @@ export type UpdateCalloutVisibilityMutation = {
     sortOrder: number;
     activity: number;
     visibility: CalloutVisibility;
-    classification: {
-      __typename?: 'Classification';
-      id: string;
-      flowState?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          flowState?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        }
+      | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12235,20 +12252,22 @@ export type CreateCalloutMutation = {
     sortOrder: number;
     activity: number;
     visibility: CalloutVisibility;
-    classification: {
-      __typename?: 'Classification';
-      id: string;
-      flowState?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          flowState?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        }
+      | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12528,20 +12547,22 @@ export type CalloutsQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            classification: {
-              __typename?: 'Classification';
-              id: string;
-              flowState?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
+            classification?:
+              | {
+                  __typename?: 'Classification';
+                  id: string;
+                  flowState?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                }
+              | undefined;
             framing: {
               __typename?: 'CalloutFraming';
               id: string;
@@ -12578,20 +12599,22 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  classification: {
-    __typename?: 'Classification';
-    id: string;
-    flowState?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-  };
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        flowState?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      }
+    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -12630,20 +12653,22 @@ export type CalloutDetailsQuery = {
           sortOrder: number;
           activity: number;
           visibility: CalloutVisibility;
-          classification: {
-            __typename?: 'Classification';
-            id: string;
-            flowState?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                flowState?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              }
+            | undefined;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -12948,20 +12973,22 @@ export type CalloutDetailsFragment = {
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
-  classification: {
-    __typename?: 'Classification';
-    id: string;
-    flowState?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-  };
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        flowState?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      }
+    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -21532,20 +21559,22 @@ export type AdminSpaceSubspacesPageQuery = {
                                   id: string;
                                   type: CalloutType;
                                   sortOrder: number;
-                                  classification: {
-                                    __typename?: 'Classification';
-                                    id: string;
-                                    flowState?:
-                                      | {
-                                          __typename?: 'Tagset';
-                                          id: string;
-                                          name: string;
-                                          tags: Array<string>;
-                                          allowedValues: Array<string>;
-                                          type: TagsetType;
-                                        }
-                                      | undefined;
-                                  };
+                                  classification?:
+                                    | {
+                                        __typename?: 'Classification';
+                                        id: string;
+                                        flowState?:
+                                          | {
+                                              __typename?: 'Tagset';
+                                              id: string;
+                                              name: string;
+                                              tags: Array<string>;
+                                              allowedValues: Array<string>;
+                                              type: TagsetType;
+                                            }
+                                          | undefined;
+                                      }
+                                    | undefined;
                                   framing: {
                                     __typename?: 'CalloutFraming';
                                     id: string;
@@ -24281,20 +24310,22 @@ export type TemplateContentQuery = {
                     id: string;
                     type: CalloutType;
                     sortOrder: number;
-                    classification: {
-                      __typename?: 'Classification';
-                      id: string;
-                      flowState?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                    };
+                    classification?:
+                      | {
+                          __typename?: 'Classification';
+                          id: string;
+                          flowState?:
+                            | {
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
                     framing: {
                       __typename?: 'CalloutFraming';
                       id: string;
@@ -24363,20 +24394,22 @@ export type CollaborationTemplateContentQuery = {
               id: string;
               type: CalloutType;
               sortOrder: number;
-              classification: {
-                __typename?: 'Classification';
-                id: string;
-                flowState?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
+              classification?:
+                | {
+                    __typename?: 'Classification';
+                    id: string;
+                    flowState?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  }
+                | undefined;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -24566,20 +24599,22 @@ export type CollaborationTemplateContentFragment = {
       id: string;
       type: CalloutType;
       sortOrder: number;
-      classification: {
-        __typename?: 'Classification';
-        id: string;
-        flowState?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            flowState?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          }
+        | undefined;
       framing: {
         __typename?: 'CalloutFraming';
         id: string;

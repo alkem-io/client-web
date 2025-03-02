@@ -90,7 +90,7 @@ fragment InnovationFlowCollaboration on Collaboration {
 
 mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
   updateCallout(
-    calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }
+    calloutData: { ID: $calloutId, classification: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
   ) {
     id
     sortOrder

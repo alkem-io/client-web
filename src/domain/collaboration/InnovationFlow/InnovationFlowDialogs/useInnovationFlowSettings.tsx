@@ -117,7 +117,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
 
   const handleUpdateCalloutFlowState = async (calloutId: string, newState: string, insertIndex: number) => {
     const callout = collaboration?.calloutsSet.callouts?.find(({ id }) => id === calloutId);
-    const flowStateTagset = callout?.classification.flowState;
+    const flowStateTagset = callout?.classification?.flowState;
     if (!collaboration || !callout || !flowStateTagset) {
       return;
     }
@@ -139,7 +139,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           ...callout,
           sortOrder: optimisticSortOrder,
           classification: {
-            id: callout.classification.id,
+            id: callout.classification?.id || '',
             flowState: {
               ...flowStateTagset,
               tags: [newState],

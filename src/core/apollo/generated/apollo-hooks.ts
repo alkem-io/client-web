@@ -6233,7 +6233,7 @@ export function refetchInnovationFlowDetailsQuery(variables: SchemaTypes.Innovat
 export const UpdateCalloutFlowStateDocument = gql`
   mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
     updateCallout(
-      calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }
+      calloutData: { ID: $calloutId, classification: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
     ) {
       id
       sortOrder

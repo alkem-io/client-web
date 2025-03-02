@@ -64,7 +64,6 @@ const CalloutsGroupView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        groupName={groupName}
         flowState={flowState}
         availableCalloutTypes={availableCalloutTypes}
         disableRichMedia={disableRichMedia}
