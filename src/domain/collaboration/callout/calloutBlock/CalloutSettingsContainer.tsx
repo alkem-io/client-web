@@ -4,7 +4,6 @@ import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOffli
 import { Box, Collapse, Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -84,7 +83,7 @@ export interface CalloutSettingsContainerProps
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    groupName: CalloutGroupName;
+    groupName: string;
     contributionPolicy: {
       state: CalloutState;
     };

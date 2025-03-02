@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Box, DialogContent } from '@mui/material';
 import {
   AuthorizationPrivilege,
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   ContributeTabPostFragment,

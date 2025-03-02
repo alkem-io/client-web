@@ -1,4 +1,3 @@
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import { CalloutGroupNameValuesMap } from '../../calloutsSet/CalloutsInContext/CalloutsGroup';
 
 export const getCalloutGroupNameValue = (tags: string[] | undefined): CalloutGroupName => {

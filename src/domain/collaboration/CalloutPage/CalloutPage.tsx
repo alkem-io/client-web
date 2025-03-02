@@ -100,7 +100,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       entitledToSaveAsTemplate: false,
       flowStates: [],
       groupName: getCalloutGroupNameValue(
-        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags // what to do with this ?
+        callout.classification.flowState.tags // what to do with this ?
       ),
     };
     return result;

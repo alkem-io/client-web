@@ -1,9 +1,4 @@
-import {
-  CalloutGroupName,
-  CalloutsQueryVariables,
-  CommunityMembershipStatus,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutsQueryVariables, CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -60,7 +55,7 @@ type SpaceDashboardViewProps = {
   shareUpdatesUrl: string;
   myMembershipStatus: CommunityMembershipStatus | undefined;
   callouts: {
-    groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
+    groupedCallouts: Record<string, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
     loading: boolean;
     refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;

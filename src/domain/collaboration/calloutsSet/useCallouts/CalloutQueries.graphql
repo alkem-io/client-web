@@ -6,7 +6,7 @@ query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) 
         id
         myPrivileges
       }
-      callouts(groups: $groups, IDs: $calloutIds) {
+      callouts(classificationTagsets: { name: FLOW_STATE, tags: $groups }, IDs: $calloutIds) {
         ...Callout
       }
     }
@@ -21,6 +21,12 @@ fragment Callout on Callout {
   authorization {
     id
     myPrivileges
+  }
+  classification {
+    id
+    flowState: tagset(tagsetName: FLOW_STATE) {
+      ...TagsetDetails
+    }
   }
   framing {
     id
@@ -47,6 +53,12 @@ query CalloutDetails($calloutId: UUID!) {
 fragment CalloutDetails on Callout {
   id
   type
+  classification {
+    id
+    flowState: tagset(tagsetName: FLOW_STATE) {
+      ...TagsetDetails
+    }
+  }
   framing {
     id
     profile {

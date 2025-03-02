@@ -6,7 +6,6 @@ import {
 import {
   AuthorizationPrivilege,
   Callout,
-  CalloutGroupName,
   CalloutsQueryVariables,
   CalloutType,
   CalloutVisibility,
@@ -18,11 +17,9 @@ import {
 import { useCallback, useMemo } from 'react';
 import { cloneDeep, groupBy } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
-import useInnovationFlowStates, {
-  INNOVATION_FLOW_STATES_TAGSET_NAME,
-} from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
+import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   authorization:
@@ -44,7 +41,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
   flowStates: string[] | undefined;
-  groupName: CalloutGroupName;
+  groupName: string;
 };
 
 export type TypedCalloutDetails = TypedCallout &
@@ -61,7 +58,7 @@ export type TypedCalloutDetails = TypedCallout &
       };
       whiteboard?: WhiteboardDetailsFragment;
     };
-    groupName: CalloutGroupName;
+    groupName: string;
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
     comments?: CommentsWithMessagesFragment | undefined;
@@ -70,7 +67,7 @@ export type TypedCalloutDetails = TypedCallout &
 interface UseCalloutsParams {
   calloutsSetId: string | undefined;
   collaborationId?: string; // Do not leave this, this is a hack
-  groupNames?: CalloutGroupName[];
+  groupNames?: string[];
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
 }
@@ -81,7 +78,7 @@ export interface OrderUpdate {
 
 export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
-  groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
+  groupedCallouts: Record<string, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
   loading: boolean;
@@ -91,7 +88,6 @@ export interface UseCalloutsProvided {
 }
 
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
-const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group'; // what to do with this ?
 
 /**
  * If you need Callouts without a group, don't specify groupNames at all.
@@ -158,13 +154,7 @@ const useCallouts = ({
           const validStates = innovationFlowStates.map(state => state.displayName);
 
           // Get the flow-state of the callout
-          const [calloutFlowState] =
-            callout.framing.profile.tagsets?.find(tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME)?.tags ??
-            [];
-          // Get the group-name tagset of the callout
-          const calloutGroupNameTagset = callout.framing.profile.tagsets?.find(
-            tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
-          );
+          const [calloutFlowState] = callout.classification.flowState?.tags ?? [];
 
           const groupNameToFlowStateMap = {
             [CalloutGroupName.Home]: validStates[0],
@@ -191,12 +181,7 @@ const useCallouts = ({
           const draft = callout?.visibility === CalloutVisibility.Draft;
           const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
           const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-          const innovationFlowTagset = callout.framing.profile.tagsets?.find(
-            tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
-          );
-          const groupNameTagset = callout.framing.profile.tagsets?.find(
-            tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
-          );
+          const innovationFlowTagset = callout.classification.flowState;
           const flowStates = innovationFlowTagset?.tags;
 
           const result: TypedCallout = {
@@ -211,7 +196,7 @@ const useCallouts = ({
             canSaveAsTemplate,
             entitledToSaveAsTemplate,
             flowStates,
-            groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
+            groupName: getCalloutGroupNameValue(innovationFlowTagset?.tags),
           };
           return result;
         }),
@@ -253,7 +238,7 @@ const useCallouts = ({
 
   const groupedCallouts = useMemo(() => {
     return groupBy(sortedCallouts, callout => callout.groupName) as Record<
-      CalloutGroupName | typeof UNGROUPED_CALLOUTS_GROUP,
+      string | typeof UNGROUPED_CALLOUTS_GROUP,
       TypedCallout[] | undefined
     >;
   }, [sortedCallouts]);

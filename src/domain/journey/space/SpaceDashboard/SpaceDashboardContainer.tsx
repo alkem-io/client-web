@@ -1,8 +1,6 @@
 import React, { FC, useCallback } from 'react';
-
 import {
   AuthorizationPrivilege,
-  CalloutGroupName,
   CommunityMembershipStatus,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';

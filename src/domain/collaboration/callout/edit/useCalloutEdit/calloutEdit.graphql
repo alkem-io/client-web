@@ -1,6 +1,12 @@
 mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
   updateCallout(calloutData: $calloutData) {
     id
+    classification {
+      id
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+    }
     framing {
       id
       profile {
@@ -8,9 +14,6 @@ mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
         description
         displayName
         tagset {
-          ...TagsetDetails
-        }
-        groupNameTagset: tagset(tagsetName: CALLOUT_GROUP) {
           ...TagsetDetails
         }
         references {

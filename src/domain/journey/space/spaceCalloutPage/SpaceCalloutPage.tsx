@@ -4,7 +4,6 @@ import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
 import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
 

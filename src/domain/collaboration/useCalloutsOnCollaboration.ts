@@ -1,10 +1,10 @@
-import { CalloutGroupName, CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
 import useCallouts, { TypedCallout } from './calloutsSet/useCallouts/useCallouts';
 
 interface UseCalloutsOnCollaborationParams {
   collaborationId: string | undefined;
-  groupNames?: CalloutGroupName[];
+  groupNames?: string[];
 }
 
 export interface OrderUpdate {
@@ -13,7 +13,7 @@ export interface OrderUpdate {
 
 export interface UseCalloutsOnCollaborationProvided {
   callouts: TypedCallout[] | undefined;
-  groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
+  groupedCallouts: Record<string, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
   loading: boolean;

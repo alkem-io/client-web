@@ -11,7 +11,7 @@ import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';

@@ -10,7 +10,12 @@ import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceSubspaceCard from '@/domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { CommunityMembershipStatus, ProfileType, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  ProfileType,
+  SpaceLevel,
+  SpacePrivacyMode,
+} from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -46,6 +51,7 @@ export enum SpacesExplorerMembershipFilter {
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
 
 interface ParentSpace extends Identifiable {
+  level: SpaceLevel;
   about: {
     profile: {
       displayName: string;
@@ -60,6 +66,7 @@ type WithParent<ParentInfo extends {}> = {
 };
 
 interface Space extends Identifiable {
+  level: SpaceLevel;
   about: {
     profile: {
       url: string;
@@ -173,6 +180,7 @@ export const SpaceExplorerView = ({
       }
       const {
         id,
+        level,
         about: { profile },
       } = space;
 
@@ -183,7 +191,7 @@ export const SpaceExplorerView = ({
           displayName={profile?.displayName}
           vision={space.about.why ?? ''}
           journeyUri={profile?.url}
-          type={profile?.type!}
+          level={level}
           banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space.about) ?? []}
           tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
@@ -192,7 +200,7 @@ export const SpaceExplorerView = ({
           label={
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
-                type={profile?.type!}
+                level={level}
                 member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
               />

@@ -78,7 +78,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           type: callout.type,
           activity: callout.activity,
           sortOrder: callout.sortOrder,
-          flowState: mapFlowState(callout.framing.profile.flowState),
+          flowState: mapFlowState(callout.classification.flowState),
         }))
         .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [collaboration?.calloutsSet.callouts]
@@ -118,7 +118,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
 
   const handleUpdateCalloutFlowState = async (calloutId: string, newState: string, insertIndex: number) => {
     const callout = collaboration?.calloutsSet.callouts?.find(({ id }) => id === calloutId);
-    const flowStateTagset = callout?.framing.profile.flowState;
+    const flowStateTagset = callout?.classification.flowState;
     if (!collaboration || !callout || !flowStateTagset) {
       return;
     }

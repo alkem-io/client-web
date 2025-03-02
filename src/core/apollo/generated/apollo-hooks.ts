@@ -329,22 +329,21 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
     }
     calloutsSet {
       id
-      callouts(groups: $filterCalloutGroups) {
+      callouts(classificationTagsets: { name: FLOW_STATE, tags: $filterCalloutGroups }) {
         id
         type
         activity
         sortOrder
+        classification {
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
+        }
         framing {
           id
           profile {
             id
             displayName
-            calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
-              ...TagsetDetails
-            }
-            flowState: tagset(tagsetName: FLOW_STATE) {
-              ...TagsetDetails
-            }
           }
         }
       }
@@ -654,6 +653,12 @@ export const CalloutFragmentDoc = gql`
       id
       myPrivileges
     }
+    classification {
+      id
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+    }
     framing {
       id
       profile {
@@ -829,6 +834,12 @@ export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
     id
     type
+    classification {
+      id
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+    }
     framing {
       id
       profile {
@@ -2290,15 +2301,18 @@ export const CollaborationTemplateContentFragmentDoc = gql`
       callouts {
         id
         type
+        classification {
+          id
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
+        }
         framing {
           id
           profile {
             id
             displayName
             description
-            flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-              tags
-            }
           }
           whiteboard {
             id
@@ -2313,6 +2327,7 @@ export const CollaborationTemplateContentFragmentDoc = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 export const WhiteboardTemplateContentFragmentDoc = gql`
@@ -6212,13 +6227,10 @@ export const UpdateCalloutFlowStateDocument = gql`
     ) {
       id
       sortOrder
-      framing {
+      classification {
         id
-        profile {
-          id
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
-          }
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
         }
       }
     }
@@ -6892,6 +6904,12 @@ export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
     updateCallout(calloutData: $calloutData) {
       id
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
       framing {
         id
         profile {
@@ -6899,9 +6917,6 @@ export const UpdateCalloutDocument = gql`
           description
           displayName
           tagset {
-            ...TagsetDetails
-          }
-          groupNameTagset: tagset(tagsetName: CALLOUT_GROUP) {
             ...TagsetDetails
           }
           references {
@@ -7742,7 +7757,7 @@ export const CalloutsDocument = gql`
           id
           myPrivileges
         }
-        callouts(groups: $groups, IDs: $calloutIds) {
+        callouts(classificationTagsets: { name: FLOW_STATE, tags: $groups }, IDs: $calloutIds) {
           ...Callout
         }
       }
@@ -16786,16 +16801,18 @@ export const AdminSpaceSubspacesPageDocument = gql`
                     id
                     type
                     sortOrder
+                    classification {
+                      id
+                      flowState: tagset(tagsetName: FLOW_STATE) {
+                        ...TagsetDetails
+                      }
+                    }
                     framing {
                       id
                       profile {
                         id
                         displayName
                         description
-                        flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-                          id
-                          tags
-                        }
                       }
                     }
                   }
@@ -16820,6 +16837,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
   }
   ${SpaceAboutCardAvatarFragmentDoc}
   ${InnovationFlowProfileFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**

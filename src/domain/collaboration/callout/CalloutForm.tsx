@@ -1,13 +1,6 @@
 import { useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import {
-  CalloutGroupName,
-  CalloutState,
-  CalloutType,
-  SpaceLevel,
-  Tagset,
-  TagsetType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';

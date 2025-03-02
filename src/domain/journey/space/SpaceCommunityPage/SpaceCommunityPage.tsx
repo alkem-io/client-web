@@ -15,7 +15,6 @@ import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/us
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
 import {
   AuthorizationPrivilege,
-  CalloutGroupName,
   RoleName,
   RoleSetContributorType,
   SearchVisibility,

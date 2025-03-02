@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';

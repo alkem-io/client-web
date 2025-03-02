@@ -1,6 +1,5 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { UseCalloutsProvided } from '../calloutsSet/useCallouts/useCallouts';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import useCalloutsOnCollaboration from '../useCalloutsOnCollaboration';
 
 interface KnowledgeBaseContainerProps

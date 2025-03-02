@@ -6,7 +6,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import useKnowledgeBase from './useKnowledgeBase';
-import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';

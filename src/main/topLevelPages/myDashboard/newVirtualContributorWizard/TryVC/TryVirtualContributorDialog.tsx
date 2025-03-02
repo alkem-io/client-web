@@ -12,7 +12,6 @@ import {
   useCalloutCreation,
 } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import {
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -67,7 +66,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     contributionPolicy: {
       state: CalloutState.Open,
     },
-    groupName: CalloutGroupName.Home,
     visibility: CalloutVisibility.Published,
     sendNotification: false,
   };
@@ -115,7 +113,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
       flowStates: undefined,
-      groupName: CalloutGroupName.Home,
       authorization: {
         myPrivileges: [],
       },

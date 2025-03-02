@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { CalloutGroupName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
