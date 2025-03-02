@@ -5,6 +5,7 @@ import {
   CalloutType,
   CalloutVisibility,
   CreateCalloutMutation,
+  CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
   CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
@@ -12,6 +13,9 @@ import { WhiteboardFieldSubmittedValues } from '../../callout/creationDialog/Cal
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
 export interface CalloutCreationType {
+  classification?: {
+    tagsets?: CreateTagsetInput[];
+  };
   framing: {
     profile: {
       description: string;
@@ -30,7 +34,6 @@ export interface CalloutCreationType {
   contributionPolicy: {
     state: CalloutState;
   };
-  groupName?: string;
   visibility?: CalloutVisibility;
   sendNotification?: boolean;
 }
@@ -108,14 +111,16 @@ export const useCalloutCreation = ({
 
       setIsCreating(true);
 
+      const calloutData: CreateCalloutOnCalloutsSetInput = {
+        calloutsSetID: calloutsSetId,
+        enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
+        ...callout,
+      };
+
       try {
         const result = await createCallout({
           variables: {
-            calloutData: {
-              calloutsSetID: calloutsSetId,
-              enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
-              ...callout,
-            },
+            calloutData,
           },
         });
 
