@@ -12,7 +12,6 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -76,7 +75,6 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
                 loading={calloutsSetLoading}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
-                groupName={SpaceTab.KNOWLEDGE}
                 createButtonPlace="bottom"
                 availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
                 disableRichMedia

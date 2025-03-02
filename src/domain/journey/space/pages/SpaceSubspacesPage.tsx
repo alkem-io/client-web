@@ -11,7 +11,11 @@ import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  SpacePrivacyMode,
+  TagsetReservedName,
+} from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
@@ -19,6 +23,7 @@ import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspa
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -60,9 +65,13 @@ const SpaceSubspacesPage = () => {
     [navigate, createSubspace, spaceId]
   );
 
+  const classificationFilter: ClassificationFilterModel = {
+    name: TagsetReservedName.FlowState,
+    tags: ['subspaces'],
+  };
+
   const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    groupNames: ['subspaces'],
   });
 
   return (
@@ -111,7 +120,7 @@ const SpaceSubspacesPage = () => {
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={SpaceTab.SUBSPACES}
+                classificationFilter={classificationFilter}
               />
             }
           />

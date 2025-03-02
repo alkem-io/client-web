@@ -97,7 +97,6 @@ const useCallouts = ({
   collaborationId,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
-  groupNames,
 }: UseCalloutsParams): UseCalloutsProvided => {
   const {
     canCreateCallout,
@@ -109,7 +108,6 @@ const useCallouts = ({
 
   const variables = {
     calloutsSetId: calloutsSetId!,
-    // groups: groupNames, // Disabled group-names server side filtering for now
   } as const;
 
   const {
@@ -144,17 +142,13 @@ const useCallouts = ({
       calloutsSet?.callouts
         ?.map(cloneDeep) // Clone to be able to modify the callouts
         .filter(callout => {
-          //!! Added client side filtering for group-names filtering by flow-state
-          if (!groupNames || groupNames.length === 0) {
-            return true;
-          }
           if (!innovationFlowStates) {
             return false;
           }
 
           // Get the flow-state of the callout
           // TODOXX: what should this be doing??!!
-          const [calloutFlowState] = callout.classification.flowState?.tags ?? [];
+          const [calloutFlowState] = callout.classification?.flowState?.tags ?? [];
           if (calloutFlowState) {
             return true;
           }
@@ -165,7 +159,7 @@ const useCallouts = ({
           const draft = callout?.visibility === CalloutVisibility.Draft;
           const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
           const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-          const innovationFlowTagset = callout.classification.flowState;
+          const innovationFlowTagset = callout.classification?.flowState;
           const flowStates = innovationFlowTagset?.tags;
 
           const result: TypedCallout = {

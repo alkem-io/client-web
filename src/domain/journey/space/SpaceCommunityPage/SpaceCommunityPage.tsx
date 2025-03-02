@@ -18,6 +18,7 @@ import {
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
+  TagsetReservedName,
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
@@ -30,6 +31,7 @@ import VirtualContributorsBlock from '@/domain/community/community/VirtualContri
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
@@ -116,6 +118,11 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
+  const classificationFilter: ClassificationFilterModel = {
+    name: TagsetReservedName.FlowState,
+    tags: [innovationFlowStates[1].displayName],
+  };
+
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer collaborationId={collaborationId}>
@@ -160,7 +167,7 @@ const SpaceCommunityPage = () => {
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={innovationFlowStates[1].displayName}
+                classificationFilter={classificationFilter}
               />
             </ContentColumn>
           </PageContent>

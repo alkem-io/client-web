@@ -14,6 +14,8 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { ClassificationFilterModel } from '../calloutsSet/ClassificationFilter.model';
 
 type KnowledgeBasePageProps = {
   calloutsFlowState: EntityPageSection;
@@ -34,6 +36,11 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
+  };
+
+  const classificationFilter: ClassificationFilterModel = {
+    name: TagsetReservedName.FlowState,
+    tags: [SpaceTab.KNOWLEDGE],
   };
 
   return (
@@ -75,7 +82,7 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
                     loading={loading}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    groupName={SpaceTab.KNOWLEDGE}
+                    classificationFilter={classificationFilter}
                   />
                 </ContentColumn>
               </PageContent>

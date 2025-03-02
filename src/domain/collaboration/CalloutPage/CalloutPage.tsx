@@ -98,7 +98,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
       flowStates: [],
-      groupName: callout.classification.flowState?.tags[0] || '',
+      groupName: callout.classification?.flowState?.tags[0] || '',
     };
     return result;
   }, [callout, locationState]);

@@ -1,5 +1,11 @@
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutState, CalloutType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutState,
+  CalloutType,
+  CalloutVisibility,
+  TagsetReservedName,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -7,7 +13,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { Reference } from '@/domain/common/profile/Profile';
 import { findDefaultTagset } from '@/domain/common/tags/utils';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
@@ -117,7 +122,7 @@ const CalloutCreationDialog = ({
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
           classification: {
-            tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
+            tagsets: flowState ? [{ name: TagsetReservedName.FlowState, tags: [flowState] }] : [],
           },
           framing: {
             profile: {

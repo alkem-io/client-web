@@ -5,11 +5,12 @@ import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
+import { ClassificationFilterModel } from '../ClassificationFilter.model';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
   canCreateCallout: boolean;
-  groupName: string;
+  classificationFilter?: ClassificationFilterModel;
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
   availableCalloutTypes?: CalloutType[];
@@ -19,10 +20,10 @@ interface CalloutsGroupProps extends CalloutsViewProps {
 
 const CalloutsGroupView = ({
   canCreateCallout,
-  groupName,
   flowState,
   createButtonPlace = 'bottom',
   calloutsSetId,
+  classificationFilter,
   availableCalloutTypes,
   disableRichMedia,
   disablePostResponses,

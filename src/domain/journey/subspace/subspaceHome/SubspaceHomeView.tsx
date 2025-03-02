@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
@@ -15,6 +15,7 @@ import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlo
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -95,6 +96,11 @@ const SubspaceHomeView = ({
   // if there is no definition for it, button should not be shown
   const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
 
+  const classificationFilter: ClassificationFilterModel = {
+    name: TagsetReservedName.FlowState,
+    tags: [flowStates[0]],
+  };
+
   return (
     <>
       <SubspaceInnovationFlow>
@@ -127,7 +133,7 @@ const SubspaceHomeView = ({
         loading={loading}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        groupName={flowStates[0]}
+        classificationFilter={classificationFilter}
         createButtonPlace="top"
         flowState={selectedInnovationFlowState}
       />

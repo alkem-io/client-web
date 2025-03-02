@@ -1,4 +1,9 @@
-import { CalloutsQueryVariables, CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutsQueryVariables,
+  CommunityMembershipStatus,
+  SpaceLevel,
+  TagsetReservedName,
+} from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -32,6 +37,7 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from './SpaceWelcomeDialog';
+import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
@@ -130,6 +136,11 @@ const SpaceDashboardView = ({
     }
   }, [spaceId]);
 
+  const classificationFilter: ClassificationFilterModel = {
+    name: TagsetReservedName.FlowState,
+    tags: [calloutFlowStates[0]],
+  };
+
   return (
     <>
       {directMessageDialog}
@@ -191,7 +202,7 @@ const SpaceDashboardView = ({
             loading={callouts.loading}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            groupName={calloutFlowStates[0]}
+            classificationFilter={classificationFilter}
           />
         </ContentColumn>
         {spaceId && tryVirtualContributorOpen && (
