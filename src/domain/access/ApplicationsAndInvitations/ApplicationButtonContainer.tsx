@@ -37,7 +37,7 @@ export const ApplicationButtonContainer = ({
   const { canReadCommunity } = useCanReadSpace({ spaceId: journeyId });
   const { user, loadingMe: membershipLoading } = useUserContext();
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated,
+    skip: !isAuthenticated || !user,
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
     pendingMembershipsData?.me ?? {};
