@@ -80,6 +80,7 @@ const SpaceCommunityPage = () => {
   );
 
   const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
+  const innovationFlowStates = data?.lookup.space?.collaboration?.innovationFlow.states ?? [];
 
   const messageReceivers = useMemo(
     () =>
@@ -154,12 +155,12 @@ const SpaceCommunityPage = () => {
               />
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
+                callouts={callouts.groupedCallouts[innovationFlowStates[1].displayName]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Community}
+                groupName={innovationFlowStates[1].displayName}
               />
             </ContentColumn>
           </PageContent>

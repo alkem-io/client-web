@@ -22,7 +22,6 @@ export interface CalloutEditDialogProps {
   onClose: () => void;
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
-  canChangeCalloutLocation?: boolean;
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }
@@ -34,7 +33,6 @@ const CalloutEditDialog = ({
   onClose,
   onDelete,
   onCalloutEdit,
-  canChangeCalloutLocation,
   disableRichMedia,
   disablePostResponses = false,
 }: CalloutEditDialogProps) => {
@@ -52,7 +50,6 @@ const CalloutEditDialog = ({
     tags: callout.framing.profile.tagset?.tags,
     postDescription: callout.contributionDefaults.postDescription ?? '',
     whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? EmptyWhiteboardString,
-    groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
@@ -89,7 +86,6 @@ const CalloutEditDialog = ({
         whiteboardContent: callout.type === CalloutType.WhiteboardCollection ? newCallout.whiteboardContent : undefined,
       },
       state: newCallout.state,
-      groupName: newCallout.groupName,
     });
     setLoading(false);
   }, [callout, newCallout, onCalloutEdit]);
@@ -114,7 +110,6 @@ const CalloutEditDialog = ({
               editMode
               onStatusChanged={handleStatusChanged}
               onChange={handleChange}
-              canChangeCalloutLocation={canChangeCalloutLocation}
               disableRichMedia={disableRichMedia}
               disablePostResponses={disablePostResponses}
             />

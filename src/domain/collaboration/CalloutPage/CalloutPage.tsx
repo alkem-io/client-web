@@ -18,7 +18,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
-import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -99,9 +98,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
       flowStates: [],
-      groupName: getCalloutGroupNameValue(
-        callout.classification.flowState.tags // what to do with this ?
-      ),
+      groupName: callout.classification.flowState?.tags[0] || '',
     };
     return result;
   }, [callout, locationState]);

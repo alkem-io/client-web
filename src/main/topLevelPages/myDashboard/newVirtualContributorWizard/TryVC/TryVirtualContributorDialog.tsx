@@ -105,6 +105,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
     return {
       ...callout,
+      groupName: callout.classification.flowState?.tags[0] || '',
       comments: callout.comments,
       // Fake callout properties to show the callout inside the dialog without any controls
       draft: callout.visibility === CalloutVisibility.Draft,

@@ -35,6 +35,7 @@ const SpaceDashboardPage = ({
           <>
             <SpaceDashboardView
               spaceId={spaceId}
+              innovationFlowStates={entities.innovationFlowStates}
               collaborationId={collaborationId}
               calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
               what={entities.space?.about.profile.description}

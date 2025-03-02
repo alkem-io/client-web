@@ -5318,8 +5318,6 @@ export type RelayPaginatedSpace = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -5948,8 +5946,6 @@ export type Space = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -9808,6 +9804,7 @@ export type InnovationFlowSettingsQuery = {
               sortOrder: number;
               classification: {
                 __typename?: 'Classification';
+                id: string;
                 flowState?:
                   | {
                       __typename?: 'Tagset';
@@ -9993,6 +9990,7 @@ export type InnovationFlowCollaborationFragment = {
       sortOrder: number;
       classification: {
         __typename?: 'Classification';
+        id: string;
         flowState?:
           | {
               __typename?: 'Tagset';
@@ -19830,6 +19828,11 @@ export type SpaceCommunityPageQuery = {
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
+            innovationFlow: {
+              __typename?: 'InnovationFlow';
+              id: string;
+              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+            };
             calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
         }
@@ -20293,6 +20296,12 @@ export type SpacePageQuery = {
           collaboration?: {
             __typename?: 'Collaboration';
             id: string;
+            innovationFlow: {
+              __typename?: 'InnovationFlow';
+              id: string;
+              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+            };
             calloutsSet: {
               __typename?: 'CalloutsSet';
               id: string;
@@ -20575,6 +20584,12 @@ export type SpacePageFragment = {
   collaboration?: {
     __typename?: 'Collaboration';
     id: string;
+    innovationFlow: {
+      __typename?: 'InnovationFlow';
+      id: string;
+      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+      currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+    };
     calloutsSet: {
       __typename?: 'CalloutsSet';
       id: string;
@@ -28570,7 +28585,7 @@ export type ExploreSpacesSearchQuery = {
           space: {
             __typename?: 'Space';
             id: string;
-            type: SpaceType;
+            level: SpaceLevel;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -28599,7 +28614,7 @@ export type ExploreSpacesSearchFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -28625,7 +28640,7 @@ export type ExploreAllSpacesQuery = {
   exploreSpaces: Array<{
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -28656,7 +28671,7 @@ export type WelcomeSpaceQuery = {
       | {
           __typename?: 'Space';
           id: string;
-          type: SpaceType;
+          level: SpaceLevel;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -28680,7 +28695,7 @@ export type WelcomeSpaceQuery = {
 export type ExploreSpacesFragment = {
   __typename?: 'Space';
   id: string;
-  type: SpaceType;
+  level: SpaceLevel;
   about: {
     __typename?: 'SpaceAbout';
     id: string;
@@ -30366,7 +30381,7 @@ export type SpaceExplorerSearchQuery = {
           space: {
             __typename?: 'Space';
             id: string;
-            type: SpaceType;
+            level: SpaceLevel;
             visibility: SpaceVisibility;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30411,7 +30426,7 @@ export type SpaceExplorerSearchSpaceFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30451,12 +30466,12 @@ export type SpaceExplorerMemberSpacesQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      type: SpaceType;
+      level: SpaceLevel;
       about: {
         __typename?: 'SpaceAbout';
         why?: string | undefined;
@@ -30524,7 +30539,7 @@ export type SpaceExplorerAllSpacesQuery = {
     spaces: Array<{
       __typename?: 'Space';
       id: string;
-      type: SpaceType;
+      level: SpaceLevel;
       visibility: SpaceVisibility;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30574,7 +30589,7 @@ export type SpaceExplorerSubspacesQuery = {
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      type: SpaceType;
+      level: SpaceLevel;
       about: {
         __typename?: 'SpaceAbout';
         why?: string | undefined;
@@ -30606,7 +30621,7 @@ export type SpaceExplorerSubspacesQuery = {
 export type SpaceExplorerSpaceFragment = {
   __typename?: 'Space';
   id: string;
-  type: SpaceType;
+  level: SpaceLevel;
   visibility: SpaceVisibility;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30636,7 +30651,7 @@ export type SpaceExplorerSpaceFragment = {
 export type SpaceExplorerSubspaceFragment = {
   __typename?: 'Space';
   id: string;
-  type: SpaceType;
+  level: SpaceLevel;
   about: {
     __typename?: 'SpaceAbout';
     why?: string | undefined;

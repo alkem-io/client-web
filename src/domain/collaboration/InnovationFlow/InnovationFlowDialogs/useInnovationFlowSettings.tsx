@@ -15,14 +15,13 @@ import {
   Tagset,
   UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
-  filterCalloutGroups?: CalloutGroupNameValuesMap[];
+  filterCalloutGroups?: string[];
   skip?: boolean;
 };
 
@@ -139,14 +138,11 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         updateCallout: {
           ...callout,
           sortOrder: optimisticSortOrder,
-          framing: {
-            id: callout.framing.id,
-            profile: {
-              ...callout.framing.profile,
-              flowState: {
-                ...flowStateTagset,
-                tags: [newState],
-              },
+          classification: {
+            id: callout.classification.id,
+            flowState: {
+              ...flowStateTagset,
+              tags: [newState],
             },
           },
         },

@@ -17,7 +17,6 @@ import {
 import { useCallback, useMemo } from 'react';
 import { cloneDeep, groupBy } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
-import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import useInnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
@@ -138,6 +137,7 @@ const useCallouts = ({
   };
 
   const calloutsSet = calloutsData?.lookup.calloutsSet;
+  const validStates = innovationFlowStates?.map(state => state.displayName) || [];
 
   const callouts = useMemo(
     () =>
@@ -151,28 +151,12 @@ const useCallouts = ({
           if (!innovationFlowStates) {
             return false;
           }
-          const validStates = innovationFlowStates.map(state => state.displayName);
 
           // Get the flow-state of the callout
+          // TODOXX: what should this be doing??!!
           const [calloutFlowState] = callout.classification.flowState?.tags ?? [];
-
-          const groupNameToFlowStateMap = {
-            [CalloutGroupName.Home]: validStates[0],
-            [CalloutGroupName.Community]: validStates[1],
-            [CalloutGroupName.Subspaces]: validStates[2],
-            [CalloutGroupName.Knowledge]: validStates[3],
-            [CalloutGroupName.Custom]: validStates[4],
-            [CalloutGroupName.Contribute]: validStates[5],
-          };
-
-          for (const groupName of groupNames) {
-            if (groupNameToFlowStateMap[groupName] === calloutFlowState) {
-              if (calloutGroupNameTagset) {
-                // Overwrite the group-name tagset with the one from the groupNames, HACK B-)
-                calloutGroupNameTagset.tags = [groupName];
-              }
-              return true;
-            }
+          if (calloutFlowState) {
+            return true;
           }
           return false;
         })
@@ -196,7 +180,7 @@ const useCallouts = ({
             canSaveAsTemplate,
             entitledToSaveAsTemplate,
             flowStates,
-            groupName: getCalloutGroupNameValue(innovationFlowTagset?.tags),
+            groupName: innovationFlowTagset?.tags[0] || validStates[0],
           };
           return result;
         }),

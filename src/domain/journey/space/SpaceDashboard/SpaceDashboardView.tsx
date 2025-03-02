@@ -36,6 +36,7 @@ import SpaceWelcomeDialog from './SpaceWelcomeDialog';
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
   level: SpaceLevel | undefined;
+  innovationFlowStates: string[];
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -68,6 +69,7 @@ const SpaceDashboardView = ({
   spaceId,
   level,
   collaborationId,
+  innovationFlowStates: calloutFlowStates,
   calloutsSetId,
   what = '',
   dashboardNavigation,
@@ -184,12 +186,12 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}
-            callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
+            callouts={callouts.groupedCallouts[calloutFlowStates[0]]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            groupName={CalloutGroupName.Home}
+            groupName={calloutFlowStates[0]}
           />
         </ContentColumn>
         {spaceId && tryVirtualContributorOpen && (

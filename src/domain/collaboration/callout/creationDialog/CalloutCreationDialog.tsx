@@ -1,11 +1,5 @@
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutGroupName,
-  CalloutState,
-  CalloutType,
-  CalloutVisibility,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -50,7 +44,7 @@ export interface CalloutCreationDialogProps {
   onClose: () => void;
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
-  groupName: CalloutGroupName;
+  groupName: string;
   flowState?: string;
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;

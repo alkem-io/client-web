@@ -6,18 +6,16 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home:
+    case SpaceTab.HOME:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.Community:
+    case SpaceTab.COMMUNITY:
       return EntityPageSection.Community;
-    case CalloutGroupName.Subspaces:
+    case SpaceTab.SUBSPACES:
       return EntityPageSection.Subspaces;
-    // case CalloutGroupName.Contribute: // In the past there was a tab called contribute ! remove?!
-    case CalloutGroupName.Custom:
-      return EntityPageSection.Custom;
     default:
       return EntityPageSection.KnowledgeBase;
   }
@@ -25,14 +23,12 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home:
+    case SpaceTab.HOME:
       return <SpaceDashboardPage />;
-    case CalloutGroupName.Subspaces:
+    case SpaceTab.SUBSPACES:
       return <SpaceSubspacesPage />;
-    case CalloutGroupName.Community:
+    case SpaceTab.COMMUNITY:
       return <SpaceCommunityPage />;
-    case CalloutGroupName.Custom: // There was a tab called contribute
-      return <KnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />;
     default:
       return <KnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
   }

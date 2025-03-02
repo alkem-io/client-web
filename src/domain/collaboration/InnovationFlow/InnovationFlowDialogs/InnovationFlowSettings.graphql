@@ -72,6 +72,7 @@ fragment InnovationFlowCollaboration on Collaboration {
       activity
       sortOrder
       classification {
+        id
         flowState: tagset(tagsetName: FLOW_STATE) {
           ...TagsetDetails
         }

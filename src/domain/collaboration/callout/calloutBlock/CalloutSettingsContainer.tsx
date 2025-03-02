@@ -439,7 +439,6 @@ const CalloutSettingsContainer = ({
           callout={callout}
           onCalloutEdit={handleCalloutEdit}
           onDelete={() => setDeleteDialogOpen(true)}
-          canChangeCalloutLocation
           disableRichMedia={disableRichMedia}
           disablePostResponses={disablePostResponses && callout.type === CalloutType.Post}
         />

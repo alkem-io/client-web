@@ -13,6 +13,7 @@ import CalloutsList from '../callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 type KnowledgeBasePageProps = {
   calloutsFlowState: EntityPageSection;
@@ -56,7 +57,7 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
                   <PageContentBlock>
                     <CalloutsList
-                      // callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                      // callouts={groupedCallouts[SpaceTab.KNOWLEDGE]}
                       callouts={allCallouts}
                       emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
                         entities: t('common.callouts'),
@@ -68,13 +69,13 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
                 <ContentColumn>
                   <CalloutsGroupView
                     calloutsSetId={calloutsSetId}
-                    // callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                    // callouts={groupedCallouts[SpaceTab.KNOWLEDGE]}
                     callouts={allCallouts}
                     canCreateCallout={canCreateCallout}
                     loading={loading}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    groupName={CalloutGroupName.Knowledge}
+                    groupName={SpaceTab.KNOWLEDGE}
                   />
                 </ContentColumn>
               </PageContent>
@@ -84,7 +85,7 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
               onClose={handleCreateCalloutClosed}
               onCreateCallout={handleCreateCallout}
               loading={loadingCalloutCreation}
-              groupName={CalloutGroupName.Knowledge}
+              groupName={SpaceTab.KNOWLEDGE}
             />
           </>
         )}

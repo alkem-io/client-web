@@ -62,7 +62,7 @@ fragment SpaceExplorerSpace on Space {
     id
     myPrivileges
   }
-  type
+  level
   about {
     why
     ...SpaceAboutCardBanner
@@ -84,7 +84,7 @@ fragment SpaceExplorerSpace on Space {
 
 fragment SpaceExplorerSubspace on Space {
   id
-  type
+  level
   about {
     ...SpaceAboutCardBanner
     why

@@ -1,6 +1,7 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { UseCalloutsProvided } from '../calloutsSet/useCallouts/useCallouts';
 import useCalloutsOnCollaboration from '../useCalloutsOnCollaboration';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 interface KnowledgeBaseContainerProps
   extends SimpleContainerProps<{
@@ -12,7 +13,7 @@ interface KnowledgeBaseContainerProps
 const KnowledgeBaseContainer = ({ collaborationId, children }: KnowledgeBaseContainerProps) => {
   const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    groupNames: [CalloutGroupName.Knowledge],
+    groupNames: [SpaceTab.KNOWLEDGE],
   });
 
   return <>{children({ callouts })}</>;

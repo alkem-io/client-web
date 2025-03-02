@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { ButtonProps } from '@mui/material';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import InnovationFlowSettingsDialog from './InnovationFlowSettingsDialog';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import { SvgIconComponent } from '@mui/icons-material';
 
 interface InnovationFlowSettingsButtonProps extends ButtonProps {
   collaborationId: string;
   templatesSetId: string | undefined;
-  filterCalloutGroups: CalloutGroupNameValuesMap[];
+  filterCalloutGroups: string[];
   tooltip: string;
   icon: SvgIconComponent;
 }

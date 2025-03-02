@@ -18,6 +18,7 @@ import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ const SpaceSubspacesPage = () => {
 
   const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    groupNames: [CalloutGroupName.Subspaces],
+    groupNames: ['subspaces'],
   });
 
   return (
@@ -105,12 +106,12 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
+                callouts={callouts.groupedCallouts[SpaceTab.SUBSPACES]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Subspaces}
+                groupName={SpaceTab.SUBSPACES}
               />
             }
           />

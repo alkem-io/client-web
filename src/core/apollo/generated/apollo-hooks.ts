@@ -335,6 +335,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         activity
         sortOrder
         classification {
+          id
           flowState: tagset(tagsetName: FLOW_STATE) {
             ...TagsetDetails
           }
@@ -1813,6 +1814,15 @@ export const SpacePageFragmentDoc = gql`
     }
     collaboration @include(if: $authorizedReadAccess) {
       id
+      innovationFlow {
+        id
+        states {
+          displayName
+        }
+        currentState {
+          displayName
+        }
+      }
       ...DashboardTopCallouts
       ...DashboardTimelineAuthorization
     }
@@ -3052,7 +3062,7 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
 export const ExploreSpacesFragmentDoc = gql`
   fragment ExploreSpaces on Space {
     id
-    type
+    level
     about {
       id
       profile {
@@ -3150,7 +3160,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       id
       myPrivileges
     }
-    type
+    level
     about {
       why
       ...SpaceAboutCardBanner
@@ -3182,7 +3192,7 @@ export const SpaceExplorerSearchSpaceFragmentDoc = gql`
 export const SpaceExplorerSubspaceFragmentDoc = gql`
   fragment SpaceExplorerSubspace on Space {
     id
-    type
+    level
     about {
       ...SpaceAboutCardBanner
       why
@@ -15008,6 +15018,12 @@ export const SpaceCommunityPageDocument = gql`
         }
         collaboration {
           id
+          innovationFlow {
+            id
+            states {
+              displayName
+            }
+          }
           calloutsSet {
             id
           }

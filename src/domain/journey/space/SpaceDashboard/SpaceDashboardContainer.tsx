@@ -19,6 +19,7 @@ import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/cor
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
   about: SpaceAboutDetailsModel | undefined;
+  innovationFlowStates: string[];
   dashboardNavigation: DashboardNavigationItem | undefined;
   isPrivate: boolean | undefined;
   permissions: {
@@ -110,7 +111,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
 
   const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    groupNames: [CalloutGroupName.Home],
   });
 
   const about: SpaceAboutDetailsModel = space?.about!;
@@ -121,6 +121,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
         {
           space,
           about,
+          innovationFlowStates: space?.collaboration?.innovationFlow.states.map(state => state.displayName) ?? [],
           dashboardNavigation,
           isPrivate,
           permissions,

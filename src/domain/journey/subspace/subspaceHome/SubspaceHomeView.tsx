@@ -14,7 +14,7 @@ import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -46,6 +46,8 @@ const SubspaceHomeView = ({
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ calloutsSetId });
+
+  const flowStates = innovationFlowStates?.map(state => state.displayName) || [];
 
   const createButton = (
     <Button
@@ -109,7 +111,7 @@ const SubspaceHomeView = ({
                 <InnovationFlowSettingsButton
                   collaborationId={collaborationId}
                   templatesSetId={templatesSetId}
-                  filterCalloutGroups={[CalloutGroupNameValuesMap.Home]}
+                  filterCalloutGroups={[SpaceTab.HOME]}
                   tooltip={manageFlowActionDef.label}
                   icon={manageFlowActionDef.icon}
                 />
@@ -125,7 +127,7 @@ const SubspaceHomeView = ({
         loading={loading}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        groupName={CalloutGroupName.Home}
+        groupName={flowStates[0]}
         createButtonPlace="top"
         flowState={selectedInnovationFlowState}
       />
@@ -134,7 +136,7 @@ const SubspaceHomeView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        groupName={CalloutGroupName.Home}
+        groupName={flowStates[0]}
         flowState={selectedInnovationFlowState}
       />
     </>

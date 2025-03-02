@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -31,7 +30,7 @@ export interface CalloutCreationType {
   contributionPolicy: {
     state: CalloutState;
   };
-  groupName?: CalloutGroupName;
+  groupName?: string;
   visibility?: CalloutVisibility;
   sendNotification?: boolean;
 }
