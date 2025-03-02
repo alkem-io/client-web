@@ -1,4 +1,4 @@
-query InnovationFlowSettings($collaborationId: UUID!, $filterCalloutGroups: [String!]) {
+query InnovationFlowSettings($collaborationId: UUID!) {
   #//!!
   lookup {
     collaboration(ID: $collaborationId) {
@@ -65,7 +65,7 @@ fragment InnovationFlowCollaboration on Collaboration {
   }
   calloutsSet {
     id
-    callouts(classificationTagsets: { name: FLOW_STATE, tags: $filterCalloutGroups }) {
+    callouts {
       #//!!
       id
       type

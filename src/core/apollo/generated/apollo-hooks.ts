@@ -329,7 +329,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
     }
     calloutsSet {
       id
-      callouts(classificationTagsets: { name: FLOW_STATE, tags: $filterCalloutGroups }) {
+      callouts {
         id
         type
         activity
@@ -6097,7 +6097,7 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
 }
 
 export const InnovationFlowSettingsDocument = gql`
-  query InnovationFlowSettings($collaborationId: UUID!, $filterCalloutGroups: [String!]) {
+  query InnovationFlowSettings($collaborationId: UUID!) {
     lookup {
       collaboration(ID: $collaborationId) {
         ...InnovationFlowCollaboration
@@ -6124,7 +6124,6 @@ export const InnovationFlowSettingsDocument = gql`
  * const { data, loading, error } = useInnovationFlowSettingsQuery({
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
- *      filterCalloutGroups: // value for 'filterCalloutGroups'
  *   },
  * });
  */
