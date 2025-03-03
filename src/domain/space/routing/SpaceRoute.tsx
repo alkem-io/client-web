@@ -10,7 +10,7 @@ import SpaceDashboardPage from '../../journey/space/SpaceDashboard/SpaceDashboar
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../../journey/space/spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../../journey/space/SpaceCommunityPage/SpaceCommunityPage';
-import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
+import SpaceKnowledgeBasePage from '@/domain/journey/space/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
@@ -46,9 +46,9 @@ const SpaceRoute = () => {
       <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
       <Route
         path={routes.KnowledgeBase}
-        element={<KnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
+        element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
       />
-      <Route path={routes.Custom} element={<KnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
+      <Route path={routes.Custom} element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
       <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
       <Route
         path="*"

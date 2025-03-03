@@ -1,6 +1,6 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { UseCalloutsProvided } from '../calloutsSet/useCallouts/useCallouts';
-import useCalloutsOnCollaboration from '../useCalloutsOnCollaboration';
+import { UseCalloutsProvided } from '../../../collaboration/calloutsSet/useCallouts/useCallouts';
+import useCalloutsOnCollaboration from '../../../collaboration/useCalloutsOnCollaboration';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 interface KnowledgeBaseContainerProps
@@ -13,7 +13,7 @@ interface KnowledgeBaseContainerProps
 const KnowledgeBaseContainer = ({ collaborationId, children }: KnowledgeBaseContainerProps) => {
   const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    groupNames: [SpaceTab.KNOWLEDGE],
+    flowStateNames: [SpaceTab.KNOWLEDGE],
   });
 
   return <>{children({ callouts })}</>;

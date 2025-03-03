@@ -14,7 +14,7 @@ interface SpaceCommunityContainerProvided {
 const SpaceCommunityContainer = ({ collaborationId, children }: SpaceCommunityContainerProps) => {
   const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    groupNames: [SpaceTab.COMMUNITY],
+    flowStateNames: [SpaceTab.COMMUNITY],
   });
 
   return <>{children({ callouts })}</>;

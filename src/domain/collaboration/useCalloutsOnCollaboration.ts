@@ -4,7 +4,7 @@ import useCallouts, { TypedCallout } from './calloutsSet/useCallouts/useCallouts
 
 interface UseCalloutsOnCollaborationParams {
   collaborationId: string | undefined;
-  groupNames?: string[];
+  flowStateNames?: string[];
 }
 
 export interface OrderUpdate {
@@ -32,7 +32,7 @@ export interface UseCalloutsOnCollaborationProvided {
  */
 const useCalloutsOnCollaboration = ({
   collaborationId,
-  groupNames,
+  flowStateNames,
 }: UseCalloutsOnCollaborationParams): UseCalloutsOnCollaborationProvided => {
   const {
     canSaveAsTemplate,
@@ -56,7 +56,7 @@ const useCalloutsOnCollaboration = ({
     collaborationId,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    flowStates: groupNames,
+    flowStates: flowStateNames,
   });
 
   return {

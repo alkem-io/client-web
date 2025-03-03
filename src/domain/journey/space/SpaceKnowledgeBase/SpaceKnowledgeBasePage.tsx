@@ -3,24 +3,24 @@ import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import CalloutsGroupView from '../calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import KnowledgeBaseContainer from './KnowledgeBaseContainer';
+import CalloutsGroupView from '../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
+import { useCalloutCreationWithPreviewImages } from '../../../collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import KnowledgeBaseContainer from './SpaceKnowledgeBaseContainer';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
-import CalloutsList from '../callout/calloutsList/CalloutsList';
+import CalloutsList from '../../../collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
-import { CalloutsFilterModel } from '../calloutsSet/CalloutsFilter.model';
+import { CalloutsFilterModel } from '../../../collaboration/calloutsSet/CalloutsFilter.model';
 
 type KnowledgeBasePageProps = {
   calloutsFlowState: EntityPageSection;
 };
 
-const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
+const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
   const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
 
   const { t } = useTranslation();
@@ -99,4 +99,4 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
   );
 };
 
-export default KnowledgeBasePage;
+export default SpaceKnowledgeBasePage;
