@@ -12,19 +12,20 @@ import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
+import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
+  const { urlInfo, flowStateForTab } = useSpaceTabProvider({ tabPosition: 2 });
+  const { spaceId, journeyPath, collaborationId, calloutsSetId } = urlInfo;
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -61,10 +62,8 @@ const SpaceSubspacesPage = () => {
     [navigate, createSubspace, spaceId]
   );
 
-  const flowStateName = SpaceTab.SUBSPACES;
-
   const calloutsFilter: CalloutsFilterModel = {
-    flowState: flowStateName,
+    flowState: flowStateForTab?.displayName,
   };
 
   const callouts = useCalloutsOnCollaboration({
@@ -112,8 +111,8 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                createInFlowState={flowStateName}
-                callouts={callouts.groupedCallouts[flowStateName]}
+                createInFlowState={flowStateForTab?.displayName || SpaceTab.SUBSPACES}
+                callouts={callouts.groupedCallouts[flowStateForTab?.displayName || SpaceTab.SUBSPACES]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}

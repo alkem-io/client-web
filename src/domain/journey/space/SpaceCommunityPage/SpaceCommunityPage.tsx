@@ -21,7 +21,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -31,12 +30,15 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
+import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
-  const { spaceId, collaborationId, journeyPath, loading: resolving } = useUrlResolver();
+  const { urlInfo, flowStateForTab } = useSpaceTabProvider({ tabPosition: 1 });
+
+  const { spaceId, collaborationId, journeyPath, loading: resolving } = urlInfo;
   const { communityId } = useSpace();
 
   if (!spaceId && !resolving) {
@@ -117,9 +119,8 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
-  const flowStateName = SpaceTab.COMMUNITY;
   const calloutsFilter: CalloutsFilterModel = {
-    flowState: flowStateName,
+    flowState: flowStateForTab?.displayName,
   };
 
   return (
@@ -161,8 +162,8 @@ const SpaceCommunityPage = () => {
               />
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                createInFlowState={flowStateName}
-                callouts={callouts.groupedCallouts[flowStateName]}
+                createInFlowState={flowStateForTab?.displayName}
+                callouts={callouts.groupedCallouts[flowStateForTab?.displayName || SpaceTab.KNOWLEDGE]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}

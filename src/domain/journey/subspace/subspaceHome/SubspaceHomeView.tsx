@@ -14,7 +14,7 @@ import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 
 interface SubspaceHomeViewProps {

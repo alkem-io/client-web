@@ -18575,6 +18575,78 @@ export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMem
   return { query: AboutPageMembersDocument, variables: variables };
 }
 
+export const SpaceTabDocument = gql`
+  query SpaceTab($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        about {
+          ...SpaceAboutLight
+        }
+        collaboration {
+          id
+          innovationFlow {
+            id
+            states {
+              displayName
+              description
+            }
+            currentState {
+              displayName
+              description
+            }
+          }
+          calloutsSet {
+            id
+          }
+        }
+      }
+    }
+  }
+  ${SpaceAboutLightFragmentDoc}
+`;
+
+/**
+ * __useSpaceTabQuery__
+ *
+ * To run a query within a React component, call `useSpaceTabQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceTabQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceTabQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceTabQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>(SpaceTabDocument, options);
+}
+
+export function useSpaceTabLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>(SpaceTabDocument, options);
+}
+
+export type SpaceTabQueryHookResult = ReturnType<typeof useSpaceTabQuery>;
+export type SpaceTabLazyQueryHookResult = ReturnType<typeof useSpaceTabLazyQuery>;
+export type SpaceTabQueryResult = Apollo.QueryResult<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>;
+export function refetchSpaceTabQuery(variables: SchemaTypes.SpaceTabQueryVariables) {
+  return { query: SpaceTabDocument, variables: variables };
+}
+
 export const JourneyStorageConfigDocument = gql`
   query JourneyStorageConfig($spaceId: UUID!) {
     lookup {

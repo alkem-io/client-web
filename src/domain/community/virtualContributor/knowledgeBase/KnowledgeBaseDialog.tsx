@@ -12,7 +12,7 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 
 type KnowledgeBaseDialogProps = {

@@ -14,9 +14,9 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
 
 const SpaceDashboardPage = ({
   dialog,
@@ -26,7 +26,9 @@ const SpaceDashboardPage = ({
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceId, collaborationId, journeyPath, calendarEventId } = useUrlResolver();
+  const { urlInfo } = useSpaceTabProvider({ tabPosition: 0 });
+
+  const { spaceId, collaborationId, journeyPath, calendarEventId } = urlInfo;
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>

@@ -12,16 +12,17 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../../../collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import { CalloutsFilterModel } from '../../../collaboration/calloutsSet/CalloutsFilter.model';
+import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
 
 type KnowledgeBasePageProps = {
   calloutsFlowState: EntityPageSection;
 };
 
 const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
-  const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
+  const { urlInfo, flowStateForTab } = useSpaceTabProvider({ tabPosition: 3 });
+  const { journeyPath, collaborationId, calloutsSetId } = urlInfo;
 
   const { t } = useTranslation();
 
@@ -38,7 +39,7 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
   };
 
   const calloutsFilter: CalloutsFilterModel = {
-    flowState: SpaceTab.KNOWLEDGE,
+    flowState: flowStateForTab?.displayName,
   };
 
   return (
@@ -50,7 +51,6 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
             canReadCalloutsSet: canReadCallout,
             canCreateCallout,
             callouts: allCallouts,
-            // groupedCallouts,
             onCalloutsSortOrderUpdate,
             refetchCallout,
           },
@@ -74,7 +74,6 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
                 <ContentColumn>
                   <CalloutsGroupView
                     calloutsSetId={calloutsSetId}
-                    // callouts={groupedCallouts[SpaceTab.KNOWLEDGE]}
                     createInFlowState={SpaceTab.KNOWLEDGE}
                     callouts={allCallouts}
                     canCreateCallout={canCreateCallout}

@@ -1,7 +1,7 @@
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
-import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 
 interface SpaceCommunityContainerProps extends SimpleContainerProps<SpaceCommunityContainerProvided> {
   collaborationId: string | undefined;
