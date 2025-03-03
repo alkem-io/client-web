@@ -666,9 +666,6 @@ export const CalloutFragmentDoc = gql`
         id
         url
         displayName
-        tagsets {
-          ...TagsetDetails
-        }
       }
     }
     visibility
@@ -848,9 +845,6 @@ export const CalloutDetailsFragmentDoc = gql`
         displayName
         description
         tagset {
-          ...TagsetDetails
-        }
-        tagsets {
           ...TagsetDetails
         }
         references {
@@ -2249,7 +2243,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
         id
         displayName
         description
-        tagsets {
+        tagset {
           ...TagsetDetails
         }
         references {
@@ -2943,9 +2937,6 @@ export const LibraryTemplatesFragmentDoc = gql`
             displayName
             description
             tagset {
-              ...TagsetDetails
-            }
-            tagsets {
               ...TagsetDetails
             }
             storageBucket {
@@ -7883,7 +7874,7 @@ export const CalloutContentDocument = gql`
             id
             displayName
             description
-            tagsets {
+            tagset {
               ...TagsetDetails
             }
             references {

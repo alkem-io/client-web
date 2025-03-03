@@ -1710,11 +1710,11 @@ export type CreateCalloutsSetInput = {
 
 export type CreateClassificationData = {
   __typename?: 'CreateClassificationData';
-  tagsets?: Maybe<Array<CreateTagsetData>>;
+  tagsets: Array<CreateTagsetData>;
 };
 
 export type CreateClassificationInput = {
-  tagsets?: InputMaybe<Array<CreateTagsetInput>>;
+  tagsets: Array<CreateTagsetInput>;
 };
 
 export type CreateCollaborationData = {
@@ -2580,8 +2580,6 @@ export type InnovationFlow = {
   settings: InnovationFlowSettings;
   /** The set of States in use in this Flow. */
   states: Array<InnovationFlowState>;
-  /** The tagsetTemplate used for entities that want to select from the states in this InnovationFlow. */
-  tagsetTemplate: TagsetTemplate;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -9457,16 +9455,6 @@ export type CalloutPageCalloutQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              tagsets?:
-                | Array<{
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }>
-                | undefined;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -11589,16 +11577,6 @@ export type UpdateCalloutVisibilityMutation = {
               type: TagsetType;
             }
           | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
@@ -12286,16 +12264,6 @@ export type CreateCalloutMutation = {
               type: TagsetType;
             }
           | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
@@ -12565,22 +12533,7 @@ export type CalloutsQuery = {
             framing: {
               __typename?: 'CalloutFraming';
               id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                url: string;
-                displayName: string;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-              };
+              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             };
           }>;
         }
@@ -12617,22 +12570,7 @@ export type CalloutFragment = {
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
 };
 
@@ -12686,16 +12624,6 @@ export type CalloutDetailsQuery = {
                     allowedValues: Array<string>;
                     type: TagsetType;
                   }
-                | undefined;
-              tagsets?:
-                | Array<{
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }>
                 | undefined;
               references?:
                 | Array<{
@@ -13007,16 +12935,6 @@ export type CalloutDetailsFragment = {
             type: TagsetType;
           }
         | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
@@ -13260,15 +13178,15 @@ export type CalloutContentQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
-              tagsets?:
-                | Array<{
+              tagset?:
+                | {
                     __typename?: 'Tagset';
                     id: string;
                     name: string;
                     tags: Array<string>;
                     allowedValues: Array<string>;
                     type: TagsetType;
-                  }>
+                  }
                 | undefined;
               references?:
                 | Array<{
@@ -24139,15 +24057,15 @@ export type TemplateContentQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
-                    tagsets?:
-                      | Array<{
+                    tagset?:
+                      | {
                           __typename?: 'Tagset';
                           id: string;
                           name: string;
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
-                        }>
+                        }
                       | undefined;
                     references?:
                       | Array<{
@@ -24457,15 +24375,15 @@ export type CalloutTemplateContentFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
-      tagsets?:
-        | Array<{
+      tagset?:
+        | {
             __typename?: 'Tagset';
             id: string;
             name: string;
             tags: Array<string>;
             allowedValues: Array<string>;
             type: TagsetType;
-          }>
+          }
         | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
@@ -28249,16 +28167,6 @@ export type LibraryTemplatesFragment = {
                     allowedValues: Array<string>;
                     type: TagsetType;
                   }
-                | undefined;
-              tagsets?:
-                | Array<{
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }>
                 | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
               references?:

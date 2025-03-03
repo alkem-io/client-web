@@ -14,7 +14,6 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Reference } from '@/domain/common/profile/Profile';
-import { findDefaultTagset } from '@/domain/common/tags/utils';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -194,7 +193,7 @@ const CalloutCreationDialog = ({
     setCallout({
       displayName: templateCallout.framing.profile.displayName,
       description: templateCallout.framing.profile.description,
-      tags: findDefaultTagset(templateCallout.framing.profile.tagsets)?.tags,
+      tags: templateCallout.framing.profile.tagset?.tags,
       references,
       type: templateCallout.type,
       postDescription: templateCallout.contributionDefaults?.postDescription,

@@ -14,7 +14,7 @@ import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuth
 
 export interface CalloutCreationType {
   classification?: {
-    tagsets?: CreateTagsetInput[];
+    tagsets: CreateTagsetInput[];
   };
   framing: {
     profile: {

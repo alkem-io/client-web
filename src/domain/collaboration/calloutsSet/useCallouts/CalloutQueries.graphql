@@ -34,9 +34,6 @@ fragment Callout on Callout {
       id
       url
       displayName
-      tagsets {
-        ...TagsetDetails
-      }
     }
   }
   visibility
@@ -66,9 +63,6 @@ fragment CalloutDetails on Callout {
       displayName
       description
       tagset {
-        ...TagsetDetails
-      }
-      tagsets {
         ...TagsetDetails
       }
       references {
@@ -121,7 +115,7 @@ query CalloutContent($calloutId: UUID!) {
           id
           displayName
           description
-          tagsets {
+          tagset {
             ...TagsetDetails
           }
           references {

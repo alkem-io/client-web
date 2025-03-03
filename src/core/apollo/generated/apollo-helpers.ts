@@ -1559,7 +1559,6 @@ export type InnovationFlowKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'states'
-  | 'tagsetTemplate'
   | 'updatedDate'
   | InnovationFlowKeySpecifier
 )[];
@@ -1571,7 +1570,6 @@ export type InnovationFlowFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   states?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagsetTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowSettingsKeySpecifier = (

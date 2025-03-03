@@ -53,7 +53,7 @@ fragment CalloutTemplateContent on Callout {
       id
       displayName
       description
-      tagsets {
+      tagset {
         ...TagsetDetails
       }
       references {
