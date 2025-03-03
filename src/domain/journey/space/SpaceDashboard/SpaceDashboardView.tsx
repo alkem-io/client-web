@@ -36,13 +36,15 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from './SpaceWelcomeDialog';
-import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
+import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
   level: SpaceLevel | undefined;
-  innovationFlowStates: string[];
+  innovationFlowStates: {
+    displayName: string;
+  }[];
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -75,7 +77,6 @@ const SpaceDashboardView = ({
   spaceId,
   level,
   collaborationId,
-  innovationFlowStates: calloutFlowStates,
   calloutsSetId,
   what = '',
   dashboardNavigation,
@@ -136,9 +137,10 @@ const SpaceDashboardView = ({
     }
   }, [spaceId]);
 
-  const classificationFilter: ClassificationFilterModel = {
-    name: 'flow-state',
-    tags: [calloutFlowStates[0]],
+  // TODO: should be first position of innovationFlowStates
+  const flowStateName = SpaceTab.HOME;
+  const calloutsFilter: CalloutsFilterModel = {
+    flowState: flowStateName,
   };
 
   return (
@@ -197,13 +199,13 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}
-            flowState={SpaceTab.HOME}
-            callouts={callouts.groupedCallouts[calloutFlowStates[0]]}
+            createInFlowState={flowStateName}
+            callouts={callouts.groupedCallouts[flowStateName]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            classificationFilter={classificationFilter}
+            calloutsFilter={calloutsFilter}
           />
         </ContentColumn>
         {spaceId && tryVirtualContributorOpen && (

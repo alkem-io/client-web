@@ -67,7 +67,7 @@ interface UseCalloutsParams {
   calloutsSetId: string | undefined;
   includeClassification: boolean;
   collaborationId?: string; // Do not leave this, this is a hack
-  groupNames?: string[];
+  flowStates?: string[];
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
 }
@@ -96,6 +96,7 @@ const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
 const useCallouts = ({
   calloutsSetId,
   collaborationId,
+  flowStates,
   includeClassification,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
@@ -111,6 +112,7 @@ const useCallouts = ({
   const variables: CalloutsOnCalloutsSetQueryVariables = {
     calloutsSetId: calloutsSetId!,
     includeClassification,
+    flowStates,
   } as const;
 
   const {

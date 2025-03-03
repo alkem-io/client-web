@@ -56,7 +56,7 @@ const useCalloutsOnCollaboration = ({
     collaborationId,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    groupNames,
+    flowStates: groupNames,
   });
 
   return {

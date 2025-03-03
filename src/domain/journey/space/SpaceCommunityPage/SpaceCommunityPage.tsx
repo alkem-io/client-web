@@ -30,7 +30,7 @@ import VirtualContributorsBlock from '@/domain/community/community/VirtualContri
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
+import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 const SpaceCommunityPage = () => {
@@ -82,7 +82,6 @@ const SpaceCommunityPage = () => {
   );
 
   const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
-  const innovationFlowStates = data?.lookup.space?.collaboration?.innovationFlow.states ?? [];
 
   const messageReceivers = useMemo(
     () =>
@@ -118,9 +117,9 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
-  const classificationFilter: ClassificationFilterModel = {
-    name: 'flow-state',
-    tags: [innovationFlowStates[1].displayName],
+  const flowStateName = SpaceTab.COMMUNITY;
+  const calloutsFilter: CalloutsFilterModel = {
+    flowState: flowStateName,
   };
 
   return (
@@ -162,13 +161,13 @@ const SpaceCommunityPage = () => {
               />
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                flowState={SpaceTab.COMMUNITY}
-                callouts={callouts.groupedCallouts[innovationFlowStates[1].displayName]}
+                createInFlowState={flowStateName}
+                callouts={callouts.groupedCallouts[flowStateName]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                classificationFilter={classificationFilter}
+                calloutsFilter={calloutsFilter}
               />
             </ContentColumn>
           </PageContent>

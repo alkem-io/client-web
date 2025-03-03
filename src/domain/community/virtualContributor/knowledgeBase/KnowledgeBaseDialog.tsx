@@ -13,6 +13,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
+import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -53,6 +54,11 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
     );
   }
 
+  const flowStateName = SpaceTab.KNOWLEDGE;
+  const calloutsFilter: CalloutsFilterModel = {
+    flowState: flowStateName,
+  };
+
   return (
     <DialogWithGrid open columns={10}>
       <DialogHeader onClose={onClose} title={title} />
@@ -72,7 +78,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
                 callouts={callouts}
-                flowState={SpaceTab.KNOWLEDGE}
+                createInFlowState={flowStateName}
                 canCreateCallout={canCreateCallout}
                 loading={calloutsSetLoading}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -80,6 +86,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
                 createButtonPlace="bottom"
                 availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
                 disableRichMedia
+                calloutsFilter={calloutsFilter}
                 disablePostResponses
               />
             </Gutters>

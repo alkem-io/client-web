@@ -15,7 +15,7 @@ import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlo
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
-import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
+import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -47,8 +47,6 @@ const SubspaceHomeView = ({
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ calloutsSetId });
-
-  const flowStates = innovationFlowStates?.map(state => state.displayName) || [];
 
   const createButton = (
     <Button
@@ -96,9 +94,8 @@ const SubspaceHomeView = ({
   // if there is no definition for it, button should not be shown
   const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
 
-  const classificationFilter: ClassificationFilterModel = {
-    name: 'flow-state',
-    tags: [flowStates[0]],
+  const calloutsFilter: CalloutsFilterModel = {
+    flowState: selectedInnovationFlowState,
   };
 
   return (
@@ -133,9 +130,9 @@ const SubspaceHomeView = ({
         loading={loading}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        classificationFilter={classificationFilter}
+        calloutsFilter={calloutsFilter}
         createButtonPlace="top"
-        flowState={selectedInnovationFlowState}
+        createInFlowState={selectedInnovationFlowState}
       />
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}

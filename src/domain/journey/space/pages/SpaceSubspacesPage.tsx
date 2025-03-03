@@ -19,7 +19,7 @@ import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspa
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
-import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
+import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -61,9 +61,10 @@ const SpaceSubspacesPage = () => {
     [navigate, createSubspace, spaceId]
   );
 
-  const classificationFilter: ClassificationFilterModel = {
-    name: 'flow-state',
-    tags: ['subspaces'],
+  const flowStateName = SpaceTab.SUBSPACES;
+
+  const calloutsFilter: CalloutsFilterModel = {
+    flowState: flowStateName,
   };
 
   const callouts = useCalloutsOnCollaboration({
@@ -111,13 +112,13 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                flowState={SpaceTab.SUBSPACES}
-                callouts={callouts.groupedCallouts[SpaceTab.SUBSPACES]}
+                createInFlowState={flowStateName}
+                callouts={callouts.groupedCallouts[flowStateName]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                classificationFilter={classificationFilter}
+                calloutsFilter={calloutsFilter}
               />
             }
           />

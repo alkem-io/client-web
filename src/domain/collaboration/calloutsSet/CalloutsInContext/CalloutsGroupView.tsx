@@ -5,13 +5,13 @@ import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
-import { ClassificationFilterModel } from '../ClassificationFilter.model';
+import { CalloutsFilterModel } from '../CalloutsFilter.model';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
   canCreateCallout: boolean;
-  classificationFilter?: ClassificationFilterModel;
-  flowState?: string;
+  calloutsFilter?: CalloutsFilterModel;
+  createInFlowState?: string;
   createButtonPlace?: 'top' | 'bottom';
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
@@ -20,10 +20,10 @@ interface CalloutsGroupProps extends CalloutsViewProps {
 
 const CalloutsGroupView = ({
   canCreateCallout,
-  flowState,
+  createInFlowState,
   createButtonPlace = 'bottom',
   calloutsSetId,
-  classificationFilter,
+  calloutsFilter,
   availableCalloutTypes,
   disableRichMedia,
   disablePostResponses,
@@ -65,7 +65,7 @@ const CalloutsGroupView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        flowState={flowState}
+        flowState={createInFlowState}
         availableCalloutTypes={availableCalloutTypes}
         disableRichMedia={disableRichMedia}
         disablePostResponses={disablePostResponses}

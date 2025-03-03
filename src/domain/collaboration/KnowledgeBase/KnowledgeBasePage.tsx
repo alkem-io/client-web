@@ -14,7 +14,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceTab } from '@/domain/space/SpaceTabs';
-import { ClassificationFilterModel } from '../calloutsSet/ClassificationFilter.model';
+import { CalloutsFilterModel } from '../calloutsSet/CalloutsFilter.model';
 
 type KnowledgeBasePageProps = {
   calloutsFlowState: EntityPageSection;
@@ -37,9 +37,8 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
     handleCreateCalloutOpened();
   };
 
-  const classificationFilter: ClassificationFilterModel = {
-    name: 'flow-state',
-    tags: [SpaceTab.KNOWLEDGE],
+  const calloutsFilter: CalloutsFilterModel = {
+    flowState: SpaceTab.KNOWLEDGE,
   };
 
   return (
@@ -76,13 +75,13 @@ const KnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
                   <CalloutsGroupView
                     calloutsSetId={calloutsSetId}
                     // callouts={groupedCallouts[SpaceTab.KNOWLEDGE]}
-                    flowState={SpaceTab.KNOWLEDGE}
+                    createInFlowState={SpaceTab.KNOWLEDGE}
                     callouts={allCallouts}
                     canCreateCallout={canCreateCallout}
                     loading={loading}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    classificationFilter={classificationFilter}
+                    calloutsFilter={calloutsFilter}
                   />
                 </ContentColumn>
               </PageContent>
