@@ -1,12 +1,12 @@
 import {
-  useCalloutsLazyQuery,
-  useCalloutsQuery,
+  useCalloutsOnCalloutsSetLazyQuery,
+  useCalloutsOnCalloutsSetQuery,
   useUpdateCalloutsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   Callout,
-  CalloutsQueryVariables,
+  CalloutsOnCalloutsSetQueryVariables,
   CalloutType,
   CalloutVisibility,
   WhiteboardDetailsFragment,
@@ -65,6 +65,7 @@ export type TypedCalloutDetails = TypedCallout &
 
 interface UseCalloutsParams {
   calloutsSetId: string | undefined;
+  includeClassification: boolean;
   collaborationId?: string; // Do not leave this, this is a hack
   groupNames?: string[];
   canSaveAsTemplate: boolean;
@@ -81,7 +82,7 @@ export interface UseCalloutsProvided {
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
   loading: boolean;
-  refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+  refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
 }
@@ -95,6 +96,7 @@ const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
 const useCallouts = ({
   calloutsSetId,
   collaborationId,
+  includeClassification,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
 }: UseCalloutsParams): UseCalloutsProvided => {
@@ -106,21 +108,22 @@ const useCallouts = ({
 
   const { innovationFlowStates } = useInnovationFlowStates({ collaborationId });
 
-  const variables = {
+  const variables: CalloutsOnCalloutsSetQueryVariables = {
     calloutsSetId: calloutsSetId!,
+    includeClassification,
   } as const;
 
   const {
     data: calloutsData,
     loading: calloutsLoading,
     refetch: refetchCallouts,
-  } = useCalloutsQuery({
+  } = useCalloutsOnCalloutsSetQuery({
     variables,
     fetchPolicy: 'cache-and-network',
     skip: !canReadCalloutsSet || !calloutsSetId,
   });
 
-  const [getCallouts] = useCalloutsLazyQuery({
+  const [getCallouts] = useCalloutsOnCalloutsSetLazyQuery({
     variables,
     fetchPolicy: 'cache-and-network',
   });

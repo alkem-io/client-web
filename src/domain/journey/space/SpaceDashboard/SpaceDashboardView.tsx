@@ -1,5 +1,5 @@
 import {
-  CalloutsQueryVariables,
+  CalloutsOnCalloutsSetQueryVariables,
   CommunityMembershipStatus,
   SpaceLevel,
   TagsetReservedName,
@@ -65,7 +65,7 @@ type SpaceDashboardViewProps = {
     groupedCallouts: Record<string, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
     loading: boolean;
-    refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+    refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetQueryVariables>) => void;
     refetchCallout: (calloutId: string) => void;
     onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   };

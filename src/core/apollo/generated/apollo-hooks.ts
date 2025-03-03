@@ -654,12 +654,6 @@ export const CalloutFragmentDoc = gql`
       id
       myPrivileges
     }
-    classification {
-      id
-      flowState: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
-      }
-    }
     framing {
       id
       profile {
@@ -670,7 +664,6 @@ export const CalloutFragmentDoc = gql`
     }
     visibility
   }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
@@ -832,12 +825,6 @@ export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
     id
     type
-    classification {
-      id
-      flowState: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
-      }
-    }
     framing {
       id
       profile {
@@ -6028,10 +6015,17 @@ export const CalloutPageCalloutDocument = gql`
   query CalloutPageCallout($calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
+        classification {
+          id
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
+        }
         ...CalloutDetails
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${CalloutDetailsFragmentDoc}
 `;
 
@@ -7748,8 +7742,13 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutation,
   SchemaTypes.CreateCalloutMutationVariables
 >;
-export const CalloutsDocument = gql`
-  query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) {
+export const CalloutsOnCalloutsSetDocument = gql`
+  query CalloutsOnCalloutsSet(
+    $calloutsSetId: UUID!
+    $groups: [String!]
+    $calloutIds: [UUID!]
+    $includeClassification: Boolean! = true
+  ) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
         id
@@ -7757,62 +7756,92 @@ export const CalloutsDocument = gql`
           id
           myPrivileges
         }
-        callouts(classificationTagsets: { name: FLOW_STATE, tags: $groups }, IDs: $calloutIds) {
+        callouts(IDs: $calloutIds, classificationTagsets: { name: FLOW_STATE, tags: $groups }) {
+          classification @include(if: $includeClassification) {
+            id
+            flowState: tagset(tagsetName: FLOW_STATE) {
+              ...TagsetDetails
+            }
+          }
           ...Callout
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${CalloutFragmentDoc}
 `;
 
 /**
- * __useCalloutsQuery__
+ * __useCalloutsOnCalloutsSetQuery__
  *
- * To run a query within a React component, call `useCalloutsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCalloutsOnCalloutsSetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsOnCalloutsSetQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCalloutsQuery({
+ * const { data, loading, error } = useCalloutsOnCalloutsSetQuery({
  *   variables: {
  *      calloutsSetId: // value for 'calloutsSetId'
  *      groups: // value for 'groups'
  *      calloutIds: // value for 'calloutIds'
+ *      includeClassification: // value for 'includeClassification'
  *   },
  * });
  */
-export function useCalloutsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>
+export function useCalloutsOnCalloutsSetQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutsOnCalloutsSetQuery,
+    SchemaTypes.CalloutsOnCalloutsSetQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>(CalloutsDocument, options);
+  return Apollo.useQuery<SchemaTypes.CalloutsOnCalloutsSetQuery, SchemaTypes.CalloutsOnCalloutsSetQueryVariables>(
+    CalloutsOnCalloutsSetDocument,
+    options
+  );
 }
 
-export function useCalloutsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>
+export function useCalloutsOnCalloutsSetLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutsOnCalloutsSetQuery,
+    SchemaTypes.CalloutsOnCalloutsSetQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>(CalloutsDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsOnCalloutsSetQuery, SchemaTypes.CalloutsOnCalloutsSetQueryVariables>(
+    CalloutsOnCalloutsSetDocument,
+    options
+  );
 }
 
-export type CalloutsQueryHookResult = ReturnType<typeof useCalloutsQuery>;
-export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery>;
-export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
-export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
-  return { query: CalloutsDocument, variables: variables };
+export type CalloutsOnCalloutsSetQueryHookResult = ReturnType<typeof useCalloutsOnCalloutsSetQuery>;
+export type CalloutsOnCalloutsSetLazyQueryHookResult = ReturnType<typeof useCalloutsOnCalloutsSetLazyQuery>;
+export type CalloutsOnCalloutsSetQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutsOnCalloutsSetQuery,
+  SchemaTypes.CalloutsOnCalloutsSetQueryVariables
+>;
+export function refetchCalloutsOnCalloutsSetQuery(variables: SchemaTypes.CalloutsOnCalloutsSetQueryVariables) {
+  return { query: CalloutsOnCalloutsSetDocument, variables: variables };
 }
 
 export const CalloutDetailsDocument = gql`
-  query CalloutDetails($calloutId: UUID!) {
+  query CalloutDetails($calloutId: UUID!, $includeClassification: Boolean! = true) {
     lookup {
       callout(ID: $calloutId) {
+        classification @include(if: $includeClassification) {
+          id
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
+        }
         ...CalloutDetails
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${CalloutDetailsFragmentDoc}
 `;
 
@@ -7829,6 +7858,7 @@ export const CalloutDetailsDocument = gql`
  * const { data, loading, error } = useCalloutDetailsQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      includeClassification: // value for 'includeClassification'
  *   },
  * });
  */

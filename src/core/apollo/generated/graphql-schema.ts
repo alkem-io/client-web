@@ -11542,22 +11542,6 @@ export type UpdateCalloutVisibilityMutation = {
     sortOrder: number;
     activity: number;
     visibility: CalloutVisibility;
-    classification?:
-      | {
-          __typename?: 'Classification';
-          id: string;
-          flowState?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        }
-      | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12229,22 +12213,6 @@ export type CreateCalloutMutation = {
     sortOrder: number;
     activity: number;
     visibility: CalloutVisibility;
-    classification?:
-      | {
-          __typename?: 'Classification';
-          id: string;
-          flowState?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        }
-      | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12487,13 +12455,14 @@ export type CreateCalloutMutation = {
   };
 };
 
-export type CalloutsQueryVariables = Exact<{
+export type CalloutsOnCalloutsSetQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID'];
   groups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   calloutIds?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+  includeClassification?: Scalars['Boolean'];
 }>;
 
-export type CalloutsQuery = {
+export type CalloutsOnCalloutsSetQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -12511,9 +12480,6 @@ export type CalloutsQuery = {
             sortOrder: number;
             activity: number;
             visibility: CalloutVisibility;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
             classification?:
               | {
                   __typename?: 'Classification';
@@ -12529,6 +12495,9 @@ export type CalloutsQuery = {
                       }
                     | undefined;
                 }
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             framing: {
               __typename?: 'CalloutFraming';
@@ -12551,22 +12520,6 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  classification?:
-    | {
-        __typename?: 'Classification';
-        id: string;
-        flowState?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      }
-    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -12576,6 +12529,7 @@ export type CalloutFragment = {
 
 export type CalloutDetailsQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
+  includeClassification?: Scalars['Boolean'];
 }>;
 
 export type CalloutDetailsQuery = {
@@ -12900,22 +12854,6 @@ export type CalloutDetailsFragment = {
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
-  classification?:
-    | {
-        __typename?: 'Classification';
-        id: string;
-        flowState?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      }
-    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;

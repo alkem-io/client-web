@@ -1,4 +1,4 @@
-import { CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { CalloutsOnCalloutsSetQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
 import useCallouts, { TypedCallout } from './calloutsSet/useCallouts/useCallouts';
 
@@ -17,7 +17,7 @@ export interface UseCalloutsOnCollaborationProvided {
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
   loading: boolean;
-  refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+  refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
 }
@@ -52,6 +52,7 @@ const useCalloutsOnCollaboration = ({
     onCalloutsSortOrderUpdate,
   } = useCallouts({
     calloutsSetId,
+    includeClassification: true,
     collaborationId,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,

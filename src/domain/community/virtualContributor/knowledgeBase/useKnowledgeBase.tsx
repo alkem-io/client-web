@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutsOnCalloutsSetQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import useCallouts, { TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { OrderUpdate } from '@/domain/collaboration/useCalloutsOnCollaboration';
 import {
@@ -21,7 +21,7 @@ interface useKnowledgeBaseProvided {
   canReadCalloutsSet: boolean;
   loading: boolean;
   calloutsSetLoading: boolean;
-  refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+  refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   knowledgeBaseDescription: string | undefined;
@@ -105,6 +105,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     onCalloutsSortOrderUpdate,
   } = useCallouts({
     calloutsSetId,
+    includeClassification: false,
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
   });
