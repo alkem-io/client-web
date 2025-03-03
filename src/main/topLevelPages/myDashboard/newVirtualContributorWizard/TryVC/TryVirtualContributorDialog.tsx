@@ -92,6 +92,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   } = useCalloutDetailsQuery({
     variables: {
       calloutId: calloutId!,
+      includeClassification: false,
     },
     skip: !calloutId,
   });

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
@@ -97,7 +97,7 @@ const SubspaceHomeView = ({
   const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
 
   const classificationFilter: ClassificationFilterModel = {
-    name: TagsetReservedName.FlowState,
+    name: 'flow-state',
     tags: [flowStates[0]],
   };
 

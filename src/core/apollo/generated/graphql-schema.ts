@@ -12213,6 +12213,22 @@ export type CreateCalloutMutation = {
     sortOrder: number;
     activity: number;
     visibility: CalloutVisibility;
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          flowState?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        }
+      | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12457,9 +12473,9 @@ export type CreateCalloutMutation = {
 
 export type CalloutsOnCalloutsSetQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID'];
-  groups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   calloutIds?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
   includeClassification?: Scalars['Boolean'];
+  flowStates?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CalloutsOnCalloutsSetQuery = {

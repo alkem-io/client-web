@@ -11,11 +11,7 @@ import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import {
-  CommunityMembershipStatus,
-  SpacePrivacyMode,
-  TagsetReservedName,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
@@ -66,7 +62,7 @@ const SpaceSubspacesPage = () => {
   );
 
   const classificationFilter: ClassificationFilterModel = {
-    name: TagsetReservedName.FlowState,
+    name: 'flow-state',
     tags: ['subspaces'],
   };
 
@@ -115,6 +111,7 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
+                flowState={SpaceTab.SUBSPACES}
                 callouts={callouts.groupedCallouts[SpaceTab.SUBSPACES]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

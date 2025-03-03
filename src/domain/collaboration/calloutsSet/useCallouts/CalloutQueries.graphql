@@ -1,8 +1,8 @@
 query CalloutsOnCalloutsSet(
   $calloutsSetId: UUID!
-  $groups: [String!]
   $calloutIds: [UUID!]
   $includeClassification: Boolean! = true
+  $flowStates: [String!]
 ) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
@@ -11,7 +11,7 @@ query CalloutsOnCalloutsSet(
         id
         myPrivileges
       }
-      callouts(IDs: $calloutIds, classificationTagsets: { name: FLOW_STATE, tags: $groups }) {
+      callouts(IDs: $calloutIds, classificationTagsets: { name: FLOW_STATE, tags: $flowStates }) {
         classification @include(if: $includeClassification) {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {

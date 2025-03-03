@@ -12,6 +12,7 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Caption } from '@/core/ui/typography';
 import { Loading } from '@/core/ui/loading/Loading';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -71,6 +72,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
                 callouts={callouts}
+                flowState={SpaceTab.KNOWLEDGE}
                 canCreateCallout={canCreateCallout}
                 loading={calloutsSetLoading}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}

@@ -18,7 +18,6 @@ import {
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
-  TagsetReservedName,
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
@@ -32,6 +31,7 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
@@ -119,7 +119,7 @@ const SpaceCommunityPage = () => {
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
   const classificationFilter: ClassificationFilterModel = {
-    name: TagsetReservedName.FlowState,
+    name: 'flow-state',
     tags: [innovationFlowStates[1].displayName],
   };
 
@@ -162,6 +162,7 @@ const SpaceCommunityPage = () => {
               />
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
+                flowState={SpaceTab.COMMUNITY}
                 callouts={callouts.groupedCallouts[innovationFlowStates[1].displayName]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

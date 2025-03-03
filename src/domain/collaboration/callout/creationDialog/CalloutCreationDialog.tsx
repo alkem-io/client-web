@@ -1,11 +1,5 @@
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutState,
-  CalloutType,
-  CalloutVisibility,
-  TagsetReservedName,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -121,7 +115,7 @@ const CalloutCreationDialog = ({
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
           classification: {
-            tagsets: flowState ? [{ name: TagsetReservedName.FlowState, tags: [flowState] }] : [],
+            tagsets: flowState ? [{ name: 'flow-state', tags: [flowState] }] : [],
           },
           framing: {
             profile: {

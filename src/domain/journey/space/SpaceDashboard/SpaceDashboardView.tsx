@@ -2,7 +2,6 @@ import {
   CalloutsOnCalloutsSetQueryVariables,
   CommunityMembershipStatus,
   SpaceLevel,
-  TagsetReservedName,
 } from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -38,6 +37,7 @@ import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from './SpaceWelcomeDialog';
 import { ClassificationFilterModel } from '@/domain/collaboration/calloutsSet/ClassificationFilter.model';
+import { SpaceTab } from '@/domain/space/SpaceTabs';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
@@ -137,7 +137,7 @@ const SpaceDashboardView = ({
   }, [spaceId]);
 
   const classificationFilter: ClassificationFilterModel = {
-    name: TagsetReservedName.FlowState,
+    name: 'flow-state',
     tags: [calloutFlowStates[0]],
   };
 
@@ -197,6 +197,7 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}
+            flowState={SpaceTab.HOME}
             callouts={callouts.groupedCallouts[calloutFlowStates[0]]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}

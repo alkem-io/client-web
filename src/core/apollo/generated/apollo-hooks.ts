@@ -7695,10 +7695,17 @@ export function refetchCalloutsSetAuthorizationQuery(variables: SchemaTypes.Call
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
     createCalloutOnCalloutsSet(calloutData: $calloutData) {
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
       ...CalloutDetails
       nameID
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${CalloutDetailsFragmentDoc}
 `;
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
@@ -7745,9 +7752,9 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const CalloutsOnCalloutsSetDocument = gql`
   query CalloutsOnCalloutsSet(
     $calloutsSetId: UUID!
-    $groups: [String!]
     $calloutIds: [UUID!]
     $includeClassification: Boolean! = true
+    $flowStates: [String!]
   ) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
@@ -7756,7 +7763,7 @@ export const CalloutsOnCalloutsSetDocument = gql`
           id
           myPrivileges
         }
-        callouts(IDs: $calloutIds, classificationTagsets: { name: FLOW_STATE, tags: $groups }) {
+        callouts(IDs: $calloutIds, classificationTagsets: { name: FLOW_STATE, tags: $flowStates }) {
           classification @include(if: $includeClassification) {
             id
             flowState: tagset(tagsetName: FLOW_STATE) {
@@ -7785,9 +7792,9 @@ export const CalloutsOnCalloutsSetDocument = gql`
  * const { data, loading, error } = useCalloutsOnCalloutsSetQuery({
  *   variables: {
  *      calloutsSetId: // value for 'calloutsSetId'
- *      groups: // value for 'groups'
  *      calloutIds: // value for 'calloutIds'
  *      includeClassification: // value for 'includeClassification'
+ *      flowStates: // value for 'flowStates'
  *   },
  * });
  */

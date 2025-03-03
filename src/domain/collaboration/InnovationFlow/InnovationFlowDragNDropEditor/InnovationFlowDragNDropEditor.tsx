@@ -9,7 +9,6 @@ import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
-import { MAX_INNOVATIONFLOW_STATES } from '@/domain/templates/models/CollaborationTemplate';
 import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
@@ -75,6 +74,9 @@ const InnovationFlowDragNDropEditor = ({
   const { t } = useTranslation();
 
   // Dialogs for Flow States management:
+
+  // TODO: get the max from the innovation flow data
+  const MAX_INNOVATIONFLOW_STATES = 10;
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
   const [createFlowState, setCreateFlowState] = useState<

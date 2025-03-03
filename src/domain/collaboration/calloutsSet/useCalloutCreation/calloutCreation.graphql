@@ -1,6 +1,12 @@
 mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
   createCalloutOnCalloutsSet(calloutData: $calloutData) {
+    classification {
+      id
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+    }
     ...CalloutDetails
-    nameID  # Used to name the files uploaded as whiteboard visuals
+    nameID # Used to name the files uploaded as whiteboard visuals
   }
 }
