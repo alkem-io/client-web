@@ -23,7 +23,7 @@ export const OrganizationPage = () => {
 
   if (loading) return <Loading />;
 
-  if (!organizationData && !loading) {
+  if (!organizationData && !loading && !organizationId) {
     return (
       <TopLevelLayout>
         <Error404 />
