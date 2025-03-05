@@ -1,0 +1,18 @@
+fragment SpaceAboutMinimal on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    tagline
+  }
+}
+
+fragment SpaceAboutMinimalUrl on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    tagline
+    url
+  }
+}

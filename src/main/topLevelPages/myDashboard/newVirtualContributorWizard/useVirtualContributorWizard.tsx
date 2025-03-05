@@ -42,6 +42,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
 import TryVcInfo from './TryVC/TryVcInfo';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const steps = {
   initial: 'initial',
@@ -57,10 +58,7 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  profile: {
-    displayName: string;
-    url: string;
-  };
+  about: SpaceAboutMinimalUrlModel;
   community: {
     roleSet: {
       id: string;
@@ -132,11 +130,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
+    const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
 
     return {
       myAccountId: account?.id,
-      allAccountSpaces: account?.spaces ?? [],
-      availableSpaces: account?.spaces?.filter(hasCommunityPrivilege) ?? [],
+      allAccountSpaces: accountSpaces,
+      availableSpaces: accountSpaces.filter(hasCommunityPrivilege),
     };
   }, [data, user, targetAccount]);
 
@@ -177,8 +176,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       variables: {
         spaceData: {
           accountID: myAccountId!,
-          profileData: {
-            displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+          about: {
+            profileData: {
+              displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+            },
           },
           collaborationData: {
             calloutsSetData: {},
@@ -336,7 +337,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             spaceId,
           },
         });
-        const spaceUrl = data?.lookup.space?.profile.url;
+        const spaceUrl = data?.lookup.space?.about.profile.url;
 
         if (spaceUrl) {
           navigate(spaceUrl);

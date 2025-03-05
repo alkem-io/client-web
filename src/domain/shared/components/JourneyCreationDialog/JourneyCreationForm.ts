@@ -6,9 +6,9 @@ interface VisualUpload {
 export interface JourneyFormValues {
   displayName: string;
   tagline: string;
-  vision?: string;
+  why?: string;
   tags: string[];
-  background?: string;
+  description?: string;
   addTutorialCallouts: boolean;
   collaborationTemplateId?: string;
   visuals: {

@@ -31,12 +31,11 @@ The goal here is to make a more hierarchical, domain-driven-design (DDD) structu
 
 ## Domain folders
 
-
 ```javascript
 .
 |__ /src
     |__ /domain
-    |   |__ /challenge (or any other entity)
+    |   |__ /space (or any other entity)
     |   |   |__ /context
     |   |   |__ /graphql
     |   |   |__ /hooks

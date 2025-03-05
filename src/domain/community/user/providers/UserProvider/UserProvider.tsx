@@ -7,7 +7,7 @@ import {
 import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
-import { FC, PropsWithChildren, createContext, useEffect, useMemo } from 'react';
+import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
 import { toUserMetadata, UserMetadata } from '@/domain/community/user';
 
 export interface UserContextValue {
@@ -34,7 +34,7 @@ const UserContext = createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider: FC<PropsWithChildren> = ({ children }) => {
+const UserProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
   const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });

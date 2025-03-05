@@ -1,11 +1,11 @@
 import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
-import { FC, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { AUTH_REQUIRED_PATH } from '../auth/authentication/constants/authentication.constants';
 import { useAuthenticationContext } from '../auth/authentication/hooks/useAuthenticationContext';
 import Loading from '../ui/loading/Loading';
 
-const NoIdentityRedirect: FC<PropsWithChildren> = ({ children }) => {
+const NoIdentityRedirect = ({ children }: PropsWithChildren) => {
   const { pathname } = useLocation();
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
 

@@ -7,11 +7,11 @@ import ApplicationButtonContainer, {
   ApplicationButtonContainerProps,
 } from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import SpaceAboutDialog, { JourneyAboutDialogProps } from '@/domain/space/about/SpaceAboutDialog';
 import { LockOutlined } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
 
 interface JourneyUnauthorizedDialogProps
   extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,
@@ -46,7 +46,7 @@ const JourneyUnauthorizedDialog = ({
       (applicationButtonRef.current instanceof HTMLButtonElement && !applicationButtonRef.current.disabled));
 
   return (
-    <JourneyAboutDialog
+    <SpaceAboutDialog
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={

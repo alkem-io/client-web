@@ -195,7 +195,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const callout = calloutStorageConfigData?.lookup.callout;
 
   const { profile } =
-    journey ??
+    journey?.about ??
     callout?.framing ??
     postStorageConfigData?.lookup.post ??
     templateStorageConfigData?.lookup.template ??

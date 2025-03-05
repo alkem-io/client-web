@@ -29,20 +29,24 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
         spaceID: parentSpaceId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
+        about: {
+          profile: {
+            displayName: value.displayName,
+            tagline: value.tagline,
+            description: value.description ?? '',
+            visuals: value.visuals,
+            tags: value.tags,
+          },
+          why: value.why,
+        },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
-        visuals: value.visuals,
       });
 
       if (!result) {
         return;
       }
-      navigate(result.profile.url);
+      navigate(result.about?.profile?.url!);
       onClose();
     },
     [navigate, createSubspace, parentSpaceId]

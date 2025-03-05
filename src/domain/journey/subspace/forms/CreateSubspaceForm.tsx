@@ -22,11 +22,11 @@ import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 
-const FormikEffect = FormikEffectFactory<FormValues>();
+const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
-type FormValues = Pick<
+type CreateSubspaceFormValues = Pick<
   JourneyFormValues,
-  'displayName' | 'tagline' | 'background' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
@@ -41,21 +41,21 @@ export const CreateSubspaceForm = ({
 
   const validationRequiredString = t('forms.validations.required');
 
-  const handleChanged = (value: FormValues) =>
+  const handleChanged = (value: CreateSubspaceFormValues) =>
     onChanged({
       displayName: value.displayName,
       tagline: value.tagline,
-      background: value.background,
+      description: value.description,
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
       visuals: value.visuals,
     });
 
-  const initialValues: FormValues = {
+  const initialValues: CreateSubspaceFormValues = {
     displayName: '',
     tagline: '',
-    background: '',
+    description: '',
     tags: [],
     addTutorialCallouts: false,
     collaborationTemplateId: undefined,

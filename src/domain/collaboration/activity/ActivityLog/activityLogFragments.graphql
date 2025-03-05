@@ -88,8 +88,11 @@ fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutW
 fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
   subspace {
     id
-    profile {
-      ...ActivitySubjectProfile
+    about {
+      id
+      profile {
+        ...ActivitySubjectProfile
+      }
     }
   }
 }
@@ -97,8 +100,11 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
 fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
   subsubspace {
     id
-    profile {
-      ...ActivitySubjectProfile
+    about {
+      id
+      profile {
+        ...ActivitySubjectProfile
+      }
     }
   }
 }
