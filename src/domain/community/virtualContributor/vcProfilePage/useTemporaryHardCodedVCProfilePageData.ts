@@ -1,6 +1,8 @@
-export const useTemporaryHardCodedVCProfilePageData = (type: 'alkemio' | 'external' | 'externalAssistant') => {
-  const isExternal = type === 'external';
-  const isAssistant = type === 'externalAssistant';
+import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+
+export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine) => {
+  const isExternal = type === AiPersonaEngine.GenericOpenai;
+  const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
   const isExternal_OR_Assistant = isExternal || isAssistant;
 
   return {
@@ -53,7 +55,8 @@ export const useTemporaryHardCodedVCProfilePageData = (type: 'alkemio' | 'extern
       },
 
       aiEngine: {
-        title: 'AI Engine: Alkemio AI Engine',
+        title: `AI Engine: ${isExternal ? 'External AI Engine' : 'Alkemio AI Engine'}`,
+        // title: 'AI Engine: Alkemio AI Engine',
         cells: [
           {
             icon: 'settingsMotion',
@@ -76,9 +79,9 @@ export const useTemporaryHardCodedVCProfilePageData = (type: 'alkemio' | 'extern
             answerIcon: isExternal ? 'exclamation' : 'check',
             answer: (() => {
               switch (type) {
-                case 'external':
+                case AiPersonaEngine.GenericOpenai:
                   return 'No';
-                case 'externalAssistant':
+                case AiPersonaEngine.OpenaiAssistant:
                   return 'Yes, when provided';
                 default:
                   return 'Yes';

@@ -22,11 +22,12 @@ import { gutters } from '@/core/ui/grid/utils';
 import { type VCProfilePageViewProps } from './model';
 import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 import Gutters from '@/core/ui/grid/Gutters';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
 import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
 
 const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: VCProfilePageViewProps) => {
+  console.log('virtualContributor', virtualContributor);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -43,7 +44,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
   };
 
   const { sections } = useTemporaryHardCodedVCProfilePageData(
-    isExternal ? 'external' : isAlkemioBok ? 'alkemio' : 'externalAssistant'
+    isExternal ? AiPersonaEngine.GenericOpenai : isAlkemioBok ? AiPersonaEngine.Expert : AiPersonaEngine.OpenaiAssistant
   );
 
   const renderCellIcon = (iconName: string) => {

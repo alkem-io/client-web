@@ -100,6 +100,8 @@ const CreateNewVirtualContributor = ({
     description: '',
     engine: AiPersonaEngine.Expert,
     bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase,
+    // engine: '',
+    // bodyOfKnowledgeType: '',
   };
 
   const validationSchema = yup.object().shape({
