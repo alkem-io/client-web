@@ -100,6 +100,7 @@ const VCAccessibilitySettingsPage = () => {
   }
 
   const type = vc?.aiPersona?.bodyOfKnowledgeType;
+  // const isGuidanceType = vc?.aiPersona?.engine === AiPersonaType.Guidance; // Waiting for answer from the team. To be used in const ingestionAvailable
   const ingestionAvailable =
     type === AiPersonaBodyOfKnowledgeType.AlkemioSpace || type === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
 
