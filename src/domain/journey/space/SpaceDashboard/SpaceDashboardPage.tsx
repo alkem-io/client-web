@@ -5,7 +5,6 @@ import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdate
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
@@ -13,15 +12,19 @@ import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceDashboardPage = ({
   dialog,
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
   const currentPath = useResolvedPath('..');
 
-  const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
+  const backToDashboard = useBackToStaticPath(`${currentPath.pathname}/dashboard` ?? '');
 
-  const { spaceId, collaborationId, journeyPath, calendarEventId } = useUrlResolver();
+  const { spaceId, collaborationId, journeyPath, calendarEventId, loading } = useUrlResolver();
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Dashboard, skip: loading || !spaceId });
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>

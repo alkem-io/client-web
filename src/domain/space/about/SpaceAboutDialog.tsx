@@ -30,6 +30,8 @@ import ApplicationButton from '@/domain/community/application/applicationButton/
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import RouterLink from '@/core/ui/link/RouterLink';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import useNavigate from '@/core/routing/useNavigate';
 
 export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -68,6 +70,7 @@ const SpaceAboutDialog = ({
   hasEditPrivilege = false,
 }: SpaceAboutDialogProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const isSpace = spaceLevel === SpaceLevel.L0;
   const leadOrganizationsHeader = isSpace
@@ -82,12 +85,15 @@ const SpaceAboutDialog = ({
 
   const aboutProfile = about?.profile;
 
-  const openEditDialog = (section: string) => {
-    console.log(section);
-    // TODO: implement edit dialog
+  const openEditDialog = () => {
+    if (aboutProfile?.url) {
+      navigate(buildSettingsUrl(aboutProfile?.url!));
+    }
   };
 
   const hasLeads = Boolean(leadOrganizations?.length || leadUsers?.length);
+
+  const hasReferences = Boolean(aboutProfile?.references?.length);
 
   const handleLearnWhyClick: MouseEventHandler = event => {
     event.preventDefault();
@@ -185,7 +191,7 @@ const SpaceAboutDialog = ({
                   metrics={metrics}
                   iconColor="white"
                   canEdit={hasEditPrivilege}
-                  onEditClick={() => openEditDialog('description')}
+                  onEditClick={openEditDialog}
                 />
               </PageContentBlock>
               <Box display="flex" justifyContent="center" width="100%">
@@ -230,7 +236,7 @@ const SpaceAboutDialog = ({
                   description={about.why}
                   loading={loading}
                   canEdit={hasEditPrivilege}
-                  onEditClick={() => openEditDialog('why')}
+                  onEditClick={openEditDialog}
                 />
               </PageContentBlock>
             )}
@@ -243,25 +249,27 @@ const SpaceAboutDialog = ({
                   description={about.who}
                   loading={loading}
                   canEdit={hasEditPrivilege}
-                  onEditClick={() => openEditDialog('who')}
+                  onEditClick={openEditDialog}
                 />
               </PageContentBlock>
             )}
 
             {communityId && <CommunityGuidelinesBlock communityId={communityId} journeyUrl={aboutProfile?.url} />}
 
-            <PageContentBlock>
-              <AboutDescription
-                title={t('components.referenceSegment.title')}
-                loading={loading}
-                canEdit={hasEditPrivilege}
-                onEditClick={() => openEditDialog('references')}
-              >
-                <Box paddingTop={gutters(1)}>
-                  <References references={aboutProfile?.references} />
-                </Box>
-              </AboutDescription>
-            </PageContentBlock>
+            {hasReferences && (
+              <PageContentBlock>
+                <AboutDescription
+                  title={t('components.referenceSegment.title')}
+                  loading={loading}
+                  canEdit={hasEditPrivilege}
+                  onEditClick={openEditDialog}
+                >
+                  <Box paddingTop={gutters(1)}>
+                    <References references={aboutProfile?.references} />
+                  </Box>
+                </AboutDescription>
+              </PageContentBlock>
+            )}
 
             {hasLeads && <PageContentBlockSeamless disablePadding>{renderHost()}</PageContentBlockSeamless>}
           </PageContentColumn>

@@ -19,7 +19,6 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import unwrapFragment from '@/core/ui/utils/unwrapFragment';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import { SpaceReadAccess } from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -38,14 +37,12 @@ import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
 import InfoColumn from './InfoColumn';
 import { SubspaceDialog } from './SubspaceDialog';
 import WelcomeBlock from './WelcomeBlock';
-import useNavigate from '@/core/routing/useNavigate';
-import { useLocation } from 'react-router-dom';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
   parentSpaceId: string | undefined;
   levelZeroSpaceId: string | undefined;
-  spaceReadAccess: SpaceReadAccess;
   spaceLevel: SpaceLevel | undefined;
   journeyPath: JourneyPath | undefined;
   spaceUrl?: string | undefined; // TODO make required
@@ -99,7 +96,6 @@ const SubspacePageLayout = ({
   journeyId,
   parentSpaceId,
   levelZeroSpaceId,
-  spaceReadAccess,
   journeyPath,
   spaceLevel,
   spaceUrl: journeyUrl,
@@ -112,10 +108,6 @@ const SubspacePageLayout = ({
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
   const { t } = useTranslation();
-
-  const navigate = useNavigate();
-
-  const { pathname } = useLocation();
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -159,10 +151,7 @@ const SubspacePageLayout = ({
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  if (!loading && !spaceReadAccess.loading && !spaceReadAccess.canReadSpace && !pathname.includes('/about')) {
-    // TODO: journeyUrl is not required, but it should be
-    navigate(`${pathname}/about`);
-  }
+  useAboutRedirect({ spaceId: journeyId, skip: !journeyId });
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>

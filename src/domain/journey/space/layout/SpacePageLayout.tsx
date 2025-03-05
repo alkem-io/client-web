@@ -1,7 +1,6 @@
 import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import SpaceTabs from './SpaceTabs';
 import { PropsWithChildren } from 'react';
-import { useSpace } from '../SpaceContext/useSpace';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
@@ -11,9 +10,7 @@ import SpacePageBanner from './SpacePageBanner';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
-import useNavigate from '@/core/routing/useNavigate';
-import { useLocation } from 'react-router-dom';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -21,12 +18,7 @@ export interface SpacePageLayoutProps {
 }
 
 const SpacePageLayout = ({ currentSection, journeyPath, children }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const { spaceId, loading, about } = useSpace();
-
-  const spaceReadAccess = useCanReadSpace({ spaceId });
+  const { spaceId, loading } = useUrlResolver();
 
   const { data: spaceData } = useSpaceProfileQuery({
     variables: {
@@ -42,10 +34,6 @@ const SpacePageLayout = ({ currentSection, journeyPath, children }: PropsWithChi
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
   });
-
-  if (!loading && !spaceReadAccess.loading && !spaceReadAccess.canReadSpace && !pathname.includes('/about')) {
-    navigate(`${about.profile.url}/about`);
-  }
 
   return (
     <EntityPageLayout

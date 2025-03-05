@@ -68,7 +68,7 @@ const AboutDescription = ({
               )}
               {canEdit && (
                 <IconButton onClick={onEditClick} sx={{ mr: '-8px', color: iconColor }}>
-                  <EditOutlined />
+                  <EditOutlined color="primary" />
                 </IconButton>
               )}
             </>
