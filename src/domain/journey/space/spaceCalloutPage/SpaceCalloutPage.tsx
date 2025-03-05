@@ -1,12 +1,12 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
-import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
-import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
-import SpaceKnowledgeBasePage from '@/domain/journey/space/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
+import SpaceSubspacesPage from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceSubspaces/SpaceSubspacesPage';
+import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
-import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
+import SpaceCommunityPage from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
 import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
+import SpaceDashboardPage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 
 const getPageSection = (flowState: string | undefined): EntityPageSection => {
   switch (flowState) {

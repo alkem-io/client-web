@@ -1,13 +1,10 @@
 import { PropsWithChildren } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import SpaceDashboardContainer from './SpaceDashboardContainer';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
-import SpacePageLayout from '../layout/SpacePageLayout';
-import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { IconButton } from '@mui/material';
@@ -17,6 +14,9 @@ import { useTranslation } from 'react-i18next';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
+import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
+import SpaceDashboardContainer from './SpaceDashboardContainer';
+import SpaceDashboardView from './SpaceDashboardView';
 
 const SpaceDashboardPage = ({
   dialog,

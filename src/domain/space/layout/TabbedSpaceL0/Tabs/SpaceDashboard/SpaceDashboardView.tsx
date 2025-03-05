@@ -34,8 +34,8 @@ import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import SpaceWelcomeDialog from './SpaceWelcomeDialog';
+import { DashboardNavigationItem } from '../../../../../journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import SpaceWelcomeDialog from '../../../../../journey/space/pages/SpaceWelcomeDialog';
 import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
 import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 

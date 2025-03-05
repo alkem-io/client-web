@@ -7,9 +7,9 @@ import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDia
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
-import SubspacesContainer from '../containers/SubspacesContainer';
-import { useSpace } from '../SpaceContext/useSpace';
-import SpacePageLayout from '../layout/SpacePageLayout';
+import SubspacesContainer from '../../../../../journey/space/containers/SubspacesContainer';
+import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
+import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';

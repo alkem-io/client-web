@@ -20,9 +20,9 @@ import {
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
-import SpacePageLayout from '../layout/SpacePageLayout';
+import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';

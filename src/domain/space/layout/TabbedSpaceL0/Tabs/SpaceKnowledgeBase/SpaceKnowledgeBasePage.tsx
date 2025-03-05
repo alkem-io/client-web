@@ -3,17 +3,17 @@ import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import CalloutsGroupView from '../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../../../collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutsGroupView from '../../../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import CalloutCreationDialog from '../../../../../collaboration/callout/creationDialog/CalloutCreationDialog';
+import { useCalloutCreationWithPreviewImages } from '../../../../../collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import KnowledgeBaseContainer from './SpaceKnowledgeBaseContainer';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
-import CalloutsList from '../../../collaboration/callout/calloutsList/CalloutsList';
+import CalloutsList from '../../../../../collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
-import { CalloutsFilterModel } from '../../../collaboration/calloutsSet/CalloutsFilter.model';
+import { CalloutsFilterModel } from '../../../../../collaboration/calloutsSet/CalloutsFilter.model';
 import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
 
 type KnowledgeBasePageProps = {

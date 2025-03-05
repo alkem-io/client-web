@@ -7,10 +7,10 @@ import {
 import { ContainerChildProps } from '@/core/container/container';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { useUserContext } from '@/domain/community/user';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
-} from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+} from '../../../../../journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
