@@ -63,6 +63,7 @@ fragment SpaceExplorerSpace on Space {
     myPrivileges
   }
   type
+  level
   about {
     why
     ...SpaceAboutCardBanner
@@ -85,6 +86,7 @@ fragment SpaceExplorerSpace on Space {
 fragment SpaceExplorerSubspace on Space {
   id
   type
+  level
   about {
     ...SpaceAboutCardBanner
     why
@@ -112,6 +114,7 @@ query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      level
       about {
         ...SpaceAboutLight
       }
