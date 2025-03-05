@@ -10,7 +10,12 @@ import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceSubspaceCard from '@/domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { CommunityMembershipStatus, ProfileType, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  ProfileType,
+  SpaceLevel,
+  SpacePrivacyMode,
+} from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -46,6 +51,7 @@ export enum SpacesExplorerMembershipFilter {
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
 
 interface ParentSpace extends Identifiable {
+  level: SpaceLevel;
   about: {
     profile: {
       displayName: string;
@@ -60,6 +66,7 @@ type WithParent<ParentInfo extends {}> = {
 };
 
 interface Space extends Identifiable {
+  level: SpaceLevel;
   about: {
     profile: {
       url: string;
@@ -88,18 +95,18 @@ interface Space extends Identifiable {
 }
 
 interface WithBanner {
-  profile: { avatar?: Visual; cardBanner?: Visual };
+  about: { profile: { avatar?: Visual; cardBanner?: Visual } };
 }
 
 const collectParentAvatars = <Journey extends WithBanner & WithParent<WithBanner>>(
-  { profile, parent }: Journey,
+  { about, parent }: Journey,
   initial: string[] = []
 ) => {
-  if (!profile) {
+  if (!about?.profile) {
     return initial;
   }
 
-  const { cardBanner, avatar = cardBanner } = profile;
+  const { cardBanner, avatar = cardBanner } = about?.profile;
   const collected = [avatar?.uri ?? '', ...initial];
 
   return parent ? collectParentAvatars(parent, collected) : collected;
@@ -183,16 +190,16 @@ export const SpaceExplorerView = ({
           displayName={profile?.displayName}
           vision={space.about.why ?? ''}
           journeyUri={profile?.url}
-          type={profile?.type!}
+          level={space.level!}
           banner={profile?.cardBanner}
-          avatarUris={collectParentAvatars(space.about) ?? []}
+          avatarUris={collectParentAvatars(space) ?? []}
           tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
           spaceDisplayName={space.parent?.about.profile?.displayName}
           matchedTerms={!!space.matchedTerms}
           label={
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
-                type={profile?.type!}
+                level={space.level}
                 member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
               />

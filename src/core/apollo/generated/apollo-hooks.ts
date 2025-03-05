@@ -3136,6 +3136,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       myPrivileges
     }
     type
+    level
     about {
       why
       ...SpaceAboutCardBanner
@@ -3168,6 +3169,7 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
   fragment SpaceExplorerSubspace on Space {
     id
     type
+    level
     about {
       ...SpaceAboutCardBanner
       why
@@ -23565,6 +23567,7 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        level
         about {
           ...SpaceAboutLight
         }
