@@ -18,7 +18,6 @@ interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'icon
   vision: string;
   member?: boolean;
   journeyUri: string;
-  level: SpaceLevel;
   spaceVisibility?: SpaceVisibility;
   spaceDisplayName?: string;
   spaceUri?: string;
@@ -26,6 +25,7 @@ interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'icon
   isPrivate?: boolean;
   avatarUris: string[];
   label?: ReactNode;
+  level?: SpaceLevel;
 }
 
 const SpaceSubspaceCard = ({

@@ -23755,6 +23755,7 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        level
         about {
           ...SpaceAboutLight
         }

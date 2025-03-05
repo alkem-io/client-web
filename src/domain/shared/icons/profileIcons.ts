@@ -29,8 +29,6 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return CalloutIcon;
     case ProfileType.Template:
       return Campaign;
-    case ProfileType.SpaceAbout:
-      return SpaceIcon;
     case ProfileType.Discussion:
       return ChatBubbleOutline;
     case ProfileType.InnovationFlow:
@@ -43,6 +41,8 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return CorporateFareOutlined;
     case ProfileType.Post:
       return calloutIcons.POST;
+    case ProfileType.SpaceAbout:
+      return SpaceIcon;
     case ProfileType.User:
       return PersonOutline;
     case ProfileType.UserGroup:

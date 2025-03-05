@@ -30629,6 +30629,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           about: {
             __typename?: 'SpaceAbout';
             id: string;

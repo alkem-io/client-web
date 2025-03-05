@@ -112,6 +112,7 @@ query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      level
       about {
         ...SpaceAboutLight
       }
