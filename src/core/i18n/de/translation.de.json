@@ -3140,7 +3140,7 @@
     },
     "initial": {
       "title": "Create a Virtual Contributor",
-      "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
+      "profileDescription": "Choose a name and avatar now, or personalize your profile later on the VC Profile page.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",
