@@ -5002,7 +5002,6 @@ export type ProfileCredentialVerified = {
 export enum ProfileType {
   CalendarEvent = 'CALENDAR_EVENT',
   CalloutFraming = 'CALLOUT_FRAMING',
-  Challenge = 'CHALLENGE',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
@@ -5010,10 +5009,9 @@ export enum ProfileType {
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
   KnowledgeBase = 'KNOWLEDGE_BASE',
-  Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
-  Space = 'SPACE',
+  SpaceAbout = 'SPACE_ABOUT',
   Template = 'TEMPLATE',
   User = 'USER',
   UserGroup = 'USER_GROUP',
@@ -30226,6 +30224,7 @@ export type SpaceExplorerSearchQuery = {
             __typename?: 'Space';
             id: string;
             type: SpaceType;
+            level: SpaceLevel;
             visibility: SpaceVisibility;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30271,6 +30270,7 @@ export type SpaceExplorerSearchSpaceFragment = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30311,11 +30311,13 @@ export type SpaceExplorerMemberSpacesQuery = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
       type: SpaceType;
+      level: SpaceLevel;
       about: {
         __typename?: 'SpaceAbout';
         why?: string | undefined;
@@ -30384,6 +30386,7 @@ export type SpaceExplorerAllSpacesQuery = {
       __typename?: 'Space';
       id: string;
       type: SpaceType;
+      level: SpaceLevel;
       visibility: SpaceVisibility;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30434,6 +30437,7 @@ export type SpaceExplorerSubspacesQuery = {
       __typename?: 'Space';
       id: string;
       type: SpaceType;
+      level: SpaceLevel;
       about: {
         __typename?: 'SpaceAbout';
         why?: string | undefined;
@@ -30466,6 +30470,7 @@ export type SpaceExplorerSpaceFragment = {
   __typename?: 'Space';
   id: string;
   type: SpaceType;
+  level: SpaceLevel;
   visibility: SpaceVisibility;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30496,6 +30501,7 @@ export type SpaceExplorerSubspaceFragment = {
   __typename?: 'Space';
   id: string;
   type: SpaceType;
+  level: SpaceLevel;
   about: {
     __typename?: 'SpaceAbout';
     why?: string | undefined;
@@ -30531,6 +30537,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
