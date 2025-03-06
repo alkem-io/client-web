@@ -963,7 +963,7 @@
       "aria-label": "Mogelijk gemaakt door Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
+      "message": "Dit is een particuliere gemeenschap en de meeste inhoud ervan is beperkt tot leden. Als je wilt deelnemen, <apply>klik dan hier om aan te melden.</apply>"
     },
     "journeyPageBannerCard": {
       "parentJourney": "Onderdeel van:"
