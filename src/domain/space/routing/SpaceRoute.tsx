@@ -3,7 +3,6 @@ import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSubspacesPage from '../layout/TabbedSpaceL0/Tabs/SpaceSubspaces/SpaceSubspacesPage';
-import { routes } from './spaceRoutes';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Redirect from '@/core/routing/Redirect';
@@ -17,6 +16,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
+const routes = { ...EntityPageSection };
 
 const SpaceRoute = () => {
   return (
