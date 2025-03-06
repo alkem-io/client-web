@@ -1,6 +1,6 @@
 import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 
-export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine | undefined) => {
+export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = AiPersonaEngine.GenericOpenai) => {
   const isExternal = type === AiPersonaEngine.GenericOpenai;
   const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
   const isExternal_OR_Assistant = isExternal || isAssistant;
