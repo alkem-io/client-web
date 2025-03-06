@@ -25,6 +25,8 @@ const useAboutRedirect = ({
   const navigate = useNavigate();
   const spaceReadAccess = useCanReadSpace({ spaceId });
 
+  // known issue where the path is updated but the spaceId is still the old one (from the URLProvider)
+  // this leads to loading of About page for space with canReadSpace if the previous one was not accessible
   useEffect(() => {
     const hasAboutInPath = pathname.includes(`/${EntityPageSection.About}`);
 
