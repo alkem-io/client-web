@@ -13265,6 +13265,7 @@ export const VirtualContributorDocument = gql`
           bodyOfKnowledgeID
           bodyOfKnowledgeType
           bodyOfKnowledge
+          engine
         }
         profile {
           id

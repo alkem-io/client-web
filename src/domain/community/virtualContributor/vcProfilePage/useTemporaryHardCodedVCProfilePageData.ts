@@ -1,8 +1,9 @@
-import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 
-export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine) => {
-  const isExternal = type === AiPersonaEngine.GenericOpenai;
-  const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
+export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaBodyOfKnowledgeType | undefined) => {
+  const isExternal = type === AiPersonaBodyOfKnowledgeType.None;
+  const isAssistant =
+    type !== AiPersonaBodyOfKnowledgeType.None && type !== AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
   const isExternal_OR_Assistant = isExternal || isAssistant;
 
   return {
@@ -77,16 +78,7 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine) =>
             title: 'Knowledge Restriction',
             description: 'Is the VC prompted to limit the responses to a specific body of knowledge?',
             answerIcon: isExternal ? 'exclamation' : 'check',
-            answer: (() => {
-              switch (type) {
-                case AiPersonaEngine.GenericOpenai:
-                  return 'No';
-                case AiPersonaEngine.OpenaiAssistant:
-                  return 'Yes, when provided';
-                default:
-                  return 'Yes';
-              }
-            })(),
+            answer: isExternal ? 'No' : isAssistant ? 'Yes, when provided' : 'Yes',
           },
           {
             icon: 'globe',
