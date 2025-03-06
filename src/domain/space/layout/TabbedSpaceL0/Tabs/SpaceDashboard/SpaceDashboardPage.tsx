@@ -7,11 +7,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import { IconButton } from '@mui/material';
-import { Close } from '@mui/icons-material';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { useTranslation } from 'react-i18next';
-import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
@@ -27,7 +23,6 @@ import { ContributorViewProps } from '@/domain/community/community/EntityDashboa
 const SpaceDashboardPage = ({
   dialog,
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
-  const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
@@ -163,18 +158,10 @@ const SpaceDashboardPage = ({
         about={about}
         sendMessageToCommunityLeads={handleSendMessageToCommunityLeads}
         metrics={space?.metrics}
-        guidelines={
-          <CommunityGuidelinesBlock communityId={space?.community?.id} journeyUrl={space?.about.profile.url} />
-        }
         loading={loadingSpace}
         leadUsers={space?.community?.roleSet?.leadUsers}
         provider={provider}
         leadOrganizations={space?.community?.roleSet?.leadOrganizations}
-        endButton={
-          <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
-            <Close />
-          </IconButton>
-        }
       />
     </SpacePageLayout>
   );
