@@ -14,13 +14,16 @@ query SpaceDashboardReferences($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        references {
+        profile {
           id
-          name
-          uri
-          description
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -30,7 +33,15 @@ query SpaceDashboardReferences($spaceId: UUID!) {
 fragment SpacePage on Space {
   id
   level
-  nameID  # Used for SpaceEdit Page
+  nameID # Used for SpaceEdit Page
+  about {
+    ...SpaceAboutDetails
+    profile {
+      location {
+        ...fullLocation
+      }
+    }
+  }
   provider {
     ...ContributorDetails
   }
@@ -43,29 +54,7 @@ fragment SpacePage on Space {
     id
     myPrivileges
   }
-  profile {
-    id
-    url
-    displayName
-    description
-    tagline
-    visuals {
-      ...VisualUri
-    }
-    tagset {
-      ...TagsetDetails
-    }
-  }
-  context {
-    id
-    vision
-    who
-    impact
-    authorization {
-      id
-      myPrivileges
-    }
-  }
+
   collaboration @include(if: $authorizedReadAccess) {
     id
     ...DashboardTopCallouts

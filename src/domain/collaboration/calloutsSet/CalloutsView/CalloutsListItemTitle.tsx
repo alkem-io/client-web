@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
-import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
+import { useTranslation } from 'react-i18next';
 
 type JourneyCalloutsListItemTitleProps = {
   callout: {
@@ -27,9 +27,11 @@ const JourneyCalloutsListItemTitle = ({ callout }: JourneyCalloutsListItemTitleP
       {SEPARATOR}
       {flowState && (
         <strong>
-          {i18n.exists(`common.enums.innovationFlowState.${flowState}`)
-            ? t(`common.enums.innovationFlowState.${flowState}` as TranslationKey)
-            : flowState}
+          <>
+            {i18n.exists(`common.enums.innovationFlowState.${flowState}`)
+              ? t(`common.enums.innovationFlowState.${flowState}` as TranslationKey)
+              : flowState}
+          </>
         </strong>
       )}
     </EllipsableWithCount>

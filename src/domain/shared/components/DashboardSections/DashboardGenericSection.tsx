@@ -1,10 +1,10 @@
 import { Caption } from '@/core/ui/typography';
 import { Box } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import Section, { SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
 
-export interface DashboardGenericSectionProps {
+export interface DashboardGenericSectionProps extends PropsWithChildren {
   bannerUrl?: string;
   alwaysShowBanner?: boolean;
   bannerOverlay?: React.ReactNode;

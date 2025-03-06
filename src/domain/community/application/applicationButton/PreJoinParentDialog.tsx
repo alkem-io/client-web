@@ -19,10 +19,10 @@ const PreJoinParentDialog = ({ open, onClose, onJoin }: PreJoinParentDialogProps
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
 
-  const { profile: spaceProfile } = useSpace();
-  const { profile: challengeProfile } = useSubSpace();
+  const { about: spaceAbout } = useSpace();
+  const { about: subspaceAbout } = useSubSpace();
 
-  const parentCommunityName = spaceId ? challengeProfile.displayName : spaceProfile.displayName;
+  const parentCommunityName = spaceId ? subspaceAbout.profile.displayName : spaceAbout.profile.displayName;
   const buttonText = t(
     `components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const
   );

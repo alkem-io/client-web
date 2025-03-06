@@ -3,10 +3,9 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '@/domain/journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
-import SubspaceProfilePage from '@/domain/journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
+import SubspaceAboutPage from '@/domain/journey/subspace/pages/SubspaceAboutPage';
 
 import ChallengeAuthorizationRoute from '@/domain/platform/admin/subspace/routing/ChallengeAuthorizationRoute';
-import SubspaceContextPage from '@/domain/journey/subspace/pages/SubspaceContext/SubspaceContextPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSubspaceCommunityPage from '@/domain/journey/subspace/pages/AdminSubspaceCommunityPage';
 import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
@@ -22,9 +21,8 @@ export const ChallengeRoute: FC = () => {
       <StorageConfigContextProvider locationType="journey" spaceId={challenge?.id}>
         <Routes>
           <Route path={'/'}>
-            <Route index element={<Navigate to="profile" replace />} />
-            <Route path="profile" element={<SubspaceProfilePage />} />
-            <Route path="context" element={<SubspaceContextPage />} />
+            <Route index element={<Navigate to="about" replace />} />
+            <Route path="about" element={<SubspaceAboutPage />} />
             <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
             <Route path="community" element={<AdminSubspaceCommunityPage />} />

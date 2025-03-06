@@ -1,14 +1,14 @@
-import { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Actions } from '@/core/ui/actions/Actions';
-import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Caption } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
+import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface EntityConfirmDeleteDialogProps {
   entity: string;
@@ -46,7 +46,7 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
             <Caption>
-              {t(description ?? 'components.deleteEntity.confirmDialog.description', { entity: entity })}{' '}
+              <>{t(description ?? 'components.deleteEntity.confirmDialog.description', { entity: entity })} </>
             </Caption>
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} />}

@@ -52,9 +52,11 @@ const searchResults: SearchResult[] = [
     },
     matchedTerms: ['callout', 'card'],
     space: {
-      profile: {
-        displayName: 'Parent Challenge',
-        url: '/space1',
+      about: {
+        profile: {
+          displayName: 'Parent Challenge',
+          url: '/space1',
+        },
       },
       level: SpaceLevel.L1,
     },
@@ -86,9 +88,11 @@ const searchResults: SearchResult[] = [
     },
     matchedTerms: ['matched', 'terms'],
     space: {
-      profile: {
-        displayName: 'Parent Space',
-        url: '/space2',
+      about: {
+        profile: {
+          displayName: 'Parent Space',
+          url: '/space2',
+        },
       },
       level: SpaceLevel.L0,
     },

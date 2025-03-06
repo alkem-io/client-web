@@ -9,7 +9,7 @@ type OrganizationCardData = {
   id: string;
   profile: {
     displayName: string;
-    visual?: { uri: string };
+    avatar?: { uri: string };
     location?: { city?: string; country?: string };
     url?: string;
   };
@@ -20,7 +20,7 @@ type OrganizationCardData = {
 export const toOrganizationCardProps = (org: OrganizationCardData): OrganizationCardProps & Identifiable => ({
   id: org.id,
   name: org.profile.displayName,
-  avatar: org.profile.visual?.uri,
+  avatar: org.profile.avatar?.uri,
   city: org.profile.location?.city,
   country: org.profile.location?.country,
   associatesCount: getMetricCount(org.metrics ?? [], MetricType.Associate),

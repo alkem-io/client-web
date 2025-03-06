@@ -1,10 +1,10 @@
-import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
-import { AuthorizationPrivilege, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import { useCreatePostFromContributeTabMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useInView } from 'react-intersection-observer';
+import { AuthorizationPrivilege, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { PropsWithChildren, Ref } from 'react';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { Ref } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
@@ -24,7 +24,7 @@ interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutCont
   };
 }
 
-const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCalloutContainerProps>) => {
+const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) => {
   const calloutId = callout.id;
   const { ref: intersectionObserverRef, inView } = useInView({
     delay: 500,

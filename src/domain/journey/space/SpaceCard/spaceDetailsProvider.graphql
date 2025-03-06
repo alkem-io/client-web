@@ -1,16 +1,8 @@
 fragment SpaceCard on Space {
   id
-  profile {
-    id
-    url
-    displayName
-    tagline
-    tagset {
-      ...TagsetDetails
-    }
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
-    }
+  about {
+    ...SpaceAboutCardBanner
+    why
   }
   metrics {
     name
@@ -22,10 +14,6 @@ fragment SpaceCard on Space {
       id
       myMembershipStatus
     }
-  }
-  context {
-    id
-    vision
   }
   settings {
     privacy {
