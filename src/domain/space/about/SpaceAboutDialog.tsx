@@ -46,7 +46,7 @@ export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   hasReadPrivilege?: boolean;
   hasEditPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const gradient = (theme: Theme) =>

@@ -85,7 +85,7 @@ const SpaceDashboardPage = ({
               leadUsers={entities.space?.community?.roleSet?.leadUsers}
               provider={entities.provider}
               leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
-              onClose={backToDashboard}
+              onClose={entities.permissions?.spaceReadAccess ? backToDashboard : undefined}
               hasReadPrivilege={entities.permissions?.spaceReadAccess}
               hasEditPrivilege={entities.permissions?.canEdit}
             />

@@ -34,7 +34,7 @@ const SubspaceAboutPage = () => {
             leadUsers={leadUsers}
             provider={provider}
             leadOrganizations={leadOrganizations}
-            onClose={backToParentPage}
+            onClose={hasReadPrivilege ? backToParentPage : undefined}
             hasReadPrivilege={hasReadPrivilege}
             hasEditPrivilege={hasEditPrivilege}
           />
