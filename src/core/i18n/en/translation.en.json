@@ -1592,8 +1592,8 @@
           "title": "References"
         },
         "engines": {
-          "external": "Generic AI",
-          "externalAssistant": "Generic AI Assistant",
+          "external": "OpenAI Generic",
+          "externalAssistant": "OpenAI Assistant",
           "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
         },
         "bodyOfKnowledge": {

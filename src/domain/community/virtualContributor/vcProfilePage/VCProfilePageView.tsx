@@ -34,7 +34,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
   const references = virtualContributor?.profile?.references;
   const vcType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
-  const isExternal = vcType === AiPersonaBodyOfKnowledgeType.None;
+  const isExternal =
+    vcType === AiPersonaBodyOfKnowledgeType.None && virtualContributor?.aiPersona?.engine !== AiPersonaEngine.Guidance;
   const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const hasKnowledgeBase = vcType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
   const isAssistant = virtualContributor?.aiPersona?.engine === AiPersonaEngine.OpenaiAssistant;
