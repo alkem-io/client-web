@@ -572,6 +572,8 @@ export type AiPersona = {
   dataAccessMode: AiPersonaDataAccessMode;
   /** The description for this AI Persona. */
   description?: Maybe<Scalars['Markdown']>;
+  /** The engine powering the AiPersona. */
+  engine: AiPersonaEngine;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The type of interactions that are supported by this AI Persona when used. */
@@ -585,6 +587,7 @@ export enum AiPersonaBodyOfKnowledgeType {
   AlkemioSpace = 'ALKEMIO_SPACE',
   None = 'NONE',
   Other = 'OTHER',
+  Website = 'WEBSITE',
 }
 
 export enum AiPersonaDataAccessMode {
@@ -3723,8 +3726,6 @@ export type Mutation = {
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Resets the interaction with the chat engine. */
-  ingest: Scalars['Boolean'];
   /** Invite an existing Contributor to join the specified RoleSet in the Entry Role. */
   inviteContributorsEntryRoleOnRoleSet: Array<Invitation>;
   /** Invite a User to join the platform and the specified RoleSet as a member. */
@@ -18241,6 +18242,7 @@ export type VirtualContributorQuery = {
                 bodyOfKnowledgeID?: string | undefined;
                 bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                 bodyOfKnowledge?: string | undefined;
+                engine: AiPersonaEngine;
               }
             | undefined;
           profile: {
@@ -20999,7 +21001,7 @@ export type CreateVirtualContributorOnAccountMutation = {
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               };
             }>;
           };

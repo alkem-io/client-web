@@ -14,7 +14,11 @@ import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
-import { AiPersonaBodyOfKnowledgeType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  AiPersonaEngine,
+  AiPersonaBodyOfKnowledgeType,
+  SearchVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
@@ -100,8 +104,11 @@ const VCAccessibilitySettingsPage = () => {
   }
 
   const type = vc?.aiPersona?.bodyOfKnowledgeType;
+  const isGuidanceType = vc?.aiPersona?.engine === AiPersonaEngine.Guidance;
   const ingestionAvailable =
-    type === AiPersonaBodyOfKnowledgeType.AlkemioSpace || type === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
+    isGuidanceType ||
+    type === AiPersonaBodyOfKnowledgeType.AlkemioSpace ||
+    type === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
 
   return (
     <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vc?.id}>

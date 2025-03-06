@@ -38,6 +38,7 @@ query VirtualContributor($id: UUID!) {
         bodyOfKnowledgeID
         bodyOfKnowledgeType
         bodyOfKnowledge
+        engine
       }
       profile {
         id

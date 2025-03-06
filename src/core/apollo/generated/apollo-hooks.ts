@@ -13265,6 +13265,7 @@ export const VirtualContributorDocument = gql`
           bodyOfKnowledgeID
           bodyOfKnowledgeType
           bodyOfKnowledge
+          engine
         }
         profile {
           id
@@ -16431,6 +16432,7 @@ export const CreateVirtualContributorOnAccountDocument = gql`
               profile {
                 id
                 displayName
+                description
               }
             }
           }

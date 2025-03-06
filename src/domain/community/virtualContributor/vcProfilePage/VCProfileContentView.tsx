@@ -38,7 +38,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
     }
   };
 
-  const { sections } = useTemporaryHardCodedVCProfilePageData();
+  const { sections } = useTemporaryHardCodedVCProfilePageData(virtualContributor?.aiPersona?.engine);
 
   const renderCellIcon = (iconName: string) => {
     switch (iconName) {
