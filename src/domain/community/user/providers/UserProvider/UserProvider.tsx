@@ -37,7 +37,11 @@ const UserContext = createContext<UserContextValue>({
 const UserProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
-  const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
+  const {
+    data: meData,
+    loading: loadingMe,
+    error: userProviderError,
+  } = useUserProviderQuery({ skip: !isAuthenticated });
 
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
@@ -51,10 +55,10 @@ const UserProvider = ({ children }: PropsWithChildren) => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser) {
+    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError) {
       createUserProfile();
     }
-  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser]);
+  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error]);
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 
