@@ -16,16 +16,22 @@ import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
-import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
-import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
+import useSpaceTabProvider from '../../SpaceTabProvider';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { urlInfo, flowStateForTab } = useSpaceTabProvider({ tabPosition: 2 });
-  const { spaceId, journeyPath, collaborationId, calloutsSetId } = urlInfo;
+  const {
+    urlInfo,
+    flowStateForNewCallouts: flowStateForTab,
+    classificationTagsets,
+    calloutsSetId,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+  } = useSpaceTabProvider({ tabPosition: 2 });
+  const { spaceId, journeyPath } = urlInfo;
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -61,14 +67,15 @@ const SpaceSubspacesPage = () => {
     },
     [navigate, createSubspace, spaceId]
   );
-
-  const calloutsFilter: CalloutsFilterModel = {
-    flowState: flowStateForTab?.displayName,
-  };
-
-  const callouts = useCalloutsOnCollaboration({
-    collaborationId,
+  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+    includeClassification: true,
   });
+
+  const loading = false;
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
@@ -112,12 +119,11 @@ const SpaceSubspacesPage = () => {
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
                 createInFlowState={flowStateForTab?.displayName || SpaceTab.SUBSPACES}
-                callouts={callouts.groupedCallouts[flowStateForTab?.displayName || SpaceTab.SUBSPACES]}
-                canCreateCallout={callouts.canCreateCallout}
-                loading={callouts.loading}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                calloutsFilter={calloutsFilter}
+                callouts={callouts}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                onCalloutUpdate={refetchCallout}
               />
             }
           />

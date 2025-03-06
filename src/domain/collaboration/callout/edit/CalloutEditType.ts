@@ -10,7 +10,6 @@ export type CalloutEditType = Omit<CalloutFormInput, 'type' | 'sortOrder'> & {
     references?: Reference[];
     tagsets?: Tagset[];
   };
-  groupName?: string;
   contributionDefaults?: {
     postDescription?: string;
     whiteboardContent?: string;

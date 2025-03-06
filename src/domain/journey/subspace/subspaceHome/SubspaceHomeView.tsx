@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import useCalloutsSet, { OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
@@ -15,7 +15,7 @@ import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlo
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
-import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -24,7 +24,6 @@ interface SubspaceHomeViewProps {
   templatesSetId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
-  callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
@@ -37,7 +36,6 @@ const SubspaceHomeView = ({
   templatesSetId,
   innovationFlowStates,
   currentInnovationFlowState,
-  callouts,
   canCreateCallout,
   loading,
   onCalloutsSortOrderUpdate,
@@ -77,26 +75,27 @@ const SubspaceHomeView = ({
     }
   }, [doesSelectedInnovationFlowStateExist]);
 
-  const selectedFlowStateCallouts = useMemo(() => {
-    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
-      return callouts?.filter(callout => {
-        if (!selectedInnovationFlowState) {
-          return true;
-        }
-        return callout.flowStates?.includes(selectedInnovationFlowState);
-      });
-    };
+  let classificationTagsets: ClassificationTagsetModel[] = [];
+  if (selectedInnovationFlowState) {
+    classificationTagsets = [
+      {
+        name: TagsetReservedName.FlowState,
+        tags: [selectedInnovationFlowState],
+      },
+    ];
+  }
 
-    return filterCallouts(callouts);
-  }, [callouts, selectedInnovationFlowState]);
+  const calloutsSetProvided = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets: classificationTagsets,
+    canSaveAsTemplate: false,
+    entitledToSaveAsTemplate: false,
+    includeClassification: true,
+  });
 
   // If it's mobile the ManageFlow action will be consumed somewhere else,
   // if there is no definition for it, button should not be shown
   const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
-
-  const calloutsFilter: CalloutsFilterModel = {
-    flowState: selectedInnovationFlowState,
-  };
 
   return (
     <>
@@ -125,12 +124,11 @@ const SubspaceHomeView = ({
       </SubspaceInnovationFlow>
       <CalloutsGroupView
         calloutsSetId={calloutsSetId}
-        callouts={selectedFlowStateCallouts}
+        callouts={calloutsSetProvided.callouts}
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        calloutsFilter={calloutsFilter}
         createButtonPlace="top"
         createInFlowState={selectedInnovationFlowState}
       />

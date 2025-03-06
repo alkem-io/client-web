@@ -7,20 +7,7 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
 import JourneyCalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
-
-export interface CalloutInfo {
-  id: string;
-  type: string;
-  framing: {
-    profile: {
-      displayName: string;
-      url: string;
-    };
-  };
-  activity: number;
-  groupName: string;
-  flowStates: string[] | undefined;
-}
+import { CalloutInfo } from '../model/CalloutInfo.model';
 
 export interface CalloutsListProps<Callout extends CalloutInfo> {
   callouts: Callout[] | undefined;
@@ -41,11 +28,7 @@ const CalloutsList = <Callout extends CalloutInfo>({
     const lowerCaseFilter = filter.toLowerCase();
 
     // If the Callout's name matches the filter
-    return (
-      callout.framing.profile.displayName.toLowerCase().includes(lowerCaseFilter) ||
-      // Or any term matches the Callout's flowState
-      callout.flowStates?.some(flowState => flowState.toLowerCase().includes(lowerCaseFilter))
-    );
+    return callout.framing.profile.displayName.toLowerCase().includes(lowerCaseFilter);
   };
 
   const filteredCallouts = useMemo(

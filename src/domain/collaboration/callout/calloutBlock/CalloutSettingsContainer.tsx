@@ -83,7 +83,6 @@ export interface CalloutSettingsContainerProps
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    groupName: string;
     contributionPolicy: {
       state: CalloutState;
     };

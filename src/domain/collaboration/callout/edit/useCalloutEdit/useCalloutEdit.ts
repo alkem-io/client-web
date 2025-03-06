@@ -80,7 +80,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               postDescription: callout.contributionDefaults?.postDescription,
               whiteboardContent: callout.contributionDefaults?.whiteboardContent,
             },
-            groupName: callout.groupName,
           },
         },
       });

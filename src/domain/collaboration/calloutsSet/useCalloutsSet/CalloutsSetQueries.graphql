@@ -1,8 +1,7 @@
-query CalloutsOnCalloutsSet(
+query CalloutsOnCalloutsSetUsingClassification(
   $calloutsSetId: UUID!
-  $calloutIds: [UUID!]
-  $includeClassification: Boolean! = true
-  $flowStates: [String!]
+  $classificationByFlowStateEnabled: Boolean! = true
+  $classificationTagsets: [TagsetArgs!] = []
 ) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
@@ -11,8 +10,8 @@ query CalloutsOnCalloutsSet(
         id
         myPrivileges
       }
-      callouts(IDs: $calloutIds, classificationTagsets: { name: FLOW_STATE, tags: $flowStates }) {
-        classification @include(if: $includeClassification) {
+      callouts(classificationTagsets: $classificationTagsets) {
+        classification @include(if: $classificationByFlowStateEnabled) {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {
             ...TagsetDetails
@@ -23,6 +22,7 @@ query CalloutsOnCalloutsSet(
     }
   }
 }
+
 
 fragment Callout on Callout {
   id

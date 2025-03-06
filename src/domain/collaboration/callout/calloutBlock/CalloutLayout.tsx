@@ -41,7 +41,6 @@ export interface CalloutLayoutProps {
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    groupName: string;
     contributionPolicy: {
       state: CalloutState;
     };

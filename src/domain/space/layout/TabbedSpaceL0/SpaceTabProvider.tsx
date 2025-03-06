@@ -1,10 +1,9 @@
 import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
-import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 
 type InnovationFlowState = {
   displayName: string;
@@ -16,11 +15,13 @@ interface SpaceTabProvided {
   myPrivileges: AuthorizationPrivilege[] | undefined;
   canReadSpace: boolean;
   innovationFlowStates: InnovationFlowState[] | undefined;
-  currentFlowState: InnovationFlowState | undefined;
-  flowStateForTab: InnovationFlowState | undefined;
+  innovationFlowCurrentState: InnovationFlowState | undefined;
+  flowStateForNewCallouts: InnovationFlowState | undefined;
   about: SpaceAboutLightModel | undefined;
-  collaborationId: string | undefined;
-  callouts: UseCalloutsProvided;
+  classificationTagsets: ClassificationTagsetModel[];
+  calloutsSetId: string | undefined;
+  canSaveAsTemplate: boolean;
+  entitledToSaveAsTemplate: boolean;
 
   refetch: () => Promise<unknown>;
   loading: boolean;
@@ -53,30 +54,37 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
 
   const innovationFlow = spaceTabData?.lookup.space?.collaboration.innovationFlow;
   const innovationFlowStates = innovationFlow?.states;
-  const currentFlowState = innovationFlow?.currentState;
+  const innovationFlowCurrentState = innovationFlow?.currentState;
   const about: SpaceAboutLightModel | undefined = spaceTabData?.lookup.space?.about;
-  const collaborationId = spaceTabData?.lookup.space?.collaboration.id;
+  const calloutsSetId = spaceTabData?.lookup.space?.collaboration.calloutsSet.id;
 
   let flowState: InnovationFlowState | undefined = undefined;
   if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
     flowState = innovationFlowStates[tabPosition];
   }
 
-  const callouts = useCalloutsOnCollaboration({
-    collaborationId,
-    flowStateNames: [flowState?.displayName || ''],
-  });
+  let classificationTagsets: ClassificationTagsetModel[] = [];
+  if (flowState) {
+    classificationTagsets = [
+      {
+        name: TagsetReservedName.FlowState,
+        tags: [flowState.displayName],
+      },
+    ];
+  }
 
   return {
     myPrivileges,
     canReadSpace: canReadSpace || false,
     innovationFlowStates,
-    currentFlowState,
+    innovationFlowCurrentState: innovationFlowCurrentState,
     about,
     urlInfo,
-    collaborationId,
-    callouts,
-    flowStateForTab: flowState,
+    canSaveAsTemplate: false,
+    entitledToSaveAsTemplate: false,
+    calloutsSetId,
+    classificationTagsets,
+    flowStateForNewCallouts: flowState,
     refetch: refetchSpaceTab,
     loading: loadingSpaceTab,
     updating: false,

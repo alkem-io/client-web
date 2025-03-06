@@ -6,23 +6,24 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalloutsGroupView from '../../../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../../../../../collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../../../../../collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import KnowledgeBaseContainer from './SpaceKnowledgeBaseContainer';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../../../../../collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
-import { CalloutsFilterModel } from '../../../../../collaboration/calloutsSet/CalloutsFilter.model';
-import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useSpaceTabProvider from '../../SpaceTabProvider';
 
 type KnowledgeBasePageProps = {
   calloutsFlowState: EntityPageSection;
 };
 
 const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
-  const { urlInfo, flowStateForTab } = useSpaceTabProvider({ tabPosition: 3 });
-  const { journeyPath, collaborationId, calloutsSetId } = urlInfo;
+  const { urlInfo, classificationTagsets, entitledToSaveAsTemplate, canSaveAsTemplate } = useSpaceTabProvider({
+    tabPosition: 3,
+  });
+  const { journeyPath, calloutsSetId } = urlInfo;
 
   const { t } = useTranslation();
 
@@ -38,62 +39,53 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
     handleCreateCalloutOpened();
   };
 
-  const calloutsFilter: CalloutsFilterModel = {
-    flowState: flowStateForTab?.displayName,
-  };
+  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+    includeClassification: true,
+  });
+
+  const loading = false;
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={calloutsFlowState}>
-      <KnowledgeBaseContainer collaborationId={collaborationId}>
-        {({
-          callouts: {
-            loading,
-            canReadCalloutsSet: canReadCallout,
-            canCreateCallout,
-            callouts: allCallouts,
-            onCalloutsSortOrderUpdate,
-            refetchCallout,
-          },
-        }) => (
-          <>
-            <MembershipBackdrop show={!loading && !canReadCallout} blockName={t('common.space')}>
-              <PageContent>
-                <InfoColumn>
-                  <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
-                  <PageContentBlock>
-                    <CalloutsList
-                      // callouts={groupedCallouts[SpaceTab.KNOWLEDGE]}
-                      callouts={allCallouts}
-                      emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
-                        entities: t('common.callouts'),
-                      })}
-                    />
-                  </PageContentBlock>
-                </InfoColumn>
+      <>
+        <MembershipBackdrop show={!loading} blockName={t('common.space')}>
+          <PageContent>
+            <InfoColumn>
+              <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
+              <PageContentBlock>
+                <CalloutsList
+                  callouts={callouts}
+                  emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
+                    entities: t('common.callouts'),
+                  })}
+                />
+              </PageContentBlock>
+            </InfoColumn>
 
-                <ContentColumn>
-                  <CalloutsGroupView
-                    calloutsSetId={calloutsSetId}
-                    createInFlowState={SpaceTab.KNOWLEDGE}
-                    callouts={allCallouts}
-                    canCreateCallout={canCreateCallout}
-                    loading={loading}
-                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                    onCalloutUpdate={refetchCallout}
-                    calloutsFilter={calloutsFilter}
-                  />
-                </ContentColumn>
-              </PageContent>
-            </MembershipBackdrop>
-            <CalloutCreationDialog
-              open={isCalloutCreationDialogOpen}
-              onClose={handleCreateCalloutClosed}
-              onCreateCallout={handleCreateCallout}
-              loading={loadingCalloutCreation}
-            />
-          </>
-        )}
-      </KnowledgeBaseContainer>
+            <ContentColumn>
+              <CalloutsGroupView
+                calloutsSetId={calloutsSetId}
+                createInFlowState={SpaceTab.KNOWLEDGE}
+                callouts={callouts}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                onCalloutUpdate={refetchCallout}
+              />
+            </ContentColumn>
+          </PageContent>
+        </MembershipBackdrop>
+        <CalloutCreationDialog
+          open={isCalloutCreationDialogOpen}
+          onClose={handleCreateCalloutClosed}
+          onCreateCallout={handleCreateCallout}
+          loading={loadingCalloutCreation}
+        />
+      </>
     </SpacePageLayout>
   );
 };

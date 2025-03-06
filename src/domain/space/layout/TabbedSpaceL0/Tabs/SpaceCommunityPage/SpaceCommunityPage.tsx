@@ -19,7 +19,6 @@ import {
   RoleSetContributorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
@@ -29,16 +28,23 @@ import VirtualContributorsBlock from '@/domain/community/community/VirtualContri
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { CalloutsFilterModel } from '@/domain/collaboration/calloutsSet/CalloutsFilter.model';
-import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
-import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTab';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useSpaceTabProvider from '../../SpaceTabProvider';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
-  const { urlInfo, flowStateForTab } = useSpaceTabProvider({ tabPosition: 1 });
+  const {
+    urlInfo,
+    classificationTagsets,
+    flowStateForNewCallouts: flowStateForTab,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+  } = useSpaceTabProvider({
+    tabPosition: 1,
+  });
 
-  const { spaceId, collaborationId, journeyPath, loading: resolving } = urlInfo;
+  const { spaceId, journeyPath, loading: resolving } = urlInfo;
   const { communityId } = useSpace();
 
   if (!spaceId && !resolving) {
@@ -119,61 +125,62 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
-  const calloutsFilter: CalloutsFilterModel = {
-    flowState: flowStateForTab?.displayName,
-  };
+  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+    includeClassification: true,
+  });
+
+  const loading = false;
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer collaborationId={collaborationId}>
-        {({ callouts }) => (
-          <PageContent>
-            <InfoColumn>
-              <EntityDashboardLeadsSection
-                usersHeader={t('community.leads')}
-                organizationsHeader={t('pages.space.sections.dashboard.organization')}
-                leadUsers={leadUsers}
-                leadOrganizations={hostOrganizations}
-              />
-              <ContactLeadsButton onClick={openContactLeadsDialog}>
-                {t('buttons.contact-leads', { contact: t('community.host') })}
-              </ContactLeadsButton>
-              <DirectMessageDialog
-                title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
-                open={isContactLeadUsersDialogOpen}
-                onClose={closeContactLeadsDialog}
-                onSendMessage={sendMessageToCommunityLeads}
-                messageReceivers={messageReceivers}
-              />
-              {showVirtualContributorsBlock && (
-                <VirtualContributorsBlock
-                  virtualContributors={virtualContributors}
-                  loading={loadingCommunity}
-                  showInviteOption={hasInvitePrivilege}
-                />
-              )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
-            </InfoColumn>
-            <ContentColumn>
-              <RoleSetContributorsBlockWide
-                users={memberUserCards}
-                showUsers={isAuthenticated}
-                organizations={memberOrganizationCards}
-              />
-              <CalloutsGroupView
-                calloutsSetId={calloutsSetId}
-                createInFlowState={flowStateForTab?.displayName}
-                callouts={callouts.groupedCallouts[flowStateForTab?.displayName || SpaceTab.KNOWLEDGE]}
-                canCreateCallout={callouts.canCreateCallout}
-                loading={callouts.loading}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                calloutsFilter={calloutsFilter}
-              />
-            </ContentColumn>
-          </PageContent>
-        )}
-      </SpaceCommunityContainer>
+      <PageContent>
+        <InfoColumn>
+          <EntityDashboardLeadsSection
+            usersHeader={t('community.leads')}
+            organizationsHeader={t('pages.space.sections.dashboard.organization')}
+            leadUsers={leadUsers}
+            leadOrganizations={hostOrganizations}
+          />
+          <ContactLeadsButton onClick={openContactLeadsDialog}>
+            {t('buttons.contact-leads', { contact: t('community.host') })}
+          </ContactLeadsButton>
+          <DirectMessageDialog
+            title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
+            open={isContactLeadUsersDialogOpen}
+            onClose={closeContactLeadsDialog}
+            onSendMessage={sendMessageToCommunityLeads}
+            messageReceivers={messageReceivers}
+          />
+          {showVirtualContributorsBlock && (
+            <VirtualContributorsBlock
+              virtualContributors={virtualContributors}
+              loading={loadingCommunity}
+              showInviteOption={hasInvitePrivilege}
+            />
+          )}
+          <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
+        </InfoColumn>
+        <ContentColumn>
+          <RoleSetContributorsBlockWide
+            users={memberUserCards}
+            showUsers={isAuthenticated}
+            organizations={memberOrganizationCards}
+          />
+          <CalloutsGroupView
+            calloutsSetId={calloutsSetId}
+            createInFlowState={flowStateForTab?.displayName}
+            callouts={callouts}
+            canCreateCallout={canCreateCallout}
+            loading={loading}
+            onSortOrderUpdate={onCalloutsSortOrderUpdate}
+            onCalloutUpdate={refetchCallout}
+          />
+        </ContentColumn>
+      </PageContent>
     </SpacePageLayout>
   );
 };

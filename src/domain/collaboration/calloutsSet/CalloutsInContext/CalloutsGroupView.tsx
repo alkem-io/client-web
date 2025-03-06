@@ -5,17 +5,13 @@ import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
-import { CalloutsFilterModel } from '../CalloutsFilter.model';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
   canCreateCallout: boolean;
-  calloutsFilter?: CalloutsFilterModel;
   createInFlowState?: string;
   createButtonPlace?: 'top' | 'bottom';
   availableCalloutTypes?: CalloutType[];
-  disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
 }
 
 const CalloutsGroupView = ({
@@ -23,7 +19,6 @@ const CalloutsGroupView = ({
   createInFlowState,
   createButtonPlace = 'bottom',
   calloutsSetId,
-  calloutsFilter,
   availableCalloutTypes,
   disableRichMedia,
   disablePostResponses,
