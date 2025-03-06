@@ -15,7 +15,7 @@ import {
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import useCanReadSpace, { SpaceReadAccess } from '../../space/graphql/queries/useCanReadSpace';
+import useCanReadSpace, { SpaceReadAccess } from '../../../journey/space/graphql/queries/useCanReadSpace';
 
 interface SubspaceHomeContainerProvided {
   level: SpaceLevel | undefined;
