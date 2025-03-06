@@ -18,6 +18,7 @@ import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspa
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -75,6 +76,7 @@ const SpaceSubspacesPage = () => {
   });
 
   const loading = false;
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: loading || !spaceId });
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>

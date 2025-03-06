@@ -80,21 +80,12 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <SubspaceHomeContainer spaceId={spaceId}>
-      {({
-        innovationFlow,
-        calloutsSetProvided: callouts,
-        subspace,
-        communityReadAccess,
-        communityId,
-        roleSet,
-        spaceReadAccess,
-      }) => {
+      {({ innovationFlow, calloutsSetProvided: callouts, subspace, communityReadAccess, communityId, roleSet }) => {
         const { collaboration, community, about, level } = subspace ?? {};
 
         return (
           <>
             <SubspacePageLayout
-              spaceReadAccess={spaceReadAccess}
               journeyId={spaceId}
               journeyPath={journeyPath}
               spaceLevel={spaceLevel}
