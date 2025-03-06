@@ -55,8 +55,7 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
       },
 
       aiEngine: {
-        title: `AI Engine: ${isExternal ? 'External AI Engine' : 'Alkemio AI Engine'}`,
-        // title: 'AI Engine: Alkemio AI Engine',
+        title: `AI Engine: ${isExternal ? 'External AI' : isAssistant ? 'External AI Assistant' : 'Alkemio AI '}`,
         cells: [
           {
             icon: 'settingsMotion',

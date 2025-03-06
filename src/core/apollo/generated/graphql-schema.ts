@@ -573,7 +573,7 @@ export type AiPersona = {
   /** The description for this AI Persona. */
   description?: Maybe<Scalars['Markdown']>;
   /** The engine powering the AiPersona. */
-  engine?: Maybe<AiPersonaEngine>;
+  engine: AiPersonaEngine;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The type of interactions that are supported by this AI Persona when used. */
@@ -18242,7 +18242,7 @@ export type VirtualContributorQuery = {
                 bodyOfKnowledgeID?: string | undefined;
                 bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                 bodyOfKnowledge?: string | undefined;
-                engine?: AiPersonaEngine | undefined;
+                engine: AiPersonaEngine;
               }
             | undefined;
           profile: {

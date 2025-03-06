@@ -1,5 +1,5 @@
 import { Reference } from '@/domain/common/profile/Profile';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
 
 export type VirtualContributorProfileProps = {
@@ -39,6 +39,7 @@ export type VirtualContributorProfileProps = {
     bodyOfKnowledge?: string;
     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
     bodyOfKnowledgeID?: string;
+    engine?: AiPersonaEngine;
   };
 };
 
