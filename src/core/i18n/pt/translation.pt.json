@@ -963,7 +963,7 @@
       "aria-label": "Desenvolvido por Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "Esta é uma comunidade privada e o seu conteúdo é restrito apenas aos membros. Se você quiser entrar, clique aqui para se inscrever."
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
     "journeyPageBannerCard": {
       "parentJourney": "Parte de:"
