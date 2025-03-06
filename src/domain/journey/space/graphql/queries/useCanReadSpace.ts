@@ -1,10 +1,10 @@
 import mainQuery from '@/core/apollo/utils/mainQuery';
-import { useJourneyPrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAndCommunityPrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { ApolloError } from '@apollo/client';
 import { useMemo } from 'react';
 
-const fetchPrivileges = mainQuery(useJourneyPrivilegesQuery);
+const fetchPrivileges = mainQuery(useSpaceAndCommunityPrivilegesQuery);
 
 interface UseCanReadSpaceParams {
   spaceId: string | undefined;
@@ -19,7 +19,7 @@ export interface SpaceReadAccess {
 
 const useCanReadSpace = ({ spaceId }: UseCanReadSpaceParams): SpaceReadAccess => {
   const {
-    data: journeyPrivilegesQueryData,
+    data: spacePrivilegesQueryData,
     loading: privilegesLoading,
     error: privilegesError,
   } = fetchPrivileges({
@@ -29,11 +29,11 @@ const useCanReadSpace = ({ spaceId }: UseCanReadSpaceParams): SpaceReadAccess =>
     skip: !spaceId,
   });
 
-  const canReadSpace = journeyPrivilegesQueryData?.lookup.space?.authorization?.myPrivileges?.includes(
+  const canReadSpace = spacePrivilegesQueryData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
-  const canReadCommunity = journeyPrivilegesQueryData?.lookup.space?.community.authorization?.myPrivileges?.includes(
+  const canReadCommunity = spacePrivilegesQueryData?.lookup.space?.community.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
