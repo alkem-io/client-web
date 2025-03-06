@@ -2,8 +2,6 @@ import OrganizationPageContainer from '../../contributor/organization/Organizati
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import Loading from '@/core/ui/loading/Loading';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -21,15 +19,7 @@ export const OrganizationPage = () => {
   const accountResources = useAccountResources(organizationData?.lookup.organization?.account?.id);
   const loading = resolvingOrganization || loadingOrganization;
 
-  if (loading) return <Loading />;
-
-  if (!organizationData && !loading) {
-    return (
-      <TopLevelLayout>
-        <Error404 />
-      </TopLevelLayout>
-    );
-  }
+  if (!organizationData || loading) return <Loading />;
 
   return (
     <OrganizationPageLayout>
