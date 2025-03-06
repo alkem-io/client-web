@@ -1591,12 +1591,15 @@
         "references": {
           "title": "crwdns36654:0crwdne36654:0"
         },
+        "engines": {
+          "external": "crwdns36738:0crwdne36738:0",
+          "externalAssistant": "crwdns36740:0crwdne36740:0",
+          "externalVCDescription": "crwdns36742:0{{engineName}}crwdne36742:0"
+        },
         "bodyOfKnowledge": {
           "title": "crwdns36656:0crwdne36656:0",
           "privateBokTooltip": "crwdns36658:0crwdne36658:0",
-          "spaceBokDescription": "crwdns36660:0{{vcName}}crwdne36660:0",
-          "externalVCDescription": "crwdns36662:0{{engineName}}crwdne36662:0",
-          "externalVCDescriptionNA": "crwdns36664:0crwdne36664:0"
+          "spaceBokDescription": "crwdns36660:0{{vcName}}crwdne36660:0"
         }
       }
     },
