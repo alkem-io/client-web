@@ -601,7 +601,7 @@
     "memberSettings": {
       "title": "Instellingen voor leden",
       "lead": "Dit lid is een <b>lead</b>: Leads worden getoond als de hosts van de Community.",
-      "admin": "Dit lid is een <b>admin</b>: zij kunnen de inhoud en leden van deze community beheren.",
+      "admin": "Dit lid is een <b>beheerder</b>: zij kunnen de inhoud en leden van deze community beheren.",
       "maxLeadsWarning": "Let op dat er een <b>maximum aantal leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
       "removeMember": {
         "sectionTitle": "Lid verwijderen",
@@ -963,7 +963,7 @@
       "aria-label": "Mogelijk gemaakt door Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "Dit is een privé Community waarin de meeste context alleen zichtbaar is voor leden. Wil je lid worden? Klik hier om je aan te melden!"
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
     "journeyPageBannerCard": {
       "parentJourney": "Onderdeel van:"
