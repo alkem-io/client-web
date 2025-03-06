@@ -25,18 +25,19 @@ const useAboutRedirect = ({
   const navigate = useNavigate();
   const spaceReadAccess = useCanReadSpace({ spaceId });
 
-  const path = pathname.split(`/${currentSection}`)[0]; // remove the currentSection to properly redirect to the about page
-  const hasAboutInPath = pathname.includes(`/${EntityPageSection.About}`);
-
   useEffect(() => {
-    if (skip || hasAboutInPath) {
+    const hasAboutInPath = pathname.includes(`/${EntityPageSection.About}`);
+
+    if (skip || hasAboutInPath || spaceReadAccess.loading) {
       return;
     }
 
-    if (!spaceReadAccess.loading && !spaceReadAccess.canReadSpace) {
+    const path = pathname.split(`/${currentSection}`)[0]; // remove the currentSection to properly redirect to the about page
+
+    if (!spaceReadAccess.canReadSpace) {
       navigate(`${path}/${EntityPageSection.About}`);
     }
-  }, [spaceId, skip, hasAboutInPath, spaceReadAccess, path]);
+  }, [skip, spaceReadAccess, pathname, currentSection, navigate, spaceReadAccess]);
 };
 
 export default useAboutRedirect;
