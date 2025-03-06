@@ -14,9 +14,10 @@ import CalloutsList from '../callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const KnowledgeBasePage = () => {
-  const { journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
+  const { spaceId, journeyPath, collaborationId, calloutsSetId, loading } = useUrlResolver();
 
   const { t } = useTranslation();
 
@@ -31,6 +32,8 @@ const KnowledgeBasePage = () => {
   const handleCreate = () => {
     handleCreateCalloutOpened();
   };
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.KnowledgeBase, skip: loading || !spaceId });
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>

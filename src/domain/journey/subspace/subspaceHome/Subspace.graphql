@@ -13,18 +13,14 @@ fragment SubspacePageSpace on Space {
     id
     myPrivileges
   }
-  profile {
-    id
-    url
+  about {
+    ...SpaceAboutLight
+    why
   }
   metrics {
     id
     name
     value
-  }
-  context {
-    id
-    vision
   }
   community @include(if: $authorizedReadAccessCommunity) {
     id

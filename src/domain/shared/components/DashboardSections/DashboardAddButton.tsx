@@ -1,13 +1,13 @@
-import React, { MouseEventHandler } from 'react';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import RouterLink from '@/core/ui/link/RouterLink';
-import Avatar from '@/core/ui/avatar/Avatar';
-import { AddCircleOutlineOutlined } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
-import { CaptionSmall } from '@/core/ui/typography';
-import { getIndentStyle } from '../../../journey/dashboardNavigation/utils';
-import { ButtonBase, SxProps, Theme } from '@mui/material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import Avatar from '@/core/ui/avatar/Avatar';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { CaptionSmall } from '@/core/ui/typography';
+import { AddCircleOutlineOutlined } from '@mui/icons-material';
+import { ButtonBase, SxProps, Theme } from '@mui/material';
+import { MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getIndentStyle } from '../../../journey/dashboardNavigation/utils';
 
 interface DashboardAddButtonProps {
   url?: string;
@@ -35,9 +35,11 @@ export const DashboardAddButton = ({ url, level = 0, onClick, translationKey, sx
       sx={{ ...getIndentStyle(level), ...sx }}
     >
       <CaptionSmall>
-        {translationKey
-          ? t(translationKey, { defaultValue: t('common.add') })
-          : t('buttons.addSubject', { subject: t('common.subspace') })}
+        <>
+          {translationKey
+            ? t(translationKey, { defaultValue: t('common.add') })
+            : t('buttons.addSubject', { subject: t('common.subspace') })}
+        </>
       </CaptionSmall>
     </BadgeCardView>
   );

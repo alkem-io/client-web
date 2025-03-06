@@ -1,9 +1,9 @@
+import { Member } from '@/domain/community/user/models/User';
+import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import TableCell from '@mui/material/TableCell';
-import React, { FC } from 'react';
-import { Member } from '@/domain/community/user/models/User';
+import { FC } from 'react';
 import { AvailableMembers, EditMembers } from './EditMembers';
-import { Box, Typography } from '@mui/material';
 
 export interface EditMemberUsersProps {
   executorId?: string;

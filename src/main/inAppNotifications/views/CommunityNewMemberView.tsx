@@ -6,7 +6,7 @@ export const CommunityNewMemberView = ({ id, type, state, space, triggeredAt }: 
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     const notificationTextValues = {
       defaultValue: '',
-      spaceName: space?.profile?.displayName,
+      spaceName: space?.about.profile?.displayName,
     };
 
     return {
@@ -14,10 +14,10 @@ export const CommunityNewMemberView = ({ id, type, state, space, triggeredAt }: 
       type,
       state,
       space: {
-        avatarUrl: space?.profile?.visual?.uri ?? '',
+        avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {
-        url: space?.profile?.url ?? '',
+        url: space?.about.profile?.url ?? '',
       },
       triggeredAt: triggeredAt,
       values: notificationTextValues,
@@ -25,7 +25,7 @@ export const CommunityNewMemberView = ({ id, type, state, space, triggeredAt }: 
   }, [id, state, space, triggeredAt]);
 
   // do not display notification if these are missing
-  if (!space?.profile?.displayName) {
+  if (!space?.about.profile?.displayName) {
     return null;
   }
 

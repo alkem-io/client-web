@@ -43,12 +43,13 @@ const MyResources = () => {
       {spaces.map(space => (
         <JourneyCardHorizontal
           key={space.id}
-          journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
+          space={{ about: space.about, level: space.level }}
           size="small"
           deepness={0}
           seamless
           sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
           disableHoverState
+          disableTagline
         />
       ))}
       {virtualContributors?.map(vc => (

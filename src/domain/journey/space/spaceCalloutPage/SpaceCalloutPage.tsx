@@ -35,10 +35,10 @@ const renderPage = (calloutGroup: string | undefined) => {
 };
 
 const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { profile } = useSpace();
+  const { about } = useSpace();
 
   const getPageRoute = (calloutGroup: string | undefined) => {
-    return `${profile.url}/${getPageSection(calloutGroup)}`;
+    return `${about.profile.url}/${getPageSection(calloutGroup)}`;
   };
 
   return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;

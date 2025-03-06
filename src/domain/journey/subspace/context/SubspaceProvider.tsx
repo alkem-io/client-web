@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -6,7 +6,7 @@ import {
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
 
 interface SubspacePermissions {
   canUpdate: boolean;
@@ -24,7 +24,7 @@ interface SubspaceContextProps {
   roleSetId: string;
   loading: boolean;
   permissions: SubspacePermissions;
-  profile: SubspacePendingMembershipInfoFragment['profile'];
+  about: SubspacePendingMembershipInfoFragment['about'];
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
@@ -41,17 +41,20 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
     canReadCommunity: false,
     contextPrivileges: [],
   },
-  profile: {
+  about: {
     id: '',
-    displayName: '',
-    visuals: [],
-    tagline: '',
-    url: '',
+    profile: {
+      id: '',
+      displayName: '',
+      visuals: [],
+      tagline: '',
+      url: '',
+    },
   },
   myMembershipStatus: undefined,
 });
 
-interface SubspaceProviderProps {}
+interface SubspaceProviderProps extends PropsWithChildren {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { spaceId, loading: urlResolverLoading } = useUrlResolver();
@@ -81,24 +84,27 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
       canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
       canReadCommunity,
-      contextPrivileges: subspace?.context?.authorization?.myPrivileges ?? [],
+      contextPrivileges: subspace?.about.authorization?.myPrivileges ?? [],
     }),
     [myPrivileges, subspace, canReadCommunity]
   );
 
-  const profile = useMemo(() => {
+  const about = useMemo(() => {
     return {
-      id: subspace?.profile.id ?? '',
-      displayName: subspace?.profile.displayName || '',
-      description: subspace?.profile.description,
-      tagset: subspace?.profile.tagset,
-      visuals: subspace?.profile.visuals ?? [],
-      tagline: subspace?.profile.tagline || '',
-      references: subspace?.profile.references ?? [],
-      location: subspace?.profile.location,
-      url: subspace?.profile.url ?? '',
+      id: subspace?.about.id ?? '',
+      profile: {
+        id: subspace?.about.profile.id ?? '',
+        displayName: subspace?.about.profile.displayName || '',
+        description: subspace?.about.profile.description,
+        tagset: subspace?.about.profile.tagset,
+        visuals: subspace?.about.profile.visuals ?? [],
+        tagline: subspace?.about.profile.tagline || '',
+        references: subspace?.about.profile.references ?? [],
+        location: subspace?.about.profile.location,
+        url: subspace?.about.profile.url ?? '',
+      },
     };
-  }, [subspace?.profile]);
+  }, [subspace?.about.profile]);
 
   return (
     <SubspaceContext.Provider
@@ -109,7 +115,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         communityId,
         roleSetId,
         permissions,
-        profile,
+        about,
         loading: loading || urlResolverLoading,
         myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
       }}
