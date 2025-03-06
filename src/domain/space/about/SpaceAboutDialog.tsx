@@ -147,7 +147,6 @@ const SpaceAboutDialog = ({
     <DialogWithGrid
       open={open}
       columns={8}
-      fullHeight
       sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
     >
