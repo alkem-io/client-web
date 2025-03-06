@@ -7,7 +7,6 @@ import { SvgIconComponent } from '@mui/icons-material';
 interface InnovationFlowSettingsButtonProps extends ButtonProps {
   collaborationId: string;
   templatesSetId: string | undefined;
-  filterCalloutGroups: string[];
   tooltip: string;
   icon: SvgIconComponent;
 }
@@ -15,7 +14,6 @@ interface InnovationFlowSettingsButtonProps extends ButtonProps {
 const InnovationFlowSettingsButton = ({
   collaborationId,
   templatesSetId,
-  filterCalloutGroups,
   icon: SettingsIcon,
   tooltip,
   ...props
@@ -37,7 +35,6 @@ const InnovationFlowSettingsButton = ({
         open={isSettingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         collaborationId={collaborationId}
-        filterCalloutGroups={filterCalloutGroups}
       />
     </>
   );

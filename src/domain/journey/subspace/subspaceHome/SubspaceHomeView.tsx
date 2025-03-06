@@ -14,7 +14,6 @@ import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
-import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 
 interface SubspaceHomeViewProps {
@@ -113,7 +112,6 @@ const SubspaceHomeView = ({
                 <InnovationFlowSettingsButton
                   collaborationId={collaborationId}
                   templatesSetId={templatesSetId}
-                  filterCalloutGroups={[SpaceTab.HOME]}
                   tooltip={manageFlowActionDef.label}
                   icon={manageFlowActionDef.icon}
                 />

@@ -16,7 +16,6 @@ import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
-import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 
@@ -118,7 +117,7 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                createInFlowState={flowStateForTab?.displayName || SpaceTab.SUBSPACES}
+                createInFlowState={flowStateForTab?.displayName}
                 callouts={callouts}
                 canCreateCallout={canCreateCallout}
                 loading={loading}

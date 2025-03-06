@@ -20,21 +20,18 @@ type InnovationFlowSettingsDialogProps = {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
-  filterCalloutGroups?: string[];
 };
 
 const InnovationFlowSettingsDialog = ({
   open = false,
   onClose,
   collaborationId,
-  filterCalloutGroups = undefined,
 }: InnovationFlowSettingsDialogProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const { data, actions, state } = useInnovationFlowSettings({
     collaborationId,
-    filterCalloutGroups,
     skip: !open,
   });
   const { innovationFlow, callouts } = data;

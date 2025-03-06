@@ -11,7 +11,6 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../../../../../collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
-import { SpaceTab } from '@/domain/space/layout/TabbedSpaceL0/SpaceTabs';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 
@@ -20,9 +19,10 @@ type KnowledgeBasePageProps = {
 };
 
 const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
-  const { urlInfo, classificationTagsets, entitledToSaveAsTemplate, canSaveAsTemplate } = useSpaceTabProvider({
-    tabPosition: 3,
-  });
+  const { urlInfo, classificationTagsets, entitledToSaveAsTemplate, flowStateForNewCallouts, canSaveAsTemplate } =
+    useSpaceTabProvider({
+      tabPosition: 3,
+    });
   const { journeyPath, calloutsSetId } = urlInfo;
 
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
             <ContentColumn>
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                createInFlowState={SpaceTab.KNOWLEDGE}
+                createInFlowState={flowStateForNewCallouts?.displayName}
                 callouts={callouts}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
