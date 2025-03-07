@@ -109,7 +109,7 @@ export const CreateSubspaceForm = ({
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikMarkdownField
-            name="background"
+            name="description"
             title={t(`context.${level}.description.title`)}
             rows={5}
             helperText={t(`context.${level}.description.description`)}
