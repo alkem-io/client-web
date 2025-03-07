@@ -307,7 +307,6 @@
     "field-required": "crwdns17854:0crwdne17854:0",
     "field-min-length": "crwdns17856:0{{min}}crwdne17856:0",
     "field-max-length": "crwdns17858:0{{max}}crwdne17858:0",
-    "last-saved": "crwdns17860:0{{datetime}}crwdne17860:0",
     "membership": "crwdns17862:0crwdne17862:0",
     "owner": "crwdns17864:0crwdne17864:0",
     "admin": "crwdns17866:0crwdne17866:0",
@@ -2541,6 +2540,8 @@
       "no-whiteboards": "crwdns20358:0crwdne20358:0",
       "locked-by": "crwdns20360:0{{user}}crwdne20360:0",
       "loadingScene": "crwdns20362:0crwdne20362:0",
+      "last-saved": "crwdns36744:0{{datetime}}crwdne36744:0",
+      "unsuccessful-save": "crwdns36746:0{{warningMessage}}crwdnd36746:0{{datetime}}crwdne36746:0",
       "state-actions": {
         "save-as-template": "crwdns20364:0crwdne20364:0",
         "save-and-check-in": "crwdns20366:0crwdne20366:0",
