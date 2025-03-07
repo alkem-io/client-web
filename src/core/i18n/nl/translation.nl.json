@@ -307,7 +307,6 @@
     "field-required": "Dit veld is vereist",
     "field-min-length": "Dit veld moet bestaan uit minimaal {{min}} karakters",
     "field-max-length": "Dit veld moet bestaan uit maximaal {{max}} karakters",
-    "last-saved": "Automatisch opgeslagen laatste wijzigingen: {{datetime}}",
     "membership": "Lidmaatschap",
     "owner": "Eigenaar",
     "admin": "Beheerder",
@@ -2541,6 +2540,8 @@
       "no-whiteboards": "Er zijn nog geen whiteboards gemaakt. Wees de eerste die er een toevoegt.",
       "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
       "loadingScene": "Inhoud laden",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>",
       "state-actions": {
         "save-as-template": "Opslaan als template",
         "save-and-check-in": "Opslaan & bewerken stoppen",
