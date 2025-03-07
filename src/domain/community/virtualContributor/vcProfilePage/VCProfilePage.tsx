@@ -2,7 +2,11 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
-import { useBodyOfKnowledgeProfileQuery, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useBodyOfKnowledgeProfileAuthorizationQuery,
+  useBodyOfKnowledgeProfileQuery,
+  useVirtualContributorQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -39,12 +43,24 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
 
   const isBokSpace =
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+  const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;
+
+  const { data: bokProfileAuthData } = useBodyOfKnowledgeProfileAuthorizationQuery({
+    variables: {
+      spaceId: bokId!,
+    },
+    skip: !bokId || !isBokSpace,
+  });
+
+  const hasSpaceProfileReadAccess = bokProfileAuthData?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
 
   const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
     variables: {
-      spaceId: data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+      spaceId: bokId!,
     },
-    skip: !data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
+    skip: !bokId || !isBokSpace || !hasSpaceProfileReadAccess,
   });
 
   useRestrictedRedirect(

@@ -5,6 +5,7 @@ import {
   useCommunityVirtualMembersListQuery,
   useRemoveRoleFromVirtualContributorMutation,
   refetchSpaceCommunityPageQuery,
+  useBodyOfKnowledgeProfileAuthorizationLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
@@ -43,8 +44,19 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
     ),
   };
 
+  const [getVcBoKProfileAuth, { loading: bokProfileAuthLoading }] = useBodyOfKnowledgeProfileAuthorizationLazyQuery();
   const [getVcBoKProfile, { loading: bokProfileLoading }] = useBodyOfKnowledgeProfileLazyQuery();
   const getBoKProfile = async (bodyOfKnowledgeID: string) => {
+    const { data: authData } = await getVcBoKProfileAuth({
+      variables: {
+        spaceId: bodyOfKnowledgeID!,
+      },
+    });
+
+    if (!authData?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read)) {
+      return;
+    }
+
     const { data } = await getVcBoKProfile({
       variables: {
         spaceId: bodyOfKnowledgeID!,
@@ -125,7 +137,7 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
     inviteExternalUser,
     getBoKProfile,
     loadingMembers,
-    bokProfileLoading,
+    bokProfileLoading: bokProfileAuthLoading || bokProfileLoading,
     availableVCsLoading,
   };
 };
