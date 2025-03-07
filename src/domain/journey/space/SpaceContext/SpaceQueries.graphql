@@ -71,15 +71,18 @@ fragment SpaceInfo on Space {
   }
 }
 
-query SpaceHost($spaceId: UUID!) {
+query SpaceProvider($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      provider {
+      about {
         id
-        profile {
+        provider {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }

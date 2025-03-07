@@ -41,20 +41,19 @@ fragment SpacePage on Space {
         ...fullLocation
       }
     }
-  }
-  provider {
-    ...ContributorDetails
-  }
-  metrics {
-    id
-    name
-    value
+    provider {
+      ...ContributorDetails
+    }
+    metrics {
+      id
+      name
+      value
+    }
   }
   authorization {
     id
     myPrivileges
   }
-
   collaboration @include(if: $authorizedReadAccess) {
     id
     innovationFlow {

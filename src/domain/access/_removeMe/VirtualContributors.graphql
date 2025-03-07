@@ -6,8 +6,11 @@ query CommunityVirtualMembersList(
   lookup {
     space(ID: $spaceId) @include(if: $includeSpaceHost) {
       id
-      provider {
-        ...ContributorDetails
+      about {
+        id
+        provider {
+          ...ContributorDetails
+        }
       }
     }
     roleSet(ID: $roleSetId) {
@@ -21,7 +24,3 @@ query CommunityVirtualMembersList(
     }
   }
 }
-
-
-
-

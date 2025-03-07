@@ -16,11 +16,11 @@ fragment SubspacePageSpace on Space {
   about {
     ...SpaceAboutLight
     why
-  }
-  metrics {
-    id
-    name
-    value
+    metrics {
+      id
+      name
+      value
+    }
   }
   community @include(if: $authorizedReadAccessCommunity) {
     id

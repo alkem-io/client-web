@@ -3,18 +3,16 @@ fragment SpaceCard on Space {
   about {
     ...SpaceAboutCardBanner
     why
-  }
-  metrics {
-    name
-    value
-  }
-  community {
-    id
-    roleSet {
-      id
+    metrics {
+      name
+      value
+    }
+    isContentPublic
+    membership {
       myMembershipStatus
     }
   }
+
   settings {
     privacy {
       mode

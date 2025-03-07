@@ -1,12 +1,12 @@
 fragment SubspaceCard on Space {
   id
-  metrics {
-    id
-    name
-    value
-  }
   about {
     ...SpaceAboutCardBanner
+    metrics {
+      id
+      name
+      value
+    }
     why
   }
   community {

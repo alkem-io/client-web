@@ -10,14 +10,15 @@ query AboutPageNonMembers($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
+        provider {
+          ...ContributorDetails
+        }
+        metrics {
+          ...MetricsItem
+        }
         ...SpaceAboutDetails
       }
-      provider {
-        ...ContributorDetails
-      }
-      metrics {
-        ...MetricsItem
-      }
+
       community {
         id
         authorization {

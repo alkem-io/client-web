@@ -8,9 +8,9 @@ query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
       }
       about {
         ...SpaceAboutLight
-      }
-      provider {
-        ...ContributorDetails
+        provider {
+          ...ContributorDetails
+        }
       }
       authorization {
         id
