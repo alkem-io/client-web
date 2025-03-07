@@ -26,8 +26,6 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
   } = useCommunityVirtualMembersListQuery({
     variables: {
       roleSetId,
-      spaceId,
-      includeSpaceHost: spaceLevel === SpaceLevel.L0,
     },
     skip: !roleSetId || !spaceId,
   });

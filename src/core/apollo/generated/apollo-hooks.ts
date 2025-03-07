@@ -3093,6 +3093,10 @@ export const ShortAccountItemFragmentDoc = gql`
 export const SpaceProfileCommunityDetailsFragmentDoc = gql`
   fragment spaceProfileCommunityDetails on Space {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     about {
       ...SpaceAboutLight
     }
@@ -5195,21 +5199,8 @@ export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
 export const CommunityVirtualMembersListDocument = gql`
-  query CommunityVirtualMembersList(
-    $roleSetId: UUID!
-    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
-    $includeSpaceHost: Boolean = false
-  ) {
+  query CommunityVirtualMembersList($roleSetId: UUID!) {
     lookup {
-      space(ID: $spaceId) @include(if: $includeSpaceHost) {
-        id
-        about {
-          id
-          provider {
-            ...ContributorDetails
-          }
-        }
-      }
       roleSet(ID: $roleSetId) {
         authorization {
           id
@@ -5221,7 +5212,6 @@ export const CommunityVirtualMembersListDocument = gql`
       }
     }
   }
-  ${ContributorDetailsFragmentDoc}
   ${RoleSetMemberVirtualContributorFragmentDoc}
 `;
 
@@ -5238,8 +5228,6 @@ export const CommunityVirtualMembersListDocument = gql`
  * const { data, loading, error } = useCommunityVirtualMembersListQuery({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      spaceId: // value for 'spaceId'
- *      includeSpaceHost: // value for 'includeSpaceHost'
  *   },
  * });
  */
@@ -18220,10 +18208,6 @@ export const SpaceCommunityPageDocument = gql`
             ...ContributorDetails
           }
         }
-        authorization {
-          id
-          myPrivileges
-        }
         community @include(if: $includeCommunity) {
           id
           roleSet {
@@ -22999,6 +22983,10 @@ export const NewVirtualContributorMySpacesDocument = gql`
           }
           spaces {
             id
+            authorization {
+              id
+              myPrivileges
+            }
             license {
               id
               availableEntitlements

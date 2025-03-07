@@ -121,13 +121,6 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         optimisticResponse: {
           createSubspace: {
             id: '',
-            metrics: [
-              {
-                id: '',
-                name: '',
-                value: '',
-              },
-            ],
             about: {
               id: '',
               why: value.about.why,

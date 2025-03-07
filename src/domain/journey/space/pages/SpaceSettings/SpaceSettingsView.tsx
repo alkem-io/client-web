@@ -7,7 +7,7 @@ import {
   refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
-  useSpaceHostQuery,
+  useSpaceProviderQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useSpaceTemplatesManagerQuery,
@@ -130,11 +130,11 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
     });
   };
 
-  const { data: hostData } = useSpaceHostQuery({
+  const { data: hostData } = useSpaceProviderQuery({
     variables: { spaceId },
     skip: !spaceId || isSubspace,
   });
-  const hostId = hostData?.lookup.space?.provider.id;
+  const hostId = hostData?.lookup.space?.about.provider.id;
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
@@ -363,7 +363,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostData?.lookup.space?.provider.profile.displayName,
+                            host: hostData?.lookup.space?.about.provider.profile.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />

@@ -3400,6 +3400,7 @@ export type SpaceAboutMembershipKeySpecifier = (
   | 'leadUsers'
   | 'myMembershipStatus'
   | 'myPrivileges'
+  | 'roleSetID'
   | SpaceAboutMembershipKeySpecifier
 )[];
 export type SpaceAboutMembershipFieldPolicy = {
@@ -3408,6 +3409,7 @@ export type SpaceAboutMembershipFieldPolicy = {
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpacePendingMembershipInfoKeySpecifier = (
   | 'about'

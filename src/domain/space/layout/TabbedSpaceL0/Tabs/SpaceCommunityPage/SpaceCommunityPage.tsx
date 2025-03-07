@@ -105,8 +105,8 @@ const SpaceCommunityPage = () => {
   );
 
   const hostOrganizations = useMemo(
-    () => data?.lookup.space?.provider && [data.lookup.space.provider],
-    [data?.lookup.space?.provider]
+    () => data?.lookup.space?.about.provider && [data.lookup.space.about.provider],
+    [data?.lookup.space?.about.provider]
   );
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.lookup.space?.community?.id);

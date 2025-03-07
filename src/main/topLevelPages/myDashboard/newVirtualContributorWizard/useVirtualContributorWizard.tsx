@@ -58,15 +58,10 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  about: SpaceAboutMinimalUrlModel;
-  community: {
-    roleSet: {
-      id: string;
-      authorization?: {
-        myPrivileges?: AuthorizationPrivilege[];
-      };
-    };
+  authorization: {
+    myPrivileges: string[];
   };
+  about: SpaceAboutMinimalUrlModel;
   subspaces?: SelectableSpace[];
 };
 
@@ -136,20 +131,27 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const hasCommunityPrivilege = (space: SelectableSpace) => {
-    return space.community.roleSet?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.CommunityAssignVcFromAccount
-    );
+  const hasReadAboutPrivilege = (space: SelectableSpace) => {
+    return space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.ReadAbout);
   };
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
-    const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
+    const accountSpaces: SelectableSpace[] = [];
+    account?.spaces.forEach(space => {
+      accountSpaces.push({
+        id: space.id,
+        authorization: space.authorization ?? {
+          myPrivileges: [],
+        },
+        about: space.about,
+      });
+    });
 
     return {
       myAccountId: account?.id,
       allAccountSpaces: accountSpaces,
-      availableSpaces: accountSpaces.filter(hasCommunityPrivilege),
+      availableSpaces: accountSpaces.filter(hasReadAboutPrivilege),
     };
   }, [data, user, targetAccount]);
 
@@ -166,7 +168,18 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           spaceId: space.id,
         },
       });
-      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasCommunityPrivilege) ?? [];
+      const availableSubspaces: SelectableSpace[] = [];
+      subspaceData?.data?.lookup.space?.subspaces.forEach(subspace => {
+        if (subspace.authorization?.myPrivileges?.includes(AuthorizationPrivilege.ReadAbout)) {
+          availableSubspaces.push({
+            id: space.id,
+            authorization: space.authorization ?? {
+              myPrivileges: [],
+            },
+            about: space.about,
+          });
+        }
+      });
 
       result.push({
         ...space,
@@ -525,7 +538,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
       if (addToCommunity) {
         addVCCreationCache(createdVC?.id);
-        await navigateToTryYourVC(getSpaceUrlFromSubSpace(selectedKnowledge.url ?? ''), undefined);
+        await navigateToTryYourVC(getSpaceUrlFromSubSpace(selectedKnowledge.about.profile.url ?? ''), undefined);
       } else {
         notifyErrorOnAddToCommunity();
         handleCloseWizard();

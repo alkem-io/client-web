@@ -119,12 +119,12 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
-  const provider = nonMembersData?.lookup.space?.provider;
+  const provider = nonMembersData?.lookup.space?.about.provider;
 
   const leadUsers = usersByRole[RoleName.Lead];
   const leadOrganizations = organizationsByRole[RoleName.Lead];
 
-  const metrics = nonMemberSpace?.metrics;
+  const metrics = nonMemberSpace?.about.metrics;
 
   const memberUsers = usersByRole[RoleName.Member];
   const memberOrganizations = organizationsByRole[RoleName.Member];

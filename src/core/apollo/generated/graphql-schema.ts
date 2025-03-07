@@ -5991,6 +5991,8 @@ export type SpaceAboutMembership = {
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The privileges granted to the current user based on the Space membership policy. */
   myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  /** The identier of the RoleSet within the Space. */
+  roleSetID?: Maybe<Scalars['UUID']>;
 };
 
 export type SpaceFilterInput = {
@@ -8749,100 +8751,12 @@ export type RemoveRoleFromVirtualContributorMutation = {
 
 export type CommunityVirtualMembersListQueryVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  spaceId?: InputMaybe<Scalars['UUID']>;
-  includeSpaceHost?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CommunityVirtualMembersListQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            provider:
-              | {
-                  __typename?: 'Organization';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagsets?:
-                      | Array<{
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }>
-                      | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                      | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagsets?:
-                      | Array<{
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }>
-                      | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                      | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'VirtualContributor';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagsets?:
-                      | Array<{
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }>
-                      | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                      | undefined;
-                  };
-                };
-          };
-        }
-      | undefined;
     roleSet?:
       | {
           __typename?: 'RoleSet';
@@ -29770,11 +29684,6 @@ export type NewVirtualContributorMySpacesQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
-                  license: {
-                    __typename?: 'License';
-                    id: string;
-                    availableEntitlements?: Array<LicenseEntitlementType> | undefined;
-                  };
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -29782,6 +29691,11 @@ export type NewVirtualContributorMySpacesQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
+                  license: {
+                    __typename?: 'License';
+                    id: string;
+                    availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+                  };
                   about: {
                     __typename?: 'SpaceAbout';
                     id: string;
@@ -29838,6 +29752,9 @@ export type AllSpaceSubspacesQuery = {
             subspaces: Array<{
               __typename?: 'Space';
               id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
               about: {
                 __typename?: 'SpaceAbout';
                 id: string;
@@ -29869,6 +29786,9 @@ export type AllSpaceSubspacesQuery = {
                 };
               };
             }>;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -29908,6 +29828,9 @@ export type AllSpaceSubspacesQuery = {
 export type SpaceProfileCommunityDetailsFragment = {
   __typename?: 'Space';
   id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   about: {
     __typename?: 'SpaceAbout';
     id: string;
