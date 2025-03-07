@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   CalloutType,
   RoleSetContributorType,
@@ -13,8 +13,6 @@ import {
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
-
-const POLLING_INTERVAL = 30 * 1000; // 30 seconds
 
 export interface InAppNotificationProps {
   id: string;
@@ -94,17 +92,9 @@ export const useInAppNotifications = () => {
 
   const [updateState] = useUpdateNotificationStateMutation();
 
-  const { data, loading, startPolling, stopPolling } = useInAppNotificationsQuery({
+  const { data, loading } = useInAppNotificationsQuery({
     skip: !isEnabled,
   });
-
-  useEffect(() => {
-    if (startPolling) {
-      startPolling(POLLING_INTERVAL);
-    }
-
-    return () => stopPolling();
-  }, [data, startPolling, stopPolling]);
 
   const items: InAppNotificationProps[] = useMemo(
     () =>
