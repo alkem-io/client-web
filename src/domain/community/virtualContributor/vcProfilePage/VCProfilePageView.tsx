@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import { groupBy } from 'lodash';
 import { Button, Tooltip } from '@mui/material';
@@ -19,7 +19,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import useNavigate from '@/core/routing/useNavigate';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
-import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -51,6 +52,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
       navigate(`${virtualContributor.profile.url}/${KNOWLEDGE_BASE_PATH}`);
     }
   }, [navigate, virtualContributor]);
+
+  const defaultProfile = { displayName: t('components.card.privacy.private', { entity: 'space' }), url: '' };
 
   const renderBokVisitButton = useCallback(
     () =>
@@ -132,7 +135,15 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 </Caption>
 
                 <Gutters disableGap disablePadding paddingTop={1}>
-                  <ContributorCardHorizontal profile={rest?.bokProfile} seamless />
+                  <JourneyCardHorizontal
+                    space={{ about: { profile: rest?.bokProfile || defaultProfile }, level: SpaceLevel.L0 }}
+                    size="small"
+                    deepness={0}
+                    seamless
+                    sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
+                    disableHoverState
+                    disableTagline
+                  />
                 </Gutters>
               </Gutters>
             </Gutters>
