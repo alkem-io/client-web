@@ -7,11 +7,9 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 export const SpaceLayoutSettingsEdit = () => {
   const { collaborationId } = useSpace();
-  const filterCalloutGroups = undefined;
 
   const { data, actions, state } = useInnovationFlowSettings({
     collaborationId,
-    filterCalloutGroups,
     skip: !collaborationId,
   });
   const { innovationFlow, callouts } = data;

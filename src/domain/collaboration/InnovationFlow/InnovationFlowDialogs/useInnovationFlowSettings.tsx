@@ -21,7 +21,6 @@ import { useMemo } from 'react';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
-  filterCalloutGroups?: string[];
   skip?: boolean;
 };
 
