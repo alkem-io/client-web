@@ -50,7 +50,7 @@ export const UserAdminCredentialsPage = () => {
   return (
     <UserAdminLayout currentTab={SettingsSection.Credentials}>
       <UserCredentialsContainer userID={currentUser?.user.id}>
-        {({ verifiedCredentials, credentialMetadata }, state, actions) => (
+        {({ entities: { verifiedCredentials, credentialMetadata }, state, actions }) => (
           <Grid container spacing={2}>
             <Grid item xs={12} display="flex" flexDirection="column">
               <DashboardGenericSection

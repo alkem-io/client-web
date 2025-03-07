@@ -162,34 +162,31 @@ const SpacePageBanner = ({
     <Root ref={containerReference}>
       {ribbon}
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
-      {!dataLoading && (
-        <>
-          <TopNotices>
-            <PageNotice level={level} isAdmin={isAdmin} />
-          </TopNotices>
-          <Box>
-            <ImageBlurredSides
-              src={bannerUrl || defaultVisualUrls[VisualType.Banner]}
-              alt={t('visuals-alt-text.banner.page.text', { altText: bannerAltText })}
-              onLoad={() => setImageLoading(false)}
-              onError={imageLoadError}
-              blurRadius={2}
-              height={theme => theme.spacing(18)}
-              width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
-              maxWidth="100%"
-            />
-            <WatermarkContainer>{watermark}</WatermarkContainer>
-          </Box>
-          <Title>
-            <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
-              {title}
-            </PageTitle>
-            <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
-              {tagline}
-            </Tagline>
-          </Title>
-        </>
-      )}
+      <TopNotices>
+        <PageNotice level={level} isAdmin={isAdmin} />
+      </TopNotices>
+      <Box>
+        <ImageBlurredSides
+          src={bannerUrl || defaultVisualUrls[VisualType.Banner]}
+          alt={t('visuals-alt-text.banner.page.text', { altText: bannerAltText })}
+          onLoad={() => setImageLoading(false)}
+          onError={imageLoadError}
+          blurRadius={2}
+          height={theme => theme.spacing(18)}
+          width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
+          maxWidth="100%"
+        />
+        <WatermarkContainer>{watermark}</WatermarkContainer>
+      </Box>
+      <Title>
+        <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
+          {title}
+          {!title && dataLoading && <Skeleton variant="text" animation="wave" />}
+        </PageTitle>
+        <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
+          {tagline}
+        </Tagline>
+      </Title>
     </Root>
   );
 };

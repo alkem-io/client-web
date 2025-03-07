@@ -12,7 +12,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
-import { Visual } from '@/domain/common/visual/Visual';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
@@ -24,6 +23,7 @@ import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
 import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -37,20 +37,14 @@ export const JourneyCardHorizontalSkeleton = () => (
 );
 
 export interface JourneyCardHorizontalProps {
-  journey: {
-    profile: {
-      url: string;
-      displayName: string;
-      tagline?: string;
-      avatar?: Visual;
-      cardBanner?: Visual;
-    };
+  space: {
+    about: SpaceAboutLightModel;
     community?: {
       roleSet?: {
         myRoles?: RoleName[];
       };
     };
-    spaceLevel: SpaceLevel;
+    level: SpaceLevel;
   };
   deepness?: number;
   seamless?: boolean;
@@ -58,6 +52,7 @@ export interface JourneyCardHorizontalProps {
   actions?: ReactNode;
   size?: AvatarSize;
   disableHoverState?: boolean;
+  disableTagline?: boolean;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
@@ -69,19 +64,20 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 const JourneyCardHorizontal = ({
-  journey,
-  deepness = !journey.spaceLevel || journey.spaceLevel === SpaceLevel.L1 ? 0 : 1,
+  space,
+  deepness = !space.level || space.level === SpaceLevel.L1 ? 0 : 1,
   seamless,
   sx,
   actions,
   size,
   disableHoverState = false,
+  disableTagline = false,
 }: JourneyCardHorizontalProps) => {
-  const Icon = journey.spaceLevel ? spaceIconByLevel[journey.spaceLevel] : undefined;
+  const Icon = space.level ? spaceIconByLevel[space.level] : undefined;
 
   const { t } = useTranslation();
 
-  const [communityRole] = intersection(VISIBLE_COMMUNITY_ROLES, journey.community?.roleSet?.myRoles);
+  const [communityRole] = intersection(VISIBLE_COMMUNITY_ROLES, space.community?.roleSet?.myRoles);
 
   const mergedSx: PaperProps['sx'] = {
     padding: gutters(),
@@ -93,13 +89,15 @@ const JourneyCardHorizontal = ({
   return (
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
-        visual={<JourneyAvatar size={size} src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri} />}
+        visual={
+          <JourneyAvatar size={size} src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri} />
+        }
         component={disableHoverState ? RouterLink : Wrapper}
-        to={journey.profile.url}
+        to={space.about.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >
         <BlockTitleWithIcon
-          title={journey.profile.displayName}
+          title={space.about.profile.displayName}
           icon={Icon ? <Icon /> : undefined}
           sx={{ height: gutters(1.5) }}
         >
@@ -112,9 +110,11 @@ const JourneyCardHorizontal = ({
             />
           )}
         </BlockTitleWithIcon>
-        <Caption noWrap component="div" lineHeight={gutters(1.5)}>
-          {journey.profile.tagline}
-        </Caption>
+        {!disableTagline && (
+          <Caption noWrap component="div" lineHeight={gutters(1.5)}>
+            {space.about.profile.tagline}
+          </Caption>
+        )}
       </BadgeCardView>
     </ElevatedPaper>
   );

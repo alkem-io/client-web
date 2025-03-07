@@ -20,10 +20,12 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import FormikVisualUpload, { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
+  onChangeAvatar: (visual: VisualWithAltText) => void;
   onCreateKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
@@ -84,6 +86,7 @@ const CreateNewVirtualContributor = ({
   onUseExistingKnowledge,
   onUseExternal,
   loading,
+  onChangeAvatar,
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
@@ -113,6 +116,7 @@ const CreateNewVirtualContributor = ({
   const handleSubmit = (values: VirtualContributorFromProps) => {
     const name = values.name.trim();
     const newValues = { ...values, name };
+
     switch (source) {
       case VCSourceOptions.WRITTEN_KNOWLEDGE:
         onCreateKnowledge(newValues);
@@ -131,9 +135,11 @@ const CreateNewVirtualContributor = ({
       <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
       <DialogContent sx={{ paddingTop: 0 }}>
         {loading && <Loading />}
+
         {!loading && (
           <Gutters disablePadding>
             <Caption>{t('createVirtualContributorWizard.initial.profileDescription')}</Caption>
+
             <GridContainer disablePadding sx={{ display: 'contents' }}>
               <GridProvider columns={12}>
                 <Formik
@@ -147,17 +153,30 @@ const CreateNewVirtualContributor = ({
                       <Form noValidate>
                         <GridItem columns={isMobile ? cols : 8}>
                           <Gutters disablePadding>
-                            <FormikInputField
-                              name="name"
-                              title={t('components.nameSegment.name')}
-                              placeholder={t('components.nameSegment.name')}
-                              required
-                            />
-                            <FormikInputField
-                              name="tagline"
-                              title={t('components.profileSegment.tagline.name')}
-                              placeholder={t('components.profileSegment.tagline.placeholder')}
-                            />
+                            <Gutters disablePadding flexDirection="row">
+                              <FormikVisualUpload
+                                flex={1}
+                                name="visuals.avatar"
+                                visualType={VisualType.Avatar}
+                                onChangeAvatar={onChangeAvatar}
+                              />
+
+                              <Gutters disablePadding flex={2}>
+                                <FormikInputField
+                                  name="name"
+                                  title={t('components.nameSegment.name')}
+                                  placeholder={t('components.nameSegment.name')}
+                                  required
+                                />
+
+                                <FormikInputField
+                                  name="tagline"
+                                  title={t('components.profileSegment.tagline.name')}
+                                  placeholder={t('components.profileSegment.tagline.placeholder')}
+                                />
+                              </Gutters>
+                            </Gutters>
+
                             <FormikMarkdownField
                               name="description"
                               title={t('components.profileSegment.description.name')}

@@ -156,6 +156,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             variant="contained"
             component={RouterLink}
             to={buildLoginUrl(applyUrl)}
+            sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
             {t('components.application-button.apply-not-signed')}
           </Button>

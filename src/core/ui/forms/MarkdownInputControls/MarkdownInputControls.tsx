@@ -16,7 +16,6 @@ import {
 import { Collapse, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
-import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
@@ -24,6 +23,7 @@ import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeBu
 import produce from 'immer';
 import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 import { useTranslation } from 'react-i18next';
+import { ChainedCommands } from '@tiptap/core';
 
 type MarkdownInputControlsProps = {
   editor: Editor | null;
@@ -36,6 +36,7 @@ type MarkdownInputControlsProps = {
 
 interface ControlsButtonProps extends MarkdownInputToolbarButtonProps {
   editor: Editor | null;
+  // @ts-ignore react-18
   command: (commandsChain: ChainedCommands) => ChainedCommands;
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
 }

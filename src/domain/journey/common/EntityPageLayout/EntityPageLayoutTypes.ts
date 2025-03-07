@@ -1,6 +1,6 @@
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { ComponentType, ReactElement, ReactNode } from 'react';
 import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
+import { ComponentType, PropsWithChildren, ReactElement, ReactNode } from 'react';
 
 export interface EntityTabsProps {
   currentTab: EntityPageSection;
@@ -12,7 +12,7 @@ export interface BasePageBannerProps {
   watermark?: ReactNode;
 }
 
-export interface EntityPageLayoutProps {
+export interface EntityPageLayoutProps extends PropsWithChildren {
   currentSection: EntityPageSection;
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
   pageBannerComponent?: ComponentType<BasePageBannerProps>;

@@ -3,7 +3,7 @@ import { Paper } from '@mui/material';
 import SwapColors from '@/core/ui/palette/SwapColors';
 import { gutters } from '@/core/ui/grid/utils';
 
-const CookieConsent = forwardRef<HTMLDivElement, PropsWithChildren<{}>>(({ children }, ref) => {
+const CookieConsent = forwardRef<HTMLDivElement, PropsWithChildren>(({ children }, ref) => {
   return (
     <SwapColors>
       <Paper

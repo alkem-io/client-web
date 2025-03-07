@@ -1,6 +1,6 @@
 export enum SettingsSection {
-  Profile = 'profile',
-  Context = 'context',
+  About = 'about',
+  Index = 'profile',
   Community = 'community',
   Communications = 'communications',
   Authorization = 'authorization',

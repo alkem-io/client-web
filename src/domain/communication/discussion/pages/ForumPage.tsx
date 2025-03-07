@@ -72,6 +72,8 @@ export const ForumPage = ({
   const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
+
+  // @ts-ignore react-18
   useSubscriptionToForum(data, data => data?.platform.forum, subscribeToMore);
 
   const isPlatformAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);

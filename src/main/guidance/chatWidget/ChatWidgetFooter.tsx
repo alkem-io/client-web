@@ -1,5 +1,5 @@
 import Gutters from '@/core/ui/grid/Gutters';
-import ReferencesListSmallItem from '@/domain/profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
+import ReferencesListSmallItem from '@/domain/common/reference/ReferencesListSmallItem';
 import { useTranslation } from 'react-i18next';
 import SwapColors from '@/core/ui/palette/SwapColors';
 import { Paper } from '@mui/material';

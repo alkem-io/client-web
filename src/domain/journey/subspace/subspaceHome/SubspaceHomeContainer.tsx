@@ -11,7 +11,7 @@ import {
   SubspacePageSpaceFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
+import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';

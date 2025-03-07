@@ -162,8 +162,8 @@ export const UserForm = ({
         ...otherData,
         profile: {
           id: profileId,
-          displayName: displayName,
-          tagline: tagline,
+          displayName,
+          tagline,
           description: bio,
           references: finalReferences,
           location: {

@@ -15,6 +15,7 @@ const InviteContributorsList = ({ contributors = [], onCardClick = noop }: Invit
       {contributors.map(c => (
         <GridItem key={c.id}>
           <UserCard
+            isExpandable={false}
             displayName={c.profile?.displayName}
             avatarSrc={c.profile?.avatar?.uri ?? ''}
             avatarAltText={c.profile?.displayName}

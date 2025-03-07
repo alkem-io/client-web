@@ -18,11 +18,12 @@ import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
+  const { spaceId, journeyPath, collaborationId, calloutsSetId, loading } = useUrlResolver();
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -36,21 +37,25 @@ const SpaceSubspacesPage = () => {
       }
       const result = await createSubspace({
         spaceID: spaceId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
+        about: {
+          profile: {
+            displayName: value.displayName,
+            description: value.description,
+            tagline: value.tagline,
+            visuals: value.visuals,
+            tags: value.tags,
+          },
+          why: value.why,
+        },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
-        visuals: value.visuals,
       });
 
       if (!result) {
         return;
       }
 
-      navigate(result.profile.url);
+      navigate(result.about.profile?.url!);
     },
     [navigate, createSubspace, spaceId]
   );
@@ -59,6 +64,8 @@ const SpaceSubspacesPage = () => {
     collaborationId,
     groupNames: [CalloutGroupName.Subspaces],
   });
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: loading || !spaceId });
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
@@ -74,12 +81,12 @@ const SpaceSubspacesPage = () => {
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={item => (
               <SubspaceCard
-                displayName={item.profile.displayName}
-                banner={item.profile.cardBanner}
-                tags={item.profile.tagset?.tags!}
-                tagline={item.profile.tagline!}
-                vision={item.context?.vision!}
-                journeyUri={item.profile.url}
+                displayName={item.about.profile.displayName}
+                banner={item.about.profile.cardBanner}
+                tags={item.about.profile.tagset?.tags!}
+                tagline={item.about.profile.tagline!}
+                vision={item.about.why!}
+                journeyUri={item.about.profile.url}
                 locked={item.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={visibility}
                 member={item.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}

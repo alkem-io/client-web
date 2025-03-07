@@ -1,13 +1,13 @@
-import { FC, useEffect, useMemo, createContext } from 'react';
 import {
   refetchUserProviderQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
   useUserProviderQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
+import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
 import { toUserMetadata, UserMetadata } from '@/domain/community/user';
 
 export interface UserContextValue {
@@ -34,10 +34,14 @@ const UserContext = createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider: FC = ({ children }) => {
+const UserProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
-  const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
+  const {
+    data: meData,
+    loading: loadingMe,
+    error: userProviderError,
+  } = useUserProviderQuery({ skip: !isAuthenticated });
 
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
@@ -51,10 +55,10 @@ const UserProvider: FC = ({ children }) => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser) {
+    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError) {
       createUserProfile();
     }
-  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser]);
+  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error]);
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 
@@ -110,4 +114,4 @@ const UserProvider: FC = ({ children }) => {
   );
 };
 
-export { UserProvider, UserContext };
+export { UserContext, UserProvider };

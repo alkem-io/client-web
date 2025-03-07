@@ -1,6 +1,0 @@
-fragment ContextDetailsProvider on Context {
-  id
-  vision
-  impact
-  who
-}

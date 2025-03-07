@@ -6,9 +6,8 @@ query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
         id
         myPrivileges
       }
-      profile {
-        id
-        url
+      about {
+        ...SpaceAboutLight
       }
       provider {
         ...ContributorDetails

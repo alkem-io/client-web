@@ -1,6 +1,6 @@
 import { onError } from '@apollo/client/link/error';
 import { error as sentryError, TagCategoryValues } from '@/core/logging/sentry/log';
-import { useApm } from 'core/analytics/apm/context/index';
+import { useApm } from '@/core/analytics/apm/context';
 
 const getErrorCode = (error: Error & { extensions?: { code?: string } }) => {
   return error?.extensions?.code ?? undefined;
@@ -24,7 +24,7 @@ export const useErrorLoggerLink = (errorLogging = false) => {
 
     const errors: Error[] = [];
     if (graphQLErrors) {
-      errors.push(...graphQLErrors);
+      errors.push(...(graphQLErrors as Error[]));
     }
 
     if (networkError) {

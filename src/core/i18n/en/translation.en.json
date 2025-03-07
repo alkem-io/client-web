@@ -307,7 +307,6 @@
     "field-required": "This field is required",
     "field-min-length": "This field must be minimum of {{min}} characters",
     "field-max-length": "This field must be maximum of {{max}} characters",
-    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
@@ -320,6 +319,7 @@
     "dashboard": "Dashboard",
     "contribute": "Contribute",
     "context": "Context",
+    "index": "Profile",
     "community": "Community",
     "library": "Library",
     "templateLibrary": "Template Library",
@@ -722,24 +722,24 @@
         "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Background",
-        "description": "Give a brief overview of the need for this Space and how it came about.",
+      "description": {
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "What will this Space change? How will people and organizations be affected?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "What is this community about?",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should be involved?",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       }
     },
@@ -755,28 +755,23 @@
         "placeholder": ""
       },
       "description": {
-        "title": "A description of the subspace that is visible on the subspace dashboard",
+        "title": "What",
         "description": "",
         "placeholder": ""
       },
-      "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+      "when": {
+        "title": "Impact",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
-        "title": "Additional context",
-        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
-        "placeholder": ""
-      },
-      "vision": {
-        "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -804,24 +799,24 @@
         "description": "In one sentence, explain what this Subspace is about.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Background",
-        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
+      "description": {
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Subspace.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -967,7 +962,7 @@
       "aria-label": "Powered by Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
     "journeyPageBannerCard": {
       "parentJourney": "Part of:"
@@ -1301,6 +1296,7 @@
     "visual-upload": {
       "loading": "Image is loading",
       "success": "Image uploaded successfully",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Upload image",
       "no-data": "Not yet set"
     },
@@ -1418,7 +1414,7 @@
         "select": "Select a host"
       },
       "read-access": "Allow read access for non-space members to Subspaces",
-      "about": "About this Space",
+      "about": "Details",
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
@@ -1590,6 +1586,19 @@
         },
         "website": {
           "title": "Website"
+        },
+        "references": {
+          "title": "References"
+        },
+        "engines": {
+          "external": "OpenAI Generic",
+          "externalAssistant": "OpenAI Assistant",
+          "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+        },
+        "bodyOfKnowledge": {
+          "title": "Body of Knowledge",
+          "privateBokTooltip": "This Body of Knowledge is private",
+          "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:"
         }
       }
     },
@@ -1813,6 +1822,9 @@
       "generic": {
         "sections": {
           "profile": {
+            "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
+          },
+          "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
           "context": {
@@ -2519,6 +2531,8 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "loadingScene": "Loading scene",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>",
       "state-actions": {
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",
@@ -3099,7 +3113,7 @@
     },
     "initial": {
       "title": "Create a Virtual Contributor",
-      "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
+      "profileDescription": "Choose a name and avatar now, or personalize your profile later on the VC Profile page.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",

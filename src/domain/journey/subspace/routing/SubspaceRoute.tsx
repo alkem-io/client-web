@@ -6,7 +6,7 @@ import SubspaceProvider from '../context/SubspaceProvider';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
-import SubspaceAboutPage from '../pages/SubspaceAboutPage';
+import SubspaceAboutPage from '../../../space/about/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -15,15 +15,15 @@ import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import Loading from '@/core/ui/loading/Loading';
 
 const SubspaceRoute = () => {
   const { spaceId, spaceLevel, loading } = useUrlResolver();
 
   // This avoids race conditions when the url has just changed from space to a subspace,
   // react router gets to execute this but the urlResolver is not yet done resolving
+  // TODO: revise this, we should not be delaying the route loading
   if (spaceLevel === SpaceLevel.L0 || loading) {
-    return <Loading />;
+    return null; // with loading spinner the entire page is shifted down
   }
 
   return (

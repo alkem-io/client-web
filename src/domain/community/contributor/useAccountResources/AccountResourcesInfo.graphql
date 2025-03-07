@@ -4,10 +4,13 @@ query AccountResourcesInfo($accountId: UUID!) {
       id
       spaces {
         id
-        profile {
-          ...AccountResourceProfile
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
+        about {
+          id
+          profile {
+            ...AccountResourceProfile
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
         }
       }
@@ -43,9 +46,8 @@ query AccountResourcesInfo($accountId: UUID!) {
         spaceVisibilityFilter
         spaceListFilter {
           id
-          profile {
-            id
-            displayName
+          about {
+            ...SpaceAboutLight
           }
         }
         subdomain

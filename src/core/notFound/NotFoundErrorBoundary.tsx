@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface Props {
+interface Props extends React.PropsWithChildren {
   errorComponent: React.ReactNode;
 }
 

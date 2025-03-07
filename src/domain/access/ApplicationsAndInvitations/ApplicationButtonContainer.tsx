@@ -1,5 +1,3 @@
-import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
-import { useUserContext } from '@/domain/community/user';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinRoleSetMutation,
@@ -8,31 +6,22 @@ import {
   useUserPendingMembershipsQuery,
   useUserProfileLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useUserContext } from '@/domain/community/user';
+import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
-import { PropsWithChildren } from 'react';
+import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
 
-interface ApplicationContainerEntities {
-  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>;
-}
-
-interface ApplicationContainerActions {}
-
-interface ApplicationContainerState {
-  loading: boolean;
-}
-
-export interface ApplicationButtonContainerProps
-  extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
+export interface ApplicationButtonContainerProps {
   parentSpaceId?: string;
   journeyId?: string;
   loading?: boolean;
   onJoin?: (params: { communityId: string }) => void;
+  children: (props: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>, loading: boolean) => ReactNode;
 }
 
 export const ApplicationButtonContainer = ({
@@ -41,7 +30,7 @@ export const ApplicationButtonContainer = ({
   loading: loadingParams = false,
   onJoin,
   children,
-}: PropsWithChildren<ApplicationButtonContainerProps>) => {
+}: ApplicationButtonContainerProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
@@ -102,9 +91,9 @@ export const ApplicationButtonContainer = ({
   const space = _communityPrivileges?.lookup.space;
   const parentSpace = _communityPrivileges?.parentSpace?.space;
 
-  const applyUrl = space?.profile.url;
-  const challengeName = space?.profile.displayName;
-  const spaceName = parentSpace?.profile.displayName;
+  const applyUrl = space?.about.profile.url;
+  const challengeName = space?.about.profile.displayName;
+  const spaceName = parentSpace?.about.profile.displayName;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinRoleSetMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
@@ -123,7 +112,7 @@ export const ApplicationButtonContainer = ({
   const isChildJourney = !!parentSpaceId;
   const isParentMember = parentSpace?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = parentSpace?.profile.url;
+  const parentUrl = parentSpace?.about.profile.url;
 
   const rolesetPrivileges = space?.community?.roleSet?.authorization?.myPrivileges ?? [];
 
@@ -187,17 +176,7 @@ export const ApplicationButtonContainer = ({
     loading,
   };
 
-  return (
-    <>
-      {children(
-        {
-          applicationButtonProps,
-        },
-        { loading },
-        {}
-      )}
-    </>
-  );
+  return <>{children(applicationButtonProps, loading)}</>;
 };
 
 export default ApplicationButtonContainer;

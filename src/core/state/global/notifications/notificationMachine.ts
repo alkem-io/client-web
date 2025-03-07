@@ -3,7 +3,7 @@ import { assign, createMachine } from 'xstate';
 
 export type Severity = 'info' | 'warning' | 'error' | 'success';
 
-export type Notification = {
+type Notification = {
   id: string;
   severity: Severity;
   message: string;
@@ -19,19 +19,24 @@ export type NotificationsEvent =
   | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
   | { type: typeof CLEAR_NOTIFICATION; payload: { id: string } };
 
-export const notificationMachine = createMachine<NotificationsContext, NotificationsEvent>({
+type NotificationMachineTypes = {
+  context: NotificationsContext;
+  events: NotificationsEvent;
+};
+
+export const notificationMachine = createMachine({
   id: 'notification',
   initial: 'active',
-  predictableActionArguments: true,
   context: {
     notifications: [],
   },
+  types: {} as NotificationMachineTypes,
   states: {
     active: {
       on: {
         PUSH: {
           actions: assign({
-            notifications: (context, event) => [
+            notifications: ({ context, event }) => [
               ...context.notifications,
               { id: v4(), message: event.payload.message, severity: event.payload.severity || 'info' },
             ],
@@ -39,7 +44,7 @@ export const notificationMachine = createMachine<NotificationsContext, Notificat
         },
         CLEAR: {
           actions: assign({
-            notifications: (context, event) => context.notifications.filter(x => x.id !== event.payload.id),
+            notifications: ({ context, event }) => context.notifications.filter(x => x.id !== event.payload.id),
           }),
         },
       },

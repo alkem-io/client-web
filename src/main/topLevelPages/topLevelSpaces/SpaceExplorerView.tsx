@@ -10,7 +10,12 @@ import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceSubspaceCard from '@/domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { CommunityMembershipStatus, ProfileType, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  ProfileType,
+  SpaceLevel,
+  SpacePrivacyMode,
+} from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -46,10 +51,13 @@ export enum SpacesExplorerMembershipFilter {
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
 
 interface ParentSpace extends Identifiable {
-  profile: {
-    displayName: string;
-    avatar?: Visual;
-    cardBanner?: Visual;
+  level: SpaceLevel;
+  about: {
+    profile: {
+      displayName: string;
+      avatar?: Visual;
+      cardBanner?: Visual;
+    };
   };
 }
 
@@ -58,19 +66,20 @@ type WithParent<ParentInfo extends {}> = {
 };
 
 interface Space extends Identifiable {
-  profile: {
-    url: string;
-    displayName: string;
-    tagline?: string;
-    type?: ProfileType;
-    tagset?: {
-      tags: string[];
+  level: SpaceLevel;
+  about: {
+    profile: {
+      url: string;
+      displayName: string;
+      tagline?: string;
+      type?: ProfileType;
+      tagset?: {
+        tags: string[];
+      };
+      avatar?: Visual;
+      cardBanner?: Visual;
     };
-    avatar?: Visual;
-    cardBanner?: Visual;
-  };
-  context?: {
-    vision?: string;
+    why?: string;
   };
   community?: {
     roleSet?: {
@@ -86,18 +95,18 @@ interface Space extends Identifiable {
 }
 
 interface WithBanner {
-  profile: { avatar?: Visual; cardBanner?: Visual };
+  about: { profile: { avatar?: Visual; cardBanner?: Visual } };
 }
 
 const collectParentAvatars = <Journey extends WithBanner & WithParent<WithBanner>>(
-  { profile, parent }: Journey,
+  { about, parent }: Journey,
   initial: string[] = []
 ) => {
-  if (!profile) {
+  if (!about?.profile) {
     return initial;
   }
 
-  const { cardBanner, avatar = cardBanner } = profile;
+  const { cardBanner, avatar = cardBanner } = about?.profile;
   const collected = [avatar?.uri ?? '', ...initial];
 
   return parent ? collectParentAvatars(parent, collected) : collected;
@@ -169,24 +178,28 @@ export const SpaceExplorerView = ({
       if (!space) {
         return;
       }
+      const {
+        id,
+        about: { profile },
+      } = space;
 
       vs.push(
         <SpaceSubspaceCard
-          key={space.id}
-          tagline={space.profile?.tagline ?? ''}
-          displayName={space.profile?.displayName}
-          vision={space.context?.vision ?? ''}
-          journeyUri={space.profile?.url}
-          type={space.profile?.type!}
-          banner={space.profile?.cardBanner}
+          key={id}
+          tagline={profile?.tagline ?? ''}
+          displayName={profile?.displayName}
+          vision={space.about.why ?? ''}
+          journeyUri={profile?.url}
+          level={space.level!}
+          banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space) ?? []}
-          tags={space.matchedTerms ?? space.profile?.tagset?.tags.length ? space.profile?.tagset?.tags : undefined}
-          spaceDisplayName={space.parent?.profile?.displayName}
+          tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
+          spaceDisplayName={space.parent?.about.profile?.displayName}
           matchedTerms={!!space.matchedTerms}
           label={
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
-                type={space.profile?.type!}
+                level={space.level}
                 member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
               />
@@ -236,11 +249,11 @@ export const SpaceExplorerView = ({
       {hasNoMemberSpaces && (
         <CaptionSmall
           component={RouterLink}
-          to={(authenticated ? welcomeSpace?.profile.url : buildLoginUrl(welcomeSpace?.profile.url)) ?? ''}
+          to={(authenticated ? welcomeSpace?.about.profile.url : buildLoginUrl(welcomeSpace?.about.profile.url)) ?? ''}
           marginX="auto"
           paddingY={gutters()}
         >
-          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.profile.displayName })}
+          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.about.profile.displayName })}
         </CaptionSmall>
       )}
       {searchTerms.length !== 0 && spacesLength === 0 && loadingSearchResults === false && (

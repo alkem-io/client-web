@@ -6,12 +6,12 @@ import {
   useGuidanceRoomIdQuery,
   useGuidanceRoomMessagesQuery,
   useResetChatGuidanceMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
-import useSubscribeOnRoomEvents from '../../../domain/collaboration/callout/useSubscribeOnRoomEvents';
-import { Message } from '../../../domain/communication/room/models/Message';
-import { buildAuthorFromUser } from '../../../domain/community/user/utils/buildAuthorFromUser';
+} from '@/core/apollo/generated/apollo-hooks';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { Message } from '@/domain/communication/room/models/Message';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
-import useLoadingState from '../../../domain/shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface Provided {
   loading?: boolean;
@@ -21,7 +21,7 @@ interface Provided {
   isSubscribedToMessages: boolean;
 }
 
-const useChatGuidanceCommunication = (): Provided => {
+const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { t, i18n } = useTranslation();
 
   const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
@@ -29,7 +29,13 @@ const useChatGuidanceCommunication = (): Provided => {
 
   const [sendingFirstMessage, setSendingFirstMessage] = useState<boolean>(false);
 
-  const { data: roomIdData, loading: roomIdLoading, refetch: refetchGuidanceRoomId } = useGuidanceRoomIdQuery();
+  const {
+    data: roomIdData,
+    loading: roomIdLoading,
+    refetch: refetchGuidanceRoomId,
+  } = useGuidanceRoomIdQuery({
+    skip,
+  });
   const roomId = roomIdData?.me.user?.guidanceRoom?.id;
 
   const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({

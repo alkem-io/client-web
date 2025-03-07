@@ -1,14 +1,14 @@
 import type { Parent } from 'unist';
 import type { H } from 'rehype-remark';
 import { useTranslation } from 'react-i18next';
-import type { HTML } from 'mdast-util-to-hast/lib/handlers/html';
+import type { Html } from 'mdast-util-to-hast/lib/handlers/html';
 import type { Element } from 'hast-util-to-mdast/lib/handlers/strong';
 import { html } from 'mdast-builder';
 import { u } from 'unist-builder';
 import { Converter } from './Converter';
 import { once } from 'lodash';
 
-const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
+const isEmptyLine = (node: Html, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
 const allowDangerousHtmlIframeProps = [
   'src',
   'width',
@@ -111,7 +111,7 @@ const UnifiedConverter = (): Converter => {
         .use(remarkRehype, {
           allowDangerousHtml: true,
           handlers: {
-            html: (state, node, parent) => {
+            html: (state, node, parent = null) => {
               if (isEmptyLine(node, parent)) {
                 return u('element', { tagName: 'p' });
               }

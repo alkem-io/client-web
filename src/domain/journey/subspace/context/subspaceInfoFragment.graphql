@@ -1,26 +1,25 @@
 fragment SubspacePendingMembershipInfo on Space {
   id
   level
-  profile {
-    id
-    displayName
-    tagline
-    description
-    url
-    tagset {
-      ...TagsetDetails
-    }
-    references {
+  about {
+    ...SpaceAboutDetails
+    authorization {
       id
-      name
-      uri
+      myPrivileges
     }
-    visuals {
-      ...VisualFull
-    }
-    location {
-      ...fullLocation
-    }
+    # profile {
+    #   references {
+    #     id
+    #     name
+    #     uri
+    #   }
+    #   visuals {
+    #     ...VisualFull
+    #   }
+    #   location {
+    #     ...fullLocation
+    #   }
+    # }
   }
   community {
     id
@@ -35,12 +34,5 @@ fragment SubspacePendingMembershipInfo on Space {
   authorization {
     id
     myPrivileges
-  }
-  context {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
   }
 }

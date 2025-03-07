@@ -46,6 +46,7 @@ import { IconButton } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import useNavigate from '@/core/routing/useNavigate';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const enum Entities {
   Space = 'Space',
@@ -76,9 +77,12 @@ export interface AccountTabResourcesProps {
   spaces: {
     id: string;
     level: SpaceLevel;
-    profile: AccountProfile & {
-      cardBanner?: { uri: string };
-      tagline?: string;
+    about: {
+      id: string;
+      profile: AccountProfile & {
+        cardBanner?: { uri: string };
+        tagline?: string;
+      };
     };
     community: {
       id: string;
@@ -116,9 +120,7 @@ export interface AccountTabResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      profile: {
-        displayName: string;
-      };
+      about: SpaceAboutMinimalUrlModel;
     }[];
     subdomain: string;
   }[];
@@ -520,7 +522,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 account?.spaces.map(space => (
                   <JourneyCardHorizontal
                     key={space.id}
-                    journey={{ profile: space.profile, spaceLevel: space.level, community: {} }}
+                    space={{ about: space.about, level: space.level }}
                     size="medium"
                     deepness={0}
                     seamless

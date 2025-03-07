@@ -70,15 +70,17 @@ export interface InAppNotificationProps {
   };
   space?: {
     level: SpaceLevel;
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
+    about: {
+      profile:
+        | {
+            displayName: string;
+            url: string;
+            visual?: {
+              uri: string;
+            };
+          }
+        | undefined;
+    };
   };
   comment?: string;
   commentUrl?: string;

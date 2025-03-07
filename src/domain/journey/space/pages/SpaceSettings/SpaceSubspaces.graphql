@@ -2,9 +2,8 @@ query SpaceSubspaces($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        id
-        displayName
+      about {
+        ...SpaceAboutMinimal
       }
       account {
         id
@@ -29,14 +28,8 @@ query SpaceSubspaces($spaceId: UUID!) {
       }
       subspaces {
         id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
+        about {
+          ...SpaceAboutCardAvatar
         }
       }
     }

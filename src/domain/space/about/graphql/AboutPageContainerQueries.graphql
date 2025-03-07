@@ -1,0 +1,71 @@
+# context tab fragments
+fragment MetricsItem on NVP {
+  id
+  name
+  value
+}
+#
+query AboutPageNonMembers($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        ...SpaceAboutDetails
+      }
+      provider {
+        ...ContributorDetails
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        roleSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          currentState {
+            displayName
+          }
+          states {
+            displayName
+            description
+          }
+        }
+      }
+    }
+  }
+}
+#
+query AboutPageMembers($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        roleSet {
+          id
+        }
+      }
+      about {
+        ...SpaceAboutDetails
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

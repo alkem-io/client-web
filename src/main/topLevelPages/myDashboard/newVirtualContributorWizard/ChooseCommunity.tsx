@@ -37,8 +37,8 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
     const addSelectableSpace = (space: SelectableSpace) => {
       result.push({
         id: space.id,
-        name: `${space.profile.displayName}`,
-        url: space.profile.url,
+        name: `${space.about.profile.displayName}`,
+        url: space.about.profile.url,
         roleSetId: space.community.roleSet.id,
       });
     };

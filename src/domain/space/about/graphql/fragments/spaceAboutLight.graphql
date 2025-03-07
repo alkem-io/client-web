@@ -1,0 +1,20 @@
+fragment SpaceAboutLight on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    url
+    tagline
+    description
+    tagset {
+      id
+      tags
+    }
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+}

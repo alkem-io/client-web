@@ -6,7 +6,7 @@ query adminSpacesList {
 
 fragment AdminSpace on Space {
   id
-  nameID  # Used for the space form
+  nameID # Used for the space form
   visibility
   subscriptions {
     name
@@ -18,10 +18,8 @@ fragment AdminSpace on Space {
       displayName
     }
   }
-  profile {
-    id
-    displayName
-    url
+  about {
+    ...SpaceAboutLight
   }
   authorization {
     id
