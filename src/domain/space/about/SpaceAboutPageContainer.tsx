@@ -158,6 +158,8 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
         tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
         url: nonMemberSpaceAboutProfile?.url ?? '',
         visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
+        location: nonMemberSpaceAboutProfile?.location,
+        references: nonMemberSpaceAboutProfile?.references ?? [],
       },
     };
   }, [nonMemberSpaceAboutProfile]);
