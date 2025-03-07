@@ -36,6 +36,7 @@ import useNavigate from '@/core/routing/useNavigate';
 export interface SpaceAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
   spaceId?: string;
+  parentSpaceId?: string; // needed for the application button on L2 level
   communityId?: string;
   spaceLevel: SpaceLevel | undefined;
   about?: SpaceAboutDetailsModel | undefined;
@@ -57,6 +58,7 @@ const gradient = (theme: Theme) =>
 const SpaceAboutDialog = ({
   open,
   spaceId,
+  parentSpaceId,
   communityId,
   spaceLevel = SpaceLevel.L0,
   about,
@@ -194,7 +196,7 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Box display="flex" justifyContent="center" width="100%">
-                <ApplicationButtonContainer journeyId={spaceId}>
+                <ApplicationButtonContainer journeyId={spaceId} parentSpaceId={parentSpaceId}>
                   {(applicationButtonProps, loading) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;

@@ -9,7 +9,7 @@ import SubspaceContributorsDialogContent from '@/domain/community/community/enti
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const SubspaceAboutPage = () => {
-  const { spaceId, spaceLevel } = useUrlResolver();
+  const { spaceId, parentSpaceId, spaceLevel } = useUrlResolver();
   const { communityId, about } = useSubSpace();
 
   const backToParentPage = useBackToStaticPath(about.profile.url);
@@ -26,6 +26,7 @@ const SubspaceAboutPage = () => {
             open
             spaceId={spaceId}
             spaceLevel={spaceLevel}
+            parentSpaceId={parentSpaceId}
             about={about}
             sendMessageToCommunityLeads={sendMessageToCommunityLeads}
             metrics={metrics}
