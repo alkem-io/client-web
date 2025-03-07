@@ -1,9 +1,9 @@
 query JourneyBreadcrumbsSpace(
-  $spaceId: UUID!,
-  $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000",
-  $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000",
-  $includeSubspaceL1: Boolean = false,
-  $includeSubspaceL2: Boolean = false,
+  $spaceId: UUID!
+  $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000"
+  $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000"
+  $includeSubspaceL1: Boolean = false
+  $includeSubspaceL2: Boolean = false
 ) {
   lookup {
     space(ID: $spaceId) {
@@ -21,24 +21,30 @@ query JourneyBreadcrumbsSpace(
 fragment JourneyBreadcrumbsSpace on Space {
   id
   level
-  profile {
+  about {
     id
-    url
-    displayName
-    avatar: visual(type: BANNER) {
-      ...VisualUri
+    profile {
+      id
+      url
+      displayName
+      avatar: visual(type: BANNER) {
+        ...VisualUri
+      }
     }
   }
 }
 fragment JourneyBreadcrumbsSubpace on Space {
   id
   level
-  profile {
+  about {
     id
-    url
-    displayName
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
+    profile {
+      id
+      url
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
     }
   }
 }

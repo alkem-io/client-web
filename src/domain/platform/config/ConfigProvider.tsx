@@ -1,12 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
-import { ApolloError } from '@apollo/client';
-import queryRequest from '@/core/http/queryRequest';
-import Loading from '@/core/ui/loading/Loading';
 import { ConfigurationDocument } from '@/core/apollo/generated/apollo-hooks';
 import { ConfigurationQuery, Metadata } from '@/core/apollo/generated/graphql-schema';
-import { Configuration } from './configuration';
-import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
+import queryRequest from '@/core/http/queryRequest';
 import { TagCategoryValues, warn as logWarn } from '@/core/logging/sentry/log';
+import Loading from '@/core/ui/loading/Loading';
+import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
+import { ApolloError } from '@apollo/client';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
+import { Configuration } from './configuration';
 
 export interface ConfigContextProps {
   config?: Configuration;
@@ -15,7 +15,7 @@ export interface ConfigContextProps {
   error?: ApolloError;
 }
 
-interface ConfigProviderProps {
+interface ConfigProviderProps extends PropsWithChildren {
   url: string;
 }
 
@@ -70,4 +70,4 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
   );
 };
 
-export { ConfigProvider, ConfigContext };
+export { ConfigContext, ConfigProvider };

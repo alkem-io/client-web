@@ -24,7 +24,7 @@ const {
   createLayout,
 } = createLayoutHolder();
 
-export const DialogFooter = createLayout(({ children }: PropsWithChildren<{}>) => <>{children}</>);
+export const DialogFooter = createLayout(({ children }: PropsWithChildren) => <>{children}</>);
 
 const DialogContainer = ({
   columns,

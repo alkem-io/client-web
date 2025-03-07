@@ -75,7 +75,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
     const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
       spaceMemberships?.map(space => ({
         value: space.id,
-        label: space.profile.displayName,
+        label: space.about.profile.displayName,
       })) ?? [];
 
     spaces?.unshift({

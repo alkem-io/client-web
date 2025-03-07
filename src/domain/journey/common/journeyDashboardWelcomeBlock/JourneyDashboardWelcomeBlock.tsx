@@ -13,7 +13,7 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface JourneyDashboardWelcomeBlockProps {
   level: SpaceLevel | undefined;
-  vision: string;
+  description: string;
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
   leadOrganizations: ContributorViewProps[] | undefined;
@@ -27,7 +27,7 @@ const JourneyDashboardWelcomeBlock = ({
   level,
   onContactLeadUser,
   onContactLeadOrganization,
-  vision,
+  description,
   member = false,
 }: JourneyDashboardWelcomeBlockProps) => {
   const leadOrganizationsUnique = useMemo(
@@ -43,7 +43,7 @@ const JourneyDashboardWelcomeBlock = ({
         overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
       >
         {member && <DashboardMemberIcon level={spaceLevel} />}
-        <WrapperMarkdown disableParagraphPadding>{vision}</WrapperMarkdown>
+        <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>
       </OverflowGradient>
       {leadUsers && leadUsers.length > 0 && (
         <Gutters flexWrap="wrap" row disablePadding>

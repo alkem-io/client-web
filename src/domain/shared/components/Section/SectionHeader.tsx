@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 
-interface SectionHeaderProps {
+interface SectionHeaderProps extends PropsWithChildren {
   text: ReactNode;
 }
 

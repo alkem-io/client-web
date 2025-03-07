@@ -21,18 +21,18 @@ export interface MetricsItemSpec {
 const useMetricsItems = (metrics: Metric[] | undefined, specs: MetricsItemSpec[] | undefined) => {
   const { t } = useTranslation();
 
-  const metricsItems: MetricItem[] = useMemo(() => {
-    return (
+  const metricsItems = useMemo(
+    () =>
       specs?.map(({ label, type, color }) => {
         return {
           type,
           color,
           name: t(label),
           count: getMetricCount(metrics, type),
-        };
-      }) ?? []
-    );
-  }, [metrics, specs, t]);
+        } as MetricItem;
+      }) ?? [],
+    [metrics, specs, t]
+  );
 
   return metricsItems;
 };

@@ -1,0 +1,16 @@
+fragment SpaceAboutCardBanner on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    url
+    tagline
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+}

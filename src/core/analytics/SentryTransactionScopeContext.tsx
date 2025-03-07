@@ -19,7 +19,7 @@ interface TransactionScopeStack {
 
 const TransactionScopeContext = createContext<TransactionScopeStack | undefined>(undefined);
 
-export const SentryTransactionScopeContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const SentryTransactionScopeContextProvider = ({ children }: PropsWithChildren) => {
   const transactionScopeStack = useRef<TransactionScope[]>([]).current;
 
   const isCurrentScope = (scope: TransactionScope) => isEqual(last(transactionScopeStack), scope);

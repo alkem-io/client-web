@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
-import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import OrganizationPageBanner from '@/domain/community/contributor/organization/OrganizationPageBanner';
 import OrganizationPageContainer from '@/domain/community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { Diversity3Outlined, Settings } from '@mui/icons-material';
+import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { Diversity3Outlined, Settings } from '@mui/icons-material';
+import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { organizationAdminTabs } from '../OrganizationAdminTabs';
 
-interface OrganizationAdminLayoutProps {
+interface OrganizationAdminLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 }
