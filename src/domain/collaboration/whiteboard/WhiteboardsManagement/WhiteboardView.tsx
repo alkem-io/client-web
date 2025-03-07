@@ -109,7 +109,7 @@ const WhiteboardView = ({
 
                 <FullscreenButton />
 
-                <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={new Date()} />
+                <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
               </>
             ),
           }}
