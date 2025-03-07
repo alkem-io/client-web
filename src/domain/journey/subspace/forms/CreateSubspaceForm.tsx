@@ -77,7 +77,7 @@ export const CreateSubspaceForm = ({
       .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
       .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
     collaborationTemplateId: yup.string().nullable(),
   });
@@ -109,7 +109,7 @@ export const CreateSubspaceForm = ({
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikMarkdownField
-            name="background"
+            name="description"
             title={t(`context.${level}.description.title`)}
             rows={5}
             helperText={t(`context.${level}.description.description`)}
