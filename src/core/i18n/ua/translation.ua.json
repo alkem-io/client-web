@@ -307,7 +307,6 @@
     "field-required": "Це поле є обов'язковим для заповнення",
     "field-min-length": "Це поле має містити мінімум {{min}} символів",
     "field-max-length": "Це поле має містити максимум {{max}} символів",
-    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Членство",
     "owner": "Васник",
     "admin": "Адміністратор",
@@ -2541,6 +2540,8 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "loadingScene": "Loading scene",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>",
       "state-actions": {
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",
