@@ -307,7 +307,6 @@
     "field-required": "Dieses Feld ist erforderlich",
     "field-min-length": "Dieses Feld muss mindestens {{count}} Zeichen enthalten",
     "field-max-length": "Dieses Feld muss mindestens {{count}} Zeichen enthalten",
-    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Mitgliedschaft",
     "owner": "Besitzer",
     "admin": "Admin",
@@ -2541,6 +2540,8 @@
       "no-whiteboards": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
       "locked-by": "{{user}} bearbeitet gerade dieses Whiteboard",
       "loadingScene": "Loading scene",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>",
       "state-actions": {
         "save-as-template": "Als Vorlage speichern",
         "save-and-check-in": "Speichern & Bearbeiten beenden",
