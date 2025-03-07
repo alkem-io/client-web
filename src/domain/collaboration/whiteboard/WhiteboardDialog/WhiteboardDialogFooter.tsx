@@ -26,7 +26,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 interface WhiteboardDialogFooterProps {
   whiteboardUrl: string | undefined;
   lastSaveError: string | undefined;
-  consecutiveSaveErrors: number;
   canUpdateContent: boolean;
   onDelete: () => void;
   canDelete?: boolean;

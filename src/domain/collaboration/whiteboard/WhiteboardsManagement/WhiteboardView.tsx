@@ -83,7 +83,6 @@ const WhiteboardView = ({
       {({ state: actionsState, actions }) => (
         <WhiteboardDialog
           entities={{ whiteboard }}
-          consecutiveSaveErrors={consecutiveSaveErrors}
           lastSuccessfulSavedDate={lastSuccessfulSavedDate}
           actions={{
             onCancel: handleCancel,

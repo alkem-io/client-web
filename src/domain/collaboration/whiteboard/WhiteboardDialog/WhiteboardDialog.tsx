@@ -60,7 +60,6 @@ interface WhiteboardDialogProps {
   entities: {
     whiteboard: WhiteboardDetails | undefined;
   };
-  consecutiveSaveErrors: number;
   lastSuccessfulSavedDate: Date | undefined;
   actions: {
     onCancel: () => void;
@@ -71,7 +70,7 @@ interface WhiteboardDialogProps {
     onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
     onDelete: (whiteboard: Identifiable) => Promise<void>;
     setLastSuccessfulSavedDate: (date: Date) => void;
-    setConsecutiveSaveErrors: (count: number) => void;
+    setConsecutiveSaveErrors: React.Dispatch<React.SetStateAction<number>>;
   };
   options: {
     show: boolean;
@@ -92,14 +91,7 @@ interface WhiteboardDialogProps {
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const WhiteboardDialog = ({
-  entities,
-  actions,
-  options,
-  state,
-  consecutiveSaveErrors,
-  lastSuccessfulSavedDate,
-}: WhiteboardDialogProps) => {
+const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSavedDate }: WhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
@@ -266,7 +258,7 @@ const WhiteboardDialog = ({
           onRemoteSave: (error?: string) => {
             if (error) {
               setLastSaveError(error);
-              actions.setConsecutiveSaveErrors?.(consecutiveSaveErrors + 1);
+              actions.setConsecutiveSaveErrors?.(prevCount => prevCount + 1);
             } else {
               actions.setLastSuccessfulSavedDate?.(new Date());
               setLastSaveError(undefined);
@@ -316,7 +308,6 @@ const WhiteboardDialog = ({
                   whiteboardUrl={whiteboard.profile.url}
                   collaboratorModeReason={modeReason}
                   lastSaveError={lastSaveError}
-                  consecutiveSaveErrors={consecutiveSaveErrors}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}
