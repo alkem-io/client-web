@@ -14,11 +14,18 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import React, { Suspense } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
 const SpaceRoute = () => {
+  // Redirect to about before loading anything else
+  const urlResolver = useUrlResolver();
+  const spaceId = urlResolver.spaceId;
+  useAboutRedirect({ spaceId, skip: !spaceId });
+
   return (
     <Routes>
       <Route index element={<Navigate replace to={routes.Dashboard} />} />

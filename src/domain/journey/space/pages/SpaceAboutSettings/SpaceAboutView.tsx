@@ -7,7 +7,7 @@ import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.m
 import { Actions } from '@/core/ui/actions/Actions';
 import Loading from '@/core/ui/loading/Loading';
 
-export const SpaceContextView = () => {
+export const SpaceAboutView = () => {
   const notify = useNotification();
   const { spaceId, spaceLevel, loading: resolverLoading } = useUrlResolver();
   const { data: spaceData, loading: spaceDataLoading } = useSpaceAboutBaseQuery({
@@ -70,4 +70,4 @@ export const SpaceContextView = () => {
   );
 };
 
-export default SpaceContextView;
+export default SpaceAboutView;
