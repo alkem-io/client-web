@@ -24,7 +24,7 @@ export interface SubspaceDialogsProps {
   journeyId: string | undefined;
   journeyUrl: string | undefined;
   parentSpaceId: string | undefined;
-  callouts: UseCalloutsSetProvided;
+  calloutsSetProvided: UseCalloutsSetProvided;
   dashboardNavigation: {
     dashboardNavigation: DashboardNavigationItem | undefined;
   };
@@ -36,7 +36,7 @@ export interface SubspaceDialogsProps {
 const SubspaceDialogs = ({
   dialogOpen,
   journeyUrl,
-  callouts,
+  calloutsSetProvided: callouts,
   journeyId,
   parentSpaceId,
   dashboardNavigation,

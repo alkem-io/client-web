@@ -17,6 +17,7 @@ interface SpaceContextProps {
     levelZeroSpaceId: string;
     nameID: string;
     about: SpaceAboutLightModel;
+    collaborationId?: string;
   };
   permissions: SpacePermissions;
   visibility: SpaceVisibility;
@@ -40,6 +41,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
         communityID: '',
       },
     },
+    collaborationId: '',
   },
   permissions: {
     canRead: false,

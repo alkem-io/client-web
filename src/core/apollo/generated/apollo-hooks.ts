@@ -1991,16 +1991,9 @@ export const SubspacePageSpaceFragmentDoc = gql`
         name
         value
       }
-    }
-    community @include(if: $authorizedReadAccessCommunity) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      roleSet {
-        id
-        myMembershipStatus
+      membership {
+        roleSetID
+        communityID
       }
     }
     collaboration {
@@ -17466,7 +17459,7 @@ export function refetchSpaceAboutBaseQuery(variables: SchemaTypes.SpaceAboutBase
 }
 
 export const SubspacePageDocument = gql`
-  query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
+  query SubspacePage($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         ...SubspacePageSpace
@@ -17489,7 +17482,6 @@ export const SubspacePageDocument = gql`
  * const { data, loading, error } = useSubspacePageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */

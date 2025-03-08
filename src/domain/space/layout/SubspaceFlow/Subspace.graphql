@@ -1,4 +1,4 @@
-query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
+query SubspacePage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       ...SubspacePageSpace
@@ -21,16 +21,9 @@ fragment SubspacePageSpace on Space {
       name
       value
     }
-  }
-  community @include(if: $authorizedReadAccessCommunity) {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    roleSet {
-      id
-      myMembershipStatus
+    membership {
+      roleSetID
+      communityID
     }
   }
   collaboration {

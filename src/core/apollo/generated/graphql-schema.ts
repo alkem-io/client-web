@@ -21377,7 +21377,6 @@ export type SpaceAboutMinimalUrlFragment = {
 
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
-  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SubspacePageQuery = {
@@ -21398,6 +21397,13 @@ export type SubspacePageQuery = {
             id: string;
             isContentPublic: boolean;
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              roleSetID?: string | undefined;
+              communityID?: string | undefined;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            };
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -21409,19 +21415,6 @@ export type SubspacePageQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            membership: {
-              __typename?: 'SpaceAboutMembership';
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            };
-          };
-          community?: {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
           };
           collaboration: {
             __typename?: 'Collaboration';
@@ -21453,6 +21446,13 @@ export type SubspacePageSpaceFragment = {
     id: string;
     isContentPublic: boolean;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    membership: {
+      __typename?: 'SpaceAboutMembership';
+      roleSetID?: string | undefined;
+      communityID?: string | undefined;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -21464,19 +21464,6 @@ export type SubspacePageSpaceFragment = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
-    membership: {
-      __typename?: 'SpaceAboutMembership';
-      myMembershipStatus?: CommunityMembershipStatus | undefined;
-      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-    };
-  };
-  community?: {
-    __typename?: 'Community';
-    id: string;
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   };
   collaboration: { __typename?: 'Collaboration'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
   templatesManager?:
