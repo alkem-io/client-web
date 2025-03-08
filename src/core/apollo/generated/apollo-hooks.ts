@@ -215,6 +215,61 @@ export const RoleDefinitionPolicyFragmentDoc = gql`
     }
   }
 `;
+export const RoleSetMemberUserFragmentDoc = gql`
+  fragment RoleSetMemberUser on User {
+    id
+    isContactable
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+    }
+    email
+    firstName
+    lastName
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleSetMemberOrganizationFragmentDoc = gql`
+  fragment RoleSetMemberOrganization on Organization {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
+      url
+    }
+    verification {
+      id
+      status
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const RoleSetMemberVirtualContributorFragmentDoc = gql`
   fragment RoleSetMemberVirtualContributor on VirtualContributor {
     id
@@ -2002,61 +2057,6 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
-export const RoleSetMemberUserFragmentDoc = gql`
-  fragment RoleSetMemberUser on User {
-    id
-    isContactable
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      url
-    }
-    email
-    firstName
-    lastName
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const RoleSetMemberOrganizationFragmentDoc = gql`
-  fragment RoleSetMemberOrganization on Organization {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        country
-        city
-      }
-      url
-    }
-    verification {
-      id
-      status
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2064,6 +2064,10 @@ export const SpacePageFragmentDoc = gql`
     nameID
     about {
       ...SpaceAboutDetails
+      membership {
+        communityID
+        roleSetID
+      }
       profile {
         location {
           ...fullLocation
@@ -2082,7 +2086,7 @@ export const SpacePageFragmentDoc = gql`
       id
       myPrivileges
     }
-    collaboration @include(if: $authorizedReadAccess) {
+    collaboration {
       id
       innovationFlow {
         id
@@ -2096,31 +2100,12 @@ export const SpacePageFragmentDoc = gql`
       ...DashboardTopCallouts
       ...DashboardTimelineAuthorization
     }
-    community @include(if: $authorizedReadAccessCommunity) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      roleSet {
-        id
-        myMembershipStatus
-        leadUsers: usersInRole(role: LEAD) {
-          ...RoleSetMemberUser
-        }
-        leadOrganizations: organizationsInRole(role: LEAD) {
-          ...RoleSetMemberOrganization
-        }
-      }
-    }
   }
   ${SpaceAboutDetailsFragmentDoc}
   ${FullLocationFragmentDoc}
   ${ContributorDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
 `;
 export const ProfileStorageConfigFragmentDoc = gql`
   fragment ProfileStorageConfig on Profile {
@@ -17611,7 +17596,7 @@ export function refetchSpaceTabQuery(variables: SchemaTypes.SpaceTabQueryVariabl
 }
 
 export const SpaceCommunityPageDocument = gql`
-  query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
+  query SpaceCommunityPage($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -17621,14 +17606,12 @@ export const SpaceCommunityPageDocument = gql`
         }
         about {
           ...SpaceAboutLight
+          membership {
+            communityID
+            roleSetID
+          }
           provider {
             ...ContributorDetails
-          }
-        }
-        community @include(if: $includeCommunity) {
-          id
-          roleSet {
-            id
           }
         }
         collaboration {
@@ -17663,7 +17646,6 @@ export const SpaceCommunityPageDocument = gql`
  * const { data, loading, error } = useSpaceCommunityPageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });
  */
@@ -17704,11 +17686,7 @@ export function refetchSpaceCommunityPageQuery(variables: SchemaTypes.SpaceCommu
 }
 
 export const SpacePageDocument = gql`
-  query SpacePage(
-    $spaceId: UUID!
-    $authorizedReadAccess: Boolean = false
-    $authorizedReadAccessCommunity: Boolean = false
-  ) {
+  query SpacePage($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         ...SpacePage
@@ -17731,8 +17709,6 @@ export const SpacePageDocument = gql`
  * const { data, loading, error } = useSpacePageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      authorizedReadAccess: // value for 'authorizedReadAccess'
- *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */

@@ -12,7 +12,6 @@ import {
   RECENT_ACTIVITIES_LIMIT_INITIAL,
   TOP_CALLOUTS_LIMIT,
 } from '@/domain/journey/common/journeyDashboard/constants';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { ApolloError } from '@apollo/client';
 
 export interface ActivityContainerEntities {
@@ -39,12 +38,9 @@ export interface ActivityContainerProps
 
 export const ActivityContainer = ({ spaceId, children }: ActivityContainerProps) => {
   const { user } = useUserContext();
-  const { permissions: spacePermissions } = useSpace();
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
-      authorizedReadAccess: spacePermissions.canRead,
-      authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
     skip: !spaceId,

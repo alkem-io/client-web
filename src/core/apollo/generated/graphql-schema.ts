@@ -21542,7 +21542,6 @@ export type SpaceTabQuery = {
 
 export type SpaceCommunityPageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
-  includeCommunity: Scalars['Boolean'];
 }>;
 
 export type SpaceCommunityPageQuery = {
@@ -21560,6 +21559,13 @@ export type SpaceCommunityPageQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             isContentPublic: boolean;
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            };
             provider:
               | {
                   __typename?: 'Organization';
@@ -21647,13 +21653,7 @@ export type SpaceCommunityPageQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            membership: {
-              __typename?: 'SpaceAboutMembership';
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            };
           };
-          community?: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
@@ -21671,8 +21671,6 @@ export type SpaceCommunityPageQuery = {
 
 export type SpacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
-  authorizedReadAccess?: InputMaybe<Scalars['Boolean']>;
-  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpacePageQuery = {
@@ -21691,6 +21689,12 @@ export type SpacePageQuery = {
             who?: string | undefined;
             why?: string | undefined;
             isContentPublic: boolean;
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+            };
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -21823,15 +21827,11 @@ export type SpacePageQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            membership: {
-              __typename?: 'SpaceAboutMembership';
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          collaboration?: {
+          collaboration: {
             __typename?: 'Collaboration';
             id: string;
             innovationFlow: {
@@ -21868,76 +21868,6 @@ export type SpacePageQuery = {
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
-            };
-          };
-          community?: {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-              leadUsers: Array<{
-                __typename?: 'User';
-                id: string;
-                isContactable: boolean;
-                email: string;
-                firstName: string;
-                lastName: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                };
-              }>;
-              leadOrganizations: Array<{
-                __typename?: 'Organization';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                };
-                verification: {
-                  __typename?: 'OrganizationVerification';
-                  id: string;
-                  status: OrganizationVerificationEnum;
-                };
-              }>;
             };
           };
         }
@@ -21990,6 +21920,12 @@ export type SpacePageFragment = {
     who?: string | undefined;
     why?: string | undefined;
     isContentPublic: boolean;
+    membership: {
+      __typename?: 'SpaceAboutMembership';
+      communityID?: string | undefined;
+      roleSetID?: string | undefined;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -22116,12 +22052,11 @@ export type SpacePageFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  collaboration?: {
+  collaboration: {
     __typename?: 'Collaboration';
     id: string;
     innovationFlow: {
@@ -22158,72 +22093,6 @@ export type SpacePageFragment = {
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
-    };
-  };
-  community?: {
-    __typename?: 'Community';
-    id: string;
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    roleSet: {
-      __typename?: 'RoleSet';
-      id: string;
-      myMembershipStatus?: CommunityMembershipStatus | undefined;
-      leadUsers: Array<{
-        __typename?: 'User';
-        id: string;
-        isContactable: boolean;
-        email: string;
-        firstName: string;
-        lastName: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-        };
-      }>;
-      leadOrganizations: Array<{
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-            | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-      }>;
     };
   };
 };

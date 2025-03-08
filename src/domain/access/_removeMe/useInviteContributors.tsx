@@ -87,7 +87,7 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
         contributorId: virtualContributorId,
         role: RoleName.Member,
       },
-      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceId: spaceId!, includeCommunity: true })],
+      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceId: spaceId! })],
     });
 
     return refetchCommunityVirtualMembers();

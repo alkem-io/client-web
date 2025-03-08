@@ -13,7 +13,7 @@ import useRoleSetApplicationsAndInvitations, {
   InviteContributorsData,
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { useSpaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface useCommunityAdminParams {
   roleSetId: string;
@@ -34,7 +34,7 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
 }
 
 const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
-  const { data: communityProviderData, loading: loadingCommunityProvider } = useSpaceProviderQuery({
+  const { data: communityProviderData, loading: loadingCommunityProvider } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
     },

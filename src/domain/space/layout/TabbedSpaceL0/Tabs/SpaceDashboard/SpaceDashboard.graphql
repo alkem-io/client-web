@@ -1,7 +1,5 @@
 query SpacePage(
   $spaceId: UUID!
-  $authorizedReadAccess: Boolean = false
-  $authorizedReadAccessCommunity: Boolean = false
 ) {
   lookup {
     space(ID: $spaceId) {
@@ -36,6 +34,10 @@ fragment SpacePage on Space {
   nameID # Used for SpaceEdit Page
   about {
     ...SpaceAboutDetails
+    membership {
+      communityID
+      roleSetID
+    }
     profile {
       location {
         ...fullLocation
@@ -54,7 +56,7 @@ fragment SpacePage on Space {
     id
     myPrivileges
   }
-  collaboration @include(if: $authorizedReadAccess) {
+  collaboration {
     id
     innovationFlow {
       id
@@ -68,21 +70,5 @@ fragment SpacePage on Space {
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
   }
-  community @include(if: $authorizedReadAccessCommunity) {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    roleSet {
-      id
-      myMembershipStatus
-      leadUsers: usersInRole(role: LEAD) {
-        ...RoleSetMemberUser
-      }
-      leadOrganizations: organizationsInRole(role: LEAD) {
-        ...RoleSetMemberOrganization
-      }
-    }
-  }
+
 }

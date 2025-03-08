@@ -56,7 +56,7 @@ const ContributionDetailsContainer = ({ entities, children }: EntityDetailsConta
       const space = spaceData.lookup.space;
       return {
         about: space.about,
-        roleSetId: space.community?.roleSet.id,
+        roleSetId: space.about.membership.roleSetID,
         level: space.level,
       };
     }

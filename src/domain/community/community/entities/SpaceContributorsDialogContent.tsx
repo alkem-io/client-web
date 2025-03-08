@@ -8,7 +8,8 @@ import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManage
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
-  const { roleSetId } = useSpace();
+  const { space } = useSpace();
+  const roleSetId = space?.about.membership?.roleSetID;
 
   const { usersByRole, organizationsByRole, loading } = useRoleSetManager({
     roleSetId,

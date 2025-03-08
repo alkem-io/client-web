@@ -61,15 +61,15 @@ const SpaceCommunityPage = () => {
   const { data: dataCommunityPage, loading: loadingCommunity } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
-      includeCommunity: isAuthenticated,
     },
     skip: !spaceId,
   });
 
-  const communityId = dataCommunityPage?.lookup.space?.community?.id;
+  const membership = dataCommunityPage?.lookup.space?.about.membership;
+  const communityId = membership?.communityID;
 
   const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
-    roleSetId: dataCommunityPage?.lookup.space?.community?.roleSet.id,
+    roleSetId: membership?.roleSetID,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
       RoleSetContributorType.User,
@@ -109,7 +109,9 @@ const SpaceCommunityPage = () => {
     [dataCommunityPage?.lookup.space?.about.provider]
   );
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(dataCommunityPage?.lookup.space?.community?.id);
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(
+    dataCommunityPage?.lookup.space?.about.membership.communityID
+  );
 
   const hasReadPrivilege = dataCommunityPage?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read

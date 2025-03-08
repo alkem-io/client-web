@@ -14,7 +14,6 @@ import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboard
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 
@@ -36,13 +35,11 @@ const SpaceDashboardPage = ({
 
   const { spaceId, journeyPath, calendarEventId } = urlInfo;
 
-  const { loading: loadingSpace, permissions: spacePermissions } = useSpace();
   const { user } = useUserContext();
 
-  const { data: spacePageData, loading: loadingSpaceQuery } = useSpacePageQuery({
+  const { data: spacePageData, loading: loadingSpacePageQuery } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
-      authorizedReadAccess: spacePermissions.canRead,
     },
     errorPolicy: 'all',
     skip: !spaceId,
@@ -63,7 +60,7 @@ const SpaceDashboardPage = ({
     skip: !permissions.spaceReadAccess,
   });
 
-  const communityId = spaceData?.community?.id ?? '';
+  const communityId = spaceData?.about.membership.communityID!;
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
 
@@ -101,7 +98,7 @@ const SpaceDashboardPage = ({
         space={space}
         dashboardNavigation={dashboardNavigation}
         dashboardNavigationLoading={dashboardNavigationLoading}
-        loading={loadingSpace || loadingSpaceQuery}
+        loading={loadingSpacePageQuery}
         entityReadAccess={permissions.spaceReadAccess}
         readUsersAccess={permissions.readUsers}
         calloutsSetProvided={calloutsSetProvided}
@@ -111,9 +108,9 @@ const SpaceDashboardPage = ({
       <CommunityUpdatesDialog
         open={dialog === 'updates'}
         onClose={backToDashboard}
-        communityId={spaceData?.community?.id}
+        communityId={spaceData?.about.membership.communityID}
         shareUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
-        loading={loadingSpace}
+        loading={loadingSpacePageQuery}
       />
       <ContributorsDialog
         open={dialog === 'contributors'}
@@ -132,7 +129,7 @@ const SpaceDashboardPage = ({
         open={dialog === 'about'}
         space={space}
         sendMessageToCommunityLeads={handleSendMessageToCommunityLeads}
-        loading={loadingSpace}
+        loading={loadingSpacePageQuery}
       />
     </SpacePageLayout>
   );
