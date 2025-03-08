@@ -71,7 +71,7 @@ const SubspaceDialogs = ({
           entities: t('common.collaborationTools'),
         })}
       />
-      <SubspacesListDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
+      <SubspacesListDialog spaceId={journeyId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
       <ContributorsToggleDialog
         journeyId={journeyId}
         open={dialogOpen === SubspaceDialog.Contributors}
