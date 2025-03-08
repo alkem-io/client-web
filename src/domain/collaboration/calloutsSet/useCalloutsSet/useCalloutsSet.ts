@@ -73,6 +73,7 @@ export interface OrderUpdate {
 }
 
 export interface UseCalloutsSetProvided {
+  calloutsSetId: string | undefined;
   callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   loading: boolean;
@@ -173,6 +174,7 @@ const useCalloutsSet = ({
   const [updateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
 
   return {
+    calloutsSetId,
     callouts,
     canCreateCallout,
     loading: calloutsLoading || authorizationLoading,

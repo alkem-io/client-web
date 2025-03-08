@@ -3,7 +3,7 @@ import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/gene
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SpaceAboutForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import { Actions } from '@/core/ui/actions/Actions';
 import Loading from '@/core/ui/loading/Loading';
 
@@ -17,7 +17,7 @@ export const SpaceContextView = () => {
     skip: !spaceId,
   });
 
-  const about: SpaceAboutDetailsModel = spaceData?.lookup.space?.about!;
+  const about: SpaceAboutFullModel = spaceData?.lookup.space?.about!;
 
   const [updateSpace, { loading: isLoading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),

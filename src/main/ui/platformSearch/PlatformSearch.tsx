@@ -29,10 +29,11 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
   ({ onExpand, compact, children }, forwardedRef) => {
     const { t } = useTranslation();
 
-    const { spaceNameId, about } = useSpace();
+    const { space } = useSpace();
+    const { about } = space;
 
     const searchOptions = useMemo<Partial<SelectOption<SearchScope>>[] | undefined>(() => {
-      if (!spaceNameId) {
+      if (!space || !space.nameID) {
         return undefined;
       }
 
@@ -48,7 +49,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
       ];
     }, [t, about.profile]);
 
-    const defaultSearchOption = spaceNameId ? SearchScope.Space : SearchScope.Platform;
+    const defaultSearchOption = space.nameID ? SearchScope.Space : SearchScope.Platform;
 
     const navigate = useNavigate();
     const query = useQueryParams();
@@ -79,7 +80,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
       const params = new URLSearchParams();
       params.append(SEARCH_TERMS_URL_PARAM, terms);
       if (scope === SearchScope.Space) {
-        params.set(SEARCH_SPACE_URL_PARAM, spaceNameId);
+        params.set(SEARCH_SPACE_URL_PARAM, space.nameID);
       }
       setValue('');
       navigate(`${pathname}?${params}`);

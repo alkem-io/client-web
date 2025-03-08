@@ -27,10 +27,10 @@ const CommunityGuidelinesSkeleton = () => {
 
 export interface CommunityGuidelinesBlockProps {
   communityId: string | undefined;
-  journeyUrl: string | undefined;
+  spaceUrl: string | undefined;
 }
 
-const CommunityGuidelinesBlock = ({ communityId, journeyUrl }: CommunityGuidelinesBlockProps) => {
+const CommunityGuidelinesBlock = ({ communityId, spaceUrl: journeyUrl }: CommunityGuidelinesBlockProps) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
@@ -41,13 +41,14 @@ const CommunityGuidelinesBlock = ({ communityId, journeyUrl }: CommunityGuidelin
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
 
-  const comunityReferences = data?.lookup.community?.guidelines.profile.references;
-  const comunityDescription = data?.lookup.community?.guidelines.profile.description;
+  const communityGuidelinesReferences = data?.lookup.community?.guidelines.profile.references;
+  const communityGuidelinesDescription = data?.lookup.community?.guidelines.profile.description;
 
   const { t } = useTranslation();
 
   const hasGuidelines = Boolean(data?.lookup.community?.guidelines.profile.description);
-  const isReadMoreVisible = Number(comunityDescription?.length) > 0 || Number(comunityReferences?.length) > 0;
+  const isReadMoreVisible =
+    Number(communityGuidelinesDescription?.length) > 0 || Number(communityGuidelinesReferences?.length) > 0;
   const showGuidelines =
     hasGuidelines ||
     data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);

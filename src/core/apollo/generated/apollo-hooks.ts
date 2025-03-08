@@ -1593,11 +1593,11 @@ export const SpaceCardFragmentDoc = gql`
     about {
       ...SpaceAboutCardBanner
       why
+      isContentPublic
       metrics {
         name
         value
       }
-      isContentPublic
       membership {
         myMembershipStatus
       }
@@ -2959,6 +2959,7 @@ export const ExploreSpacesFragmentDoc = gql`
     level
     about {
       id
+      isContentPublic
       profile {
         id
         url
@@ -2966,11 +2967,6 @@ export const ExploreSpacesFragmentDoc = gql`
         cardBanner: visual(type: CARD) {
           ...VisualUri
         }
-      }
-    }
-    settings {
-      privacy {
-        mode
       }
     }
   }
@@ -3055,22 +3051,14 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       myPrivileges
     }
     level
+    visibility
     about {
       why
       ...SpaceAboutCardBanner
-    }
-    visibility
-    community {
-      id
-      roleSet {
-        id
+      membership {
         myMembershipStatus
       }
-    }
-    settings {
-      privacy {
-        mode
-      }
+      isContentPublic
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
@@ -3095,18 +3083,10 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
           ...VisualUri
         }
       }
-    }
-    community {
-      id
-      roleSet {
-        id
+      membership {
         myMembershipStatus
       }
-    }
-    settings {
-      privacy {
-        mode
-      }
+      isContentPublic
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
@@ -22502,6 +22482,7 @@ export const MyResourcesDocument = gql`
                 ...VisualUri
               }
             }
+            isContentPublic
           }
         }
         virtualContributors {
@@ -22741,13 +22722,12 @@ export const RecentSpacesDocument = gql`
       mySpaces(limit: $limit) {
         space {
           id
-          settings {
-            privacy {
-              mode
-            }
-          }
           about {
             ...SpaceAboutCardBanner
+            isContentPublic
+            membership {
+              myMembershipStatus
+            }
           }
           level
           __typename

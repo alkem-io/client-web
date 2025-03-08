@@ -183,7 +183,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               <SubspaceHomeView
                 spaceLevel={level}
                 collaborationId={collaboration?.id}
-                calloutsSetId={collaboration?.calloutsSet.id}
                 templatesSetId={subspace?.templatesManager?.templatesSet?.id}
                 {...innovationFlow}
                 {...callouts}

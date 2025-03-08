@@ -29,7 +29,6 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
         <JourneyTile
           key={result.space.id}
           columns={cardColumns}
-          isPrivate={!result.space.about.isContentPublic}
           journey={{
             about: result.space.about,
             level: result.space.level,

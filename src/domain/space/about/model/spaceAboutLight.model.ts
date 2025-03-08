@@ -7,7 +7,7 @@ export type SpaceAboutLightModel = {
     myPrivileges?: AuthorizationPrivilege[] | undefined;
   };
   isContentPublic: boolean;
-  membership: {
+  membership?: {
     myMembershipStatus?: string;
     roleSetID?: string;
   };

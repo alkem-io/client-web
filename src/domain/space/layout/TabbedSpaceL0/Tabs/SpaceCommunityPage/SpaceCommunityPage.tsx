@@ -21,7 +21,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
@@ -46,7 +45,6 @@ const SpaceCommunityPage = () => {
   });
 
   const { spaceId, journeyPath, loading: resolving } = urlInfo;
-  const { communityId } = useSpace();
 
   if (!spaceId && !resolving) {
     throw new TypeError('Must be within a Space');
@@ -60,7 +58,7 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
-  const { data, loading: loadingCommunity } = useSpaceCommunityPageQuery({
+  const { data: dataCommunityPage, loading: loadingCommunity } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
       includeCommunity: isAuthenticated,
@@ -68,8 +66,10 @@ const SpaceCommunityPage = () => {
     skip: !spaceId,
   });
 
+  const communityId = dataCommunityPage?.lookup.space?.community?.id;
+
   const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
-    roleSetId: data?.lookup.space?.community?.roleSet.id,
+    roleSetId: dataCommunityPage?.lookup.space?.community?.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
       RoleSetContributorType.User,
@@ -90,7 +90,7 @@ const SpaceCommunityPage = () => {
     }
   );
 
-  const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
+  const calloutsSetId = dataCommunityPage?.lookup.space?.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -105,13 +105,15 @@ const SpaceCommunityPage = () => {
   );
 
   const hostOrganizations = useMemo(
-    () => data?.lookup.space?.about.provider && [data.lookup.space.about.provider],
-    [data?.lookup.space?.about.provider]
+    () => dataCommunityPage?.lookup.space?.about.provider && [dataCommunityPage.lookup.space.about.provider],
+    [dataCommunityPage?.lookup.space?.about.provider]
   );
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.lookup.space?.community?.id);
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(dataCommunityPage?.lookup.space?.community?.id);
 
-  const hasReadPrivilege = data?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  const hasReadPrivilege = dataCommunityPage?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
@@ -166,7 +168,10 @@ const SpaceCommunityPage = () => {
               showInviteOption={hasInvitePrivilege}
             />
           )}
-          <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
+          <CommunityGuidelinesBlock
+            communityId={communityId}
+            spaceUrl={dataCommunityPage?.lookup.space?.about.profile.url}
+          />
         </InfoColumn>
         <ContentColumn>
           <RoleSetContributorsBlockWide

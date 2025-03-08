@@ -7,11 +7,13 @@ import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/us
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
 
 const SubspaceAboutPage = () => {
-  const { spaceId, spaceLevel } = useUrlResolver();
+  const { spaceId } = useUrlResolver();
   const { subspace } = useSubSpace();
   const { about } = subspace;
+  const communityId = about.membership.communityID;
 
   const backToParentPage = useBackToStaticPath(about.profile.url);
 
@@ -19,22 +21,21 @@ const SubspaceAboutPage = () => {
 
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
+  const space2: SpaceDashboardSpaceDetails = {
+    id: spaceId,
+    about: about,
+    level: subspace.level,
+  };
+
   return (
     <>
       <AboutPageContainer journeyId={spaceId}>
-        {({ about, provider, leadOrganizations, leadUsers, metrics, hasReadPrivilege, hasEditPrivilege }, state) => (
+        {({ hasReadPrivilege, hasEditPrivilege }, state) => (
           <SpaceAboutDialog
             open
-            spaceId={spaceId}
-            spaceLevel={spaceLevel}
-            about={about}
+            space={space2}
             sendMessageToCommunityLeads={sendMessageToCommunityLeads}
-            metrics={metrics}
-            communityId={communityId}
             loading={state.loading}
-            leadUsers={leadUsers}
-            provider={provider}
-            leadOrganizations={leadOrganizations}
             onClose={hasReadPrivilege ? backToParentPage : undefined}
             hasReadPrivilege={hasReadPrivilege}
             hasEditPrivilege={hasEditPrivilege}

@@ -64,8 +64,6 @@ export const ExploreSpacesView = ({
     setSelectedFilter(filter);
   };
 
-  const isPrivate = (space): boolean => !space.about.isContentPublic;
-
   const renderSkeleton = (size: number) =>
     Array.from({ length: size }).map((_, index) => (
       <JourneyTile key={index} journey={undefined} columns={cardColumns} />
@@ -118,14 +116,12 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && (
-          <JourneyTile journey={welcomeSpace} columns={cardColumns} isPrivate={isPrivate(welcomeSpace)} />
-        )}
+        {visibleFirstWelcomeSpace && <JourneyTile journey={welcomeSpace} columns={cardColumns} />}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyTile key={space.id} journey={space} columns={cardColumns} isPrivate={isPrivate(space)} />
+                <JourneyTile key={space.id} journey={space} columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}

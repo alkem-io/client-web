@@ -172,7 +172,7 @@ export const SpaceExplorerView = ({
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
                 level={level}
-                member={membership.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
                 isPrivate={!isContentPublic}
               />
             )

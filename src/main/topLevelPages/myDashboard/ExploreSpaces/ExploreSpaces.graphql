@@ -35,6 +35,7 @@ fragment ExploreSpaces on Space {
   level
   about {
     id
+    isContentPublic
     profile {
       id
       url
@@ -42,11 +43,6 @@ fragment ExploreSpaces on Space {
       cardBanner: visual(type: CARD) {
         ...VisualUri
       }
-    }
-  }
-  settings {
-    privacy {
-      mode
     }
   }
 }

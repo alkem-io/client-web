@@ -21,7 +21,6 @@ type JourneyTileProps = {
       }
     | undefined;
   columns?: number;
-  isPrivate?: boolean;
 };
 
 export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
@@ -29,7 +28,8 @@ export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
 const JOURNEY_TITLE_CLASS_NAME = 'JourneyTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
+const JourneyTile = ({ journey, columns = 3 }: JourneyTileProps) => {
+  const isPrivate = !journey?.about.isContentPublic;
   return (
     <GridItem columns={columns}>
       <ElevatedPaper

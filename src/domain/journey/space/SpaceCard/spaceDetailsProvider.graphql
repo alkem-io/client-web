@@ -3,11 +3,11 @@ fragment SpaceCard on Space {
   about {
     ...SpaceAboutCardBanner
     why
+    isContentPublic
     metrics {
       name
       value
     }
-    isContentPublic
     membership {
       myMembershipStatus
     }

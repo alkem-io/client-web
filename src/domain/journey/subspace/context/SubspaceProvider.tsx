@@ -1,6 +1,6 @@
 import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { FC, PropsWithChildren, useMemo } from 'react';
 
@@ -14,7 +14,7 @@ interface SubspaceContextProps {
   subspace: {
     id: string;
     level: SpaceLevel;
-    about: SpaceAboutDetailsModel;
+    about: SpaceAboutFullModel;
   };
   loading: boolean;
   permissions: SubspacePermissions;
@@ -77,7 +77,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   );
 
   const subspace = useMemo(() => {
-    const about: SpaceAboutDetailsModel = {
+    const about: SpaceAboutFullModel = {
       id: subspaceData?.about.id ?? '',
       profile: {
         id: subspaceData?.about.profile.id ?? '',

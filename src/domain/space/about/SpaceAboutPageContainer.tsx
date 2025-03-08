@@ -12,7 +12,7 @@ import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/Inn
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { SpaceAboutDetailsModel } from './model/spaceAboutFull.model';
+import { SpaceAboutFullModel } from './model/spaceAboutFull.model';
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
@@ -25,7 +25,7 @@ interface AboutPagePermissions {
 }
 
 export interface AboutPageContainerEntities {
-  about: SpaceAboutDetailsModel;
+  about: SpaceAboutFullModel;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
@@ -145,7 +145,7 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
 
-  const about: SpaceAboutDetailsModel = useMemo(() => {
+  const about: SpaceAboutFullModel = useMemo(() => {
     return {
       id: nonMemberSpaceAbout?.id ?? '',
       why: nonMemberSpaceAbout?.why ?? '',

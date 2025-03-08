@@ -97,7 +97,6 @@ const DashboardSpaces = () => {
                         about: about,
                         level: level,
                       }}
-                      isPrivate={!subSpace.about.isContentPublic}
                     />
                   );
                 })}

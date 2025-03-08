@@ -51,13 +51,14 @@ export const SubspaceListView = () => {
   const notify = useNotification();
   const navigate = useNavigate();
 
-  const { spaceId } = useSpace();
+  const { space } = useSpace();
   const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
   const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
   const [selectedState, setSelectedState] = useState<string>();
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
 
+  const spaceId = space.id;
   const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
       spaceId: spaceId,

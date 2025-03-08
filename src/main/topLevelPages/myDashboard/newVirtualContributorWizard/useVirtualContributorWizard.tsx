@@ -3,7 +3,6 @@ import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
-  useSpaceUrlLazyQuery,
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
   useCreateLinkOnCalloutMutation,
@@ -11,6 +10,7 @@ import {
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
   useUploadVisualMutation,
+  useSpaceAboutBaseLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -352,7 +352,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   };
 
   // post creation navigation
-  const [getNewSpaceUrl] = useSpaceUrlLazyQuery();
+  const [getNewSpaceUrl] = useSpaceAboutBaseLazyQuery();
   const navigateToTryYourVC = async (url: string | undefined, spaceId: string | undefined) => {
     if (url) {
       navigate(url);

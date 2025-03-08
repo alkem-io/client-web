@@ -86,7 +86,6 @@ const SpaceSubspacesPage = () => {
             childEntities={subspaces}
             level={level}
             childEntitiesIcon={<SubspaceIcon />}
-            childEntityReadAccess={permissions.canReadSubspaces}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
             state={{ loading: state.loading, error: state.error }}
