@@ -19,10 +19,12 @@ import useSpaceTabProvider from '../../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useAboutRedirect from '@/core/routing/useAboutRedirect';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import useSubSpaceCreatedSubscription from '@/domain/journey/space/hooks/useSubSpaceCreatedSubscription';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
   const {
     urlInfo,
     flowStateForNewCallouts: flowStateForTab,
@@ -32,6 +34,8 @@ const SpaceSubspacesPage = () => {
     entitledToSaveAsTemplate,
   } = useSpaceTabProvider({ tabPosition: 2 });
   const { spaceId, journeyPath } = urlInfo;
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: !spaceId });
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -67,21 +71,13 @@ const SpaceSubspacesPage = () => {
     },
     [navigate, createSubspace, spaceId]
   );
-  const {
-    callouts,
-    canCreateCallout,
-    loading: loadingCalloutsSet,
-    onCalloutsSortOrderUpdate,
-    refetchCallout,
-  } = useCalloutsSet({
+  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
     includeClassification: true,
   });
-
-  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: loadingCalloutsSet || !spaceId });
 
   const { data, loading, error, subscribeToMore } = useSpaceSubspaceCardsQuery({
     variables: { spaceId: spaceId! },
