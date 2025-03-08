@@ -10,6 +10,7 @@ import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirec
 
 export const OpportunityRoute = () => {
   const { subspace } = useSubSpace();
+  const communityId = subspace.about.membership.communityID;
 
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
@@ -17,10 +18,7 @@ export const OpportunityRoute = () => {
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<OpportunityAboutPage />} />
-          <Route
-            path="communications"
-            element={<OpportunityCommunicationsPage communityId={subspace?.community?.id} />}
-          />
+          <Route path="communications" element={<OpportunityCommunicationsPage communityId={communityId} />} />
           <Route path="community" element={<AdminOpportunityCommunityPage />} />
           <Route path="settings" element={<OpportunitySettingsPage />} />
           <Route path="*" element={<Error404 />} />

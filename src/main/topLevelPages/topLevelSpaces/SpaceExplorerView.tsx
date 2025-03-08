@@ -10,12 +10,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceSubspaceCard from '@/domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { Identifiable } from '@/core/utils/Identifiable';
-import {
-  CommunityMembershipStatus,
-  ProfileType,
-  SpaceLevel,
-  SpacePrivacyMode,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -28,6 +23,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { compact } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -67,31 +63,8 @@ type WithParent<ParentInfo extends {}> = {
 
 interface Space extends Identifiable {
   level: SpaceLevel;
-  about: {
-    profile: {
-      url: string;
-      displayName: string;
-      tagline?: string;
-      type?: ProfileType;
-      tagset?: {
-        tags: string[];
-      };
-      avatar?: Visual;
-      cardBanner?: Visual;
-    };
-    why?: string;
-  };
-  community?: {
-    roleSet?: {
-      myMembershipStatus?: CommunityMembershipStatus;
-    };
-  };
+  about: SpaceAboutLightModel;
   matchedTerms?: string[];
-  settings: {
-    privacy?: {
-      mode: SpacePrivacyMode;
-    };
-  };
 }
 
 interface WithBanner {
@@ -178,31 +151,29 @@ export const SpaceExplorerView = ({
       if (!space) {
         return;
       }
-      const {
-        id,
-        level,
-        about: { profile },
-      } = space;
+      const { id, level, about } = space;
+
+      const { profile, isContentPublic, membership } = about;
 
       vs.push(
         <SpaceSubspaceCard
           key={id}
           tagline={profile?.tagline ?? ''}
           displayName={profile?.displayName}
-          vision={space.about.why ?? ''}
+          vision={profile.description ?? ''}
           journeyUri={profile?.url}
           level={level}
           banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space) ?? []}
           tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
-          spaceDisplayName={space.parent?.about.profile?.displayName}
+          spaceDisplayName={profile?.displayName}
           matchedTerms={!!space.matchedTerms}
           label={
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
                 level={level}
-                member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
-                isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
+                member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
+                isPrivate={!isContentPublic}
               />
             )
           }

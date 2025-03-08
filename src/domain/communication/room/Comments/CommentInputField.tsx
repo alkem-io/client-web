@@ -156,8 +156,10 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
 
   const [queryUsers] = useMentionableUsersLazyQuery();
 
-  const { roleSetId: spaceRoleSetId } = useSpace();
-  const { roleSetId: subspaceRoleSetId } = useSubSpace();
+  const { space } = useSpace();
+  const spaceRoleSetId = space.about.membership?.roleSetID;
+  const { subspace } = useSubSpace();
+  const subspaceRoleSetId = subspace.about.membership?.roleSetID;
   const roleSetId = subspaceRoleSetId ? subspaceRoleSetId : spaceRoleSetId;
 
   const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>

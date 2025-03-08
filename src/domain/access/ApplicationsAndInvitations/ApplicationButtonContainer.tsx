@@ -11,7 +11,6 @@ import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
-import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
@@ -34,7 +33,6 @@ export const ApplicationButtonContainer = ({
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
-  const { canReadCommunity } = useCanReadSpace({ spaceId: journeyId });
   const { user, loadingMe: membershipLoading } = useUserContext();
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
     skip: !isAuthenticated || !user,
@@ -75,7 +73,6 @@ export const ApplicationButtonContainer = ({
     refetchSpaceQuery({
       variables: {
         spaceId: journeyId!,
-        authorizedReadAccessCommunity: canReadCommunity,
       },
     });
 

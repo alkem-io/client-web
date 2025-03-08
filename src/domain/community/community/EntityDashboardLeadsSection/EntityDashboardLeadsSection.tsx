@@ -1,6 +1,5 @@
 import { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import { useUserContext } from '@/domain/community/user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -9,6 +8,7 @@ import { SvgIconProps } from '@mui/material';
 import DashboardLeads from './DashboardLeads';
 import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
 
 const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 
@@ -16,16 +16,19 @@ const ContributorCard = ({ contributor }: { contributor: ContributorCardHorizont
   <ContributorCardHorizontal {...contributor} />
 );
 
-interface EntityDashboardLeadsProps extends EntityDashboardLeads {
+interface EntityDashboardLeadsProps {
+  leadUsers: ContributorViewProps[] | undefined;
+  leadOrganizations: ContributorViewProps[] | undefined;
+  provider?: ContributorViewProps;
   organizationsHeader: string;
   organizationsHeaderIcon?: ReactElement<SvgIconProps>;
   usersHeader?: string;
 }
 
 const EntityDashboardLeadsSection = ({
-  leadUsers,
-  leadOrganizations,
   usersHeader,
+  leadOrganizations,
+  leadUsers,
   organizationsHeader,
   organizationsHeaderIcon,
   children,

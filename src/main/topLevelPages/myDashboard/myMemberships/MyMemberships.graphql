@@ -28,13 +28,10 @@ fragment SpaceMembership on Space {
     id
     myPrivileges
   }
-  community {
-    roleSet {
-      id
-      ...MyMembershipsRoleSet
-    }
-  }
   about {
     ...SpaceAboutCardBanner
+    membership {
+      myMembershipStatus
+    }
   }
 }

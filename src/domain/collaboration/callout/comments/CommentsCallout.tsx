@@ -42,7 +42,8 @@ const CommentsCallout = ({
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
-  const { myMembershipStatus } = useSpace();
+  const { space } = useSpace();
+  const myMembershipStatus = space?.about.membership?.myMembershipStatus;
   const user = userMetadata?.user;
 
   const commentsId = callout.comments?.id;

@@ -11,14 +11,32 @@ import SpaceCommunityPage from '../layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/
 import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
 const SpaceRoute = () => {
+  // Redirect to about before loading anything else
+  const urlResolver = useUrlResolver();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (urlResolver) {
+      setIsLoading(false);
+    }
+  }, [urlResolver]);
+
+  const spaceId = urlResolver.spaceId;
+  useAboutRedirect({ spaceId, skip: !spaceId });
+
+  if (isLoading) {
+    return <p>Loading...</p>; // Prevent rendering until `urlResolver` is ready
+  }
+
   return (
     <Routes>
       <Route index element={<Navigate replace to={routes.Dashboard} />} />

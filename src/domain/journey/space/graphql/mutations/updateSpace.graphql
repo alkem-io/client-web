@@ -3,3 +3,9 @@ mutation updateSpace($input: UpdateSpaceInput!) {
     ...SpaceInfo
   }
 }
+
+fragment SpaceInfo on Space {
+  about {
+    ...SpaceAboutDetails
+  }
+}

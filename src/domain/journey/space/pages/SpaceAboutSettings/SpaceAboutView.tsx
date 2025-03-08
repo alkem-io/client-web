@@ -1,23 +1,23 @@
 import SaveButton from '@/core/ui/actions/SaveButton';
-import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutBaseQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SpaceAboutForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import { Actions } from '@/core/ui/actions/Actions';
 import Loading from '@/core/ui/loading/Loading';
 
-export const SpaceContextView = () => {
+export const SpaceAboutView = () => {
   const notify = useNotification();
   const { spaceId, spaceLevel, loading: resolverLoading } = useUrlResolver();
-  const { data: spaceData, loading: spaceDataLoading } = useSpaceProfileQuery({
+  const { data: spaceData, loading: spaceDataLoading } = useSpaceAboutBaseQuery({
     variables: {
       spaceId: spaceId!,
     },
     skip: !spaceId,
   });
 
-  const about: SpaceAboutDetailsModel = spaceData?.lookup.space?.about!;
+  const about: SpaceAboutFullModel = spaceData?.lookup.space?.about!;
 
   const [updateSpace, { loading: isLoading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
@@ -70,4 +70,4 @@ export const SpaceContextView = () => {
   );
 };
 
-export default SpaceContextView;
+export default SpaceAboutView;

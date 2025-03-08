@@ -1,10 +1,6 @@
-import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CommunityMembershipStatus,
-  SpaceLevel,
-  SubspacePendingMembershipInfoFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { FC, PropsWithChildren, useMemo } from 'react';
 
@@ -12,46 +8,47 @@ interface SubspacePermissions {
   canUpdate: boolean;
   canCreate: boolean;
   canCreateSubspace: boolean;
-  canReadCommunity: boolean;
-  contextPrivileges: AuthorizationPrivilege[];
 }
 
 interface SubspaceContextProps {
-  subspace?: SubspacePendingMembershipInfoFragment;
-  subspaceId: string;
-  level: SpaceLevel;
-  communityId: string;
-  roleSetId: string;
+  subspace: {
+    id: string;
+    level: SpaceLevel;
+    about: SpaceAboutFullModel;
+    authorization?: {
+      myPrivileges: AuthorizationPrivilege[];
+    };
+  };
   loading: boolean;
   permissions: SubspacePermissions;
-  about: SubspacePendingMembershipInfoFragment['about'];
-  myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
 export const SubspaceContext = React.createContext<SubspaceContextProps>({
   loading: true,
-  level: SpaceLevel.L1,
-  subspaceId: '',
-  communityId: '',
-  roleSetId: '',
+  subspace: {
+    id: '',
+    level: SpaceLevel.L1,
+    about: {
+      id: '',
+      profile: {
+        id: '',
+        displayName: '',
+        visuals: [],
+        tagline: '',
+        url: '',
+      },
+      membership: {
+        myMembershipStatus: undefined,
+        roleSetID: '',
+      },
+      isContentPublic: true,
+    },
+  },
   permissions: {
     canUpdate: false,
     canCreate: false,
     canCreateSubspace: false,
-    canReadCommunity: false,
-    contextPrivileges: [],
   },
-  about: {
-    id: '',
-    profile: {
-      id: '',
-      displayName: '',
-      visuals: [],
-      tagline: '',
-      url: '',
-    },
-  },
-  myMembershipStatus: undefined,
 });
 
 interface SubspaceProviderProps extends PropsWithChildren {}
@@ -59,23 +56,17 @@ interface SubspaceProviderProps extends PropsWithChildren {}
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { spaceId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { data, loading } = useSubspacePendingMembershipInfoQuery({
-    variables: { subspaceId: spaceId! },
+  const { data, loading } = useSpaceAboutBaseQuery({
+    variables: { spaceId: spaceId! },
     errorPolicy: 'all',
     skip: !spaceId,
   });
 
-  const subspace = data?.lookup.space;
-  const communityId = subspace?.community?.id ?? '';
-  const roleSetId = subspace?.community?.roleSet?.id ?? '';
+  const subspaceData = data?.lookup.space;
 
   const myPrivileges = useMemo(
-    () => subspace?.authorization?.myPrivileges ?? [],
-    [subspace?.authorization?.myPrivileges]
-  );
-
-  const canReadCommunity = (subspace?.community?.authorization?.myPrivileges ?? []).includes(
-    AuthorizationPrivilege.Read
+    () => subspaceData?.authorization?.myPrivileges ?? [],
+    [subspaceData?.authorization?.myPrivileges]
   );
 
   const permissions = useMemo<SubspacePermissions>(
@@ -83,41 +74,43 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
       canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      canReadCommunity,
-      contextPrivileges: subspace?.about.authorization?.myPrivileges ?? [],
+      contextPrivileges: subspaceData?.about.authorization?.myPrivileges ?? [],
     }),
-    [myPrivileges, subspace, canReadCommunity]
+    [myPrivileges, subspaceData]
   );
 
-  const about = useMemo(() => {
-    return {
-      id: subspace?.about.id ?? '',
+  const subspace = useMemo(() => {
+    const about: SpaceAboutFullModel = {
+      id: subspaceData?.about.id ?? '',
       profile: {
-        id: subspace?.about.profile.id ?? '',
-        displayName: subspace?.about.profile.displayName || '',
-        description: subspace?.about.profile.description,
-        tagset: subspace?.about.profile.tagset,
-        visuals: subspace?.about.profile.visuals ?? [],
-        tagline: subspace?.about.profile.tagline || '',
-        references: subspace?.about.profile.references ?? [],
-        location: subspace?.about.profile.location,
-        url: subspace?.about.profile.url ?? '',
+        id: subspaceData?.about.profile.id ?? '',
+        displayName: subspaceData?.about.profile.displayName || '',
+        description: subspaceData?.about.profile.description,
+        tagset: subspaceData?.about.profile.tagset,
+        visuals: subspaceData?.about.profile.visuals ?? [],
+        tagline: subspaceData?.about.profile.tagline || '',
+        references: subspaceData?.about.profile.references ?? [],
+        location: subspaceData?.about.profile.location,
+        url: subspaceData?.about.profile.url ?? '',
+      },
+      isContentPublic: subspaceData?.about.isContentPublic ?? true,
+      membership: {
+        myMembershipStatus: subspaceData?.about.membership.myMembershipStatus,
       },
     };
-  }, [subspace?.about.profile]);
+    return {
+      id: subspaceData?.id ?? '',
+      level: subspaceData?.level ?? SpaceLevel.L1,
+      about,
+    };
+  }, [subspaceData?.about.profile]);
 
   return (
     <SubspaceContext.Provider
       value={{
         subspace,
-        level: subspace?.level || SpaceLevel.L1,
-        subspaceId: spaceId ?? '',
-        communityId,
-        roleSetId,
         permissions,
-        about,
         loading: loading || urlResolverLoading,
-        myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

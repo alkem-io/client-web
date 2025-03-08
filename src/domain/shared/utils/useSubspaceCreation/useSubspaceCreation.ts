@@ -9,12 +9,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import {
-  CommunityMembershipStatus,
-  PlatformFeatureFlagName,
-  SpacePrivacyMode,
-  TagsetType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, PlatformFeatureFlagName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
@@ -121,13 +116,6 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         optimisticResponse: {
           createSubspace: {
             id: '',
-            metrics: [
-              {
-                id: '',
-                name: '',
-                value: '',
-              },
-            ],
             about: {
               id: '',
               why: value.about.why,
@@ -154,18 +142,9 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
                   type: TagsetType.Freeform,
                 },
               },
-            },
-            community: {
-              id: '',
-              roleSet: {
-                id: '',
+              isContentPublic: true,
+              membership: {
                 myMembershipStatus: CommunityMembershipStatus.Member,
-              },
-            },
-
-            settings: {
-              privacy: {
-                mode: SpacePrivacyMode.Public,
               },
             },
           },

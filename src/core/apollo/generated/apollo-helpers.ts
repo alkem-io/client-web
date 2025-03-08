@@ -2954,9 +2954,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
-  | 'metrics'
   | 'nameID'
-  | 'provider'
   | 'settings'
   | 'storageAggregator'
   | 'subscriptions'
@@ -2980,9 +2978,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3337,9 +3333,7 @@ export type SpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
-  | 'metrics'
   | 'nameID'
-  | 'provider'
   | 'settings'
   | 'storageAggregator'
   | 'subscriptions'
@@ -3363,9 +3357,7 @@ export type SpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3379,7 +3371,11 @@ export type SpaceAboutKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'isContentPublic'
+  | 'membership'
+  | 'metrics'
   | 'profile'
+  | 'provider'
   | 'updatedDate'
   | 'who'
   | 'why'
@@ -3389,10 +3385,33 @@ export type SpaceAboutFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContentPublic?: FieldPolicy<any> | FieldReadFunction<any>;
+  membership?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
   why?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceAboutMembershipKeySpecifier = (
+  | 'applicationForm'
+  | 'communityID'
+  | 'leadOrganizations'
+  | 'leadUsers'
+  | 'myMembershipStatus'
+  | 'myPrivileges'
+  | 'roleSetID'
+  | SpaceAboutMembershipKeySpecifier
+)[];
+export type SpaceAboutMembershipFieldPolicy = {
+  applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpacePendingMembershipInfoKeySpecifier = (
   | 'about'
@@ -3893,8 +3912,14 @@ export type UserFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserAuthenticationResultKeySpecifier = ('createdAt' | 'method' | UserAuthenticationResultKeySpecifier)[];
+export type UserAuthenticationResultKeySpecifier = (
+  | 'authenticatedAt'
+  | 'createdAt'
+  | 'method'
+  | UserAuthenticationResultKeySpecifier
+)[];
 export type UserAuthenticationResultFieldPolicy = {
+  authenticatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   method?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4956,6 +4981,10 @@ export type StrictTypedTypePolicies = {
   SpaceAbout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceAboutKeySpecifier | (() => undefined | SpaceAboutKeySpecifier);
     fields?: SpaceAboutFieldPolicy;
+  };
+  SpaceAboutMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceAboutMembershipKeySpecifier | (() => undefined | SpaceAboutMembershipKeySpecifier);
+    fields?: SpaceAboutMembershipFieldPolicy;
   };
   SpacePendingMembershipInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

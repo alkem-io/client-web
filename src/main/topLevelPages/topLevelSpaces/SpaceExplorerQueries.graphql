@@ -63,22 +63,14 @@ fragment SpaceExplorerSpace on Space {
     myPrivileges
   }
   level
+  visibility
   about {
     why
     ...SpaceAboutCardBanner
-  }
-  visibility
-  community {
-    id
-    roleSet {
-      id
+    membership {
       myMembershipStatus
     }
-  }
-  settings {
-    privacy {
-      mode
-    }
+    isContentPublic
   }
 }
 
@@ -93,18 +85,10 @@ fragment SpaceExplorerSubspace on Space {
         ...VisualUri
       }
     }
-  }
-  community {
-    id
-    roleSet {
-      id
+    membership {
       myMembershipStatus
     }
-  }
-  settings {
-    privacy {
-      mode
-    }
+    isContentPublic
   }
 }
 

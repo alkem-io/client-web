@@ -26,8 +26,6 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
   } = useCommunityVirtualMembersListQuery({
     variables: {
       roleSetId,
-      spaceId,
-      includeSpaceHost: spaceLevel === SpaceLevel.L0,
     },
     skip: !roleSetId || !spaceId,
   });
@@ -89,7 +87,7 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
         contributorId: virtualContributorId,
         role: RoleName.Member,
       },
-      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceId: spaceId!, includeCommunity: true })],
+      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceId: spaceId! })],
     });
 
     return refetchCommunityVirtualMembers();

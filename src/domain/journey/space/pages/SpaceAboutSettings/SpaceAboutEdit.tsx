@@ -1,4 +1,4 @@
-import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutBaseQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
@@ -6,7 +6,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
-import SpaceContextView from './SpaceContextView';
+import SpaceAboutView from './SpaceAboutView';
 import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -20,7 +20,7 @@ type Props = {
 export const SpaceAboutEdit = ({ spaceId = '' }: Props) => {
   const notify = useNotification();
   const { t } = useTranslation();
-  const { data: spaceData } = useSpaceProfileQuery({
+  const { data: spaceData } = useSpaceAboutBaseQuery({
     variables: {
       spaceId,
     },
@@ -79,7 +79,7 @@ export const SpaceAboutEdit = ({ spaceId = '' }: Props) => {
       </PageContentBlock>
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.description')} />
-        <SpaceContextView />
+        <SpaceAboutView />
       </PageContentBlock>
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.visuals')} />

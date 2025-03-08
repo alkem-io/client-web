@@ -29,7 +29,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const notify = useNotification();
 
   const { spaceId, spaceLevel, loading: urlResolverLoading } = useUrlResolver();
-  const { roleSetId } = useSpace();
+  const { space } = useSpace();
+  const roleSetId = space?.about.membership?.roleSetID!;
 
   const { virtualContributors } = useRoleSetManager({
     roleSetId,

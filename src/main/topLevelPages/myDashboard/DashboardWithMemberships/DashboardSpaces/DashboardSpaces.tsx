@@ -11,7 +11,7 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
-import { SpacePrivacyMode, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
@@ -97,7 +97,6 @@ const DashboardSpaces = () => {
                         about: about,
                         level: level,
                       }}
-                      isPrivate={subSpace.settings.privacy.mode === SpacePrivacyMode.Private}
                     />
                   );
                 })}

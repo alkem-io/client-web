@@ -11,14 +11,14 @@ fragment AdminSpace on Space {
   subscriptions {
     name
   }
-  provider {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
   about {
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
     ...SpaceAboutLight
   }
   authorization {

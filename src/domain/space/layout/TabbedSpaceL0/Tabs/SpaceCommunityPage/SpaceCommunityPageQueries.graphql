@@ -1,4 +1,4 @@
-query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
+query SpaceCommunityPage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
@@ -8,18 +8,12 @@ query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
       }
       about {
         ...SpaceAboutLight
-      }
-      provider {
-        ...ContributorDetails
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-      community @include(if: $includeCommunity) {
-        id
-        roleSet {
-          id
+        membership {
+          communityID
+          roleSetID
+        }
+        provider {
+          ...ContributorDetails
         }
       }
       collaboration {

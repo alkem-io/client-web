@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
-import SubspaceHomeContainer from './SubspaceHomeContainer';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '@/domain/journey/common/EntityPageLayout';
 import JourneyDashboardWelcomeBlock from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityMembershipStatus,
+  RoleName,
+  RoleSetContributorType,
+} from '@/core/apollo/generated/graphql-schema';
 import { DialogDef } from '../../../journey/subspace/layout/DialogDefinition';
 import { SubspaceDialog } from '../../../journey/subspace/layout/SubspaceDialog';
 import {
@@ -31,6 +35,10 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from '../../../journey/subspace/subspaceHome/dialogs/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
+import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);
@@ -78,138 +86,163 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     });
   };
 
-  return (
-    <SubspaceHomeContainer spaceId={spaceId}>
-      {({ innovationFlow, calloutsSetProvided: callouts, subspace, communityReadAccess, communityId, roleSet }) => {
-        const { collaboration, community, about, level } = subspace ?? {};
+  const { data: subspacePageData } = useSubspacePageQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
 
-        return (
+  const subspace = subspacePageData?.lookup.space;
+  const about = subspace?.about;
+  const membership = about?.membership;
+  const roleSetID = membership?.roleSetID;
+  const communityId = membership?.communityID;
+  const collaboration = subspace?.collaboration;
+  const calloutsSetId = collaboration?.calloutsSet.id;
+  const collaborationId = collaboration?.id;
+
+  const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
+
+  const { organizations: leadOrganizations, users: leadUsers } = useRoleSetManager({
+    roleSetId: roleSetID,
+    relevantRoles: [RoleName.Lead],
+    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    fetchContributors: true,
+  });
+
+  // TODO: THIS needs to be removed
+  const calloutsSetProvided = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets: [],
+    canSaveAsTemplate: false,
+    entitledToSaveAsTemplate: false,
+    includeClassification: true,
+  });
+
+  return (
+    <>
+      <SubspacePageLayout
+        journeyId={spaceId}
+        journeyPath={journeyPath}
+        spaceLevel={spaceLevel}
+        spaceUrl={about?.profile?.url}
+        levelZeroSpaceId={levelZeroSpaceId}
+        parentSpaceId={parentSpaceId}
+        loading={loading}
+        welcome={
+          <JourneyDashboardWelcomeBlock
+            description={about?.profile.description ?? ''}
+            leadUsers={leadUsers}
+            onContactLeadUser={receiver => sendMessage('user', receiver)}
+            leadOrganizations={leadOrganizations}
+            onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+            level={spaceLevel}
+            member={about?.membership?.myMembershipStatus === CommunityMembershipStatus.Member}
+          />
+        }
+        actions={
           <>
-            <SubspacePageLayout
-              journeyId={spaceId}
-              journeyPath={journeyPath}
-              spaceLevel={spaceLevel}
-              spaceUrl={about?.profile?.url}
-              levelZeroSpaceId={levelZeroSpaceId}
-              parentSpaceId={parentSpaceId}
-              loading={loading}
-              welcome={
-                <JourneyDashboardWelcomeBlock
-                  description={subspace?.about.profile.description ?? ''}
-                  leadUsers={roleSet.leadUsers}
-                  onContactLeadUser={receiver => sendMessage('user', receiver)}
-                  leadOrganizations={roleSet.leadOrganizations}
-                  onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-                  level={spaceLevel}
-                  member={community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
-                />
-              }
-              actions={
-                <>
-                  <DialogDef
-                    dialogType={SubspaceDialog.About}
-                    label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
-                    icon={InfoOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Outline}
-                    label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
-                    icon={AccountTreeOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Index}
-                    label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
-                    icon={ListOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Subspaces}
-                    label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
-                    icon={SegmentOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Contributors}
-                    label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
-                    icon={GroupsOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Activity}
-                    label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
-                    icon={HistoryOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Timeline}
-                    label={t('spaceDialog.events')}
-                    icon={CalendarMonthOutlined}
-                  />
-                  <DialogDef
-                    dialogType={SubspaceDialog.Share}
-                    label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
-                    icon={ShareOutlined}
-                  />
-                  {innovationFlow.canEditInnovationFlow && (
-                    <DialogDef
-                      dialogType={SubspaceDialog.ManageFlow}
-                      label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
-                      icon={InnovationFlowIcon}
-                    />
-                  )}
-                  {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
-                    <DialogDef
-                      dialogType={SubspaceDialog.Settings}
-                      label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
-                      icon={SettingsOutlined}
-                    />
-                  )}
-                </>
-              }
-              infoColumnChildren={
-                <>
-                  <Outline
-                    currentItemId={spaceId}
-                    level={level}
-                    dashboardNavigation={dashboardNavigation.dashboardNavigation}
-                    onCreateSubspace={openCreateSubspace}
-                    onCurrentItemNotFound={dashboardNavigation.refetch}
-                  />
-                  {communityReadAccess && communityId && (
-                    <DashboardUpdatesSection
-                      communityId={communityId}
-                      shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')}
-                    />
-                  )}
-                </>
-              }
-            >
-              <SubspaceHomeView
-                spaceLevel={level}
-                collaborationId={collaboration?.id}
-                calloutsSetId={collaboration?.calloutsSet.id}
-                templatesSetId={subspace?.templatesManager?.templatesSet?.id}
-                {...innovationFlow}
-                {...callouts}
+            <DialogDef
+              dialogType={SubspaceDialog.About}
+              label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
+              icon={InfoOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Outline}
+              label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
+              icon={AccountTreeOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Index}
+              label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
+              icon={ListOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Subspaces}
+              label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
+              icon={SegmentOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Contributors}
+              label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
+              icon={GroupsOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Activity}
+              label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
+              icon={HistoryOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Timeline}
+              label={t('spaceDialog.events')}
+              icon={CalendarMonthOutlined}
+            />
+            <DialogDef
+              dialogType={SubspaceDialog.Share}
+              label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
+              icon={ShareOutlined}
+            />
+            {innovationFlowProvided.canEditInnovationFlow && (
+              <DialogDef
+                dialogType={SubspaceDialog.ManageFlow}
+                label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
+                icon={InnovationFlowIcon}
               />
-            </SubspacePageLayout>
-            {directMessageDialog}
-            <CreateJourney
-              isVisible={createSpaceState.isDialogVisible}
-              onClose={onCreateJourneyClose}
-              parentSpaceId={createSpaceState.parentSpaceId}
-            />
-            <SubspaceDialogs
-              parentSpaceId={parentSpaceId}
-              dialogOpen={dialog}
-              callouts={callouts}
-              journeyId={spaceId}
-              journeyUrl={about?.profile?.url}
-              dashboardNavigation={dashboardNavigation}
-              communityId={community?.id}
-              collaborationId={collaboration?.id}
-              calendarEventId={calendarEventId}
-            />
+            )}
+            {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
+              <DialogDef
+                dialogType={SubspaceDialog.Settings}
+                label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
+                icon={SettingsOutlined}
+              />
+            )}
           </>
-        );
-      }}
-    </SubspaceHomeContainer>
+        }
+        infoColumnChildren={
+          <>
+            <Outline
+              currentItemId={spaceId}
+              level={spaceLevel}
+              dashboardNavigation={dashboardNavigation.dashboardNavigation}
+              onCreateSubspace={openCreateSubspace}
+              onCurrentItemNotFound={dashboardNavigation.refetch}
+            />
+            <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
+          </>
+        }
+      >
+        <SubspaceHomeView
+          spaceLevel={subspace?.level}
+          collaborationId={collaboration?.id}
+          templatesSetId={subspace?.templatesManager?.templatesSet?.id}
+          calloutsSetId={calloutsSetId}
+          innovationFlowStates={innovationFlowProvided.innovationFlowStates}
+          refetchCallout={calloutsSetProvided.refetchCallout}
+          onCalloutsSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
+          canCreateCallout={calloutsSetProvided.canCreateCallout}
+          currentInnovationFlowState={innovationFlowProvided.currentInnovationFlowState}
+          loading={loading}
+        />
+      </SubspacePageLayout>
+      {directMessageDialog}
+      <CreateJourney
+        isVisible={createSpaceState.isDialogVisible}
+        onClose={onCreateJourneyClose}
+        parentSpaceId={createSpaceState.parentSpaceId}
+      />
+      <SubspaceDialogs
+        parentSpaceId={parentSpaceId}
+        dialogOpen={dialog}
+        calloutsSetProvided={calloutsSetProvided}
+        journeyId={spaceId}
+        journeyUrl={about?.profile?.url}
+        dashboardNavigation={dashboardNavigation}
+        communityId={about?.membership.communityID}
+        collaborationId={collaboration?.id}
+        calendarEventId={calendarEventId}
+      />
+    </>
   );
 };
 

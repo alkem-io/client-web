@@ -1,6 +1,24 @@
 import { AuthorizationPrivilege, TagsetType } from '@/core/apollo/generated/graphql-schema';
 
-export type SpaceAboutDetailsModel = {
+export type ContributorModel = {
+  id: string;
+  profile: {
+    id: string;
+    displayName: string;
+    url: string;
+    tagline?: string;
+    description?: string;
+    avatar?: {
+      id;
+      uri;
+    };
+    location?: {
+      city?: string;
+      country?: string;
+    };
+  };
+};
+export type SpaceAboutFullModel = {
   id: string;
   who?: string;
   why?: string;
@@ -8,6 +26,19 @@ export type SpaceAboutDetailsModel = {
     id: string;
     myPrivileges?: AuthorizationPrivilege[] | undefined;
   };
+  isContentPublic: boolean;
+  membership: {
+    myMembershipStatus?: string;
+    roleSetID?: string;
+    communityID?: string;
+    leadUsers?: ContributorModel[];
+    leadOrganizations?: ContributorModel[];
+  };
+  metrics?: {
+    name: string;
+    value: string;
+  }[];
+  provider?: ContributorModel;
   profile: {
     id: string;
     url: string;

@@ -39,7 +39,7 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
     handleCreateCalloutOpened();
   };
 
-  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
+  const { callouts, canCreateCallout, loading, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
     canSaveAsTemplate,
@@ -47,12 +47,10 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
     includeClassification: true,
   });
 
-  const loading = false;
-
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={calloutsFlowState}>
       <>
-        <MembershipBackdrop show={!loading} blockName={t('common.space')}>
+        <MembershipBackdrop show={loading} blockName={t('common.space')}>
           <PageContent>
             <InfoColumn>
               <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />

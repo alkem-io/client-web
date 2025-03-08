@@ -8,17 +8,14 @@ import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
-import SpaceDashboardView from './SpaceDashboardView';
+import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
-import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 
 const SpaceDashboardPage = ({
   dialog,
@@ -36,47 +33,33 @@ const SpaceDashboardPage = ({
     entitledToSaveAsTemplate,
   } = useSpaceTabProvider({ tabPosition: 0 });
 
-  const { spaceId, collaborationId, journeyPath, calendarEventId } = urlInfo;
+  const { spaceId, journeyPath, calendarEventId } = urlInfo;
 
-  const { loading: loadingSpace, permissions: spacePermissions } = useSpace();
   const { user } = useUserContext();
 
-  const { data: spaceData, loading: loadingSpaceQuery } = useSpacePageQuery({
+  const { data: spacePageData, loading: loadingSpacePageQuery } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
-      authorizedReadAccess: spacePermissions.canRead,
-      authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
     skip: !spaceId,
   });
 
-  const space = spaceData?.lookup.space;
+  const spaceData = spacePageData?.lookup.space;
 
-  const communityReadAccess = (space?.community?.authorization?.myPrivileges ?? []).includes(
-    AuthorizationPrivilege.Read
-  );
-
-  const timelineReadAccess = (space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
-    AuthorizationPrivilege.Read
-  );
-
-  const spacePrivileges = space?.authorization?.myPrivileges ?? [];
+  const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
 
   const permissions = {
     canEdit: spacePrivileges.includes(AuthorizationPrivilege.Update),
-    communityReadAccess,
-    timelineReadAccess,
     spaceReadAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
-    spaceId: spaceId!, // spaceReadAccess implies presence of spaceId
-    skip: !permissions.spaceReadAccess,
+    spaceId: spaceId!,
   });
 
-  const communityId = space?.community?.id ?? '';
+  const communityId = spaceData?.about.membership.communityID!;
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
 
@@ -102,66 +85,50 @@ const SpaceDashboardPage = ({
     includeClassification: true,
   });
 
-  const about: SpaceAboutDetailsModel = space?.about!;
-
-  const provider: ContributorViewProps | undefined = undefined;
+  const space: SpaceDashboardSpaceDetails = {
+    id: spaceId || '',
+    level: spaceData?.level,
+    about: spaceData?.about,
+  };
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardView
-        spaceId={spaceId}
-        collaborationId={collaborationId}
-        calloutsSetId={space?.collaboration?.calloutsSet?.id}
-        what={space?.about.profile.description}
+        space={space}
         dashboardNavigation={dashboardNavigation}
         dashboardNavigationLoading={dashboardNavigationLoading}
-        loading={loadingSpace || loadingSpaceQuery}
-        communityId={space?.community?.id}
-        communityReadAccess={permissions.communityReadAccess}
-        timelineReadAccess={permissions.timelineReadAccess}
+        loading={loadingSpacePageQuery}
         entityReadAccess={permissions.spaceReadAccess}
         readUsersAccess={permissions.readUsers}
-        leadUsers={space?.community?.roleSet?.leadUsers ?? []}
-        host={provider}
         calloutsSetProvided={calloutsSetProvided}
         flowStateForNewCallouts={flowStateForNewCallouts}
-        classificationTagsets={classificationTagsets}
-        level={space?.level}
-        myMembershipStatus={space?.community?.roleSet?.myMembershipStatus}
-        shareUpdatesUrl={buildUpdatesUrl(space?.about.profile.url ?? '')}
+        shareUpdatesUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
       />
       <CommunityUpdatesDialog
         open={dialog === 'updates'}
         onClose={backToDashboard}
-        communityId={space?.community?.id}
-        shareUrl={buildUpdatesUrl(space?.about.profile.url ?? '')}
-        loading={loadingSpace}
+        communityId={spaceData?.about.membership.communityID}
+        shareUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
+        loading={loadingSpacePageQuery}
       />
       <ContributorsDialog
         open={dialog === 'contributors'}
         onClose={backToDashboard}
         dialogContent={SpaceContributorsDialogContent}
       />
-      {permissions.timelineReadAccess && (
-        <CalendarDialog
-          open={dialog === 'calendar'}
-          onClose={backToDashboard}
-          journeyId={spaceId}
-          parentSpaceId={undefined}
-          parentPath={space?.about.profile.url ?? ''}
-          calendarEventId={calendarEventId}
-        />
-      )}
+      <CalendarDialog
+        open={dialog === 'calendar'}
+        onClose={backToDashboard}
+        journeyId={spaceId}
+        parentSpaceId={undefined}
+        parentPath={spaceData?.about.profile.url ?? ''}
+        calendarEventId={calendarEventId}
+      />
       <SpaceAboutDialog
         open={dialog === 'about'}
-        spaceLevel={SpaceLevel.L0}
-        about={about}
+        space={space}
         sendMessageToCommunityLeads={handleSendMessageToCommunityLeads}
-        metrics={space?.metrics}
-        loading={loadingSpace}
-        leadUsers={space?.community?.roleSet?.leadUsers}
-        provider={provider}
-        leadOrganizations={space?.community?.roleSet?.leadOrganizations}
+        loading={loadingSpacePageQuery}
       />
     </SpacePageLayout>
   );

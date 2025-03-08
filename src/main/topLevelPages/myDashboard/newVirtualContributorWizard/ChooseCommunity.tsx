@@ -38,8 +38,15 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
       result.push({
         id: space.id,
         name: `${space.about.profile.displayName}`,
-        url: space.about.profile.url,
-        roleSetId: space.community.roleSet.id,
+        about: {
+          profile: {
+            displayName: `${space.about.profile.displayName}`,
+            url: space.about.profile.url,
+          },
+          membership: {
+            roleSetID: space.about.membership?.roleSetID ?? '',
+          },
+        },
       });
     };
 

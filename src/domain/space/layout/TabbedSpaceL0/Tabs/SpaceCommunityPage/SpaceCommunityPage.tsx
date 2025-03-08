@@ -21,7 +21,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
@@ -30,7 +29,6 @@ import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
-import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
@@ -46,7 +44,6 @@ const SpaceCommunityPage = () => {
   });
 
   const { spaceId, journeyPath, loading: resolving } = urlInfo;
-  const { communityId } = useSpace();
 
   if (!spaceId && !resolving) {
     throw new TypeError('Must be within a Space');
@@ -60,16 +57,18 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
-  const { data, loading: loadingCommunity } = useSpaceCommunityPageQuery({
+  const { data: dataCommunityPage, loading: loadingCommunity } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
-      includeCommunity: isAuthenticated,
     },
     skip: !spaceId,
   });
 
+  const membership = dataCommunityPage?.lookup.space?.about.membership;
+  const communityId = membership?.communityID;
+
   const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
-    roleSetId: data?.lookup.space?.community?.roleSet.id,
+    roleSetId: membership?.roleSetID,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
       RoleSetContributorType.User,
@@ -90,7 +89,7 @@ const SpaceCommunityPage = () => {
     }
   );
 
-  const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
+  const calloutsSetId = dataCommunityPage?.lookup.space?.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -105,13 +104,17 @@ const SpaceCommunityPage = () => {
   );
 
   const hostOrganizations = useMemo(
-    () => data?.lookup.space?.provider && [data.lookup.space.provider],
-    [data?.lookup.space?.provider]
+    () => dataCommunityPage?.lookup.space?.about.provider && [dataCommunityPage.lookup.space.about.provider],
+    [dataCommunityPage?.lookup.space?.about.provider]
   );
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.lookup.space?.community?.id);
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(
+    dataCommunityPage?.lookup.space?.about.membership.communityID
+  );
 
-  const hasReadPrivilege = data?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  const hasReadPrivilege = dataCommunityPage?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
@@ -123,8 +126,6 @@ const SpaceCommunityPage = () => {
       privilege
     )
   );
-
-  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Community, skip: resolving || !spaceId });
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
@@ -166,7 +167,10 @@ const SpaceCommunityPage = () => {
               showInviteOption={hasInvitePrivilege}
             />
           )}
-          <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
+          <CommunityGuidelinesBlock
+            communityId={communityId}
+            spaceUrl={dataCommunityPage?.lookup.space?.about.profile.url}
+          />
         </InfoColumn>
         <ContentColumn>
           <RoleSetContributorsBlockWide

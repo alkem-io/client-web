@@ -13,6 +13,9 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
         id
         about {
           ...SpaceAboutCardAvatar
+          membership {
+            myMembershipStatus
+          }
         }
         authorization {
           id

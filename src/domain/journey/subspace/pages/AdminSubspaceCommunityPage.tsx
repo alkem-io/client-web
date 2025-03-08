@@ -29,8 +29,11 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceId, parentSpaceId, spaceLevel } = useUrlResolver();
-  const { loading: isLoadingChallenge, communityId, roleSetId, about } = useSubSpace();
+  const { loading: isLoadingChallenge, subspace } = useSubSpace();
+  const { about } = subspace;
+  const roleSetId = about.membership.roleSetID!;
 
+  const communityId = about.membership.communityID!;
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const {

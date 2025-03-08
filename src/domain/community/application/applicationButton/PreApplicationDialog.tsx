@@ -34,8 +34,10 @@ const PreApplicationDialog = ({
 }: PreApplicationDialogProps) => {
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { about: spaceAbout } = useSpace();
-  const { about: subspaceAbout } = useSubSpace();
+  const { space } = useSpace();
+  const spaceAbout = space?.about;
+  const { subspace } = useSubSpace();
+  const subspaceAbout = subspace?.about;
   const parentCommunityName = spaceId ? subspaceAbout.profile.displayName : spaceAbout.profile.displayName;
   const buttonText = t(
     `components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const
