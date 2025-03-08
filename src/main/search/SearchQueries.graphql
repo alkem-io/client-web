@@ -81,11 +81,7 @@ fragment PostParent on SearchResultPost {
     visibility
     about {
       ...SpaceAboutLight
-    }
-    settings {
-      privacy {
-        mode
-      }
+      isContentPublic
     }
   }
   callout {
@@ -204,11 +200,7 @@ fragment SearchResultSpace on SearchResultSpace {
     level
     about {
       ...SpaceAboutLight
-    }
-    settings {
-      privacy {
-        mode
-      }
+      isContentPublic
     }
   }
   space {
@@ -229,17 +221,9 @@ fragment SearchResultSpace on SearchResultSpace {
           ...VisualUri
         }
       }
-    }
-    community {
-      id
-      roleSet {
-        id
+      isContentPublic
+      membership {
         myMembershipStatus
-      }
-    }
-    settings {
-      privacy {
-        mode
       }
     }
     visibility

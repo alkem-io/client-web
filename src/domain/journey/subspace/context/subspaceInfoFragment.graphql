@@ -7,28 +7,8 @@ fragment SubspacePendingMembershipInfo on Space {
       id
       myPrivileges
     }
-    # profile {
-    #   references {
-    #     id
-    #     name
-    #     uri
-    #   }
-    #   visuals {
-    #     ...VisualFull
-    #   }
-    #   location {
-    #     ...fullLocation
-    #   }
-    # }
-  }
-  community {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    roleSet {
-      ...MyMembershipsRoleSet
+    membership {
+      myMembershipStatus
     }
   }
   authorization {

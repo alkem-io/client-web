@@ -194,6 +194,13 @@ export const VirtualContributorFullFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const MyMembershipsRoleSetFragmentDoc = gql`
+  fragment MyMembershipsRoleSet on RoleSet {
+    id
+    myMembershipStatus
+    myRoles
+  }
+`;
 export const RoleDefinitionPolicyFragmentDoc = gql`
   fragment RoleDefinitionPolicy on Role {
     id
@@ -1595,14 +1602,38 @@ export const SpaceCardFragmentDoc = gql`
         myMembershipStatus
       }
     }
-    settings {
-      privacy {
-        mode
-      }
-    }
     visibility
   }
   ${SpaceAboutCardBannerFragmentDoc}
+`;
+export const SubspaceCardFragmentDoc = gql`
+  fragment SubspaceCard on Space {
+    id
+    about {
+      ...SpaceAboutCardBanner
+      metrics {
+        id
+        name
+        value
+      }
+      membership {
+        myMembershipStatus
+        myPrivileges
+      }
+      isContentPublic
+      why
+    }
+  }
+  ${SpaceAboutCardBannerFragmentDoc}
+`;
+export const SubspacesOnSpaceFragmentDoc = gql`
+  fragment SubspacesOnSpace on Space {
+    id
+    subspaces {
+      ...SubspaceCard
+    }
+  }
+  ${SubspaceCardFragmentDoc}
 `;
 export const SpaceAboutDetailsFragmentDoc = gql`
   fragment SpaceAboutDetails on SpaceAbout {
@@ -1643,50 +1674,10 @@ export const SpaceInfoFragmentDoc = gql`
   fragment SpaceInfo on Space {
     about {
       ...SpaceAboutDetails
-    }
-    settings {
-      privacy {
-        mode
-      }
+      isContentPublic
     }
   }
   ${SpaceAboutDetailsFragmentDoc}
-`;
-export const SubspaceCardFragmentDoc = gql`
-  fragment SubspaceCard on Space {
-    id
-    about {
-      ...SpaceAboutCardBanner
-      metrics {
-        id
-        name
-        value
-      }
-      why
-    }
-    community {
-      id
-      roleSet {
-        id
-        myMembershipStatus
-      }
-    }
-    settings {
-      privacy {
-        mode
-      }
-    }
-  }
-  ${SpaceAboutCardBannerFragmentDoc}
-`;
-export const SubspacesOnSpaceFragmentDoc = gql`
-  fragment SubspacesOnSpace on Space {
-    id
-    subspaces {
-      ...SubspaceCard
-    }
-  }
-  ${SubspaceCardFragmentDoc}
 `;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
@@ -1707,13 +1698,6 @@ export const SpaceSettingsFragmentDoc = gql`
     }
   }
 `;
-export const MyMembershipsRoleSetFragmentDoc = gql`
-  fragment MyMembershipsRoleSet on RoleSet {
-    id
-    myMembershipStatus
-    myRoles
-  }
-`;
 export const SubspacePendingMembershipInfoFragmentDoc = gql`
   fragment SubspacePendingMembershipInfo on Space {
     id
@@ -1724,15 +1708,8 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
         id
         myPrivileges
       }
-    }
-    community {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      roleSet {
-        ...MyMembershipsRoleSet
+      membership {
+        myMembershipStatus
       }
     }
     authorization {
@@ -1741,7 +1718,6 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
     }
   }
   ${SpaceAboutDetailsFragmentDoc}
-  ${MyMembershipsRoleSetFragmentDoc}
 `;
 export const SpaceAboutLightFragmentDoc = gql`
   fragment SpaceAboutLight on SpaceAbout {
@@ -2626,11 +2602,7 @@ export const PostParentFragmentDoc = gql`
       visibility
       about {
         ...SpaceAboutLight
-      }
-      settings {
-        privacy {
-          mode
-        }
+        isContentPublic
       }
     }
     callout {
@@ -2788,11 +2760,7 @@ export const SearchResultSpaceFragmentDoc = gql`
       level
       about {
         ...SpaceAboutLight
-      }
-      settings {
-        privacy {
-          mode
-        }
+        isContentPublic
       }
     }
     space {
@@ -2813,17 +2781,9 @@ export const SearchResultSpaceFragmentDoc = gql`
             ...VisualUri
           }
         }
-      }
-      community {
-        id
-        roleSet {
-          id
+        isContentPublic
+        membership {
           myMembershipStatus
-        }
-      }
-      settings {
-        privacy {
-          mode
         }
       }
       visibility
@@ -2989,31 +2949,24 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
     level
     about {
       ...SpaceAboutCardBanner
+      isContentPublic
       profile {
         spaceBanner: visual(type: BANNER) {
           ...VisualUri
         }
       }
-    }
-    settings {
-      privacy {
-        mode
+      isContentPublic
+      membership {
+        myMembershipStatus
       }
     }
     authorization {
       id
       myPrivileges
     }
-    community {
-      roleSet {
-        id
-        ...MyMembershipsRoleSet
-      }
-    }
   }
   ${SpaceAboutCardBannerFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${MyMembershipsRoleSetFragmentDoc}
 `;
 export const ExploreSpacesFragmentDoc = gql`
   fragment ExploreSpaces on Space {
@@ -3054,17 +3007,13 @@ export const SpaceMembershipFragmentDoc = gql`
       id
       myPrivileges
     }
-    community {
-      roleSet {
-        id
-        ...MyMembershipsRoleSet
-      }
-    }
     about {
       ...SpaceAboutCardBanner
+      membership {
+        myMembershipStatus
+      }
     }
   }
-  ${MyMembershipsRoleSetFragmentDoc}
   ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
@@ -14707,35 +14656,26 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
   return { query: SpacePrivilegesDocument, variables: variables };
 }
 
-export const SpaceDocument = gql`
-  query Space($spaceId: UUID!) {
+export const SpaceAboutDocument = gql`
+  query SpaceAbout($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
+        level
         nameID
         about {
           ...SpaceAboutLight
+          isContentPublic
+          membership {
+            myMembershipStatus
+            myPrivileges
+          }
         }
         authorization {
           id
           myPrivileges
         }
-        collaboration {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          calloutsSet {
-            id
-          }
-        }
         visibility
-        settings {
-          privacy {
-            mode
-          }
-        }
       }
     }
   }
@@ -14743,169 +14683,49 @@ export const SpaceDocument = gql`
 `;
 
 /**
- * __useSpaceQuery__
+ * __useSpaceAboutQuery__
  *
- * To run a query within a React component, call `useSpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceAboutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceAboutQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceQuery({
+ * const { data, loading, error } = useSpaceAboutQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceQuery, SchemaTypes.SpaceQueryVariables>
+export function useSpaceAboutQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceAboutQuery, SchemaTypes.SpaceAboutQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceQuery, SchemaTypes.SpaceQueryVariables>(SpaceDocument, options);
-}
-
-export function useSpaceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceQuery, SchemaTypes.SpaceQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceQuery, SchemaTypes.SpaceQueryVariables>(SpaceDocument, options);
-}
-
-export type SpaceQueryHookResult = ReturnType<typeof useSpaceQuery>;
-export type SpaceLazyQueryHookResult = ReturnType<typeof useSpaceLazyQuery>;
-export type SpaceQueryResult = Apollo.QueryResult<SchemaTypes.SpaceQuery, SchemaTypes.SpaceQueryVariables>;
-export function refetchSpaceQuery(variables: SchemaTypes.SpaceQueryVariables) {
-  return { query: SpaceDocument, variables: variables };
-}
-
-export const SpaceCommunityIdsDocument = gql`
-  query SpaceCommunityIds($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          roleSet {
-            id
-            myMembershipStatus
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceCommunityIdsQuery__
- *
- * To run a query within a React component, call `useSpaceCommunityIdsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCommunityIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCommunityIdsQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceCommunityIdsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceCommunityIdsQuery, SchemaTypes.SpaceCommunityIdsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceCommunityIdsQuery, SchemaTypes.SpaceCommunityIdsQueryVariables>(
-    SpaceCommunityIdsDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceAboutQuery, SchemaTypes.SpaceAboutQueryVariables>(
+    SpaceAboutDocument,
     options
   );
 }
 
-export function useSpaceCommunityIdsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceCommunityIdsQuery,
-    SchemaTypes.SpaceCommunityIdsQueryVariables
-  >
+export function useSpaceAboutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceAboutQuery, SchemaTypes.SpaceAboutQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityIdsQuery, SchemaTypes.SpaceCommunityIdsQueryVariables>(
-    SpaceCommunityIdsDocument,
+  return Apollo.useLazyQuery<SchemaTypes.SpaceAboutQuery, SchemaTypes.SpaceAboutQueryVariables>(
+    SpaceAboutDocument,
     options
   );
 }
 
-export type SpaceCommunityIdsQueryHookResult = ReturnType<typeof useSpaceCommunityIdsQuery>;
-export type SpaceCommunityIdsLazyQueryHookResult = ReturnType<typeof useSpaceCommunityIdsLazyQuery>;
-export type SpaceCommunityIdsQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCommunityIdsQuery,
-  SchemaTypes.SpaceCommunityIdsQueryVariables
+export type SpaceAboutQueryHookResult = ReturnType<typeof useSpaceAboutQuery>;
+export type SpaceAboutLazyQueryHookResult = ReturnType<typeof useSpaceAboutLazyQuery>;
+export type SpaceAboutQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceAboutQuery,
+  SchemaTypes.SpaceAboutQueryVariables
 >;
-export function refetchSpaceCommunityIdsQuery(variables: SchemaTypes.SpaceCommunityIdsQueryVariables) {
-  return { query: SpaceCommunityIdsDocument, variables: variables };
-}
-
-export const SpaceProfileDocument = gql`
-  query SpaceProfile($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        level
-        ...SpaceInfo
-      }
-    }
-  }
-  ${SpaceInfoFragmentDoc}
-`;
-
-/**
- * __useSpaceProfileQuery__
- *
- * To run a query within a React component, call `useSpaceProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceProfileQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceProfileQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceProfileQuery, SchemaTypes.SpaceProfileQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceProfileQuery, SchemaTypes.SpaceProfileQueryVariables>(
-    SpaceProfileDocument,
-    options
-  );
-}
-
-export function useSpaceProfileLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceProfileQuery, SchemaTypes.SpaceProfileQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceProfileQuery, SchemaTypes.SpaceProfileQueryVariables>(
-    SpaceProfileDocument,
-    options
-  );
-}
-
-export type SpaceProfileQueryHookResult = ReturnType<typeof useSpaceProfileQuery>;
-export type SpaceProfileLazyQueryHookResult = ReturnType<typeof useSpaceProfileLazyQuery>;
-export type SpaceProfileQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceProfileQuery,
-  SchemaTypes.SpaceProfileQueryVariables
->;
-export function refetchSpaceProfileQuery(variables: SchemaTypes.SpaceProfileQueryVariables) {
-  return { query: SpaceProfileDocument, variables: variables };
+export function refetchSpaceAboutQuery(variables: SchemaTypes.SpaceAboutQueryVariables) {
+  return { query: SpaceAboutDocument, variables: variables };
 }
 
 export const SpaceProviderDocument = gql`
@@ -16139,15 +15959,6 @@ export const SpaceSettingsDocument = gql`
         settings {
           ...SpaceSettings
         }
-        community {
-          id
-          roleSet {
-            id
-          }
-        }
-        collaboration {
-          id
-        }
       }
     }
   }
@@ -16497,6 +16308,9 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
           id
           about {
             ...SpaceAboutCardAvatar
+            membership {
+              myMembershipStatus
+            }
           }
           authorization {
             id

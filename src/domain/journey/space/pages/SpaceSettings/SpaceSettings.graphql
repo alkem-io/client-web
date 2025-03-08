@@ -5,15 +5,6 @@ query SpaceSettings($spaceId: UUID!) {
       settings {
         ...SpaceSettings
       }
-      community {
-        id
-        roleSet {
-          id
-        }
-      }
-      collaboration {
-        id
-      }
     }
   }
 }
