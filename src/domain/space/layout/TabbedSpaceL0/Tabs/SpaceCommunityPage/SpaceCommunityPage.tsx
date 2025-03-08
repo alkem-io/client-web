@@ -29,7 +29,6 @@ import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
-import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
@@ -127,8 +126,6 @@ const SpaceCommunityPage = () => {
       privilege
     )
   );
-
-  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Community, skip: resolving || !spaceId });
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 

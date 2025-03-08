@@ -17,7 +17,6 @@ import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspa
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import useAboutRedirect from '@/core/routing/useAboutRedirect';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/journey/space/hooks/useSubSpaceCreatedSubscription';
 
@@ -35,7 +34,6 @@ const SpaceSubspacesPage = () => {
   } = useSpaceTabProvider({ tabPosition: 2 });
   const { spaceId, journeyPath } = urlInfo;
 
-  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: !spaceId });
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
