@@ -56,8 +56,7 @@ const SpaceDashboardPage = ({
   };
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
-    spaceId: spaceId!, // spaceReadAccess implies presence of spaceId
-    skip: !permissions.spaceReadAccess,
+    spaceId: spaceId!,
   });
 
   const communityId = spaceData?.about.membership.communityID!;
