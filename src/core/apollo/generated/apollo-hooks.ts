@@ -15732,8 +15732,27 @@ export const SpaceSettingsDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        about {
+          id
+          provider {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         settings {
           ...SpaceSettings
+        }
+        collaboration {
+          id
+        }
+        community {
+          id
+          roleSet {
+            id
+          }
         }
       }
     }

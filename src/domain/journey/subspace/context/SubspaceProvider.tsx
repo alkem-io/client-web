@@ -15,6 +15,9 @@ interface SubspaceContextProps {
     id: string;
     level: SpaceLevel;
     about: SpaceAboutFullModel;
+    authorization?: {
+      myPrivileges: AuthorizationPrivilege[];
+    };
   };
   loading: boolean;
   permissions: SubspacePermissions;

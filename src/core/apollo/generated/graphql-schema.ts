@@ -19992,6 +19992,26 @@ export type SpaceSettingsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            provider:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                };
+          };
           settings: {
             __typename?: 'SpaceSettings';
             privacy: {
@@ -20013,6 +20033,8 @@ export type SpaceSettingsQuery = {
               allowEventsFromSubspaces: boolean;
             };
           };
+          collaboration: { __typename?: 'Collaboration'; id: string };
+          community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
         }
       | undefined;
   };

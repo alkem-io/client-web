@@ -7,7 +7,6 @@ import {
   refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
-  useSpaceProviderQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useSpaceTemplatesManagerQuery,
@@ -76,13 +75,11 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
 
   let isSubspace = spaceLevel !== SpaceLevel.L0;
 
-  const { subspaceId } = useSubSpace();
-  const {
-    spaceId,
-    about: {
-      profile: { url: levelZeroSpaceUrl },
-    },
-  } = useSpace();
+  const { subspace } = useSubSpace();
+  const subspaceId = subspace.id;
+  const { space } = useSpace();
+  const spaceId = space.id;
+  const levelZeroSpaceUrl = space.about.profile.url;
 
   // TODO: flaky logic here. We already faced a couple of bugs related to this multiple spaceIds logic.
   // It's better to use the URL resolver getting the spaceId (+ parent or levelZero if needed)
@@ -130,12 +127,6 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
     });
   };
 
-  const { data: hostData } = useSpaceProviderQuery({
-    variables: { spaceId },
-    skip: !spaceId || isSubspace,
-  });
-  const hostId = hostData?.lookup.space?.about.provider.id;
-
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
       spaceId: currentSpaceId,
@@ -144,6 +135,8 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
+  const provider = settingsData?.lookup.space?.about.provider;
+  const hostId = provider?.id;
 
   // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesManagerQuery({
@@ -363,7 +356,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostData?.lookup.space?.about.provider.profile.displayName,
+                            host: provider?.profile.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />
