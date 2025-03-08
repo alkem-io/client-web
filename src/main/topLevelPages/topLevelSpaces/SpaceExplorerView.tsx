@@ -180,6 +180,7 @@ export const SpaceExplorerView = ({
       }
       const {
         id,
+        level,
         about: { profile },
       } = space;
 
@@ -190,7 +191,7 @@ export const SpaceExplorerView = ({
           displayName={profile?.displayName}
           vision={space.about.why ?? ''}
           journeyUri={profile?.url}
-          level={space.level!}
+          level={level}
           banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space) ?? []}
           tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
@@ -199,7 +200,7 @@ export const SpaceExplorerView = ({
           label={
             shouldDisplayPrivacyInfo && (
               <SpaceSubspaceCardLabel
-                level={space.level}
+                level={level}
                 member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
               />

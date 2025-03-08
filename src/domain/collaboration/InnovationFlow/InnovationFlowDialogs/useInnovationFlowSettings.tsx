@@ -15,14 +15,12 @@ import {
   Tagset,
   UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
-  filterCalloutGroups?: CalloutGroupNameValuesMap[];
   skip?: boolean;
 };
 
@@ -53,11 +51,10 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
     : undefined;
 };
 
-const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip }: useInnovationFlowSettingsProps) => {
+const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
     variables: {
       collaborationId: collaborationId!,
-      filterCalloutGroups,
     },
     skip: skip || !collaborationId,
   });
@@ -78,14 +75,14 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           type: callout.type,
           activity: callout.activity,
           sortOrder: callout.sortOrder,
-          flowState: mapFlowState(callout.framing.profile.flowState),
+          flowState: mapFlowState(callout.classification?.flowState),
         }))
         .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [collaboration?.calloutsSet.callouts]
   );
 
   const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowCurrentStateMutation({
-    refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+    refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
   const handleInnovationFlowCurrentStateChange = (newState: string) => {
     if (!innovationFlow) {
@@ -96,7 +93,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         innovationFlowId: innovationFlow.id,
         currentState: newState,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
   };
 
@@ -109,7 +106,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           profileData,
         },
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
   };
 
@@ -118,7 +115,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
 
   const handleUpdateCalloutFlowState = async (calloutId: string, newState: string, insertIndex: number) => {
     const callout = collaboration?.calloutsSet.callouts?.find(({ id }) => id === calloutId);
-    const flowStateTagset = callout?.framing.profile.flowState;
+    const flowStateTagset = callout?.classification?.flowState;
     if (!collaboration || !callout || !flowStateTagset) {
       return;
     }
@@ -139,14 +136,11 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         updateCallout: {
           ...callout,
           sortOrder: optimisticSortOrder,
-          framing: {
-            id: callout.framing.id,
-            profile: {
-              ...callout.framing.profile,
-              flowState: {
-                ...flowStateTagset,
-                tags: [newState],
-              },
+          classification: {
+            id: callout.classification?.id || '',
+            flowState: {
+              ...flowStateTagset,
+              tags: [newState],
             },
           },
         },
@@ -173,7 +167,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         calloutsSetID: calloutsSetId!,
         calloutIds: sortedCalloutIds,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
   };
 
@@ -222,7 +216,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         stateName: oldState.displayName,
         stateUpdatedData: newState,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
   };
 
@@ -261,7 +255,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           },
         });
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
       awaitRefetchQueries: true,
     });
   };
@@ -283,7 +277,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         addCallouts,
       },
       refetchQueries: [
-        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups }),
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
         'InnovationFlowDetails',
         'Callouts',
       ],

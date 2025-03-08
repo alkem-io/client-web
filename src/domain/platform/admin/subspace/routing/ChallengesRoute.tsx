@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
-import SubspaceListPage from '@/domain/journey/space/pages/SpaceSubspaces/SubspaceListPage';
+import SubspaceListPage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceSubspaces/SubspaceListPage';
 import { ChallengeRoute } from '@/domain/journey/settings/routes/ChallengeRoute';
 
 const ChallengesRoute = () => {

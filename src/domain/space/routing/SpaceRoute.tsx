@@ -2,31 +2,23 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SpaceSubspacesPage from '../../journey/space/pages/SpaceSubspacesPage';
-import { routes } from './spaceRoutes';
+import SpaceSubspacesPage from '../layout/TabbedSpaceL0/Tabs/SpaceSubspaces/SpaceSubspacesPage';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
-import SpaceDashboardPage from '../../journey/space/SpaceDashboard/SpaceDashboardPage';
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../../journey/space/spaceCalloutPage/SpaceCalloutPage';
-import SpaceCommunityPage from '../../journey/space/SpaceCommunityPage/SpaceCommunityPage';
-import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
+import SpaceCommunityPage from '../layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/SpaceCommunityPage';
+import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
-import { useUrlParams } from '@/core/routing/useUrlParams';
-import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import React, { Suspense } from 'react';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
+const routes = { ...EntityPageSection };
 
 const SpaceRoute = () => {
-  const { spaceNameId } = useUrlParams();
-
-  if (reservedTopLevelRoutePaths.includes(spaceNameId!)) {
-    return <Navigate to={ROUTE_HOME} replace />;
-  }
-
   return (
     <Routes>
       <Route index element={<Navigate replace to={routes.Dashboard} />} />
@@ -43,7 +35,11 @@ const SpaceRoute = () => {
       <Route path={routes.Community} element={<SpaceCommunityPage />} />
       <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
       <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
-      <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage />} />
+      <Route
+        path={routes.KnowledgeBase}
+        element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
+      />
+      <Route path={routes.Custom} element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
       <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
       <Route
         path="*"

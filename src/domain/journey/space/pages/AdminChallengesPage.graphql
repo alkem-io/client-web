@@ -30,16 +30,18 @@ query AdminSpaceSubspacesPage($spaceId: UUID!) {
                   id
                   type
                   sortOrder
+                  classification {
+                    id
+                    flowState: tagset(tagsetName: FLOW_STATE) {
+                      ...TagsetDetails
+                    }
+                  }
                   framing {
                     id
                     profile {
                       id
                       displayName
                       description
-                      flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-                        id
-                        tags
-                      }
                     }
                   }
                 }

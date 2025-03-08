@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { useTranslation } from 'react-i18next';
-import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { SubspaceDialog } from '@/domain/journey/subspace/layout/SubspaceDialog';
 import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesListDialog';
 import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
@@ -24,7 +24,7 @@ export interface SubspaceDialogsProps {
   journeyId: string | undefined;
   journeyUrl: string | undefined;
   parentSpaceId: string | undefined;
-  callouts: UseCalloutsProvided;
+  callouts: UseCalloutsSetProvided;
   dashboardNavigation: {
     dashboardNavigation: DashboardNavigationItem | undefined;
   };

@@ -1,44 +1,50 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
-import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
-import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
-import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
+import SpaceSubspacesPage from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceSubspaces/SpaceSubspacesPage';
+import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
-import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
+import SpaceCommunityPage from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
+import SpaceDashboardPage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 
-const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
-  switch (calloutGroup) {
-    case CalloutGroupName.Home:
+enum SpaceTab {
+  HOME = 'home',
+  SUBSPACES = 'subspaces',
+  COMMUNITY = 'community',
+  KNOWLEDGE = 'knowledge',
+}
+
+const getPageSection = (flowState: string | undefined): EntityPageSection => {
+  switch (flowState) {
+    case SpaceTab.HOME:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.Community:
+    case SpaceTab.COMMUNITY:
       return EntityPageSection.Community;
-    case CalloutGroupName.Subspaces:
+    case SpaceTab.SUBSPACES:
       return EntityPageSection.Subspaces;
     default:
       return EntityPageSection.KnowledgeBase;
   }
 };
 
-const renderPage = (calloutGroup: string | undefined) => {
-  switch (calloutGroup) {
-    case CalloutGroupName.Home:
+const renderPage = (flowState: string | undefined) => {
+  switch (flowState) {
+    case SpaceTab.HOME:
       return <SpaceDashboardPage />;
-    case CalloutGroupName.Subspaces:
+    case SpaceTab.SUBSPACES:
       return <SpaceSubspacesPage />;
-    case CalloutGroupName.Community:
+    case SpaceTab.COMMUNITY:
       return <SpaceCommunityPage />;
     default:
-      return <KnowledgeBasePage />;
+      return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
   }
 };
 
 const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
   const { about } = useSpace();
 
-  const getPageRoute = (calloutGroup: string | undefined) => {
-    return `${about.profile.url}/${getPageSection(calloutGroup)}`;
+  const getPageRoute = (flowState: string | undefined) => {
+    return `${about.profile.url}/${getPageSection(flowState)}`;
   };
 
   return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;

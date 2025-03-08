@@ -1,9 +1,4 @@
-import {
-  CalloutGroupName,
-  CalloutsQueryVariables,
-  CommunityMembershipStatus,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -13,7 +8,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import RouterLink from '@/core/ui/link/RouterLink';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
@@ -35,14 +30,18 @@ import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import SpaceWelcomeDialog from './SpaceWelcomeDialog';
+import { DashboardNavigationItem } from '../../../../../journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import SpaceWelcomeDialog from '../../../../../journey/space/pages/SpaceWelcomeDialog';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
   level: SpaceLevel | undefined;
-  collaborationId: string | undefined;
   calloutsSetId: string | undefined;
+  classificationTagsets: ClassificationTagsetModel[];
+  flowStateForNewCallouts: InnovationFlowState | undefined;
+  collaborationId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
   what?: string;
@@ -59,21 +58,14 @@ type SpaceDashboardViewProps = {
   loading: boolean;
   shareUpdatesUrl: string;
   myMembershipStatus: CommunityMembershipStatus | undefined;
-  callouts: {
-    groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
-    canCreateCallout: boolean;
-    loading: boolean;
-    refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
-    refetchCallout: (calloutId: string) => void;
-    onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
-  };
+  calloutsSetProvided: UseCalloutsSetProvided;
 };
 
 const SpaceDashboardView = ({
   spaceId,
   level,
-  collaborationId,
   calloutsSetId,
+  collaborationId,
   what = '',
   dashboardNavigation,
   dashboardNavigationLoading,
@@ -82,9 +74,10 @@ const SpaceDashboardView = ({
   timelineReadAccess = false,
   host,
   leadUsers,
-  callouts,
+  calloutsSetProvided,
   shareUpdatesUrl,
   myMembershipStatus,
+  flowStateForNewCallouts,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
 
@@ -190,12 +183,12 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}
-            callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
-            canCreateCallout={callouts.canCreateCallout}
-            loading={callouts.loading}
-            onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-            onCalloutUpdate={callouts.refetchCallout}
-            groupName={CalloutGroupName.Home}
+            createInFlowState={flowStateForNewCallouts?.displayName}
+            callouts={calloutsSetProvided.callouts}
+            canCreateCallout={calloutsSetProvided.canCreateCallout}
+            loading={calloutsSetProvided.loading}
+            onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
+            onCalloutUpdate={calloutsSetProvided.refetchCallout}
           />
         </ContentColumn>
         {spaceId && tryVirtualContributorOpen && (

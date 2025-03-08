@@ -57,6 +57,15 @@ fragment SpacePage on Space {
 
   collaboration @include(if: $authorizedReadAccess) {
     id
+    innovationFlow {
+      id
+      states {
+        displayName
+      }
+      currentState {
+        displayName
+      }
+    }
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
   }

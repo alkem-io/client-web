@@ -2,7 +2,9 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import useCalloutsSet, {
+  UseCalloutsSetProvided,
+} from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import {
   AuthorizationPrivilege,
   RoleName,
@@ -11,19 +13,18 @@ import {
   SubspacePageSpaceFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/space/graphql/queries/useCanReadSpace';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useCanReadSpace, { SpaceReadAccess } from '../../../journey/space/graphql/queries/useCanReadSpace';
 
 interface SubspaceHomeContainerProvided {
   level: SpaceLevel | undefined;
   innovationFlow: UseInnovationFlowStatesProvided;
-  callouts: UseCalloutsProvided;
+  calloutsSetProvided: UseCalloutsSetProvided;
   subspace?: SubspacePageSpaceFragment;
-  spaceReadAccess: SpaceReadAccess;
   communityReadAccess: boolean;
   communityId: string | undefined;
+  spaceReadAccess: SpaceReadAccess;
   roleSet: {
     leadUsers: ContributorViewProps[];
     leadOrganizations: ContributorViewProps[];
@@ -47,12 +48,17 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
 
   const space = data?.lookup.space;
   const collaboration = space?.collaboration;
+  const calloutsSetId = collaboration?.calloutsSet.id;
   const collaborationId = collaboration?.id;
 
   const innovationFlow = useInnovationFlowStates({ collaborationId });
 
-  const callouts = useCalloutsOnCollaboration({
-    collaborationId,
+  const calloutsSetProvided = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets: [],
+    canSaveAsTemplate: false,
+    entitledToSaveAsTemplate: false,
+    includeClassification: true,
   });
 
   const community = space?.community;
@@ -70,11 +76,11 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
       {children({
         level: space?.level,
         innovationFlow,
-        callouts,
+        calloutsSetProvided: calloutsSetProvided,
         subspace: space,
-        spaceReadAccess,
         communityReadAccess,
         communityId: community?.id,
+        spaceReadAccess,
         roleSet: {
           leadUsers: users,
           leadOrganizations: organizations,

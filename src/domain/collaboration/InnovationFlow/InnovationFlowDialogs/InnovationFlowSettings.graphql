@@ -1,4 +1,5 @@
-query InnovationFlowSettings($collaborationId: UUID!, $filterCalloutGroups: [String!]) {
+query InnovationFlowSettings($collaborationId: UUID!) {
+  #//!!
   lookup {
     collaboration(ID: $collaborationId) {
       ...InnovationFlowCollaboration
@@ -64,22 +65,23 @@ fragment InnovationFlowCollaboration on Collaboration {
   }
   calloutsSet {
     id
-    callouts(groups: $filterCalloutGroups) {
+    callouts {
+      #//!!
       id
       type
       activity
       sortOrder
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
       framing {
         id
         profile {
           id
           displayName
-          calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
-            ...TagsetDetails
-          }
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
-          }
         }
       }
     }
@@ -88,17 +90,14 @@ fragment InnovationFlowCollaboration on Collaboration {
 
 mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
   updateCallout(
-    calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }
+    calloutData: { ID: $calloutId, classification: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
   ) {
     id
     sortOrder
-    framing {
+    classification {
       id
-      profile {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
       }
     }
   }

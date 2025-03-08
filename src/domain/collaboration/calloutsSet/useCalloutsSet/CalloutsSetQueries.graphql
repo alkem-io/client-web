@@ -1,4 +1,8 @@
-query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) {
+query CalloutsOnCalloutsSetUsingClassification(
+  $calloutsSetId: UUID!
+  $classificationByFlowStateEnabled: Boolean! = true
+  $classificationTagsets: [TagsetArgs!] = []
+) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
       id
@@ -6,12 +10,19 @@ query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) 
         id
         myPrivileges
       }
-      callouts(groups: $groups, IDs: $calloutIds) {
+      callouts(classificationTagsets: $classificationTagsets) {
+        classification @include(if: $classificationByFlowStateEnabled) {
+          id
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
+        }
         ...Callout
       }
     }
   }
 }
+
 
 fragment Callout on Callout {
   id
@@ -28,17 +39,20 @@ fragment Callout on Callout {
       id
       url
       displayName
-      tagsets {
-        ...TagsetDetails
-      }
     }
   }
   visibility
 }
 
-query CalloutDetails($calloutId: UUID!) {
+query CalloutDetails($calloutId: UUID!, $includeClassification: Boolean! = true) {
   lookup {
     callout(ID: $calloutId) {
+      classification @include(if: $includeClassification) {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
       ...CalloutDetails
     }
   }
@@ -54,9 +68,6 @@ fragment CalloutDetails on Callout {
       displayName
       description
       tagset {
-        ...TagsetDetails
-      }
-      tagsets {
         ...TagsetDetails
       }
       references {
@@ -109,7 +120,7 @@ query CalloutContent($calloutId: UUID!) {
           id
           displayName
           description
-          tagsets {
+          tagset {
             ...TagsetDetails
           }
           references {

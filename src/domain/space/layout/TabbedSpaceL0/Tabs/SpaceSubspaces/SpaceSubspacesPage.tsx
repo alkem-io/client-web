@@ -7,23 +7,31 @@ import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDia
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
-import SubspacesContainer from '../containers/SubspacesContainer';
-import { useSpace } from '../SpaceContext/useSpace';
-import SpacePageLayout from '../layout/SpacePageLayout';
+import SubspacesContainer from '../../../../../journey/space/containers/SubspacesContainer';
+import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
+import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import useSpaceTabProvider from '../../SpaceTabProvider';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, journeyPath, collaborationId, calloutsSetId, loading } = useUrlResolver();
+  const {
+    urlInfo,
+    flowStateForNewCallouts: flowStateForTab,
+    classificationTagsets,
+    calloutsSetId,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+  } = useSpaceTabProvider({ tabPosition: 2 });
+  const { spaceId, journeyPath } = urlInfo;
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -59,12 +67,15 @@ const SpaceSubspacesPage = () => {
     },
     [navigate, createSubspace, spaceId]
   );
-
-  const callouts = useCalloutsOnCollaboration({
-    collaborationId,
-    groupNames: [CalloutGroupName.Subspaces],
+  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets,
+    canSaveAsTemplate,
+    entitledToSaveAsTemplate,
+    includeClassification: true,
   });
 
+  const loading = false;
   useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: loading || !spaceId });
 
   return (
@@ -108,12 +119,12 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 calloutsSetId={calloutsSetId}
-                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
-                canCreateCallout={callouts.canCreateCallout}
-                loading={callouts.loading}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Subspaces}
+                createInFlowState={flowStateForTab?.displayName}
+                callouts={callouts}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                onCalloutUpdate={refetchCallout}
               />
             }
           />

@@ -9,7 +9,6 @@ import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaboration
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
@@ -21,21 +20,18 @@ type InnovationFlowSettingsDialogProps = {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
-  filterCalloutGroups?: CalloutGroupNameValuesMap[];
 };
 
 const InnovationFlowSettingsDialog = ({
   open = false,
   onClose,
   collaborationId,
-  filterCalloutGroups = undefined,
 }: InnovationFlowSettingsDialogProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const { data, actions, state } = useInnovationFlowSettings({
     collaborationId,
-    filterCalloutGroups,
     skip: !open,
   });
   const { innovationFlow, callouts } = data;

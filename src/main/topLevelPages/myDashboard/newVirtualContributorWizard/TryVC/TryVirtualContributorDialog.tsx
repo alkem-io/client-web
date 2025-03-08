@@ -12,7 +12,6 @@ import {
   useCalloutCreation,
 } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import {
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -25,7 +24,7 @@ import {
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
@@ -67,7 +66,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     contributionPolicy: {
       state: CalloutState.Open,
     },
-    groupName: CalloutGroupName.Home,
     visibility: CalloutVisibility.Published,
     sendNotification: false,
   };
@@ -94,6 +92,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   } = useCalloutDetailsQuery({
     variables: {
       calloutId: calloutId!,
+      includeClassification: false,
     },
     skip: !calloutId,
   });
@@ -107,6 +106,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
     return {
       ...callout,
+      groupName: callout.classification?.flowState?.tags[0] || '',
       comments: callout.comments,
       // Fake callout properties to show the callout inside the dialog without any controls
       draft: callout.visibility === CalloutVisibility.Draft,
@@ -115,7 +115,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
       flowStates: undefined,
-      groupName: CalloutGroupName.Home,
       authorization: {
         myPrivileges: [],
       },

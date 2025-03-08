@@ -24,6 +24,12 @@ query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
       }
       collaboration {
         id
+        innovationFlow {
+          id
+          states {
+            displayName
+          }
+        }
         calloutsSet {
           id
         }

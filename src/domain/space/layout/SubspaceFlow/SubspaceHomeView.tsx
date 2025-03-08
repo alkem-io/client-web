@@ -1,20 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { CalloutGroupName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import useCalloutsSet, { OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
-import React, { useEffect, useMemo, useState } from 'react';
-import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
+import React, { useEffect, useState } from 'react';
+import { SubspaceInnovationFlow, useConsumeAction } from '../../../journey/subspace/layout/SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
-import { SubspaceDialog } from '../layout/SubspaceDialog';
+import { SubspaceDialog } from '../../../journey/subspace/layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -23,7 +23,6 @@ interface SubspaceHomeViewProps {
   templatesSetId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
-  callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
@@ -36,7 +35,6 @@ const SubspaceHomeView = ({
   templatesSetId,
   innovationFlowStates,
   currentInnovationFlowState,
-  callouts,
   canCreateCallout,
   loading,
   onCalloutsSortOrderUpdate,
@@ -76,18 +74,23 @@ const SubspaceHomeView = ({
     }
   }, [doesSelectedInnovationFlowStateExist]);
 
-  const selectedFlowStateCallouts = useMemo(() => {
-    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
-      return callouts?.filter(callout => {
-        if (!selectedInnovationFlowState) {
-          return true;
-        }
-        return callout.flowStates?.includes(selectedInnovationFlowState);
-      });
-    };
+  let classificationTagsets: ClassificationTagsetModel[] = [];
+  if (selectedInnovationFlowState) {
+    classificationTagsets = [
+      {
+        name: TagsetReservedName.FlowState,
+        tags: [selectedInnovationFlowState],
+      },
+    ];
+  }
 
-    return filterCallouts(callouts);
-  }, [callouts, selectedInnovationFlowState]);
+  const calloutsSetProvided = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets: classificationTagsets,
+    canSaveAsTemplate: false,
+    entitledToSaveAsTemplate: false,
+    includeClassification: true,
+  });
 
   // If it's mobile the ManageFlow action will be consumed somewhere else,
   // if there is no definition for it, button should not be shown
@@ -109,7 +112,6 @@ const SubspaceHomeView = ({
                 <InnovationFlowSettingsButton
                   collaborationId={collaborationId}
                   templatesSetId={templatesSetId}
-                  filterCalloutGroups={[CalloutGroupNameValuesMap.Home]}
                   tooltip={manageFlowActionDef.label}
                   icon={manageFlowActionDef.icon}
                 />
@@ -120,21 +122,19 @@ const SubspaceHomeView = ({
       </SubspaceInnovationFlow>
       <CalloutsGroupView
         calloutsSetId={calloutsSetId}
-        callouts={selectedFlowStateCallouts}
+        callouts={calloutsSetProvided.callouts}
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        groupName={CalloutGroupName.Home}
         createButtonPlace="top"
-        flowState={selectedInnovationFlowState}
+        createInFlowState={selectedInnovationFlowState}
       />
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        groupName={CalloutGroupName.Home}
         flowState={selectedInnovationFlowState}
       />
     </>

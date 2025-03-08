@@ -2,25 +2,21 @@ import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationD
 import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
-import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
   canCreateCallout: boolean;
-  groupName: CalloutGroupName;
-  flowState?: string;
+  createInFlowState?: string;
   createButtonPlace?: 'top' | 'bottom';
   availableCalloutTypes?: CalloutType[];
-  disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
 }
 
 const CalloutsGroupView = ({
   canCreateCallout,
-  groupName,
-  flowState,
+  createInFlowState,
   createButtonPlace = 'bottom',
   calloutsSetId,
   availableCalloutTypes,
@@ -64,8 +60,7 @@ const CalloutsGroupView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        groupName={groupName}
-        flowState={flowState}
+        flowState={createInFlowState}
         availableCalloutTypes={availableCalloutTypes}
         disableRichMedia={disableRichMedia}
         disablePostResponses={disablePostResponses}

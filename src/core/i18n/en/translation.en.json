@@ -248,6 +248,7 @@
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
     "category": "Category",
+    "custom": "Custom",
     "date": "Date",
     "description": "Description",
     "noDescription": "No description",
@@ -271,6 +272,7 @@
     "aspects": "Cards",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Layout",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -656,7 +658,8 @@
       "CONTRIBUTE": "Contribute",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Knowledge Base"
+      "KNOWLEDGE": "Knowledge Base",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -1827,6 +1830,9 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}."
+          },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-members."
           },
@@ -2037,6 +2043,9 @@
           "preferences": {
             "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2460,6 +2469,13 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Hosted by",
           "hostTooltip": "The host is the organization responsible for the creation of the Space.",

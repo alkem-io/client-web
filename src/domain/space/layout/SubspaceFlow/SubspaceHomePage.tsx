@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '@/domain/journey/common/EntityPageLayout';
 import JourneyDashboardWelcomeBlock from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import { DialogDef } from '../layout/DialogDefinition';
-import { SubspaceDialog } from '../layout/SubspaceDialog';
+import { DialogDef } from '../../../journey/subspace/layout/DialogDefinition';
+import { SubspaceDialog } from '../../../journey/subspace/layout/SubspaceDialog';
 import {
   AccountTreeOutlined,
   CalendarMonthOutlined,
@@ -20,15 +20,15 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import SubspaceDialogs from './dialogs/SubspaceDialogs';
+import SubspaceDialogs from '../../../journey/subspace/subspaceHome/dialogs/SubspaceDialogs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, {
   DashboardNavigationProps,
 } from '@/domain/journey/dashboardNavigation/DashboardNavigation';
-import { useConsumeAction } from '../layout/SubspacePageLayout';
+import { useConsumeAction } from '../../../journey/subspace/layout/SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import CreateJourney from './dialogs/CreateJourney';
+import CreateJourney from '../../../journey/subspace/subspaceHome/dialogs/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
@@ -80,7 +80,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <SubspaceHomeContainer spaceId={spaceId}>
-      {({ innovationFlow, callouts, subspace, communityReadAccess, communityId, roleSet }) => {
+      {({ innovationFlow, calloutsSetProvided: callouts, subspace, communityReadAccess, communityId, roleSet }) => {
         const { collaboration, community, about, level } = subspace ?? {};
 
         return (

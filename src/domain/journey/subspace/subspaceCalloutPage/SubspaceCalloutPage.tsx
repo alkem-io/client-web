@@ -1,5 +1,5 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
-import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
+import SubspaceHomePage from '../../../space/layout/SubspaceFlow/SubspaceHomePage';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
 import { useSubSpace } from '../hooks/useSubSpace';
 

@@ -1,7 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
-import useCallouts, { TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
-import { OrderUpdate } from '@/domain/collaboration/useCalloutsOnCollaboration';
+import {
+  AuthorizationPrivilege,
+  CalloutsOnCalloutsSetUsingClassificationQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
+import useCalloutsSet, {
+  OrderUpdate,
+  TypedCallout,
+} from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorMutation,
@@ -18,10 +23,9 @@ interface useKnowledgeBaseProvided {
   callouts: TypedCallout[] | undefined;
   calloutsSetId: string;
   canCreateCallout: boolean;
-  canReadCalloutsSet: boolean;
   loading: boolean;
   calloutsSetLoading: boolean;
-  refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+  refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetUsingClassificationQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   knowledgeBaseDescription: string | undefined;
@@ -98,22 +102,22 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
   const {
     callouts,
     canCreateCallout,
-    canReadCalloutsSet,
     loading: calloutsSetLoading,
     refetchCallouts,
     refetchCallout,
     onCalloutsSortOrderUpdate,
-  } = useCallouts({
+  } = useCalloutsSet({
     calloutsSetId,
+    includeClassification: false,
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
+    classificationTagsets: [],
   });
 
   return {
     callouts,
     calloutsSetId,
     canCreateCallout,
-    canReadCalloutsSet,
     loading: knowledgeBaseLoading,
     loadingPrivileges,
     calloutsSetLoading,
