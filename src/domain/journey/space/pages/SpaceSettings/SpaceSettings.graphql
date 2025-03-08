@@ -11,18 +11,16 @@ query SpaceSettings($spaceId: UUID!) {
             displayName
           }
         }
+        membership {
+          roleSetID
+          communityID
+        }
       }
       settings {
         ...SpaceSettings
       }
       collaboration {
         id
-      }
-      community {
-        id
-        roleSet {
-          id
-        }
       }
     }
   }

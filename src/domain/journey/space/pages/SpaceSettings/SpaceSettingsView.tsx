@@ -133,7 +133,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
     },
     skip: !currentSpaceId,
   });
-  const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
+  const roleSetId = settingsData?.lookup.space?.about.membership.roleSetID;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
   const provider = settingsData?.lookup.space?.about.provider;
   const hostId = provider?.id;

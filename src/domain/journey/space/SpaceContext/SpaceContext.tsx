@@ -37,6 +37,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
       isContentPublic: true,
       membership: {
         myMembershipStatus: undefined,
+        communityID: '',
       },
     },
   },

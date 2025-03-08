@@ -1,4 +1,4 @@
-import { useSpaceProfileQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutBaseQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
@@ -20,7 +20,7 @@ type Props = {
 export const SpaceAboutEdit = ({ spaceId = '' }: Props) => {
   const notify = useNotification();
   const { t } = useTranslation();
-  const { data: spaceData } = useSpaceProfileQuery({
+  const { data: spaceData } = useSpaceAboutBaseQuery({
     variables: {
       spaceId,
     },

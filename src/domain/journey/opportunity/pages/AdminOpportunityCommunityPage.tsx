@@ -14,8 +14,10 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSubSpace } from '../../subspace/hooks/useSubSpace';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, roleSetId } = useSubSpace();
-  const { spaceId } = useSpace();
+  const { loading: isLoadingChallenge, subspace } = useSubSpace();
+  const { space } = useSpace();
+  const spaceId = space?.id!;
+  const roleSetId = subspace?.about.membership.roleSetID!;
 
   const {
     users,

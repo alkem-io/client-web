@@ -6,7 +6,8 @@ import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/Inn
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 export const SpaceLayoutSettingsEdit = () => {
-  const { collaborationId } = useSpace();
+  const { space } = useSpace();
+  const collaborationId = space.id; // TODO!!
 
   const { data, actions, state } = useInnovationFlowSettings({
     collaborationId,

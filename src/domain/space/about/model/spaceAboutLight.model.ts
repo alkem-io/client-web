@@ -10,6 +10,7 @@ export type SpaceAboutLightModel = {
   membership?: {
     myMembershipStatus?: string;
     roleSetID?: string;
+    communityID?: string;
   };
   profile: {
     displayName: string;

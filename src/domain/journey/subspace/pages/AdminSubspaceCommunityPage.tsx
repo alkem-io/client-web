@@ -33,6 +33,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
   const { about } = subspace;
   const roleSetId = about.membership.roleSetID!;
 
+  const communityId = about.membership.communityID!;
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const {

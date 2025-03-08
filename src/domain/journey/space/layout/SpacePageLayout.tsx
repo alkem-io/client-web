@@ -9,8 +9,8 @@ import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/Innovati
 import SpacePageBanner from './SpacePageBanner';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -20,7 +20,7 @@ export interface SpacePageLayoutProps {
 const SpacePageLayout = ({ currentSection, journeyPath, children }: PropsWithChildren<SpacePageLayoutProps>) => {
   const { spaceId, loading } = useUrlResolver();
 
-  const { data: spaceData } = useSpaceProfileQuery({
+  const { data: spaceData } = useSpaceAboutBaseQuery({
     variables: {
       spaceId: spaceId!,
     },

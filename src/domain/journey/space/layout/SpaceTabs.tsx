@@ -18,12 +18,7 @@ import {
   TabProps,
   useTheme,
 } from '@mui/material';
-import {
-  History,
-  MoreVertOutlined,
-  SettingsOutlined,
-  ShareOutlined,
-} from '@mui/icons-material';
+import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
 import useNavigate from '@/core/routing/useNavigate';
 import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
@@ -54,18 +49,13 @@ enum NavigationActions {
   More = 'more',
 }
 
-
-const SpaceTabs = ({
-  currentTab,
-  mobile,
-  actions,
-  onMenuOpen,
-}: SpacePageTabsProps) => {
+const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const { spaceId, about } = useSpace();
+  const { space } = useSpace();
+  const { id: spaceId, about } = space;
   const { tabs, showSettings } = useSpaceTabs();
 
   const spaceUrl = about.profile.url;
@@ -77,7 +67,6 @@ const SpaceTabs = ({
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isActivityVisible, setIsActivityVisible] = useState(false);
-
 
   useLayoutEffect(() => {
     onMenuOpen?.(isDrawerOpen);
@@ -113,13 +102,8 @@ const SpaceTabs = ({
               },
             }}
           >
-            {tabs.map((tab) => (
-              <BottomNavigationAction
-                key={tab.value}
-                value={tab.value}
-                label={tab.label}
-                icon={tab.icon}
-              />
+            {tabs.map(tab => (
+              <BottomNavigationAction key={tab.value} value={tab.value} label={tab.label} icon={tab.icon} />
             ))}
             {!showSettings && spaceUrl && (
               <BottomNavigationAction
@@ -213,13 +197,8 @@ const SpaceTabs = ({
         showSettings={showSettings}
         settingsUrl={settingsUrl}
       >
-        {tabs.map((tab) => (
-          <HeaderNavigationTab
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-            to={`${spaceUrl}/${tab.value}`}
-          />
+        {tabs.map(tab => (
+          <HeaderNavigationTab key={tab.value} label={tab.label} value={tab.value} to={`${spaceUrl}/${tab.value}`} />
         ))}
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />

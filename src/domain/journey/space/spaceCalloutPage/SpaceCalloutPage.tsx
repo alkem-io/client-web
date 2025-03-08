@@ -41,7 +41,8 @@ const renderPage = (flowState: string | undefined) => {
 };
 
 const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { about } = useSpace();
+  const { space } = useSpace();
+  const about = space.about;
 
   const getPageRoute = (flowState: string | undefined) => {
     return `${about.profile.url}/${getPageSection(flowState)}`;

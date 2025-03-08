@@ -69,24 +69,26 @@ const WhiteboardDialogFooter = ({
 
   // TODO: WhiteboardDialogFooter depends on being inside a Space, not sure if this is fully correct
   const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
-  const spaceContext = useSpace();
-  const subspaceContext = useSubSpace();
+  const { space } = useSpace();
+  const { subspace } = useSubSpace();
+  const spaceAbout = space.about;
+  const subspaceAbout = subspace.about;
 
   const getMyMembershipStatus = () => {
     switch (spaceLevel) {
       case SpaceLevel.L0:
-        return spaceContext.myMembershipStatus;
+        return spaceAbout.membership?.myMembershipStatus;
       default:
-        return subspaceContext.myMembershipStatus;
+        return subspaceAbout.membership.myMembershipStatus;
     }
   };
 
   const getJourneyProfile = () => {
     switch (spaceLevel) {
       case SpaceLevel.L0:
-        return spaceContext.about.profile;
+        return spaceAbout.profile;
       case SpaceLevel.L1:
-        return subspaceContext.about.profile;
+        return subspaceAbout.profile;
     }
   };
 
