@@ -6,6 +6,10 @@ fragment SpaceAboutDetails on SpaceAbout {
     id
     myPrivileges
   }
+  membership {
+    myMembershipStatus
+  }
+  isContentPublic
   profile {
     id
     url

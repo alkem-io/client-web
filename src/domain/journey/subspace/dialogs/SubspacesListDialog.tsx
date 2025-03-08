@@ -1,4 +1,4 @@
-import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -50,11 +50,9 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
                             tagline={subspace.about.profile.tagline!}
                             vision={subspace.about.why!}
                             journeyUri={subspace.about.profile.url}
-                            locked={subspace.settings.privacy?.mode === SpacePrivacyMode.Private}
+                            locked={!subspace.about.isContentPublic}
                             spaceVisibility={visibility}
-                            member={
-                              subspace.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member
-                            }
+                            member={subspace.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
                           />
                         );
                       })}

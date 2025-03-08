@@ -7,6 +7,5 @@ mutation updateSpace($input: UpdateSpaceInput!) {
 fragment SpaceInfo on Space {
   about {
     ...SpaceAboutDetails
-    isContentPublic
   }
 }

@@ -10,7 +10,8 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const SubspaceAboutPage = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { communityId, about } = useSubSpace();
+  const { subspace } = useSubSpace();
+  const { about } = subspace;
 
   const backToParentPage = useBackToStaticPath(about.profile.url);
 

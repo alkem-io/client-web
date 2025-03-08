@@ -1,44 +1,4 @@
-query SpaceAbout($spaceId: UUID!) {
-  # Only access properties that are publicly available for all spaces no matter permissions and logged in status
-  lookup {
-    space(ID: $spaceId) {
-      id
-      level
-      nameID # Used for search in space
-      about {
-        ...SpaceAboutLight
-        isContentPublic
-        membership {
-          myMembershipStatus
-          myPrivileges
-        }
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-      visibility
-    }
-  }
-}
 
-query SpaceProvider($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      about {
-        id
-        provider {
-          id
-          profile {
-            id
-            displayName
-          }
-        }
-      }
-    }
-  }
-}
 
 query SpaceTemplatesManager($spaceId: UUID!) {
   lookup {
@@ -58,13 +18,3 @@ query SpaceTemplatesManager($spaceId: UUID!) {
   }
 }
 
-query SpaceUrl($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      about {
-        ...SpaceAboutLight
-      }
-    }
-  }
-}

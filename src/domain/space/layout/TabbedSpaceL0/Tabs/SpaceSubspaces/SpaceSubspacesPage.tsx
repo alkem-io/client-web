@@ -11,7 +11,7 @@ import SubspacesContainer from '../../../../../journey/space/containers/Subspace
 import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
 import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
@@ -98,9 +98,9 @@ const SpaceSubspacesPage = () => {
                 tagline={item.about.profile.tagline!}
                 vision={item.about.why!}
                 journeyUri={item.about.profile.url}
-                locked={item.settings.privacy?.mode === SpacePrivacyMode.Private}
+                locked={!item.about.isContentPublic}
                 spaceVisibility={visibility}
-                member={item.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             onClickCreate={() => setCreateDialogOpen(true)}

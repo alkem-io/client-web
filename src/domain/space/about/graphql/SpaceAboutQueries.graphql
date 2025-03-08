@@ -1,0 +1,19 @@
+query SpaceAboutBase($spaceId: UUID!) {
+  # Only access properties that are publicly available for all spaces no matter permissions and logged in status
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      nameID # Used for search in space
+      about {
+        ...SpaceAboutDetails
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      visibility
+    }
+  }
+}
+

@@ -81,7 +81,6 @@ fragment PostParent on SearchResultPost {
     visibility
     about {
       ...SpaceAboutLight
-      isContentPublic
     }
   }
   callout {
@@ -200,7 +199,6 @@ fragment SearchResultSpace on SearchResultSpace {
     level
     about {
       ...SpaceAboutLight
-      isContentPublic
     }
   }
   space {

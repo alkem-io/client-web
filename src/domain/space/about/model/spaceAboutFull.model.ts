@@ -8,6 +8,11 @@ export type SpaceAboutDetailsModel = {
     id: string;
     myPrivileges?: AuthorizationPrivilege[] | undefined;
   };
+  isContentPublic: boolean;
+  membership: {
+    myMembershipStatus?: string;
+    roleSetID?: string;
+  };
   profile: {
     id: string;
     url: string;
