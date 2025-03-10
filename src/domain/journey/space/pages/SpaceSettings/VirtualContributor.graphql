@@ -19,6 +19,7 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
             profile {
               id
               displayName
+              description
             }
           }
         }

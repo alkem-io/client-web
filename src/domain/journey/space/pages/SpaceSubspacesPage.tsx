@@ -18,11 +18,12 @@ import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, journeyPath, collaborationId, calloutsSetId } = useUrlResolver();
+  const { spaceId, journeyPath, collaborationId, calloutsSetId, loading } = useUrlResolver();
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -63,6 +64,8 @@ const SpaceSubspacesPage = () => {
     collaborationId,
     groupNames: [CalloutGroupName.Subspaces],
   });
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Subspaces, skip: loading || !spaceId });
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>

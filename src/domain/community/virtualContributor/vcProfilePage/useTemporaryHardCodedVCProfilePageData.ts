@@ -1,4 +1,10 @@
-export const useTemporaryHardCodedVCProfilePageData = () => {
+import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+
+export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = AiPersonaEngine.GenericOpenai) => {
+  const isExternal = type === AiPersonaEngine.GenericOpenai;
+  const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
+  const isExternal_OR_Assistant = isExternal || isAssistant;
+
   return {
     sections: {
       functionality: {
@@ -49,41 +55,50 @@ export const useTemporaryHardCodedVCProfilePageData = () => {
       },
 
       aiEngine: {
-        title: 'AI Engine: Alkemio AI Engine',
+        title: `AI Engine: ${isExternal ? 'External AI' : isAssistant ? 'External AI Assistant' : 'Alkemio AI '}`,
         cells: [
           {
             icon: 'settingsMotion',
             title: ' Open Model Transparency',
             description: 'Does the VC use an open-weight model?',
-            answerIcon: 'check',
-            answer: 'Yes',
+            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
+            answer: isExternal_OR_Assistant ? 'No' : 'Yes',
           },
           {
             icon: 'database',
             title: 'Data Usage Disclosure',
             description: 'Is interaction data used in any way for model training?',
-            answerIcon: 'exclamation',
-            answer: 'Yes',
+            answerIcon: isExternal_OR_Assistant ? '' : 'exclamation',
+            answer: isExternal_OR_Assistant ? 'Unknown' : 'No',
           },
           {
             icon: 'knowledge',
             title: 'Knowledge Restriction',
             description: 'Is the VC prompted to limit the responses to a specific body of knowledge?',
-            answerIcon: 'check',
-            answer: 'Yes',
+            answerIcon: isExternal ? 'exclamation' : 'check',
+            answer: (() => {
+              switch (type) {
+                case AiPersonaEngine.GenericOpenai:
+                  return 'No';
+                case AiPersonaEngine.OpenaiAssistant:
+                  return 'Yes, when provided';
+                default:
+                  return 'Yes';
+              }
+            })(),
           },
           {
             icon: 'globe',
             title: 'Web Access',
             description: 'Can the VC access or search the web?',
-            answerIcon: 'exclamation',
-            answer: 'Yes',
+            answerIcon: isExternal ? 'check' : 'exclamation',
+            answer: isExternal ? 'Yes' : 'No',
           },
           {
             icon: 'location',
             title: 'Physical Location',
             description: 'Where is the AI service hosted?',
-            answer: 'Unknown',
+            answer: isExternal_OR_Assistant ? 'Unknown' : 'Sweden, EU',
           },
           {
             icon: 'techReferences',
@@ -91,7 +106,11 @@ export const useTemporaryHardCodedVCProfilePageData = () => {
             description: 'Access to detailed information on the underlying models specifications',
             buttonIcon: 'launch',
             buttonText: 'SEE DOCUMENTATION',
-            to: 'https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/tree/main',
+            to: isExternal
+              ? 'https://platform.openai.com/docs/overview'
+              : isAssistant
+              ? 'https://platform.openai.com/docs/assistants/overview'
+              : 'https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/tree/main',
           },
         ],
       },

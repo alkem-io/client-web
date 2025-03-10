@@ -19,9 +19,6 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import unwrapFragment from '@/core/ui/utils/unwrapFragment';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
-import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
-import { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -40,12 +37,12 @@ import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
 import InfoColumn from './InfoColumn';
 import { SubspaceDialog } from './SubspaceDialog';
 import WelcomeBlock from './WelcomeBlock';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
   parentSpaceId: string | undefined;
   levelZeroSpaceId: string | undefined;
-  spaceReadAccess: SpaceReadAccess;
   spaceLevel: SpaceLevel | undefined;
   journeyPath: JourneyPath | undefined;
   spaceUrl?: string | undefined; // TODO make required
@@ -99,12 +96,10 @@ const SubspacePageLayout = ({
   journeyId,
   parentSpaceId,
   levelZeroSpaceId,
-  spaceReadAccess,
   journeyPath,
   spaceLevel,
   spaceUrl: journeyUrl,
   loading = false,
-  unauthorizedDialogDisabled = false,
   welcome,
   actions,
   children,
@@ -155,6 +150,8 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
+  useAboutRedirect({ spaceId: journeyId, skip: !journeyId });
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
@@ -272,17 +269,6 @@ const SubspacePageLayout = ({
                   </Paper>
                 )}
               </TopLevelLayout>
-              <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
-                {({ ...props }) => (
-                  <JourneyUnauthorizedDialog
-                    journeyId={journeyId}
-                    parentSpaceId={parentSpaceId}
-                    disabled={unauthorizedDialogDisabled}
-                    spaceLevel={spaceLevel}
-                    {...props}
-                  />
-                )}
-              </JourneyUnauthorizedDialogContainer>
               {isMobile && (
                 <SwapColors>
                   <GridProvider columns={GRID_COLUMNS_MOBILE}>

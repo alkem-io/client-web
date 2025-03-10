@@ -38,6 +38,7 @@ query VirtualContributor($id: UUID!) {
         bodyOfKnowledgeID
         bodyOfKnowledgeType
         bodyOfKnowledge
+        engine
       }
       profile {
         id
@@ -83,6 +84,18 @@ query VirtualContributorProfile($id: UUID!) {
           uri
           description
         }
+      }
+    }
+  }
+}
+
+query BodyOfKnowledgeProfileAuthorization($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
       }
     }
   }

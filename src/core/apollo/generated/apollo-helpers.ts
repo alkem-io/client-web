@@ -473,6 +473,7 @@ export type AiPersonaKeySpecifier = (
   | 'createdDate'
   | 'dataAccessMode'
   | 'description'
+  | 'engine'
   | 'id'
   | 'interactionModes'
   | 'updatedDate'
@@ -486,6 +487,7 @@ export type AiPersonaFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
+  engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2183,7 +2185,6 @@ export type MutationKeySpecifier = (
   | 'eventOnOrganizationVerification'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
-  | 'ingest'
   | 'inviteContributorsEntryRoleOnRoleSet'
   | 'inviteUserToPlatformAndRoleSet'
   | 'joinRoleSet'
@@ -2349,7 +2350,6 @@ export type MutationFieldPolicy = {
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteContributorsEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;

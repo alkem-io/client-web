@@ -89,12 +89,26 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
 
-  const [visual, setVisual] = useState<VisualWithAltText>();
+  const [avatar, setAvatar] = useState<VisualWithAltText>();
 
   const [uploadVisual] = useUploadVisualMutation({
     onError: () => notify(t('components.visual-upload.error'), 'error'),
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
+
+  const uploadAvatar = useCallback(async (avatar: VisualWithAltText | undefined, visualID: string | undefined) => {
+    if (avatar?.file && visualID) {
+      await uploadVisual({
+        variables: {
+          file: avatar?.file,
+          uploadData: {
+            visualID,
+            alternativeText: avatar.altText,
+          },
+        },
+      });
+    }
+  }, []);
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -241,6 +255,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             },
             profile: {
               displayName: values.name,
+              description: values.description,
             },
           },
         },
@@ -249,9 +264,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       if (values.externalConfig) {
         variables.virtualContributorData.aiPersona.aiPersonaService!.externalConfig = values.externalConfig;
       }
-      const { data } = await createVirtualContributor({
-        variables,
-      });
+      const { data } = await createVirtualContributor({ variables });
 
       if (data?.createVirtualContributor?.id) {
         notify(
@@ -431,17 +444,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
-    if (visual?.file && createdVCData?.profile?.avatar?.id) {
-      await uploadVisual({
-        variables: {
-          file: visual.file,
-          uploadData: {
-            visualID: createdVCData.profile.avatar.id,
-            alternativeText: visual.altText,
-          },
-        },
-      });
-    }
+    await uploadAvatar(avatar, createdVCData?.profile?.avatar?.id);
 
     setCreatedVc(createdVCData);
 
@@ -509,6 +512,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         return;
       }
 
+      await uploadAvatar(avatar, createdVC?.profile?.avatar?.id);
+
       // Refresh explicitly the ingestion
       refreshIngestion(createdVC.id);
 
@@ -547,6 +552,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         accountId: myAccountId,
       });
 
+      await uploadAvatar(avatar, createdVc?.profile?.avatar?.id);
+
       // navigate to VC page
       if (createdVc) {
         navigate(createdVc.profile.url);
@@ -572,7 +579,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
                 onStepSelection('existingKnowledge', values);
               }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
-              onChangeAvatar={setVisual}
+              onChangeAvatar={setAvatar}
             />
           )}
           {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}

@@ -38,7 +38,9 @@ export interface AboutPageContainerEntities {
   provider: ContributorViewProps | undefined;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
+  hasEditPrivilege?: boolean;
   hasInvitePrivilege?: boolean;
+  spaceId: string | undefined;
 }
 
 export interface AboutPageContainerActions {}
@@ -106,6 +108,9 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
     AuthorizationPrivilege.Read
   );
 
+  const hasEditPrivilege =
+    membersData?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+
   const hasInvitePrivilege =
     communityPrivileges?.includes(AuthorizationPrivilege.RolesetEntryRoleInvite) ||
     communityPrivileges?.includes(AuthorizationPrivilege.CommunityAssignVcFromAccount) ||
@@ -153,6 +158,8 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
         tagline: nonMemberSpaceAboutProfile?.tagline ?? '',
         url: nonMemberSpaceAboutProfile?.url ?? '',
         visuals: nonMemberSpaceAboutProfile?.visuals ?? [],
+        location: nonMemberSpaceAboutProfile?.location,
+        references: nonMemberSpaceAboutProfile?.references ?? [],
       },
     };
   }, [nonMemberSpaceAboutProfile]);
@@ -161,6 +168,7 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
     <>
       {children(
         {
+          spaceId: journeyId,
           about,
           innovationFlow: collaboration?.innovationFlow,
           permissions,
@@ -169,6 +177,7 @@ const AboutPageContainer = ({ journeyId, children }: AboutPageContainerProps) =>
           leadOrganizations,
           provider,
           virtualContributors: publicVirtualContributors,
+          hasEditPrivilege,
           hasReadPrivilege,
           hasInvitePrivilege,
           ...contributors,

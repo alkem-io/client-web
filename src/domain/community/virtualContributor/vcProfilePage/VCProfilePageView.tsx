@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import { groupBy } from 'lodash';
 import { Button, Tooltip } from '@mui/material';
@@ -19,7 +19,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import useNavigate from '@/core/routing/useNavigate';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -34,9 +35,11 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
   const references = virtualContributor?.profile?.references;
   const vcType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
-  const isExternal = vcType === AiPersonaBodyOfKnowledgeType.None;
+  const isExternal =
+    vcType === AiPersonaBodyOfKnowledgeType.None && virtualContributor?.aiPersona?.engine !== AiPersonaEngine.Guidance;
   const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const hasKnowledgeBase = vcType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
+  const isAssistant = virtualContributor?.aiPersona?.engine === AiPersonaEngine.OpenaiAssistant;
 
   const links = useMemo(() => {
     return groupBy(references, reference =>
@@ -49,6 +52,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
       navigate(`${virtualContributor.profile.url}/${KNOWLEDGE_BASE_PATH}`);
     }
   }, [navigate, virtualContributor]);
+
+  const defaultProfile = { displayName: t('components.card.privacy.private', { entity: 'space' }), url: '' };
 
   const renderBokVisitButton = useCallback(
     () =>
@@ -130,7 +135,15 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 </Caption>
 
                 <Gutters disableGap disablePadding paddingTop={1}>
-                  <ContributorCardHorizontal profile={rest?.bokProfile} seamless />
+                  <JourneyCardHorizontal
+                    space={{ about: { profile: rest?.bokProfile || defaultProfile }, level: SpaceLevel.L0 }}
+                    size="small"
+                    deepness={0}
+                    seamless
+                    sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
+                    disableHoverState
+                    disableTagline
+                  />
                 </Gutters>
               </Gutters>
             </Gutters>
@@ -143,13 +156,11 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
               <Gutters disableGap disablePadding>
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
-                  value={
-                    rest?.bokProfile?.displayName
-                      ? t('components.profile.fields.bodyOfKnowledge.externalVCDescription', {
-                          engineName: rest.bokProfile.displayName,
-                        })
-                      : t('components.profile.fields.bodyOfKnowledge.externalVCDescriptionNA')
-                  }
+                  value={t('components.profile.fields.engines.externalVCDescription', {
+                    engineName: isAssistant
+                      ? t('components.profile.fields.engines.externalAssistant')
+                      : t('components.profile.fields.engines.external'),
+                  })}
                   aria-label="body-of-knowledge"
                 />
               </Gutters>

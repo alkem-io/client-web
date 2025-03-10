@@ -174,6 +174,7 @@ const SpaceDashboardView = ({
             component={RouterLink}
             to={EntityPageSection.About}
             variant="contained"
+            sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
             {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>

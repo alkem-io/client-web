@@ -307,7 +307,6 @@
     "field-required": "This field is required",
     "field-min-length": "This field must be minimum of {{min}} characters",
     "field-max-length": "This field must be maximum of {{max}} characters",
-    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
@@ -963,7 +962,7 @@
       "aria-label": "Powered by Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
     "journeyPageBannerCard": {
       "parentJourney": "Part of:"
@@ -1591,12 +1590,15 @@
         "references": {
           "title": "References"
         },
+        "engines": {
+          "external": "OpenAI Generic",
+          "externalAssistant": "OpenAI Assistant",
+          "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+        },
         "bodyOfKnowledge": {
           "title": "Body of Knowledge",
           "privateBokTooltip": "This Body of Knowledge is private",
-          "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:",
-          "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible.",
-          "externalVCDescriptionNA": "This Virtual Contributor utilizes an external AI engine. No data at the moment."
+          "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:"
         }
       }
     },
@@ -2529,6 +2531,8 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "loadingScene": "Loading scene",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>",
       "state-actions": {
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",
@@ -3109,7 +3113,7 @@
     },
     "initial": {
       "title": "Create a Virtual Contributor",
-      "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
+      "profileDescription": "Choose a name and avatar now, or personalize your profile later on the VC Profile page.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",
