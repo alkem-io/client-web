@@ -1,6 +1,7 @@
 import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 
 export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = AiPersonaEngine.GenericOpenai) => {
+  // TODO: the logic here should be isGeneric, isAssistant and isExternal = isGeneric || isAssistant;
   const isExternal = type === AiPersonaEngine.GenericOpenai;
   const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
   const isExternal_OR_Assistant = isExternal || isAssistant;
@@ -68,14 +69,14 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
             icon: 'database',
             title: 'Data Usage Disclosure',
             description: 'Is interaction data used in any way for model training?',
-            answerIcon: isExternal_OR_Assistant ? '' : 'exclamation',
+            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
             answer: isExternal_OR_Assistant ? 'Unknown' : 'No',
           },
           {
             icon: 'knowledge',
             title: 'Knowledge Restriction',
             description: 'Is the VC prompted to limit the responses to a specific body of knowledge?',
-            answerIcon: isExternal ? 'exclamation' : 'check',
+            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
             answer: (() => {
               switch (type) {
                 case AiPersonaEngine.GenericOpenai:
