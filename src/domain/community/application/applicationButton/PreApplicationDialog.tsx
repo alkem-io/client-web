@@ -2,7 +2,7 @@ import { Button, Dialog, DialogContent } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
 import isApplicationPending from './isApplicationPending';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';

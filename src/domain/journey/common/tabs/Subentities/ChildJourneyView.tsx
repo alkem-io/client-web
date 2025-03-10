@@ -17,7 +17,7 @@ import { ValueType } from '@/core/utils/filtering/filterFn';
 import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { ApolloError } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';

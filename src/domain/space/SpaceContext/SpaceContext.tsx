@@ -1,4 +1,4 @@
-import { useSpaceAboutBaseQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -8,7 +8,6 @@ export interface SpacePermissions {
   canRead: boolean;
   canUpdate: boolean;
   canCreateSubspaces: boolean;
-  canCreateTemplates: boolean;
 }
 
 interface SpaceContextProps {
@@ -47,16 +46,13 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canRead: false,
     canUpdate: false,
     canCreateSubspaces: false,
-    canCreateTemplates: false,
   },
   visibility: SpaceVisibility.Active,
   loading: false,
 });
 
-const NO_PRIVILEGES = [];
-
 const SpaceContextProvider = ({ children }: PropsWithChildren) => {
-  const { levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
+  const { levelZeroSpaceId, loading: urlResolverLoading, collaborationId } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
 
   const { data: spaceAboutData, loading: loadingSpaceQuery } = useSpaceAboutBaseQuery({
@@ -68,25 +64,15 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
   const spaceNameId = spaceData?.nameID ?? '';
   const visibility = spaceData?.visibility || SpaceVisibility.Active;
 
-  const spacePrivileges = spaceData?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-
-  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
-    variables: { spaceId },
-    skip: !spaceId,
-  });
-  const canCreateTemplates =
-    templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.Create
-    ) ?? false;
+  const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
 
   const permissions = useMemo<SpacePermissions>(() => {
     return {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      canCreateTemplates,
     };
-  }, [spacePrivileges, canCreateTemplates]);
+  }, [spacePrivileges]);
 
   const space = useMemo(() => {
     const aboutModel: SpaceAboutLightModel = {
@@ -107,6 +93,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       levelZeroSpaceId: levelZeroSpaceId ?? '',
       nameID: spaceNameId,
       about: aboutModel,
+      collaborationId,
     };
   }, [spaceData]);
 
