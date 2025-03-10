@@ -1,11 +1,14 @@
 query ExploreSpacesSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
     spaceResults {
-      id
-      type
-      ... on SearchResultSpace {
+      cursor
+      results {
+        score
+        terms
+        type
         ...ExploreSpacesSearch
       }
+      total
     }
   }
 }

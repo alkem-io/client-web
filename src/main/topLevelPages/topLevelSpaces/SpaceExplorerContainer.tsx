@@ -8,6 +8,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user';
 import {
+  SearchCategory,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SearchResultType,
@@ -64,7 +65,12 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
       searchData: {
         terms: searchTerms,
         tagsetNames: ['skills', 'keywords'],
-        types: [SearchResultType.Space, SearchResultType.Subspace],
+        filters: [
+          {
+            category: SearchCategory.Spaces,
+            size: ITEMS_LIMIT,
+          },
+        ],
       },
     },
     fetchPolicy: 'no-cache',
@@ -148,7 +154,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch) {
-      return rawSearchResults?.search?.journeyResults.map(result => {
+      return rawSearchResults?.search?.spaceResults?.results.map(result => {
         const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
 
         if (entry.type === SearchResultType.Space || entry.type === SearchResultType.Subspace) {
