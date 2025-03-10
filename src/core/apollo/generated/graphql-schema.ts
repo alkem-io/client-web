@@ -18326,6 +18326,26 @@ export type VirtualContributorProfileQuery = {
   };
 };
 
+export type BodyOfKnowledgeProfileAuthorizationQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type BodyOfKnowledgeProfileAuthorizationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type BodyOfKnowledgeProfileQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
