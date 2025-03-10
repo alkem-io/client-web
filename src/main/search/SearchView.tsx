@@ -161,7 +161,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
 
-  const { spaceResultsCount, calloutResultsCount, contributorResultsCount, contributionResultsCount } =
+  const { journeyResultsCount, calloutResultsCount, contributorResultsCount, contributionResultsCount } =
     data?.search ?? {};
 
   const { spaceResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
@@ -214,7 +214,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         <SearchResultSection
           title={journeyFilterTitle}
           filterTitle={t('pages.search.filter.type.journey')}
-          count={spaceResultsCount}
+          count={journeyResultsCount}
           filterConfig={journeyFilterConfig}
           results={spaceResults}
           currentFilter={journeyFilter}
@@ -267,7 +267,7 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     return [];
   }
 
-  const spaceResults = (query.search.spaceResults || [])
+  const spaceResults = (query.search.journeyResults || [])
     .map<SearchResultMetaType>(
       ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
       []

@@ -148,7 +148,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch) {
-      return rawSearchResults?.search?.spaceResults.map(result => {
+      return rawSearchResults?.search?.journeyResults.map(result => {
         const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
 
         if (entry.type === SearchResultType.Space || entry.type === SearchResultType.Subspace) {

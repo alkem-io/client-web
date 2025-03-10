@@ -88,8 +88,8 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
   const hasMore = false;
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
-    if (shouldSearch && rawSearchResults?.search?.spaceResults) {
-      return rawSearchResults.search.spaceResults
+    if (shouldSearch && rawSearchResults?.search?.journeyResults) {
+      return rawSearchResults.search.journeyResults
         .filter(
           (journey): journey is TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment> =>
             journey.type === SearchResultType.Space
