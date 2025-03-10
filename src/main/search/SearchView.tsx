@@ -1,6 +1,7 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState, PropsWithChildren } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '@/core/ui/grid/utils';
 import useNavigate from '@/core/routing/useNavigate';
 import {
   useSearchQuery,
@@ -26,6 +27,8 @@ import {
   FilterConfig,
   FilterDefinition,
 } from './Filter';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -39,6 +42,7 @@ import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
+import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -211,50 +215,68 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
             <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
           </Box>
         )}
-        <SearchResultSection
-          title={journeyFilterTitle}
-          filterTitle={t('pages.search.filter.type.journey')}
-          count={journeyResultsCount}
-          filterConfig={journeyFilterConfig}
-          results={spaceResults}
-          currentFilter={journeyFilter}
-          onFilterChange={setJourneyFilter}
-          loading={isSearching}
-          cardComponent={SearchResultPostChooser}
-        />
-        <SearchResultSection
-          title={t('common.collaborationTools')}
-          filterTitle={t('common.type')}
-          count={calloutResultsCount}
-          filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
-          results={convertedCalloutResults}
-          currentFilter={calloutFilter}
-          onFilterChange={setCalloutFilter}
-          loading={isSearching}
-          cardComponent={SearchResultsCalloutCard}
-        />
-        <SearchResultSection
-          title={t('common.contributions')}
-          filterTitle={t('pages.search.filter.type.contribution')}
-          count={contributionResultsCount}
-          filterConfig={contributionFilterConfig}
-          results={contributionResults}
-          currentFilter={contributionFilter}
-          onFilterChange={setContributionFilter}
-          loading={isSearching}
-          cardComponent={SearchResultPostChooser}
-        />
-        <SearchResultSection
-          title={t('common.contributors')}
-          filterTitle={t('pages.search.filter.type.contributor')}
-          count={contributorResultsCount}
-          filterConfig={contributorFilterConfig}
-          results={contributorResults}
-          currentFilter={contributorFilter}
-          onFilterChange={setContributorFilter}
-          loading={isSearching}
-          cardComponent={SearchResultPostChooser}
-        />
+
+        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
+          <FiltersDescriptionBlock />
+
+          <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
+            <SectionWrapper>
+              <SearchResultSection
+                title={journeyFilterTitle}
+                filterTitle={t('pages.search.filter.type.journey')}
+                count={journeyResultsCount}
+                filterConfig={journeyFilterConfig}
+                results={spaceResults}
+                currentFilter={journeyFilter}
+                onFilterChange={setJourneyFilter}
+                loading={isSearching}
+                cardComponent={SearchResultPostChooser}
+              />
+            </SectionWrapper>
+
+            <SectionWrapper>
+              <SearchResultSection
+                title={t('common.collaborationTools')}
+                filterTitle={t('common.type')}
+                count={calloutResultsCount}
+                filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
+                results={convertedCalloutResults}
+                currentFilter={calloutFilter}
+                onFilterChange={setCalloutFilter}
+                loading={isSearching}
+                cardComponent={SearchResultsCalloutCard}
+              />
+            </SectionWrapper>
+
+            <SectionWrapper>
+              <SearchResultSection
+                title={t('common.contributions')}
+                filterTitle={t('pages.search.filter.type.contribution')}
+                count={contributionResultsCount}
+                filterConfig={contributionFilterConfig}
+                results={contributionResults}
+                currentFilter={contributionFilter}
+                onFilterChange={setContributionFilter}
+                loading={isSearching}
+                cardComponent={SearchResultPostChooser}
+              />
+            </SectionWrapper>
+
+            <SectionWrapper>
+              <SearchResultSection
+                title={t('common.contributors')}
+                filterTitle={t('pages.search.filter.type.contributor')}
+                count={contributorResultsCount}
+                filterConfig={contributorFilterConfig}
+                results={contributorResults}
+                currentFilter={contributorFilter}
+                onFilterChange={setContributorFilter}
+                loading={isSearching}
+                cardComponent={SearchResultPostChooser}
+              />
+            </SectionWrapper>
+          </Gutters>
+        </Gutters>
       </PageContentColumn>
     </>
   );
@@ -295,3 +317,48 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
 
   return calloutResults.concat(contributorResults).concat(spaceResults).concat(contributionResults);
 };
+
+function SectionWrapper({ children }: PropsWithChildren) {
+  return <Box sx={{ display: 'flex', flexDirection: 'row', gap: gutters(1) }}>{children}</Box>;
+}
+
+function FiltersDescriptionBlock() {
+  const { t } = useTranslation();
+
+  return (
+    <Gutters
+      disableGap
+      disablePadding
+      sx={theme => ({
+        minWidth: 250,
+        borderRadius: 1,
+        height: 'fit-content',
+        border: `1px solid ${theme.palette.divider}`,
+      })}
+    >
+      <FiltersDescriptionBlockItem>
+        <HubOutlined />
+        <Caption>{t('components.searchDialog.spacesAndSubspaces')}</Caption>
+      </FiltersDescriptionBlockItem>
+
+      <FiltersDescriptionBlockItem>
+        <DrawOutlined />
+        <Caption>{t('components.searchDialog.collaborationTools')}</Caption>
+      </FiltersDescriptionBlockItem>
+
+      <FiltersDescriptionBlockItem>
+        <LibraryBooksOutlined />
+        <Caption>{t('components.searchDialog.responses')}</Caption>
+      </FiltersDescriptionBlockItem>
+
+      <FiltersDescriptionBlockItem>
+        <GroupOutlined />
+        <Caption>{t('components.searchDialog.contributors')}</Caption>
+      </FiltersDescriptionBlockItem>
+    </Gutters>
+  );
+}
+
+function FiltersDescriptionBlockItem({ children }: PropsWithChildren) {
+  return <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}>{children}</Gutters>;
+}
