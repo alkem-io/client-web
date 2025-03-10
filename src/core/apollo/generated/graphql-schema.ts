@@ -20301,12 +20301,11 @@ export type SpaceDashboardNavigationSubspacesQuery = {
   };
 };
 
-export type SpaceDashboardNavigationOpportunitiesQueryVariables = Exact<{
+export type SpaceDashboardNavigationSubspacesAuthQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
-  challengeIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
-export type SpaceDashboardNavigationOpportunitiesQuery = {
+export type SpaceDashboardNavigationSubspacesAuthQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -20314,38 +20313,9 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
       | {
           __typename?: 'Space';
           id: string;
-          subspaces: Array<{
-            __typename?: 'Space';
-            id: string;
-            subspaces: Array<{
-              __typename?: 'Space';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                };
-              };
-              community: {
-                __typename?: 'Community';
-                id: string;
-                roleSet: {
-                  __typename?: 'RoleSet';
-                  id: string;
-                  myMembershipStatus?: CommunityMembershipStatus | undefined;
-                  myRoles: Array<RoleName>;
-                };
-              };
-            }>;
-          }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
