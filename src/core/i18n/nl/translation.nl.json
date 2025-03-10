@@ -1591,9 +1591,9 @@
           "title": "Referenties"
         },
         "engines": {
-          "external": "OpenAI Generic",
-          "externalAssistant": "OpenAI Assistant",
-          "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+          "external": "OpenAI Generiek",
+          "externalAssistant": "OpenAI Assistent",
+          "externalVCDescription": "Deze Virtual Contributor gebruikt <strong>{{engineName}}</strong>, een externe AI engine. Als gevolg daarvan is de kennisbank niet toegankelijk."
         },
         "bodyOfKnowledge": {
           "title": "Kennisbank",
