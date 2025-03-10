@@ -2605,26 +2605,13 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const InAppNotificationAllTypesFragmentDoc = gql`
-  fragment InAppNotificationAllTypes on InAppNotification {
+export const SearchResultsFragmentDoc = gql`
+  fragment SearchResults on SearchResult {
     id
     type
-    category
-    state
-    triggeredAt
-    ... on InAppNotificationCalloutPublished {
-      ...InAppNotificationCalloutPublished
-    }
-    ... on InAppNotificationCommunityNewMember {
-      ...InAppNotificationCommunityNewMember
-    }
-    ... on InAppNotificationUserMentioned {
-      ...InAppNotificationUserMentioned
-    }
+    score
+    terms
   }
-  ${InAppNotificationCalloutPublishedFragmentDoc}
-  ${InAppNotificationCommunityNewMemberFragmentDoc}
-  ${InAppNotificationUserMentionedFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
@@ -21702,52 +21689,37 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      spaceResults {
-        id
-        score
-        terms
-        type
-        ...SearchResultSpace
-      }
-      spaceResultsCount
-      calloutResults {
-        id
-        score
-        terms
-        type
-        ...SearchResultCallout
-      }
-      calloutResultsCount
       contributorResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultUser {
-          ...SearchResultUser
+        cursor
+        results {
+          ...SearchResults
         }
-        ... on SearchResultOrganization {
-          ...SearchResultOrganization
-        }
+        total
       }
-      contributorResultsCount
       contributionResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultPost {
-          ...SearchResultPost
+        cursor
+        results {
+          ...SearchResults
         }
+        total
       }
-      contributionResultsCount
+      spaceResults {
+        cursor
+        results {
+          ...SearchResults
+        }
+        total
+      }
+      calloutResults {
+        cursor
+        results {
+          ...SearchResults
+        }
+        total
+      }
     }
   }
-  ${SearchResultSpaceFragmentDoc}
-  ${SearchResultCalloutFragmentDoc}
-  ${SearchResultUserFragmentDoc}
-  ${SearchResultOrganizationFragmentDoc}
-  ${SearchResultPostFragmentDoc}
+  ${SearchResultsFragmentDoc}
 `;
 
 /**
@@ -22199,11 +22171,14 @@ export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
       spaceResults {
-        id
-        type
-        ... on SearchResultSpace {
+        cursor
+        results {
+          score
+          terms
+          type
           ...ExploreSpacesSearch
         }
+        total
       }
     }
   }
@@ -23256,10 +23231,14 @@ export const SpaceExplorerSearchDocument = gql`
   query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
       spaceResults {
-        id
-        type
-        terms
-        ...SpaceExplorerSearchSpace
+        cursor
+        results {
+          score
+          terms
+          type
+          ...SpaceExplorerSearchSpace
+        }
+        total
       }
     }
   }

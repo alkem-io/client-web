@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState, PropsWithChildren } from 'react';
+import { ReactNode, useEffect, useMemo, useState, useCallback, PropsWithChildren } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
@@ -11,6 +11,8 @@ import {
 import {
   SearchQuery,
   SearchResult,
+  SearchCategory,
+  // SearchFilterInput,
   SearchResultCalloutFragment,
   SearchResultOrganizationFragment,
   SearchResultPostFragment,
@@ -45,7 +47,7 @@ import SearchResultsCalloutCard from './searchResults/searchResultsCallout/Searc
 import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
 export const MAX_TERMS_SEARCH = 5;
-
+const SEARCH_RESULTS_COUNT = 5;
 const tagsetNames = ['skills', 'keywords'];
 
 export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
@@ -90,8 +92,9 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const spaceNameId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
 
-  const termsFromUrl = useMemo(() => {
+  const searchTerms = useMemo(() => {
     const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM).filter(identity);
+
     if (terms.length > MAX_TERMS_SEARCH) {
       // All terms above 4th are joined into a single 5th term
       // That is mainly coming from UX issues when having more than 5 tags in the Search input
@@ -101,87 +104,106 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     return terms;
   }, [queryParams]);
 
-  const searchTerms = termsFromUrl;
-
   const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
   const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
   const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
   const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
 
-  const resetFilters = () => {
-    setJourneyFilter(journeyFilterConfig.all);
-    setContributionFilter(contributionFilterConfig.all);
-    setContributorFilter(contributorFilterConfig.all);
-  };
+  const handleTermsChange = useCallback(
+    (newValue: string[]) => {
+      const params = new URLSearchParams(queryParams);
+      params.delete(SEARCH_TERMS_URL_PARAM);
+      for (const term of newValue) {
+        params.append(SEARCH_TERMS_URL_PARAM, term);
+      }
+      if (newValue.length === 0) {
+        // Keeping the dialog open when there are no search terms
+        params.append(SEARCH_TERMS_URL_PARAM, '');
+      }
+      navigate(`${searchRoute}?${params}`);
+    },
+    [queryParams, searchRoute]
+  );
 
-  useEffect(() => {
-    if (termsFromUrl.length === 0) {
-      resetFilters();
-    }
-  }, [termsFromUrl.length]);
-
-  const handleTermsChange = (newValue: string[]) => {
-    const params = new URLSearchParams(queryParams);
-    params.delete(SEARCH_TERMS_URL_PARAM);
-    for (const term of newValue) {
-      params.append(SEARCH_TERMS_URL_PARAM, term);
-    }
-    if (newValue.length === 0) {
-      // Keeping the dialog open when there are no search terms
-      params.append(SEARCH_TERMS_URL_PARAM, '');
-    }
-    navigate(`${searchRoute}?${params}`);
-  };
-
-  const handleSearchInPlatform = () => {
+  const handleSearchInPlatform = useCallback(() => {
     const params = new URLSearchParams(queryParams);
     params.delete(SEARCH_SPACE_URL_PARAM);
     navigate(`${searchRoute}?${params}`);
-  };
-
-  const filters = useMemo(
-    () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value, ...calloutFilter.value],
-    [journeyFilter, contributionFilter, contributorFilter, calloutFilter]
-  );
+  }, [navigate, searchRoute]);
 
   const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
     variables: { spaceNameId: spaceNameId! },
     skip: !spaceNameId,
   });
+
   const spaceId = spaceIdData?.lookupByName.space?.id;
+
+  const memoizedSearchFilters = useMemo(
+    () => [
+      {
+        category: SearchCategory.Spaces,
+        size: SEARCH_RESULTS_COUNT,
+        types: journeyFilter.value,
+        // cursor: data?.search?.spaceResults?.cursor,
+        cursor: undefined,
+      },
+      {
+        category: SearchCategory.CollaborationTools,
+        size: SEARCH_RESULTS_COUNT,
+        // cursor: data?.search?.calloutResults?.cursor,
+        cursor: undefined,
+      },
+      {
+        category: SearchCategory.Responses,
+        size: SEARCH_RESULTS_COUNT,
+        types: contributionFilter.value,
+        // cursor: data?.search?.contributionResults?.cursor,
+        cursor: undefined,
+      },
+      {
+        category: SearchCategory.Contributors,
+        size: SEARCH_RESULTS_COUNT,
+        types: contributorFilter.value,
+        // cursor: data?.search?.contributorResults?.cursor,
+        cursor: undefined,
+      },
+    ],
+    [journeyFilter, contributionFilter, contributorFilter]
+  );
 
   const { data, loading: isSearching } = useSearchQuery({
     variables: {
       searchData: {
-        terms: termsFromUrl,
+        terms: searchTerms,
         tagsetNames,
-        types: filters,
+        filters: memoizedSearchFilters,
         searchInSpaceFilter: spaceId,
       },
     },
     fetchPolicy: 'no-cache',
-    skip: termsFromUrl.length === 0 || resolvingSpace,
+    skip: searchTerms.length === 0 || resolvingSpace,
   });
 
-  const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
-
-  const { journeyResultsCount, calloutResultsCount, contributorResultsCount, contributionResultsCount } =
-    data?.search ?? {};
+  const results = searchTerms.length === 0 ? undefined : toResultType(data);
 
   const { spaceResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
-    () =>
-      groupBy(results, ({ type }) => {
-        return findKey(searchResultSectionTypes, types => types.includes(type));
-      }),
+    () => groupBy(results, ({ type }) => findKey(searchResultSectionTypes, types => types.includes(type))),
     [results]
   );
+  console.log('spaceResults >>>', spaceResults);
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
+    variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
+
+  useEffect(() => {
+    if (searchTerms.length === 0) {
+      setJourneyFilter(journeyFilterConfig.all);
+      setContributionFilter(contributionFilterConfig.all);
+      setContributorFilter(contributorFilterConfig.all);
+    }
+  }, [searchTerms.length]);
 
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
@@ -191,6 +213,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         <PageContentBlockSeamless disablePadding>
           <MultipleSelect size="small" onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus />
         </PageContentBlockSeamless>
+
         {spaceId && (
           <SearchResultsScope
             currentScope={
@@ -210,6 +233,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
             }
           />
         )}
+
         {!isAuthenticated && (
           <Box display="flex" justifyContent="center" paddingBottom={2}>
             <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
@@ -224,7 +248,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={journeyFilterTitle}
                 filterTitle={t('pages.search.filter.type.journey')}
-                count={journeyResultsCount}
+                count={data?.search?.spaceResults?.total || 0}
                 filterConfig={journeyFilterConfig}
                 results={spaceResults}
                 currentFilter={journeyFilter}
@@ -238,7 +262,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={t('common.collaborationTools')}
                 filterTitle={t('common.type')}
-                count={calloutResultsCount}
+                count={data?.search?.calloutResults?.total || 0}
                 filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
                 results={convertedCalloutResults}
                 currentFilter={calloutFilter}
@@ -252,7 +276,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={t('common.contributions')}
                 filterTitle={t('pages.search.filter.type.contribution')}
-                count={contributionResultsCount}
+                count={data?.search?.contributionResults?.total || 0}
                 filterConfig={contributionFilterConfig}
                 results={contributionResults}
                 currentFilter={contributionFilter}
@@ -266,7 +290,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={t('common.contributors')}
                 filterTitle={t('pages.search.filter.type.contributor')}
-                count={contributorResultsCount}
+                count={data?.search?.contributorResults?.total || 0}
                 filterConfig={contributorFilterConfig}
                 results={contributorResults}
                 currentFilter={contributorFilter}
@@ -284,39 +308,41 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
 export default SearchView;
 
-const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
+function toResultType(query?: SearchQuery): SearchResultMetaType[] {
   if (!query) {
     return [];
   }
 
-  const spaceResults = (query.search.journeyResults || [])
+  const spaceResults = (query.search.spaceResults?.results || [])
     .map<SearchResultMetaType>(
-      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
-      []
+      ({ id, type, score, terms, ...rest }) =>
+        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
 
-  const contributionResults = (query.search.contributionResults || [])
+  const contributionResults = (query.search.contributionResults?.results || [])
     .map<SearchResultMetaType>(
-      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
-      []
+      ({ id, type, score, terms, ...rest }) =>
+        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
 
-  const contributorResults = (query.search.contributorResults || [])
+  const contributorResults = (query.search.contributorResults?.results || [])
     .map<SearchResultMetaType>(
-      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
-      []
+      ({ id, type, score, terms, ...rest }) =>
+        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
 
-  const calloutResults = (query.search.calloutResults || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
-    []
-  );
+  const calloutResults = (query.search.calloutResults?.results || [])
+    .map<SearchResultMetaType>(
+      ({ id, type, score, terms, ...rest }) =>
+        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+    )
+    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
 
-  return calloutResults.concat(contributorResults).concat(spaceResults).concat(contributionResults);
-};
+  return [...spaceResults, ...contributionResults, ...contributorResults, ...calloutResults];
+}
 
 function SectionWrapper({ children }: PropsWithChildren) {
   return <Box sx={{ display: 'flex', flexDirection: 'row', gap: gutters(1) }}>{children}</Box>;
