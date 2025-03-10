@@ -1,18 +1,20 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useTheme } from '@mui/material';
 import { Theme, useMediaQuery } from '@mui/material';
 
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { useDashboardWithMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useDashboardWithMembershipsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
+
+const LIMIT = 8; // Hardcoded max value as this request is heavy
 
 export const useDashboardSpaces = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSpaceName, setSelectedSpaceName] = useState('');
   const [selectedSpaceIdx, setSelectedSpaceIdx] = useState<number | null>(null);
 
-  const { data, loading } = useDashboardWithMembershipsQuery();
+  const [fetchDashboardWithMemberships, { data, loading, refetch }] = useDashboardWithMembershipsLazyQuery();
 
   const theme = useTheme();
 
@@ -30,9 +32,23 @@ export const useDashboardSpaces = () => {
 
   const handleDialogClose = () => setIsDialogOpen(false);
 
+  const fetchSpaces = useCallback(
+    (limit: number = LIMIT) => {
+      fetchDashboardWithMemberships({ variables: { limit } });
+    },
+    [fetchDashboardWithMemberships]
+  );
+
+  const refetchSpaces = useCallback(() => {
+    refetch({ limit: LIMIT });
+  }, [refetch]);
+
   return {
     data,
     loading,
+    hasMore: data?.me.spaceMembershipsHierarchical?.length === LIMIT,
+    fetchSpaces,
+    refetchSpaces,
     cardColumns,
     isDialogOpen,
     selectedSpaceIdx,

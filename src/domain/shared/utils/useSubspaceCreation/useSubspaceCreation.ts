@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import {
   CreateSubspaceMutationOptions,
-  refetchDashboardWithMembershipsQuery,
   refetchUserProviderQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
@@ -47,7 +46,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   const [uploadVisual] = useUploadVisualMutation();
 
   const {
-    refetchQueries = [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()], // default to refetching user provider and dashboard
+    refetchQueries = [refetchUserProviderQuery()], // default to refetching user provider
     ...restMutationOptions
   } = mutationOptions;
 

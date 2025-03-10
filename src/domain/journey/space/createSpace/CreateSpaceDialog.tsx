@@ -27,7 +27,7 @@ import NameIdField from '@/core/utils/nameId/NameIdField';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { refetchDashboardWithMembershipsQuery, useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -36,6 +36,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/journey/space/createSpace/useSpacePlans';
 import { LoadingButton } from '@mui/lab';
+import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
@@ -75,6 +76,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   const accountId = account?.id ?? currentUserAccountId;
 
   const { availablePlans } = useSpacePlans({ skip: !dialogOpen, accountId });
+  const { refetchSpaces } = useDashboardSpaces();
 
   const handleClose = () => {
     if (creatingLoading) {
@@ -151,7 +153,10 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
           licensePlanID: planId,
         },
       },
-      refetchQueries: ['AccountInformation', refetchDashboardWithMembershipsQuery()],
+      refetchQueries: ['AccountInformation'],
+      onCompleted: () => {
+        refetchSpaces();
+      },
       onError: () => {
         setCreatingLoading(false);
       },

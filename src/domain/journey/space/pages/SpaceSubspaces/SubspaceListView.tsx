@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   refetchAdminSpaceSubspacesPageQuery,
-  refetchDashboardWithMembershipsQuery,
   refetchSpaceDashboardNavigationChallengesQuery,
   refetchSubspacesInSpaceQuery,
   useAdminSpaceSubspacesPageQuery,
@@ -115,7 +114,7 @@ export const SubspaceListView = () => {
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
-    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId }), refetchDashboardWithMembershipsQuery()],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId })],
     awaitRefetchQueries: true,
   });
 

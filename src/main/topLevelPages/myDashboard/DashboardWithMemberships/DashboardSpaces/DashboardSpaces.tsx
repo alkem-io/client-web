@@ -15,12 +15,18 @@ import { SpacePrivacyMode, VisualType } from '@/core/apollo/generated/graphql-sc
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
+import { useEffect } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { Actions } from '@/core/ui/actions/Actions';
+
+const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
 const DashboardSpaces = () => {
   const {
     data,
+    hasMore,
     loading,
-
+    fetchSpaces,
     cardColumns,
     isDialogOpen,
     visibleSpaces,
@@ -34,14 +40,20 @@ const DashboardSpaces = () => {
 
   const { t } = useTranslation();
 
+  useEffect(() => {
+    fetchSpaces(); // with default limit
+  }, []);
+
+  if (loading) {
+    return (
+      <PageContentBlock style={loader}>
+        <Loading />
+      </PageContentBlock>
+    );
+  }
+
   return (
     <>
-      {loading && (
-        <PageContentBlock style={loader}>
-          <Loading />
-        </PageContentBlock>
-      )}
-
       {data?.me.spaceMembershipsHierarchical?.map(({ space, childMemberships }, idx) => {
         if (!space) {
           return null;
@@ -124,6 +136,13 @@ const DashboardSpaces = () => {
           </PageContentBlock>
         );
       })}
+      {hasMore && (
+        <Actions>
+          <LoadingButton loading={loading} onClick={() => fetchSpaces(DASHBOARD_MEMBERSHIPS_ALL)}>
+            {t('buttons.load-more')}
+          </LoadingButton>
+        </Actions>
+      )}
 
       <MyMembershipsDialog
         loading={loading}
