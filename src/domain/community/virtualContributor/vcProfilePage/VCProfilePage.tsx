@@ -45,6 +45,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;
 
+  // TODO: Additional Auth Check
   const { data: bokProfileAuthData } = useBodyOfKnowledgeProfileAuthorizationQuery({
     variables: {
       spaceId: bokId!,

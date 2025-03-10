@@ -1,4 +1,7 @@
-import { useSpaceDashboardNavigationSubspacesQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSpaceDashboardNavigationSubspacesQuery,
+  useSpaceDashboardNavigationSubspacesAuthQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -63,18 +66,28 @@ const useSpaceDashboardNavigation = ({
   spaceId,
   skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
-  const {
-    data: challengesQueryData,
-    loading: challengesQueryLoading,
-    refetch: refetchChallenges,
-  } = useSpaceDashboardNavigationSubspacesQuery({
+  // TODO: Additional Auth Check
+  const { data: subSpacesAuth, loading: subSpacesAuthLoading } = useSpaceDashboardNavigationSubspacesAuthQuery({
     variables: { spaceId: spaceId! },
     skip: skip || !spaceId,
   });
 
-  const space = challengesQueryData?.lookup.space;
+  const hasSpaceProfileReadAccess = subSpacesAuth?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
 
-  const loading = challengesQueryLoading;
+  const {
+    data: subSpacesQueryData,
+    loading: subSpacesQueryLoading,
+    refetch: refetchSubSpaces,
+  } = useSpaceDashboardNavigationSubspacesQuery({
+    variables: { spaceId: spaceId! },
+    skip: skip || !spaceId || subSpacesAuthLoading || !hasSpaceProfileReadAccess,
+  });
+
+  const space = subSpacesQueryData?.lookup.space;
+
+  const loading = subSpacesQueryLoading;
 
   const dashboardNavigation = useMemo<DashboardNavigationItem | undefined>(() => {
     if (!space) {
@@ -88,11 +101,11 @@ const useSpaceDashboardNavigation = ({
         };
       }),
     };
-  }, [challengesQueryData]);
+  }, [subSpacesQueryData]);
 
   const refetch = useCallback(() => {
-    refetchChallenges();
-  }, [refetchChallenges]);
+    refetchSubSpaces();
+  }, [refetchSubSpaces]);
 
   return {
     dashboardNavigation,
