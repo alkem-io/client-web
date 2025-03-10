@@ -16186,51 +16186,107 @@ export function refetchSpaceDashboardNavigationSubspacesAuthQuery(
   return { query: SpaceDashboardNavigationSubspacesAuthDocument, variables: variables };
 }
 
-export const SpaceTemplatesManagerDocument = gql`
-  query SpaceTemplatesManager($spaceId: UUID!) {
+export const SubspacePendingMembershipInfoDocument = gql`
+  query SubspacePendingMembershipInfo($subspaceId: UUID!) {
     lookup {
-      space(ID: $spaceId) {
-        id
-        templatesManager {
-          id
-          templatesSet {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
-          }
-        }
+      space(ID: $subspaceId) {
+        ...SubspacePendingMembershipInfo
       }
     }
   }
+  ${SubspacePendingMembershipInfoFragmentDoc}
 `;
 
 /**
- * __useSpaceTemplatesManagerQuery__
+ * __useSubspacePendingMembershipInfoQuery__
  *
- * To run a query within a React component, call `useSpaceTemplatesManagerQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceTemplatesManagerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubspacePendingMembershipInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspacePendingMembershipInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceTemplatesManagerQuery({
+ * const { data, loading, error } = useSubspacePendingMembershipInfoQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      subspaceId: // value for 'subspaceId'
  *   },
  * });
  */
-export function useSpaceTemplatesManagerQuery(
+export function useSubspacePendingMembershipInfoQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceTemplatesManagerQuery,
-    SchemaTypes.SpaceTemplatesManagerQueryVariables
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceTemplatesManagerQuery, SchemaTypes.SpaceTemplatesManagerQueryVariables>(
-    SpaceTemplatesManagerDocument,
+  return Apollo.useQuery<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >(SubspacePendingMembershipInfoDocument, options);
+}
+
+export function useSubspacePendingMembershipInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >(SubspacePendingMembershipInfoDocument, options);
+}
+
+export type SubspacePendingMembershipInfoQueryHookResult = ReturnType<typeof useSubspacePendingMembershipInfoQuery>;
+export type SubspacePendingMembershipInfoLazyQueryHookResult = ReturnType<
+  typeof useSubspacePendingMembershipInfoLazyQuery
+>;
+export type SubspacePendingMembershipInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.SubspacePendingMembershipInfoQuery,
+  SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+>;
+export function refetchSubspacePendingMembershipInfoQuery(
+  variables: SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+) {
+  return { query: SubspacePendingMembershipInfoDocument, variables: variables };
+}
+
+export const SubspacePageDocument = gql`
+  query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
+    lookup {
+      space(ID: $spaceId) {
+        ...SubspacePageSpace
+      }
+    }
+  }
+  ${SubspacePageSpaceFragmentDoc}
+`;
+
+/**
+ * __useSubspacePageQuery__
+ *
+ * To run a query within a React component, call `useSubspacePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspacePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubspacePageQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
+ *   },
+ * });
+ */
+export function useSubspacePageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SubspacePageQuery, SchemaTypes.SubspacePageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SubspacePageQuery, SchemaTypes.SubspacePageQueryVariables>(
+    SubspacePageDocument,
     options
   );
 }
