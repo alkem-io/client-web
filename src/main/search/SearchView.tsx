@@ -1,8 +1,9 @@
 import { useMemo, useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
 
 import { Box, Link } from '@mui/material';
-import { findKey, groupBy, unionBy } from 'lodash';
+import { findKey, groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { NetworkStatus } from '@apollo/client';
 import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
 import Gutters from '@/core/ui/grid/Gutters';
@@ -95,11 +96,16 @@ const tagsetNames = ['skills', 'keywords'];
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: SearchViewProps) => {
+  const [canJourneyLoadMore, setCanJourneyLoadMore] = useState(true);
+  const [canCalloutLoadMore, setCalloutCanLoadMore] = useState(true);
+  const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
+  const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
+
   const [resultsCursors, setResultsCursors] = useState<ResultsCursors>({
     spaceCursor: undefined,
-    collaborationCursor: undefined,
-    contributionCursor: undefined,
     contributorCursor: undefined,
+    contributionCursor: undefined,
+    collaborationCursor: undefined,
   });
   const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
   const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
@@ -160,6 +166,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const {
     data,
+    networkStatus,
     loading: isSearching,
     fetchMore,
   } = useSearchQuery({
@@ -299,26 +306,41 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         },
 
         updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
-          if (!fetchMoreResult) return prev;
+          switch (resultsType) {
+            case SearchCategory.Spaces: {
+              setCanJourneyLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
+              break;
+            }
+
+            case SearchCategory.CollaborationTools: {
+              setCalloutCanLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
+              break;
+            }
+
+            case SearchCategory.Responses: {
+              setCanContributionLoadMore(fetchMoreResult?.search?.contributionResults?.results?.length > 0);
+              break;
+            }
+
+            case SearchCategory.Contributors: {
+              setContributorCanLoadMore(fetchMoreResult?.search?.contributorResults?.results?.length > 0);
+              break;
+            }
+
+            default: {
+              break;
+            }
+          }
 
           switch (resultsType) {
             case SearchCategory.Spaces: {
               return {
                 search: {
-                  ...fetchMoreResult.search,
+                  ...prev.search,
                   spaceResults: {
                     ...fetchMoreResult.search.spaceResults,
-                    results: unionBy(
-                      [
-                        ...(prev.search.spaceResults?.results ?? []),
-                        ...(fetchMoreResult.search.spaceResults?.results ?? []),
-                      ],
-                      'id'
-                    ),
+                    results: [...prev.search.spaceResults?.results, ...fetchMoreResult.search.spaceResults?.results],
                   },
-                  calloutResults: prev.search.calloutResults,
-                  contributionResults: prev.search.contributionResults,
-                  contributorResults: prev.search.contributorResults,
                 },
               };
             }
@@ -326,20 +348,14 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
             case SearchCategory.CollaborationTools: {
               return {
                 search: {
-                  ...fetchMoreResult.search,
-                  spaceResults: prev.search.spaceResults,
+                  ...prev.search,
                   calloutResults: {
                     ...fetchMoreResult.search.calloutResults,
-                    results: unionBy(
-                      [
-                        ...(prev.search.calloutResults?.results ?? []),
-                        ...(fetchMoreResult.search.calloutResults?.results ?? []),
-                      ],
-                      'id'
-                    ),
+                    results: [
+                      ...prev.search.calloutResults?.results,
+                      ...fetchMoreResult.search.calloutResults?.results,
+                    ],
                   },
-                  contributionResults: prev.search.contributionResults,
-                  contributorResults: prev.search.contributorResults,
                 },
               };
             }
@@ -347,20 +363,14 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
             case SearchCategory.Responses: {
               return {
                 search: {
-                  ...fetchMoreResult.search,
-                  spaceResults: prev.search.spaceResults,
-                  calloutResults: prev.search.calloutResults,
+                  ...prev.search,
                   contributionResults: {
                     ...fetchMoreResult.search.contributionResults,
-                    results: unionBy(
-                      [
-                        ...(prev.search.contributionResults?.results ?? []),
-                        ...(fetchMoreResult.search.contributionResults?.results ?? []),
-                      ],
-                      'id'
-                    ),
+                    results: [
+                      ...prev.search.contributionResults?.results,
+                      ...fetchMoreResult.search.contributionResults?.results,
+                    ],
                   },
-                  contributorResults: prev.search.contributorResults,
                 },
               };
             }
@@ -368,19 +378,13 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
             case SearchCategory.Contributors: {
               return {
                 search: {
-                  ...fetchMoreResult.search,
-                  spaceResults: prev.search.spaceResults,
-                  calloutResults: prev.search.calloutResults,
-                  contributionResults: prev.search.contributionResults,
+                  ...prev.search,
                   contributorResults: {
                     ...fetchMoreResult.search.contributorResults,
-                    results: unionBy(
-                      [
-                        ...(prev.search.contributorResults?.results ?? []),
-                        ...(fetchMoreResult.search.contributorResults?.results ?? []),
-                      ],
-                      'id'
-                    ),
+                    results: [
+                      ...prev.search.contributorResults?.results,
+                      ...fetchMoreResult.search.contributorResults?.results,
+                    ],
                   },
                 },
               };
@@ -421,6 +425,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       });
   }, [data, isSearching]);
 
+  const isSearchingForMore = networkStatus === NetworkStatus.fetchMore;
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
   const filteredSpaceResults =
@@ -443,109 +448,119 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         );
 
   return (
-    <>
-      <PageContentColumn columns={12}>
-        <PageContentBlockSeamless disablePadding>
-          <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
-        </PageContentBlockSeamless>
+    <PageContentColumn columns={12}>
+      <PageContentBlockSeamless
+        disablePadding
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          backgroundColor: '#fff',
+        }}
+      >
+        <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
+      </PageContentBlockSeamless>
 
-        {spaceId && (
-          <SearchResultsScope
-            currentScope={
-              <SearchResultsScopeCard
-                avatar={spaceDetails?.lookup.space?.about.profile.avatar}
-                iconComponent={SpaceIcon}
-                loading={loading}
-                onDelete={handleSearchInPlatform}
-              >
-                {spaceDetails?.lookup.space?.about.profile.displayName}
-              </SearchResultsScopeCard>
-            }
-            alternativeScope={
-              <SearchResultsScopeCard iconComponent={Logo} onClick={handleSearchInPlatform}>
-                {t('components.searchScope.platform')}
-              </SearchResultsScopeCard>
-            }
-          />
-        )}
+      {spaceId && (
+        <SearchResultsScope
+          currentScope={
+            <SearchResultsScopeCard
+              avatar={spaceDetails?.lookup.space?.about.profile.avatar}
+              iconComponent={SpaceIcon}
+              loading={loading}
+              onDelete={handleSearchInPlatform}
+            >
+              {spaceDetails?.lookup.space?.about.profile.displayName}
+            </SearchResultsScopeCard>
+          }
+          alternativeScope={
+            <SearchResultsScopeCard iconComponent={Logo} onClick={handleSearchInPlatform}>
+              {t('components.searchScope.platform')}
+            </SearchResultsScopeCard>
+          }
+        />
+      )}
 
-        {!isAuthenticated && (
-          <Box display="flex" justifyContent="center" paddingBottom={2}>
-            <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
-          </Box>
-        )}
+      {!isAuthenticated && (
+        <Box display="flex" justifyContent="center" paddingBottom={2}>
+          <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
+        </Box>
+      )}
 
-        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
-          <FiltersDescriptionBlock />
+      <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
+        <FiltersDescriptionBlock />
 
-          <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="spaces"
-                title={journeyFilterTitle}
-                filterTitle={t('pages.search.filter.type.journey')}
-                count={data?.search?.spaceResults?.total ?? 0}
-                filterConfig={journeyFilterConfig}
-                results={filteredSpaceResults}
-                currentFilter={journeyFilter}
-                onFilterChange={setJourneyFilter}
-                loading={isSearching}
-                cardComponent={SearchResultPostChooser}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
-              />
-            </SectionWrapper>
+        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="spaces"
+              title={journeyFilterTitle}
+              filterTitle={t('pages.search.filter.type.journey')}
+              count={data?.search?.spaceResults?.total ?? 0}
+              filterConfig={journeyFilterConfig}
+              results={filteredSpaceResults}
+              currentFilter={journeyFilter}
+              onFilterChange={setJourneyFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultPostChooser}
+              canLoadMore={canJourneyLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
+            />
+          </SectionWrapper>
 
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="collaboration-tools"
-                title={t('common.collaborationTools')}
-                filterTitle={t('common.type')}
-                count={data?.search?.calloutResults?.total ?? 0}
-                filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
-                results={convertedCalloutResults}
-                currentFilter={calloutFilter}
-                onFilterChange={setCalloutFilter}
-                loading={isSearching}
-                cardComponent={SearchResultsCalloutCard}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
-              />
-            </SectionWrapper>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="collaboration-tools"
+              title={t('common.collaborationTools')}
+              filterTitle={t('common.type')}
+              count={data?.search?.calloutResults?.total ?? 0}
+              filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
+              results={convertedCalloutResults}
+              currentFilter={calloutFilter}
+              onFilterChange={setCalloutFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultsCalloutCard}
+              canLoadMore={canCalloutLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
+            />
+          </SectionWrapper>
 
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="responses"
-                title={t('common.contributions')}
-                filterTitle={t('pages.search.filter.type.contribution')}
-                count={data?.search?.contributionResults?.total ?? 0}
-                filterConfig={contributionFilterConfig}
-                results={filteredContributionResults}
-                currentFilter={contributionFilter}
-                onFilterChange={setContributionFilter}
-                loading={isSearching}
-                cardComponent={SearchResultPostChooser}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
-              />
-            </SectionWrapper>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="responses"
+              title={t('common.responses')}
+              filterTitle={t('pages.search.filter.type.contribution')}
+              count={data?.search?.contributionResults?.total ?? 0}
+              filterConfig={contributionFilterConfig}
+              results={filteredContributionResults}
+              currentFilter={contributionFilter}
+              onFilterChange={setContributionFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultPostChooser}
+              canLoadMore={canContributionLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
+            />
+          </SectionWrapper>
 
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="contributors"
-                title={t('common.contributors')}
-                filterTitle={t('pages.search.filter.type.contributor')}
-                count={data?.search?.contributorResults?.total ?? 0}
-                filterConfig={contributorFilterConfig}
-                results={filteredContributorResults}
-                currentFilter={contributorFilter}
-                onFilterChange={setContributorFilter}
-                loading={isSearching}
-                cardComponent={SearchResultPostChooser}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
-              />
-            </SectionWrapper>
-          </Gutters>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="contributors"
+              title={t('common.contributors')}
+              filterTitle={t('pages.search.filter.type.contributor')}
+              count={data?.search?.contributorResults?.total ?? 0}
+              filterConfig={contributorFilterConfig}
+              results={filteredContributorResults}
+              currentFilter={contributorFilter}
+              onFilterChange={setContributorFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultPostChooser}
+              canLoadMore={canContributorLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
+            />
+          </SectionWrapper>
         </Gutters>
-      </PageContentColumn>
-    </>
+      </Gutters>
+    </PageContentColumn>
   );
 };
 
@@ -556,33 +571,21 @@ function toResultType(query?: SearchQuery): SearchResultMetaType[] {
     return [];
   }
 
-  const spaceResults = (query.search.spaceResults?.results || [])
-    .map<SearchResultMetaType>(
-      ({ id, type, score, terms, ...rest }) =>
-        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
-    )
-    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+  const spaceResults = (query.search.spaceResults?.results || []).map<SearchResultMetaType>(
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+  );
 
-  const contributionResults = (query.search.contributionResults?.results || [])
-    .map<SearchResultMetaType>(
-      ({ id, type, score, terms, ...rest }) =>
-        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
-    )
-    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+  const contributionResults = (query.search.contributionResults?.results || []).map<SearchResultMetaType>(
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+  );
 
-  const contributorResults = (query.search.contributorResults?.results || [])
-    .map<SearchResultMetaType>(
-      ({ id, type, score, terms, ...rest }) =>
-        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
-    )
-    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+  const contributorResults = (query.search.contributorResults?.results || []).map<SearchResultMetaType>(
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+  );
 
-  const calloutResults = (query.search.calloutResults?.results || [])
-    .map<SearchResultMetaType>(
-      ({ id, type, score, terms, ...rest }) =>
-        ({ id, type, ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
-    )
-    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+  const calloutResults = (query.search.calloutResults?.results || []).map<SearchResultMetaType>(
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+  );
 
   return [...spaceResults, ...contributionResults, ...contributorResults, ...calloutResults];
 }
@@ -599,6 +602,9 @@ function FiltersDescriptionBlock() {
       disableGap
       disablePadding
       sx={theme => ({
+        position: 'sticky',
+        top: 80,
+
         minWidth: 250,
         borderRadius: 1,
         height: 'fit-content',
@@ -617,12 +623,12 @@ function FiltersDescriptionBlock() {
 
       <FiltersDescriptionBlockItem href="#responses">
         <LibraryBooksOutlined />
-        <Caption>{t('components.searchDialog.responses')}</Caption>
+        <Caption>{t('common.responses')}</Caption>
       </FiltersDescriptionBlockItem>
 
       <FiltersDescriptionBlockItem href="#contributors">
         <GroupOutlined />
-        <Caption>{t('components.searchDialog.contributors')}</Caption>
+        <Caption>{t('common.contributors')}</Caption>
       </FiltersDescriptionBlockItem>
     </Gutters>
   );
