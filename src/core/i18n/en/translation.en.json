@@ -950,7 +950,11 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools",
+      "responses": "Responses",
+      "contributors": "Contributors"
     },
     "searchScope": {
       "currentScope": "Search results for:",
