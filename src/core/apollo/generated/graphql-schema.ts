@@ -27216,7 +27216,11 @@ export type SearchQuery = {
   __typename?: 'Query';
   search: {
     __typename?: 'ISearchResults';
+<<<<<<< HEAD
     spaceResults: {
+=======
+    contributorResults: {
+>>>>>>> 562f620fc (update gql schema)
       __typename?: 'ISearchCategoryResult';
       cursor?: string | undefined;
       total: number;
@@ -27236,12 +27240,27 @@ export type SearchQuery = {
             terms: Array<string>;
           }
         | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+<<<<<<< HEAD
         | {
             __typename?: 'SearchResultSpace';
+=======
+        | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+      >;
+    };
+    contributionResults: {
+      __typename?: 'ISearchCategoryResult';
+      cursor?: string | undefined;
+      total: number;
+      results: Array<
+        | {
+            __typename?: 'SearchResultCallout';
+>>>>>>> 562f620fc (update gql schema)
             id: string;
             type: SearchResultType;
             score: number;
             terms: Array<string>;
+<<<<<<< HEAD
             parentSpace?:
               | {
                   __typename?: 'Space';
@@ -27311,6 +27330,42 @@ export type SearchQuery = {
               };
             };
           }
+=======
+          }
+        | {
+            __typename?: 'SearchResultOrganization';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+      >;
+    };
+    spaceResults: {
+      __typename?: 'ISearchCategoryResult';
+      cursor?: string | undefined;
+      total: number;
+      results: Array<
+        | {
+            __typename?: 'SearchResultCallout';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | {
+            __typename?: 'SearchResultOrganization';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+>>>>>>> 562f620fc (update gql schema)
         | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
       >;
     };
@@ -27325,6 +27380,7 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
+<<<<<<< HEAD
             callout: {
               __typename?: 'Callout';
               id: string;
@@ -27385,6 +27441,8 @@ export type SearchQuery = {
                 };
               };
             };
+=======
+>>>>>>> 562f620fc (update gql schema)
           }
         | {
             __typename?: 'SearchResultOrganization';
@@ -27398,6 +27456,7 @@ export type SearchQuery = {
         | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
       >;
     };
+<<<<<<< HEAD
     contributionResults: {
       __typename?: 'ISearchCategoryResult';
       cursor?: string | undefined;
@@ -27634,8 +27693,57 @@ export type SearchQuery = {
           }
       >;
     };
+=======
+>>>>>>> 562f620fc (update gql schema)
   };
 };
+
+type SearchResults_SearchResultCallout_Fragment = {
+  __typename?: 'SearchResultCallout';
+  id: string;
+  type: SearchResultType;
+  score: number;
+  terms: Array<string>;
+};
+
+type SearchResults_SearchResultOrganization_Fragment = {
+  __typename?: 'SearchResultOrganization';
+  id: string;
+  type: SearchResultType;
+  score: number;
+  terms: Array<string>;
+};
+
+type SearchResults_SearchResultPost_Fragment = {
+  __typename?: 'SearchResultPost';
+  id: string;
+  type: SearchResultType;
+  score: number;
+  terms: Array<string>;
+};
+
+type SearchResults_SearchResultSpace_Fragment = {
+  __typename?: 'SearchResultSpace';
+  id: string;
+  type: SearchResultType;
+  score: number;
+  terms: Array<string>;
+};
+
+type SearchResults_SearchResultUser_Fragment = {
+  __typename?: 'SearchResultUser';
+  id: string;
+  type: SearchResultType;
+  score: number;
+  terms: Array<string>;
+};
+
+export type SearchResultsFragment =
+  | SearchResults_SearchResultCallout_Fragment
+  | SearchResults_SearchResultOrganization_Fragment
+  | SearchResults_SearchResultPost_Fragment
+  | SearchResults_SearchResultSpace_Fragment
+  | SearchResults_SearchResultUser_Fragment;
 
 export type SearchResultPostFragment = {
   __typename?: 'SearchResultPost';

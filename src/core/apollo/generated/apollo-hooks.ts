@@ -21681,6 +21681,7 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
+<<<<<<< HEAD
       spaceResults {
         cursor
         results {
@@ -21734,6 +21735,39 @@ export const SearchDocument = gql`
   ${SearchResultPostFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
+=======
+      contributorResults {
+        cursor
+        results {
+          ...SearchResults
+        }
+        total
+      }
+      contributionResults {
+        cursor
+        results {
+          ...SearchResults
+        }
+        total
+      }
+      spaceResults {
+        cursor
+        results {
+          ...SearchResults
+        }
+        total
+      }
+      calloutResults {
+        cursor
+        results {
+          ...SearchResults
+        }
+        total
+      }
+    }
+  }
+  ${SearchResultsFragmentDoc}
+>>>>>>> 562f620fc (update gql schema)
 `;
 
 /**
