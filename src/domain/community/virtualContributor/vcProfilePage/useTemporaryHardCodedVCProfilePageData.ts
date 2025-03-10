@@ -99,7 +99,6 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
             icon: 'location',
             title: 'Physical Location',
             description: 'Where is the AI service hosted?',
-            answerIcon: isExternal_OR_Assistant ? 'exclamation' : '',
             answer: isExternal_OR_Assistant ? 'Unknown' : 'Sweden, EU',
           },
           {
