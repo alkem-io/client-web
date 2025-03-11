@@ -2672,6 +2672,20 @@
       "accountResources": {
         "sectionTitle": "crwdns20502:0crwdne20502:0"
       },
+      "membership": {
+        "space": {
+          "confirmation-dialog": {
+            "title": "crwdns36747:0{{space}}crwdne36747:0",
+            "text": "crwdns36749:0{{space}}crwdne36749:0"
+          }
+        },
+        "subspace": {
+          "confirmation-dialog": {
+            "title": "crwdns36751:0{{space}}crwdne36751:0",
+            "text": "crwdns36753:0{{space}}crwdne36753:0"
+          }
+        }
+      },
       "communities": {
         "title": "crwdns20504:0crwdne20504:0",
         "help": "crwdns20506:0crwdne20506:0",
