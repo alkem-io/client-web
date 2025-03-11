@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { useMemo } from 'react';
 import {
   CalloutType,
@@ -108,18 +109,13 @@ export const useInAppNotifications = () => {
   >(subscribeToMore, {
     document: InAppNotificationReceivedDocument,
     updateQuery: (prev, { subscriptionData }) => {
-      if (!prev.notifications) {
-        return;
+      if (!prev.notifications || !subscriptionData.data?.inAppNotificationReceived) {
+        return prev;
       }
 
-      // if (!subscriptionData.data.inAppNotificationReceived) {
-
-      if (prev.notifications.length === 0) {
-        prev.notifications.push(subscriptionData.data.inAppNotificationReceived);
-        return;
-      }
-
-      prev.notifications.unshift(subscriptionData.data.inAppNotificationReceived);
+      return produce(prev, draft => {
+        draft.notifications = [subscriptionData.data.inAppNotificationReceived, ...draft.notifications];
+      });
     },
   });
 
