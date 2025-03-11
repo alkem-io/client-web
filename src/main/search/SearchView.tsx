@@ -1,54 +1,57 @@
-import { ReactNode, useEffect, useMemo, useState, useCallback, PropsWithChildren } from 'react';
+import { useMemo, useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
+
 import { Box, Link } from '@mui/material';
+import { findKey, groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
-import useNavigate from '@/core/routing/useNavigate';
+import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
+
+import Gutters from '@/core/ui/grid/Gutters';
 import {
   useSearchQuery,
-  useSearchScopeDetailsSpaceQuery,
   useSpaceUrlResolverQuery,
+  useSearchScopeDetailsSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 import {
   SearchQuery,
   SearchResult,
   SearchCategory,
-  // SearchFilterInput,
+  SearchResultType,
+  SearchResultPostFragment,
+  SearchResultUserFragment,
+  SearchResultSpaceFragment,
   SearchResultCalloutFragment,
   SearchResultOrganizationFragment,
-  SearchResultPostFragment,
-  SearchResultSpaceFragment,
-  SearchResultType,
-  SearchResultUserFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import useNavigate from '@/core/routing/useNavigate';
 import { useUserContext } from '@/domain/community/user';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
+import { useMemoizedQueryParams } from '@/core/routing/useQueryParams';
+import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+
 import {
-  calloutFilterConfig,
-  contributionFilterConfig,
-  contributorFilterConfig,
   FilterConfig,
   FilterDefinition,
+  calloutFilterConfig,
+  contributorFilterConfig,
+  contributionFilterConfig,
 } from './Filter';
-import Gutters from '@/core/ui/grid/Gutters';
-import { Caption } from '@/core/ui/typography';
-import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import SearchResultSection from './SearchResultSection';
-import { useQueryParams } from '@/core/routing/useQueryParams';
-import { buildLoginUrl } from '../routing/urlBuilders';
-import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
-import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
-import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
-import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
-import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
-export const MAX_TERMS_SEARCH = 5;
+import { useSearchTerms } from './useSearchTerms';
+import { buildLoginUrl } from '../routing/urlBuilders';
+import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
+import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
+
 const SEARCH_RESULTS_COUNT = 5;
-const tagsetNames = ['skills', 'keywords'];
+export const MAX_TERMS_SEARCH = 5;
 
 export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
   ResultFragment & { type: Type };
@@ -84,59 +87,63 @@ const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultTyp
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: SearchViewProps) => {
+  const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
+  const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
+  const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
+  const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
+
   const navigate = useNavigate();
+
   const { t } = useTranslation();
+
+  const termsFromUrl = useSearchTerms();
+
+  const queryParams = useMemoizedQueryParams();
+
   const { isAuthenticated } = useUserContext();
 
-  const queryParams = useQueryParams();
-
-  const spaceNameId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
-
-  const searchTerms = useMemo(() => {
-    const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM).filter(identity);
-
-    if (terms.length > MAX_TERMS_SEARCH) {
-      // All terms above 4th are joined into a single 5th term
-      // That is mainly coming from UX issues when having more than 5 tags in the Search input
-      // Please note that server also puts certain limits on the maximum number of terms (currently 10)
-      return [...terms.slice(0, MAX_TERMS_SEARCH - 1), terms.slice(MAX_TERMS_SEARCH - 1).join(' ')];
-    }
-    return terms;
-  }, [queryParams]);
-
-  const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
-  const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
-  const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
-  const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
+  const spaceNameId = queryParams[SEARCH_SPACE_URL_PARAM]?.[0] ?? undefined;
+  console.log('spaceNameId', spaceNameId);
 
   const handleTermsChange = useCallback(
     (newValue: string[]) => {
-      const params = new URLSearchParams(queryParams);
+      const params = new URLSearchParams(
+        Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
+      );
+
       params.delete(SEARCH_TERMS_URL_PARAM);
+
       for (const term of newValue) {
         params.append(SEARCH_TERMS_URL_PARAM, term);
       }
+
       if (newValue.length === 0) {
-        // Keeping the dialog open when there are no search terms
         params.append(SEARCH_TERMS_URL_PARAM, '');
       }
+
       navigate(`${searchRoute}?${params}`);
     },
-    [queryParams, searchRoute]
+    [searchRoute, queryParams, navigate]
   );
 
   const handleSearchInPlatform = useCallback(() => {
-    const params = new URLSearchParams(queryParams);
+    const params = new URLSearchParams(
+      Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
+    );
+
     params.delete(SEARCH_SPACE_URL_PARAM);
+
     navigate(`${searchRoute}?${params}`);
-  }, [navigate, searchRoute]);
+  }, [searchRoute, queryParams, navigate]);
 
   const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
     variables: { spaceNameId: spaceNameId! },
     skip: !spaceNameId,
   });
+  console.log('spaceIdData', spaceIdData);
 
   const spaceId = spaceIdData?.lookupByName.space?.id;
+  console.log('spaceId', spaceId);
 
   const memoizedSearchFilters = useMemo(
     () => [
@@ -171,20 +178,22 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     [journeyFilter, contributionFilter, contributorFilter]
   );
 
+  const hasNoTermsLength = termsFromUrl.length === 0;
+
   const { data, loading: isSearching } = useSearchQuery({
     variables: {
       searchData: {
-        terms: searchTerms,
-        tagsetNames,
-        filters: memoizedSearchFilters,
+        terms: termsFromUrl,
         searchInSpaceFilter: spaceId,
+        filters: memoizedSearchFilters,
+        tagsetNames: ['skills', 'keywords'],
       },
     },
     fetchPolicy: 'no-cache',
-    skip: searchTerms.length === 0 || resolvingSpace,
+    skip: hasNoTermsLength || resolvingSpace,
   });
 
-  const results = searchTerms.length === 0 ? undefined : toResultType(data);
+  const results = hasNoTermsLength ? undefined : toResultType(data);
 
   const { spaceResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
     () => groupBy(results, ({ type }) => findKey(searchResultSectionTypes, types => types.includes(type))),
@@ -198,12 +207,12 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
   });
 
   useEffect(() => {
-    if (searchTerms.length === 0) {
+    if (hasNoTermsLength) {
       setJourneyFilter(journeyFilterConfig.all);
       setContributionFilter(contributionFilterConfig.all);
       setContributorFilter(contributorFilterConfig.all);
     }
-  }, [searchTerms.length]);
+  }, [hasNoTermsLength]);
 
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
@@ -211,7 +220,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     <>
       <PageContentColumn columns={12}>
         <PageContentBlockSeamless disablePadding>
-          <MultipleSelect size="small" onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus />
+          <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
         </PageContentBlockSeamless>
 
         {spaceId && (
@@ -240,6 +249,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           </Box>
         )}
 
+        {/* ⬇️⬇️⬇️⬇️⬇️⬇️⬇️ */}
         <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
           <FiltersDescriptionBlock />
 
@@ -248,7 +258,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={journeyFilterTitle}
                 filterTitle={t('pages.search.filter.type.journey')}
-                count={data?.search?.spaceResults?.total || 0}
+                count={data?.search?.spaceResults?.total ?? 0}
                 filterConfig={journeyFilterConfig}
                 results={spaceResults}
                 currentFilter={journeyFilter}
@@ -262,7 +272,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={t('common.collaborationTools')}
                 filterTitle={t('common.type')}
-                count={data?.search?.calloutResults?.total || 0}
+                count={data?.search?.calloutResults?.total ?? 0}
                 filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
                 results={convertedCalloutResults}
                 currentFilter={calloutFilter}
@@ -276,7 +286,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={t('common.contributions')}
                 filterTitle={t('pages.search.filter.type.contribution')}
-                count={data?.search?.contributionResults?.total || 0}
+                count={data?.search?.contributionResults?.total ?? 0}
                 filterConfig={contributionFilterConfig}
                 results={contributionResults}
                 currentFilter={contributionFilter}
@@ -290,7 +300,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               <SearchResultSection
                 title={t('common.contributors')}
                 filterTitle={t('pages.search.filter.type.contributor')}
-                count={data?.search?.contributorResults?.total || 0}
+                count={data?.search?.contributorResults?.total ?? 0}
                 filterConfig={contributorFilterConfig}
                 results={contributorResults}
                 currentFilter={contributorFilter}
@@ -301,6 +311,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
             </SectionWrapper>
           </Gutters>
         </Gutters>
+        {/* ⬆️⬆️⬆️⬆️⬆️⬆️⬆️ */}
       </PageContentColumn>
     </>
   );
