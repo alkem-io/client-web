@@ -1,25 +1,13 @@
 query search($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    contributorResults {
-      cursor
-      results {
-        ...SearchResults
-      }
-      total
-    }
-
-    contributionResults {
-      cursor
-      results {
-        ...SearchResults
-      }
-      total
-    }
-
     spaceResults {
       cursor
       results {
-        ...SearchResults
+        id
+        type
+        score
+        terms
+        ...SearchResultSpace
       }
       total
     }
@@ -27,17 +15,41 @@ query search($searchData: SearchInput!) {
     calloutResults {
       cursor
       results {
-        ...SearchResults
+        id
+        type
+        score
+        terms
+        ...SearchResultCallout
+      }
+      total
+    }
+
+    contributionResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultPost
+        ...SearchResultCallout
+      }
+      total
+    }
+
+    contributorResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultUser
+        ...SearchResultOrganization
       }
       total
     }
   }
-}
-fragment SearchResults on SearchResult {
-  id
-  type
-  score
-  terms
 }
 
 fragment SearchResultPost on SearchResultPost {
