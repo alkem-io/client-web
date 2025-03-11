@@ -1,4 +1,3 @@
-import produce from 'immer';
 import { useMemo } from 'react';
 import {
   CalloutType,
@@ -7,18 +6,13 @@ import {
   InAppNotificationState,
   NotificationEventType,
   SpaceLevel,
-  InAppNotificationReceivedSubscription,
-  InAppNotificationsQuery,
-  InAppNotificationReceivedSubscriptionVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import {
-  InAppNotificationReceivedDocument,
   refetchInAppNotificationsQuery,
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
-import useSubscribeToMore from '@/core/apollo/subscriptions/useSubscribeToMore';
 
 export interface InAppNotificationProps {
   id: string;
@@ -98,26 +92,8 @@ export const useInAppNotifications = () => {
 
   const [updateState] = useUpdateNotificationStateMutation();
 
-  const { data, loading, subscribeToMore } = useInAppNotificationsQuery({
+  const { data, loading } = useInAppNotificationsQuery({
     skip: !isEnabled,
-  });
-
-  useSubscribeToMore<
-    InAppNotificationsQuery,
-    InAppNotificationReceivedSubscription,
-    InAppNotificationReceivedSubscriptionVariables
-  >(subscribeToMore, {
-    skip: !isEnabled,
-    document: InAppNotificationReceivedDocument,
-    updateQuery: (prev, { subscriptionData }) => {
-      if (!prev.notifications || !subscriptionData.data?.inAppNotificationReceived) {
-        return prev;
-      }
-
-      return produce(prev, draft => {
-        draft.notifications = [subscriptionData.data.inAppNotificationReceived, ...draft.notifications];
-      });
-    },
   });
 
   const items: InAppNotificationProps[] = useMemo(
