@@ -7,7 +7,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 export const organizationAdminTabs: TabDefinition<SettingsSection>[] = [
   {
-    section: SettingsSection.Profile,
+    section: SettingsSection.Index,
     route: 'profile',
     icon: PeopleOutlinedIcon,
   },

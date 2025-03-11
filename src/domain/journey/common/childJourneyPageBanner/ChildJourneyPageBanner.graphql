@@ -2,27 +2,33 @@ query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
   lookup {
     level0Space: space(ID: $level0Space) {
       id
-      profile {
+      about {
         id
-        banner :visual(type: BANNER) {
+        profile {
           id
-          uri
+          banner: visual(type: BANNER) {
+            id
+            uri
+          }
         }
       }
     }
     space(ID: $spaceId) {
       id
-      profile {
+      about {
         id
-        displayName
-        tagline
-        avatar: visual(type: AVATAR) {
+        profile {
           id
-          uri
-        }
-        tagset {
-          id
-          tags
+          displayName
+          tagline
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagset {
+            id
+            tags
+          }
         }
       }
       community {

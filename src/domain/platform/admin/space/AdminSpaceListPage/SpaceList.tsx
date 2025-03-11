@@ -43,8 +43,8 @@ export const SpaceList: FC = () => {
             return {
               ...space,
               profile: {
-                ...space.profile,
-                displayName: `${space.profile.displayName} [${space.visibility.toUpperCase()}]`,
+                ...space.about.profile,
+                displayName: `${space.about.profile.displayName} [${space.visibility.toUpperCase()}]`,
               },
             };
           }
@@ -52,8 +52,8 @@ export const SpaceList: FC = () => {
         })
         .map(space => ({
           ...space,
-          displayName: space.profile.displayName,
-          url: buildSettingsUrl(space.profile.url),
+          displayName: space.about.profile.displayName,
+          url: buildSettingsUrl(space.about.profile.url),
         }))
         .map(space => {
           const activeLicensingCredentialBasedCredentialTypes = space.subscriptions.map(

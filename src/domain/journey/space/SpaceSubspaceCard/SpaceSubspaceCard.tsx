@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import { ProfileType, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import CardActions from '@/core/ui/card/CardActions';
@@ -18,7 +18,6 @@ interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'icon
   vision: string;
   member?: boolean;
   journeyUri: string;
-  type: ProfileType;
   spaceVisibility?: SpaceVisibility;
   spaceDisplayName?: string;
   spaceUri?: string;
@@ -26,6 +25,7 @@ interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'icon
   isPrivate?: boolean;
   avatarUris: string[];
   label?: ReactNode;
+  level?: SpaceLevel;
 }
 
 const SpaceSubspaceCard = ({
@@ -33,7 +33,7 @@ const SpaceSubspaceCard = ({
   vision,
   tagline,
   spaceVisibility,
-  type,
+  level,
   member,
   spaceDisplayName,
   avatarUris,
@@ -48,7 +48,7 @@ const SpaceSubspaceCard = ({
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
 
-  const isSubspace = type !== ProfileType.Space;
+  const isSubspace = level !== SpaceLevel.L0;
 
   return (
     <JourneyCard

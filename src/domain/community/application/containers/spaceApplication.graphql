@@ -2,10 +2,8 @@ query SpaceApplication($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        id
-        url
-        displayName
+      about {
+        ...SpaceAboutMinimalUrl
       }
       community {
         id

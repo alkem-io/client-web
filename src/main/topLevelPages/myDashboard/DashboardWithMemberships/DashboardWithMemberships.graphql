@@ -17,37 +17,28 @@ query DashboardWithMemberships($limit: Float! = 0) {
 
 fragment DashboardSpaceMembership on Space {
   id
-
   level
-
+  about {
+    ...SpaceAboutCardBanner
+    profile {
+      spaceBanner: visual(type: BANNER) {
+        ...VisualUri
+      }
+    }
+  }
   settings {
     privacy {
       mode
     }
   }
-
   authorization {
     id
     myPrivileges
   }
-
   community {
     roleSet {
       id
       ...MyMembershipsRoleSet
-    }
-  }
-
-  profile {
-    id
-    url
-    tagline
-    displayName
-    spaceBanner: visual(type: BANNER) {
-      ...VisualUri
-    }
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
     }
   }
 }

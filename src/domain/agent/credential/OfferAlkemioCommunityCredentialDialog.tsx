@@ -74,11 +74,13 @@ const OfferAlkemioCommunityCredentialDialog = ({
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog">
-      <DialogHeader onClose={handleClose} title={title} />
+      <DialogHeader onClose={handleClose} title={String(title)} />
       <DialogContent ref={containerRef} sx={{ minHeight: 400, overflow: 'hidden' }}>
         <Slide direction="right" unmountOnExit in={!Boolean(token) && !loadingToken} container={containerRef.current}>
           <Box>
-            <DialogContentText>{content}</DialogContentText>
+            <DialogContentText>
+              <>{content}</>
+            </DialogContentText>
             {state?.isLoadingContributions && <Loading text="Loading contributions" />}
             {!state?.isLoadingContributions && contributions && (
               <List disablePadding>
@@ -89,7 +91,10 @@ const OfferAlkemioCommunityCredentialDialog = ({
                         onClick={() => setSelectedContribution(details)}
                         selected={details === selectedContribution}
                       >
-                        <ListItemText primary={details?.displayName} secondary={details?.tagline} />
+                        <ListItemText
+                          primary={details?.about.profile.displayName}
+                          secondary={details?.about.profile.tagline}
+                        />
                       </ListItemButton>
                     )}
                   </ContributionDetailsContainer>

@@ -1,26 +1,26 @@
-import React, { ComponentType, FC, ReactNode, useMemo } from 'react';
-import { isMatch, some } from 'lodash';
+import { Text } from '@/core/ui/typography';
 import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
+import { isMatch, some } from 'lodash';
+import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
+import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
+import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
+import AuthActionButton, { AuthActionButtonProps } from './Button';
+import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
 import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
+import { useKratosFormContext } from './Kratos/KratosForm';
 import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
-import { useKratosT } from './Kratos/messages';
-import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
-import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
-import { Text } from '@/core/ui/typography';
-import AuthActionButton, { AuthActionButtonProps } from './Button';
-import { UiNodeInput } from './Kratos/UiNodeTypes';
-import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
-import { useKratosFormContext } from './Kratos/KratosForm';
 import KratosSocialButton from './Kratos/KratosSocialButton';
+import { UiNodeInput } from './Kratos/UiNodeTypes';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
+import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
+import { useKratosT } from './Kratos/messages';
 
-interface KratosUIProps {
+interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
   resetPasswordElement?: ReactNode;
   acceptTermsComponent?: ComponentType<KratosAcceptTermsProps>;
@@ -223,9 +223,9 @@ interface KratosUIContextProps {
   onBeforeSubmit?: () => void;
 }
 
-export const KratosUIContext = React.createContext<KratosUIContextProps>({});
+export const KratosUIContext = createContext<KratosUIContextProps>({});
 
-interface KratosUIProviderProps {
+interface KratosUIProviderProps extends PropsWithChildren {
   /**
    * @deprecated - it's needed to store hasAcceptedTerms before submit because Kratos can reset the form state.
    * Remove once we're able to make Kratos keep traits.accepted_terms on error.

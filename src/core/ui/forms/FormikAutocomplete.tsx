@@ -70,7 +70,7 @@ export const FormikAutocomplete = ({
           {...textFieldProps}
           {...params}
           InputLabelProps={{ shrink: true }}
-          helperText={helperText}
+          helperText={Boolean(helperText) ? <>{helperText}</> : null}
           error={isError}
         />
       )}

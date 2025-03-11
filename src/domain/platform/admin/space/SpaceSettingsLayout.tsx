@@ -6,7 +6,6 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
@@ -30,14 +29,9 @@ type SpaceSettingsLayoutProps = {
 
 const tabs: TabDefinition<SettingsSection>[] = [
   {
-    section: SettingsSection.Profile,
-    route: 'profile',
+    section: SettingsSection.About,
+    route: 'about',
     icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Context,
-    route: 'context',
-    icon: ListOutlinedIcon,
   },
   {
     section: SettingsSection.Community,
@@ -83,7 +77,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
-  const profile = spaceData?.lookup.space?.profile;
+  const profile = spaceData?.lookup.space?.about.profile;
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,

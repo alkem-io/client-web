@@ -30,10 +30,10 @@ export const useApplicationCommunityQuery = (journeyId: string | undefined, canJ
     return {
       communityId: challengeData?.lookup.space?.community?.id ?? '',
       roleSetId: challengeData?.lookup.space?.community?.roleSet?.id ?? '',
-      displayName: challengeData?.lookup.space?.profile.displayName ?? '',
+      displayName: challengeData?.lookup.space?.about.profile.displayName ?? '',
       description: challengeTemplateData?.lookup.space?.community?.roleSet.applicationForm?.description,
       questions: challengeTemplateData?.lookup.space?.community?.roleSet.applicationForm?.questions ?? [],
-      backUrl: challengeData?.lookup.space?.profile.url,
+      backUrl: challengeData?.lookup.space?.about.profile.url,
       communityGuidelines: challengeData?.lookup.space?.community?.guidelines?.profile,
     };
   }, [challengeData, challengeTemplateData]);

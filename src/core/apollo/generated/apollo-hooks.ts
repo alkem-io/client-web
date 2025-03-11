@@ -487,8 +487,11 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
   fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     subspace {
       id
-      profile {
-        ...ActivitySubjectProfile
+      about {
+        id
+        profile {
+          ...ActivitySubjectProfile
+        }
       }
     }
   }
@@ -498,8 +501,11 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
   fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     subsubspace {
       id
-      profile {
-        ...ActivitySubjectProfile
+      about {
+        id
+        profile {
+          ...ActivitySubjectProfile
+        }
       }
     }
   }
@@ -1303,24 +1309,6 @@ export const AccountResourceProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const PendingMembershipsJourneyProfileFragmentDoc = gql`
-  fragment PendingMembershipsJourneyProfile on Profile {
-    id
-    url
-    displayName
-    visual(type: $visualType) {
-      id
-      uri
-    }
-    ... on Profile @include(if: $fetchDetails) {
-      tagline
-      tagset {
-        id
-        tags
-      }
-    }
-  }
-`;
 export const PendingMembershipInvitationFragmentDoc = gql`
   fragment PendingMembershipInvitation on Invitation {
     id
@@ -1431,17 +1419,25 @@ export const MyPrivilegesFragmentDoc = gql`
     myPrivileges
   }
 `;
+export const SpaceAboutMinimalUrlFragmentDoc = gql`
+  fragment SpaceAboutMinimalUrl on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      tagline
+      url
+    }
+  }
+`;
 export const InvitationDataFragmentDoc = gql`
   fragment InvitationData on CommunityInvitationResult {
     id
     spacePendingMembershipInfo {
       id
       level
-      profile {
-        id
-        displayName
-        tagline
-        url
+      about {
+        ...SpaceAboutMinimalUrl
       }
     }
     invitation {
@@ -1458,6 +1454,7 @@ export const InvitationDataFragmentDoc = gql`
       contributorType
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 export const EntitlementDetailsFragmentDoc = gql`
   fragment EntitlementDetails on LicenseEntitlement {
@@ -1468,14 +1465,6 @@ export const EntitlementDetailsFragmentDoc = gql`
     isAvailable
     dataType
     enabled
-  }
-`;
-export const ContextDetailsProviderFragmentDoc = gql`
-  fragment ContextDetailsProvider on Context {
-    id
-    vision
-    impact
-    who
   }
 `;
 export const InnovationHubProfileFragmentDoc = gql`
@@ -1506,11 +1495,11 @@ export const InnovationHubSpaceFragmentDoc = gql`
         displayName
       }
     }
-    profile {
-      id
-      displayName
+    about {
+      ...SpaceAboutMinimalUrl
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 export const InnovationHubSettingsFragmentDoc = gql`
   fragment InnovationHubSettings on InnovationHub {
@@ -1543,43 +1532,173 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     }
   }
 `;
-export const ContextTabFragmentDoc = gql`
-  fragment ContextTab on Context {
+export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
+  fragment JourneyBreadcrumbsSpace on Space {
     id
+    level
+    about {
+      id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: BANNER) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
+  fragment JourneyBreadcrumbsSubpace on Space {
+    id
+    level
+    about {
+      id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SpaceAboutCardBannerFragmentDoc = gql`
+  fragment SpaceAboutCardBanner on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SpaceCardFragmentDoc = gql`
+  fragment SpaceCard on Space {
+    id
+    about {
+      ...SpaceAboutCardBanner
+      why
+    }
+    metrics {
+      name
+      value
+    }
+    community {
+      id
+      roleSet {
+        id
+        myMembershipStatus
+      }
+    }
+    settings {
+      privacy {
+        mode
+      }
+    }
+    visibility
+  }
+  ${SpaceAboutCardBannerFragmentDoc}
+`;
+export const SpaceAboutDetailsFragmentDoc = gql`
+  fragment SpaceAboutDetails on SpaceAbout {
+    id
+    who
+    why
     authorization {
       id
       myPrivileges
     }
-    vision
-    impact
-    who
-  }
-`;
-export const MetricsItemFragmentDoc = gql`
-  fragment MetricsItem on NVP {
-    id
-    name
-    value
-  }
-`;
-export const ProfileJourneyDataFragmentDoc = gql`
-  fragment ProfileJourneyData on Profile {
-    id
-    displayName
-    tagline
-    references {
-      ...ReferenceDetails
+    profile {
+      id
+      url
+      displayName
+      tagline
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      visuals {
+        ...VisualFull
+      }
+      references {
+        ...ReferenceDetails
+      }
+      location {
+        id
+        city
+        country
+      }
     }
-    description
   }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
 `;
-export const ContextJourneyDataFragmentDoc = gql`
-  fragment ContextJourneyData on Context {
+export const SpaceInfoFragmentDoc = gql`
+  fragment SpaceInfo on Space {
+    about {
+      ...SpaceAboutDetails
+    }
+    settings {
+      privacy {
+        mode
+      }
+    }
+  }
+  ${SpaceAboutDetailsFragmentDoc}
+`;
+export const DashboardTopCalloutFragmentDoc = gql`
+  fragment DashboardTopCallout on Callout {
     id
-    vision
-    who
-    impact
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+        description
+      }
+    }
+    type
+    visibility
+    activity
+  }
+`;
+export const DashboardTopCalloutsFragmentDoc = gql`
+  fragment DashboardTopCallouts on Collaboration {
+    calloutsSet {
+      id
+      callouts(sortByActivity: true) {
+        ...DashboardTopCallout
+      }
+    }
+  }
+  ${DashboardTopCalloutFragmentDoc}
+`;
+export const DashboardTimelineAuthorizationFragmentDoc = gql`
+  fragment DashboardTimelineAuthorization on Collaboration {
+    timeline {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
   }
 `;
 export const RoleSetMemberUserFragmentDoc = gql`
@@ -1637,193 +1756,19 @@ export const RoleSetMemberOrganizationFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
-export const JourneyCommunityFragmentDoc = gql`
-  fragment JourneyCommunity on Community {
-    id
-    roleSet {
-      leadUsers: usersInRole(role: LEAD) {
-        ...RoleSetMemberUser
-      }
-      leadOrganizations: organizationsInRole(role: LEAD) {
-        ...RoleSetMemberOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
-`;
-export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
-  fragment JourneyBreadcrumbsSpace on Space {
-    id
-    level
-    profile {
-      id
-      url
-      displayName
-      avatar: visual(type: BANNER) {
-        ...VisualUri
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
-  fragment JourneyBreadcrumbsSubpace on Space {
-    id
-    level
-    profile {
-      id
-      url
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const SpaceCardFragmentDoc = gql`
-  fragment SpaceCard on Space {
-    id
-    profile {
-      id
-      url
-      displayName
-      tagline
-      tagset {
-        ...TagsetDetails
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
-    metrics {
-      name
-      value
-    }
-    community {
-      id
-      roleSet {
-        id
-        myMembershipStatus
-      }
-    }
-    context {
-      id
-      vision
-    }
-    settings {
-      privacy {
-        mode
-      }
-    }
-    visibility
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
-export const ContextDetailsFragmentDoc = gql`
-  fragment ContextDetails on Context {
-    id
-    vision
-    impact
-    who
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-`;
-export const SpaceInfoFragmentDoc = gql`
-  fragment SpaceInfo on Space {
-    profile {
-      id
-      displayName
-      description
-      tagline
-      url
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        description
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
-      }
-    }
-    context {
-      authorization {
-        id
-        myPrivileges
-      }
-      ...ContextDetails
-    }
-    settings {
-      privacy {
-        mode
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-  ${ContextDetailsFragmentDoc}
-`;
-export const DashboardTopCalloutFragmentDoc = gql`
-  fragment DashboardTopCallout on Callout {
-    id
-    framing {
-      id
-      profile {
-        id
-        url
-        displayName
-        description
-      }
-    }
-    type
-    visibility
-    activity
-  }
-`;
-export const DashboardTopCalloutsFragmentDoc = gql`
-  fragment DashboardTopCallouts on Collaboration {
-    calloutsSet {
-      id
-      callouts(sortByActivity: true) {
-        ...DashboardTopCallout
-      }
-    }
-  }
-  ${DashboardTopCalloutFragmentDoc}
-`;
-export const DashboardTimelineAuthorizationFragmentDoc = gql`
-  fragment DashboardTimelineAuthorization on Collaboration {
-    timeline {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
     level
     nameID
+    about {
+      ...SpaceAboutDetails
+      profile {
+        location {
+          ...fullLocation
+        }
+      }
+    }
     provider {
       ...ContributorDetails
     }
@@ -1835,29 +1780,6 @@ export const SpacePageFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-    }
-    profile {
-      id
-      url
-      displayName
-      description
-      tagline
-      visuals {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    context {
-      id
-      vision
-      who
-      impact
-      authorization {
-        id
-        myPrivileges
-      }
     }
     collaboration @include(if: $authorizedReadAccess) {
       id
@@ -1882,9 +1804,9 @@ export const SpacePageFragmentDoc = gql`
       }
     }
   }
+  ${SpaceAboutDetailsFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContributorDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${RoleSetMemberUserFragmentDoc}
@@ -1898,23 +1820,9 @@ export const SubspaceCardFragmentDoc = gql`
       name
       value
     }
-    profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
-      url
-    }
-    context {
-      id
-      vision
+    about {
+      ...SpaceAboutCardBanner
+      why
     }
     community {
       id
@@ -1929,8 +1837,7 @@ export const SubspaceCardFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const SubspacesOnSpaceFragmentDoc = gql`
   fragment SubspacesOnSpace on Space {
@@ -1960,18 +1867,6 @@ export const SpaceSettingsFragmentDoc = gql`
     }
   }
 `;
-export const SpaceDashboardNavigationProfileFragmentDoc = gql`
-  fragment SpaceDashboardNavigationProfile on Profile {
-    id
-    url
-    displayName
-    avatar: visual(type: AVATAR) {
-      id
-      uri
-      alternativeText
-    }
-  }
-`;
 export const MyMembershipsRoleSetFragmentDoc = gql`
   fragment MyMembershipsRoleSet on RoleSet {
     id
@@ -1983,25 +1878,11 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
   fragment SubspacePendingMembershipInfo on Space {
     id
     level
-    profile {
-      id
-      displayName
-      tagline
-      description
-      url
-      tagset {
-        ...TagsetDetails
-      }
-      references {
+    about {
+      ...SpaceAboutDetails
+      authorization {
         id
-        name
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
+        myPrivileges
       }
     }
     community {
@@ -2018,18 +1899,32 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
       id
       myPrivileges
     }
-    context {
+  }
+  ${SpaceAboutDetailsFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
+`;
+export const SpaceAboutLightFragmentDoc = gql`
+  fragment SpaceAboutLight on SpaceAbout {
+    id
+    profile {
       id
-      authorization {
+      displayName
+      url
+      tagline
+      description
+      tagset {
         id
-        myPrivileges
+        tags
+      }
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-  ${MyMembershipsRoleSetFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
@@ -2039,18 +1934,14 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
       myPrivileges
     }
-    profile {
-      id
-      url
+    about {
+      ...SpaceAboutLight
+      why
     }
     metrics {
       id
       name
       value
-    }
-    context {
-      id
-      vision
     }
     community @include(if: $authorizedReadAccessCommunity) {
       id
@@ -2076,6 +1967,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -2092,16 +1984,15 @@ export const AdminSpaceFragmentDoc = gql`
         displayName
       }
     }
-    profile {
-      id
-      displayName
-      url
+    about {
+      ...SpaceAboutLight
     }
     authorization {
       id
       myPrivileges
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const StorageAggregatorParentFragmentDoc = gql`
   fragment StorageAggregatorParent on StorageAggregatorParent {
@@ -2242,6 +2133,37 @@ export const ConfigurationFragmentDoc = gql`
     }
     geo {
       endpoint
+    }
+  }
+`;
+export const MetricsItemFragmentDoc = gql`
+  fragment MetricsItem on NVP {
+    id
+    name
+    value
+  }
+`;
+export const SpaceAboutCardAvatarFragmentDoc = gql`
+  fragment SpaceAboutCardAvatar on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SpaceAboutMinimalFragmentDoc = gql`
+  fragment SpaceAboutMinimal on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      tagline
     }
   }
 `;
@@ -2529,13 +2451,13 @@ export const CalendarEventInfoFragmentDoc = gql`
     }
     subspace @include(if: $includeSubspace) {
       id
-      profile {
-        id
-        displayName
+      about {
+        ...SpaceAboutLight
       }
     }
   }
   ${EventProfileFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const CollaborationTimelineInfoFragmentDoc = gql`
   fragment CollaborationTimelineInfo on Collaboration {
@@ -2608,13 +2530,8 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
     space {
       id
       level
-      profile {
-        id
-        displayName
-        url
-        visual(type: CARD) {
-          ...VisualUri
-        }
+      about {
+        ...SpaceAboutCardBanner
       }
     }
     triggeredBy {
@@ -2630,6 +2547,7 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
   fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
@@ -2647,13 +2565,8 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
     space {
       id
       level
-      profile {
-        id
-        displayName
-        url
-        visual(type: CARD) {
-          ...VisualUri
-        }
+      about {
+        ...SpaceAboutCardBanner
       }
     }
     actor {
@@ -2670,6 +2583,7 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`
   fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
@@ -2707,10 +2621,8 @@ export const PostParentFragmentDoc = gql`
       id
       level
       visibility
-      profile {
-        id
-        url
-        displayName
+      about {
+        ...SpaceAboutLight
       }
       settings {
         privacy {
@@ -2730,6 +2642,7 @@ export const PostParentFragmentDoc = gql`
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const SearchResultPostFragmentDoc = gql`
   fragment SearchResultPost on SearchResultPost {
@@ -2800,14 +2713,13 @@ export const CalloutParentFragmentDoc = gql`
   fragment CalloutParent on SearchResultCallout {
     space {
       id
-      profile {
-        id
-        displayName
-        url
+      about {
+        ...SpaceAboutLight
       }
       level
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const SearchResultCalloutFragmentDoc = gql`
   fragment SearchResultCallout on SearchResultCallout {
@@ -2871,10 +2783,8 @@ export const SearchResultSpaceFragmentDoc = gql`
     parentSpace {
       id
       level
-      profile {
-        id
-        url
-        displayName
+      about {
+        ...SpaceAboutLight
       }
       settings {
         privacy {
@@ -2885,21 +2795,21 @@ export const SearchResultSpaceFragmentDoc = gql`
     space {
       id
       level
-      profile {
+      about {
         id
-        url
-        displayName
-        tagset {
-          ...TagsetDetails
+        why
+        profile {
+          id
+          url
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          tagline
+          visuals {
+            ...VisualUri
+          }
         }
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      context {
-        id
-        vision
       }
       community {
         id
@@ -2916,6 +2826,7 @@ export const SearchResultSpaceFragmentDoc = gql`
       visibility
     }
   }
+  ${SpaceAboutLightFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
@@ -3076,6 +2987,14 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {
     id
     level
+    about {
+      ...SpaceAboutCardBanner
+      profile {
+        spaceBanner: visual(type: BANNER) {
+          ...VisualUri
+        }
+      }
+    }
     settings {
       privacy {
         mode
@@ -3091,32 +3010,24 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
         ...MyMembershipsRoleSet
       }
     }
-    profile {
-      id
-      url
-      tagline
-      displayName
-      spaceBanner: visual(type: BANNER) {
-        ...VisualUri
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
   }
-  ${MyMembershipsRoleSetFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
 `;
 export const ExploreSpacesFragmentDoc = gql`
   fragment ExploreSpaces on Space {
     id
     type
-    profile {
+    about {
       id
-      url
-      displayName
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
+      profile {
+        id
+        url
+        displayName
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
     settings {
@@ -3135,46 +3046,6 @@ export const ExploreSpacesSearchFragmentDoc = gql`
   }
   ${ExploreSpacesFragmentDoc}
 `;
-export const NewMembershipsBasicSpaceFragmentDoc = gql`
-  fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
-    id
-    level
-    profile {
-      id
-      displayName
-      tagline
-      url
-    }
-  }
-`;
-export const RecentContributionsJourneyProfileFragmentDoc = gql`
-  fragment RecentContributionsJourneyProfile on Profile {
-    id
-    url
-    displayName
-    type
-  }
-`;
-export const RecentContributionsSpaceProfileFragmentDoc = gql`
-  fragment RecentContributionsSpaceProfile on Profile {
-    ...RecentContributionsJourneyProfile
-    avatar: visual(type: CARD) {
-      id
-      uri
-    }
-  }
-  ${RecentContributionsJourneyProfileFragmentDoc}
-`;
-export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
-  fragment RecentContributionsChildJourneyProfile on Profile {
-    ...RecentContributionsJourneyProfile
-    avatar: visual(type: AVATAR) {
-      id
-      uri
-    }
-  }
-  ${RecentContributionsJourneyProfileFragmentDoc}
-`;
 export const SpaceMembershipFragmentDoc = gql`
   fragment SpaceMembership on Space {
     id
@@ -3189,18 +3060,12 @@ export const SpaceMembershipFragmentDoc = gql`
         ...MyMembershipsRoleSet
       }
     }
-    profile {
-      id
-      url
-      displayName
-      tagline
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
+    about {
+      ...SpaceAboutCardBanner
     }
   }
   ${MyMembershipsRoleSetFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   fragment MyMembershipsChildJourneyProfile on Profile {
@@ -3228,10 +3093,8 @@ export const ShortAccountItemFragmentDoc = gql`
 export const SpaceProfileCommunityDetailsFragmentDoc = gql`
   fragment spaceProfileCommunityDetails on Space {
     id
-    profile {
-      id
-      displayName
-      url
+    about {
+      ...SpaceAboutLight
     }
     community {
       id
@@ -3244,17 +3107,7 @@ export const SpaceProfileCommunityDetailsFragmentDoc = gql`
       }
     }
   }
-`;
-export const RecentSpaceProfileFragmentDoc = gql`
-  fragment RecentSpaceProfile on Profile {
-    id
-    url
-    displayName
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 export const SpaceExplorerSpaceFragmentDoc = gql`
   fragment SpaceExplorerSpace on Space {
@@ -3264,23 +3117,10 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       myPrivileges
     }
     type
-    profile {
-      id
-      url
-      tagline
-      displayName
-      type
-      tagset {
-        id
-        tags
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
+    level
+    about {
+      why
+      ...SpaceAboutCardBanner
     }
     visibility
     community {
@@ -3296,7 +3136,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const SpaceExplorerSearchSpaceFragmentDoc = gql`
   fragment SpaceExplorerSearchSpace on SearchResultSpace {
@@ -3310,27 +3150,15 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
   fragment SpaceExplorerSubspace on Space {
     id
     type
-    profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
+    level
+    about {
+      ...SpaceAboutCardBanner
+      why
+      profile {
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
       }
-      type
-      tagset {
-        id
-        tags
-      }
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
     }
     community {
       id
@@ -3345,6 +3173,7 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
       }
     }
   }
+  ${SpaceAboutCardBannerFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const UploadFileOnReferenceDocument = gql`
@@ -4439,11 +4268,8 @@ export const UserPendingMembershipsDocument = gql`
         spacePendingMembershipInfo {
           id
           level
-          profile {
-            id
-            displayName
-            tagline
-            url
+          about {
+            ...SpaceAboutMinimalUrl
           }
         }
         application {
@@ -4458,6 +4284,7 @@ export const UserPendingMembershipsDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
+  ${SpaceAboutMinimalUrlFragmentDoc}
   ${InvitationDataFragmentDoc}
 `;
 
@@ -5725,12 +5552,17 @@ export const AccountInformationDocument = gql`
             id
             myPrivileges
           }
-          profile {
-            ...AccountItemProfile
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+          about {
+            id
+            profile {
+              id
+              displayName
+              url
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
+              tagline
             }
-            tagline
           }
           license {
             id
@@ -5781,9 +5613,8 @@ export const AccountInformationDocument = gql`
           spaceVisibilityFilter
           spaceListFilter {
             id
-            profile {
-              id
-              displayName
+            about {
+              ...SpaceAboutLight
             }
           }
           subdomain
@@ -5791,9 +5622,10 @@ export const AccountInformationDocument = gql`
       }
     }
   }
-  ${AccountItemProfileFragmentDoc}
   ${VisualUriFragmentDoc}
   ${EntitlementDetailsFragmentDoc}
+  ${AccountItemProfileFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -6784,8 +6616,8 @@ export const ActivityLogOnCollaborationDocument = gql`
       space {
         id
         ... on Space {
-          profile {
-            ...RecentContributionsSpaceProfile
+          about {
+            ...SpaceAboutCardBanner
           }
         }
       }
@@ -6838,7 +6670,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
-  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -10343,10 +10175,8 @@ export const CommunityUserPrivilegesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          url
-          displayName
+        about {
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10368,10 +10198,8 @@ export const CommunityUserPrivilegesDocument = gql`
     parentSpace: lookup @include(if: $includeParentSpace) {
       space(ID: $parentSpaceId) {
         id
-        profile {
-          id
-          url
-          displayName
+        about {
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10391,6 +10219,7 @@ export const CommunityUserPrivilegesDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
 `;
 
 /**
@@ -10452,10 +10281,8 @@ export const SpaceApplicationDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          url
-          displayName
+        about {
+          ...SpaceAboutMinimalUrl
         }
         community {
           id
@@ -10469,6 +10296,7 @@ export const SpaceApplicationDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalUrlFragmentDoc}
   ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
@@ -11721,10 +11549,13 @@ export const AccountResourcesInfoDocument = gql`
         id
         spaces {
           id
-          profile {
-            ...AccountResourceProfile
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+          about {
+            id
+            profile {
+              ...AccountResourceProfile
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
             }
           }
         }
@@ -11760,9 +11591,8 @@ export const AccountResourcesInfoDocument = gql`
           spaceVisibilityFilter
           spaceListFilter {
             id
-            profile {
-              id
-              displayName
+            about {
+              ...SpaceAboutLight
             }
           }
           subdomain
@@ -11772,6 +11602,7 @@ export const AccountResourcesInfoDocument = gql`
   }
   ${AccountResourceProfileFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -12128,17 +11959,17 @@ export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.Pend
 }
 
 export const PendingMembershipsSpaceDocument = gql`
-  query PendingMembershipsSpace(
-    $spaceId: UUID!
-    $fetchDetails: Boolean! = false
-    $visualType: VisualType!
-    $fetchCommunityGuidelines: Boolean! = false
-  ) {
+  query PendingMembershipsSpace($spaceId: UUID!, $fetchCommunityGuidelines: Boolean! = false) {
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          ...PendingMembershipsJourneyProfile
+        about {
+          ...SpaceAboutCardBanner
+          profile {
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+          }
         }
         community @include(if: $fetchCommunityGuidelines) {
           id
@@ -12149,7 +11980,8 @@ export const PendingMembershipsSpaceDocument = gql`
       }
     }
   }
-  ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
@@ -12166,8 +11998,6 @@ export const PendingMembershipsSpaceDocument = gql`
  * const { data, loading, error } = usePendingMembershipsSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      fetchDetails: // value for 'fetchDetails'
- *      visualType: // value for 'visualType'
  *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
@@ -12280,20 +12110,20 @@ export const SpaceContributionDetailsDocument = gql`
       space(ID: $spaceId) {
         id
         level
-        profile {
+        about {
           id
-          url
-          displayName
-          tagline
-          visuals {
-            ...VisualUri
+          profile {
+            id
+            url
+            displayName
+            tagline
+            visuals {
+              ...VisualUri
+            }
+            tagset {
+              ...TagsetDetails
+            }
           }
-          tagset {
-            ...TagsetDetails
-          }
-        }
-        context {
-          id
         }
         community {
           id
@@ -13435,6 +13265,7 @@ export const VirtualContributorDocument = gql`
           bodyOfKnowledgeID
           bodyOfKnowledgeType
           bodyOfKnowledge
+          engine
         }
         profile {
           id
@@ -13596,28 +13427,90 @@ export function refetchVirtualContributorProfileQuery(variables: SchemaTypes.Vir
   return { query: VirtualContributorProfileDocument, variables: variables };
 }
 
+export const BodyOfKnowledgeProfileAuthorizationDocument = gql`
+  query BodyOfKnowledgeProfileAuthorization($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useBodyOfKnowledgeProfileAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useBodyOfKnowledgeProfileAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBodyOfKnowledgeProfileAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBodyOfKnowledgeProfileAuthorizationQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useBodyOfKnowledgeProfileAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+  >(BodyOfKnowledgeProfileAuthorizationDocument, options);
+}
+
+export function useBodyOfKnowledgeProfileAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
+    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+  >(BodyOfKnowledgeProfileAuthorizationDocument, options);
+}
+
+export type BodyOfKnowledgeProfileAuthorizationQueryHookResult = ReturnType<
+  typeof useBodyOfKnowledgeProfileAuthorizationQuery
+>;
+export type BodyOfKnowledgeProfileAuthorizationLazyQueryHookResult = ReturnType<
+  typeof useBodyOfKnowledgeProfileAuthorizationLazyQuery
+>;
+export type BodyOfKnowledgeProfileAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
+  SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+>;
+export function refetchBodyOfKnowledgeProfileAuthorizationQuery(
+  variables: SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+) {
+  return { query: BodyOfKnowledgeProfileAuthorizationDocument, variables: variables };
+}
+
 export const BodyOfKnowledgeProfileDocument = gql`
   query BodyOfKnowledgeProfile($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
-          cardBanner: visual(type: CARD) {
-            id
-            uri
-          }
+        about {
+          ...SpaceAboutLight
         }
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -14596,444 +14489,38 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
   return { query: InnovationHubDocument, variables: variables };
 }
 
-export const AboutPageNonMembersDocument = gql`
-  query AboutPageNonMembers($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        profile {
-          id
-          url
-          displayName
-          tagline
-          description
-          tagset {
-            ...TagsetDetails
-          }
-          visuals {
-            ...VisualFull
-          }
-          url
-        }
-        provider {
-          ...ContributorDetails
-        }
-        metrics {
-          ...MetricsItem
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          roleSet {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
-          }
-        }
-        context {
-          ...ContextTab
-        }
-        collaboration {
-          id
-          innovationFlow {
-            id
-            currentState {
-              displayName
-            }
-            states {
-              displayName
-              description
-            }
-          }
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${ContributorDetailsFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${ContextTabFragmentDoc}
-`;
-
-/**
- * __useAboutPageNonMembersQuery__
- *
- * To run a query within a React component, call `useAboutPageNonMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAboutPageNonMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAboutPageNonMembersQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useAboutPageNonMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AboutPageNonMembersQuery,
-    SchemaTypes.AboutPageNonMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
-    AboutPageNonMembersDocument,
-    options
-  );
-}
-
-export function useAboutPageNonMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AboutPageNonMembersQuery,
-    SchemaTypes.AboutPageNonMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
-    AboutPageNonMembersDocument,
-    options
-  );
-}
-
-export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
-export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
-export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AboutPageNonMembersQuery,
-  SchemaTypes.AboutPageNonMembersQueryVariables
->;
-export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPageNonMembersQueryVariables) {
-  return { query: AboutPageNonMembersDocument, variables: variables };
-}
-
-export const AboutPageMembersDocument = gql`
-  query AboutPageMembers($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-          roleSet {
-            id
-          }
-        }
-        profile {
-          id
-          references {
-            ...ReferenceDetails
-          }
-          url
-        }
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-  ${ReferenceDetailsFragmentDoc}
-`;
-
-/**
- * __useAboutPageMembersQuery__
- *
- * To run a query within a React component, call `useAboutPageMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAboutPageMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAboutPageMembersQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useAboutPageMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
-    AboutPageMembersDocument,
-    options
-  );
-}
-
-export function useAboutPageMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AboutPageMembersQuery,
-    SchemaTypes.AboutPageMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
-    AboutPageMembersDocument,
-    options
-  );
-}
-
-export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
-export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
-export type AboutPageMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AboutPageMembersQuery,
-  SchemaTypes.AboutPageMembersQueryVariables
->;
-export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMembersQueryVariables) {
-  return { query: AboutPageMembersDocument, variables: variables };
-}
-
-export const JourneyCommunityPrivilegesDocument = gql`
-  query JourneyCommunityPrivileges($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useJourneyCommunityPrivilegesQuery__
- *
- * To run a query within a React component, call `useJourneyCommunityPrivilegesQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyCommunityPrivilegesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useJourneyCommunityPrivilegesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >(JourneyCommunityPrivilegesDocument, options);
-}
-
-export function useJourneyCommunityPrivilegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >(JourneyCommunityPrivilegesDocument, options);
-}
-
-export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
-export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
-export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyCommunityPrivilegesQuery,
-  SchemaTypes.JourneyCommunityPrivilegesQueryVariables
->;
-export function refetchJourneyCommunityPrivilegesQuery(
-  variables: SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-) {
-  return { query: JourneyCommunityPrivilegesDocument, variables: variables };
-}
-
-export const JourneyDataDocument = gql`
-  query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        profile {
-          ...ProfileJourneyData
-        }
-        context {
-          ...ContextJourneyData
-        }
-        community @include(if: $includeCommunity) {
-          ...JourneyCommunity
-        }
-        metrics {
-          ...MetricsItem
-        }
-        provider {
-          ...ContributorDetails
-        }
-      }
-    }
-  }
-  ${ProfileJourneyDataFragmentDoc}
-  ${ContextJourneyDataFragmentDoc}
-  ${JourneyCommunityFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${ContributorDetailsFragmentDoc}
-`;
-
-/**
- * __useJourneyDataQuery__
- *
- * To run a query within a React component, call `useJourneyDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyDataQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      includeCommunity: // value for 'includeCommunity'
- *   },
- * });
- */
-export function useJourneyDataQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>(
-    JourneyDataDocument,
-    options
-  );
-}
-
-export function useJourneyDataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>(
-    JourneyDataDocument,
-    options
-  );
-}
-
-export type JourneyDataQueryHookResult = ReturnType<typeof useJourneyDataQuery>;
-export type JourneyDataLazyQueryHookResult = ReturnType<typeof useJourneyDataLazyQuery>;
-export type JourneyDataQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyDataQuery,
-  SchemaTypes.JourneyDataQueryVariables
->;
-export function refetchJourneyDataQuery(variables: SchemaTypes.JourneyDataQueryVariables) {
-  return { query: JourneyDataDocument, variables: variables };
-}
-
-export const JourneyPrivilegesDocument = gql`
-  query JourneyPrivileges($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useJourneyPrivilegesQuery__
- *
- * To run a query within a React component, call `useJourneyPrivilegesQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyPrivilegesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useJourneyPrivilegesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>(
-    JourneyPrivilegesDocument,
-    options
-  );
-}
-
-export function useJourneyPrivilegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyPrivilegesQuery,
-    SchemaTypes.JourneyPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>(
-    JourneyPrivilegesDocument,
-    options
-  );
-}
-
-export type JourneyPrivilegesQueryHookResult = ReturnType<typeof useJourneyPrivilegesQuery>;
-export type JourneyPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyPrivilegesLazyQuery>;
-export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyPrivilegesQuery,
-  SchemaTypes.JourneyPrivilegesQueryVariables
->;
-export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPrivilegesQueryVariables) {
-  return { query: JourneyPrivilegesDocument, variables: variables };
-}
-
 export const ChildJourneyPageBannerDocument = gql`
   query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
     lookup {
       level0Space: space(ID: $level0Space) {
         id
-        profile {
+        about {
           id
-          banner: visual(type: BANNER) {
+          profile {
             id
-            uri
+            banner: visual(type: BANNER) {
+              id
+              uri
+            }
           }
         }
       }
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
-          tagline
-          avatar: visual(type: AVATAR) {
+          profile {
             id
-            uri
-          }
-          tagset {
-            id
-            tags
+            displayName
+            tagline
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            tagset {
+              id
+              tags
+            }
           }
         }
         community {
@@ -15324,9 +14811,8 @@ export const SpaceCommunityPageDocument = gql`
           id
           myPrivileges
         }
-        profile {
-          id
-          url
+        about {
+          ...SpaceAboutLight
         }
         provider {
           ...ContributorDetails
@@ -15350,6 +14836,7 @@ export const SpaceCommunityPageDocument = gql`
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
   ${ContributorDetailsFragmentDoc}
 `;
 
@@ -15412,10 +14899,8 @@ export const SpaceDocument = gql`
       space(ID: $spaceId) {
         id
         nameID
-        profile {
-          id
-          displayName
-          url
+        about {
+          ...SpaceAboutLight
         }
         authorization {
           id
@@ -15440,6 +14925,7 @@ export const SpaceDocument = gql`
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -15554,6 +15040,7 @@ export const SpaceProfileDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        level
         ...SpaceInfo
       }
     }
@@ -15741,13 +15228,13 @@ export const SpaceUrlDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          url
+        about {
+          ...SpaceAboutLight
         }
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -15849,13 +15336,16 @@ export const SpaceDashboardReferencesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          references {
+          profile {
             id
-            name
-            uri
-            description
+            references {
+              id
+              name
+              uri
+              description
+            }
           }
         }
       }
@@ -15986,12 +15476,12 @@ export const CreateSpaceDocument = gql`
   mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
     createSpace(spaceData: $spaceData) {
       id
-      profile {
-        id
-        url
+      about {
+        ...SpaceAboutLight
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 export type CreateSpaceMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateSpaceMutation,
@@ -16323,6 +15813,81 @@ export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateSpaceMutation,
   SchemaTypes.UpdateSpaceMutationVariables
 >;
+export const SpaceAndCommunityPrivilegesDocument = gql`
+  query SpaceAndCommunityPrivileges($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceAndCommunityPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useSpaceAndCommunityPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceAndCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceAndCommunityPrivilegesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceAndCommunityPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >(SpaceAndCommunityPrivilegesDocument, options);
+}
+
+export function useSpaceAndCommunityPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+    SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+  >(SpaceAndCommunityPrivilegesDocument, options);
+}
+
+export type SpaceAndCommunityPrivilegesQueryHookResult = ReturnType<typeof useSpaceAndCommunityPrivilegesQuery>;
+export type SpaceAndCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useSpaceAndCommunityPrivilegesLazyQuery>;
+export type SpaceAndCommunityPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceAndCommunityPrivilegesQuery,
+  SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+>;
+export function refetchSpaceAndCommunityPrivilegesQuery(
+  variables: SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
+) {
+  return { query: SpaceAndCommunityPrivilegesDocument, variables: variables };
+}
+
 export const SpaceApplicationTemplateDocument = gql`
   query SpaceApplicationTemplate($spaceId: UUID!) {
     lookup {
@@ -16402,105 +15967,6 @@ export function refetchSpaceApplicationTemplateQuery(variables: SchemaTypes.Spac
   return { query: SpaceApplicationTemplateDocument, variables: variables };
 }
 
-export const SubspaceProfileInfoDocument = gql`
-  query SubspaceProfileInfo($subspaceId: UUID!) {
-    lookup {
-      space(ID: $subspaceId) {
-        id
-        profile {
-          id
-          displayName
-          description
-          tagline
-          tagset {
-            ...TagsetDetails
-          }
-          visuals {
-            ...VisualFull
-          }
-          location {
-            ...fullLocation
-          }
-          references {
-            id
-            name
-            description
-            uri
-          }
-        }
-        context {
-          ...ContextDetails
-        }
-        collaboration {
-          id
-          innovationFlow {
-            id
-          }
-          calloutsSet {
-            id
-          }
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-  ${ContextDetailsFragmentDoc}
-`;
-
-/**
- * __useSubspaceProfileInfoQuery__
- *
- * To run a query within a React component, call `useSubspaceProfileInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useSubspaceProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSubspaceProfileInfoQuery({
- *   variables: {
- *      subspaceId: // value for 'subspaceId'
- *   },
- * });
- */
-export function useSubspaceProfileInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SubspaceProfileInfoQuery,
-    SchemaTypes.SubspaceProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SubspaceProfileInfoQuery, SchemaTypes.SubspaceProfileInfoQueryVariables>(
-    SubspaceProfileInfoDocument,
-    options
-  );
-}
-
-export function useSubspaceProfileInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SubspaceProfileInfoQuery,
-    SchemaTypes.SubspaceProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SubspaceProfileInfoQuery, SchemaTypes.SubspaceProfileInfoQueryVariables>(
-    SubspaceProfileInfoDocument,
-    options
-  );
-}
-
-export type SubspaceProfileInfoQueryHookResult = ReturnType<typeof useSubspaceProfileInfoQuery>;
-export type SubspaceProfileInfoLazyQueryHookResult = ReturnType<typeof useSubspaceProfileInfoLazyQuery>;
-export type SubspaceProfileInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.SubspaceProfileInfoQuery,
-  SchemaTypes.SubspaceProfileInfoQueryVariables
->;
-export function refetchSubspaceProfileInfoQuery(variables: SchemaTypes.SubspaceProfileInfoQueryVariables) {
-  return { query: SubspaceProfileInfoDocument, variables: variables };
-}
-
 export const SubspacesInSpaceDocument = gql`
   query SubspacesInSpace($spaceId: UUID!) {
     lookup {
@@ -16508,20 +15974,15 @@ export const SubspacesInSpaceDocument = gql`
         id
         subspaces {
           id
-          profile {
-            id
-            displayName
-            url
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
-            }
+          about {
+            ...SpaceAboutCardBanner
           }
           level
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 
 /**
@@ -16690,9 +16151,8 @@ export const SpaceAccountDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          url
+        about {
+          ...SpaceAboutLight
         }
         activeSubscription {
           name
@@ -16748,6 +16208,7 @@ export const SpaceAccountDocument = gql`
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
@@ -16871,9 +16332,8 @@ export const SpaceSubspacesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          displayName
+        about {
+          ...SpaceAboutMinimal
         }
         account {
           id
@@ -16898,22 +16358,17 @@ export const SpaceSubspacesDocument = gql`
         }
         subspaces {
           id
-          profile {
-            id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
+          about {
+            ...SpaceAboutCardAvatar
           }
         }
       }
     }
   }
+  ${SpaceAboutMinimalFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${SpaceAboutCardAvatarFragmentDoc}
 `;
 
 /**
@@ -17034,6 +16489,9 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       profile {
         id
         url
+        avatar: visual(type: AVATAR) {
+          id
+        }
       }
       knowledgeBase {
         id
@@ -17046,6 +16504,7 @@ export const CreateVirtualContributorOnAccountDocument = gql`
               profile {
                 id
                 displayName
+                description
               }
             }
           }
@@ -17157,13 +16616,8 @@ export const AdminSpaceSubspacesPageDocument = gql`
         subspaces {
           id
           level
-          profile {
-            id
-            displayName
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
+          about {
+            ...SpaceAboutCardAvatar
           }
         }
         templatesManager {
@@ -17219,7 +16673,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${SpaceAboutCardAvatarFragmentDoc}
   ${InnovationFlowProfileFragmentDoc}
 `;
 
@@ -17275,8 +16729,8 @@ export function refetchAdminSpaceSubspacesPageQuery(variables: SchemaTypes.Admin
   return { query: AdminSpaceSubspacesPageDocument, variables: variables };
 }
 
-export const SpaceDashboardNavigationChallengesDocument = gql`
-  query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
+export const SpaceDashboardNavigationSubspacesDocument = gql`
+  query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -17284,13 +16738,13 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
           id
           myPrivileges
         }
-        profile {
-          ...SpaceDashboardNavigationProfile
+        about {
+          ...SpaceAboutCardBanner
         }
         subspaces {
           id
-          profile {
-            ...SpaceDashboardNavigationProfile
+          about {
+            ...SpaceAboutCardAvatar
           }
           authorization {
             id
@@ -17306,66 +16760,139 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
       }
     }
   }
-  ${SpaceDashboardNavigationProfileFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
+  ${SpaceAboutCardAvatarFragmentDoc}
   ${MyMembershipsRoleSetFragmentDoc}
 `;
 
 /**
- * __useSpaceDashboardNavigationChallengesQuery__
+ * __useSpaceDashboardNavigationSubspacesQuery__
  *
- * To run a query within a React component, call `useSpaceDashboardNavigationChallengesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceDashboardNavigationChallengesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceDashboardNavigationSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceDashboardNavigationSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceDashboardNavigationChallengesQuery({
+ * const { data, loading, error } = useSpaceDashboardNavigationSubspacesQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSpaceDashboardNavigationChallengesQuery(
+export function useSpaceDashboardNavigationSubspacesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
-  >(SpaceDashboardNavigationChallengesDocument, options);
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
+  >(SpaceDashboardNavigationSubspacesDocument, options);
 }
 
-export function useSpaceDashboardNavigationChallengesLazyQuery(
+export function useSpaceDashboardNavigationSubspacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-    SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
-  >(SpaceDashboardNavigationChallengesDocument, options);
+    SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
+  >(SpaceDashboardNavigationSubspacesDocument, options);
 }
 
-export type SpaceDashboardNavigationChallengesQueryHookResult = ReturnType<
-  typeof useSpaceDashboardNavigationChallengesQuery
+export type SpaceDashboardNavigationSubspacesQueryHookResult = ReturnType<
+  typeof useSpaceDashboardNavigationSubspacesQuery
 >;
-export type SpaceDashboardNavigationChallengesLazyQueryHookResult = ReturnType<
-  typeof useSpaceDashboardNavigationChallengesLazyQuery
+export type SpaceDashboardNavigationSubspacesLazyQueryHookResult = ReturnType<
+  typeof useSpaceDashboardNavigationSubspacesLazyQuery
 >;
-export type SpaceDashboardNavigationChallengesQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceDashboardNavigationChallengesQuery,
-  SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+export type SpaceDashboardNavigationSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
+  SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
 >;
-export function refetchSpaceDashboardNavigationChallengesQuery(
-  variables: SchemaTypes.SpaceDashboardNavigationChallengesQueryVariables
+export function refetchSpaceDashboardNavigationSubspacesQuery(
+  variables: SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
 ) {
-  return { query: SpaceDashboardNavigationChallengesDocument, variables: variables };
+  return { query: SpaceDashboardNavigationSubspacesDocument, variables: variables };
+}
+
+export const SpaceDashboardNavigationSubspacesAuthDocument = gql`
+  query SpaceDashboardNavigationSubspacesAuth($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceDashboardNavigationSubspacesAuthQuery__
+ *
+ * To run a query within a React component, call `useSpaceDashboardNavigationSubspacesAuthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceDashboardNavigationSubspacesAuthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceDashboardNavigationSubspacesAuthQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceDashboardNavigationSubspacesAuthQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
+  >(SpaceDashboardNavigationSubspacesAuthDocument, options);
+}
+
+export function useSpaceDashboardNavigationSubspacesAuthLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
+    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
+  >(SpaceDashboardNavigationSubspacesAuthDocument, options);
+}
+
+export type SpaceDashboardNavigationSubspacesAuthQueryHookResult = ReturnType<
+  typeof useSpaceDashboardNavigationSubspacesAuthQuery
+>;
+export type SpaceDashboardNavigationSubspacesAuthLazyQueryHookResult = ReturnType<
+  typeof useSpaceDashboardNavigationSubspacesAuthLazyQuery
+>;
+export type SpaceDashboardNavigationSubspacesAuthQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
+  SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
+>;
+export function refetchSpaceDashboardNavigationSubspacesAuthQuery(
+  variables: SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
+) {
+  return { query: SpaceDashboardNavigationSubspacesAuthDocument, variables: variables };
 }
 
 export const SubspacePendingMembershipInfoDocument = gql`
@@ -18082,9 +17609,8 @@ export const SpaceStorageAdminPageDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          displayName
+        about {
+          ...SpaceAboutMinimal
         }
         storageAggregator {
           ...StorageAggregator
@@ -18092,6 +17618,7 @@ export const SpaceStorageAdminPageDocument = gql`
       }
     }
   }
+  ${SpaceAboutMinimalFragmentDoc}
   ${StorageAggregatorFragmentDoc}
 `;
 
@@ -18584,18 +18111,29 @@ export const CreateSubspaceDocument = gql`
   mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
     createSubspace(subspaceData: $input) {
       ...SubspaceCard
-      visuals: profile @include(if: $includeVisuals) {
+      about {
         id
-        cardBanner: visual(type: CARD) {
+        profile @include(if: $includeVisuals) {
           id
-        }
-        avatar: visual(type: AVATAR) {
-          id
+          cardBanner: visual(type: CARD) {
+            id
+            uri
+            name
+          }
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+            name
+          }
+          tagset {
+            ...TagsetDetails
+          }
         }
       }
     }
   }
   ${SubspaceCardFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export type CreateSubspaceMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateSubspaceMutation,
@@ -18639,13 +18177,190 @@ export type CreateSubspaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateSubspaceMutation,
   SchemaTypes.CreateSubspaceMutationVariables
 >;
+export const AboutPageNonMembersDocument = gql`
+  query AboutPageNonMembers($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        about {
+          ...SpaceAboutDetails
+        }
+        provider {
+          ...ContributorDetails
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          roleSet {
+            id
+            authorization {
+              id
+              myPrivileges
+            }
+          }
+        }
+        collaboration {
+          id
+          innovationFlow {
+            id
+            currentState {
+              displayName
+            }
+            states {
+              displayName
+              description
+            }
+          }
+        }
+      }
+    }
+  }
+  ${SpaceAboutDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
+  ${MetricsItemFragmentDoc}
+`;
+
+/**
+ * __useAboutPageNonMembersQuery__
+ *
+ * To run a query within a React component, call `useAboutPageNonMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAboutPageNonMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAboutPageNonMembersQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useAboutPageNonMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AboutPageNonMembersQuery,
+    SchemaTypes.AboutPageNonMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
+    AboutPageNonMembersDocument,
+    options
+  );
+}
+
+export function useAboutPageNonMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AboutPageNonMembersQuery,
+    SchemaTypes.AboutPageNonMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
+    AboutPageNonMembersDocument,
+    options
+  );
+}
+
+export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
+export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
+export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AboutPageNonMembersQuery,
+  SchemaTypes.AboutPageNonMembersQueryVariables
+>;
+export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPageNonMembersQueryVariables) {
+  return { query: AboutPageNonMembersDocument, variables: variables };
+}
+
+export const AboutPageMembersDocument = gql`
+  query AboutPageMembers($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        community {
+          id
+          roleSet {
+            id
+          }
+        }
+        about {
+          ...SpaceAboutDetails
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+  ${SpaceAboutDetailsFragmentDoc}
+`;
+
+/**
+ * __useAboutPageMembersQuery__
+ *
+ * To run a query within a React component, call `useAboutPageMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAboutPageMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAboutPageMembersQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useAboutPageMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
+    AboutPageMembersDocument,
+    options
+  );
+}
+
+export function useAboutPageMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AboutPageMembersQuery,
+    SchemaTypes.AboutPageMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
+    AboutPageMembersDocument,
+    options
+  );
+}
+
+export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
+export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
+export type AboutPageMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AboutPageMembersQuery,
+  SchemaTypes.AboutPageMembersQueryVariables
+>;
+export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMembersQueryVariables) {
+  return { query: AboutPageMembersDocument, variables: variables };
+}
+
 export const JourneyStorageConfigDocument = gql`
   query JourneyStorageConfig($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          ...ProfileStorageConfig
+        about {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
         }
       }
     }
@@ -22088,12 +21803,15 @@ export const SearchScopeDetailsSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
+        about {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
+          profile {
             id
-            uri
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
           }
         }
         visibility
@@ -22603,7 +22321,11 @@ export const PendingInvitationsDocument = gql`
       communityInvitations(states: ["invited"]) {
         id
         spacePendingMembershipInfo {
-          ...NewMembershipsBasicSpace
+          id
+          level
+          about {
+            ...SpaceAboutLight
+          }
         }
         invitation {
           id
@@ -22618,7 +22340,7 @@ export const PendingInvitationsDocument = gql`
       }
     }
   }
-  ${NewMembershipsBasicSpaceFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -22686,8 +22408,14 @@ export const LatestContributionsDocument = gql`
         space {
           id
           ... on Space {
-            profile {
-              ...RecentContributionsSpaceProfile
+            about {
+              ...SpaceAboutCardBanner
+              profile {
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
             }
           }
         }
@@ -22745,7 +22473,7 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
-  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -22827,8 +22555,8 @@ export const LatestContributionsGroupedDocument = gql`
       space {
         id
         ... on Space {
-          profile {
-            ...RecentContributionsSpaceProfile
+          about {
+            ...SpaceAboutCardAvatar
           }
         }
       }
@@ -22870,7 +22598,7 @@ export const LatestContributionsGroupedDocument = gql`
       }
     }
   }
-  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${SpaceAboutCardAvatarFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -22946,14 +22674,14 @@ export const LatestContributionsSpacesFlatDocument = gql`
         id
         space {
           id
-          profile {
-            id
-            displayName
+          about {
+            ...SpaceAboutLight
           }
         }
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -23091,10 +22819,12 @@ export const MyResourcesDocument = gql`
         spaces {
           id
           level
-          profile {
-            ...ShortAccountItem
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
+          about {
+            ...SpaceAboutCardBanner
+            profile {
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
             }
           }
         }
@@ -23123,8 +22853,9 @@ export const MyResourcesDocument = gql`
       }
     }
   }
-  ${ShortAccountItemFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${ShortAccountItemFragmentDoc}
 `;
 
 /**
@@ -23335,8 +23066,8 @@ export const RecentSpacesDocument = gql`
               mode
             }
           }
-          profile {
-            ...RecentSpaceProfile
+          about {
+            ...SpaceAboutCardBanner
           }
           level
           __typename
@@ -23344,7 +23075,7 @@ export const RecentSpacesDocument = gql`
       }
     }
   }
-  ${RecentSpaceProfileFragmentDoc}
+  ${SpaceAboutCardBannerFragmentDoc}
 `;
 
 /**
@@ -23728,14 +23459,14 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        profile {
-          id
-          url
-          displayName
+        level
+        about {
+          ...SpaceAboutLight
         }
       }
     }
   }
+  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**

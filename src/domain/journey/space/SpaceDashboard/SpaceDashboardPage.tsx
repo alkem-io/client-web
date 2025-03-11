@@ -5,39 +5,37 @@ import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdate
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import JourneyAboutDialog from '@/domain/journey/common/JourneyAboutDialog/JourneyAboutDialog';
-import { IconButton } from '@mui/material';
-import { Close } from '@mui/icons-material';
-import { buildAboutUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { useTranslation } from 'react-i18next';
+import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceDashboardPage = ({
   dialog,
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
-  const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
 
-  const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
+  const backToDashboard = useBackToStaticPath(`${currentPath.pathname}/dashboard` ?? '');
 
-  const { spaceId, collaborationId, journeyPath, calendarEventId } = useUrlResolver();
+  const { spaceId, collaborationId, journeyPath, calendarEventId, loading } = useUrlResolver();
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Dashboard, skip: loading || !spaceId });
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer spaceId={spaceId}>
-        {({ callouts, dashboardNavigation, ...entities }, state) => (
+        {({ callouts, dashboardNavigation, about, ...entities }, state) => (
           <>
             <SpaceDashboardView
               spaceId={spaceId}
               collaborationId={collaborationId}
               calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
-              vision={entities.space?.context?.vision}
+              what={entities.space?.about.profile.description}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
               loading={state.loading}
@@ -51,13 +49,13 @@ const SpaceDashboardPage = ({
               callouts={callouts}
               level={entities.space?.level}
               myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
-              shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
+              shareUpdatesUrl={buildUpdatesUrl(entities.space?.about.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
               communityId={entities.space?.community?.id}
-              shareUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
+              shareUrl={buildUpdatesUrl(entities.space?.about.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog
@@ -71,38 +69,25 @@ const SpaceDashboardPage = ({
                 onClose={backToDashboard}
                 journeyId={spaceId}
                 parentSpaceId={undefined}
-                parentPath={entities.space?.profile.url ?? ''}
+                parentPath={entities.space?.about.profile.url ?? ''}
                 calendarEventId={calendarEventId}
               />
             )}
-            <JourneyAboutDialog
+            <SpaceAboutDialog
               open={dialog === 'about'}
+              spaceId={spaceId}
               spaceLevel={SpaceLevel.L0}
-              displayName={entities.space?.profile.displayName}
-              tagline={entities.space?.profile.tagline}
-              references={entities.references}
+              about={about}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               metrics={entities.space?.metrics}
-              description={entities.space?.context?.vision}
-              background={entities.space?.profile.description}
-              who={entities.space?.context?.who}
-              impact={entities.space?.context?.impact}
-              guidelines={
-                <CommunityGuidelinesBlock
-                  communityId={entities.space?.community?.id}
-                  journeyUrl={entities.space?.profile.url}
-                />
-              }
+              communityId={entities.space?.community?.id}
               loading={state.loading}
               leadUsers={entities.space?.community?.roleSet?.leadUsers}
               provider={entities.provider}
               leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
-              endButton={
-                <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
-                  <Close />
-                </IconButton>
-              }
-              shareUrl={buildAboutUrl(entities.space?.profile.url)}
+              onClose={entities.permissions?.spaceReadAccess ? backToDashboard : undefined}
+              hasReadPrivilege={entities.permissions?.spaceReadAccess}
+              hasEditPrivilege={entities.permissions?.canEdit}
             />
           </>
         )}

@@ -1,12 +1,14 @@
-import { ReactNode } from 'react';
-import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
-import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { useState, useEffect, ReactNode } from 'react';
+import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
+import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
+import { SaveRequestIndicatorIcon } from '../icon/SaveRequestIndicatorIcon';
+import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -37,6 +39,9 @@ const WhiteboardView = ({
   preventWhiteboardDeletion,
   ...whiteboardsState
 }: WhiteboardViewProps) => {
+  const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
+  const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
+
   const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = () => {
@@ -60,17 +65,31 @@ const WhiteboardView = ({
     skip: !hasUpdatePrivileges,
   });
 
+  const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
+    variables: { whiteboardId: whiteboard?.id! },
+    skip: !whiteboard?.id,
+    fetchPolicy: 'network-only',
+  });
+
+  useEffect(() => {
+    // on the initialization of lastSuccessfulSavedDate take the date from the database
+    if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
+      setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
+    }
+  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
+
   return (
     <WhiteboardActionsContainer>
-      {(_, actionsState, actions) => (
+      {({ state: actionsState, actions }) => (
         <WhiteboardDialog
-          entities={{
-            whiteboard,
-          }}
+          entities={{ whiteboard }}
+          lastSuccessfulSavedDate={lastSuccessfulSavedDate}
           actions={{
             onCancel: handleCancel,
+            setConsecutiveSaveErrors,
             onUpdate: actions.onUpdate,
             onDelete: actions.onDelete,
+            setLastSuccessfulSavedDate,
             onChangeDisplayName: actions.onChangeDisplayName,
           }}
           options={{
@@ -87,7 +106,10 @@ const WhiteboardView = ({
                     <WhiteboardShareSettings createdBy={whiteboard?.createdBy} {...contentUpdatePolicyProvided} />
                   )}
                 </ShareButton>
+
                 <FullscreenButton />
+
+                <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
               </>
             ),
           }}

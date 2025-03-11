@@ -105,8 +105,12 @@ const DashboardSpaces = () => {
           return null;
         }
 
-        const { id, profile } = space;
-        const { tagline } = profile;
+        const {
+          id,
+          about: {
+            profile: { tagline, ...profile },
+          },
+        } = space;
         const hasChildMemberships = childMemberships?.length > 0;
 
         return (
@@ -141,19 +145,14 @@ const DashboardSpaces = () => {
                     return null;
                   }
 
-                  const { id, profile, level } = subSpace;
-                  const { url, cardBanner, displayName } = profile;
+                  const { id, about, level } = subSpace;
 
                   return (
                     <JourneyTile
                       key={id}
                       columns={cardColumns}
                       journey={{
-                        profile: {
-                          url,
-                          cardBanner,
-                          displayName,
-                        },
+                        about: about,
                         level: level,
                       }}
                       isPrivate={subSpace.settings.privacy.mode === SpacePrivacyMode.Private}

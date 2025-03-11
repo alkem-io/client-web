@@ -26,7 +26,7 @@ export const CommunicationUserMentionView = ({
       type,
       state: state,
       space: {
-        avatarUrl: space?.profile?.visual?.uri ?? '',
+        avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {
         url: commentUrl ?? '',

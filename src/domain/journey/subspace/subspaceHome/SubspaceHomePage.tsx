@@ -80,23 +80,22 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <SubspaceHomeContainer spaceId={spaceId}>
-      {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId, roleSet }) => {
-        const { collaboration, community, profile, level } = subspace ?? {};
+      {({ innovationFlow, callouts, subspace, communityReadAccess, communityId, roleSet }) => {
+        const { collaboration, community, about, level } = subspace ?? {};
 
         return (
           <>
             <SubspacePageLayout
-              spaceReadAccess={spaceReadAccess}
               journeyId={spaceId}
               journeyPath={journeyPath}
               spaceLevel={spaceLevel}
-              journeyUrl={profile?.url}
+              spaceUrl={about?.profile?.url}
               levelZeroSpaceId={levelZeroSpaceId}
               parentSpaceId={parentSpaceId}
               loading={loading}
               welcome={
                 <JourneyDashboardWelcomeBlock
-                  vision={subspace?.context?.vision ?? ''}
+                  description={subspace?.about.profile.description ?? ''}
                   leadUsers={roleSet.leadUsers}
                   onContactLeadUser={receiver => sendMessage('user', receiver)}
                   leadOrganizations={roleSet.leadOrganizations}
@@ -173,7 +172,10 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
                     onCurrentItemNotFound={dashboardNavigation.refetch}
                   />
                   {communityReadAccess && communityId && (
-                    <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(profile?.url ?? '')} />
+                    <DashboardUpdatesSection
+                      communityId={communityId}
+                      shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')}
+                    />
                   )}
                 </>
               }
@@ -198,7 +200,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               dialogOpen={dialog}
               callouts={callouts}
               journeyId={spaceId}
-              journeyUrl={profile?.url}
+              journeyUrl={about?.profile?.url}
               dashboardNavigation={dashboardNavigation}
               communityId={community?.id}
               collaborationId={collaboration?.id}

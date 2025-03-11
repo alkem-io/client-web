@@ -49,9 +49,8 @@ fragment CalendarEventInfo on CalendarEvent {
   }
   subspace @include(if: $includeSubspace) {
     id
-    profile {
-      id
-      displayName
+    about {
+      ...SpaceAboutLight
     }
   }
 }

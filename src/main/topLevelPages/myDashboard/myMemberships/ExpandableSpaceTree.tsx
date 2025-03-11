@@ -43,7 +43,9 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
     space: {
       level,
       community,
-      profile: { url, tagline, cardBanner, displayName },
+      about: {
+        profile: { url, tagline, cardBanner, displayName },
+      },
     },
   } = membership;
   const avatar = cardBanner?.uri;
