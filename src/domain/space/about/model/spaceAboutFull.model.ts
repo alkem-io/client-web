@@ -53,19 +53,21 @@ export type SpaceAboutFullModel = {
       allowedValues: string[];
       type: TagsetType;
     };
-    visuals: {
+    avatar?: {
       id: string;
       uri: string;
-      name: string;
       alternativeText?: string;
-      // TODO: these should not be part of the basic About model type
-      allowedTypes: string[];
-      aspectRatio: number;
-      maxHeight: number;
-      maxWidth: number;
-      minHeight: number;
-      minWidth: number;
-    }[];
+    };
+    cardBanner?: {
+      id: string;
+      uri: string;
+      alternativeText?: string;
+    };
+    banner?: {
+      id: string;
+      uri: string;
+      alternativeText?: string;
+    };
     references?: {
       id: string;
       name: string;

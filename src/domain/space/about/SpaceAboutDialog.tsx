@@ -34,7 +34,6 @@ import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDa
 export interface SpaceAboutDialogProps {
   open: boolean;
   space: SpaceDashboardSpaceDetails;
-  sendMessageToCommunityLeads: (message: string) => Promise<void>;
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;

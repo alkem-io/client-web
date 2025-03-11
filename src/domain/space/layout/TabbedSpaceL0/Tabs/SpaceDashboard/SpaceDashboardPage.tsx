@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback } from 'react';
+import { PropsWithChildren } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
@@ -12,7 +12,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
-import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
@@ -58,24 +58,6 @@ const SpaceDashboardPage = ({
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
     spaceId: spaceId!,
   });
-
-  const communityId = spaceData?.about.membership.communityID!;
-
-  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
-
-  const handleSendMessageToCommunityLeads = useCallback(
-    async (messageText: string) => {
-      await sendMessageToCommunityLeads({
-        variables: {
-          messageData: {
-            message: messageText,
-            communityId: communityId,
-          },
-        },
-      });
-    },
-    [sendMessageToCommunityLeads, communityId]
-  );
 
   const calloutsSetProvided = useCalloutsSet({
     calloutsSetId,
@@ -124,12 +106,7 @@ const SpaceDashboardPage = ({
         parentPath={spaceData?.about.profile.url ?? ''}
         calendarEventId={calendarEventId}
       />
-      <SpaceAboutDialog
-        open={dialog === 'about'}
-        space={space}
-        sendMessageToCommunityLeads={handleSendMessageToCommunityLeads}
-        loading={loadingSpacePageQuery}
-      />
+      <SpaceAboutDialog open={dialog === 'about'} space={space} loading={loadingSpacePageQuery} />
     </SpacePageLayout>
   );
 };

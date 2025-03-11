@@ -28,7 +28,6 @@ import ActivityDialog from '../../../../journey/common/Activity/ActivityDialog';
 import { useSpace } from '../../../SpaceContext/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../../../../journey/space/layout/useSpaceTabs';
-import { times } from 'lodash';
 
 type TabDefinition = {
   label: ReactNode;
@@ -221,18 +220,18 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
 export default SpaceTabs;
 
-export const SpaceTabsSkeleton = ({ mobile }: SpacePageTabsProps) => {
+export const SpaceTabsPlaceholder = ({ mobile, loading }: SpacePageTabsProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const navigationBackgroundColor = getEntityColor(theme, 'space');
   const navigationForegroundColor = theme.palette.common.white;
-
+  const value = loading ? 'loading' : undefined;
   if (mobile) {
     return (
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
         <BottomNavigation
           showLabels
-          value="loading"
+          value={value}
           sx={{
             backgroundColor: navigationBackgroundColor,
             '.MuiBottomNavigationAction-root.Mui-selected': {
@@ -243,10 +242,7 @@ export const SpaceTabsSkeleton = ({ mobile }: SpacePageTabsProps) => {
             },
           }}
         >
-          <BottomNavigationAction key="loading" value="loading" label="Loading..." />
-          {times(3, index => (
-            <BottomNavigationAction key={`loading_${index}`} value={`loading_${index}`} label="" />
-          ))}
+          {loading && <BottomNavigationAction key="loading" value="loading" label="Loading..." />}
         </BottomNavigation>
       </Paper>
     );
@@ -255,14 +251,16 @@ export const SpaceTabsSkeleton = ({ mobile }: SpacePageTabsProps) => {
   return (
     <>
       <HeaderNavigationTabs value="loading" defaultTab="loading" aria-label={t('pages.admin.space.aria.tabs')}>
-        <HeaderNavigationTab
-          key="loading"
-          label={t('common.loading')}
-          value="loading"
-          to=""
-          disabled
-          sx={{ marginX: 'auto' }}
-        />
+        {loading && (
+          <HeaderNavigationTab
+            key="loading"
+            label={t('common.loading')}
+            value={value}
+            to=""
+            disabled
+            sx={{ marginX: 'auto' }}
+          />
+        )}
       </HeaderNavigationTabs>
     </>
   );

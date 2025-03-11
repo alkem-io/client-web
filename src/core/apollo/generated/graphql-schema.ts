@@ -19184,85 +19184,6 @@ export type SpaceCardFragment = {
   };
 };
 
-export type SpaceTemplatesManagerQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceTemplatesManagerQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          templatesManager?:
-            | {
-                __typename?: 'TemplatesManager';
-                id: string;
-                templatesSet?:
-                  | {
-                      __typename?: 'TemplatesSet';
-                      id: string;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type SpaceSubspaceCardsQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceSubspaceCardsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          subspaces: Array<{
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              isContentPublic: boolean;
-              why?: string | undefined;
-              id: string;
-              metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-              membership: {
-                __typename?: 'SpaceAboutMembership';
-                myMembershipStatus?: CommunityMembershipStatus | undefined;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              };
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              };
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
 export type CreateSpaceMutationVariables = Exact<{
   spaceData: CreateSpaceOnAccountInput;
 }>;
@@ -19355,6 +19276,49 @@ export type ContactSupportLocationQuery = {
   platform: {
     __typename?: 'Platform';
     configuration: { __typename?: 'Config'; locations: { __typename?: 'PlatformLocations'; contactsupport: string } };
+  };
+};
+
+export type SpaceSubspaceCardsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceSubspaceCardsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          subspaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            about: {
+              __typename?: 'SpaceAbout';
+              isContentPublic: boolean;
+              why?: string | undefined;
+              id: string;
+              metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              membership: {
+                __typename?: 'SpaceAboutMembership';
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              };
+            };
+          }>;
+        }
+      | undefined;
   };
 };
 
@@ -19455,19 +19419,51 @@ export type UpdateSpaceMutation = {
               type: TagsetType;
             }
           | undefined;
-        visuals: Array<{
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
+        avatar?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }
+          | undefined;
+        cardBanner?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }
+          | undefined;
+        banner?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }
+          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
@@ -19508,19 +19504,51 @@ export type SpaceInfoFragment = {
             type: TagsetType;
           }
         | undefined;
-      visuals: Array<{
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-        alternativeText?: string | undefined;
-      }>;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      cardBanner?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      banner?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
@@ -19679,28 +19707,6 @@ export type BannerInnovationHubQuery = {
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type SpaceTabsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
-}>;
-
-export type SpaceTabsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          innovationFlow: {
-            __typename?: 'InnovationFlow';
-            id: string;
-            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          };
         }
       | undefined;
   };
@@ -20320,6 +20326,42 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
               };
             }>;
           }>;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceTemplatesManagerQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceTemplatesManagerQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -21231,19 +21273,51 @@ export type SpaceAboutBaseQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              banner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -21319,19 +21393,51 @@ export type SpaceAboutDetailsFragment = {
           type: TagsetType;
         }
       | undefined;
-    visuals: Array<{
-      __typename?: 'Visual';
-      id: string;
-      uri: string;
-      name: string;
-      allowedTypes: Array<string>;
-      aspectRatio: number;
-      maxHeight: number;
-      maxWidth: number;
-      minHeight: number;
-      minWidth: number;
-      alternativeText?: string | undefined;
-    }>;
+    avatar?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+    cardBanner?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+    banner?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
@@ -21711,19 +21817,51 @@ export type SpacePageQuery = {
                     type: TagsetType;
                   }
                 | undefined;
-              visuals: Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }>;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              banner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -21942,19 +22080,51 @@ export type SpacePageFragment = {
             type: TagsetType;
           }
         | undefined;
-      visuals: Array<{
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-        alternativeText?: string | undefined;
-      }>;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      cardBanner?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      banner?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
@@ -22081,6 +22251,28 @@ export type SpacePageFragment = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
+  };
+};
+
+export type SpaceTabsQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type SpaceTabsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+        }
+      | undefined;
   };
 };
 

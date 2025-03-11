@@ -14,8 +14,6 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceTabs';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
@@ -85,7 +83,6 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
     skip: !spaceId,
   });
   const profile = spaceData?.lookup.space?.about.profile;
-  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
   });
@@ -101,8 +98,8 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
           title={profile?.displayName}
           tagline={profile?.tagline}
           loading={loading}
-          bannerUrl={visual?.uri}
-          bannerAltText={visual?.alternativeText}
+          bannerUrl={profile?.banner?.uri}
+          bannerAltText={profile?.banner?.alternativeText}
           ribbon={ribbon}
         />
       }

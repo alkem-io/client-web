@@ -19,7 +19,13 @@ fragment SpaceAboutDetails on SpaceAbout {
     tagset {
       ...TagsetDetails
     }
-    visuals {
+    avatar: visual(type: AVATAR) {
+      ...VisualFull
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualFull
+    }
+    banner: visual(type: BANNER) {
       ...VisualFull
     }
     references {

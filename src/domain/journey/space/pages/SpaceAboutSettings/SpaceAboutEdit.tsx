@@ -12,6 +12,7 @@ import SaveButton from '@/core/ui/actions/SaveButton';
 import { Actions } from '@/core/ui/actions/Actions';
 import React from 'react';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { compact } from 'lodash';
 
 type Props = {
   spaceId: string | undefined;
@@ -59,7 +60,7 @@ export const SpaceAboutEdit = ({ spaceId = '' }: Props) => {
     });
   };
   const space = spaceData?.lookup.space;
-  const visuals = space?.about.profile.visuals ?? [];
+  const visuals = compact([space?.about.profile.avatar, space?.about.profile.cardBanner, space?.about.profile.banner]);
   let submitWired;
 
   return (

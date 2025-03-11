@@ -8,6 +8,7 @@ export interface SpacePermissions {
   canRead: boolean;
   canUpdate: boolean;
   canCreateSubspaces: boolean;
+  canCreateTemplates: boolean;
 }
 
 interface SpaceContextProps {
@@ -48,9 +49,10 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canRead: false,
     canUpdate: false,
     canCreateSubspaces: false,
+    canCreateTemplates: false,
   },
   visibility: SpaceVisibility.Active,
-  loading: false,
+  loading: true,
 });
 
 const SpaceContextProvider = ({ children }: PropsWithChildren) => {
@@ -73,6 +75,9 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
+      // TODO: This is a shortcut. Instead of accessing the TemplatesManager of a space,
+      // 100% of the time, if the user is able to create a subspace they should be able to create a template
+      canCreateTemplates: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
     };
   }, [spacePrivileges]);
 

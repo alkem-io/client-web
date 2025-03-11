@@ -26,5 +26,8 @@ export type SpaceAboutLightModel = {
     cardBanner?: {
       uri: string;
     };
+    banner?: {
+      uri: string;
+    };
   };
 };
