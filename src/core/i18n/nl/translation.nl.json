@@ -2675,14 +2675,14 @@
       "membership": {
         "space": {
           "confirmation-dialog": {
-            "title": "Leaving Space {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this Space or its Subspaces. If this Space is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Space, you will also be automatically removed from there."
+            "title": "Space verlaten {{space}}",
+            "text": "Weet je zeker dat je <b>{{space}}</b>wilt verlaten? <br /><br /> Je zult niet langer updates ontvangen of toegang hebben tot gedeelde bronnen vanuit deze Space of de Subspaces. Als deze Space openbaar is, kun je op elk gewenst moment opnieuw aanmelden, of als de Space privé is, dan heb je een uitnodiging nodig om opnieuw in te schrijven. <br /><br />Merk op dat als je lid bent van een Subspace binnen deze Space, je je daar ook automatisch wordt verwijderd."
           }
         },
         "subspace": {
           "confirmation-dialog": {
-            "title": "Leaving Subspace {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this Subspace or its Subspaces. If this Subspace is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Subspace, you will also be automatically removed from there."
+            "title": "Verlaat Subspace {{space}}",
+            "text": "Weet je zeker dat je <b>{{space}}</b>wilt verlaten? <br /><br /> Je zult niet langer updates ontvangen of toegang hebben tot gedeelde bronnen vanuit deze Subspace of de Subspaces die de Subspace eventueel bevat. Als deze Subpace openbaar is, kun je op elk gewenst moment opnieuw aanmelden, of als de Subpace privé is, dan heb je een uitnodiging nodig om opnieuw in te schrijven. <br /><br />Merk op dat als je lid bent van een Subspace binnen deze Subpace, je je daar ook automatisch wordt verwijderd."
           }
         }
       },
