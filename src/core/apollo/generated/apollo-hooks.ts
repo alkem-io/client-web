@@ -21682,6 +21682,7 @@ export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
 <<<<<<< HEAD
+<<<<<<< HEAD
       spaceResults {
         cursor
         results {
@@ -21750,24 +21751,66 @@ export const SearchDocument = gql`
         }
         total
       }
+=======
+>>>>>>> 3a0001d38 (finish functionality)
       spaceResults {
         cursor
         results {
-          ...SearchResults
+          id
+          type
+          score
+          terms
+          ...SearchResultSpace
         }
         total
       }
       calloutResults {
         cursor
         results {
-          ...SearchResults
+          id
+          type
+          score
+          terms
+          ...SearchResultCallout
+        }
+        total
+      }
+      contributionResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultPost
+          ...SearchResultCallout
+        }
+        total
+      }
+      contributorResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultUser
+          ...SearchResultOrganization
         }
         total
       }
     }
   }
+<<<<<<< HEAD
   ${SearchResultsFragmentDoc}
 >>>>>>> 562f620fc (update gql schema)
+=======
+  ${SearchResultSpaceFragmentDoc}
+  ${SearchResultCalloutFragmentDoc}
+  ${SearchResultPostFragmentDoc}
+  ${SearchResultUserFragmentDoc}
+  ${SearchResultOrganizationFragmentDoc}
+>>>>>>> 3a0001d38 (finish functionality)
 `;
 
 /**
