@@ -44,7 +44,6 @@ const EntityDashboardLeadsSection = ({
   const leadOrganizationsMapped = useMemo(
     () =>
       leadOrganizations?.map(org => ({
-        key: org.id,
         id: org.id,
         profile: org.profile,
         seamless: true,
