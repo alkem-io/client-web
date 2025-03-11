@@ -6,13 +6,18 @@ import {
   InAppNotificationState,
   NotificationEventType,
   SpaceLevel,
+  InAppNotificationReceivedSubscription,
+  InAppNotificationsQuery,
+  InAppNotificationReceivedSubscriptionVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import {
+  InAppNotificationReceivedDocument,
   refetchInAppNotificationsQuery,
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
+import useSubscribeToMore from '@/core/apollo/subscriptions/useSubscribeToMore';
 
 export interface InAppNotificationProps {
   id: string;
@@ -92,15 +97,34 @@ export const useInAppNotifications = () => {
 
   const [updateState] = useUpdateNotificationStateMutation();
 
-  const { data, loading } = useInAppNotificationsQuery({
+  const { data, loading, subscribeToMore } = useInAppNotificationsQuery({
     skip: !isEnabled,
   });
 
+  useSubscribeToMore<
+    InAppNotificationsQuery,
+    InAppNotificationReceivedSubscription,
+    InAppNotificationReceivedSubscriptionVariables
+  >(subscribeToMore, {
+    document: InAppNotificationReceivedDocument,
+    updateQuery: (prev, { subscriptionData }) => {
+      if (!prev.notifications) {
+        return;
+      }
+
+      // if (!subscriptionData.data.inAppNotificationReceived) {
+
+      if (prev.notifications.length === 0) {
+        prev.notifications.push(subscriptionData.data.inAppNotificationReceived);
+        return;
+      }
+
+      prev.notifications.unshift(subscriptionData.data.inAppNotificationReceived);
+    },
+  });
+
   const items: InAppNotificationProps[] = useMemo(
-    () =>
-      (data?.notifications ?? [])
-        .filter(item => item.state !== InAppNotificationState.Archived)
-        .sort((a, b) => new Date(b.triggeredAt).getTime() - new Date(a.triggeredAt).getTime()),
+    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
     [data]
   );
 
