@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '@/core/routing/useNavigate';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceSubspacesPageQuery,
