@@ -1,8 +1,13 @@
+import { useTranslation } from 'react-i18next';
+
+import { Button } from '@mui/material';
+import { Autorenew } from '@mui/icons-material';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import { Box, BoxProps } from '@mui/material';
 import { FC, ReactElement, ReactNode, cloneElement, useMemo } from 'react';
+import Gutters from '../../grid/Gutters';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   extends Omit<PageContentBlockGridProps, 'children'> {
@@ -11,6 +16,8 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   deps?: unknown[];
   showCreateButton?: boolean;
   createButton?: ReactNode;
+  globalSearch?: boolean;
+  onClickLoadMore?: () => void;
 }
 
 /**
@@ -26,8 +33,12 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   children,
   deps = [],
   createButton,
+  onClickLoadMore,
+  globalSearch = false,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
+  const { t } = useTranslation();
+
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
 
   const cards = useMemo(
@@ -39,6 +50,33 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
       }),
     [items, depsValueFromObjectDeps, children]
   );
+
+  if (globalSearch) {
+    return (
+      <Gutters
+        disablePadding
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <CardLayoutContainer {...layoutProps} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          {createButton}
+          {cards}
+        </CardLayoutContainer>
+
+        {cards.length > 0 && (
+          <Button
+            startIcon={<Autorenew />}
+            sx={{ minWidth: 'fit-content', height: 'fit-content' }}
+            onClick={onClickLoadMore}
+          >
+            {t('buttons.load-more')}
+          </Button>
+        )}
+      </Gutters>
+    );
+  }
 
   return (
     <CardLayoutContainer {...layoutProps}>

@@ -32,6 +32,7 @@ import { UrlResolverProvider } from './main/routing/urlResolver/UrlResolverProvi
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
   '*': {
+    scrollBehavior: 'smooth',
     scrollbarColor: `${theme.palette.primary.main} transparent`,
   },
   '*, *::before, *::after': {
