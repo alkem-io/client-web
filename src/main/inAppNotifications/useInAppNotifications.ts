@@ -107,6 +107,7 @@ export const useInAppNotifications = () => {
     InAppNotificationReceivedSubscription,
     InAppNotificationReceivedSubscriptionVariables
   >(subscribeToMore, {
+    skip: !isEnabled,
     document: InAppNotificationReceivedDocument,
     updateQuery: (prev, { subscriptionData }) => {
       if (!prev.notifications || !subscriptionData.data?.inAppNotificationReceived) {
