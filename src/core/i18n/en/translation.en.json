@@ -2663,6 +2663,20 @@
       "accountResources": {
         "sectionTitle": "Resources I host"
       },
+      "membership": {
+        "space": {
+          "confirmation-dialog": {
+            "title": "Leaving Space {{space}}",
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this Space or its Subspaces. If this Space is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Space, you will also be automatically removed from there."
+          }
+        },
+        "subspace": {
+          "confirmation-dialog": {
+            "title": "Leaving Subspace {{space}}",
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this Subspace or its Subspaces. If this Subspace is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Subspace, you will also be automatically removed from there."
+          }
+        }
+      },
       "communities": {
         "title": "Communities",
         "help": "Communities the user is a part of",
