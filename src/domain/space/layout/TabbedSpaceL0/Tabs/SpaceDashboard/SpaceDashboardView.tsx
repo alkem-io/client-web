@@ -57,6 +57,7 @@ const SpaceDashboardView = ({
   space,
   dashboardNavigation,
   dashboardNavigationLoading,
+  loading,
   calloutsSetProvided,
   shareUpdatesUrl,
   flowStateForNewCallouts,
@@ -124,26 +125,28 @@ const SpaceDashboardView = ({
     <>
       {directMessageDialog}
       <PageContent>
-        <ApplicationButtonContainer journeyId={space?.id}>
-          {(applicationButtonProps, loading) => {
-            if (loading || applicationButtonProps.isMember) {
-              return null;
-            }
+        {!loading && (
+          <ApplicationButtonContainer journeyId={space?.id}>
+            {(applicationButtonProps, loading) => {
+              if (loading || applicationButtonProps.isMember) {
+                return null;
+              }
 
-            return (
-              <PageContentColumn columns={12}>
-                <ApplicationButton
-                  {...applicationButtonProps}
-                  loading={loading}
-                  component={FullWidthButton}
-                  extended={hasExtendedApplicationButton}
-                  journeyId={space?.id}
-                  spaceLevel={level}
-                />
-              </PageContentColumn>
-            );
-          }}
-        </ApplicationButtonContainer>
+              return (
+                <PageContentColumn columns={12}>
+                  <ApplicationButton
+                    {...applicationButtonProps}
+                    loading={loading}
+                    component={FullWidthButton}
+                    extended={hasExtendedApplicationButton}
+                    journeyId={space?.id}
+                    spaceLevel={level}
+                  />
+                </PageContentColumn>
+              );
+            }}
+          </ApplicationButtonContainer>
+        )}
         <InfoColumn>
           <PageContentBlock accent>
             <JourneyDashboardWelcomeBlock

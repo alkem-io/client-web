@@ -1,5 +1,5 @@
 import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { PropsWithChildren, useMemo } from 'react';
@@ -17,6 +17,7 @@ interface SpaceContextProps {
     nameID: string;
     about: SpaceAboutLightModel;
     collaborationId?: string;
+    level: SpaceLevel;
   };
   permissions: SpacePermissions;
   visibility: SpaceVisibility;
@@ -41,6 +42,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
       },
     },
     collaborationId: '',
+    level: SpaceLevel.L0,
   },
   permissions: {
     canRead: false,
@@ -94,6 +96,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       nameID: spaceNameId,
       about: aboutModel,
       collaborationId,
+      level: SpaceLevel.L0,
     };
   }, [spaceData]);
 

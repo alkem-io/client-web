@@ -13,7 +13,7 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import SpaceTabs from '@/domain/journey/space/layout/SpaceTabs';
+import SpaceTabs from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceTabs';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
