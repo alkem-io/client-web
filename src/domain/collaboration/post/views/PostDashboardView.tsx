@@ -119,7 +119,9 @@ const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) 
             )}
           </Gutters>
         </PageContentBlock>
-        <References references={post?.profile.references} />
+        <Gutters sx={{ width: '100%' }}>
+          <References references={post?.profile.references} />
+        </Gutters>
       </PageContentColumn>
       {mode === 'messages' && permissions.canReadComments && (
         <PageContentColumn columns={6}>
