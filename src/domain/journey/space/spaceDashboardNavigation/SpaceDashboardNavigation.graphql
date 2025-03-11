@@ -29,30 +29,14 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
   }
 }
 
-query SpaceDashboardNavigationOpportunities($spaceId: UUID!, $challengeIds: [UUID!]!) {
+query SpaceDashboardNavigationSubspacesAuth($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      subspaces(IDs: $challengeIds) {
+      authorization {
         id
-        subspaces {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          about {
-            ...SpaceAboutCardAvatar
-          }
-          community {
-            id
-            roleSet {
-              ...MyMembershipsRoleSet
-            }
-          }
-        }
+        myPrivileges
       }
     }
   }
 }
-

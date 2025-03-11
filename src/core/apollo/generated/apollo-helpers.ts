@@ -3864,8 +3864,14 @@ export type UserFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserAuthenticationResultKeySpecifier = ('createdAt' | 'method' | UserAuthenticationResultKeySpecifier)[];
+export type UserAuthenticationResultKeySpecifier = (
+  | 'authenticatedAt'
+  | 'createdAt'
+  | 'method'
+  | UserAuthenticationResultKeySpecifier
+)[];
 export type UserAuthenticationResultFieldPolicy = {
+  authenticatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   method?: FieldPolicy<any> | FieldReadFunction<any>;
 };
