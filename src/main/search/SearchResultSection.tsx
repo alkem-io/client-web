@@ -1,5 +1,6 @@
 import { FilterConfig, FilterDefinition } from './Filter';
-import { ComponentType, ReactNode } from 'react';
+import { memo, ComponentType, ReactNode } from 'react';
+import { isEqual as lodashIsEqual } from 'lodash';
 import { Box, Button } from '@mui/material';
 import { EntityFilter } from './EntityFilter';
 import { Autorenew } from '@mui/icons-material';
@@ -93,4 +94,14 @@ const SearchResultSection = <Result extends Identifiable>({
   );
 };
 
-export default SearchResultSection;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEqual = (prevProps: ResultSectionProps<any>, nextProps: ResultSectionProps<any>) =>
+  prevProps.title === nextProps.title &&
+  lodashIsEqual(prevProps.results, nextProps.results) &&
+  prevProps.filterTitle === nextProps.filterTitle &&
+  lodashIsEqual(prevProps.filterConfig, nextProps.filterConfig) &&
+  lodashIsEqual(prevProps.currentFilter, nextProps.currentFilter) &&
+  prevProps.loading === nextProps.loading &&
+  prevProps.cardComponent === nextProps.cardComponent;
+
+export default memo(SearchResultSection, isEqual);
