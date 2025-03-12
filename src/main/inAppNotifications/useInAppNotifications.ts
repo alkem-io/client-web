@@ -97,10 +97,7 @@ export const useInAppNotifications = () => {
   });
 
   const items: InAppNotificationProps[] = useMemo(
-    () =>
-      (data?.notifications ?? [])
-        .filter(item => item.state !== InAppNotificationState.Archived)
-        .sort((a, b) => new Date(b.triggeredAt).getTime() - new Date(a.triggeredAt).getTime()),
+    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
     [data]
   );
 
