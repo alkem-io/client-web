@@ -18,21 +18,16 @@ import {
   TabProps,
   useTheme,
 } from '@mui/material';
-import {
-  History,
-  MoreVertOutlined,
-  SettingsOutlined,
-  ShareOutlined,
-} from '@mui/icons-material';
+import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
 import useNavigate from '@/core/routing/useNavigate';
 import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
-import { EntityTabsProps } from '../../common/EntityPageLayout';
+import { EntityTabsProps } from '../../../../journey/common/EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
-import ActivityDialog from '../../common/Activity/ActivityDialog';
-import { useSpace } from '../SpaceContext/useSpace';
+import ActivityDialog from '../../../../journey/common/Activity/ActivityDialog';
+import { useSpace } from '../../../SpaceContext/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import useSpaceTabs from './useSpaceTabs';
+import useSpaceTabs from '../../../../journey/space/layout/useSpaceTabs';
 
 type TabDefinition = {
   label: ReactNode;
@@ -54,18 +49,13 @@ enum NavigationActions {
   More = 'more',
 }
 
-
-const SpaceTabs = ({
-  currentTab,
-  mobile,
-  actions,
-  onMenuOpen,
-}: SpacePageTabsProps) => {
+const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const { spaceId, about } = useSpace();
+  const { space } = useSpace();
+  const { id: spaceId, about } = space;
   const { tabs, showSettings } = useSpaceTabs();
 
   const spaceUrl = about.profile.url;
@@ -77,7 +67,6 @@ const SpaceTabs = ({
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isActivityVisible, setIsActivityVisible] = useState(false);
-
 
   useLayoutEffect(() => {
     onMenuOpen?.(isDrawerOpen);
@@ -113,13 +102,8 @@ const SpaceTabs = ({
               },
             }}
           >
-            {tabs.map((tab) => (
-              <BottomNavigationAction
-                key={tab.value}
-                value={tab.value}
-                label={tab.label}
-                icon={tab.icon}
-              />
+            {tabs.map(tab => (
+              <BottomNavigationAction key={tab.value} value={tab.value} label={tab.label} icon={tab.icon} />
             ))}
             {!showSettings && spaceUrl && (
               <BottomNavigationAction
@@ -213,13 +197,8 @@ const SpaceTabs = ({
         showSettings={showSettings}
         settingsUrl={settingsUrl}
       >
-        {tabs.map((tab) => (
-          <HeaderNavigationTab
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-            to={`${spaceUrl}/${tab.value}`}
-          />
+        {tabs.map(tab => (
+          <HeaderNavigationTab key={tab.value} label={tab.label} value={tab.value} to={`${spaceUrl}/${tab.value}`} />
         ))}
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />
@@ -240,3 +219,49 @@ const SpaceTabs = ({
 };
 
 export default SpaceTabs;
+
+export const SpaceTabsPlaceholder = ({ mobile, loading }: SpacePageTabsProps) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const navigationBackgroundColor = getEntityColor(theme, 'space');
+  const navigationForegroundColor = theme.palette.common.white;
+  const value = loading ? 'loading' : undefined;
+  if (mobile) {
+    return (
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
+        <BottomNavigation
+          showLabels
+          value={value}
+          sx={{
+            backgroundColor: navigationBackgroundColor,
+            '.MuiBottomNavigationAction-root.Mui-selected': {
+              color: navigationForegroundColor,
+            },
+            '.MuiBottomNavigationAction-root:not(.Mui-selected)': {
+              color: alpha(navigationForegroundColor, 0.75),
+            },
+          }}
+        >
+          {loading && <BottomNavigationAction key="loading" value="loading" label="Loading..." />}
+        </BottomNavigation>
+      </Paper>
+    );
+  }
+
+  return (
+    <>
+      <HeaderNavigationTabs value="loading" defaultTab="loading" aria-label={t('pages.admin.space.aria.tabs')}>
+        {loading && (
+          <HeaderNavigationTab
+            key="loading"
+            label={t('common.loading')}
+            value={value}
+            to=""
+            disabled
+            sx={{ marginX: 'auto' }}
+          />
+        )}
+      </HeaderNavigationTabs>
+    </>
+  );
+};

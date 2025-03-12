@@ -17,11 +17,9 @@ query SpaceContributionDetails($spaceId: UUID!) {
             ...TagsetDetails
           }
         }
-      }
-      community {
-        id
-        roleSet {
-          id
+        membership {
+          roleSetID
+          communityID
         }
       }
     }

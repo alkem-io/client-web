@@ -31,7 +31,6 @@ import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtu
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
-  collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   vcId: string;
   open: boolean;

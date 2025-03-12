@@ -4,7 +4,7 @@ import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/Spa
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
 import SpaceCommunityPage from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/SpaceCommunityPage';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../../../space/SpaceContext/useSpace';
 import SpaceDashboardPage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 
 enum SpaceTab {
@@ -41,7 +41,8 @@ const renderPage = (flowState: string | undefined) => {
 };
 
 const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { about } = useSpace();
+  const { space } = useSpace();
+  const about = space.about;
 
   const getPageRoute = (flowState: string | undefined) => {
     return `${about.profile.url}/${getPageSection(flowState)}`;

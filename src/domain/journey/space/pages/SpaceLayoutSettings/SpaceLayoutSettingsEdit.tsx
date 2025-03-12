@@ -1,12 +1,13 @@
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { useSpace } from '../../SpaceContext/useSpace';
+import { useSpace } from '../../../../space/SpaceContext/useSpace';
 import InnovationFlowCollaborationToolsBlock from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowCollaborationToolsBlock';
 import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 export const SpaceLayoutSettingsEdit = () => {
-  const { collaborationId } = useSpace();
+  const { space } = useSpace();
+  const collaborationId = space.id; // TODO!!
 
   const { data, actions, state } = useInnovationFlowSettings({
     collaborationId,

@@ -1,0 +1,20 @@
+
+
+query SpaceTemplatesManager($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      templatesManager {
+        id
+        templatesSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+}
+

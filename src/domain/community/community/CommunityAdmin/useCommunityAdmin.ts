@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useCommunityProviderDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   RoleName,
   RoleSetContributorType,
@@ -14,6 +13,7 @@ import useRoleSetApplicationsAndInvitations, {
   InviteContributorsData,
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface useCommunityAdminParams {
   roleSetId: string;
@@ -34,7 +34,7 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
 }
 
 const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
-  const { data: communityProviderData, loading: loadingCommunityProvider } = useCommunityProviderDetailsQuery({
+  const { data: communityProviderData, loading: loadingCommunityProvider } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
     },
@@ -66,7 +66,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
 
-  const communityProvider = communityProviderData?.lookup.space?.provider;
+  const communityProvider = communityProviderData?.lookup.space?.about.provider;
   const communityUsers = useMemo(
     () =>
       users.map<CommunityMemberUserFragmentWithRoles>(user => ({
@@ -85,18 +85,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
       isLead: organization.roles.includes(RoleName.Lead),
       isFacilitating: communityProvider?.__typename === 'Organization' && communityProvider.id === organization.id,
     }));
-    // Add the community provider if it's not yet in the list
-    if (communityProvider && communityProvider.__typename === 'Organization') {
-      const member = result.find(organization => organization.id === communityProvider.id);
-      if (!member) {
-        result.push({
-          ...communityProvider,
-          isMember: false,
-          isLead: false,
-          isFacilitating: true,
-        });
-      }
-    }
+
     return result;
   }, [organizations]);
 

@@ -1,35 +1,37 @@
 import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
-import SpaceTabs from './SpaceTabs';
+import SpaceTabs, { SpaceTabsPlaceholder } from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceTabs';
 import { PropsWithChildren } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
   journeyPath: JourneyPath | undefined;
+  loading?: boolean;
 }
 
-const SpacePageLayout = ({ currentSection, journeyPath, children }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceId, loading } = useUrlResolver();
+const SpacePageLayout = ({
+  currentSection,
+  journeyPath,
+  loading = false,
+  children,
+}: PropsWithChildren<SpacePageLayoutProps>) => {
+  const { spaceId, loading: resolving } = useUrlResolver();
 
-  const { data: spaceData } = useSpaceProfileQuery({
+  const { data: spaceData } = useSpaceAboutBaseQuery({
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId,
+    skip: !spaceId || loading,
   });
 
   const profile = spaceData?.lookup.space?.about.profile;
-
-  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
@@ -43,13 +45,13 @@ const SpacePageLayout = ({ currentSection, journeyPath, children }: PropsWithChi
         <SpacePageBanner
           title={profile?.displayName}
           tagline={profile?.tagline}
-          loading={loading}
-          bannerUrl={visual?.uri}
-          bannerAltText={visual?.alternativeText}
+          loading={loading || resolving}
+          bannerUrl={profile?.banner?.uri}
+          bannerAltText={profile?.banner?.alternativeText}
           ribbon={ribbon}
         />
       }
-      tabsComponent={SpaceTabs}
+      tabsComponent={loading ? SpaceTabsPlaceholder : SpaceTabs}
     >
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
         {children}

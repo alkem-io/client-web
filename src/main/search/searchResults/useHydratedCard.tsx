@@ -6,7 +6,6 @@ import {
   SearchResultType,
   SearchResultUserFragment,
   SpaceLevel,
-  SpacePrivacyMode,
   UserRolesSearchCardsQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
@@ -93,7 +92,7 @@ const hydrateSpaceCard = (
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = space.about.why ?? '';
 
-  const isMember = space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentSegment = (
     data: TypedSearchResult<
@@ -111,7 +110,7 @@ const hydrateSpaceCard = (
       <CardParentJourneySegment
         iconComponent={parentIcon}
         parentJourneyUri={data.parentSpace?.about.profile.url ?? ''}
-        locked={data.parentSpace?.settings.privacy?.mode === SpacePrivacyMode.Private}
+        locked={!data.parentSpace?.about.isContentPublic}
       >
         {data.parentSpace?.about.profile.displayName}
       </CardParentJourneySegment>
@@ -129,7 +128,7 @@ const hydrateSpaceCard = (
       tags={tags}
       matchedTerms
       vision={vision}
-      locked={space.settings.privacy?.mode === SpacePrivacyMode.Private}
+      locked={!space.about.isContentPublic}
       spaceVisibility={space.visibility}
       parentSegment={parentSegment(data)}
     />
@@ -148,7 +147,7 @@ const getContributionParentInformation = (
 ): ContributionParentInformation => {
   return {
     displayName: data.space.about.profile.displayName,
-    locked: data.space?.settings.privacy?.mode === SpacePrivacyMode.Private,
+    locked: !data.space?.about.isContentPublic,
     url: data.space.about.profile.url,
     icon: spaceLevelIcon[data.space.level] ?? SpaceIcon,
   };

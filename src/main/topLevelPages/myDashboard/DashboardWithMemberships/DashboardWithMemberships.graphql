@@ -20,25 +20,19 @@ fragment DashboardSpaceMembership on Space {
   level
   about {
     ...SpaceAboutCardBanner
+    isContentPublic
     profile {
       spaceBanner: visual(type: BANNER) {
         ...VisualUri
       }
     }
-  }
-  settings {
-    privacy {
-      mode
+    isContentPublic
+    membership {
+      myMembershipStatus
     }
   }
   authorization {
     id
     myPrivileges
-  }
-  community {
-    roleSet {
-      id
-      ...MyMembershipsRoleSet
-    }
   }
 }

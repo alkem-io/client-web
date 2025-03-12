@@ -2,7 +2,7 @@ import { Button, Dialog, DialogContent } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
 import isApplicationPending from './isApplicationPending';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
@@ -34,8 +34,10 @@ const PreApplicationDialog = ({
 }: PreApplicationDialogProps) => {
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { about: spaceAbout } = useSpace();
-  const { about: subspaceAbout } = useSubSpace();
+  const { space } = useSpace();
+  const spaceAbout = space?.about;
+  const { subspace } = useSubSpace();
+  const subspaceAbout = subspace?.about;
   const parentCommunityName = spaceId ? subspaceAbout.profile.displayName : spaceAbout.profile.displayName;
   const buttonText = t(
     `components.application-button.goTo${spaceLevel === SpaceLevel.L0 ? 'Space' : 'Subspace'}` as const

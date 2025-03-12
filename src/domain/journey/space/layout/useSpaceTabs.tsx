@@ -1,13 +1,9 @@
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ReactNode, useMemo } from 'react';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../../../space/SpaceContext/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import {
-  DashboardOutlined,
-  SchoolOutlined,
-  Tab,
-} from '@mui/icons-material';
+import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';
@@ -17,17 +13,21 @@ type TabDefinition = {
   label: string;
   description: string;
   icon: ReactNode;
-}
-
-const tabsDefaultNames: Record<string, TranslationKey> = {
-  'dashboard': 'pages.space.sections.tabs.dashboard',
-  'community': 'pages.space.sections.tabs.community',
-  'subspaces': 'pages.space.sections.tabs.subspaces',
-  'knowledge base': 'pages.space.sections.tabs.knowledgeBase',
-  'contribute': 'pages.space.sections.tabs.contribute',
 };
 
-const tabName = (t: TFunction<'translation', undefined>, customName: string | undefined, defaultName: TranslationKey): string => {
+const tabsDefaultNames: Record<string, TranslationKey> = {
+  dashboard: 'pages.space.sections.tabs.dashboard',
+  community: 'pages.space.sections.tabs.community',
+  subspaces: 'pages.space.sections.tabs.subspaces',
+  'knowledge base': 'pages.space.sections.tabs.knowledgeBase',
+  contribute: 'pages.space.sections.tabs.contribute',
+};
+
+const tabName = (
+  t: TFunction<'translation', undefined>,
+  customName: string | undefined,
+  defaultName: TranslationKey
+): string => {
   if (!customName) {
     return String(t(defaultName));
   }
@@ -36,26 +36,28 @@ const tabName = (t: TFunction<'translation', undefined>, customName: string | un
     return String(t(tabsDefaultNames[customName.toLowerCase()]));
   }
   return customName;
-}
+};
 
 const useSpaceTabs = () => {
   const { t, i18n } = useTranslation();
 
-  const { collaborationId, permissions } = useSpace();
+  const { space, permissions } = useSpace();
+  const collaborationId = space?.collaborationId;
 
   const { data: spaceTabsData, loading: spaceTabsLoading } = useSpaceTabsQuery({
     variables: {
       collaborationId: collaborationId!,
     },
-    skip: !collaborationId || !permissions.canReadCollaboration,
+    skip: !collaborationId,
   });
 
   const tabs = useMemo(() => {
     const result: TabDefinition[] = [];
-    const innovationFlowTabs = spaceTabsData?.lookup.collaboration?.innovationFlow.states.map((state) => ({
-      displayName: state.displayName,
-      description: state.description,
-    })) ?? [];
+    const innovationFlowTabs =
+      spaceTabsData?.lookup.collaboration?.innovationFlow.states.map(state => ({
+        displayName: state.displayName,
+        description: state.description,
+      })) ?? [];
 
     result.push({
       value: EntityPageSection.Dashboard,
@@ -71,14 +73,12 @@ const useSpaceTabs = () => {
       description: innovationFlowTabs?.[1]?.description ?? '',
     });
 
-    if (permissions.canReadSubspaces) {
-      result.push({
-        value: EntityPageSection.Subspaces,
-        label: tabName(t, innovationFlowTabs?.[2]?.displayName, 'pages.space.sections.tabs.subspaces'),
-        icon: <SubspaceIcon />,
-        description: innovationFlowTabs?.[2]?.description ?? '',
-      });
-    }
+    result.push({
+      value: EntityPageSection.Subspaces,
+      label: tabName(t, innovationFlowTabs?.[2]?.displayName, 'pages.space.sections.tabs.subspaces'),
+      icon: <SubspaceIcon />,
+      description: innovationFlowTabs?.[2]?.description ?? '',
+    });
 
     result.push({
       value: EntityPageSection.KnowledgeBase,
@@ -88,7 +88,7 @@ const useSpaceTabs = () => {
     });
 
     if (innovationFlowTabs.length > 4) {
-      innovationFlowTabs.slice(4).forEach((state) => {
+      innovationFlowTabs.slice(4).forEach(state => {
         result.push({
           value: state.displayName,
           label: state.displayName,
@@ -100,12 +100,10 @@ const useSpaceTabs = () => {
     return result;
   }, [t, i18n.language, spaceTabsData, spaceTabsLoading]);
 
-
   return {
     tabs,
     showSettings: permissions.canUpdate,
-  }
+  };
 };
-
 
 export default useSpaceTabs;

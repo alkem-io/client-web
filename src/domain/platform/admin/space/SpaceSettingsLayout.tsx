@@ -13,16 +13,14 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import SpaceTabs from '@/domain/journey/space/layout/SpaceTabs';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
+import SpaceTabs from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
@@ -80,12 +78,11 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>) => {
   const { t } = useTranslation();
   const { spaceId, journeyPath, loading: resolvingSpace } = useUrlResolver();
-  const { data: spaceData, loading: loadingSpace } = useSpaceProfileQuery({
+  const { data: spaceData, loading: loadingSpace } = useSpaceAboutBaseQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
   const profile = spaceData?.lookup.space?.about.profile;
-  const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
   });
@@ -101,8 +98,8 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
           title={profile?.displayName}
           tagline={profile?.tagline}
           loading={loading}
-          bannerUrl={visual?.uri}
-          bannerAltText={visual?.alternativeText}
+          bannerUrl={profile?.banner?.uri}
+          bannerAltText={profile?.banner?.alternativeText}
           ribbon={ribbon}
         />
       }

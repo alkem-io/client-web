@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '@/domain/journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
-import SpaceAboutPage from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutPage';
+import SpaceSettingsAboutPage from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutPage';
 import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
 import SpaceTemplatesAdminRoutes from '@/domain/platform/admin/space/SpaceTemplatesAdminRoutes';
 import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceStorageAdminPage';
@@ -17,14 +17,16 @@ import SpaceLayoutSettingsPage from '../../space/pages/SpaceLayoutSettings/Space
 
 const SpaceSettingsRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { spaceId, communityId } = useSpace();
+  const { space } = useSpace();
+  const spaceId = space.id!;
+  const communityId = space.about.membership?.communityID!;
 
   return (
     <NonSpaceAdminRedirect spaceId={spaceId}>
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
-          <Route path="about" element={<SpaceAboutPage />} />
+          <Route path="about" element={<SpaceSettingsAboutPage />} />
           <Route path="layout" element={<SpaceLayoutSettingsPage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="account" element={<SpaceAccountPage />} />
