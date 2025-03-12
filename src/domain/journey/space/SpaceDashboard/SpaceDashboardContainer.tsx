@@ -44,14 +44,12 @@ export interface SpaceContainerState {
 }
 
 export interface SpacePageContainerProps
-  extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {
-  spaceId: string | undefined;
-}
+  extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {}
 
 const NO_PRIVILEGES = [];
 
-export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, children }) => {
-  const { loading: loadingSpace, permissions: spacePermissions, isPrivate } = useSpace();
+export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children }) => {
+  const { loading: loadingSpace, permissions: spacePermissions, isPrivate, spaceId } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
   const { data: spaceData, loading: loadingSpaceQuery } = useSpacePageQuery({
@@ -61,7 +59,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
       authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
-    skip: !spaceId,
+    skip: !spaceId || loadingSpace,
   });
 
   const space = spaceData?.lookup.space;
