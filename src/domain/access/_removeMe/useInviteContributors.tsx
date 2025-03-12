@@ -17,7 +17,9 @@ interface useInviteContributorsParams {
   spaceLevel: SpaceLevel | undefined;
 }
 
-//TODO Use rolesetManager for this
+/**
+ * @deprecated Use rolesetManager for this
+ */
 const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteContributorsParams) => {
   // Fetch community virtual members list
   const {
