@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   CalloutType,
   RoleSetContributorType,
@@ -13,8 +13,6 @@ import {
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
-
-const POLLING_INTERVAL = 30 * 1000; // 30 seconds
 
 export interface InAppNotificationProps {
   id: string;
@@ -72,15 +70,17 @@ export interface InAppNotificationProps {
   };
   space?: {
     level: SpaceLevel;
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
+    about: {
+      profile:
+        | {
+            displayName: string;
+            url: string;
+            visual?: {
+              uri: string;
+            };
+          }
+        | undefined;
+    };
   };
   comment?: string;
   commentUrl?: string;
@@ -92,23 +92,12 @@ export const useInAppNotifications = () => {
 
   const [updateState] = useUpdateNotificationStateMutation();
 
-  const { data, loading, startPolling, stopPolling } = useInAppNotificationsQuery({
+  const { data, loading } = useInAppNotificationsQuery({
     skip: !isEnabled,
   });
 
-  useEffect(() => {
-    if (startPolling) {
-      startPolling(POLLING_INTERVAL);
-    }
-
-    return () => stopPolling();
-  }, [data, startPolling, stopPolling]);
-
   const items: InAppNotificationProps[] = useMemo(
-    () =>
-      (data?.notifications ?? [])
-        .filter(item => item.state !== InAppNotificationState.Archived)
-        .sort((a, b) => new Date(b.triggeredAt).getTime() - new Date(a.triggeredAt).getTime()),
+    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
     [data]
   );
 

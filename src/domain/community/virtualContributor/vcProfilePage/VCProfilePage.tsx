@@ -1,24 +1,38 @@
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
-import { useBodyOfKnowledgeProfileQuery, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useBodyOfKnowledgeProfileAuthorizationQuery,
+  useBodyOfKnowledgeProfileQuery,
+  useVirtualContributorQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { ReactNode } from 'react';
+import { AiPersonaBodyOfKnowledgeType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+
+/**
+ * children will have the virtual contributor data available if it is loaded
+ */
+interface VirtualContributorProvided {
+  id: string;
+  profile: {
+    displayName: string;
+    url: string;
+  };
+}
 
 type VCProfilePageProps = {
   openKnowledgeBaseDialog?: boolean;
-  children?: ReactNode;
+  children?: (vc: VirtualContributorProvided | undefined) => ReactNode;
 };
 
 export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading, error } = useVirtualContributorQuery({
     variables: {
@@ -29,17 +43,36 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
 
   const isBokSpace =
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+  const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;
+
+  // TODO: Additional Auth Check
+  const { data: bokProfileAuthData } = useBodyOfKnowledgeProfileAuthorizationQuery({
+    variables: {
+      spaceId: bokId!,
+    },
+    skip: !bokId || !isBokSpace,
+  });
+
+  const hasSpaceProfileReadAccess = bokProfileAuthData?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
 
   const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
     variables: {
-      spaceId: data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+      spaceId: bokId!,
     },
-    skip: !data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
+    skip: !bokId || !isBokSpace || !hasSpaceProfileReadAccess,
   });
 
-  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges);
+  useRestrictedRedirect(
+    { data, error, skip: urlResolverLoading || loading },
+    data => data.lookup.virtualContributor?.authorization?.myPrivileges,
+    {
+      requiredPrivilege: AuthorizationPrivilege.ReadAbout,
+    }
+  );
 
-  if (loading || !vcId) {
+  if (urlResolverLoading || loading || !vcId) {
     return (
       <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );
@@ -56,11 +89,11 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
   return (
     <VCPageLayout>
       <VCProfilePageView
-        bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
+        bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
         virtualContributor={data?.lookup.virtualContributor}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
-      {children}
+      {children?.(data?.lookup.virtualContributor)}
     </VCPageLayout>
   );
 };

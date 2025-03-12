@@ -2,7 +2,6 @@ query VirtualContributor($id: UUID!) {
   lookup {
     virtualContributor(ID: $id) {
       id
-      nameID
       authorization {
         id
         myPrivileges
@@ -39,6 +38,7 @@ query VirtualContributor($id: UUID!) {
         bodyOfKnowledgeID
         bodyOfKnowledgeType
         bodyOfKnowledge
+        engine
       }
       profile {
         id
@@ -51,6 +51,12 @@ query VirtualContributor($id: UUID!) {
         url
         avatar: visual(type: AVATAR) {
           ...VisualFull
+        }
+        references {
+          id
+          name
+          uri
+          description
         }
       }
     }
@@ -72,6 +78,24 @@ query VirtualContributorProfile($id: UUID!) {
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+}
+
+query BodyOfKnowledgeProfileAuthorization($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
       }
     }
   }
@@ -81,19 +105,8 @@ query BodyOfKnowledgeProfile($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        id
-        displayName
-        tagline
-        url
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-        cardBanner: visual(type: CARD) {
-          id
-          uri
-        }
+      about {
+        ...SpaceAboutLight
       }
     }
   }
@@ -118,6 +131,12 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
       }
       displayName
       description
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
 }
@@ -141,6 +160,12 @@ mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributo
       }
       displayName
       description
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
 }

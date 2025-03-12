@@ -3,7 +3,6 @@ import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
-  usePlansTableQuery,
   useSpaceUrlLazyQuery,
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
@@ -11,6 +10,7 @@ import {
   useAllSpaceSubspacesLazyQuery,
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
+  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -18,7 +18,6 @@ import {
   RoleName,
   CreateCalloutInput,
   CreateVirtualContributorOnAccountMutationVariables,
-  LicensingCredentialBasedPlanType,
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -35,15 +34,15 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
-import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './TryVC/utils';
-import { info as logInfo } from '@/core/logging/sentry/log';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
+import { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
 import TryVcInfo from './TryVC/TryVcInfo';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const steps = {
   initial: 'initial',
@@ -59,10 +58,7 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  profile: {
-    displayName: string;
-    url: string;
-  };
+  about: SpaceAboutMinimalUrlModel;
   community: {
     roleSet: {
       id: string;
@@ -87,9 +83,32 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [accountName, setAccountName] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
-  const [createdVc, setCreatedVc] = useState<{ id: string; profile: { url: string } } | undefined>(undefined);
+  const [createdVc, setCreatedVc] = useState<
+    { id: string; profile: { url: string; avatar?: { id: string } } } | undefined
+  >();
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
+
+  const [avatar, setAvatar] = useState<VisualWithAltText>();
+
+  const [uploadVisual] = useUploadVisualMutation({
+    onError: () => notify(t('components.visual-upload.error'), 'error'),
+    onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
+  });
+
+  const uploadAvatar = useCallback(async (avatar: VisualWithAltText | undefined, visualID: string | undefined) => {
+    if (avatar?.file && visualID) {
+      await uploadVisual({
+        variables: {
+          file: avatar?.file,
+          uploadData: {
+            visualID,
+            alternativeText: avatar.altText,
+          },
+        },
+      });
+    }
+  }, []);
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -125,11 +144,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
+    const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
 
     return {
       myAccountId: account?.id,
-      allAccountSpaces: account?.spaces ?? [],
-      availableSpaces: account?.spaces?.filter(hasCommunityPrivilege) ?? [],
+      allAccountSpaces: accountSpaces,
+      availableSpaces: accountSpaces.filter(hasCommunityPrivilege),
     };
   }, [data, user, targetAccount]);
 
@@ -158,32 +178,11 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     setAvailableExistingSpaces(result);
   }, [allSpaceSubspaces, availableSpaces]);
 
-  // get plans data todo: make lazy, usePlanAvailability is temp
-  const skipPlansQueries = Boolean(allAccountSpaces.length);
-  const { data: plansData } = usePlansTableQuery({ skip: skipPlansQueries });
-  const { isPlanAvailable } = usePlanAvailability({ skip: skipPlansQueries });
-
-  const plans = useMemo(
-    () =>
-      plansData?.platform.licensingFramework.plans
-        .filter(plan => plan.enabled)
-        .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
-        .filter(plan => isPlanAvailable(plan))
-        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
-    [plansData, isPlanAvailable]
-  );
-
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount', 'AccountInformation', 'LatestContributionsSpacesFlat'],
   });
 
   const executeCreateSpace = async () => {
-    if (plans.length === 0) {
-      logInfo(`No available plans for this account. User: ${user?.user.id}`);
-      notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
-      return;
-    }
-
     // loading
     setStep(steps.loadingStep);
 
@@ -191,8 +190,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       variables: {
         spaceData: {
           accountID: myAccountId!,
-          profileData: {
-            displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+          about: {
+            profileData: {
+              displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+            },
           },
           collaborationData: {
             calloutsSetData: {},
@@ -254,6 +255,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             },
             profile: {
               displayName: values.name,
+              description: values.description,
             },
           },
         },
@@ -262,9 +264,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       if (values.externalConfig) {
         variables.virtualContributorData.aiPersona.aiPersonaService!.externalConfig = values.externalConfig;
       }
-      const { data } = await createVirtualContributor({
-        variables,
-      });
+      const { data } = await createVirtualContributor({ variables });
 
       if (data?.createVirtualContributor?.id) {
         notify(
@@ -347,10 +347,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       if (spaceId) {
         const { data } = await getNewSpaceUrl({
           variables: {
-            spaceNameId: spaceId,
+            spaceId,
           },
         });
-        const spaceUrl = data?.space?.profile.url;
+        const spaceUrl = data?.lookup.space?.about.profile.url;
 
         if (spaceUrl) {
           navigate(spaceUrl);
@@ -444,6 +444,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
+    await uploadAvatar(avatar, createdVCData?.profile?.avatar?.id);
+
     setCreatedVc(createdVCData);
 
     if (hasDocuments) {
@@ -510,6 +512,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         return;
       }
 
+      await uploadAvatar(avatar, createdVC?.profile?.avatar?.id);
+
       // Refresh explicitly the ingestion
       refreshIngestion(createdVC.id);
 
@@ -548,6 +552,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         accountId: myAccountId,
       });
 
+      await uploadAvatar(avatar, createdVc?.profile?.avatar?.id);
+
       // navigate to VC page
       if (createdVc) {
         navigate(createdVc.profile.url);
@@ -573,6 +579,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
                 onStepSelection('existingKnowledge', values);
               }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
+              onChangeAvatar={setAvatar}
             />
           )}
           {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}

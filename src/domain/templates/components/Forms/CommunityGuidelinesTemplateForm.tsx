@@ -15,7 +15,7 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import { tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { mapReferencesToUpdateReferences, mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { gutters } from '@/core/ui/grid/utils';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   communityGuidelines?: {

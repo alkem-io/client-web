@@ -1,13 +1,12 @@
-import React, { ComponentType, FC, useState } from 'react';
-import { Box, Button, ButtonProps, Skeleton, TextField } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useTranslation } from 'react-i18next';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
+import { isAbsoluteUrl } from '@/core/utils/links';
+import { Box, Button, ButtonProps, DialogContent, Skeleton, TextField } from '@mui/material';
+import { ComponentType, FC, PropsWithChildren, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
 import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { isAbsoluteUrl } from '@/core/utils/links';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
@@ -43,7 +42,7 @@ export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeNam
   );
 };
 
-export interface ShareComponentProps {
+export interface ShareComponentProps extends PropsWithChildren {
   url: string;
   entityTypeName: ShareDialogProps['entityTypeName'];
   loading?: boolean;

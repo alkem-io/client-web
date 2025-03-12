@@ -1,14 +1,13 @@
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { LoadingButton } from '@mui/lab';
+import { Button, DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
-import { LoadingButton } from '@mui/lab';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { DialogContent } from '../dialog/deprecated';
-import DialogHeader from '../dialog/DialogHeader';
-import { BlockTitle } from '../typography';
 import { Actions } from '../actions/Actions';
+import DialogHeader from '../dialog/DialogHeader';
 import { gutters } from '../grid/utils';
-import { Button } from '@mui/material';
+import { BlockTitle } from '../typography';
 /**
  * @deprecated Needs refactor, do not base other components on this Props.
  */
@@ -54,9 +53,13 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onCancel}>
       <DialogHeader onClose={actions.onCancel}>
-        <BlockTitle>{title}</BlockTitle>
+        <BlockTitle>
+          <>{title}</>
+        </BlockTitle>
       </DialogHeader>
-      <DialogContent>{content}</DialogContent>
+      <DialogContent>
+        <>{content}</>
+      </DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
         <Button variant="contained" onClick={actions.onCancel}>
           {t('buttons.cancel')}

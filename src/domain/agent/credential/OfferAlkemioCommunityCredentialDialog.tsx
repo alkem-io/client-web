@@ -1,7 +1,17 @@
+import { AgentBeginVerifiedCredentialOfferOutput } from '@/core/apollo/generated/graphql-schema';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Loading from '@/core/ui/loading/Loading';
+import QRCode from '@/core/ui/qrCode/QRCode';
+import ContributionDetailsContainer, {
+  ContributionDetails,
+} from '@/domain/community/profile/ContributionDetails/ContributionDetailsContainer';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import {
   Box,
   Button,
   DialogActions,
+  DialogContent,
   DialogContentText,
   List,
   ListItemButton,
@@ -11,15 +21,6 @@ import {
 import Dialog from '@mui/material/Dialog';
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributionDetailsContainer, {
-  ContributionDetails,
-} from '@/domain/community/profile/ContributionDetails/ContributionDetailsContainer';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { AgentBeginVerifiedCredentialOfferOutput } from '@/core/apollo/generated/graphql-schema';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import Loading from '@/core/ui/loading/Loading';
-import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
-import QRCode from '@/core/ui/qrCode/QRCode';
 
 interface OfferAlkemioCommunityCredentialDialogProps {
   entities: {
@@ -65,23 +66,21 @@ const OfferAlkemioCommunityCredentialDialog = ({
   if (!content) {
     throw new Error('The credential offer dialog needs text content provided');
   }
+  const handleClose = () => {
+    setSelectedContribution(undefined);
+    setToken(undefined);
+    actions.onCancel();
+  };
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog">
-      <DialogTitle
-        id="credential-offer-dialog-title"
-        onClose={() => {
-          setSelectedContribution(undefined);
-          setToken(undefined);
-          actions.onCancel();
-        }}
-      >
-        {title}
-      </DialogTitle>
+      <DialogHeader onClose={handleClose} title={String(title)} />
       <DialogContent ref={containerRef} sx={{ minHeight: 400, overflow: 'hidden' }}>
         <Slide direction="right" unmountOnExit in={!Boolean(token) && !loadingToken} container={containerRef.current}>
           <Box>
-            <DialogContentText>{content}</DialogContentText>
+            <DialogContentText>
+              <>{content}</>
+            </DialogContentText>
             {state?.isLoadingContributions && <Loading text="Loading contributions" />}
             {!state?.isLoadingContributions && contributions && (
               <List disablePadding>
@@ -92,7 +91,10 @@ const OfferAlkemioCommunityCredentialDialog = ({
                         onClick={() => setSelectedContribution(details)}
                         selected={details === selectedContribution}
                       >
-                        <ListItemText primary={details?.displayName} secondary={details?.tagline} />
+                        <ListItemText
+                          primary={details?.about.profile.displayName}
+                          secondary={details?.about.profile.tagline}
+                        />
                       </ListItemButton>
                     )}
                   </ContributionDetailsContainer>

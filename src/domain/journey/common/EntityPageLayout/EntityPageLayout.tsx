@@ -1,13 +1,13 @@
-import React, { cloneElement, PropsWithChildren, useState } from 'react';
-import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
-import { Theme, useMediaQuery } from '@mui/material';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { gutters } from '@/core/ui/grid/utils';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
+import { Theme, useMediaQuery } from '@mui/material';
+import { cloneElement, useState } from 'react';
+import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 
 const EntityPageLayout = ({
   currentSection,
@@ -17,7 +17,7 @@ const EntityPageLayout = ({
   tabsComponent: Tabs,
   tabs: tabsElement,
   children,
-}: PropsWithChildren<EntityPageLayoutProps>) => {
+}: EntityPageLayoutProps) => {
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
 

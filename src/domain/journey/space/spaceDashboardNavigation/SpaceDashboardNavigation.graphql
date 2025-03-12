@@ -1,21 +1,18 @@
-query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
+query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      authorization {
         id
-        url
-        displayName
-        avatar: visual(type: CARD) {
-          id
-          uri
-          alternativeText
-        }
+        myPrivileges
+      }
+      about {
+        ...SpaceAboutCardBanner
       }
       subspaces {
         id
-        profile {
-          ...SpaceDashboardNavigationProfile
+        about {
+          ...SpaceAboutCardAvatar
         }
         authorization {
           id
@@ -32,40 +29,14 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
   }
 }
 
-query SpaceDashboardNavigationOpportunities($spaceId: UUID!, $challengeIds: [UUID!]!) {
+query SpaceDashboardNavigationSubspacesAuth($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      subspaces(IDs: $challengeIds) {
+      authorization {
         id
-        subspaces {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          profile {
-            ...SpaceDashboardNavigationProfile
-          }
-          community {
-            id
-            roleSet {
-              ...MyMembershipsRoleSet
-            }
-          }
-        }
+        myPrivileges
       }
     }
-  }
-}
-
-fragment SpaceDashboardNavigationProfile on Profile {
-  id
-  url
-  displayName
-  avatar: visual(type: AVATAR) {
-    id
-    uri
-    alternativeText
   }
 }

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
 
 export interface BreadcrumbsItem {
@@ -14,26 +14,25 @@ export interface BreadcrumbsItem {
 }
 
 export interface UseJourneyBreadcrumbsParams {
-  journeyPath: JourneyPath;
+  journeyPath: JourneyPath | undefined;
   loading?: boolean;
 }
 
-export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourneyBreadcrumbsParams) => {
+export const useJourneyBreadcrumbs = ({ journeyPath = [], loading = false }: UseJourneyBreadcrumbsParams) => {
   const currentJourneyIndex = journeyPath.length - 1;
 
   const { data, loading: isLoadingBreadcrumbs } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      spaceNameId: journeyPath[0]!,
-      subspaceLevel1NameId: journeyPath[1]!,
-      subspaceLevel2NameId: journeyPath[2]!,
-      includeSubspaceLevel1: journeyPath.length > 1,
-      includeSubspaceLevel2: journeyPath.length > 2,
-      visualType: VisualType.Banner,
+      spaceId: journeyPath[0]!,
+      subspaceL1Id: journeyPath[1],
+      subspaceL2Id: journeyPath[2],
+      includeSubspaceL1: journeyPath.length > 1,
+      includeSubspaceL2: journeyPath.length > 2,
     },
     skip: !journeyPath || journeyPath.length === 0 || loading,
   });
 
-  const pathSpaces = compact([data?.space, data?.space.subspace, data?.space.subspace?.subspace]);
+  const pathSpaces = compact([data?.lookup.space, data?.lookup.subspaceL1, data?.lookup.subspaceL2]);
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
     if (isLoadingBreadcrumbs) {
@@ -41,7 +40,7 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
     }
 
     return pathSpaces.slice(0, currentJourneyIndex + 1).map(space => {
-      const profile = space.profile;
+      const profile = space.about.profile;
       const displayName = profile.displayName!;
       const journeyUri = profile.url!;
       return {

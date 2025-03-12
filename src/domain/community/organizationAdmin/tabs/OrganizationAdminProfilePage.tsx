@@ -7,7 +7,7 @@ import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettings
 
 const OrganizationAdminProfilePage: FC<SettingsPageProps> = () => {
   return (
-    <OrganizationAdminLayout currentTab={SettingsSection.Profile}>
+    <OrganizationAdminLayout currentTab={SettingsSection.Index}>
       <OrganizationPage mode={EditMode.edit} />
     </OrganizationAdminLayout>
   );

@@ -6,8 +6,10 @@ export const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
 export interface LatestContributionsProps {
   spaceMemberships:
     | (Identifiable & {
-        profile: {
-          displayName: string;
+        about: {
+          profile: {
+            displayName: string;
+          };
         };
       })[]
     | undefined;

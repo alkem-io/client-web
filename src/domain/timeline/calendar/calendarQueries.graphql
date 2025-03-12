@@ -38,7 +38,6 @@ fragment DashboardTimelineAuthorization on Collaboration {
 
 fragment CalendarEventInfo on CalendarEvent {
   id
-  nameID
   startDate
   durationDays
   durationMinutes
@@ -50,9 +49,8 @@ fragment CalendarEventInfo on CalendarEvent {
   }
   subspace @include(if: $includeSubspace) {
     id
-    profile {
-      id
-      displayName
+    about {
+      ...SpaceAboutLight
     }
   }
 }
@@ -67,6 +65,10 @@ query calendarEventDetails($eventId: UUID!, $includeSubspace: Boolean = false) {
 
 fragment CalendarEventDetails on CalendarEvent {
   ...CalendarEventInfo
+  authorization {
+    id
+    myPrivileges
+  }
   type
   createdBy {
     id

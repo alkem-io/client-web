@@ -1,31 +1,34 @@
-import React, { FC, useEffect, useState } from 'react';
-import { ApolloError } from '@apollo/client';
-import queryRequest from '@/core/http/queryRequest';
-import Loading from '@/core/ui/loading/Loading';
 import { ConfigurationDocument } from '@/core/apollo/generated/apollo-hooks';
-import { ConfigurationQuery } from '@/core/apollo/generated/graphql-schema';
-import { Configuration } from './configuration';
-import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
+import { ConfigurationQuery, Metadata } from '@/core/apollo/generated/graphql-schema';
+import queryRequest from '@/core/http/queryRequest';
 import { TagCategoryValues, warn as logWarn } from '@/core/logging/sentry/log';
+import Loading from '@/core/ui/loading/Loading';
+import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
+import { ApolloError } from '@apollo/client';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
+import { Configuration } from './configuration';
 
 export interface ConfigContextProps {
   config?: Configuration;
+  serverMetadata: Metadata;
   loading: boolean;
   error?: ApolloError;
 }
 
-interface ConfigProviderProps {
+interface ConfigProviderProps extends PropsWithChildren {
   url: string;
 }
 
 const ConfigContext = React.createContext<ConfigContextProps>({
   config: undefined,
+  serverMetadata: { services: [] },
   loading: false,
   error: undefined,
 });
 
 const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
   const [config, setConfig] = useState<Configuration | undefined>();
+  const [serverMetadata, setServerMetadata] = useState<Metadata>({ services: [] });
 
   const [requestConfig, loading, error] = useLoadingStateWithHandlers(
     async (url: string) => {
@@ -38,6 +41,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
       };
 
       setConfig(combinedConfiguration);
+      setServerMetadata(result.data.data.platform.metadata);
     },
     {
       onError: err => logWarn(err, { category: TagCategoryValues.CONFIG }),
@@ -56,6 +60,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
     <ConfigContext.Provider
       value={{
         config,
+        serverMetadata,
         loading,
         error: error && new ApolloError({ errorMessage: error.message }),
       }}
@@ -65,4 +70,4 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
   );
 };
 
-export { ConfigProvider, ConfigContext };
+export { ConfigContext, ConfigProvider };

@@ -90,6 +90,8 @@ export const ContributionsView = ({
                   return (
                     <ContributionDetailsCard
                       {...details}
+                      tagline={details.about.profile.tagline!}
+                      displayName={details.about.profile.displayName}
                       enableLeave={enableLeave}
                       leavingCommunity={isLeavingCommunity}
                       handleLeaveCommunity={handleLeaveCommunity}

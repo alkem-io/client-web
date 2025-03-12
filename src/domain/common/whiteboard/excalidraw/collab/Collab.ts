@@ -19,6 +19,7 @@ import {
   CURSOR_SYNC_TIMEOUT,
   EVENT,
   IDLE_THRESHOLD,
+  SCENE_SYNC_TIMEOUT,
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
@@ -43,7 +44,7 @@ type CollabState = {
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;
   username: string;
-  onRemoteSave: () => void; // The client has received a room saved event
+  onRemoteSave: (error?: string) => void; // The client has received a room saved event
   filesManager: WhiteboardFilesManager;
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
@@ -74,7 +75,6 @@ class Collab {
   activeIntervalId: number | null = null;
   idleTimeoutId: number | null = null;
 
-  private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<SocketId, Collaborator>();
   private onCloseConnection: () => void;
@@ -130,7 +130,7 @@ class Collab {
   private handleCloseConnection = () => {
     this.setCollaborators([]);
     this.onCloseConnection();
-    this.portal.socketInitialized = false;
+    this.portal.sceneInitialized = false;
     this.onSceneInitChange(false);
   };
 
@@ -184,8 +184,7 @@ class Collab {
           },
           {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
-              if (!this.portal.socketInitialized) {
-                this.initializeRoom({ fetchScene: false });
+              if (!this.portal.sceneInitialized) {
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
                   {
@@ -198,6 +197,7 @@ class Collab {
                   await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
                 }
                 this.excalidrawAPI.zoomToFit();
+                this.portal.sceneInitialized = true;
                 this.onSceneInitChange(true);
               }
             },
@@ -214,22 +214,25 @@ class Collab {
 
               if (isInvalidResponsePayload(data)) {
                 return;
-              } else if (isMouseLocationPayload(data)) {
-                const { pointer, button, username, selectedElementIds } = data.payload;
-                const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] = data.payload.socketId;
-
+              }
+              // do not handled mouse location until socket is initialized - this may improve loading times
+              if (isMouseLocationPayload(data) && this.portal.sceneInitialized) {
+                const { pointer, button, username, selectedElementIds, socketId } = data.payload;
                 this.updateCollaborator(socketId, {
                   pointer,
                   button,
                   selectedElementIds,
                   username,
                 });
-              } else if (isSceneUpdatePayload(data)) {
+                return;
+              }
+              if (isSceneUpdatePayload(data)) {
                 const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
                 const remoteFiles = data.payload.files;
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles)
                 );
+                return;
               }
             },
             'collaborator-mode': event => {
@@ -273,36 +276,6 @@ class Collab {
     });
   };
 
-  private initializeRoom = ({
-    fetchScene,
-    roomLinkData,
-  }:
-    | {
-        fetchScene: true;
-        roomLinkData: { roomId: string } | null;
-      }
-    | { fetchScene: false; roomLinkData?: null }) => {
-    clearTimeout(this.socketInitializationTimer!);
-
-    if (fetchScene && roomLinkData) {
-      try {
-        this.queueBroadcastAllElements();
-      } catch (error: unknown) {
-        const err = error as Error;
-        // log the error and move on. other peers will sync us the scene.
-        // eslint-disable-next-line no-console
-        logError(err?.message ?? JSON.stringify(err), {
-          category: TagCategoryValues.WHITEBOARD,
-          label: 'Collab',
-        });
-      } finally {
-        this.portal.socketInitialized = true;
-      }
-    } else {
-      this.portal.socketInitialized = true;
-    }
-  };
-
   private reconcileElementsAndLoadFiles = async (
     remoteElements: readonly ExcalidrawElement[],
     remoteFiles: BinaryFilesWithUrl
@@ -319,17 +292,20 @@ class Collab {
       restoredRemoteElements as RemoteExcalidrawElement[],
       appState
     );
-
-    // Download the files that this instance is missing:
-    await this.filesManager.loadFiles({ files: remoteFiles });
-
     // Avoid broadcasting to the rest of the collaborators the scene
     // we just received!
     // Note: this needs to be set before updating the scene as it
     // synchronously calls render.
     this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(reconciledElements);
 
-    return reconciledElements;
+    // Download the files that this instance is missing:
+    return this.filesManager.loadFiles({ files: remoteFiles }).then(() => {
+      // once the files are loaded, we need to update the scene again to render them
+      // instead of updating the scene twice, which is already expensive, we
+      // return the elements once the files have been loaded
+      // that way we render the elements and images at the same time
+      return reconciledElements;
+    });
   };
 
   private handleRemoteSceneUpdate = async (
@@ -447,15 +423,22 @@ class Collab {
     this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
-  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
-    const { hashElementsVersion } = await this.excalidrawUtils;
-    const newVersion = hashElementsVersion(elements);
+  private throttledSyncScene = throttle(
+    async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+      const { hashElementsVersion } = await this.excalidrawUtils;
+      const newVersion = hashElementsVersion(elements);
 
-    if (newVersion !== this.lastBroadcastedOrReceivedSceneVersion) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
-      this.lastBroadcastedOrReceivedSceneVersion = newVersion;
-      this.queueBroadcastAllElements();
-    }
+      if (newVersion !== this.lastBroadcastedOrReceivedSceneVersion) {
+        this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
+        this.lastBroadcastedOrReceivedSceneVersion = newVersion;
+        this.queueBroadcastAllElements();
+      }
+    },
+    SCENE_SYNC_TIMEOUT
+  );
+
+  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+    this.throttledSyncScene(elements, files);
   };
 
   private queueBroadcastAllElements = throttle(async () => {

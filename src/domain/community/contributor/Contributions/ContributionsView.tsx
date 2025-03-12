@@ -20,19 +20,15 @@ export const ContributionsView = ({ contributions, title }: ContributionViewProp
           <ContributionDetailsContainer key={contributionItem.id} entities={contributionItem}>
             {({ details }, { loading }) => {
               if (loading || !details) {
-                return <JourneyTile journey={undefined} journeyTypeName="space" />;
+                return <JourneyTile journey={undefined} />;
               }
 
               return (
                 <JourneyTile
                   journey={{
-                    profile: {
-                      displayName: details.displayName,
-                      url: details.journeyUri,
-                      cardBanner: details.banner,
-                    },
+                    about: details.about,
+                    level: details.level,
                   }}
-                  journeyTypeName={details.journeyTypeName}
                 />
               );
             }}

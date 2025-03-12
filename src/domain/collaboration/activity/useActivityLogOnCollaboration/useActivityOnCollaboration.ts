@@ -62,6 +62,7 @@ const useActivityOnCollaboration = (
   useActivityOnCollaborationSubscription(collaborationID!, { types })(
     activityLogData,
     data => data?.activityLogOnCollaboration,
+    // @ts-ignore react-18
     subscribeToMore,
     { skip: !collaborationID }
   );

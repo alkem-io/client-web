@@ -40,8 +40,9 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingS
     const addSelectableSpace = (space: SelectableSpace, parentSpaces: SelectableSpace[] = []) => {
       result.push({
         id: space.id,
-        name: `${space.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`,
-        url: parentSpaces.length > 0 ? parentSpaces[parentSpaces.length - 1].profile.url : space.profile.url, // If available, go to the parent space
+        name: `${space.about.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`,
+        url:
+          parentSpaces.length > 0 ? parentSpaces[parentSpaces.length - 1].about.profile.url : space.about.profile.url, // If available, go to the parent space
         roleSetId: space.community.roleSet.id,
         parentRoleSetIds: parentSpaces.map(space => space?.community.roleSet.id),
       });

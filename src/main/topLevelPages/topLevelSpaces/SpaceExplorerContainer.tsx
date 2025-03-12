@@ -5,7 +5,6 @@ import {
   useSpaceExplorerMemberSpacesQuery,
   useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
-  useSpaceExplorerWelcomeSpaceLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user';
 import {
@@ -31,13 +30,6 @@ export interface ChallengeExplorerContainerEntities {
   loading: boolean;
   hasMore: boolean | undefined;
   authenticated: boolean;
-  welcomeSpace:
-    | {
-        displayName: string;
-        url: string;
-      }
-    | undefined;
-  fetchWelcomeSpace?: (args: { variables: { spaceNameId: string } }) => void;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
   loadingSearchResults: boolean | null;
 }
@@ -205,8 +197,6 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
     return flattenedSpaces;
   }, [flattenedSpaces, membershipFilter, shouldSearch]);
 
-  const [fetchWelcomeSpace, { data: welcomeSpaceData }] = useSpaceExplorerWelcomeSpaceLazyQuery();
-
   const provided = {
     spaces: filteredSpaces,
     authenticated: isAuthenticated,
@@ -216,8 +206,6 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
     fetchMore,
     loading,
     hasMore,
-    welcomeSpace: welcomeSpaceData?.space.profile,
-    fetchWelcomeSpace,
     setSearchTerms,
     loadingSearchResults,
   };

@@ -2,12 +2,10 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
@@ -19,9 +17,10 @@ import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { useSpaceProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
@@ -30,14 +29,9 @@ type SpaceSettingsLayoutProps = {
 
 const tabs: TabDefinition<SettingsSection>[] = [
   {
-    section: SettingsSection.Profile,
-    route: 'profile',
+    section: SettingsSection.About,
+    route: 'about',
     icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Context,
-    route: 'context',
-    icon: ListOutlinedIcon,
   },
   {
     section: SettingsSection.Community,
@@ -77,20 +71,19 @@ const tabs: TabDefinition<SettingsSection>[] = [
 ];
 
 const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>) => {
-  const entityAttrs = useSpace();
-
   const { t } = useTranslation();
-
-  const { spaceId, profile, loading } = useSpace();
-
+  const { spaceId, journeyPath, loading: resolvingSpace } = useUrlResolver();
+  const { data: spaceData, loading: loadingSpace } = useSpaceProfileQuery({
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
+  });
+  const profile = spaceData?.lookup.space?.about.profile;
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
-
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
-    journeyTypeName: 'space',
   });
 
-  const { journeyPath } = useRouteResolver();
+  const loading = resolvingSpace || loadingSpace;
 
   return (
     <EntitySettingsLayout
@@ -98,20 +91,19 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
       subheaderTabs={tabs}
       pageBanner={
         <SpacePageBanner
-          title={profile.displayName}
+          title={profile?.displayName}
           tagline={profile?.tagline}
           loading={loading}
           bannerUrl={visual?.uri}
           bannerAltText={visual?.alternativeText}
           ribbon={ribbon}
-          journeyTypeName="space"
         />
       }
       tabsComponent={SpaceTabs}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
         <RouterLink
-          to={`${entityAttrs.profile.url}/${EntityPageSection.Dashboard}`}
+          to={`${profile?.url}/${EntityPageSection.Dashboard}`}
           sx={{ alignSelf: 'center', marginLeft: 'auto' }}
         >
           <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
@@ -119,7 +111,6 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
           </BackButton>
         </RouterLink>
       }
-      {...entityAttrs}
       {...props}
     />
   );

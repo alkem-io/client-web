@@ -1,29 +1,26 @@
-import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback } from 'react';
-import { useSpace } from '../SpaceContext/useSpace';
-import { useUserContext } from '@/domain/community/user';
-import {
-  useSendMessageToCommunityLeadsMutation,
-  useSpaceDashboardReferencesQuery,
-  useSpacePageQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@/core/container/container';
+
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
-  Reference,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { useUserContext } from '@/domain/community/user';
+import { useSpace } from '../SpaceContext/useSpace';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
+import { SpaceAboutDetailsModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import { useSendMessageToCommunityLeadsMutation, useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
+  about: SpaceAboutDetailsModel | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   isPrivate: boolean | undefined;
   permissions: {
@@ -35,7 +32,6 @@ export interface SpaceContainerEntities {
   };
   isAuthenticated: boolean;
   isMember: boolean;
-  references: Reference[] | undefined;
   provider: ContributorViewProps | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
@@ -45,39 +41,30 @@ export interface SpaceContainerActions {}
 
 export interface SpaceContainerState {
   loading: boolean;
-  error?: ApolloError;
 }
 
 export interface SpacePageContainerProps
-  extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {
-  spaceId: string | undefined;
-}
+  extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {}
 
 const NO_PRIVILEGES = [];
 
-export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, children }) => {
-  const { loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
+export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children }) => {
+  const { loading: loadingSpace, permissions: spacePermissions, isPrivate, spaceId } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
   const { data: spaceData, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
       authorizedReadAccess: spacePermissions.canRead,
-      authorizedReadAccessCommunity: spacePermissions.communityReadAccess,
+      authorizedReadAccessCommunity: spacePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
-    skip: !spaceId,
+    skip: !spaceId || loadingSpace,
   });
 
   const space = spaceData?.lookup.space;
 
   const isMember = space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
-
-  // don't load references without READ privilege on Context
-  const { data: referencesData } = useSpaceDashboardReferencesQuery({
-    variables: { spaceId: spaceId! }, // having Read privilege implies presence of spaceId
-    skip: !space?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
-  });
 
   const communityReadAccess = (space?.community?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
@@ -101,8 +88,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     spaceId: spaceId!, // spaceReadAccess implies presence of spaceId
     skip: !permissions.spaceReadAccess,
   });
-
-  const references = referencesData?.lookup.space?.profile.references;
 
   const communityId = space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';
@@ -128,23 +113,24 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     groupNames: [CalloutGroupName.Home],
   });
 
+  const about: SpaceAboutDetailsModel = space?.about!;
+
   return (
     <>
       {children(
         {
           space,
+          about,
           dashboardNavigation,
           isPrivate,
           permissions,
           isAuthenticated,
           isMember,
-          references,
           provider: space?.provider,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
           callouts,
         },
         {
-          error,
           loading: loadingSpaceQuery || loadingSpace || dashboardNavigationLoading,
         },
         {}

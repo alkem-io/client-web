@@ -26,7 +26,6 @@ export const SpaceList: FC = () => {
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
   const { data: platformLicensingData } = usePlatformLicensingPlansQuery();
 
-
   const allLicensePlans = platformLicensingData?.platform.licensingFramework.plans ?? [];
   const spaceLicensePlans = allLicensePlans.filter(
     plan =>
@@ -44,8 +43,8 @@ export const SpaceList: FC = () => {
             return {
               ...space,
               profile: {
-                ...space.profile,
-                displayName: `${space.profile.displayName} [${space.visibility.toUpperCase()}]`,
+                ...space.about.profile,
+                displayName: `${space.about.profile.displayName} [${space.visibility.toUpperCase()}]`,
               },
             };
           }
@@ -53,8 +52,8 @@ export const SpaceList: FC = () => {
         })
         .map(space => ({
           ...space,
-          displayName: space.profile.displayName,
-          url: buildSettingsUrl(space.profile.url),
+          displayName: space.about.profile.displayName,
+          url: buildSettingsUrl(space.about.profile.url),
         }))
         .map(space => {
           const activeLicensingCredentialBasedCredentialTypes = space.subscriptions.map(
@@ -81,16 +80,13 @@ export const SpaceList: FC = () => {
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],
     awaitRefetchQueries: true,
-    onCompleted: data =>
-      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success'),
+    onCompleted: () => notify(t('pages.admin.space.notifications.space-removed'), 'success'),
   });
 
   const handleDelete = (item: SearchableTableItem) => {
     deleteSpace({
       variables: {
-        input: {
-          ID: item.id,
-        },
+        spaceId: item.id,
       },
     });
   };

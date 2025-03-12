@@ -41,8 +41,10 @@ type InnovationHubSpacesProps = {
   spaceVisibilityFilter?: SpaceVisibility;
   spaceListFilter?: {
     id: string;
-    profile: {
-      displayName: string;
+    about?: {
+      profile: {
+        displayName: string;
+      };
     };
   }[];
   actions?: React.ReactNode;
@@ -54,7 +56,7 @@ const InnovationHubSpaces = ({ spaceVisibilityFilter, spaceListFilter }: Innovat
     return <Caption>{t(`common.enums.space-visibility.${spaceVisibilityFilter}` as const)}</Caption>;
   }
   if (spaceListFilter && spaceListFilter.length) {
-    const spaceList = spaceListFilter.map(({ profile: { displayName } }) => displayName).join(', ');
+    const spaceList = spaceListFilter.map(space => space.about?.profile.displayName).join(', ');
     return (
       <Caption maxWidth={gutters(7)} noWrap textOverflow="ellipsis" overflow="hidden" title={spaceList}>
         {spaceList}

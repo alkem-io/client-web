@@ -2,8 +2,11 @@ query JourneyStorageConfig($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        ...ProfileStorageConfig
+      about {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }
@@ -23,17 +26,12 @@ query CalloutStorageConfig($calloutId: UUID!) {
   }
 }
 
-query CalloutPostStorageConfig($postId: UUID_NAMEID!, $calloutId: UUID!) {
+query CalloutPostStorageConfig($postId: UUID!) {
   lookup {
-    callout(ID: $calloutId) {
+    post(ID: $postId) {
       id
-      contributions(filter: { postIDs: [$postId] }) {
-        post {
-          id
-          profile {
-            ...ProfileStorageConfig
-          }
-        }
+      profile {
+        ...ProfileStorageConfig
       }
     }
   }

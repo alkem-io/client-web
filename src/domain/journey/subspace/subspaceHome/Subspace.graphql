@@ -8,22 +8,19 @@ query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = fa
 
 fragment SubspacePageSpace on Space {
   id
+  level
   authorization {
     id
     myPrivileges
   }
-  profile {
-    id
-    url
+  about {
+    ...SpaceAboutLight
+    why
   }
   metrics {
     id
     name
     value
-  }
-  context {
-    id
-    vision
   }
   community @include(if: $authorizedReadAccessCommunity) {
     id

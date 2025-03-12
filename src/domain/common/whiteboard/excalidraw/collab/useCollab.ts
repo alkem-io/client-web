@@ -55,8 +55,8 @@ const useCollab = ({
     }
   };
 
-  const handleRemoteSave = () => {
-    onRemoteSave?.();
+  const handleRemoteSave = (error?: string) => {
+    onRemoteSave?.(error);
   };
 
   const handleSceneInitChange = (initialized: boolean) => {

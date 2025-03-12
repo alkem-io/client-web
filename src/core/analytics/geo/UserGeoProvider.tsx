@@ -26,9 +26,7 @@ export const UserGeoContext = createContext<UserGeoContextProps>({
   error: undefined,
 });
 
-interface Props extends PropsWithChildren<{}> {}
-
-export const UserGeoProvider = ({ children }: Props) => {
+export const UserGeoProvider = ({ children }: PropsWithChildren) => {
   const { geo } = useConfig();
   const geoEndpoint = geo?.endpoint;
 

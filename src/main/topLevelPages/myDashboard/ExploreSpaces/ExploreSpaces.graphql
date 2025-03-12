@@ -22,21 +22,26 @@ query ExploreAllSpaces {
   }
 }
 
-query WelcomeSpace($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    ...ExploreSpaces
+query WelcomeSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      ...ExploreSpaces
+    }
   }
 }
 
 fragment ExploreSpaces on Space {
   id
   type
-  profile {
+  about {
     id
-    url
-    displayName
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
+    profile {
+      id
+      url
+      displayName
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
     }
   }
   settings {

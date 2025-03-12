@@ -2,9 +2,8 @@ query SpaceStorageAdminPage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        id
-        displayName
+      about {
+        ...SpaceAboutMinimal
       }
       storageAggregator {
         ...StorageAggregator
@@ -75,10 +74,10 @@ fragment DocumentData on Document {
   mimeType
   createdBy {
     id
-    nameID
     profile {
       id
       displayName
+      url
     }
   }
   uploadedDate

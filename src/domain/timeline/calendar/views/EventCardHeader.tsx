@@ -9,7 +9,7 @@ import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 
 export interface EventCardHeaderProps {
   event:
@@ -22,8 +22,10 @@ export interface EventCardHeaderProps {
           displayName: string;
         };
         subspace?: {
-          profile: {
-            displayName: string;
+          about: {
+            profile: {
+              displayName: string;
+            };
           };
         };
       }
@@ -73,7 +75,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
                   <SubspaceIcon2 fill="primary" sx={{ maxHeight: gutters(0.7), maxWidth: gutters(0.7) }} />
                 }
               >
-                {event.subspace.profile.displayName}
+                {event.subspace.about.profile.displayName}
               </CardHeaderDetail>
             )}
           </>

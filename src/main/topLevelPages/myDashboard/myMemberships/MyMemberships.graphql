@@ -1,6 +1,6 @@
-query MyMemberships {
+query MyMemberships($limit: Float) {
   me {
-    spaceMembershipsHierarchical {
+    spaceMembershipsHierarchical(limit: $limit) {
       id
       space {
         ...SpaceMembership
@@ -34,13 +34,7 @@ fragment SpaceMembership on Space {
       ...MyMembershipsRoleSet
     }
   }
-  profile {
-    id
-    url
-    displayName
-    tagline
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
-    }
+  about {
+    ...SpaceAboutCardBanner
   }
 }

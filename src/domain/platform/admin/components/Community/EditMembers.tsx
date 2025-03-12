@@ -1,6 +1,9 @@
-import debounce from 'lodash/debounce';
+import { Identifiable } from '@/core/utils/Identifiable';
+import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { Skeleton, TableProps, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,15 +11,12 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import React, { ComponentType, forwardRef, ReactNode, useEffect, useMemo, useState } from 'react';
+import { styled } from '@mui/material/styles';
+import { times } from 'lodash';
+import debounce from 'lodash/debounce';
+import React, { ComponentType, PropsWithChildren, ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../Common/Filter';
-import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
-import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import { times } from 'lodash';
-import { Identifiable } from '@/core/utils/Identifiable';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   '& th': { background: theme.palette.divider },
@@ -46,7 +46,7 @@ const ScrollableTable = (props: TableProps) => (
 
 interface CustomizedTable<Item> {
   header: ReactNode | (() => ReactNode);
-  renderRow: (member: Item, Cell: ComponentType) => ReactNode;
+  renderRow: (member: Item, Cell: ComponentType<PropsWithChildren>) => ReactNode;
   renderEmptyRow?: (Cell: ComponentType) => ReactNode;
 }
 

@@ -13,18 +13,18 @@ import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import { startOfDay } from '@/core/utils/time/utils';
 import { first, groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
-import { CalendarEvent } from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '@/domain/shared/utils/scroll/useScrollToElement';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 type CalendarEventsListProps = {
   events: {
     id: string;
-    nameID: string;
     startDate?: Date;
     durationDays?: number | undefined;
     durationMinutes: number;
@@ -34,9 +34,7 @@ type CalendarEventsListProps = {
       description?: string;
     };
     subspace?: {
-      profile: {
-        displayName: string;
-      };
+      about: SpaceAboutMinimalUrlModel;
     };
   }[];
   highlightedDay?: Date | null;
@@ -82,11 +80,11 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
     if (highlightedDay) {
       // Scroll to the first event on highlightedDay:
       const event = first(sortedEvents.filter(event => dayjs(event.startDate).startOf('day').isSame(highlightedDay)));
-      scrollTo(event?.nameID);
+      scrollTo(event?.id);
     }
   }, [highlightedDay, sortedEvents]);
 
-  const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => {
+  const onClickHighlightedDate = (date: Date, events: Identifiable[]) => {
     if (date) {
       const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
       nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
@@ -94,7 +92,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
     }
     if (events.length > 0) {
       // Scroll again in case url hasn't changed but user has scrolled out of the view
-      scrollTo(events[0].nameID);
+      scrollTo(events[0].id);
     }
   };
 
@@ -117,7 +115,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
               {sortedFutureEvents.map(event => (
                 <CalendarEventCard
                   key={event.id}
-                  ref={scrollable(event.nameID)}
+                  ref={scrollable(event.id)}
                   highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                   event={event}
                   onClick={() => handleClickOnEvent(event.profile.url)}
@@ -129,7 +127,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
                   {sortedPastEvents.map(event => (
                     <CalendarEventCard
                       key={event.id}
-                      ref={scrollable(event.nameID)}
+                      ref={scrollable(event.id)}
                       highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                       event={event}
                       onClick={() => handleClickOnEvent(event.profile.url)}

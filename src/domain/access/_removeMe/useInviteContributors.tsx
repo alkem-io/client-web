@@ -5,34 +5,20 @@ import {
   useCommunityVirtualMembersListQuery,
   useRemoveRoleFromVirtualContributorMutation,
   refetchSpaceCommunityPageQuery,
+  useBodyOfKnowledgeProfileAuthorizationLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 
-// TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useInviteContributorsParams {
   roleSetId: string;
   spaceId?: string;
-  challengeId?: string;
-  opportunityId?: string;
   spaceLevel: SpaceLevel | undefined;
 }
 
-const useInviteContributors = ({
-  roleSetId,
-  spaceId,
-  challengeId,
-  opportunityId,
-  spaceLevel,
-}: useInviteContributorsParams) => {
-  const journeyTypeName = getJourneyTypeName({
-    spaceNameId: spaceId,
-    challengeNameId: challengeId,
-    opportunityNameId: opportunityId,
-  })!;
-
+//TODO Use rolesetManager for this
+const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteContributorsParams) => {
   // Fetch community virtual members list
   const {
     data: roleSetData,
@@ -42,7 +28,7 @@ const useInviteContributors = ({
     variables: {
       roleSetId,
       spaceId,
-      includeSpaceHost: journeyTypeName === 'space',
+      includeSpaceHost: spaceLevel === SpaceLevel.L0,
     },
     skip: !roleSetId || !spaceId,
   });
@@ -58,22 +44,33 @@ const useInviteContributors = ({
     ),
   };
 
+  const [getVcBoKProfileAuth, { loading: bokProfileAuthLoading }] = useBodyOfKnowledgeProfileAuthorizationLazyQuery();
   const [getVcBoKProfile, { loading: bokProfileLoading }] = useBodyOfKnowledgeProfileLazyQuery();
   const getBoKProfile = async (bodyOfKnowledgeID: string) => {
+    const { data: authData } = await getVcBoKProfileAuth({
+      variables: {
+        spaceId: bodyOfKnowledgeID!,
+      },
+    });
+
+    if (!authData?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read)) {
+      return;
+    }
+
     const { data } = await getVcBoKProfile({
       variables: {
         spaceId: bodyOfKnowledgeID!,
       },
     });
 
-    return data?.lookup?.space?.profile;
+    return data?.lookup?.space?.about.profile;
   };
 
   // Memoize the virtual contributors list (already members)
-  const virtualContributors = useMemo(() => {
-    const roleSet = roleSetData?.lookup.roleSet;
-    return roleSet?.memberVirtualContributors ?? [];
-  }, [roleSetData]);
+  const virtualContributors = useMemo(
+    () => roleSetData?.lookup.roleSet?.memberVirtualContributors ?? [],
+    [roleSetData]
+  );
 
   const {
     findAvailableVirtualContributorsForRoleSet,
@@ -140,7 +137,7 @@ const useInviteContributors = ({
     inviteExternalUser,
     getBoKProfile,
     loadingMembers,
-    bokProfileLoading,
+    bokProfileLoading: bokProfileAuthLoading || bokProfileLoading,
     availableVCsLoading,
   };
 };

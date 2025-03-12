@@ -32,13 +32,9 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
           columns={cardColumns}
           isPrivate={result.space.settings.privacy?.mode === SpacePrivacyMode.Private}
           journey={{
-            profile: {
-              displayName: result.space.profile.displayName,
-              url: result.space.profile.url,
-              cardBanner: result.space.profile.cardBanner,
-            },
+            about: result.space.about,
+            level: result.space.level,
           }}
-          journeyTypeName="space"
         />
       ))}
 

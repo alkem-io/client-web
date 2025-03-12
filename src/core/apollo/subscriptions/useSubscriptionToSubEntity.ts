@@ -1,6 +1,7 @@
-import { TypedDocumentNode } from '@apollo/client';
+import { OperationVariables, TypedDocumentNode } from '@apollo/client';
+import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
 import produce from 'immer';
-import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMore';
+import useSubscribeToMore, { Options } from './useSubscribeToMore';
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
@@ -28,13 +29,13 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  */
 // todo rename createUseSubscriptionToParentQuery
 const createUseSubscriptionToSubEntityHook =
-  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables = undefined>(
+  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables extends OperationVariables>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
   <QueryData>(
     parentEntity: QueryData | undefined,
     getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null, // Some queries give nulls when the type actually says undefined.
-    subscribeToMore: SubscribeToMore<QueryData>,
+    subscribeToMore: SubscribeToMoreFunction<QueryData, SubEntitySubscriptionVariables>,
     subscriptionOptions: Options<SubEntitySubscriptionVariables> = { skip: false }
   ) => {
     const subEntity = getSubEntity(parentEntity) ?? undefined;
@@ -49,7 +50,7 @@ const createUseSubscriptionToSubEntityHook =
       updateQuery: (prev, { subscriptionData }) => {
         return produce(prev, next => {
           const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
-          options.updateSubEntity(nextSubEntity, subscriptionData.data);
+          options.updateSubEntity(nextSubEntity, subscriptionData.data as SubEntitySubscription);
         });
       },
       ...subscriptionOptions,

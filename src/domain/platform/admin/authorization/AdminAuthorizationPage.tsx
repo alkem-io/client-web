@@ -8,7 +8,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from '@/domain/community/user';
 import EditMemberUsers from '../components/Community/EditMembersUsers';
@@ -35,10 +35,11 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
     removePlatformRoleFromUser,
     loading: loadingRoleSet,
     updating,
-  } = useRoleSetAdmin({
+  } = useRoleSetManager({
     roleSetId,
     relevantRoles: MANAGED_ROLES,
     contributorTypes: [RoleSetContributorType.User],
+    fetchContributors: true,
   });
 
   const availableUsersForRole = useRoleSetAvailableUsers({
