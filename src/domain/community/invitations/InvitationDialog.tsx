@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -19,6 +19,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import useNavigate from '@/core/routing/useNavigate';
 
 type InvitationDialogProps = {
   open: boolean;
@@ -44,6 +45,7 @@ const InvitationDialog = ({
   actions,
 }: InvitationDialogProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -66,6 +68,16 @@ const InvitationDialog = ({
 
     return t('community.pendingMembership.invitationDialog.actions.join');
   };
+
+  const onCardClick = useCallback(
+    (url: string) => {
+      if (url) {
+        navigate(url);
+        onClose();
+      }
+    },
+    [navigate, onClose]
+  );
 
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
@@ -95,6 +107,7 @@ const InvitationDialog = ({
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
                       banner={invitation.space.about.profile.cardBanner}
                       journeyUri={invitation.space.about.profile.url}
+                      onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >
                       <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
                     </JourneyCard>
