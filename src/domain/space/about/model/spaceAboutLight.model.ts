@@ -1,7 +1,6 @@
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export type SpaceAboutLightModel = {
-  id: string;
   authorization?: {
     id: string;
     myPrivileges?: AuthorizationPrivilege[] | undefined;

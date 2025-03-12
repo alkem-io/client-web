@@ -6,6 +6,23 @@ query SpaceAboutBase($spaceId: UUID!) {
       level
       nameID # Used for search in space
       about {
+        ...SpaceAboutLight
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      visibility
+    }
+  }
+}
+
+query SpaceAboutDetails($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
         ...SpaceAboutDetails
       }
       authorization {
@@ -17,3 +34,19 @@ query SpaceAboutBase($spaceId: UUID!) {
   }
 }
 
+query SpaceAboutFull($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
+        ...SpaceAboutDetails
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      visibility
+    }
+  }
+}

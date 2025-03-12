@@ -37,8 +37,9 @@ import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templat
 const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { t } = useTranslation();
   const { space, loading: isLoadingSpace } = useSpace();
+  const spaceId = space.id;
   const { about } = space;
-  const { id: spaceId, membership } = about;
+  const { membership } = about;
   const communityId = membership?.communityID!;
   const roleSetId = membership?.roleSetID!;
 

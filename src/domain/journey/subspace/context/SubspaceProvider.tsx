@@ -1,4 +1,4 @@
-import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -58,7 +58,7 @@ interface SubspaceProviderProps extends PropsWithChildren {}
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { spaceId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { data, loading } = useSpaceAboutBaseQuery({
+  const { data, loading } = useSpaceAboutDetailsQuery({
     variables: { spaceId: spaceId! },
     errorPolicy: 'all',
     skip: !spaceId,

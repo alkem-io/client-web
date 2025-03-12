@@ -58,7 +58,7 @@ const SpaceAboutDialog = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const isLevelZeroSpace = space?.level === SpaceLevel.L0;
+  const isLevelZeroSpace = space.level === SpaceLevel.L0;
   const { about } = space;
   const metrics = about?.metrics || [];
   const membership = about?.membership;

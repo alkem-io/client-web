@@ -31,7 +31,6 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     nameID: '',
     levelZeroSpaceId: '',
     about: {
-      id: '',
       profile: {
         displayName: '',
         url: '',
@@ -83,7 +82,6 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
 
   const space = useMemo(() => {
     const aboutModel: SpaceAboutLightModel = {
-      id: spaceData?.about.id ?? '',
       authorization: spaceData?.authorization,
       isContentPublic: spaceData?.about.isContentPublic ?? true,
       membership: {

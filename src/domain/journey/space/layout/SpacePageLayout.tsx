@@ -8,7 +8,7 @@ import SpacePageBanner from './SpacePageBanner';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -24,7 +24,7 @@ const SpacePageLayout = ({
 }: PropsWithChildren<SpacePageLayoutProps>) => {
   const { spaceId, loading: resolving } = useUrlResolver();
 
-  const { data: spaceData } = useSpaceAboutBaseQuery({
+  const { data: spaceData } = useSpaceAboutDetailsQuery({
     variables: {
       spaceId: spaceId!,
     },

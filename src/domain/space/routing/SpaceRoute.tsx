@@ -12,12 +12,14 @@ const SpaceRoute = () => {
   const { permissions, loading } = useSpace();
 
   if (loading) {
-    <Routes>
-      <Route path="*" element={<SpaceSkeletonLayout />} />
-    </Routes>;
+    return (
+      <Routes>
+        <Route path="*" element={<SpaceSkeletonLayout />} />
+      </Routes>
+    );
   }
 
-  if (!permissions.canRead) {
+  if (permissions.canRead) {
     return (
       <Routes>
         <Route path={routes.About} element={<SpaceAboutPage />} />

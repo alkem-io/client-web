@@ -1,5 +1,4 @@
 export type SpaceAboutMinimalModel = {
-  id: string;
   profile: {
     id: string;
     displayName: string;
@@ -8,7 +7,6 @@ export type SpaceAboutMinimalModel = {
 };
 
 export type SpaceAboutMinimalUrlModel = {
-  id: string;
   profile: {
     id: string;
     displayName: string;

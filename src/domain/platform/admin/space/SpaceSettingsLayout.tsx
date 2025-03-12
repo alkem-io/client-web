@@ -20,7 +20,7 @@ import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/Journ
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
@@ -78,7 +78,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>) => {
   const { t } = useTranslation();
   const { spaceId, journeyPath, loading: resolvingSpace } = useUrlResolver();
-  const { data: spaceData, loading: loadingSpace } = useSpaceAboutBaseQuery({
+  const { data: spaceData, loading: loadingSpace } = useSpaceAboutDetailsQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });

@@ -11,14 +11,17 @@ import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/Journ
 import { SpaceTabsPlaceholder } from '../layout/TabbedSpaceL0/Tabs/SpaceTabs';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const SpaceAboutPage = () => {
   const { journeyPath } = useUrlResolver();
-  const { space, permissions, loading } = useSpace();
+  const { space, permissions, loading: loadingSpace } = useSpace();
   const profile = space.about.profile;
-  const { about } = space;
+  const { data, loading: loadingDetails } = useSpaceAboutDetailsQuery({ variables: { spaceId: space.id } });
+  const loading = loadingSpace || loadingDetails;
+  const spaceDetails = data?.lookup.space;
 
-  const backToParentPage = useBackWithDefaultUrl(permissions.canRead ? about.profile.url : '/home');
+  const backToParentPage = useBackWithDefaultUrl(permissions.canRead ? space.about.profile.url : '/home');
 
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
@@ -37,14 +40,16 @@ const SpaceAboutPage = () => {
       tabsComponent={SpaceTabsPlaceholder}
     >
       <StorageConfigContextProvider locationType="journey" spaceId={space.id}>
-        <SpaceAboutDialog
-          open
-          space={space}
-          loading={loading}
-          onClose={backToParentPage}
-          hasReadPrivilege={permissions.canRead}
-          hasEditPrivilege={permissions.canUpdate}
-        />
+        {spaceDetails && (
+          <SpaceAboutDialog
+            open
+            space={spaceDetails}
+            loading={loading}
+            onClose={backToParentPage}
+            hasReadPrivilege={permissions.canRead}
+            hasEditPrivilege={permissions.canUpdate}
+          />
+        )}
         <ContributorsDialog
           open={isContributorsDialogOpen}
           onClose={() => setIsContributorsDialogOpen(false)}
