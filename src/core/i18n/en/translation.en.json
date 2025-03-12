@@ -2672,11 +2672,11 @@
         },
         "external": {
           "personality": {
-            "description": "This Virtual Contributor operates using the following external AI service: <strong>OpenAI</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>OpenAI</strong>. Please be aware that this data may be used to train and improve their model."
+            "description": "This Virtual Contributor operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
           },
           "privacy": {
             "description": "At Alkemio, protecting your data is our top priority. We are fully committed to ensuring the security and privacy of your information. Here’s how we handle your data when interacting with a Virtual Contributor (VC):",
-            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as OpenAI, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
           }
         }
       },
