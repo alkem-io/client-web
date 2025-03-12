@@ -14,7 +14,6 @@ import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypo
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { UserProvider } from '@/domain/community/user/providers/UserProvider/UserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
-import ServerMetadataProvider from '@/domain/platform/metadata/ServerMetadataProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
@@ -26,7 +25,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
+import { InAppNotificationSubscriber } from './main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
+import { UrlResolverProvider } from './main/routing/urlResolver/UrlResolverProvider';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -74,45 +75,46 @@ const Root: FC = () => {
         <GlobalStyles styles={globalStyles} />
         <CookiesProvider>
           <ConfigProvider url={publicGraphQLEndpoint}>
-            <ServerMetadataProvider url={publicGraphQLEndpoint}>
-              <SentryTransactionScopeContextProvider>
-                <SentryErrorBoundaryProvider>
-                  <GlobalStateProvider>
-                    <GlobalErrorProvider>
-                      <BrowserRouter>
-                        <AuthenticationProvider>
-                          <UserGeoProvider>
-                            <ApmProvider>
-                              <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                                <UserProvider>
-                                  <PendingMembershipsDialogProvider>
-                                    <InAppNotificationsProvider>
-                                      <ApmUserSetter />
-                                      <ScrollToTop />
-                                      <InAppNotificationsDialog />
-                                      <NotFoundErrorBoundary
-                                        errorComponent={
-                                          <TopLevelLayout>
-                                            <Error404 />
-                                          </TopLevelLayout>
-                                        }
-                                      >
+            <SentryTransactionScopeContextProvider>
+              <SentryErrorBoundaryProvider>
+                <GlobalStateProvider>
+                  <GlobalErrorProvider>
+                    <BrowserRouter>
+                      <AuthenticationProvider>
+                        <UserGeoProvider>
+                          <ApmProvider>
+                            <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                              <UserProvider>
+                                <PendingMembershipsDialogProvider>
+                                  <InAppNotificationsProvider>
+                                    <InAppNotificationSubscriber />
+                                    <ApmUserSetter />
+                                    <ScrollToTop />
+                                    <InAppNotificationsDialog />
+                                    <NotFoundErrorBoundary
+                                      errorComponent={
+                                        <TopLevelLayout>
+                                          <Error404 />
+                                        </TopLevelLayout>
+                                      }
+                                    >
+                                      <UrlResolverProvider>
                                         <TopLevelRoutes />
-                                        <GlobalErrorDialog />
-                                      </NotFoundErrorBoundary>
-                                    </InAppNotificationsProvider>
-                                  </PendingMembershipsDialogProvider>
-                                </UserProvider>
-                              </AlkemioApolloProvider>
-                            </ApmProvider>
-                          </UserGeoProvider>
-                        </AuthenticationProvider>
-                      </BrowserRouter>
-                    </GlobalErrorProvider>
-                  </GlobalStateProvider>
-                </SentryErrorBoundaryProvider>
-              </SentryTransactionScopeContextProvider>
-            </ServerMetadataProvider>
+                                      </UrlResolverProvider>
+                                      <GlobalErrorDialog />
+                                    </NotFoundErrorBoundary>
+                                  </InAppNotificationsProvider>
+                                </PendingMembershipsDialogProvider>
+                              </UserProvider>
+                            </AlkemioApolloProvider>
+                          </ApmProvider>
+                        </UserGeoProvider>
+                      </AuthenticationProvider>
+                    </BrowserRouter>
+                  </GlobalErrorProvider>
+                </GlobalStateProvider>
+              </SentryErrorBoundaryProvider>
+            </SentryTransactionScopeContextProvider>
           </ConfigProvider>
         </CookiesProvider>
       </RootThemeProvider>

@@ -1,16 +1,15 @@
 import {
-  useSpaceDashboardNavigationChallengesQuery,
-  useSpaceDashboardNavigationOpportunitiesQuery,
+  useSpaceDashboardNavigationSubspacesQuery,
+  useSpaceDashboardNavigationSubspacesAuthQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   Authorization,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
-  SpaceDashboardNavigationProfileFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { keyBy } from 'lodash';
-import { useCallback, useEffect, useMemo } from 'react';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { useCallback, useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
   spaceId: string | undefined;
@@ -39,9 +38,9 @@ export interface DashboardNavigationItem {
 }
 
 const getDashboardNavigationItemProps = (
-  journey: {
+  space: {
     id: string;
-    profile: SpaceDashboardNavigationProfileFragment;
+    about: SpaceAboutLightModel;
     roleSet?: MyMembershipsRoleSetFragment;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
@@ -50,13 +49,13 @@ const getDashboardNavigationItemProps = (
   disabled?: boolean
 ): DashboardNavigationItem => {
   return {
-    id: journey.id,
-    url: journey.profile.url,
-    displayName: journey.profile.displayName,
-    avatar: journey.profile.avatar,
+    id: space.id,
+    url: space.about.profile.url,
+    displayName: space.about.profile.displayName,
+    avatar: space.about.profile.avatar,
     private: disabled,
-    member: journey.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
-    canCreateSubspace: journey.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
+    member: space.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
+    canCreateSubspace: space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };
 
@@ -67,43 +66,28 @@ const useSpaceDashboardNavigation = ({
   spaceId,
   skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
-  const {
-    data: challengesQueryData,
-    loading: challengesQueryLoading,
-    refetch: refetchChallenges,
-  } = useSpaceDashboardNavigationChallengesQuery({
+  // TODO: Additional Auth Check
+  const { data: subSpacesAuth, loading: subSpacesAuthLoading } = useSpaceDashboardNavigationSubspacesAuthQuery({
     variables: { spaceId: spaceId! },
     skip: skip || !spaceId,
   });
 
-  const space = challengesQueryData?.lookup.space;
-
-  const readableChallengeIds = space?.subspaces.filter(isReadable).map(({ id }) => id) ?? [];
-
-  const {
-    data: opportunitiesQueryData,
-    loading: opportunitiesQueryLoading,
-    refetch: refetchOpportunities,
-  } = useSpaceDashboardNavigationOpportunitiesQuery({
-    variables: {
-      spaceId: spaceId!,
-      challengeIds: readableChallengeIds!,
-    },
-    skip: !readableChallengeIds.length || skip,
-  });
-
-  useEffect(() => {
-    if (readableChallengeIds.length > 0) {
-      refetchOpportunities();
-    }
-  }, [readableChallengeIds.join(',')]);
-
-  const challengesWithOpportunitiesById = useMemo(
-    () => keyBy(opportunitiesQueryData?.lookup.space?.subspaces, 'id'),
-    [opportunitiesQueryData]
+  const hasSpaceProfileReadAccess = subSpacesAuth?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
   );
 
-  const loading = challengesQueryLoading || opportunitiesQueryLoading;
+  const {
+    data: subSpacesQueryData,
+    loading: subSpacesQueryLoading,
+    refetch: refetchSubSpaces,
+  } = useSpaceDashboardNavigationSubspacesQuery({
+    variables: { spaceId: spaceId! },
+    skip: skip || !spaceId || subSpacesAuthLoading || !hasSpaceProfileReadAccess,
+  });
+
+  const space = subSpacesQueryData?.lookup.space;
+
+  const loading = subSpacesQueryLoading;
 
   const dashboardNavigation = useMemo<DashboardNavigationItem | undefined>(() => {
     if (!space) {
@@ -112,20 +96,16 @@ const useSpaceDashboardNavigation = ({
     return {
       ...getDashboardNavigationItemProps(space),
       children: space.subspaces.map(subspace => {
-        const subspaces = challengesWithOpportunitiesById[subspace.id]?.subspaces ?? [];
-
         return {
           ...getDashboardNavigationItemProps(subspace, !isReadable(subspace)),
-          children: subspaces.map(challenge => getDashboardNavigationItemProps(challenge, !isReadable(challenge))),
         };
       }),
     };
-  }, [challengesQueryData, opportunitiesQueryData]);
+  }, [subSpacesQueryData]);
 
   const refetch = useCallback(() => {
-    refetchChallenges();
-    refetchOpportunities();
-  }, [refetchChallenges, refetchOpportunities]);
+    refetchSubSpaces();
+  }, [refetchSubSpaces]);
 
   return {
     dashboardNavigation,

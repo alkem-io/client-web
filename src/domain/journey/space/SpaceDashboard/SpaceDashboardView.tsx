@@ -1,49 +1,51 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   CalloutGroupName,
   CalloutsQueryVariables,
   CommunityMembershipStatus,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
-import PageContent from '@/core/ui/content/PageContent';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import { Theme } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { InfoOutlined } from '@mui/icons-material';
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import RouterLink from '@/core/ui/link/RouterLink';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import JourneyDashboardWelcomeBlock, {
   JourneyDashboardWelcomeBlockProps,
 } from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import RouterLink from '@/core/ui/link/RouterLink';
+import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
+import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
+import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
+import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import InfoColumn from '@/core/ui/content/InfoColumn';
-import ContentColumn from '@/core/ui/content/ContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
+import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
 import {
   getVCCreationCache,
   removeVCCreationCache,
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
-import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
+import { InfoOutlined } from '@mui/icons-material';
+import { Theme } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import SpaceWelcomeDialog from './SpaceWelcomeDialog';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
+  level: SpaceLevel | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
-  vision?: string;
+  what?: string;
   communityId?: string;
   organization?: unknown;
   host: ContributorViewProps | undefined;
@@ -53,7 +55,6 @@ type SpaceDashboardViewProps = {
   entityReadAccess: boolean;
   readUsersAccess: boolean;
   childEntitiesCount?: number;
-  journeyTypeName: JourneyTypeName;
   recommendations?: ReactNode;
   loading: boolean;
   shareUpdatesUrl: string;
@@ -70,9 +71,10 @@ type SpaceDashboardViewProps = {
 
 const SpaceDashboardView = ({
   spaceId,
+  level,
   collaborationId,
   calloutsSetId,
-  vision = '',
+  what = '',
   dashboardNavigation,
   dashboardNavigationLoading,
   communityId = '',
@@ -80,7 +82,6 @@ const SpaceDashboardView = ({
   timelineReadAccess = false,
   host,
   leadUsers,
-  journeyTypeName,
   callouts,
   shareUpdatesUrl,
   myMembershipStatus,
@@ -88,11 +89,12 @@ const SpaceDashboardView = ({
   const { t } = useTranslation();
 
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
+  const [openWelcome, setOpenWelcome] = useState(false);
   const [vcId, setVcId] = useState<string>('');
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const translatedSpaceLevel = t(`common.space-level.${level ?? SpaceLevel.L0}`);
 
-  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -105,24 +107,38 @@ const SpaceDashboardView = ({
     removeVCCreationCache();
   };
 
+  const onCloseWelcome = () => {
+    setOpenWelcome(false);
+    removeSpaceWelcomeCache();
+  };
+
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
-    const cachedVC = getVCCreationCache();
+    const cachedVCId = getVCCreationCache();
 
-    if (cachedVC) {
-      setVcId(cachedVC);
+    if (cachedVCId) {
+      setVcId(cachedVCId);
       setTryVirtualContributorOpen(true);
     }
 
     return onCloseTryVirtualContributor;
   }, []);
 
+  useEffect(() => {
+    // on space change, check the cache and show welcome
+    const cachedSpaceWelcome = getSpaceWelcomeCache();
+
+    if (spaceId && cachedSpaceWelcome === spaceId) {
+      setOpenWelcome(true);
+    }
+  }, [spaceId]);
+
   return (
     <>
       {directMessageDialog}
       <PageContent>
         <ApplicationButtonContainer journeyId={spaceId}>
-          {({ applicationButtonProps }, { loading }) => {
+          {(applicationButtonProps, loading) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
             }
@@ -135,7 +151,7 @@ const SpaceDashboardView = ({
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
                   journeyId={spaceId}
-                  spaceLevel={SpaceLevel.L0}
+                  spaceLevel={level}
                 />
               </PageContentColumn>
             );
@@ -144,12 +160,12 @@ const SpaceDashboardView = ({
         <InfoColumn>
           <PageContentBlock accent>
             <JourneyDashboardWelcomeBlock
-              vision={vision}
+              description={what}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              journeyTypeName="space"
+              level={level}
               member={myMembershipStatus === CommunityMembershipStatus.Member}
             />
           </PageContentBlock>
@@ -158,15 +174,16 @@ const SpaceDashboardView = ({
             component={RouterLink}
             to={EntityPageSection.About}
             variant="contained"
+            sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
-            {t('common.aboutThis', { entity: translatedJourneyTypeName })}
+            {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>
           <DashboardNavigation
             currentItemId={spaceId}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
+          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} level={level} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 
@@ -176,7 +193,6 @@ const SpaceDashboardView = ({
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
-            journeyTypeName={journeyTypeName}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
             groupName={CalloutGroupName.Home}
@@ -192,6 +208,7 @@ const SpaceDashboardView = ({
             vcId={vcId}
           />
         )}
+        {spaceId && openWelcome && <SpaceWelcomeDialog onClose={onCloseWelcome} />}
       </PageContent>
     </>
   );

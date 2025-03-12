@@ -21,9 +21,10 @@ query RoleSetAuthorization(
 query RoleSetRoleAssignment(
   $roleSetId: UUID!
   $roles: [RoleName!]!
-  $includeUsers: Boolean = true,
-  $includeOrganizations: Boolean = true,
-  $includeVirtualContributors: Boolean = true,
+  $includeUsers: Boolean = false,
+  $includeOrganizations: Boolean = false,
+  $includeVirtualContributors: Boolean = false,
+  $includeRoleDefinitions: Boolean = false,
 ) {
   lookup {
     roleSet(ID: $roleSetId) {
@@ -46,7 +47,7 @@ query RoleSetRoleAssignment(
           ...RoleSetMemberVirtualContributor
         }
       }
-      roleDefinitions(roles: $roles) {
+      roleDefinitions(roles: $roles) @include (if: $includeRoleDefinitions) {
         ...RoleDefinitionPolicy
       }
     }

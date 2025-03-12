@@ -1,32 +1,31 @@
-import { ApolloError } from '@apollo/client';
-import { PropsWithChildren, useCallback, useMemo } from 'react';
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { isSocialLink, SocialLinkItem } from '@/domain/shared/components/SocialLinks/SocialLinks';
-import { useOrganization } from '../hooks/useOrganization';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
-import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
-import { ContainerChildProps } from '@/core/container/container';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import {
-  isSocialNetworkSupported,
-  SocialNetworkEnum,
-  toSocialNetworkEnum,
-} from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import {
   AuthorizationPrivilege,
-  RoleSetContributorType,
   OrganizationInfoFragment,
-  SpaceLevel,
   RoleName,
+  RoleSetContributorType,
+  SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
+import { ContainerChildProps } from '@/core/container/container';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { ApolloError } from '@apollo/client';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import { useOrganization } from '../hooks/useOrganization';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
-  socialLinks: SocialLinkItem[];
-  links: string[];
+  references: {
+    id: string;
+    name: string;
+    uri: string;
+    description?: string;
+  }[];
   capabilities: string[];
   keywords: string[];
   associates: ContributorCardSquareProps[];
@@ -55,14 +54,15 @@ export interface OrganizationPageContainerProps
 
 const NO_PRIVILEGES = [];
 
-export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
+export const OrganizationPageContainer = ({ children }: OrganizationPageContainerProps) => {
   const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
 
   const { t } = useTranslation();
-  const { usersByRole } = useRoleSetAdmin({
+  const { usersByRole } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Organization,
     contributorTypes: [RoleSetContributorType.User],
+    fetchContributors: true,
     skip: !organizationId,
   });
   const usersWithRoles = usersByRole[RoleName.Associate];
@@ -73,23 +73,14 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
     },
     skip: !organizationId || !canReadUsers,
   });
-
-  const socialLinks = useMemo(() => {
-    const result = (organization?.profile.references || [])
-      .map(s => ({
-        type: toSocialNetworkEnum(s.name),
-        url: s.uri,
-      }))
-      .filter(isSocialLink);
-    if (organization?.contactEmail) result.push({ type: SocialNetworkEnum.email, url: organization?.contactEmail });
-    if (organization?.website) result.push({ type: SocialNetworkEnum.website, url: organization?.website });
-
+  const references = useMemo(() => {
+    const result = [...(organization?.profile.references ?? [])];
+    if (organization?.contactEmail)
+      result.push({ id: '_email', name: SocialNetworkEnum.email, uri: organization.contactEmail });
+    if (organization?.website)
+      result.push({ id: '_website', name: SocialNetworkEnum.website, uri: organization.website });
     return result;
-  }, [organization]);
-
-  const links = useMemo(() => {
-    return (organization?.profile.references ?? []).filter(x => !isSocialNetworkSupported(x.name)).map(s => s.uri);
-  }, [organization]);
+  }, [organization?.profile.references]);
 
   const keywords = useMemo(
     () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
@@ -167,14 +158,14 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
     },
     [sendMessageToOrganization, organizationId]
   );
+
   return (
     <>
       {children(
         {
           organization,
           permissions,
-          socialLinks,
-          links,
+          references,
           keywords,
           capabilities,
           associates,

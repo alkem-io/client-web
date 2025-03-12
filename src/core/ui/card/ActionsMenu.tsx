@@ -1,9 +1,9 @@
-import { FC, cloneElement, isValidElement, useCallback, useState, MouseEvent, Children } from 'react';
-import { ClickAwayListener, IconButton, Menu } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { ClickAwayListener, IconButton, Menu } from '@mui/material';
+import { Children, MouseEvent, PropsWithChildren, cloneElement, isValidElement, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const ActionsMenu: FC = ({ children }) => {
+const ActionsMenu = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);

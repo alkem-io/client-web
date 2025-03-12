@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { InAppNotificationProps } from '../useInAppNotifications';
 import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
-import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export const CollaborationCalloutPublishedView = ({
@@ -23,10 +22,11 @@ export const CollaborationCalloutPublishedView = ({
       calloutType = t(`components.calloutTypeSelect.label.${callout?.type}` as const);
     }
 
+    const spaceLevel = space?.level ?? SpaceLevel.L0;
     const notificationTextValues = {
       defaultValue: '',
-      spaceName: space?.profile?.displayName,
-      spaceType: t(`common.${getChildJourneyTypeName({ level: space?.level ?? SpaceLevel.L0 })}`),
+      spaceName: space?.about.profile?.displayName,
+      spaceType: t(`common.space-level.${spaceLevel}`),
       calloutName: callout?.framing?.profile?.displayName,
       calloutType: calloutType,
       contributorName: triggeredBy?.profile?.displayName,
@@ -37,7 +37,7 @@ export const CollaborationCalloutPublishedView = ({
       type,
       state,
       space: {
-        avatarUrl: space?.profile?.visual?.uri ?? '',
+        avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {
         url: callout?.framing?.profile?.url ?? '',

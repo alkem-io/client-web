@@ -3,7 +3,7 @@ import {
   CredentialMetadataOutput,
 } from '@/core/apollo/generated/graphql-schema';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { DialogTitle } from '@/core/ui/dialog/deprecated';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
 import QRCode from '@/core/ui/qrCode/QRCode';
 import {
@@ -66,18 +66,15 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
     setVcInteraction(undefined);
   }, [options.show]);
 
+  const handleClose = () => {
+    setSelectedCredentialMetadata(undefined);
+    setVcInteraction(undefined);
+    actions.onCancel();
+  };
+
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
-      <DialogTitle
-        id="credential-request-dialog-title"
-        onClose={() => {
-          setSelectedCredentialMetadata(undefined);
-          setVcInteraction(undefined);
-          actions.onCancel();
-        }}
-      >
-        {title}
-      </DialogTitle>
+      <DialogHeader title={String(title)} onClose={handleClose} />
       <DialogContent ref={containerRef} sx={{ overflowX: 'hidden', display: 'flex', flexFlow: 'column nowrap' }}>
         <Slide
           direction="right"
@@ -86,7 +83,9 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
           container={containerRef.current}
         >
           <Box>
-            <DialogContentText>{content}</DialogContentText>
+            <DialogContentText>
+              <>{content}</>
+            </DialogContentText>
             {state?.isLoadingCredentialMetadata && <Loading text="Loading credential metadata" />}
             {!state?.isLoadingCredentialMetadata && credentialMetadata && (
               <List disablePadding>

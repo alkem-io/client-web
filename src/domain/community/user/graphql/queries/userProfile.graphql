@@ -8,21 +8,18 @@ query userProfile($input: UUID!) {
   rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {
+      id
+      displayName
+      roles
+      visibility
+      subspaces {
         id
-        nameID
         displayName
         roles
-        visibility
-        subspaces {
-        id
-        nameID
-        displayName
-        roles
-        }
+      }
     }
     organizations {
         id
-        nameID
         displayName
         roles
     }

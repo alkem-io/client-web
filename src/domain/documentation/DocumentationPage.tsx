@@ -93,7 +93,7 @@ const DocumentationPage = () => {
               <iframe
                 src={src}
                 ref={iframeRef}
-                sandbox="allow-scripts allow-same-origin"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                 title={t('pages.documentation.title')}
                 style={{ width: '100%', height: DEFAULT_HEIGHT, border: 'none' }}
               />

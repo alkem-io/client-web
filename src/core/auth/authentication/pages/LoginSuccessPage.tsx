@@ -13,7 +13,7 @@ export const LoginSuccessPage = () => {
   const { user, loading } = useUserContext();
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && user) {
       if (returnUrl) {
         window.location.replace(returnUrl);
         return () => {

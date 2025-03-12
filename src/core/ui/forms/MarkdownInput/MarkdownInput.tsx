@@ -30,13 +30,13 @@ import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
-  storageBucketId: string | undefined;
 }
 
 type Offset = {
@@ -72,7 +72,6 @@ export const MarkdownInput = memo(
         hideImageOptions,
         onFocus,
         onBlur,
-        storageBucketId,
         temporaryLocation = false,
       },
       ref
@@ -87,6 +86,8 @@ export const MarkdownInput = memo(
       const [htmlContent, setHtmlContent] = useState('');
 
       const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
+
+      const storageConfig = useStorageConfigContext();
 
       const updateHtmlContent = async () => {
         const content = await markdownToHTML(value);
@@ -110,7 +111,7 @@ export const MarkdownInput = memo(
       });
 
       const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
-        if (item.kind === 'file' && item.type.startsWith('image/')) {
+        if (item.type.startsWith('image/') || (item.kind === 'file' && item.type.startsWith('image/'))) {
           return true; // Image
         }
 
@@ -121,6 +122,8 @@ export const MarkdownInput = memo(
 
         return false; // Not an image or HTML with images
       };
+
+      const storageBucketId = storageConfig?.storageBucketId;
 
       /**
        * Handles the paste event in the editor.
@@ -134,63 +137,43 @@ export const MarkdownInput = memo(
        */
       const handlePaste = useCallback(
         (_view: EditorView, event: ClipboardEvent): boolean => {
+          if (!storageBucketId) {
+            return false; // Allow default behavior for text
+          }
+
           const clipboardData = event.clipboardData;
           const items = clipboardData?.items;
 
           if (!items) {
-            return false;
+            return false; // Allow default behavior for text
           }
 
-          if (!storageBucketId) {
-            return false;
-          }
+          const itemsArray = Array.from(items); // Keep `Array.from` since if any kind of `for` loop is used it will iterate only over one item.
 
-          let imageProcessed = false;
-
-          for (const item of items) {
+          itemsArray.forEach(item => {
             const isImage = isImageOrHtmlWithImage(item, clipboardData);
 
             if (hideImageOptions && isImage) {
               event.preventDefault();
-
               return true; // Block paste of images or HTML with images
             }
 
-            if (!imageProcessed && isImage) {
-              if (item.kind === 'file' && item.type.startsWith('image/')) {
-                const file = item.getAsFile();
+            if (isImage) {
+              const file = item.getAsFile();
 
-                if (file) {
-                  const reader = new FileReader();
+              if (file) {
+                const reader = new FileReader();
 
-                  reader.onload = () => {
-                    uploadFile({
-                      variables: {
-                        file,
-                        uploadData: { storageBucketId, temporaryLocation },
-                      },
-                    });
-                  };
+                reader.onload = () => {
+                  uploadFile({ variables: { file, uploadData: { storageBucketId, temporaryLocation } } });
+                };
 
-                  reader.readAsDataURL(file);
-                  imageProcessed = true;
-                }
-              } else if (item.kind === 'string' && item.type === 'text/html') {
-                imageProcessed = true; // HTML with images
+                reader.readAsDataURL(file);
+                event.preventDefault();
+                return true; // Block default behavior for images
               }
             }
-
-            if (imageProcessed) {
-              // Stop if we have already processed an image
-              break;
-            }
-          }
-
-          if (imageProcessed) {
-            event.preventDefault();
-
-            return true; // Block default behavior for images
-          }
+          });
 
           return false; // Allow default behavior for text
         },

@@ -2,20 +2,21 @@ query SpaceContributionDetails($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
+      level
+      about {
         id
-        url
-        displayName
-        tagline
-        visuals {
-          ...VisualUri
+        profile {
+          id
+          url
+          displayName
+          tagline
+          visuals {
+            ...VisualUri
+          }
+          tagset {
+            ...TagsetDetails
+          }
         }
-        tagset {
-          ...TagsetDetails
-        }
-      }
-      context {
-        id
       }
       community {
         id

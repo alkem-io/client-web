@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../PostForm/PostForm';
-import usePostSettings from '../containers/PostSettings/usePostSettings';
+import usePostSettings from '../graphql/usePostSettings';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,
@@ -14,7 +14,6 @@ import {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
-import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import {
@@ -42,11 +41,11 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
 
   const [post, setPost] = useState<PostFormOutput>();
   const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
+  const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
 
   const toPostFormInput = (post?: PostSettingsFragment): PostFormInput | undefined =>
     post && {
       id: post.id,
-      nameID: post.nameID,
       profileData: {
         displayName: post.profile.displayName,
         description: post.profile.description!,
@@ -89,14 +88,18 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
     post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingContribution
   );
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     if (!postSettings.post || !post) {
       return;
     }
 
     await postSettings.handleDelete(postSettings.post.id);
     onClose();
-  };
+  }, [postSettings, post, onClose]);
+
+  const onCloseEdit = useCallback(() => {
+    setCloseConfirmDialogOpen(true);
+  }, []);
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
     if (!postSettings.contributionId || !postSettings.post || !post) {
@@ -132,8 +135,8 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
   });
 
   return (
-    <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>
-      <StorageConfigContextProvider locationType="post" postId={postId} calloutId={calloutId}>
+    <PostLayout currentSection={PostDialogSection.Settings} onClose={onCloseEdit}>
+      <StorageConfigContextProvider locationType="post" postId={postId}>
         <PostForm
           edit
           loading={postSettings.loading || postSettings.updating || isMovingContribution}
@@ -149,20 +152,16 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
 
             return (
               <>
-                <SectionSpacer double />
                 <Box>
                   <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                  <SectionSpacer />
                   {/* Do not show VisualType.Card for Posts for now, see #4362.
                       TODO: Maybe in the future we want to remove those visuals from the database,
                       for now Card profiles don't have a Banner because it's not shown anywhere */}
                   <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
                 </Box>
-                <SectionSpacer double />
                 {canMoveCard && (
                   <Box>
                     <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
-                    <SectionSpacer />
                     <Autocomplete
                       disablePortal
                       options={calloutsOfTypePost}
@@ -219,6 +218,23 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
             titleId: 'post-edit.delete.title',
             contentId: 'post-edit.delete.description',
             confirmButtonTextId: 'buttons.delete',
+          }}
+        />
+        <ConfirmationDialog
+          actions={{
+            onConfirm: () => {
+              setCloseConfirmDialogOpen(false);
+              onClose();
+            },
+            onCancel: () => setCloseConfirmDialogOpen(false),
+          }}
+          options={{
+            show: closeConfirmDialogOpen,
+          }}
+          entities={{
+            titleId: 'post-edit.closeConfirm.title',
+            contentId: 'post-edit.closeConfirm.description',
+            confirmButtonTextId: 'buttons.yes-close',
           }}
         />
       </StorageConfigContextProvider>

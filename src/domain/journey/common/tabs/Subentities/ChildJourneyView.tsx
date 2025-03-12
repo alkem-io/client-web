@@ -1,31 +1,31 @@
-import { ApolloError } from '@apollo/client';
-import { useMemo, useState, ReactElement, ReactNode, cloneElement } from 'react';
-import { useTranslation } from 'react-i18next';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { ValueType } from '@/core/utils/filtering/filterFn';
-import ErrorBlock from '@/core/ui/error/ErrorBlock';
-import getJourneyChildrenTranslation from '@/domain/journey/subspace/getJourneyChildrenTranslation';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
+import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import LinksList from '@/core/ui/list/LinksList';
-import { Caption } from '@/core/ui/typography';
-import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
-import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import ChildJourneyCreate from './ChildJourneyCreate';
-import Loading from '@/core/ui/loading/Loading';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Actions } from '@/core/ui/actions/Actions';
+import ErrorBlock from '@/core/ui/error/ErrorBlock';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import InfoColumn from '@/core/ui/content/InfoColumn';
-import ContentColumn from '@/core/ui/content/ContentColumn';
+import LinksList from '@/core/ui/list/LinksList';
+import Loading from '@/core/ui/loading/Loading';
 import SearchField from '@/core/ui/search/SearchField';
+import { Caption } from '@/core/ui/typography';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { ValueType } from '@/core/utils/filtering/filterFn';
+import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
+import { ApolloError } from '@apollo/client';
+import AddIcon from '@mui/icons-material/Add';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button, IconButton } from '@mui/material';
+import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ChildJourneyCreate from './ChildJourneyCreate';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -33,20 +33,14 @@ export interface JourneySubentitiesState {
 }
 
 interface BaseChildEntity extends Identifiable {
-  profile: {
-    displayName: string;
-    url: string;
-    cardBanner?: {
-      uri: string;
-    };
-  };
+  about: SpaceAboutLightModel;
 }
 
 export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
-  journeyTypeName: JourneyTypeName;
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
   childEntityReadAccess?: boolean;
+  level: SpaceLevel;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   childEntityValueGetter: (childEntity: ChildEntity) => ValueType;
   childEntityTagsGetter: (childEntity: ChildEntity) => string[];
@@ -59,10 +53,10 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
 }
 
 const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
-  journeyTypeName,
   childEntities = [],
   childEntitiesIcon,
   childEntityReadAccess,
+  level,
   renderChildEntityCard,
   childEntityValueGetter,
   childEntityTagsGetter,
@@ -83,21 +77,21 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
       childEntities
         .map(entity => ({
           id: entity.id,
-          title: entity.profile.displayName,
+          title: entity.about.profile.displayName,
           icon: childEntitiesIcon,
-          uri: entity.profile.url,
-          cardBanner: entity.profile?.cardBanner?.uri || defaultSubspaceAvatar,
+          uri: entity.about.profile.url,
+          cardBanner: entity.about.profile?.cardBanner?.uri || defaultSubspaceAvatar,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]
   );
 
   return (
-    <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
+    <MembershipBackdrop show={!childEntityReadAccess} blockName={t(`common.space-level.${level}`)}>
       <PageContent>
         <InfoColumn>
           <ChildJourneyCreate
-            journeyTypeName={journeyTypeName}
+            level={level}
             canCreateSubentity={childEntityCreateAccess}
             onCreateSubentity={childEntityOnCreate}
           />
@@ -122,8 +116,8 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
             <PageContentBlockSeamless>
               <Caption textAlign="center">
                 {t('pages.generic.sections.subEntities.empty', {
-                  entities: getJourneyChildrenTranslation(t, journeyTypeName),
-                  parentEntity: t(`common.${journeyTypeName}` as const),
+                  entities: t(`common.space-level.${level}`),
+                  parentEntity: t(`common.space-level.${level}`),
                 })}
               </Caption>
             </PageContentBlockSeamless>
@@ -136,7 +130,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   valueGetter={childEntityValueGetter}
                   tagsGetter={childEntityTagsGetter}
                   title={t('common.entitiesWithCount', {
-                    entityType: getJourneyChildrenTranslation(t, journeyTypeName),
+                    entityType: t(`common.space-level.${level}`),
                     count: childEntities.length,
                   })}
                 >
@@ -166,11 +160,11 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               onClick={childEntityOnCreate}
               sx={{ width: '100%' }}
             >
-              {t('common.create-new-entity', { entity: getJourneyChildrenTranslation(t, journeyTypeName, 1) })}
+              {t('common.create-new-entity', { entity: t(`common.space-level.${level}`) })}
             </Button>
           )}
           {children}
-          {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
+          {state.error && <ErrorBlock blockName={t(`common.space-level.${level}`)} />}
         </ContentColumn>
       </PageContent>
     </MembershipBackdrop>

@@ -1,19 +1,19 @@
 import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { DialogActions } from '@/core/ui/dialog/deprecated';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
 import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/CalloutLayout';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { LoadingButton } from '@mui/lab';
-import { DialogContent } from '@mui/material';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import DeleteButton from '@/core/ui/actions/DeleteButton';
+import { DialogActions, DialogContent } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -23,7 +23,6 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
-  journeyTypeName: CalloutsSetParentType;
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }
@@ -36,7 +35,6 @@ const CalloutEditDialog = ({
   onDelete,
   onCalloutEdit,
   canChangeCalloutLocation,
-  journeyTypeName,
   disableRichMedia,
   disablePostResponses = false,
 }: CalloutEditDialogProps) => {
@@ -57,8 +55,13 @@ const CalloutEditDialog = ({
     groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
+  const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
 
   const handleStatusChanged = (valid: boolean) => setValid(valid);
+
+  const onCloseEdit = useCallback(() => {
+    setCloseConfirmDialogOpen(true);
+  }, []);
 
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
 
@@ -95,13 +98,13 @@ const CalloutEditDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} columns={8} aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
+      <DialogWithGrid open={open} columns={8} aria-labelledby="callout-visibility-dialog-title" onClose={onCloseEdit}>
         <DialogHeader
           icon={CalloutIcon && <CalloutIcon />}
           title={t('components.calloutEdit.titleWithType', {
             type: t(`components.calloutTypeSelect.label.${calloutType}` as const),
           })}
-          onClose={onClose}
+          onClose={onCloseEdit}
         />
         <DialogContent>
           <StorageConfigContextProvider locationType="callout" calloutId={callout.id}>
@@ -112,32 +115,32 @@ const CalloutEditDialog = ({
               onStatusChanged={handleStatusChanged}
               onChange={handleChange}
               canChangeCalloutLocation={canChangeCalloutLocation}
-              journeyTypeName={journeyTypeName}
               disableRichMedia={disableRichMedia}
               disablePostResponses={disablePostResponses}
             />
           </StorageConfigContextProvider>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between' }}>
-          <LoadingButton
-            loading={loading}
-            disabled={loading}
-            variant="outlined"
-            onClick={() => onDelete(callout)}
-            aria-label={t('buttons.delete')}
-          >
-            {t('buttons.delete')}
-          </LoadingButton>
-          <LoadingButton
-            loading={loading}
-            disabled={!valid || loading}
-            variant="contained"
-            onClick={handleSave}
-            aria-label={t('buttons.save')}
-          >
-            {t('buttons.save')}
-          </LoadingButton>
+        <DialogActions>
+          <DeleteButton loading={loading} disabled={loading} onClick={() => onDelete(callout)} />
+          <SaveButton loading={loading} disabled={!valid || loading} onClick={handleSave} />
         </DialogActions>
+        <ConfirmationDialog
+          actions={{
+            onConfirm: () => {
+              setCloseConfirmDialogOpen(false);
+              onClose();
+            },
+            onCancel: () => setCloseConfirmDialogOpen(false),
+          }}
+          options={{
+            show: closeConfirmDialogOpen,
+          }}
+          entities={{
+            titleId: 'post-edit.closeConfirm.title',
+            contentId: 'post-edit.closeConfirm.description',
+            confirmButtonTextId: 'buttons.yes-close',
+          }}
+        />
       </DialogWithGrid>
     </>
   );

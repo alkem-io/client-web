@@ -1,16 +1,12 @@
-import React, { PropsWithChildren } from 'react';
 import { useWhiteboardFromCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  WhiteboardDetailsFragment,
   CollaborationWithWhiteboardDetailsFragment,
+  WhiteboardDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import React from 'react';
 
-interface WhiteboardLocation {
-  calloutId: string | undefined;
-  whiteboardNameId: string;
-}
-
-interface WhiteboardProviderProps extends WhiteboardLocation {
+interface WhiteboardProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
@@ -24,28 +20,17 @@ export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardProvider = ({
-  calloutId,
-  whiteboardNameId: whiteboardId,
-  children,
-}: PropsWithChildren<WhiteboardProviderProps>) => {
+const WhiteboardProvider = ({ children }: WhiteboardProviderProps) => {
+  const { calloutId, contributionId } = useUrlResolver();
   const { data, loading } = useWhiteboardFromCalloutQuery({
-    variables: { calloutId: calloutId!, whiteboardId },
-    skip: !calloutId || !whiteboardId,
-    errorPolicy: 'all',
-    fetchPolicy: 'cache-and-network', // TODO: Check if this is still needed
+    variables: { calloutId: calloutId!, contributionId: contributionId! },
+    skip: !calloutId || !contributionId,
   });
 
   const callout = data?.lookup.callout;
-
-  const whiteboardContribution = callout?.contributions?.find(
-    contribution =>
-      contribution.whiteboard &&
-      (contribution.whiteboard.nameID === whiteboardId || contribution.whiteboard.id === whiteboardId)
-  );
+  const whiteboardContribution = callout?.contributions[0];
 
   const framingWhiteboard = callout?.framing.whiteboard;
-
   const authorization = callout?.authorization;
 
   return (

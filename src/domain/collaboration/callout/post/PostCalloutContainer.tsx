@@ -1,17 +1,16 @@
-import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
-import { AuthorizationPrivilege, CreatePostInput, TagsetType } from '@/core/apollo/generated/graphql-schema';
-import { PostCardFragmentDoc, useCreatePostFromContributeTabMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useInView } from 'react-intersection-observer';
+import { useCreatePostFromContributeTabMutation } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { PropsWithChildren, Ref } from 'react';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { Ref } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
   posts: PostContributionProps[];
   loading: boolean;
-  onCreatePost: (post: CreatePostInput) => Promise<{ nameID: string } | undefined>;
+  onCreatePost: (post: CreatePostInput) => Promise<unknown>;
   creatingPost: boolean;
   canCreate: boolean;
 }
@@ -25,7 +24,7 @@ interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutCont
   };
 }
 
-const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCalloutContainerProps>) => {
+const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) => {
   const calloutId = callout.id;
   const { ref: intersectionObserverRef, inView } = useInView({
     delay: 500,
@@ -33,46 +32,15 @@ const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCallo
     triggerOnce: true,
   });
 
-  const { subscriptionEnabled, posts, loading } = useCalloutPosts({
+  const { posts, loading } = useCalloutPosts({
     calloutId,
     skip: !inView,
   });
 
-  const [createPost, { loading: isCreatingPost }] = useCreatePostFromContributeTabMutation({
-    update: (cache, { data }) => {
-      if (subscriptionEnabled || !data) {
-        return;
-      }
-
-      const { createContributionOnCallout } = data;
-
-      const calloutRefId = cache.identify({
-        __typename: 'Callout',
-        id: calloutId,
-      });
-
-      if (!calloutRefId) {
-        return;
-      }
-
-      cache.modify({
-        id: calloutRefId,
-        fields: {
-          posts(existingPosts = []) {
-            const newPostRef = cache.writeFragment({
-              data: createContributionOnCallout.post,
-              fragment: PostCardFragmentDoc,
-              fragmentName: 'PostCard',
-            });
-            return [...existingPosts, newPostRef];
-          },
-        },
-      });
-    },
-  });
+  const [createPost, { loading: isCreatingPost }] = useCreatePostFromContributeTabMutation();
 
   const onCreatePost = async (post: CreatePostInput) => {
-    const { data } = await createPost({
+    return createPost({
       variables: {
         postData: {
           calloutID: calloutId,
@@ -85,33 +53,7 @@ const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCallo
           },
         },
       },
-      optimisticResponse: {
-        createContributionOnCallout: {
-          __typename: 'CalloutContribution',
-          post: {
-            id: '',
-            nameID: '',
-            profile: {
-              id: '',
-              url: '',
-              displayName: post.profileData.displayName,
-              description: post.profileData?.description,
-              tagset: {
-                id: '-1',
-                name: DEFAULT_TAGSET,
-                tags: [],
-                allowedValues: [],
-                type: TagsetType.Freeform,
-              },
-            },
-          },
-        },
-      },
     });
-
-    const nameID = data?.createContributionOnCallout.post?.nameID;
-
-    return nameID ? { nameID } : undefined;
   };
 
   return (

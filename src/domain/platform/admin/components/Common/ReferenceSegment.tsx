@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Box, BoxProps, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { FieldArray } from 'formik';
+import { FieldArray, useFormikContext } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -17,7 +17,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -29,14 +30,17 @@ export interface ReferenceSegmentProps extends BoxProps {
   // TODO REMOVE CALLBACK FROM SIGNATURE!
   onRemove?: (ref: Reference, remove: RemoveFunc) => void;
   temporaryLocation?: boolean;
+  fullWidth?: boolean;
 }
 
 export const referenceSegmentValidationObject = yup.object().shape({
   name: yup
     .string()
     .min(3, MessageWithPayload('forms.validations.minLength'))
-    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+    .required('forms.validations.required'),
+  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')).url(),
+  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH), // It's not markdown in the client but it's a TEXT column in the DB
 });
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 
@@ -48,10 +52,12 @@ export const ReferenceSegment = ({
   compactMode = false,
   onAdd,
   onRemove,
+  fullWidth,
   temporaryLocation = false,
   ...props
 }: ReferenceSegmentProps) => {
   const { t } = useTranslation();
+  const { setFieldValue, touched } = useFormikContext();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
   const breakpoint = useCurrentBreakpoint();
@@ -75,6 +81,12 @@ export const ReferenceSegment = ({
       });
     }
     push({ name: '', uri: '' });
+  };
+
+  const onFileUploaded = (referenceIndex: number, fileName: string) => {
+    if (!touched?.[fieldName]?.[referenceIndex]?.name) {
+      setFieldValue(`${fieldName}.${referenceIndex}.name`, fileName);
+    }
   };
 
   return (
@@ -109,13 +121,15 @@ export const ReferenceSegment = ({
                     disabled={disabled || isRemoving(index)}
                     fullWidth={isMobile}
                   />
-                  <Box display="flex" flexDirection="row">
+                  <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput
+                      fullWidth={fullWidth}
                       name={`${fieldName}.${index}.uri`}
                       title={t('common.url')}
                       readOnly={readOnly}
                       disabled={disabled || isRemoving(index)}
                       entityID={attachment.id}
+                      onChange={fileName => onFileUploaded(index, fileName)}
                       helperText={tLinks('components.referenceSegment.url-helper-text', {
                         terms: {
                           href: locations?.terms,

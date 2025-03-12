@@ -12,12 +12,12 @@ import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '@/core/ui/typography';
-import ReferencesListSmallItem from '@/domain/profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
+import ReferencesListSmallItem from '@/domain/common/reference/ReferencesListSmallItem';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import {} from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const InnovationPackProfilePage = () => {
   const { t } = useTranslation();

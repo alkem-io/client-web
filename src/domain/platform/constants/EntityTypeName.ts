@@ -1,3 +1,1 @@
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-
-export type EntityTypeName = JourneyTypeName | 'organization' | 'user' | 'innovationPack';
+export type EntityTypeName = 'space' | 'subspace' | 'subsubspace' | 'organization' | 'user' | 'innovationPack';

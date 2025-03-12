@@ -37,8 +37,8 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
     const addSelectableSpace = (space: SelectableSpace) => {
       result.push({
         id: space.id,
-        name: `${space.profile.displayName}`,
-        url: space.profile.url,
+        name: `${space.about.profile.displayName}`,
+        url: space.about.profile.url,
         roleSetId: space.community.roleSet.id,
       });
     };
@@ -104,7 +104,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
             </Button>
             <LoadingButton
               variant="contained"
-              disabled={loading || (!hasAvailableSpaces && !values.spaceId)}
+              disabled={loading || (hasAvailableSpaces && !values.spaceId)}
               loading={loading}
               onClick={() => onCreate(values)}
             >

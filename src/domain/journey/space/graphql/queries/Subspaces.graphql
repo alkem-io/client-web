@@ -1,0 +1,14 @@
+query SubspacesInSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      subspaces {
+        id
+        about {
+          ...SpaceAboutCardBanner
+        }
+        level
+      }
+    }
+  }
+}

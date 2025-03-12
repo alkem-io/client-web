@@ -1,6 +1,6 @@
 fragment OrganizationProfileInfo on Organization {
   id
-  nameID
+  nameID  # Used in the Organization profile form
   contactEmail
   domain
   legalEntityName

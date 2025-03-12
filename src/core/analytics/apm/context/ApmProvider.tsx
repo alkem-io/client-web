@@ -13,9 +13,7 @@ export const ApmContext = createContext<ApmContextProps>({
   setUser: () => {},
 });
 
-interface Props extends PropsWithChildren<{}> {}
-
-export const ApmProvider = ({ children }: Props) => {
+export const ApmProvider = ({ children }: PropsWithChildren) => {
   const [apm, setApm] = useState<ApmBase | undefined>();
   const [user, setUser] = useState<(UserMetadata['user'] & { isAuthenticated: boolean }) | undefined>();
 

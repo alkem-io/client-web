@@ -3,13 +3,10 @@ import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
 import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
-import {
-  refetchSubspacesInSpaceQuery,
-  refetchDashboardWithMembershipsQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../../forms/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
-import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '../../icon/SubspaceIcon2';
 
 export interface CreateJourneyProps {
   isVisible: boolean;
@@ -22,27 +19,31 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   const navigate = useNavigate();
 
   const { createSubspace } = useSubspaceCreation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId }), refetchDashboardWithMembershipsQuery()],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId })],
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
         spaceID: parentSpaceId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
+        about: {
+          profile: {
+            displayName: value.displayName,
+            tagline: value.tagline,
+            description: value.description ?? '',
+            visuals: value.visuals,
+            tags: value.tags,
+          },
+          why: value.why,
+        },
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
-        visuals: value.visuals,
       });
 
       if (!result) {
         return;
       }
-      navigate(result.profile.url);
+      navigate(result.about?.profile?.url!);
       onClose();
     },
     [navigate, createSubspace, parentSpaceId]

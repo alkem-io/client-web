@@ -8,13 +8,13 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { displayNameValidator } from '@/core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { RadioButtonOption } from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { TagsetField, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
@@ -24,6 +24,7 @@ import {
   mapTemplateProfileToUpdateProfile,
 } from './common/mappings';
 import { Caption } from '@/core/ui/typography';
+import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 
 export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   callout?: {
@@ -73,18 +74,8 @@ const validator = {
         profile: yup.object().shape({
           displayName: displayNameValidator.required(),
           description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-          references: yup.array().of(
-            yup.object().shape({
-              name: yup.string().required(),
-              description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-              uri: yup.string().url(),
-            })
-          ),
-          tagsets: yup.array().of(
-            yup.object().shape({
-              tags: yup.array().of(yup.string().required()).required(),
-            })
-          ),
+          references: referenceSegmentSchema,
+          tagsets: tagsetsSegmentSchema,
         }),
         whiteboard: yup.object().when('type', {
           is: (type: CalloutType) => type === CalloutType.Whiteboard,

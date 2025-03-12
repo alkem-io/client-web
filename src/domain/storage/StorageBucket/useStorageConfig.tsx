@@ -52,7 +52,6 @@ interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase {
 
 interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
   postId: string | undefined;
-  calloutId: string | undefined;
   locationType: 'post';
 }
 
@@ -133,9 +132,8 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const { data: postStorageConfigData } = useCalloutPostStorageConfigQuery({
     variables: {
       postId: postOptions.postId!, // ensured by skip
-      calloutId: postOptions.calloutId!, // ensured by skip
     },
-    skip: skip || locationType !== 'post' || !postOptions.postId || !postOptions.calloutId,
+    skip: skip || locationType !== 'post' || !postOptions.postId,
   });
 
   const templateOptions = options as UseStorageConfigOptionsTemplate;
@@ -196,12 +194,10 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
 
   const callout = calloutStorageConfigData?.lookup.callout;
 
-  const [contribution] = postStorageConfigData?.lookup.callout?.contributions ?? [];
-
   const { profile } =
-    journey ??
+    journey?.about ??
     callout?.framing ??
-    contribution?.post ??
+    postStorageConfigData?.lookup.post ??
     templateStorageConfigData?.lookup.template ??
     userStorageConfigData?.lookup.user ??
     virtualContributorStorageConfigData?.lookup.virtualContributor ??

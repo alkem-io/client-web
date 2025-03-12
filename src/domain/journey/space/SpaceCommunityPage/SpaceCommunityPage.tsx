@@ -22,7 +22,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -30,16 +30,16 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceCommunityPage = () => {
-  const { isAuthenticated } = useUserContext();
-  const { collaborationId, journeyPath } = useRouteResolver();
-  const { spaceId, loading: loadingSpace, communityId } = useSpace();
-
   const { t } = useTranslation();
+  const { isAuthenticated } = useUserContext();
+  const { spaceId, collaborationId, journeyPath, loading: resolving } = useUrlResolver();
+  const { communityId } = useSpace();
 
-  if (!spaceId && !loadingSpace) {
+  if (!spaceId && !resolving) {
     throw new TypeError('Must be within a Space');
   }
 
@@ -51,15 +51,15 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
-  const { data, loading } = useSpaceCommunityPageQuery({
+  const { data, loading: loadingCommunity } = useSpaceCommunityPageQuery({
     variables: {
-      spaceId,
+      spaceId: spaceId!,
       includeCommunity: isAuthenticated,
     },
     skip: !spaceId,
   });
 
-  const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetAdmin({
+  const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
     roleSetId: data?.lookup.space?.community?.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
@@ -67,6 +67,7 @@ const SpaceCommunityPage = () => {
       RoleSetContributorType.Organization,
       RoleSetContributorType.Virtual,
     ],
+    fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member];
   const leadUsers = usersByRole[RoleName.Lead];
@@ -116,6 +117,8 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Community, skip: resolving || !spaceId });
+
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer collaborationId={collaborationId}>
@@ -123,7 +126,7 @@ const SpaceCommunityPage = () => {
           <PageContent>
             <InfoColumn>
               <EntityDashboardLeadsSection
-                usersHeader={t('community.host')}
+                usersHeader={t('community.leads')}
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
                 leadUsers={leadUsers}
                 leadOrganizations={hostOrganizations}
@@ -141,11 +144,11 @@ const SpaceCommunityPage = () => {
               {showVirtualContributorsBlock && (
                 <VirtualContributorsBlock
                   virtualContributors={virtualContributors}
-                  loading={loading}
+                  loading={loadingCommunity}
                   showInviteOption={hasInvitePrivilege}
                 />
               )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.profile.url} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
             </InfoColumn>
             <ContentColumn>
               <RoleSetContributorsBlockWide
@@ -158,7 +161,6 @@ const SpaceCommunityPage = () => {
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
-                journeyTypeName="space"
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Community}

@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
@@ -21,7 +22,6 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
@@ -58,13 +58,13 @@ const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
 export interface WhiteboardWhiteboardEntities {
   whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
   filesManager: WhiteboardFilesManager;
-  lastSavedDate: Date | undefined;
+  lastSuccessfulSavedDate: Date | undefined;
 }
 
 export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
-  onRemoteSave?: () => void;
+  onRemoteSave?: (error?: string) => void;
 }
 
 export interface WhiteboardWhiteboardEvents {}
@@ -95,7 +95,13 @@ const CollaborativeExcalidrawWrapper = ({
   collabApiRef,
   children: renderChildren,
 }: WhiteboardWhiteboardProps) => {
-  const { whiteboard, filesManager, lastSavedDate } = entities;
+  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
+
+  const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
+
+  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
+  const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
@@ -105,20 +111,22 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
-  const handleScroll = useRef(
-    debounce(async () => {
-      excalidrawApi?.refresh();
-    }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
-  ).current;
+  const debouncedRefresh = useMemo(
+    () =>
+      debounce(async () => {
+        excalidrawApi?.refresh();
+      }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL),
+    [excalidrawApi]
+  );
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('scroll', debouncedRefresh, true);
 
     return () => {
-      handleScroll.cancel();
-      window.removeEventListener('scroll', handleScroll, true);
+      debouncedRefresh.cancel();
+      window.removeEventListener('scroll', debouncedRefresh, true);
     };
-  }, [handleScroll]);
+  }, [debouncedRefresh]);
 
   const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
     () => ({
@@ -139,7 +147,7 @@ const CollaborativeExcalidrawWrapper = ({
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
     filesManager,
-    onRemoteSave: () => actions.onRemoteSave?.(),
+    onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
@@ -166,12 +174,6 @@ const CollaborativeExcalidrawWrapper = ({
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };
-
-  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
-
-  const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
-
-  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
   const isOnline = useOnlineStatus();
 
@@ -257,10 +259,10 @@ const CollaborativeExcalidrawWrapper = ({
         <DialogContent>
           {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
           {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
-          {lastSavedDate && (
+          {lastSuccessfulSavedDate && (
             <Text>
               {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                lastSaved: formatTimeElapsed(lastSavedDate, t, 'long'),
+                lastSaved: formatTimeElapsed(lastSuccessfulSavedDate, t, 'long'),
               })}
             </Text>
           )}

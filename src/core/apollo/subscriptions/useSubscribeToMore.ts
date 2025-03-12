@@ -5,6 +5,7 @@ import { useUserContext } from '@/domain/community/user';
 import { ApolloError, OperationVariables, SubscribeToMoreOptions } from '@apollo/client';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import { PlatformFeatureFlagName } from '../generated/graphql-schema';
+import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
 
 export interface SubscribeToMore<QueryData> {
   <SubscriptionData, SubscriptionVariables extends OperationVariables>(
@@ -17,8 +18,8 @@ export interface Options<TVariables> {
   variables?: TVariables;
 }
 
-const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables = undefined>(
-  subscribeToMore: SubscribeToMore<QueryData>,
+const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables extends OperationVariables>(
+  subscribeToMore: SubscribeToMoreFunction<QueryData, SubscriptionVariables>,
   options: SubscribeToMoreOptions<QueryData, SubscriptionVariables, SubscriptionData> & Options<SubscriptionVariables>
 ) => {
   const handleError = useRef(useApolloErrorHandler()).current;

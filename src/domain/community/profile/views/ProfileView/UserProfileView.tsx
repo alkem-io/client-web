@@ -1,4 +1,5 @@
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { gutters } from '@/core/ui/grid/utils';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import { UserMetadata } from '@/domain/community/user/hooks/useUserMetadataWrapper';
@@ -17,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 export interface UserProfileViewProps {
   entities: {
     userMetadata: UserMetadata;
-    verified: boolean;
   };
 }
 
@@ -48,26 +48,35 @@ export const UserProfileView = ({ entities: { userMetadata } }: UserProfileViewP
         <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
       </Grid>
 
-      <Grid item>
-        <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
-        <TagsWithOffset tags={keywords} />
-      </Grid>
+      {keywords.length > 0 && (
+        <Grid item>
+          <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
+          <TagsWithOffset tags={keywords} />
+        </Grid>
+      )}
 
-      <Grid item>
-        <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
-        <TagsWithOffset tags={skills} />
-      </Grid>
+      {skills.length > 0 && (
+        <Grid item>
+          <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
+          <TagsWithOffset tags={skills} />
+        </Grid>
+      )}
 
-      <Grid item container direction="column">
-        <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
-        <References
-          references={links[OTHER_LINK_GROUP]}
-          noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
-        />
-      </Grid>
-      <Grid item display="flex" flexGrow={1} justifyContent="end">
-        <SocialLinks items={socialLinks} />
-      </Grid>
+      {Number(links[OTHER_LINK_GROUP]?.length) > 0 && (
+        <Grid item container direction="column">
+          <BlockSectionTitle mb={gutters()}>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+          <References
+            references={links[OTHER_LINK_GROUP]}
+            noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+          />
+        </Grid>
+      )}
+
+      {socialLinks.length > 0 && (
+        <Grid item display="flex" flexGrow={1} justifyContent="end">
+          <SocialLinks items={socialLinks} />
+        </Grid>
+      )}
     </PageContentBlock>
   );
 };

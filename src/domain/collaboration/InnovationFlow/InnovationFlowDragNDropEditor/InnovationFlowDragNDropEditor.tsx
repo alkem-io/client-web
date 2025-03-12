@@ -1,25 +1,25 @@
-import AddIcon from '@mui/icons-material/Add';
-import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
-import { PropsWithChildren, useState } from 'react';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
-import { useTranslation } from 'react-i18next';
 import i18n from '@/core/i18n/config';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
-import { Caption } from '@/core/ui/typography';
-import { InnovationFlowState } from '../InnovationFlow';
-import InnovationFlowStateMenu from './InnovationFlowStateMenu';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { EditOutlined } from '@mui/icons-material';
-import InnovationFlowStateForm from './InnovationFlowStateForm';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption } from '@/core/ui/typography';
 import { MAX_INNOVATIONFLOW_STATES } from '@/domain/templates/models/CollaborationTemplate';
+import { EditOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
+import { useState } from 'react';
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { InnovationFlowState } from '../InnovationFlow';
+import InnovationFlowStateForm from './InnovationFlowStateForm';
+import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -66,7 +66,7 @@ const InnovationFlowDragNDropEditor = ({
   onCreateFlowState,
   onEditFlowState,
   onDeleteFlowState,
-}: PropsWithChildren<InnovationFlowDragNDropEditorProps>) => {
+}: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
 
   // Dialogs for Flow States management:
@@ -116,7 +116,9 @@ const InnovationFlowDragNDropEditor = ({
                         >
                           <PageContentBlockHeader
                             title={
-                              <Caption {...parentProvider.dragHandleProps}>{getStateName(state.displayName)}</Caption>
+                              <Caption {...parentProvider.dragHandleProps}>
+                                <>{getStateName(state.displayName)}</>
+                              </Caption>
                             }
                             actions={
                               <InnovationFlowStateMenu

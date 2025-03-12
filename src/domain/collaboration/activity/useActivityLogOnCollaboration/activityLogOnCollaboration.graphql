@@ -8,13 +8,12 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     description
     type
     child
-    parentNameID
     journeyDisplayName: parentDisplayName
     space {
       id
       ... on Space {
-        profile {
-          ...RecentContributionsSpaceProfile
+        about {
+          ...SpaceAboutCardBanner
         }
       }
       # ... on RelayPaginatedSpace {

@@ -1,4 +1,4 @@
-import { Button, IconButton, IconButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
 import { Editor } from '@tiptap/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,8 +12,9 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Selection } from 'prosemirror-state';
 import { BlockTitle } from '@/core/ui/typography';
+import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
-interface ToggleLinkButtonProps extends IconButtonProps {
+interface ToggleLinkButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
@@ -104,15 +105,15 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
 
   return (
     <>
-      <IconButton
+      <MarkdownInputToolbarButton
         onClick={handleClick}
         disabled={isDisabled}
         color={isActive ? 'secondary' : undefined}
-        aria-label={t('components.wysiwyg-editor.toolbar.link.link')}
+        tooltip={t('components.wysiwyg-editor.toolbar.link.link')}
         {...buttonProps}
       >
         <LinkOutlined />
-      </IconButton>
+      </MarkdownInputToolbarButton>
       <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>
         <DialogHeader onClose={closeDialog}>
           <BlockTitle>{t('components.wysiwyg-editor.link.dialogHeader')}</BlockTitle>

@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
-import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
+import { SocialNetworkEnum, SocialNetworksSortOrder } from './models/SocialNetworks';
 
 interface SocialLinksProps {
   title?: string;
@@ -47,15 +47,25 @@ export interface SocialLinkItem {
 }
 
 const schema = yup.string().url();
+const schemaEmail = yup.string().email();
 
 export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) => {
   const filteredSortedItems = useMemo(
     () =>
       items
-        ?.filter(i => schema.isValidSync(i.url) && i.url)
-        .sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type]) || [],
+        ?.filter(
+          link =>
+            link.url &&
+            (link.type === SocialNetworkEnum.email ? schemaEmail.isValidSync(link.url) : schema.isValidSync(link.url))
+        )
+        .sort((a, b) => SocialNetworksSortOrder[a.type] - SocialNetworksSortOrder[b.type]) || [],
     [items]
   );
+
+  if (!filteredSortedItems.length) {
+    return null;
+  }
+
   return (
     <Box>
       {title && (

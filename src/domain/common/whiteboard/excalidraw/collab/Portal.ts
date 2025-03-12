@@ -37,13 +37,13 @@ interface SocketEventHandlers {
 }
 
 class Portal {
-  onRemoteSave: () => void;
+  onRemoteSave: (error?: string) => void;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithUrl>;
   socket: Socket | null = null;
-  socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
+  sceneInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
   broadcastedFiles: Set<string> = new Set();
@@ -88,6 +88,7 @@ class Portal {
       });
 
       this.socket.on('room-saved', () => this.onRemoteSave());
+      this.socket.on('room-not-saved', ({ error }) => this.onRemoteSave(error));
 
       this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
 
@@ -131,19 +132,19 @@ class Portal {
     this.socket.close();
     this.socket = null;
     this.roomId = null;
-    this.socketInitialized = false;
+    this.sceneInitialized = false;
     this.broadcastedElementVersions = new Map();
   }
 
   isOpen() {
-    return !!(this.socketInitialized && this.socket && this.roomId);
+    return !!(this.sceneInitialized && this.socket && this.roomId);
   }
 
   private _broadcastSocketData(data: SocketUpdateData, { volatile = false }: BroadcastOptions = {}) {
     return this._broadcastEvent(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, data);
   }
 
-  private _broadcastEvent(eventName: typeof WS_EVENTS[keyof typeof WS_EVENTS], data: SocketUpdateData) {
+  private _broadcastEvent(eventName: (typeof WS_EVENTS)[keyof typeof WS_EVENTS], data: SocketUpdateData) {
     if (this.isOpen()) {
       const jsonStr = JSON.stringify(data);
       const buffer = new TextEncoder().encode(jsonStr).buffer;

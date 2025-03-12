@@ -1,14 +1,13 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '@/domain/journey/space/SpaceContext/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
 import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
-import { WithApmTransaction } from '@/domain/shared/components';
+import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
 import devRoute from '@/dev/routes';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
@@ -19,6 +18,7 @@ import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSit
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -29,18 +29,34 @@ const InnovationLibraryPage = lazyWithGlobalErrorHandler(
 );
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
 const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platform/admin/routing/AdminRoute'));
-const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
-const OrganizationRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/organization/routing/OrganizationRoute')
+const UserRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/user/routing/UserRoute'),
+  withUrlResolverParams
 );
-const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
-const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
-const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
-const ProfileRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/profile/routing/ProfileRoute'));
+const OrganizationRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/organization/routing/OrganizationRoute'),
+  withUrlResolverParams
+);
+const VCRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/virtualContributor/VCRoute'),
+  withUrlResolverParams
+);
+const ForumRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/communication/discussion/routing/ForumRoute'),
+  withUrlResolverParams
+);
+const InnovationPackRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/InnovationPack/InnovationPackRoute'),
+  withUrlResolverParams
+);
+const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
+  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes'),
+  withUrlResolverParams
+);
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/space/routing/SpaceRoute'));
+const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'), withUrlResolverParams);
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -88,14 +104,12 @@ export const TopLevelRoutes = () => {
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
                 <SpaceContextProvider>
-                  <CommunityContextProvider>
-                    <EntityPageLayoutHolder>
-                      <Suspense fallback={<Loading />}>
-                        <SpaceRoute />
-                      </Suspense>
-                      <RenderPoint />
-                    </EntityPageLayoutHolder>
-                  </CommunityContextProvider>
+                  <EntityPageLayoutHolder>
+                    <Suspense fallback={<Loading />}>
+                      <SpaceRoute />
+                    </Suspense>
+                    <RenderPoint />
+                  </EntityPageLayoutHolder>
                 </SpaceContextProvider>
               </WithApmTransaction>
             </NonIdentity>
@@ -179,6 +193,18 @@ export const TopLevelRoutes = () => {
           }
         />
         <Route
+          path={`${TopLevelRoutePath.InnovationHubs}/*`}
+          element={
+            <NonIdentity>
+              <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
+                <Suspense fallback={<Loading />}>
+                  <InnovationHubsRoutes />
+                </Suspense>
+              </WithApmTransaction>
+            </NonIdentity>
+          }
+        />
+        <Route
           path={`${TopLevelRoutePath.Docs}/*`}
           element={
             <Suspense fallback={<Loading />}>
@@ -217,18 +243,6 @@ export const TopLevelRoutes = () => {
               <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
                 <Suspense fallback={<Loading />}>
                   <ForumRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Profile}`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.Profile}`}>
-                <Suspense fallback={<Loading />}>
-                  <ProfileRoute />
                 </Suspense>
               </WithApmTransaction>
             </NonIdentity>

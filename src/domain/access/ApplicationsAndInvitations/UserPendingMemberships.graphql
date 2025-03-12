@@ -8,11 +8,8 @@ query UserPendingMemberships {
       spacePendingMembershipInfo {
         id
         level
-        profile {
-          id
-          displayName
-          tagline
-          url
+        about {
+          ...SpaceAboutMinimalUrl
         }
       }
       application {

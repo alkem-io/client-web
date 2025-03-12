@@ -28,9 +28,10 @@ import { SvgIconComponent } from '@mui/icons-material';
 import { useUserContext } from '@/domain/community/user';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 interface SpaceAccountPageProps {
-  journeyId: string;
+  spaceId: string | undefined;
 }
 
 const StyledPageContentBlock = styled(PageContentBlock)(({ theme }) => ({
@@ -76,18 +77,20 @@ const LicenseActionBlock = ({
   );
 };
 
-const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
+const SpaceAccountView: FC<SpaceAccountPageProps> = ({ spaceId }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const notify = useNotification();
   const navigate = useNavigate();
   const planTranslations = getPlanTranslations(t);
+  const ensurePresence = useEnsurePresence();
   const tLink = translateWithElements(<Link target="_blank" />);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const { data, loading } = useSpaceAccountQuery({
-    variables: { spaceId: journeyId },
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
   });
 
   const [fetchOrganizationAuthorization, { data: organizationData }] = useOrganizationAuthorizationLazyQuery();
@@ -155,8 +158,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],
     awaitRefetchQueries: true,
-    onCompleted: data => {
-      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
+    onCompleted: () => {
+      notify(t('pages.admin.space.notifications.space-removed'), 'success');
       navigate(ROUTE_HOME, { replace: true });
       // Resetting the Apollo cache is not working well, because the page has not fully navigated
       // to the dashboard when we reset, so Apollo is trying to reload SpaceProvider
@@ -165,12 +168,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     },
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string | undefined) => {
+    const requiredSpaceId = ensurePresence(id, 'SpaceId');
     return deleteSpace({
       variables: {
-        input: {
-          ID: id,
-        },
+        spaceId: requiredSpaceId,
       },
     });
   };
@@ -182,7 +184,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding>
               <BlockTitle>{t('common.url')}</BlockTitle>
-              <Caption>{space.profile.url}</Caption>
+              <Caption>{space.about.profile.url}</Caption>
             </Gutters>
             <Gutters disablePadding>
               <BlockTitle>{t('common.visibility')}</BlockTitle>
@@ -303,7 +305,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               entity={t('common.space')}
               open={deleteDialogOpen}
               onClose={() => setDeleteDialogOpen(false)}
-              onDelete={() => handleDelete(journeyId)}
+              onDelete={() => handleDelete(spaceId)}
             />
           )}
         </>

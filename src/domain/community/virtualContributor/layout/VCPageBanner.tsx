@@ -1,11 +1,11 @@
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { buildSettingsProfileUrl } from '@/main/routing/urlBuilders';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const VCPageBanner = () => {
-  const { vcId } = useUrlResolver();
+  const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
   const { data, loading } = useVirtualContributorQuery({
     variables: { id: vcId! },
@@ -20,8 +20,8 @@ const VCPageBanner = () => {
       isVirtualContributor
       entityId={vc?.id}
       profile={profile}
-      settingsUri={hasSettingsAccess && profile?.url ? buildSettingsProfileUrl(profile.url) : undefined}
-      loading={loading}
+      settingsUri={hasSettingsAccess && profile?.url ? buildSettingsUrl(profile.url) : undefined}
+      loading={urlResolverLoading || loading}
     />
   );
 };

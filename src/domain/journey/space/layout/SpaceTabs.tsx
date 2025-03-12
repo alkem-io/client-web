@@ -9,17 +9,17 @@ import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 const SpaceTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
 
-  const { profile, permissions } = useSpace();
-  const settingsUrl = buildSettingsUrl(profile.url);
+  const { about, permissions } = useSpace();
+  const settingsUrl = buildSettingsUrl(about.profile.url);
 
   return (
     <SpacePageTabs
       {...props}
       entityTypeName="space"
-      showSettings={permissions.viewerCanUpdate}
+      showSettings={permissions.canUpdate}
       settingsUrl={settingsUrl}
-      rootUrl={profile.url}
-      shareUrl={profile.url}
+      rootUrl={about.profile.url}
+      shareUrl={about.profile.url}
       subEntityTab={{
         label: t('common.subspaces'),
         section: EntityPageSection.Subspaces,

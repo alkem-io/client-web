@@ -1,6 +1,5 @@
 fragment BasicOrganizationDetails on Organization {
   id
-  nameID
   profile {
     id
     url

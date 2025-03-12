@@ -53,9 +53,13 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onCancel}>
       <DialogHeader onClose={actions.onCancel}>
-        <BlockTitle>{title}</BlockTitle>
+        <BlockTitle>
+          <>{title}</>
+        </BlockTitle>
       </DialogHeader>
-      <DialogContent>{content}</DialogContent>
+      <DialogContent>
+        <>{content}</>
+      </DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
         <Button variant="contained" onClick={actions.onCancel}>
           {t('buttons.cancel')}

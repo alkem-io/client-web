@@ -1,12 +1,13 @@
 import { useAddReactionMutation, useRemoveReactionMutation } from '@/core/apollo/generated/apollo-hooks';
-import ensurePresence from '@/core/utils/ensurePresence';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 const useCommentReactionsMutations = (roomId: string | undefined) => {
   const [addReaction] = useAddReactionMutation();
   const [removeReaction] = useRemoveReactionMutation();
+  const ensurePresence = useEnsurePresence();
 
   const handleAddReaction = ({ emoji, messageId }: { emoji: string; messageId: string }) => {
-    const requiredRoomId = ensurePresence(roomId);
+    const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return addReaction({
       variables: {
@@ -18,7 +19,7 @@ const useCommentReactionsMutations = (roomId: string | undefined) => {
   };
 
   const handleRemoveReaction = (reactionId: string) => {
-    const requiredRoomId = ensurePresence(roomId);
+    const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return removeReaction({
       variables: {

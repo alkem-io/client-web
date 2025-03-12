@@ -57,7 +57,7 @@ const StandalonePlatformNavigationMenu = forwardRef<HTMLDivElement, StandalonePl
           >
             {PLATFORM_NAVIGATION_MENU_ITEMS.map(({ label, ...props }) => (
               <PlatformNavigationMenuItem key={label} {...props} onClick={onClose}>
-                {t(label)}
+                <>{t(label)}</>
               </PlatformNavigationMenuItem>
             ))}
             <Divider component="li" sx={{ width: '75%', marginY: 1 }} />
