@@ -4,7 +4,7 @@
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Assistance d'Alkemio",
-      "content": "Use the Alkemio guidance chat to get automatic answers to your questions from Alkemio’s documentation.\n\nThis is an __advanced search module__ powered by a widely used online generative AI engine. It interprets your question and guides you to the most relevant help from the Alkemio help center. You can see the sources of the answers as well.\n\n__Don’t worry about your privacy:__ the search engine does not use or store any user data, and it cannot link the interaction to individual users. If you need to contact the Alkemio team, please click the contact button below."
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its profile!"
     },
     "feedback": {
       "message": "Is the answer relevant?",
@@ -207,6 +207,11 @@
     }
   },
   "common": {
+    "space-level": {
+      "L0": "Space",
+      "L1": "Subspace",
+      "L2": "Subsubspace"
+    },
     "account": "Account",
     "all": "All",
     "knowledge-base": "Base de connaissances",
@@ -302,7 +307,6 @@
     "field-required": "Ce champ est obligatoire",
     "field-min-length": "Cet champ doit contenir au moins {{min}} caractères",
     "field-max-length": "Cet champ doit contenir au moins {{max}} caractères",
-    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Appartenance",
     "owner": "Propriétaire",
     "admin": "Administrateur",
@@ -315,6 +319,7 @@
     "dashboard": "Tableau de bord",
     "contribute": "Contribuer",
     "context": "Contexte",
+    "index": "Profile",
     "community": "Communauté",
     "library": "Library",
     "templateLibrary": "Template Library",
@@ -493,7 +498,8 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    }
+    },
+    "supportEmail": "support@alkem.io"
   },
   "community": {
     "memberUsers": "Membres ({{count}})",
@@ -710,62 +716,62 @@
     }
   },
   "context": {
-    "space": {
+    "L0": {
       "tagline": {
-        "title": "Slogan",
-        "description": "Expliquez en une phrase de quoi ce Hub s'agit.",
+        "title": "Tagline",
+        "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Arrière plan",
-        "description": "Donnez un bref aperçu de la nécessité de ce Hub et comment il s'est produit.",
+      "description": {
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "Que va changer ce Hub ? Comment les personnes et les organisations seront-elles affectées ?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "En quoi consiste cette communauté?",
-        "description": "Quel est le cadre de référence de ce Hub ?",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Qui devrait être impliqué?",
-        "description": "Pensez aux individus, aux organisations, aux organismes publics, aux instituts de recherche, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       }
     },
-    "subspace": {
+    "L1": {
       "displayName": {
-        "title": "Title",
+        "title": "Title *",
         "description": "",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Subspace Statement",
+        "title": "Tagline",
         "description": "",
         "placeholder": ""
       },
-      "background": {
-        "title": "Current Reality",
+      "description": {
+        "title": "What",
         "description": "",
         "placeholder": ""
       },
-      "impact": {
-        "title": "Additional context",
-        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
+      "when": {
+        "title": "Impact",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
-        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -782,7 +788,7 @@
         "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
-    "subsubspace": {
+    "L2": {
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",
@@ -793,24 +799,24 @@
         "description": "In one sentence, explain what this Subspace is about.",
         "placeholder": ""
       },
-      "background": {
-        "title": "Background",
-        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
+      "description": {
+        "title": "What",
+        "description": "",
         "placeholder": ""
       },
-      "impact": {
+      "when": {
         "title": "Impact",
-        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
-      "vision": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
+      "why": {
+        "title": "Why",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Subspace.",
+        "title": "Who",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
@@ -878,6 +884,8 @@
         "title": "Subspace URL",
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
+        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
@@ -921,8 +929,8 @@
       "editableBy": {
         "title": "This whiteboard can be edited by:",
         "options": {
-          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
-          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
+          "ADMINS": "The owner and the admins and leads of this (sub)space",
           "OWNER": "The owner of this whiteboard"
         }
       }
@@ -954,7 +962,7 @@
       "aria-label": "Powered by Alkemio"
     },
     "journeyUnauthorizedDialog": {
-      "message": "Ceci est une communauté privée et la plupart de son contenu est réservé aux membres seulement. Si vous souhaitez vous inscrire, cliquez ici pour postuler."
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
     "journeyPageBannerCard": {
       "parentJourney": "Partie de:"
@@ -1048,16 +1056,18 @@
       "inviteToRole": "Invite to be a: "
     },
     "inviteContributorsDialog": {
+      "title": "Virtual Contributors Store",
       "vcs": {
         "onAccount": {
-          "title": "Virtual Contributors from my account"
+          "title": "Virtual Contributors linked to this Space's account"
         },
         "inLibrary": {
           "title": "Other Virtual Contributors"
         },
         "emptyMessage": "No available Virtual Contributors"
       },
-      "successfullyAdded": "{{contributor}} added successfully"
+      "successfullyAdded": "{{contributor}} added successfully",
+      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -1104,7 +1114,8 @@
         "list.indent": "Retrait",
         "list.outdent": "Diminuer le retrait",
         "remove.remove": "Supprimer",
-        "embed.video": "Embed Video or other Media"
+        "embed.video": "Embed Video or other Media",
+        "horizontal.line": "Insert horizontal line"
       },
       "image": {
         "dialogHeader": "Insérer image"
@@ -1155,8 +1166,8 @@
     "activity-log-section": {
       "title": "Contributions récurrentes",
       "activity-sign-in-error-message": "Pour voir les contributions récentes, veuillez vous connecter.",
-      "activity-join-error-message": "Pour voir les contributions récentes, veuillez vous joindre si vous n'êtes pas encore membre de ce {{spaceType}}.",
-      "activity-sign-in-and-join-error-message": "Pour voir les contributions récentes, veuillez vous joindre si vous n'êtes pas encore membre de ce {{spaceType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -1285,6 +1296,7 @@
     "visual-upload": {
       "loading": "Chargement de l'image",
       "success": "Image ajoutée avec succès",
+      "error": "Error occurred while uploading the image",
       "upload-hover": "Importer l'image",
       "no-data": "Pas encore défini"
     },
@@ -1402,7 +1414,7 @@
         "select": "Sélectionnez un hôte"
       },
       "read-access": "Autoriser l'accès en lecture pour les membres non-hub aux challenges",
-      "about": "About this Space",
+      "about": "Details",
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
@@ -1574,6 +1586,19 @@
         },
         "website": {
           "title": "Site Web"
+        },
+        "references": {
+          "title": "References"
+        },
+        "engines": {
+          "external": "OpenAI Generic",
+          "externalAssistant": "OpenAI Assistant",
+          "externalVCDescription": "This Virtual Contributor utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+        },
+        "bodyOfKnowledge": {
+          "title": "Body of Knowledge",
+          "privateBokTooltip": "This Body of Knowledge is private",
+          "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:"
         }
       }
     },
@@ -1684,6 +1709,11 @@
         }
       },
       "emptyInbox": "No pending notifications"
+    },
+    "spaceWelcomeDialog": {
+      "title": "🎉 Your Space is Ready!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and settings.<br>📝 <b>Add content</b> - Create whiteboards, posts, and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the Space Settings.<br>📚 <b>Need help?</b> Tutorials are available in your Space if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "button": "Get Started"
     }
   },
   "navigation": {
@@ -1794,6 +1824,9 @@
           "profile": {
             "description": "Ici, vous pouvez modifier le profil pour cette {{entity}}."
           },
+          "about": {
+            "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
+          },
           "context": {
             "description": "Ici, vous pouvez modifier le profil pour cette {{entity}}."
           },
@@ -1877,6 +1910,10 @@
               "titleWithDaysLeft": "Free Trial - {{daysLeft}} days left",
               "description": "Click here to set up your full {{planName}} subscription"
             },
+            "externalSubExists": "This account already has an existing Wingback account",
+            "addExternalSub": "Create a Wingback account",
+            "externalSubAdded": "Successfully created a Wingback account",
+            "externalSubErrored": "An error occurred while creating the Wingback account",
             "yourLicense": "Your current license:",
             "changeLicense": "Change the Space license",
             "changeLicense_description": "Contact the Alkemio team to change the license.",
@@ -2010,14 +2047,16 @@
         "notifications": {
           "space-created": "Hub créé avec succès.",
           "errorCreatingSpace": "An error ocurred while creating the Space.",
-          "space-removed": "Hub '{{name}}' supprimé avec succès."
+          "space-removed": "Space removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Paramètres sauvegardés avec succès",
           "visibility": {
             "title": "Visibilité",
             "public": "<b>Public:</b> This space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
+            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible.",
+            "publicSubspace": "<b>Public:</b> This Subspace and all its contents are visible to everyone who has access to the Space it belongs to. If the Space itself is public, this Subspace and its contents will be visible to all users, including those outside the Space.",
+            "privateSubspace": "<b>Private:</b> This Subspace is visible to all members of the Space, but its contents are restricted and can only be accessed by members of the Subspace. No application required: All Space members can directly join, without you having to review their application."
           },
           "license-features": {
             "title": "Space Features",
@@ -2254,7 +2293,7 @@
         },
         "recentJourneys": {
           "seeMore": "Explore all your Spaces",
-          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
+          "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
         "campaignBlock": {
           "createYourVCButton": "Create your Virtual Contributor!",
@@ -2278,7 +2317,16 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -2359,22 +2407,22 @@
               "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
-              "title": "💭 Have a look at the FAQ",
+              "title": "💭 Have a look at the documentation",
               "description": "To find answers to your most urgent questions",
               "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
-              "url": "https://welcome.alkem.io/faq/"
+              "url": "https://alkem.io/docs"
+            },
+            {
+              "title": "📑 Read more about Alkemio's Space structure",
+              "description": "To help you get started smoothly on the platform",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://alkem.io/docs/structure/space"
             },
             {
               "title": "⚒️ Start a new Space",
               "description": "To gather contributors for your envisioned change",
               "imageUrl": "/my-dashboard/tipsntricks-space.webp",
               "url": "https://welcome.alkem.io/want-to-own-space/"
-            },
-            {
-              "title": "📑 Read more about the Key concepts",
-              "description": "To help you get started smoothly on the platform",
-              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
-              "url": "https://welcome.alkem.io/help/key-concepts/"
             },
             {
               "title": "💬 Powered by Generative AI",
@@ -2492,6 +2540,8 @@
       "no-whiteboards": "Aucun tableau blanc n'a encore été créé. Soyez le premier à en ajouter un.",
       "locked-by": "{{user}} est en train de modifier ce tableau blanc",
       "loadingScene": "Loading scene",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your whiteboard to your local disk.</p>",
       "state-actions": {
         "save-as-template": "Enregistrer en tant que modèle",
         "save-and-check-in": "Enregistrer & arrêter l'édition",
@@ -2622,6 +2672,20 @@
       "accountResources": {
         "sectionTitle": "Resources I host"
       },
+      "membership": {
+        "space": {
+          "confirmation-dialog": {
+            "title": "Leaving Space {{space}}",
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this Space or its Subspaces. If this Space is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Space, you will also be automatically removed from there."
+          }
+        },
+        "subspace": {
+          "confirmation-dialog": {
+            "title": "Leaving Subspace {{space}}",
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this Subspace or its Subspaces. If this Subspace is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Subspace, you will also be automatically removed from there."
+          }
+        }
+      },
       "communities": {
         "title": "Groupes",
         "help": "Communautés dont l'utilisateur fait partie",
@@ -2699,6 +2763,18 @@
           "title": "Update Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Private Virtual Contributor Knowledge",
+          "tooltip1": "Public: When users visit {{vcName}}'s profile, they can see the content of its body of knowledge.",
+          "tooltip2": "Private: Only the account admins can see the content of the body of knowledge."
+        }
+      },
+      "knowledgeBase": {
+        "noAccess": {
+          "title": "Private Virtual Contributor Knowledge",
+          "description": "You don't have access to the knowledge base of this Virtual Contributor. Please contact the owner of the Virtual Contributor for more information."
         }
       }
     },
@@ -2848,6 +2924,10 @@
     "delete": {
       "title": "Voulez-vous vraiment supprimer cette annonce ?",
       "description": "Cette action ne peut pas être annulée"
+    },
+    "closeConfirm": {
+      "title": "Discard Callout",
+      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
@@ -2883,27 +2963,42 @@
       {
         "key": "transition-énergie",
         "name": "Transition énergétique",
-        "tags": ["Transition énergétique", "Énergie transitoire"]
+        "tags": [
+          "Transition énergétique",
+          "Énergie transitoire"
+        ]
       },
       {
         "key": "société inclusive",
         "name": "Société inclusive",
-        "tags": ["Société inclusive", "Samenleving inclusive"]
+        "tags": [
+          "Société inclusive",
+          "Samenleving inclusive"
+        ]
       },
       {
         "key": "services publics",
         "name": "Services publics",
-        "tags": ["Services publics", "Publieke Diensten"]
+        "tags": [
+          "Services publics",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovations"]
+        "tags": [
+          "Innovation",
+          "Innovations"
+        ]
       },
       {
         "key": "digitalisation de la société",
         "name": "Digitalisation de la société",
-        "tags": ["Digitalisation de la société", "Numérisation"]
+        "tags": [
+          "Digitalisation de la société",
+          "Numérisation"
+        ]
       }
     ]
   },
@@ -2970,7 +3065,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "features": [
+          "Up to 10 members",
+          "Various tools, including standard Whiteboards"
+        ],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -2978,7 +3076,11 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "features": [
+          "Up to 100 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },
@@ -3034,6 +3136,7 @@
     },
     "name": "Name",
     "bodyOfKnowledge": "Body Of Knowledge",
+    "placeholder": "Here you'll find a collection of documents and texts that are ingested to give this VC its insights and functionality.",
     "infoTextBoK": "Select the Subspace you want as a body of knowledge for this Virtual Contributor",
     "noSubspacesInfo": "Create a Subspace first, and populate it with the relevant information for your Virtual Contributor.",
     "confirmDeletion": {
@@ -3055,7 +3158,7 @@
     },
     "initial": {
       "title": "Create a Virtual Contributor",
-      "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
+      "profileDescription": "Choose a name and avatar now, or personalize your profile later on the VC Profile page.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",
@@ -3142,7 +3245,7 @@
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need to be an admin of a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",
