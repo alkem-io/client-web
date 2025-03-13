@@ -39,7 +39,6 @@ import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAI
 import { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
 import TryVcInfo from './TryVC/TryVcInfo';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
@@ -457,9 +456,9 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       return;
     }
 
-    await uploadAvatar(avatar, createdVCData?.profile?.avatar?.id);
-
     setCreatedVc(createdVCData);
+
+    await uploadAvatar(avatar, createdVCData?.profile?.avatar?.id);
 
     if (hasDocuments) {
       const createdLinkCollection = createdVCData.knowledgeBase?.calloutsSet?.callouts?.find(
@@ -468,9 +467,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       await addDocumentLinksToCallout(documents, createdLinkCollection?.id);
     }
 
-    // Refresh explicitly the ingestion after callouts creation
     refreshIngestion(createdVCData.id);
-
     setChooseCommunityStep();
   };
 
@@ -525,24 +522,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         return;
       }
 
+      setCreatedVc(createdVC);
+
       await uploadAvatar(avatar, createdVC?.profile?.avatar?.id);
 
-      // Refresh explicitly the ingestion
       refreshIngestion(createdVC.id);
-
-      const addToCommunity = await addVCToCommunity({
-        virtualContributorId: createdVC?.id,
-        parentRoleSetIds: selectedKnowledge.parentRoleSetIds,
-        spaceId: selectedKnowledge.id,
-      });
-
-      if (addToCommunity) {
-        addVCCreationCache(createdVC?.id);
-        await navigateToTryYourVC(getSpaceUrlFromSubSpace(selectedKnowledge.about.profile.url ?? ''), undefined);
-      } else {
-        notifyErrorOnAddToCommunity();
-        handleCloseWizard();
-      }
+      setChooseCommunityStep();
     }
   };
 
