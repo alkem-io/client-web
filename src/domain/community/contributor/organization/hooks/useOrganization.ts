@@ -1,4 +1,4 @@
 import { useContext } from 'react';
 import { OrganizationContext } from '../context/OrganizationProvider';
 
-export const useOrganization = () => useContext(OrganizationContext);
+export const useOrganizationContext = () => useContext(OrganizationContext);

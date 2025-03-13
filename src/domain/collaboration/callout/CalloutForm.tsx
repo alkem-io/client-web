@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutState, CalloutType, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutState,
+  CalloutType,
+  Tagset,
+  TagsetReservedName,
+  TagsetType,
+} from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -22,7 +28,6 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
 
@@ -95,7 +100,7 @@ const CalloutForm = ({
     () => [
       {
         id: '-1',
-        name: DEFAULT_TAGSET,
+        name: TagsetReservedName.Default,
         tags: callout?.tags ?? [],
         allowedValues: [],
         type: TagsetType.Freeform,

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
@@ -13,7 +13,7 @@ export const OrganizationAssociatesView: FC = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
 
-  const { roleSetId } = useOrganization();
+  const { roleSetId } = useOrganizationContext();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
   const {

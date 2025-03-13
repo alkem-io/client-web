@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import Loading from '@/core/ui/loading/Loading';
 import { Trans, useTranslation } from 'react-i18next';
 import {
@@ -21,7 +21,7 @@ const defaultOrganizationSettings = {
 };
 
 export const OrganizationAdminSettingsView = () => {
-  const { organizationId, loading: isLoadingOrganization } = useOrganization();
+  const { organizationId, loading: isLoadingOrganization } = useOrganizationContext();
   const { t } = useTranslation();
 
   const { data, loading } = useOrganizationSettingsQuery({

@@ -1,10 +1,9 @@
-import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
 import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/CalloutLayout';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SaveButton from '@/core/ui/actions/SaveButton';
@@ -74,7 +73,7 @@ const CalloutEditDialog = ({
         tagsets: [
           {
             id: callout.framing.profile.tagset?.id,
-            name: DEFAULT_TAGSET,
+            name: TagsetReservedName.Default,
             tags: newCallout.tags,
             allowedValues: [],
             type: TagsetType.Freeform,
