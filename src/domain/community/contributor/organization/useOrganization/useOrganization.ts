@@ -2,23 +2,21 @@ import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from 
 import {
   AuthorizationPrivilege,
   OrganizationInfoFragment,
-  RoleName,
   RoleSetContributorType,
   SpaceLevel,
+  TagsetReservedName,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
-import { ContainerChildProps } from '@/core/container/container';
-import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
-import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { ApolloError } from '@apollo/client';
 import { useCallback, useMemo } from 'react';
+import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
-import { useOrganization } from '../hooks/useOrganization';
+import { useOrganizationContext } from '../hooks/useOrganization';
 
-export interface OrganizationContainerEntities {
+export interface UseOrganizationProvided {
   organization?: OrganizationInfoFragment;
   references: {
     id: string;
@@ -36,26 +34,11 @@ export interface OrganizationContainerEntities {
   };
   website?: string;
   handleSendMessage: (text: string) => Promise<void>;
-}
-
-export interface OrganizationContainerActions {}
-
-export interface OrganizationContainerState {
   loading: boolean;
-  error?: ApolloError;
 }
 
-export interface OrganizationPageContainerProps
-  extends ContainerChildProps<
-    OrganizationContainerEntities,
-    OrganizationContainerActions,
-    OrganizationContainerState
-  > {}
-
-const NO_PRIVILEGES = [];
-
-export const OrganizationPageContainer = ({ children }: OrganizationPageContainerProps) => {
-  const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
+const useOrganizationProvider = (): UseOrganizationProvided => {
+  const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganizationContext();
 
   const { t } = useTranslation();
   const { usersByRole } = useRoleSetManager({
@@ -83,16 +66,17 @@ export const OrganizationPageContainer = ({ children }: OrganizationPageContaine
   }, [organization?.profile.references]);
 
   const keywords = useMemo(
-    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
+    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords)?.tags || [],
     [organization]
   );
 
   const capabilities = useMemo(
-    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === CAPABILITIES_TAGSET)?.tags || [],
+    () =>
+      organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities)?.tags || [],
     [organization]
   );
 
-  const organizationPrivileges = organization?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const organizationPrivileges = organization?.authorization?.myPrivileges ?? [];
 
   const permissions = {
     canEdit: organizationPrivileges.includes(AuthorizationPrivilege.Update),
@@ -159,26 +143,17 @@ export const OrganizationPageContainer = ({ children }: OrganizationPageContaine
     [sendMessageToOrganization, organizationId]
   );
 
-  return (
-    <>
-      {children(
-        {
-          organization,
-          permissions,
-          references,
-          keywords,
-          capabilities,
-          associates,
-          contributions,
-          handleSendMessage,
-        },
-        {
-          loading: loading || orgRolesLoading,
-        },
-        {}
-      )}
-    </>
-  );
+  return {
+    organization,
+    permissions,
+    references,
+    keywords,
+    capabilities,
+    associates,
+    contributions,
+    handleSendMessage,
+    loading: loading || orgRolesLoading,
+  };
 };
 
-export default OrganizationPageContainer;
+export default useOrganizationProvider;

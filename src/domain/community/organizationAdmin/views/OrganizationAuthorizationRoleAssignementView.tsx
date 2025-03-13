@@ -1,6 +1,6 @@
 import React from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '../../user';
@@ -13,7 +13,7 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
   const { t } = useTranslation();
   const { user } = useUserContext();
 
-  const { roleSetId } = useOrganization();
+  const { roleSetId } = useOrganizationContext();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
   const refetch = () => {

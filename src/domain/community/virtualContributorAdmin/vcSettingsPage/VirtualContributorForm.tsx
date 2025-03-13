@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { Tagset, UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
+import {
+  Tagset,
+  TagsetReservedName,
+  UpdateVirtualContributorInput,
+  Visual,
+} from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -22,7 +27,6 @@ import { BasicSpaceProps } from '../../virtualContributor/components/BasicSpaceC
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import { KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 
 type VirtualContributorProps = {
@@ -115,7 +119,7 @@ export const VirtualContributorForm = ({
 
   // use keywords tagset (existing after creation of VC) as tags
   const keywordsTagsetWrapped = useMemo(() => {
-    const tagset = tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET);
+    const tagset = tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase());
     return tagset && [tagset];
   }, [tagsets]);
 

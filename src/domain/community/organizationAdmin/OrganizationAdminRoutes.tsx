@@ -6,14 +6,14 @@ import OrganizationAccountPage from './tabs/OrganizationAdminAccountPage';
 import OrganizationAdminCommunityPage from './tabs/OrganizationAdminCommunityPage';
 import OrganizationAdminAuthorizationPage from './tabs/OrganizationAdminAuthorizationPage';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
-import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import OrganizationAdminSettingsPage from './tabs/OrganizationAdminSettingsPage';
 
 const OrganizationAdminRoutes: FC = () => {
-  const { organization, loading } = useOrganization();
+  const { organization, loading } = useOrganizationContext();
 
   if (loading) return <Loading />;
 
