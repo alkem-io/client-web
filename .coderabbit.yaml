@@ -1,5 +1,6 @@
 language: en
 early_access: false
+ignored_branch: "develop_translations"
 reviews:
   high_level_summary: true
   sequence_diagrams: true
