@@ -706,6 +706,17 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const ClassificationDetailsFragmentDoc = gql`
+  fragment ClassificationDetails on Callout {
+    classification {
+      id
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -724,8 +735,10 @@ export const CalloutFragmentDoc = gql`
         displayName
       }
     }
+    ...ClassificationDetails
     visibility
   }
+  ${ClassificationDetailsFragmentDoc}
 `;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
@@ -908,6 +921,7 @@ export const CalloutDetailsFragmentDoc = gql`
         ...WhiteboardDetails
       }
     }
+    ...ClassificationDetails
     contributionPolicy {
       state
     }
@@ -937,6 +951,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${ClassificationDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
@@ -5889,17 +5904,10 @@ export const CalloutPageCalloutDocument = gql`
   query CalloutPageCallout($calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
-        classification {
-          id
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
-          }
-        }
         ...CalloutDetails
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${CalloutDetailsFragmentDoc}
 `;
 
@@ -6771,43 +6779,10 @@ export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions
 export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
     updateCallout(calloutData: $calloutData) {
-      id
-      classification {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
-      }
-      framing {
-        id
-        profile {
-          id
-          description
-          displayName
-          tagset {
-            ...TagsetDetails
-          }
-          references {
-            id
-            name
-            uri
-          }
-        }
-      }
-      contributionDefaults {
-        id
-        postDescription
-        whiteboardContent
-      }
-      contributionPolicy {
-        id
-        state
-      }
-      type
-      visibility
+      ...CalloutDetails
     }
   }
-  ${TagsetDetailsFragmentDoc}
+  ${CalloutDetailsFragmentDoc}
 `;
 export type UpdateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutMutation,
@@ -7569,17 +7544,10 @@ export function refetchCalloutsSetAuthorizationQuery(variables: SchemaTypes.Call
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
     createCalloutOnCalloutsSet(calloutData: $calloutData) {
-      classification {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
-      }
       ...CalloutDetails
       nameID
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${CalloutDetailsFragmentDoc}
 `;
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
@@ -7624,11 +7592,7 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutationVariables
 >;
 export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
-  query CalloutsOnCalloutsSetUsingClassification(
-    $calloutsSetId: UUID!
-    $classificationByFlowStateEnabled: Boolean! = true
-    $classificationTagsets: [TagsetArgs!] = []
-  ) {
+  query CalloutsOnCalloutsSetUsingClassification($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
         id
@@ -7637,18 +7601,11 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
           myPrivileges
         }
         callouts(classificationTagsets: $classificationTagsets) {
-          classification @include(if: $classificationByFlowStateEnabled) {
-            id
-            flowState: tagset(tagsetName: FLOW_STATE) {
-              ...TagsetDetails
-            }
-          }
           ...Callout
         }
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${CalloutFragmentDoc}
 `;
 
@@ -7665,7 +7622,6 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
  * const { data, loading, error } = useCalloutsOnCalloutsSetUsingClassificationQuery({
  *   variables: {
  *      calloutsSetId: // value for 'calloutsSetId'
- *      classificationByFlowStateEnabled: // value for 'classificationByFlowStateEnabled'
  *      classificationTagsets: // value for 'classificationTagsets'
  *   },
  * });
@@ -7713,20 +7669,13 @@ export function refetchCalloutsOnCalloutsSetUsingClassificationQuery(
 }
 
 export const CalloutDetailsDocument = gql`
-  query CalloutDetails($calloutId: UUID!, $includeClassification: Boolean! = true) {
+  query CalloutDetails($calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
-        classification @include(if: $includeClassification) {
-          id
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
-          }
-        }
         ...CalloutDetails
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${CalloutDetailsFragmentDoc}
 `;
 
@@ -7743,7 +7692,6 @@ export const CalloutDetailsDocument = gql`
  * const { data, loading, error } = useCalloutDetailsQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      includeClassification: // value for 'includeClassification'
  *   },
  * });
  */
@@ -11012,75 +10960,6 @@ export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.Associ
   return { query: AssociatedOrganizationDocument, variables: variables };
 }
 
-export const RolesOrganizationDocument = gql`
-  query rolesOrganization($organizationId: UUID!) {
-    rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
-      id
-      spaces {
-        id
-        roles
-        displayName
-        visibility
-        subspaces {
-          id
-          displayName
-          roles
-          level
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useRolesOrganizationQuery__
- *
- * To run a query within a React component, call `useRolesOrganizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useRolesOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRolesOrganizationQuery({
- *   variables: {
- *      organizationId: // value for 'organizationId'
- *   },
- * });
- */
-export function useRolesOrganizationQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>(
-    RolesOrganizationDocument,
-    options
-  );
-}
-
-export function useRolesOrganizationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RolesOrganizationQuery,
-    SchemaTypes.RolesOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>(
-    RolesOrganizationDocument,
-    options
-  );
-}
-
-export type RolesOrganizationQueryHookResult = ReturnType<typeof useRolesOrganizationQuery>;
-export type RolesOrganizationLazyQueryHookResult = ReturnType<typeof useRolesOrganizationLazyQuery>;
-export type RolesOrganizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.RolesOrganizationQuery,
-  SchemaTypes.RolesOrganizationQueryVariables
->;
-export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
-  return { query: RolesOrganizationDocument, variables: variables };
-}
-
 export const OrganizationInfoDocument = gql`
   query organizationInfo($organizationId: UUID!) {
     lookup {
@@ -11422,6 +11301,75 @@ export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
   return { query: OrganizationProfileInfoDocument, variables: variables };
+}
+
+export const RolesOrganizationDocument = gql`
+  query rolesOrganization($organizationId: UUID!) {
+    rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
+      spaces {
+        id
+        roles
+        displayName
+        visibility
+        subspaces {
+          id
+          displayName
+          roles
+          level
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useRolesOrganizationQuery__
+ *
+ * To run a query within a React component, call `useRolesOrganizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRolesOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRolesOrganizationQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useRolesOrganizationQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>(
+    RolesOrganizationDocument,
+    options
+  );
+}
+
+export function useRolesOrganizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RolesOrganizationQuery,
+    SchemaTypes.RolesOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>(
+    RolesOrganizationDocument,
+    options
+  );
+}
+
+export type RolesOrganizationQueryHookResult = ReturnType<typeof useRolesOrganizationQuery>;
+export type RolesOrganizationLazyQueryHookResult = ReturnType<typeof useRolesOrganizationLazyQuery>;
+export type RolesOrganizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.RolesOrganizationQuery,
+  SchemaTypes.RolesOrganizationQueryVariables
+>;
+export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
+  return { query: RolesOrganizationDocument, variables: variables };
 }
 
 export const AccountResourcesInfoDocument = gql`

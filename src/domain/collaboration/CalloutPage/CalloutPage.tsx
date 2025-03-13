@@ -27,7 +27,7 @@ type CalloutLocation = {
 
 export interface CalloutPageProps {
   renderPage: (calloutGroupName?: string) => ReactElement;
-  parentRoute: string | ((calloutGroup: string | undefined) => string);
+  parentRoute: string | ((flowState: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
 
@@ -44,7 +44,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  *                   (such as routes for Post/Whiteboard dialogs).
  * @constructor
  */
-const CalloutPage = ({ renderPage, children }: CalloutPageProps) => {
+const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) => {
   const {
     spaceId,
     levelZeroSpaceId,
@@ -84,7 +84,6 @@ const CalloutPage = ({ renderPage, children }: CalloutPageProps) => {
 
     const draft = callout.visibility === CalloutVisibility.Draft;
     const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-
     const result: TypedCalloutDetails = {
       ...callout,
       authorization: {
@@ -127,9 +126,9 @@ const CalloutPage = ({ renderPage, children }: CalloutPageProps) => {
       </NotFoundPageLayout>
     );
   }
+  const calloutGroupName = typedCalloutDetails?.classification?.flowState?.tags[0] ?? '';
 
-  const parentPagePath = ''; // FIXCME
-
+  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroupName) : parentRoute;
   const handleClose = () => {
     backOrElse(parentPagePath);
   };

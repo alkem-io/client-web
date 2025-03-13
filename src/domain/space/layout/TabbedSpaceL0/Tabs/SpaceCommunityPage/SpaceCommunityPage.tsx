@@ -129,16 +129,12 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
-  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
+  const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout, loading } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    includeClassification: true,
   });
-
-  // TODO
-  const loading = false;
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>

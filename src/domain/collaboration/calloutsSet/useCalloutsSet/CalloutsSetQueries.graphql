@@ -1,6 +1,5 @@
 query CalloutsOnCalloutsSetUsingClassification(
   $calloutsSetId: UUID!
-  $classificationByFlowStateEnabled: Boolean! = true
   $classificationTagsets: [TagsetArgs!] = []
 ) {
   lookup {
@@ -11,12 +10,6 @@ query CalloutsOnCalloutsSetUsingClassification(
         myPrivileges
       }
       callouts(classificationTagsets: $classificationTagsets) {
-        classification @include(if: $classificationByFlowStateEnabled) {
-          id
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
-          }
-        }
         ...Callout
       }
     }
@@ -41,19 +34,23 @@ fragment Callout on Callout {
       displayName
     }
   }
+  ...ClassificationDetails
   visibility
 }
 
-query CalloutDetails($calloutId: UUID!, $includeClassification: Boolean! = true) {
+query CalloutDetails($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
-      classification @include(if: $includeClassification) {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
-      }
       ...CalloutDetails
+    }
+  }
+}
+
+fragment ClassificationDetails on Callout {
+  classification {
+    id
+    flowState: tagset(tagsetName: FLOW_STATE) {
+      ...TagsetDetails
     }
   }
 }
@@ -82,6 +79,7 @@ fragment CalloutDetails on Callout {
       ...WhiteboardDetails
     }
   }
+  ...ClassificationDetails
   contributionPolicy {
     state
   }

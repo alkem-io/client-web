@@ -70,7 +70,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   };
 
   const [deleteCallout] = useDeleteCalloutMutation({
-    refetchQueries: ['Callouts'],
+    refetchQueries: ['CalloutsOnCalloutsSetUsingClassification'],
   });
 
   const handleClose = () => {
@@ -91,7 +91,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   } = useCalloutDetailsQuery({
     variables: {
       calloutId: calloutId!,
-      includeClassification: false,
     },
     skip: !calloutId,
   });

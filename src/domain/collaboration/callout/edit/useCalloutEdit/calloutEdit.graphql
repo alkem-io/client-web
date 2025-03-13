@@ -1,39 +1,6 @@
 mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
   updateCallout(calloutData: $calloutData) {
-    id
-    classification {
-      id
-      flowState: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
-      }
-    }
-    framing {
-      id
-      profile {
-        id
-        description
-        displayName
-        tagset {
-          ...TagsetDetails
-        }
-        references {
-          id
-          name
-          uri
-        }
-      }
-    }
-    contributionDefaults {
-      id
-      postDescription
-      whiteboardContent
-    }
-    contributionPolicy {
-      id
-      state
-    }
-    type
-    visibility
+    ...CalloutDetails
   }
 }
 

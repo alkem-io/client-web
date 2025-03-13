@@ -1,10 +1,8 @@
 import { PropsWithChildren } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
@@ -16,14 +14,11 @@ import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 
 const SpaceDashboardPage = ({
   dialog,
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
-  const currentPath = useResolvedPath('..');
-
-  const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
-
   const {
     urlInfo,
     classificationTagsets,
@@ -46,6 +41,7 @@ const SpaceDashboardPage = ({
   });
 
   const spaceData = spacePageData?.lookup.space;
+  const backToDashboard = useBackWithDefaultUrl(spaceData?.about.profile.url ?? '');
 
   const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
 
@@ -64,7 +60,6 @@ const SpaceDashboardPage = ({
     classificationTagsets,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    includeClassification: true,
   });
 
   const space: SpaceDashboardSpaceDetails = {
@@ -106,7 +101,12 @@ const SpaceDashboardPage = ({
         parentPath={spaceData?.about.profile.url ?? ''}
         calendarEventId={calendarEventId}
       />
-      <SpaceAboutDialog open={dialog === 'about'} space={space} loading={loadingSpacePageQuery} />
+      <SpaceAboutDialog
+        open={dialog === 'about'}
+        space={space}
+        loading={loadingSpacePageQuery}
+        onClose={backToDashboard}
+      />
     </SpacePageLayout>
   );
 };

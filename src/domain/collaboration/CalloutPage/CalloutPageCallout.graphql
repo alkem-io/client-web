@@ -3,12 +3,6 @@ query CalloutPageCallout(
 ) {
   lookup {
     callout(ID: $calloutId) {
-      classification {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
-      }
       ...CalloutDetails
     }
   }

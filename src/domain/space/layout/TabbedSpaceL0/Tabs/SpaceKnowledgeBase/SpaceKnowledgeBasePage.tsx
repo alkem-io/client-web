@@ -44,7 +44,6 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
     classificationTagsets,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    includeClassification: true,
   });
 
   return (

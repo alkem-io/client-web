@@ -17,7 +17,10 @@ const SpaceAboutPage = () => {
   const { journeyPath } = useUrlResolver();
   const { space, permissions, loading: loadingSpace } = useSpace();
   const profile = space.about.profile;
-  const { data, loading: loadingDetails } = useSpaceAboutDetailsQuery({ variables: { spaceId: space.id } });
+  const { data, loading: loadingDetails } = useSpaceAboutDetailsQuery({
+    variables: { spaceId: space.id },
+    skip: !space.id,
+  });
   const loading = loadingSpace || loadingDetails;
   const spaceDetails = data?.lookup.space;
 

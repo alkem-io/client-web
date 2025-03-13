@@ -103,7 +103,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
     };
   }, [spaceData]);
 
-  const loading = urlResolverLoading || loadingSpaceQuery;
+  const loading = urlResolverLoading || loadingSpaceQuery || !spaceId;
   return (
     <SpaceContext.Provider
       value={{

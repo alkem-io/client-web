@@ -55,6 +55,11 @@ export type TypedCalloutDetails = TypedCallout &
       };
       whiteboard?: WhiteboardDetailsFragment;
     };
+    classification?: {
+      flowState?: {
+        tags: string[];
+      };
+    };
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
     comments?: CommentsWithMessagesFragment | undefined;
@@ -62,7 +67,6 @@ export type TypedCalloutDetails = TypedCallout &
 
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
-  includeClassification: boolean;
   classificationTagsets: ClassificationTagsetModel[];
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
@@ -84,7 +88,6 @@ export interface UseCalloutsSetProvided {
 
 const useCalloutsSet = ({
   calloutsSetId,
-  includeClassification,
   classificationTagsets,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
@@ -93,7 +96,6 @@ const useCalloutsSet = ({
 
   const variables: CalloutsOnCalloutsSetUsingClassificationQueryVariables = {
     calloutsSetId: calloutsSetId!,
-    classificationByFlowStateEnabled: includeClassification,
     classificationTagsets,
   } as const;
   const {

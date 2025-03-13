@@ -74,7 +74,6 @@ const SpaceSubspacesPage = () => {
     classificationTagsets,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    includeClassification: true,
   });
 
   const { data, loading, error, subscribeToMore } = useSpaceSubspaceCardsQuery({

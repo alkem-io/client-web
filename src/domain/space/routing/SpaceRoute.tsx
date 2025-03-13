@@ -4,7 +4,8 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpaceAboutPage from '../about/SpaceAboutPage';
 import SpaceTabbedLayoutRoute from './SpaceTabbedLayoutRoute';
-import SpaceSkeletonLayout from '../layout/SpaceSkeleton/SpaceSkeletonLayout';
+import SpaceSkeletonLayout from '../layout/Skeletons/SpaceSkeletonLayout';
+import SubSpaceSkeletonLayout from '../layout/Skeletons/SubSpaceSkeletonLayout';
 
 const routes = { ...EntityPageSection };
 
@@ -14,12 +15,13 @@ const SpaceRoute = () => {
   if (loading) {
     return (
       <Routes>
+        <Route path="challenges/*" element={<SubSpaceSkeletonLayout />} />
         <Route path="*" element={<SpaceSkeletonLayout />} />
       </Routes>
     );
   }
 
-  if (permissions.canRead) {
+  if (!permissions.canRead) {
     return (
       <Routes>
         <Route path={routes.About} element={<SpaceAboutPage />} />

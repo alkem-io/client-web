@@ -88,7 +88,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   );
 
   const [deleteCallout] = useDeleteCalloutMutation({
-    refetchQueries: ['Callouts'],
+    refetchQueries: ['CalloutsOnCalloutsSetUsingClassification'],
   });
 
   const handleDelete = useCallback(

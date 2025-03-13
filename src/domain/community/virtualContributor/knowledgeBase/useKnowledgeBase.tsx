@@ -108,7 +108,6 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     onCalloutsSortOrderUpdate,
   } = useCalloutsSet({
     calloutsSetId,
-    includeClassification: false,
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
     classificationTagsets: [],

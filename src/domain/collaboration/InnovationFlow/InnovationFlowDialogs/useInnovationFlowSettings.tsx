@@ -52,7 +52,11 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
 };
 
 const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {
-  const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
+  const {
+    data,
+    loading: loadingData,
+    refetch,
+  } = useInnovationFlowSettingsQuery({
     variables: {
       collaborationId: collaborationId!,
     },
@@ -210,14 +214,19 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     if (!innovationFlowId) {
       throw new Error('Innovation flow still not loaded.');
     }
-    return updateInnovationFlowState({
+    await updateInnovationFlowState({
       variables: {
         innovationFlowId,
         stateName: oldState.displayName,
         stateUpdatedData: newState,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
+    for (const callout of callouts) {
+      if (callout.flowState?.currentState === oldState.displayName) {
+        await handleUpdateCalloutFlowState(callout.id, newState.displayName, callout.sortOrder);
+      }
+    }
+    refetch({ collaborationId: collaborationId! });
   };
 
   const handleDeleteState = (stateDisplayName: string) => {
@@ -279,7 +288,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
         'InnovationFlowDetails',
-        'Callouts',
+        'CalloutsOnCalloutsSetUsingClassification',
       ],
     });
   };
