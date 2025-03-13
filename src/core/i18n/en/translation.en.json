@@ -247,6 +247,7 @@
     "comment": "Comment",
     "comments": "Comments",
     "contributions": "Contributions",
+    "responses": "Responses",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
@@ -957,9 +958,7 @@
     "searchDialog": {
       "headerTitle": "Search results",
       "spacesAndSubspaces": "Spaces & Subspaces",
-      "collaborationTools": "Collaboration Tools",
-      "responses": "Responses",
-      "contributors": "Contributors"
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Search results for:",
