@@ -11,8 +11,13 @@
       "tooltip": "Це повідомлення було автоматично згенеровано на основі документації Alkemio. Ваш відгук дуже важливий для нас!"
     },
     "menu": {
-      "clear": "Видалити розмову",
+      "clear": "New Chat",
       "close": "Закрити вікно"
+    },
+    "confirmNewChat": {
+      "title": "Start a new chat?",
+      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
+      "confirm": "Yes, start new chat"
     },
     "references": [
       {
