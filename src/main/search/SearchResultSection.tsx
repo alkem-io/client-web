@@ -18,18 +18,20 @@ interface ResultSectionProps<Result extends Identifiable> {
   onFilterChange: (value: FilterDefinition) => void;
   loading?: boolean;
   cardComponent: ComponentType<{ result: Result | undefined }>;
+  canLoadMore?: boolean;
   onClickLoadMore?: () => void;
 }
 
 const SearchResultSection = <Result extends Identifiable>({
   title,
+  loading,
   tagId = '',
   results = [],
   filterTitle,
   filterConfig,
   currentFilter,
   onFilterChange,
-  loading,
+  canLoadMore = true,
   cardComponent: Card,
   onClickLoadMore,
 }: ResultSectionProps<Result>) => {
@@ -56,11 +58,12 @@ const SearchResultSection = <Result extends Identifiable>({
 
       <CardsLayout
         globalSearch
+        loading={loading}
         items={loading ? [undefined, undefined] : results}
         deps={[currentFilter]}
         cards={false}
         disablePadding
-        onClickLoadMore={onClickLoadMore}
+        onClickLoadMore={() => (canLoadMore ? onClickLoadMore?.() : undefined)}
       >
         {result => <Card result={result} />}
       </CardsLayout>
