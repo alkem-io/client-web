@@ -18,6 +18,7 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   createButton?: ReactNode;
   globalSearch?: boolean;
   loading?: boolean;
+  isButtonDisabled?: boolean;
   onClickLoadMore?: () => void;
 }
 
@@ -37,6 +38,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   createButton,
   onClickLoadMore,
   globalSearch = false,
+  isButtonDisabled = false,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const { t } = useTranslation();
@@ -80,6 +82,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
                 }}
               />
             }
+            disabled={isButtonDisabled}
             sx={{ minWidth: 'fit-content', height: 'fit-content' }}
             onClick={onClickLoadMore}
           >
