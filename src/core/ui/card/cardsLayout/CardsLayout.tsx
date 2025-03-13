@@ -17,6 +17,7 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   showCreateButton?: boolean;
   createButton?: ReactNode;
   globalSearch?: boolean;
+  loading?: boolean;
   onClickLoadMore?: () => void;
 }
 
@@ -30,6 +31,7 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
  */
 const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
+  loading,
   children,
   deps = [],
   createButton,
@@ -67,7 +69,17 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
         {cards.length > 0 && (
           <Button
-            startIcon={<Autorenew />}
+            startIcon={
+              <Autorenew
+                sx={{
+                  animation: loading ? 'spin 1s linear infinite' : 'none',
+                  '@keyframes spin': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' },
+                  },
+                }}
+              />
+            }
             sx={{ minWidth: 'fit-content', height: 'fit-content' }}
             onClick={onClickLoadMore}
           >
