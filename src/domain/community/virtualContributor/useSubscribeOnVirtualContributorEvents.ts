@@ -2,9 +2,11 @@ import { useVirtualContributorUpdatesSubscription } from '@/core/apollo/generate
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useUserContext } from '../user';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 
 export const useSubscribeOnVirtualContributorEvents = (virtualContributorId: string | undefined, skip?: boolean) => {
   const { isFeatureEnabled } = useConfig();
+  const handleError = useApolloErrorHandler();
   const areSubscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const { isAuthenticated } = useUserContext();
 
@@ -13,8 +15,10 @@ export const useSubscribeOnVirtualContributorEvents = (virtualContributorId: str
     shouldResubscribe: true,
     variables: { virtualContributorID: virtualContributorId! }, // Ensured by skip
     skip: !enabled,
-    onSubscriptionData: ({ subscriptionData, client }) => {
-      const data = subscriptionData?.data;
+    onData: ({ data: { data, error }, client }) => {
+      if (error) {
+        return handleError(error);
+      }
       if (!data) {
         return;
       }

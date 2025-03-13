@@ -33,7 +33,7 @@ export const UserAdminCredentialsPage = () => {
 
   useProfileVerifiedCredentialSubscription({
     shouldResubscribe: true,
-    onSubscriptionData: async () => {
+    onData: async () => {
       await refetchUserSsiQuery();
       setRequestCredentialDialogOpen(false);
       notify(t('pages.user-credentials.added-successfully'), 'success');
