@@ -3506,6 +3506,7 @@ export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
   | 'forumDiscussionUpdated'
+  | 'inAppNotificationReceived'
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
@@ -3516,6 +3517,7 @@ export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+  inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;

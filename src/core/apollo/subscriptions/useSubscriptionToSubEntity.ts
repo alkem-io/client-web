@@ -1,6 +1,7 @@
 import { OperationVariables, TypedDocumentNode } from '@apollo/client';
+import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
 import produce from 'immer';
-import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMore';
+import useSubscribeToMore, { Options } from './useSubscribeToMore';
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
@@ -34,7 +35,7 @@ const createUseSubscriptionToSubEntityHook =
   <QueryData>(
     parentEntity: QueryData | undefined,
     getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null, // Some queries give nulls when the type actually says undefined.
-    subscribeToMore: SubscribeToMore<QueryData>,
+    subscribeToMore: SubscribeToMoreFunction<QueryData, SubEntitySubscriptionVariables>,
     subscriptionOptions: Options<SubEntitySubscriptionVariables> = { skip: false }
   ) => {
     const subEntity = getSubEntity(parentEntity) ?? undefined;

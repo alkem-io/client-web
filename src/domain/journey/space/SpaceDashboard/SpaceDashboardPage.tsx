@@ -28,7 +28,7 @@ const SpaceDashboardPage = ({
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
-      <SpaceDashboardContainer spaceId={spaceId}>
+      <SpaceDashboardContainer>
         {({ callouts, dashboardNavigation, about, ...entities }, state) => (
           <>
             <SpaceDashboardView
