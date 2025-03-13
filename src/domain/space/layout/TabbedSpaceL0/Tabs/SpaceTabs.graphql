@@ -1,12 +1,15 @@
-query SpaceTabs($collaborationId: UUID!) {
+query SpaceTabs($spaceId: UUID!) {
   lookup {
-    collaboration(ID: $collaborationId) {
+    space(ID: $spaceId) {
       id
-      innovationFlow {
+      collaboration {
         id
-        states {
-          displayName
-          description
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
         }
       }
     }

@@ -42,19 +42,19 @@ const useSpaceTabs = () => {
   const { t, i18n } = useTranslation();
 
   const { space, permissions } = useSpace();
-  const collaborationId = space?.collaborationId;
+  const spaceId = space?.id;
 
   const { data: spaceTabsData, loading: spaceTabsLoading } = useSpaceTabsQuery({
     variables: {
-      collaborationId: collaborationId!,
+      spaceId: spaceId!,
     },
-    skip: !collaborationId,
+    skip: !spaceId,
   });
 
   const tabs = useMemo(() => {
     const result: TabDefinition[] = [];
     const innovationFlowTabs =
-      spaceTabsData?.lookup.collaboration?.innovationFlow.states.map(state => ({
+      spaceTabsData?.lookup.space?.collaboration?.innovationFlow.states.map(state => ({
         displayName: state.displayName,
         description: state.description,
       })) ?? [];
@@ -98,8 +98,8 @@ const useSpaceTabs = () => {
       });
     }
     return result;
-  }, [t, i18n.language, spaceTabsData, spaceTabsLoading]);
-
+  }, [t, i18n.language, space.id, spaceTabsData, spaceTabsLoading]);
+  console.log({ tabs });
   return {
     tabs,
     showSettings: permissions.canUpdate,

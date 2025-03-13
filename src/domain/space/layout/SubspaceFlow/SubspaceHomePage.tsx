@@ -37,7 +37,6 @@ import DashboardUpdatesSection from '@/domain/shared/components/DashboardSection
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const Outline = (props: DashboardNavigationProps) => {
@@ -111,14 +110,13 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     fetchContributors: true,
   });
 
-  // TODO: THIS needs to be removed
-  const calloutsSetProvided = useCalloutsSet({
+  // TODO: THIS needs to be removed //!!
+  /*const calloutsSetProvided = useCalloutsSet({
     calloutsSetId,
     classificationTagsets: [],
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
-    includeClassification: true,
-  });
+  });*/
 
   return (
     <>
@@ -218,9 +216,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
           templatesSetId={subspace?.templatesManager?.templatesSet?.id}
           calloutsSetId={calloutsSetId}
           innovationFlowStates={innovationFlowProvided.innovationFlowStates}
-          refetchCallout={calloutsSetProvided.refetchCallout}
-          onCalloutsSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
-          canCreateCallout={calloutsSetProvided.canCreateCallout}
           currentInnovationFlowState={innovationFlowProvided.currentInnovationFlowState}
           loading={loading}
         />
@@ -234,8 +229,8 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
       <SubspaceDialogs
         parentSpaceId={parentSpaceId}
         dialogOpen={dialog}
-        calloutsSetProvided={calloutsSetProvided}
-        journeyId={spaceId}
+        calloutsSetId={calloutsSetId}
+        spaceId={spaceId}
         journeyUrl={about?.profile?.url}
         dashboardNavigation={dashboardNavigation}
         communityId={about?.membership.communityID}

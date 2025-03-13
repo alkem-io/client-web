@@ -70,6 +70,7 @@ interface UseCalloutsSetParams {
   classificationTagsets: ClassificationTagsetModel[];
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
+  skip?: boolean;
 }
 
 export interface OrderUpdate {
@@ -91,6 +92,7 @@ const useCalloutsSet = ({
   classificationTagsets,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
+  skip,
 }: UseCalloutsSetParams): UseCalloutsSetProvided => {
   const { canCreateCallout, loading: authorizationLoading } = useCalloutsSetAuthorization({ calloutsSetId });
 
@@ -105,7 +107,7 @@ const useCalloutsSet = ({
   } = useCalloutsOnCalloutsSetUsingClassificationQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !calloutsSetId,
+    skip: skip || !calloutsSetId,
   });
 
   const [getCalloutDetails] = useCalloutDetailsLazyQuery({

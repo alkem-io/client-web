@@ -4,7 +4,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import useCalloutsSet, { OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import React, { useEffect, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../../../journey/subspace/layout/SubspacePageLayout';
@@ -23,10 +23,7 @@ interface SubspaceHomeViewProps {
   templatesSetId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
-  canCreateCallout: boolean;
   loading: boolean;
-  refetchCallout: (calloutId: string) => void;
-  onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
 }
 
 const SubspaceHomeView = ({
@@ -35,10 +32,7 @@ const SubspaceHomeView = ({
   templatesSetId,
   innovationFlowStates,
   currentInnovationFlowState,
-  canCreateCallout,
   loading,
-  onCalloutsSortOrderUpdate,
-  refetchCallout,
 }: SubspaceHomeViewProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
@@ -105,7 +99,7 @@ const SubspaceHomeView = ({
             selectedState={selectedInnovationFlowState}
             onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
             visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
-            createButton={canCreateCallout && createButton}
+            createButton={calloutsSetProvided.canCreateCallout && createButton}
             settingsButton={
               manageFlowActionDef && (
                 <InnovationFlowSettingsButton
@@ -122,10 +116,10 @@ const SubspaceHomeView = ({
       <CalloutsGroupView
         calloutsSetId={calloutsSetId}
         callouts={calloutsSetProvided.callouts}
-        canCreateCallout={canCreateCallout && isMobile}
+        canCreateCallout={calloutsSetProvided.canCreateCallout && isMobile}
         loading={loading}
-        onSortOrderUpdate={onCalloutsSortOrderUpdate}
-        onCalloutUpdate={refetchCallout}
+        onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
+        onCalloutUpdate={calloutsSetProvided.refetchCallout}
         createButtonPlace="top"
         createInFlowState={selectedInnovationFlowState}
       />

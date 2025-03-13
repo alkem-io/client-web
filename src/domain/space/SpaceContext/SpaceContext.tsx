@@ -17,7 +17,6 @@ interface SpaceContextProps {
     levelZeroSpaceId: string;
     nameID: string;
     about: SpaceAboutLightModel;
-    collaborationId?: string;
     level: SpaceLevel;
   };
   permissions: SpacePermissions;
@@ -41,7 +40,6 @@ const SpaceContext = React.createContext<SpaceContextProps>({
         communityID: '',
       },
     },
-    collaborationId: '',
     level: SpaceLevel.L0,
   },
   permissions: {
@@ -55,7 +53,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
 });
 
 const SpaceContextProvider = ({ children }: PropsWithChildren) => {
-  const { levelZeroSpaceId, loading: urlResolverLoading, collaborationId } = useUrlResolver();
+  const { levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
 
   const { data: spaceAboutData, loading: loadingSpaceQuery } = useSpaceAboutBaseQuery({
@@ -98,7 +96,6 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       levelZeroSpaceId: levelZeroSpaceId ?? '',
       nameID: spaceNameId,
       about: aboutModel,
-      collaborationId,
       level: SpaceLevel.L0,
     };
   }, [spaceData]);

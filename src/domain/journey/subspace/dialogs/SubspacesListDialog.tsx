@@ -21,13 +21,11 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
   const { t } = useTranslation();
   const { visibility } = useSpace();
 
-  const { data, loading, subscribeToMore } = useSpaceSubspaceCardsQuery({
+  const { data, loading } = useSpaceSubspaceCardsQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
 
-  // @ts-ignore react-18
-  useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
   const space = data?.lookup.space;
 
   const subspaces = space?.subspaces ?? [];

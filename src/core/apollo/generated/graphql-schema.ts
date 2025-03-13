@@ -22680,21 +22680,25 @@ export type SpacePageFragment = {
 };
 
 export type SpaceTabsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceTabsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    collaboration?:
+    space?:
       | {
-          __typename?: 'Collaboration';
+          __typename?: 'Space';
           id: string;
-          innovationFlow: {
-            __typename?: 'InnovationFlow';
+          collaboration: {
+            __typename?: 'Collaboration';
             id: string;
-            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            innovationFlow: {
+              __typename?: 'InnovationFlow';
+              id: string;
+              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            };
           };
         }
       | undefined;

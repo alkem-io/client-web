@@ -17910,15 +17910,18 @@ export function refetchSpaceDashboardReferencesQuery(variables: SchemaTypes.Spac
 }
 
 export const SpaceTabsDocument = gql`
-  query SpaceTabs($collaborationId: UUID!) {
+  query SpaceTabs($spaceId: UUID!) {
     lookup {
-      collaboration(ID: $collaborationId) {
+      space(ID: $spaceId) {
         id
-        innovationFlow {
+        collaboration {
           id
-          states {
-            displayName
-            description
+          innovationFlow {
+            id
+            states {
+              displayName
+              description
+            }
           }
         }
       }
@@ -17938,7 +17941,7 @@ export const SpaceTabsDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceTabsQuery({
  *   variables: {
- *      collaborationId: // value for 'collaborationId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */

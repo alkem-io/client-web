@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import { useTranslation } from 'react-i18next';
-import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { SubspaceDialog } from '@/domain/journey/subspace/layout/SubspaceDialog';
 import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesListDialog';
 import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
@@ -21,10 +19,10 @@ import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   journeyUrl: string | undefined;
   parentSpaceId: string | undefined;
-  calloutsSetProvided: UseCalloutsSetProvided;
+  calloutsSetId: string | undefined;
   dashboardNavigation: {
     dashboardNavigation: DashboardNavigationItem | undefined;
   };
@@ -36,16 +34,14 @@ export interface SubspaceDialogsProps {
 const SubspaceDialogs = ({
   dialogOpen,
   journeyUrl,
-  calloutsSetProvided: callouts,
-  journeyId,
+  spaceId,
+  calloutsSetId,
   parentSpaceId,
   dashboardNavigation,
   communityId,
   collaborationId,
   calendarEventId,
 }: SubspaceDialogsProps) => {
-  const { t } = useTranslation();
-
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
@@ -56,30 +52,26 @@ const SubspaceDialogs = ({
     }
   }, [isMobile]);
 
-  if (!dialogOpen || !journeyId || !journeyUrl) {
+  if (!dialogOpen || !spaceId || !journeyUrl) {
     return null;
   }
 
   return (
     <>
       <CalloutsListDialog
-        open={dialogOpen === SubspaceDialog.Index}
+        open={dialogOpen === SubspaceDialog.Index && Boolean(calloutsSetId)}
         onClose={handleClose}
-        callouts={callouts.callouts}
-        loading={callouts.loading}
-        emptyListCaption={t('pages.generic.sections.subEntities.empty', {
-          entities: t('common.collaborationTools'),
-        })}
+        calloutsSetId={calloutsSetId!}
       />
-      <SubspacesListDialog spaceId={journeyId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
+      <SubspacesListDialog spaceId={spaceId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
       <ContributorsToggleDialog
-        journeyId={journeyId}
+        journeyId={spaceId}
         open={dialogOpen === SubspaceDialog.Contributors}
         onClose={handleClose}
       />
-      <ActivityDialog spaceId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
+      <ActivityDialog spaceId={spaceId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog
-        journeyId={journeyId}
+        journeyId={spaceId}
         parentSpaceId={parentSpaceId}
         open={dialogOpen === SubspaceDialog.Timeline}
         onClose={handleClose}
@@ -108,7 +100,7 @@ const SubspaceDialogs = ({
       {dashboardNavigation && (
         <Dialog open={dialogOpen === SubspaceDialog.Outline} onClose={handleClose} fullWidth>
           <GridProvider columns={GRID_COLUMNS_MOBILE}>
-            <DashboardNavigation currentItemId={journeyId} {...dashboardNavigation} />
+            <DashboardNavigation currentItemId={spaceId} {...dashboardNavigation} />
           </GridProvider>
         </Dialog>
       )}
