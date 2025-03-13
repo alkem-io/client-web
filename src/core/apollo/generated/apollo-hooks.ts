@@ -22740,13 +22740,16 @@ export const LatestContributionsSpacesFlatDocument = gql`
         space {
           id
           about {
-            ...SpaceAboutLight
+            id
+            profile {
+              id
+              displayName
+            }
           }
         }
       }
     }
   }
-  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
