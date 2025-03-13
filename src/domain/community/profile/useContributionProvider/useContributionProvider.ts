@@ -1,36 +1,13 @@
+import { useCallback, useMemo } from 'react';
+import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { useUserContext } from '../../user/hooks/useUserContext';
 import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
   useSpaceContributionDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { ContainerChildProps } from '@/core/container/container';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { useCallback, useMemo } from 'react';
-
-export interface EntityDetailsContainerEntities {
-  details?: ContributionDetails;
-}
-
-export interface EntityDetailsContainerState {
-  loading: boolean;
-  isLeavingCommunity: boolean;
-}
-
-export interface EntityDetailsContainerActions {
-  leaveCommunity: () => Promise<void>;
-}
-
-interface EntityDetailsContainerProps
-  extends ContainerChildProps<
-    EntityDetailsContainerEntities,
-    EntityDetailsContainerActions,
-    EntityDetailsContainerState
-  > {
-  entities: SpaceHostedItem;
-}
 
 export interface ContributionDetails {
   about: SpaceAboutLightModel;
@@ -38,7 +15,18 @@ export interface ContributionDetails {
   level: SpaceLevel;
 }
 
-const ContributionDetailsContainer = ({ entities, children }: EntityDetailsContainerProps) => {
+interface UseContributionParams {
+  spaceHostedItem: SpaceHostedItem;
+}
+
+export interface UseContributionProvided {
+  details?: ContributionDetails;
+  leaveCommunity: () => Promise<void>;
+  loading: boolean;
+  isLeavingCommunity: boolean;
+}
+
+const useContribution = ({ spaceHostedItem: entities }: UseContributionParams): UseContributionProvided => {
   const { spaceID, spaceLevel, contributorType, contributorId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
@@ -95,18 +83,12 @@ const ContributionDetailsContainer = ({ entities, children }: EntityDetailsConta
     }
   }, [userId, contributorId, contributorType, details?.roleSetId, userLeaveCommunity, vcLeaveCommunity]);
 
-  return (
-    <>
-      {children(
-        { details },
-        {
-          loading: spaceLoading,
-          isLeavingCommunity: userIsLeavingCommunity || vcIsLeavingCommunity,
-        },
-        { leaveCommunity: handleLeaveCommunity }
-      )}
-    </>
-  );
+  return {
+    details,
+    loading: spaceLoading,
+    isLeavingCommunity: userIsLeavingCommunity || vcIsLeavingCommunity,
+    leaveCommunity: handleLeaveCommunity,
+  };
 };
 
-export default ContributionDetailsContainer;
+export default useContribution;
