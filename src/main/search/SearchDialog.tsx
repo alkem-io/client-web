@@ -31,7 +31,8 @@ const SearchDialog = () => {
   return (
     <DialogWithGrid open={isSearchDialogOpen} columns={12}>
       <DialogHeader icon={<Search />} title={t('components.searchDialog.headerTitle')} onClose={handleClose} />
-      <DialogContent>
+
+      <DialogContent sx={{ paddingTop: 0 }}>
         <SearchView
           searchRoute={pathname}
           journeyFilterConfig={journeyFilterConfig}
