@@ -11,13 +11,13 @@
       "tooltip": "Dit bericht is automatisch gegenereerd op basis van de documentatie van Alkemio. Je feedback is zeer relevant voor ons!"
     },
     "menu": {
-      "clear": "New Chat",
+      "clear": "Nieuw gesprek",
       "close": "Sluit venster"
     },
     "confirmNewChat": {
-      "title": "Start a new chat?",
-      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
-      "confirm": "Yes, start new chat"
+      "title": "Een nieuw gesprek beginnen?",
+      "description": "Als je een nieuw gesprek start, wordt je huidige gesprek geschiedenis gewist. Weet je zeker dat je wilt doorgaan?",
+      "confirm": "Ja, nieuw gesprek starten"
     },
     "references": [
       {
