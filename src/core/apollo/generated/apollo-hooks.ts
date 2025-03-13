@@ -2605,6 +2605,27 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const InAppNotificationAllTypesFragmentDoc = gql`
+  fragment InAppNotificationAllTypes on InAppNotification {
+    id
+    type
+    category
+    state
+    triggeredAt
+    ... on InAppNotificationCalloutPublished {
+      ...InAppNotificationCalloutPublished
+    }
+    ... on InAppNotificationCommunityNewMember {
+      ...InAppNotificationCommunityNewMember
+    }
+    ... on InAppNotificationUserMentioned {
+      ...InAppNotificationUserMentioned
+    }
+  }
+  ${InAppNotificationCalloutPublishedFragmentDoc}
+  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -21339,6 +21360,50 @@ export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.Guidance
   return { query: GuidanceRoomMessagesDocument, variables: variables };
 }
 
+export const InAppNotificationReceivedDocument = gql`
+  subscription InAppNotificationReceived {
+    inAppNotificationReceived {
+      ... on InAppNotification {
+        ...InAppNotificationAllTypes
+      }
+    }
+  }
+  ${InAppNotificationAllTypesFragmentDoc}
+`;
+
+/**
+ * __useInAppNotificationReceivedSubscription__
+ *
+ * To run a query within a React component, call `useInAppNotificationReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationReceivedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInAppNotificationReceivedSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.InAppNotificationReceivedSubscription,
+    SchemaTypes.InAppNotificationReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.InAppNotificationReceivedSubscription,
+    SchemaTypes.InAppNotificationReceivedSubscriptionVariables
+  >(InAppNotificationReceivedDocument, options);
+}
+
+export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
+  typeof useInAppNotificationReceivedSubscription
+>;
+export type InAppNotificationReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
   query InAppNotifications {
     notifications {

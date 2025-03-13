@@ -65,11 +65,3 @@ export const getAccountLink = (profileUrl?: string) => {
 };
 
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
-
-export const getSpaceUrlFromSubSpace = (subSpaceUrl: string) => {
-  const url = new URL(subSpaceUrl, window.location.origin);
-  const urlSegments = url.pathname.split('/challenges');
-
-  url.pathname = urlSegments[0];
-  return url.href;
-};
