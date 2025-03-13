@@ -643,7 +643,7 @@ function FiltersDescriptionBlock() {
       disablePadding
       sx={theme => ({
         position: 'sticky',
-        top: 100,
+        top: 80,
 
         minWidth: 250,
         borderRadius: 1,
