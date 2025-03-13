@@ -5,7 +5,11 @@ query LatestContributionsSpacesFlat {
       space {
         id
         about {
-          ...SpaceAboutLight
+          id
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
