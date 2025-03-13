@@ -1,8 +1,9 @@
 import { useMemo, useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
 
 import { Box, Link } from '@mui/material';
-import { findKey, groupBy, unionBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { NetworkStatus } from '@apollo/client';
+import { findKey, groupBy, unionBy } from 'lodash';
 import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
 import Gutters from '@/core/ui/grid/Gutters';
@@ -165,6 +166,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const {
     data,
+    networkStatus,
     loading: isSearching,
     fetchMore,
   } = useSearchQuery({
@@ -201,6 +203,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       },
     },
     fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
     skip: hasNoTermsLength || resolvingSpace,
   });
 
@@ -450,6 +453,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       });
   }, [data, isSearching]);
 
+  const isSearchingForMore = networkStatus === NetworkStatus.fetchMore;
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
   const filteredSpaceResults =
@@ -472,113 +476,119 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         );
 
   return (
-    <>
-      <PageContentColumn columns={12}>
-        <PageContentBlockSeamless disablePadding>
-          <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
-        </PageContentBlockSeamless>
+    <PageContentColumn columns={12}>
+      <PageContentBlockSeamless
+        disablePadding
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          backgroundColor: '#fff',
+        }}
+      >
+        <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
+      </PageContentBlockSeamless>
 
-        {spaceId && (
-          <SearchResultsScope
-            currentScope={
-              <SearchResultsScopeCard
-                avatar={spaceDetails?.lookup.space?.about.profile.avatar}
-                iconComponent={SpaceIcon}
-                loading={loading}
-                onDelete={handleSearchInPlatform}
-              >
-                {spaceDetails?.lookup.space?.about.profile.displayName}
-              </SearchResultsScopeCard>
-            }
-            alternativeScope={
-              <SearchResultsScopeCard iconComponent={Logo} onClick={handleSearchInPlatform}>
-                {t('components.searchScope.platform')}
-              </SearchResultsScopeCard>
-            }
-          />
-        )}
+      {spaceId && (
+        <SearchResultsScope
+          currentScope={
+            <SearchResultsScopeCard
+              avatar={spaceDetails?.lookup.space?.about.profile.avatar}
+              iconComponent={SpaceIcon}
+              loading={loading}
+              onDelete={handleSearchInPlatform}
+            >
+              {spaceDetails?.lookup.space?.about.profile.displayName}
+            </SearchResultsScopeCard>
+          }
+          alternativeScope={
+            <SearchResultsScopeCard iconComponent={Logo} onClick={handleSearchInPlatform}>
+              {t('components.searchScope.platform')}
+            </SearchResultsScopeCard>
+          }
+        />
+      )}
 
-        {!isAuthenticated && (
-          <Box display="flex" justifyContent="center" paddingBottom={2}>
-            <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
-          </Box>
-        )}
+      {!isAuthenticated && (
+        <Box display="flex" justifyContent="center" paddingBottom={2}>
+          <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
+        </Box>
+      )}
 
-        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
-          <FiltersDescriptionBlock />
+      <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
+        <FiltersDescriptionBlock />
 
-          <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="spaces"
-                title={journeyFilterTitle}
-                filterTitle={t('pages.search.filter.type.journey')}
-                count={data?.search?.spaceResults?.total ?? 0}
-                filterConfig={journeyFilterConfig}
-                results={filteredSpaceResults}
-                currentFilter={journeyFilter}
-                onFilterChange={setJourneyFilter}
-                loading={isSearching}
-                cardComponent={SearchResultPostChooser}
-                canLoadMore={canJourneyLoadMore}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
-              />
-            </SectionWrapper>
+        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="spaces"
+              title={journeyFilterTitle}
+              filterTitle={t('pages.search.filter.type.journey')}
+              count={data?.search?.spaceResults?.total ?? 0}
+              filterConfig={journeyFilterConfig}
+              results={filteredSpaceResults}
+              currentFilter={journeyFilter}
+              onFilterChange={setJourneyFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultPostChooser}
+              canLoadMore={canJourneyLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
+            />
+          </SectionWrapper>
 
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="collaboration-tools"
-                title={t('common.collaborationTools')}
-                filterTitle={t('common.type')}
-                count={data?.search?.calloutResults?.total ?? 0}
-                filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
-                results={convertedCalloutResults}
-                currentFilter={calloutFilter}
-                onFilterChange={setCalloutFilter}
-                loading={isSearching}
-                cardComponent={SearchResultsCalloutCard}
-                canLoadMore={canCalloutLoadMore}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
-              />
-            </SectionWrapper>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="collaboration-tools"
+              title={t('common.collaborationTools')}
+              filterTitle={t('common.type')}
+              count={data?.search?.calloutResults?.total ?? 0}
+              filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
+              results={convertedCalloutResults}
+              currentFilter={calloutFilter}
+              onFilterChange={setCalloutFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultsCalloutCard}
+              canLoadMore={canCalloutLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
+            />
+          </SectionWrapper>
 
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="responses"
-                title={t('common.contributions')}
-                filterTitle={t('pages.search.filter.type.contribution')}
-                count={data?.search?.contributionResults?.total ?? 0}
-                filterConfig={contributionFilterConfig}
-                results={filteredContributionResults}
-                currentFilter={contributionFilter}
-                onFilterChange={setContributionFilter}
-                loading={isSearching}
-                cardComponent={SearchResultPostChooser}
-                canLoadMore={canContributionLoadMore}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
-              />
-            </SectionWrapper>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="responses"
+              title={t('common.contributions')}
+              filterTitle={t('pages.search.filter.type.contribution')}
+              count={data?.search?.contributionResults?.total ?? 0}
+              filterConfig={contributionFilterConfig}
+              results={filteredContributionResults}
+              currentFilter={contributionFilter}
+              onFilterChange={setContributionFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultPostChooser}
+              canLoadMore={canContributionLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
+            />
+          </SectionWrapper>
 
-            <SectionWrapper>
-              <SearchResultSection
-                tagId="contributors"
-                title={t('common.contributors')}
-                filterTitle={t('pages.search.filter.type.contributor')}
-                count={data?.search?.contributorResults?.total ?? 0}
-                filterConfig={contributorFilterConfig}
-                results={filteredContributorResults}
-                currentFilter={contributorFilter}
-                onFilterChange={setContributorFilter}
-                loading={isSearching}
-                cardComponent={SearchResultPostChooser}
-                canLoadMore={canContributorLoadMore}
-                onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
-              />
-            </SectionWrapper>
-          </Gutters>
+          <SectionWrapper>
+            <SearchResultSection
+              tagId="contributors"
+              title={t('common.contributors')}
+              filterTitle={t('pages.search.filter.type.contributor')}
+              count={data?.search?.contributorResults?.total ?? 0}
+              filterConfig={contributorFilterConfig}
+              results={filteredContributorResults}
+              currentFilter={contributorFilter}
+              onFilterChange={setContributorFilter}
+              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+              cardComponent={SearchResultPostChooser}
+              canLoadMore={canContributorLoadMore}
+              onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
+            />
+          </SectionWrapper>
         </Gutters>
-      </PageContentColumn>
-    </>
+      </Gutters>
+    </PageContentColumn>
   );
 };
 
@@ -632,6 +642,9 @@ function FiltersDescriptionBlock() {
       disableGap
       disablePadding
       sx={theme => ({
+        position: 'sticky',
+        top: 80,
+
         minWidth: 250,
         borderRadius: 1,
         height: 'fit-content',
