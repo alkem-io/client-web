@@ -27,7 +27,6 @@ import {
   markAllAsRead,
   renderCustomComponent,
   setBadgeCount,
-  toggleWidget,
 } from 'react-chat-widget-react-18';
 import 'react-chat-widget-react-18/lib/styles.css';
 import { createPortal } from 'react-dom';
@@ -35,10 +34,11 @@ import { useTranslation } from 'react-i18next';
 import { useUserContext } from '@/domain/community/user';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
-import ChatWidgetMenu from './ChatWidgetMenu';
+import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -173,6 +173,7 @@ const ChatWidget = () => {
   const { t } = useTranslation();
   const [firstOpen, setFirstOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { user } = useUserContext();
   const userId = user?.user.id;
@@ -216,15 +217,22 @@ const ChatWidget = () => {
     if (!menuButtonContainer) {
       menuButtonContainer = document.createElement('div');
       menuButtonContainer.classList.add('menu-button-container');
-      messageInputContainer.appendChild(menuButtonContainer);
+      messageInputContainer.prepend(menuButtonContainer);
     }
     setMenuButtonContainer(menuButtonContainer);
   };
 
   useLayoutEffect(setupMenuButton, [chatToggleTime]);
 
+  const closeConfirmationDialog = () => setOpenClearConfirm(false);
+
+  const onClearClick = () => {
+    setOpenClearConfirm(true);
+  };
+
   const handleClearChat = async () => {
     await clearChat();
+    closeConfirmationDialog();
     setChatToggleTime(Date.now()); // Force a re-render
   };
 
@@ -282,8 +290,21 @@ const ChatWidget = () => {
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       {footerContainer && createPortal(<ChatWidgetFooter />, footerContainer)}
-      {menuButtonContainer &&
-        createPortal(<ChatWidgetMenu onClear={handleClearChat} onClose={toggleWidget} />, menuButtonContainer)}
+      {menuButtonContainer && createPortal(<ChatWidgetNewThreadButton onClear={onClearClick} />, menuButtonContainer)}
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleClearChat,
+          onCancel: closeConfirmationDialog,
+        }}
+        options={{
+          show: openClearConfirm,
+        }}
+        entities={{
+          titleId: 'chatbot.confirmNewChat.title',
+          contentId: 'chatbot.confirmNewChat.description',
+          confirmButtonTextId: 'chatbot.confirmNewChat.confirm',
+        }}
+      />
     </>
   );
 };
