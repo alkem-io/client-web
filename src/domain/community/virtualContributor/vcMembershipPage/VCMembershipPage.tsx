@@ -11,9 +11,11 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useNavigate from '@/core/routing/useNavigate';
 
 const VCMembershipPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { vcId, loading: resolving } = useUrlResolver();
   const {
@@ -83,7 +85,22 @@ const VCMembershipPage = () => {
       }));
   }, [data]);
 
+  type ProfileUrl = {
+    about?: {
+      profile?: {
+        url?: string;
+      };
+    };
+  };
+
+  const onContributionClick = (_, details: ProfileUrl) => {
+    if (details?.about?.profile?.url) {
+      navigate(details.about.profile.url);
+    }
+  };
+
   const loading = resolving || loadingVc;
+
   return (
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>
       <ContributionsView
@@ -93,6 +110,7 @@ const VCMembershipPage = () => {
         loading={loading}
         enableLeave={canLeaveCommunities}
         onLeave={refetch}
+        onContributionClick={onContributionClick}
       />
       <ContributionsView
         title={t('pages.virtualContributorProfile.membership.pendingInvitations')}

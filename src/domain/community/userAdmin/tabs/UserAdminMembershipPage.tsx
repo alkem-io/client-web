@@ -8,10 +8,12 @@ import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
+import useNavigate from '@/core/routing/useNavigate';
 
 const UserAdminMembershipPage = () => {
   const { t } = useTranslation();
   const { userId } = useUrlResolver();
+  const navigate = useNavigate();
 
   const { data, loading, refetch } = useUserContributionsQuery({
     variables: {
@@ -63,6 +65,20 @@ const UserAdminMembershipPage = () => {
     }
   }, [userId, pendingMembershipsData]);
 
+  type ProfileUrl = {
+    about?: {
+      profile?: {
+        url?: string;
+      };
+    };
+  };
+
+  const onContributionClick = (_, details: ProfileUrl) => {
+    if (details?.about?.profile?.url) {
+      navigate(details.about.profile.url);
+    }
+  };
+
   return (
     <UserAdminLayout currentTab={SettingsSection.Membership}>
       <Gutters>
@@ -72,6 +88,7 @@ const UserAdminMembershipPage = () => {
           loading={loading}
           enableLeave
           onLeave={refetch}
+          onContributionClick={onContributionClick}
         />
         <ContributionsView
           title={t('pages.user-profile.pending-applications.title')}
