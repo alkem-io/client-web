@@ -1805,7 +1805,7 @@
     },
     "innovationLibrary": {
       "shortName": "Bibliotheek",
-      "fullName": "Best practices",
+      "fullName": "Template Bibliotheek",
       "title": "De Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
       "subtitle": "Open de onderstaande Innovatiepakketten om alle templates voor whiteboards, posts en innovatie flows te verkennen. Als je meer wilt weten <click>klik dan hier</click>.",
       "useTemplateButton": "Vind dit template via de template bibliotheek in jouw Space om het te gebruiken.",
@@ -2734,11 +2734,11 @@
         },
         "external": {
           "personality": {
-            "description": "This Virtual Contributor operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
+            "description": "Deze Virtual Contributor werkt met behulp van de volgende externe AI-service: <strong>Mistral</strong>. Alle vragen die bij deze Virtual Contributor worden ingediend, samen met eventuele gerelateerde opmerkingen in een threaded gesprek, zullen worden verzonden naar <strong>Mistral</strong>. Houd er rekening mee dat deze gegevens gebruikt kunnen worden om hun model te trainen en te verbeteren."
           },
           "privacy": {
             "description": "Bij Alkemio is het beschermen van je gegevens onze topprioriteit. We zijn volledig betrokken bij het waarborgen van de veiligheid en privacy van je informatie. Dit is hoe we omgaan met je gegevens wanneer we interactie hebben met een Virtual Contributor (VC):",
-            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+            "bullets": "<ul><li>Alleen de inhoud van je vraag en eventuele gerelateerde opmerkingen in een threaded gesprek worden gedeeld met de AI service die de Virtual Contributor aanstuurt.</li><li>Houd er rekening mee dat als de Virtual Contributor is gebaseerd op een externe AI service, zoals Mistral, de gegevens die worden gedeeld kunnen worden gebruikt om die dienst verder te trainen en te verbeteren.</li><li>Aanvullend. Houd er rekening mee dat vragen en antwoorden die worden uitgewisseld met de Virtual Contributor mogelijk toegankelijk zijn voor het Alkemio-team voor monitoring of hulp.</li></ul>"
           }
         }
       },
