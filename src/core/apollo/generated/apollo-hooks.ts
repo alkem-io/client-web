@@ -14832,6 +14832,10 @@ export const SpaceCommunityPageDocument = gql`
           id
           myPrivileges
         }
+        license {
+          id
+          availableEntitlements
+        }
         about {
           ...SpaceAboutLight
         }
