@@ -63,6 +63,7 @@ const SearchResultSection = <Result extends Identifiable>({
         deps={[currentFilter]}
         cards={false}
         disablePadding
+        isButtonDisabled={!canLoadMore}
         onClickLoadMore={() => (canLoadMore ? onClickLoadMore?.() : undefined)}
       >
         {result => <Card result={result} />}
