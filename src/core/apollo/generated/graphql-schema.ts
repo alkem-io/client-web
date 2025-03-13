@@ -16111,6 +16111,7 @@ export type CommunityProviderDetailsQuery = {
     space?:
       | {
           __typename?: 'Space';
+          id: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -16144,6 +16145,28 @@ export type CommunityProviderDetailsQuery = {
               }
             | { __typename?: 'User' }
             | { __typename?: 'VirtualContributor' };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceEntitlementsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceEntitlementsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
         }
       | undefined;
   };
