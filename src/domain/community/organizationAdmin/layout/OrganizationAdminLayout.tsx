@@ -1,6 +1,6 @@
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import OrganizationPageBanner from '@/domain/community/contributor/organization/OrganizationPageBanner';
-import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganizationContext';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined, Settings } from '@mui/icons-material';
 import { FC, PropsWithChildren } from 'react';

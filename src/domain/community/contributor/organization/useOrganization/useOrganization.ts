@@ -14,7 +14,7 @@ import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants'
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
-import { useOrganizationContext } from '../hooks/useOrganization';
+import { useOrganizationContext } from '../hooks/useOrganizationContext';
 
 export interface UseOrganizationProvided {
   organization?: OrganizationInfoFragment;

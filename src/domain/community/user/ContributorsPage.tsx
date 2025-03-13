@@ -55,7 +55,6 @@ const ContributorsPage = () => {
 
   const [searchTerms, setSearchTerms] = useState('');
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchTermsDebounced, setSearchTermsDebounced] = useState('');
 
   const { isAuthenticated } = useUserContext();
@@ -80,7 +79,7 @@ const ContributorsPage = () => {
     },
     variables: {
       withTags: true,
-      filter: { firstName: searchTerms, lastName: searchTerms, email: searchTerms },
+      filter: { firstName: searchTermsDebounced, lastName: searchTermsDebounced, email: searchTermsDebounced },
     },
     pageSize: pageSize,
     getPageInfo: result => result.usersPaginated.pageInfo,
