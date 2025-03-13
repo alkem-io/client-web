@@ -26,7 +26,7 @@ export interface UseContributionProvided {
   isLeavingCommunity: boolean;
 }
 
-const useContribution = ({ spaceHostedItem: entities }: UseContributionParams): UseContributionProvided => {
+const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionParams): UseContributionProvided => {
   const { spaceID, spaceLevel, contributorType, contributorId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
@@ -91,4 +91,4 @@ const useContribution = ({ spaceHostedItem: entities }: UseContributionParams): 
   };
 };
 
-export default useContribution;
+export default useContributionProvider;
