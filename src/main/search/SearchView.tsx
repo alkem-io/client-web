@@ -1,8 +1,9 @@
 import { useMemo, useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
 
 import { Box, Link } from '@mui/material';
-import { findKey, groupBy, unionBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { NetworkStatus } from '@apollo/client';
+import { findKey, groupBy, unionBy } from 'lodash';
 import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
 import Gutters from '@/core/ui/grid/Gutters';
@@ -165,6 +166,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const {
     data,
+    networkStatus,
     loading: isSearching,
     fetchMore,
   } = useSearchQuery({
@@ -201,6 +203,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       },
     },
     fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
     skip: hasNoTermsLength || resolvingSpace,
   });
 
@@ -450,6 +453,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       });
   }, [data, isSearching]);
 
+  const isSearchingForMore = networkStatus === NetworkStatus.fetchMore;
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
   const filteredSpaceResults =
@@ -518,7 +522,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 results={filteredSpaceResults}
                 currentFilter={journeyFilter}
                 onFilterChange={setJourneyFilter}
-                loading={isSearching}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
                 cardComponent={SearchResultPostChooser}
                 canLoadMore={canJourneyLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
@@ -535,7 +539,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 results={convertedCalloutResults}
                 currentFilter={calloutFilter}
                 onFilterChange={setCalloutFilter}
-                loading={isSearching}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
                 cardComponent={SearchResultsCalloutCard}
                 canLoadMore={canCalloutLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
@@ -552,7 +556,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 results={filteredContributionResults}
                 currentFilter={contributionFilter}
                 onFilterChange={setContributionFilter}
-                loading={isSearching}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
                 cardComponent={SearchResultPostChooser}
                 canLoadMore={canContributionLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
@@ -569,7 +573,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 results={filteredContributorResults}
                 currentFilter={contributorFilter}
                 onFilterChange={setContributorFilter}
-                loading={isSearching}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
                 cardComponent={SearchResultPostChooser}
                 canLoadMore={canContributorLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
