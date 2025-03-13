@@ -95,11 +95,16 @@ const tagsetNames = ['skills', 'keywords'];
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: SearchViewProps) => {
+  const [canJourneyLoadMore, setCanJourneyLoadMore] = useState(true);
+  const [canCalloutLoadMore, setCalloutCanLoadMore] = useState(true);
+  const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
+  const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
+
   const [resultsCursors, setResultsCursors] = useState<ResultsCursors>({
     spaceCursor: undefined,
-    collaborationCursor: undefined,
-    contributionCursor: undefined,
     contributorCursor: undefined,
+    contributionCursor: undefined,
+    collaborationCursor: undefined,
   });
   const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
   const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
@@ -299,7 +304,31 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         },
 
         updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
-          if (!fetchMoreResult) return prev;
+          switch (resultsType) {
+            case SearchCategory.Spaces: {
+              setCanJourneyLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
+              break;
+            }
+
+            case SearchCategory.CollaborationTools: {
+              setCalloutCanLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
+              break;
+            }
+
+            case SearchCategory.Responses: {
+              setCanContributionLoadMore(fetchMoreResult?.search?.contributionResults?.results?.length > 0);
+              break;
+            }
+
+            case SearchCategory.Contributors: {
+              setContributorCanLoadMore(fetchMoreResult?.search?.contributorResults?.results?.length > 0);
+              break;
+            }
+
+            default: {
+              break;
+            }
+          }
 
           switch (resultsType) {
             case SearchCategory.Spaces: {
@@ -491,6 +520,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 onFilterChange={setJourneyFilter}
                 loading={isSearching}
                 cardComponent={SearchResultPostChooser}
+                canLoadMore={canJourneyLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
               />
             </SectionWrapper>
@@ -507,6 +537,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 onFilterChange={setCalloutFilter}
                 loading={isSearching}
                 cardComponent={SearchResultsCalloutCard}
+                canLoadMore={canCalloutLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
               />
             </SectionWrapper>
@@ -523,6 +554,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 onFilterChange={setContributionFilter}
                 loading={isSearching}
                 cardComponent={SearchResultPostChooser}
+                canLoadMore={canContributionLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
               />
             </SectionWrapper>
@@ -539,6 +571,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
                 onFilterChange={setContributorFilter}
                 loading={isSearching}
                 cardComponent={SearchResultPostChooser}
+                canLoadMore={canContributorLoadMore}
                 onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
               />
             </SectionWrapper>
