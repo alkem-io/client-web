@@ -556,7 +556,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           <SectionWrapper>
             <SearchResultSection
               tagId="responses"
-              title={t('common.contributions')}
+              title={t('common.responses')}
               filterTitle={t('pages.search.filter.type.contribution')}
               count={data?.search?.contributionResults?.total ?? 0}
               filterConfig={contributionFilterConfig}
@@ -663,12 +663,12 @@ function FiltersDescriptionBlock() {
 
       <FiltersDescriptionBlockItem href="#responses">
         <LibraryBooksOutlined />
-        <Caption>{t('components.searchDialog.responses')}</Caption>
+        <Caption>{t('common.responses')}</Caption>
       </FiltersDescriptionBlockItem>
 
       <FiltersDescriptionBlockItem href="#contributors">
         <GroupOutlined />
-        <Caption>{t('components.searchDialog.contributors')}</Caption>
+        <Caption>{t('common.contributors')}</Caption>
       </FiltersDescriptionBlockItem>
     </Gutters>
   );
