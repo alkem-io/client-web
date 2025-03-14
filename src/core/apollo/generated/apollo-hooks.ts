@@ -21702,24 +21702,20 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
+      spaceResults {
         id
         score
         terms
         type
-        ... on SearchResultSpace {
-          ...SearchResultSpace
-        }
+        ...SearchResultSpace
       }
-      journeyResultsCount
+      spaceResultsCount
       calloutResults {
         id
         score
         terms
         type
-        ... on SearchResultCallout {
-          ...SearchResultCallout
-        }
+        ...SearchResultCallout
       }
       calloutResultsCount
       contributorResults {
@@ -22202,7 +22198,7 @@ export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.Das
 export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
+      spaceResults {
         id
         type
         ... on SearchResultSpace {
@@ -23259,13 +23255,11 @@ export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.Challe
 export const SpaceExplorerSearchDocument = gql`
   query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
+      spaceResults {
         id
         type
         terms
-        ... on SearchResultSpace {
-          ...SpaceExplorerSearchSpace
-        }
+        ...SpaceExplorerSearchSpace
       }
     }
   }

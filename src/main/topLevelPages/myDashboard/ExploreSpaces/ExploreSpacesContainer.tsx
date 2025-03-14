@@ -6,7 +6,7 @@ import {
   useSpaceUrlResolverQuery,
   useWelcomeSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ExploreSpacesSearchFragment, SearchResultType } from '@/core/apollo/generated/graphql-schema';
+import { ExploreSpacesSearchFragment, SearchCategory, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '@/main/search/SearchView';
 import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
@@ -53,7 +53,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
       searchData: {
         terms: getTerms(searchTerms, selectedFilter),
         tagsetNames: ['skills', 'keywords'],
-        typesFilter: ['space'],
+        categories: [SearchCategory.Spaces],
       },
     },
     fetchPolicy: 'no-cache',

@@ -64,7 +64,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
       searchData: {
         terms: searchTerms,
         tagsetNames: ['skills', 'keywords'],
-        typesFilter: ['space', 'subspace'],
+        types: [SearchResultType.Space, SearchResultType.Subspace],
       },
     },
     fetchPolicy: 'no-cache',
