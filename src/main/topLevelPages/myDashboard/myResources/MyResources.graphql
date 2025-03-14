@@ -12,6 +12,7 @@ query MyResources($accountId: UUID!) {
               ...VisualUri
             }
           }
+          isContentPublic
         }
       }
       virtualContributors {

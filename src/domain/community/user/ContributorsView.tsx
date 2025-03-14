@@ -20,11 +20,8 @@ import ContributorCardSquare, {
   ContributorCardSkeleton,
   ContributorCardSquareProps,
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
-import {
-  PaginatedResult,
-  VirtualContributor,
-  VirtualContributors,
-} from '../contributor/ContributorsSearch/ContributorsSearchContainer';
+import { VirtualContributorModelBase } from '../virtualContributor/model/virtual.contributor.base.model';
+import { PaginatedResult, VirtualContributors } from './ContributorsPage';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 32;
@@ -56,7 +53,7 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
   };
 };
 
-const vcToContributorCard = (vc: VirtualContributor): ContributorCardSquareProps => {
+const vcToContributorCard = (vc: VirtualContributorModelBase): ContributorCardSquareProps => {
   return {
     id: vc.id,
     displayName: vc.profile.displayName,

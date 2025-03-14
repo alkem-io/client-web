@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { SpaceContextProvider } from '@/domain/journey/space/SpaceContext/SpaceContext';
+import { SpaceContextProvider } from '@/domain/space/SpaceContext/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
@@ -56,6 +56,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
+// TODO: this to load directly, and lazy load then the appropriate layout
 const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'), withUrlResolverParams);
 
 export const TopLevelRoutes = () => {

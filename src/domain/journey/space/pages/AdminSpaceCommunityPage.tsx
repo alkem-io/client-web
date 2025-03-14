@@ -5,7 +5,7 @@ import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/In
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../../../space/SpaceContext/useSpace';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -36,7 +36,12 @@ import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templat
 
 const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { t } = useTranslation();
-  const { spaceId, loading: isLoadingSpace, communityId, roleSetId, about: spaceAbout } = useSpace();
+  const { space, loading: isLoadingSpace } = useSpace();
+  const spaceId = space.id;
+  const { about } = space;
+  const { membership } = about;
+  const communityId = membership?.communityID!;
+  const roleSetId = membership?.roleSetID!;
 
   const {
     users,
@@ -129,7 +134,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           </PageContentBlock>
           <PageContentBlockSeamless columns={4} disablePadding>
             <InvitationOptionsBlock
-              spaceDisplayName={spaceAbout.profile.displayName}
+              spaceDisplayName={about.profile.displayName}
               inviteExistingUser={inviteExistingUser}
               inviteExternalUser={inviteExternalUser}
               currentApplicationsUserIds={currentApplicationsUserIds}
@@ -265,7 +270,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
                   permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
                 }
                 onRemoveMember={onRemoveVirtualContributor}
-                spaceDisplayName={spaceAbout.profile.displayName}
+                spaceDisplayName={about.profile.displayName}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}
                 fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
                 onAddMember={onAddVirtualContributor}

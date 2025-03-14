@@ -53,7 +53,7 @@ fragment CalloutTemplateContent on Callout {
       id
       displayName
       description
-      tagsets {
+      tagset {
         ...TagsetDetails
       }
       references {
@@ -109,15 +109,18 @@ fragment CollaborationTemplateContent on Collaboration {
     callouts {
       id
       type
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
       framing {
         id
         profile {
           id
           displayName
           description
-          flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-            tags
-          }
         }
         whiteboard {
           id

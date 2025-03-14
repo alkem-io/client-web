@@ -7,7 +7,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
@@ -69,24 +69,26 @@ const WhiteboardDialogFooter = ({
 
   // TODO: WhiteboardDialogFooter depends on being inside a Space, not sure if this is fully correct
   const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
-  const spaceContext = useSpace();
-  const subspaceContext = useSubSpace();
+  const { space } = useSpace();
+  const { subspace } = useSubSpace();
+  const spaceAbout = space.about;
+  const subspaceAbout = subspace.about;
 
   const getMyMembershipStatus = () => {
     switch (spaceLevel) {
       case SpaceLevel.L0:
-        return spaceContext.myMembershipStatus;
+        return spaceAbout.membership?.myMembershipStatus;
       default:
-        return subspaceContext.myMembershipStatus;
+        return subspaceAbout.membership.myMembershipStatus;
     }
   };
 
   const getJourneyProfile = () => {
     switch (spaceLevel) {
       case SpaceLevel.L0:
-        return spaceContext.about.profile;
+        return spaceAbout.profile;
       case SpaceLevel.L1:
-        return subspaceContext.about.profile;
+        return subspaceAbout.profile;
     }
   };
 

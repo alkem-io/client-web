@@ -1,24 +1,17 @@
 fragment SubspaceCard on Space {
   id
-  metrics {
-    id
-    name
-    value
-  }
   about {
     ...SpaceAboutCardBanner
-    why
-  }
-  community {
-    id
-    roleSet {
+    metrics {
       id
-      myMembershipStatus
+      name
+      value
     }
-  }
-  settings {
-    privacy {
-      mode
+    membership {
+        myMembershipStatus
+        myPrivileges
     }
+    isContentPublic
+    why
   }
 }

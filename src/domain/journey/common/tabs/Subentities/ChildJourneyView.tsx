@@ -17,8 +17,7 @@ import { ValueType } from '@/core/utils/filtering/filterFn';
 import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { ApolloError } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -39,7 +38,6 @@ interface BaseChildEntity extends Identifiable {
 export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
-  childEntityReadAccess?: boolean;
   level: SpaceLevel;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   childEntityValueGetter: (childEntity: ChildEntity) => ValueType;
@@ -55,7 +53,6 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
 const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   childEntities = [],
   childEntitiesIcon,
-  childEntityReadAccess,
   level,
   renderChildEntityCard,
   childEntityValueGetter,
@@ -87,87 +84,85 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   );
 
   return (
-    <MembershipBackdrop show={!childEntityReadAccess} blockName={t(`common.space-level.${level}`)}>
-      <PageContent>
-        <InfoColumn>
-          <ChildJourneyCreate
-            level={level}
-            canCreateSubentity={childEntityCreateAccess}
-            onCreateSubentity={childEntityOnCreate}
-          />
+    <PageContent>
+      <InfoColumn>
+        <ChildJourneyCreate
+          level={level}
+          canCreateSubentity={childEntityCreateAccess}
+          onCreateSubentity={childEntityOnCreate}
+        />
 
-          {createSubentityDialog}
+        {createSubentityDialog}
 
+        <PageContentBlock>
+          {childEntities.length > 3 && (
+            <SearchField
+              value={filter}
+              placeholder={t('pages.generic.sections.subEntities.searchPlaceholder')}
+              onChange={event => setFilter(event.target.value)}
+            />
+          )}
+
+          <LinksList items={filteredItems} />
+        </PageContentBlock>
+      </InfoColumn>
+      <ContentColumn>
+        {state.loading && <Loading />}
+        {!state.loading && childEntities.length === 0 && (
+          <PageContentBlockSeamless>
+            <Caption textAlign="center">
+              {t('pages.generic.sections.subEntities.empty', {
+                entities: t(`common.space-level.${level}`),
+                parentEntity: t(`common.space-level.${level}`),
+              })}
+            </Caption>
+          </PageContentBlockSeamless>
+        )}
+        {!state.loading && childEntities.length > 0 && (
           <PageContentBlock>
-            {childEntities.length > 3 && (
-              <SearchField
-                value={filter}
-                placeholder={t('pages.generic.sections.subEntities.searchPlaceholder')}
-                onChange={event => setFilter(event.target.value)}
-              />
-            )}
-
-            <LinksList items={filteredItems} />
-          </PageContentBlock>
-        </InfoColumn>
-        <ContentColumn>
-          {state.loading && <Loading />}
-          {!state.loading && childEntities.length === 0 && (
-            <PageContentBlockSeamless>
-              <Caption textAlign="center">
-                {t('pages.generic.sections.subEntities.empty', {
-                  entities: t(`common.space-level.${level}`),
-                  parentEntity: t(`common.space-level.${level}`),
+            {renderChildEntityCard && (
+              <JourneyFilter
+                data={childEntities}
+                valueGetter={childEntityValueGetter}
+                tagsGetter={childEntityTagsGetter}
+                title={t('common.entitiesWithCount', {
+                  entityType: t(`common.space-level.${level}`),
+                  count: childEntities.length,
                 })}
-              </Caption>
-            </PageContentBlockSeamless>
-          )}
-          {!state.loading && childEntities.length > 0 && (
-            <PageContentBlock>
-              {childEntityReadAccess && renderChildEntityCard && (
-                <JourneyFilter
-                  data={childEntities}
-                  valueGetter={childEntityValueGetter}
-                  tagsGetter={childEntityTagsGetter}
-                  title={t('common.entitiesWithCount', {
-                    entityType: t(`common.space-level.${level}`),
-                    count: childEntities.length,
-                  })}
-                >
-                  {filteredEntities => (
-                    <CardLayoutContainer disablePadding>
-                      {filteredEntities.map((item, index) => {
-                        const key = item ? item.id : `__loading_${index}`;
-                        return cloneElement(renderChildEntityCard(item), { key });
-                      })}
-                      {permissions.canCreateSubspaces && (
-                        <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
-                          <IconButton aria-label={t('common.add')} size="small" onClick={() => onClickCreate?.(true)}>
-                            <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-                          </IconButton>
-                        </Actions>
-                      )}
-                    </CardLayoutContainer>
-                  )}
-                </JourneyFilter>
-              )}
-            </PageContentBlock>
-          )}
-          {!state.loading && childEntities.length === 0 && childEntityCreateAccess && (
-            <Button
-              startIcon={<AddOutlinedIcon />}
-              variant="contained"
-              onClick={childEntityOnCreate}
-              sx={{ width: '100%' }}
-            >
-              {t('common.create-new-entity', { entity: t(`common.space-level.${level}`) })}
-            </Button>
-          )}
-          {children}
-          {state.error && <ErrorBlock blockName={t(`common.space-level.${level}`)} />}
-        </ContentColumn>
-      </PageContent>
-    </MembershipBackdrop>
+              >
+                {filteredEntities => (
+                  <CardLayoutContainer disablePadding>
+                    {filteredEntities.map((item, index) => {
+                      const key = item ? item.id : `__loading_${index}`;
+                      return cloneElement(renderChildEntityCard(item), { key });
+                    })}
+                    {permissions.canCreateSubspaces && (
+                      <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
+                        <IconButton aria-label={t('common.add')} size="small" onClick={() => onClickCreate?.(true)}>
+                          <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+                        </IconButton>
+                      </Actions>
+                    )}
+                  </CardLayoutContainer>
+                )}
+              </JourneyFilter>
+            )}
+          </PageContentBlock>
+        )}
+        {!state.loading && childEntities.length === 0 && childEntityCreateAccess && (
+          <Button
+            startIcon={<AddOutlinedIcon />}
+            variant="contained"
+            onClick={childEntityOnCreate}
+            sx={{ width: '100%' }}
+          >
+            {t('common.create-new-entity', { entity: t(`common.space-level.${level}`) })}
+          </Button>
+        )}
+        {children}
+        {state.error && <ErrorBlock blockName={t(`common.space-level.${level}`)} />}
+      </ContentColumn>
+    </PageContent>
   );
 };
 

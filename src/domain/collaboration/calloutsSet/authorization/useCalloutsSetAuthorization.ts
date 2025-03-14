@@ -3,6 +3,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 type CalloutsSetAuthorizationParams = {
   calloutsSetId: string | undefined;
+  skip?: boolean;
 };
 
 type CalloutsSetAuthorizationType = {
@@ -15,12 +16,13 @@ type CalloutsSetAuthorizationType = {
 // TODO: Additional Auth Check
 export const useCalloutsSetAuthorization = ({
   calloutsSetId,
+  skip,
 }: CalloutsSetAuthorizationParams): CalloutsSetAuthorizationType => {
   const { data: calloutsSetData, loading: loadingCalloutsSet } = useCalloutsSetAuthorizationQuery({
     variables: {
       calloutsSetId: calloutsSetId!,
     },
-    skip: !calloutsSetId,
+    skip: skip || !calloutsSetId,
   });
 
   const calloutsSetPrivileges = calloutsSetData?.lookup.calloutsSet?.authorization?.myPrivileges ?? [];

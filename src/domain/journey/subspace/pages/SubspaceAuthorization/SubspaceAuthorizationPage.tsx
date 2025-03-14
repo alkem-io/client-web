@@ -13,7 +13,8 @@ interface SubspaceAuthorizationPageProps extends SettingsPageProps {}
 
 const SubspaceAuthorizationPage = ({ routePrefix = '../' }: SubspaceAuthorizationPageProps) => {
   const { t } = useTranslation();
-  const { subspaceId: challengeId } = useSubSpace();
+  const { subspace } = useSubSpace();
+  const challengeId = subspace.id;
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
       spaceId: challengeId,

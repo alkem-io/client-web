@@ -1,9 +1,9 @@
-import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,
   RoleName,
   SpaceLevel,
+  TagsetReservedName,
   UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -51,7 +51,9 @@ export const toUserMetadata = (
     user,
     hasPlatformPrivilege,
     hasPlatformRole,
-    keywords: user.profile.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags ?? [],
-    skills: user.profile.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags ?? [],
+    keywords:
+      user.profile.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())?.tags ?? [],
+    skills:
+      user.profile.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Skills.toLowerCase())?.tags ?? [],
   };
 };

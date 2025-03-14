@@ -33,4 +33,31 @@ export const useBackToStaticPath = (parentPagePath: string) => {
   return useCallback(() => backToPath(parentPagePath), [parentPagePath]);
 };
 
+/**
+ * Useful to close dialogs.
+ * Will navigate back using the history API if possible, but will navigate to the default URL if it's not possible or if the previous URL is the same as the current one.
+ */
+export const useBackWithDefaultUrl = (parentPagePath: string) => {
+  const navigate = useNavigate();
+  const canGoBack = useCanGoBack();
+
+  return useCallback(() => {
+    parentPagePath = normalizeLink(parentPagePath);
+    if (!canGoBack) {
+      navigate(parentPagePath);
+    }
+    const currentUrl = window.location.pathname;
+    const handlePopState = () => {
+      window.removeEventListener('popstate', handlePopState);
+      const previousUrl = window.location.pathname;
+
+      if (currentUrl === previousUrl) {
+        navigate(parentPagePath);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    navigate(-1);
+  }, []);
+};
+
 export default useBackToPath;

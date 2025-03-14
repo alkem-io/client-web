@@ -6,6 +6,7 @@ export interface EntityTabsProps {
   currentTab: EntityPageSection;
   mobile?: boolean;
   onMenuOpen?: (open: boolean) => void;
+  loading?: boolean;
 }
 
 export interface BasePageBannerProps {

@@ -1,46 +1,40 @@
 import { useState } from 'react';
 import { useSubSpace } from '../../journey/subspace/hooks/useSubSpace';
-import AboutPageContainer from '@/domain/space/about/SpaceAboutPageContainer';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 const SubspaceAboutPage = () => {
-  const { spaceId, parentSpaceId, spaceLevel } = useUrlResolver();
-  const { communityId, about } = useSubSpace();
+  const { subspace, loading } = useSubSpace();
+  const { about } = subspace;
 
   const backToParentPage = useBackToStaticPath(about.profile.url);
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
-
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
+
+  const space: SpaceDashboardSpaceDetails = {
+    id: subspace.id,
+    about: about,
+    level: subspace.level,
+  };
+
+  const spacePrivileges = subspace.authorization?.myPrivileges || [];
+  const canReadSpace = spacePrivileges.includes(AuthorizationPrivilege.Read);
+  const canUpdateSpace = spacePrivileges.includes(AuthorizationPrivilege.Update);
 
   return (
     <>
-      <AboutPageContainer journeyId={spaceId}>
-        {({ about, provider, leadOrganizations, leadUsers, metrics, hasReadPrivilege, hasEditPrivilege }, state) => (
-          <SpaceAboutDialog
-            open
-            spaceId={spaceId}
-            spaceLevel={spaceLevel}
-            parentSpaceId={parentSpaceId}
-            about={about}
-            sendMessageToCommunityLeads={sendMessageToCommunityLeads}
-            metrics={metrics}
-            communityId={communityId}
-            loading={state.loading}
-            leadUsers={leadUsers}
-            provider={provider}
-            leadOrganizations={leadOrganizations}
-            onClose={hasReadPrivilege ? backToParentPage : undefined}
-            hasReadPrivilege={hasReadPrivilege}
-            hasEditPrivilege={hasEditPrivilege}
-          />
-        )}
-      </AboutPageContainer>
+      <SpaceAboutDialog
+        open
+        space={space}
+        loading={loading}
+        onClose={canReadSpace ? backToParentPage : undefined}
+        hasReadPrivilege={canReadSpace}
+        hasEditPrivilege={canUpdateSpace}
+      />
       <ContributorsDialog
         open={isContributorsDialogOpen}
         onClose={() => setIsContributorsDialogOpen(false)}

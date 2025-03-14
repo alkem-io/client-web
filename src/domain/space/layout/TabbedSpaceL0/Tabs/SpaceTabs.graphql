@@ -1,0 +1,17 @@
+query SpaceTabs($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        id
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
+        }
+      }
+    }
+  }
+}

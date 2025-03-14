@@ -12,7 +12,6 @@ import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
 import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -64,8 +63,6 @@ export const ExploreSpacesView = ({
   const onFilterChange = (filter: string) => {
     setSelectedFilter(filter);
   };
-
-  const isPrivate = (space): boolean => space?.settings.privacy?.mode === SpacePrivacyMode.Private;
 
   const renderSkeleton = (size: number) =>
     Array.from({ length: size }).map((_, index) => (
@@ -119,14 +116,12 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && (
-          <JourneyTile journey={welcomeSpace} columns={cardColumns} isPrivate={isPrivate(welcomeSpace)} />
-        )}
+        {visibleFirstWelcomeSpace && <JourneyTile journey={welcomeSpace} columns={cardColumns} />}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyTile key={space.id} journey={space} columns={cardColumns} isPrivate={isPrivate(space)} />
+                <JourneyTile key={space.id} journey={space} columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}

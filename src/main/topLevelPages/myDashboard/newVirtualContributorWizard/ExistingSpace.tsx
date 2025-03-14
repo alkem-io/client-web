@@ -14,8 +14,15 @@ import Loading from '@/core/ui/loading/Loading';
 export interface SelectableKnowledgeSpace {
   id: string;
   name: string;
-  url: string | undefined;
-  roleSetId?: string;
+  about: {
+    profile: {
+      displayName: string;
+      url: string | undefined;
+    };
+    membership: {
+      roleSetID: string;
+    };
+  };
   parentRoleSetIds?: string[];
 }
 
@@ -38,13 +45,25 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingS
   const listItems = useMemo(() => {
     const result: SelectableKnowledgeSpace[] = [];
     const addSelectableSpace = (space: SelectableSpace, parentSpaces: SelectableSpace[] = []) => {
+      const name = `${space.about.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`;
       result.push({
         id: space.id,
-        name: `${space.about.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`,
-        url:
-          parentSpaces.length > 0 ? parentSpaces[parentSpaces.length - 1].about.profile.url : space.about.profile.url, // If available, go to the parent space
-        roleSetId: space.community.roleSet.id,
-        parentRoleSetIds: parentSpaces.map(space => space?.community.roleSet.id),
+        name,
+        about: {
+          profile: {
+            displayName: `${space.about.profile.displayName}${
+              parentSpaces.length > 0 ? '' : ` (${t('common.space')})`
+            }`,
+            url:
+              parentSpaces.length > 0
+                ? parentSpaces[parentSpaces.length - 1].about.profile.url
+                : space.about.profile.url, // If available, go to the parent space
+          },
+          membership: {
+            roleSetID: space.about.membership?.roleSetID ?? '',
+          },
+        },
+        parentRoleSetIds: parentSpaces.map(space => space?.about.membership?.roleSetID ?? ''),
       });
     };
 

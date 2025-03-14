@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import {
-  CalloutGroupName,
   CalloutState,
   CalloutType,
-  SpaceLevel,
   Tagset,
+  TagsetReservedName,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
@@ -24,18 +23,13 @@ import { ProfileReferenceSegment } from '@/domain/platform/admin/components/Comm
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import FormikSelect from '@/core/ui/forms/FormikSelect';
-import { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete';
-import { FormControlLabel } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 type FormValueType = {
   displayName: string;
@@ -44,7 +38,6 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
-  groupName: CalloutGroupName;
   postDescription?: string;
   whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -60,7 +53,6 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  groupName?: CalloutGroupName;
   postDescription?: string;
   whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValues;
@@ -74,7 +66,6 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
-  groupName: CalloutGroupName;
   postDescription?: string;
   whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -84,7 +75,6 @@ export interface CalloutFormProps {
   calloutType: CalloutType;
   callout: CalloutFormInput;
   editMode?: boolean;
-  canChangeCalloutLocation?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
@@ -97,7 +87,6 @@ const CalloutForm = ({
   calloutType,
   callout,
   editMode = false,
-  canChangeCalloutLocation,
   onChange,
   onStatusChanged,
   children,
@@ -106,15 +95,12 @@ const CalloutForm = ({
   disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
-  // Note that we can also have callouts on a VC Knowledge Base, so don't tie this component to spaces
-  const { spaceLevel } = useUrlResolver();
-  const isL0Space = spaceLevel === SpaceLevel.L0;
 
   const tagsets: Tagset[] = useMemo(
     () => [
       {
         id: '-1',
-        name: DEFAULT_TAGSET,
+        name: TagsetReservedName.Default,
         tags: callout?.tags ?? [],
         allowedValues: [],
         type: TagsetType.Freeform,
@@ -131,7 +117,6 @@ const CalloutForm = ({
       tagsets,
       references: callout?.references ?? [],
       opened: !disablePostResponses && (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
       whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
@@ -170,29 +155,12 @@ const CalloutForm = ({
       references: values.references,
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      groupName: values.groupName,
       postDescription: values.postDescription,
       whiteboardContent: values.whiteboardContent,
       whiteboard: values.whiteboard,
     };
     onChange?.(callout);
   };
-
-  const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
-    const locations = [CalloutGroupName.Home];
-    if (isL0Space) {
-      // Add in additional groups
-      locations.push(...[CalloutGroupName.Community, CalloutGroupName.Subspaces, CalloutGroupName.Knowledge]);
-    }
-
-    if (editMode) {
-      return locations.map(key => ({
-        id: key,
-        name: t(`callout.callout-group.${key}` as const),
-      }));
-    }
-    return [];
-  }, [editMode]);
 
   // Enable or disable form fields depending on the callout type and other conditions
   const formConfiguration = {
@@ -202,7 +170,6 @@ const CalloutForm = ({
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
     newResponses: !disablePostResponses && calloutType !== CalloutType.Whiteboard,
-    locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
@@ -260,14 +227,6 @@ const CalloutForm = ({
             {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplateSelector name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
-            {formConfiguration.locationChange && isL0Space && (
-              <FormControlLabel
-                sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
-                labelPlacement="start"
-                control={<FormikSelect name="groupName" values={calloutsGroups} />}
-                label={t('callout.callout-location')}
-              />
-            )}
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>

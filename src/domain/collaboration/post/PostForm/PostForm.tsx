@@ -1,4 +1,4 @@
-import { Post, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Post, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -8,7 +8,6 @@ import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValid
 import Gutters from '@/core/ui/grid/Gutters';
 import { Reference } from '@/domain/common/profile/Profile';
 import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { Formik, FormikConfig } from 'formik';
@@ -70,7 +69,7 @@ const PostForm = ({
   const tagsets: Tagset[] = [
     {
       id: '-1',
-      name: DEFAULT_TAGSET,
+      name: TagsetReservedName.Default,
       tags: tags ?? [],
       allowedValues: [],
       type: TagsetType.Freeform,

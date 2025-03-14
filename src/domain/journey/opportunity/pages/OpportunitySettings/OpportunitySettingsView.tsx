@@ -18,13 +18,16 @@ import DeleteIcon from '@/domain/journey/space/pages/SpaceSettings/icon/DeleteIc
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import PageContent from '@/core/ui/content/PageContent';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 
 const OpportunitySettingsView = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { subspaceId } = useSubSpace();
-  const { spaceNameId, spaceId } = useSpace();
+  const { subspace } = useSubSpace();
+  const { space } = useSpace();
+  const spaceId = space?.id;
+  const subspaceId = subspace?.id;
+  const spaceNameId = space?.nameID;
   const notify = useNotification();
   const navigate = useNavigate();
 
@@ -57,8 +60,8 @@ const OpportunitySettingsView = () => {
     skip: !spaceId && !subspaceId,
   });
 
-  const subspacePriviledges = data?.lookup.space?.authorization?.myPrivileges ?? [];
-  const canDelete = subspacePriviledges.includes(AuthorizationPrivilege.Delete);
+  const subspacePrivileges = data?.lookup.space?.authorization?.myPrivileges ?? [];
+  const canDelete = subspacePrivileges.includes(AuthorizationPrivilege.Delete);
   const handleDelete = () => {
     return deleteOpportunity({
       variables: {

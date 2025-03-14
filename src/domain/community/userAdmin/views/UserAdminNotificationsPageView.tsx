@@ -1,39 +1,21 @@
 import { Grid, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
-import { ViewProps } from '@/core/container/view';
 import { useUserContext } from '@/domain/community/user';
 import PreferenceSection from '@/main/ui/settings/PreferenceSection';
 import { gutters } from '@/core/ui/grid/utils';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
 
-export interface UserNotificationsPageViewEntities {
+export interface UserNotificationsPageViewProps {
   preferences: Preference[];
-}
-
-export interface UserNotificationsPageViewState {
   loading: boolean;
-}
-
-export interface UserNotificationsPageViewActions {
   updatePreference: (type: PreferenceType, checked: boolean, id: string) => void;
 }
 
-export interface UserNotificationsPageViewProps
-  extends ViewProps<
-    UserNotificationsPageViewEntities,
-    UserNotificationsPageViewActions,
-    UserNotificationsPageViewState
-  > {}
-
-const UserNotificationsPageView = ({ entities, actions, state }: UserNotificationsPageViewProps) => {
+const UserNotificationsPageView = ({ preferences, loading, updatePreference }: UserNotificationsPageViewProps) => {
   const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
   const isPlatformAdmin = userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
-
-  const { preferences } = entities;
-  const { updatePreference } = actions;
-  const { loading } = state;
 
   const generalGroup = preferences.filter(x => x.definition.group === 'Notification');
   const adminGroup = isPlatformAdmin ? preferences.filter(x => x.definition.group === 'NotificationGlobalAdmin') : [];
