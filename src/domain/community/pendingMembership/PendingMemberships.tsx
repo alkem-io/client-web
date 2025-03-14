@@ -2,11 +2,17 @@ import { ReactNode, useMemo } from 'react';
 import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
+  useSpacePrivilegesQuery,
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { PendingApplication } from '../user';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { CommunityGuidelinesSummaryFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityGuidelinesSummaryFragment,
+  SpaceLevel,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
@@ -70,11 +76,20 @@ export const InvitationHydrator = ({
   withCommunityGuidelines = false,
   children,
 }: InvitationHydratorProps) => {
+  const { data: spacePrivileges } = useSpacePrivilegesQuery({
+    variables: {
+      spaceId: invitation.spacePendingMembershipInfo.id,
+    },
+  });
+  const hasReadAboutPrivilege = spacePrivileges?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.ReadAbout
+  );
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: invitation.spacePendingMembershipInfo.id,
       fetchCommunityGuidelines: withCommunityGuidelines,
     },
+    skip: !hasReadAboutPrivilege,
   });
 
   const journey = spaceData?.lookup.space;
@@ -123,10 +138,19 @@ interface ApplicationHydratorProps {
 }
 
 export const ApplicationHydrator = ({ application, children }: ApplicationHydratorProps) => {
+  const { data: spacePrivileges } = useSpacePrivilegesQuery({
+    variables: {
+      spaceId: application.spacePendingMembershipInfo.id,
+    },
+  });
+  const hasReadAboutPrivilege = spacePrivileges?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.ReadAbout
+  );
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: application.spacePendingMembershipInfo.id,
     },
+    skip: !hasReadAboutPrivilege,
   });
 
   const journey = spaceData?.lookup.space;
