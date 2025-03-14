@@ -1836,7 +1836,8 @@
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
           "layout": {
-            "description": "Here you can edit the layout for this {{entity}}."
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
           },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-members."

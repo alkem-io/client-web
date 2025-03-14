@@ -4,6 +4,10 @@ query InnovationFlowSettings($collaborationId: UUID!) {
       ...InnovationFlowCollaboration
       innovationFlow {
         ...InnovationFlowDetails
+        settings{
+          maximumNumberOfStates
+          minimumNumberOfStates
+        }
       }
     }
   }

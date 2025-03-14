@@ -9672,6 +9672,11 @@ export type InnovationFlowSettingsQuery = {
           innovationFlow: {
             __typename?: 'InnovationFlow';
             id: string;
+            settings: {
+              __typename?: 'InnovationFlowSettings';
+              maximumNumberOfStates: number;
+              minimumNumberOfStates: number;
+            };
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -22697,6 +22702,7 @@ export type SpaceTabsQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
+              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
               states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
             };
           };

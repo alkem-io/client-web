@@ -11,17 +11,55 @@ import SpaceCommunityPage from '../layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/
 import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
+import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
+import SpaceSkeletonLayout from '../layout/Skeletons/SpaceSkeletonLayout';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
-const SpaceTabbedLayoutRoute = () => {
+const SpaceTabbedLayoutRoute = ({ spaceId }: { spaceId: string }) => {
+  const { data: spaceTabsData, loading: tabsLoading } = useSpaceTabsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+
+  const defaultTab = useMemo(() => {
+    const defaultState = spaceTabsData?.lookup.space?.collaboration.innovationFlow.currentState.displayName;
+    const defaultStateIndex = spaceTabsData?.lookup.space?.collaboration.innovationFlow.states.findIndex(
+      state => state.displayName === defaultState
+    );
+    switch (defaultStateIndex) {
+      case 0:
+        return routes.Dashboard;
+      case 1:
+        return routes.Community;
+      case 2:
+        return routes.Subspaces;
+      case 3:
+        return routes.KnowledgeBase;
+      case 4:
+        return routes.Custom;
+      default:
+        return routes.Dashboard;
+    }
+  }, [spaceTabsData]);
+
+  if (tabsLoading) {
+    return (
+      <Routes>
+        <Route path="*" element={<SpaceSkeletonLayout />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
-      <Route index element={<Navigate replace to={routes.Dashboard} />} />
+      <Route index element={<Navigate replace to={defaultTab} />} />
       <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
       <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
       <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />

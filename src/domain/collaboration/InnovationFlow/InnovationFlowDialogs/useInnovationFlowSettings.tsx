@@ -18,6 +18,7 @@ import {
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
@@ -52,6 +53,7 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
 };
 
 const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {
+  const ensurePresence = useEnsurePresence();
   const {
     data,
     loading: loadingData,
@@ -197,7 +199,8 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
    * if stateBefore is undefined, the new state will be appended to the end of the list
    */
   const handleCreateState = (newState: InnovationFlowState, stateBefore?: string) => {
-    const states = innovationFlow?.states ?? [];
+    const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
+    const states = requiredInnovationFlow.states;
     const stateBeforeIndex = !stateBefore ? -1 : states.findIndex(state => state.displayName === stateBefore);
 
     const nextStates =
@@ -205,15 +208,16 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         ? [...states, newState] // if stateBefore not found or undefined, just append the newState to the end
         : [...states.slice(0, stateBeforeIndex + 1), newState, ...states.slice(stateBeforeIndex + 1)];
 
+    if (nextStates.length > requiredInnovationFlow.settings.maximumNumberOfStates) {
+      throw new Error('Maximum number of states reached.');
+    }
     return updateInnovationFlowStates(nextStates);
   };
 
   const [updateInnovationFlowState] = useUpdateInnovationFlowSingleStateMutation();
   const handleEditState = async (oldState: InnovationFlowState, newState: InnovationFlowState) => {
-    const innovationFlowId = innovationFlow?.id;
-    if (!innovationFlowId) {
-      throw new Error('Innovation flow still not loaded.');
-    }
+    const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
+
     await updateInnovationFlowState({
       variables: {
         innovationFlowId,
@@ -230,17 +234,19 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   };
 
   const handleDeleteState = (stateDisplayName: string) => {
-    const states = innovationFlow?.states ?? [];
+    const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
+    const states = requiredInnovationFlow.states;
     const nextStates = states.filter(state => state.displayName !== stateDisplayName);
+    if (nextStates.length < requiredInnovationFlow.settings.minimumNumberOfStates) {
+      throw new Error('Minimum number of states reached.');
+    }
     return updateInnovationFlowStates(nextStates);
   };
 
   const [updateInnovationFlow] = useUpdateInnovationFlowStatesMutation();
   const updateInnovationFlowStates = (nextStates: InnovationFlowState[]) => {
-    const innovationFlowId = innovationFlow?.id;
-    if (!innovationFlowId) {
-      throw new Error('Innovation flow still not loaded.');
-    }
+    const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
+
     return updateInnovationFlow({
       variables: { innovationFlowId, states: nextStates },
       optimisticResponse: {
@@ -271,14 +277,8 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
 
   const [applyCollaborationTemplate] = useUpdateCollaborationFromTemplateMutation();
   const handleImportCollaborationTemplate = (collaborationTemplateId: string, addCallouts?: boolean) => {
-    const innovationFlowId = innovationFlow?.id;
-    if (!innovationFlowId) {
-      throw new Error('Innovation flow still not loaded.');
-    }
-    const collaborationId = collaboration?.id;
-    if (!collaborationId) {
-      throw new Error('Collaboration flow still not loaded.');
-    }
+    const collaborationId = ensurePresence(collaboration?.id, 'Collaboration');
+
     return applyCollaborationTemplate({
       variables: {
         collaborationId,

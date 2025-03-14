@@ -26,7 +26,7 @@ type CalloutLocation = {
 };
 
 export interface CalloutPageProps {
-  renderPage: (calloutGroupName?: string) => ReactElement;
+  renderPage: (calloutFlowState?: string) => ReactElement;
   parentRoute: string | ((flowState: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
@@ -126,9 +126,9 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       </NotFoundPageLayout>
     );
   }
-  const calloutGroupName = typedCalloutDetails?.classification?.flowState?.tags[0] ?? '';
+  const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
 
-  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroupName) : parentRoute;
+  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutFlowState) : parentRoute;
   const handleClose = () => {
     backOrElse(parentPagePath);
   };
@@ -152,7 +152,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
   }
 
   if (!typedCalloutDetails) {
-    return renderPage();
+    return renderPage(calloutFlowState);
   }
 
   return (

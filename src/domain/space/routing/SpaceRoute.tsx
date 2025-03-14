@@ -10,7 +10,7 @@ import SubSpaceSkeletonLayout from '../layout/Skeletons/SubSpaceSkeletonLayout';
 const routes = { ...EntityPageSection };
 
 const SpaceRoute = () => {
-  const { permissions, loading } = useSpace();
+  const { space, permissions, loading } = useSpace();
 
   if (loading) {
     return (
@@ -32,7 +32,7 @@ const SpaceRoute = () => {
 
   return (
     <Routes>
-      <Route path="*" element={<SpaceTabbedLayoutRoute />} />
+      <Route path="*" element={<SpaceTabbedLayoutRoute spaceId={space.id} />} />
     </Routes>
   );
 };

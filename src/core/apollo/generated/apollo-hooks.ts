@@ -5970,6 +5970,10 @@ export const InnovationFlowSettingsDocument = gql`
         ...InnovationFlowCollaboration
         innovationFlow {
           ...InnovationFlowDetails
+          settings {
+            maximumNumberOfStates
+            minimumNumberOfStates
+          }
         }
       }
     }
@@ -17918,6 +17922,9 @@ export const SpaceTabsDocument = gql`
           id
           innovationFlow {
             id
+            currentState {
+              displayName
+            }
             states {
               displayName
               description

@@ -70,5 +70,4 @@ fragment SpacePage on Space {
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
   }
-
 }

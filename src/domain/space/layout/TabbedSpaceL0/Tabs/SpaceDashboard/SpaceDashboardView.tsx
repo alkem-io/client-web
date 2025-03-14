@@ -31,6 +31,8 @@ import { DashboardNavigationItem } from '../../../../../journey/space/spaceDashb
 import SpaceWelcomeDialog from '../../../../../journey/space/pages/SpaceWelcomeDialog';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import useSpaceTabs from '@/domain/journey/space/layout/useSpaceTabs';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -120,6 +122,7 @@ const SpaceDashboardView = ({
   const myMembershipStatus = membership?.myMembershipStatus;
   const communityId = membership?.communityID;
   const calloutsSetId = calloutsSetProvided.calloutsSetId;
+  const { getTabDescription } = useSpaceTabs();
 
   return (
     <>
@@ -149,6 +152,9 @@ const SpaceDashboardView = ({
         )}
         <InfoColumn>
           <PageContentBlock accent>
+            <WrapperMarkdown>{getTabDescription(EntityPageSection.Dashboard)}</WrapperMarkdown>
+          </PageContentBlock>
+          <PageContentBlock>
             <JourneyDashboardWelcomeBlock
               description={what}
               leadUsers={leadUsers}

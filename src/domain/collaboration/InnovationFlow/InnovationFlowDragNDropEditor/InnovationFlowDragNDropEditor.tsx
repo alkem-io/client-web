@@ -25,8 +25,17 @@ const STATES_DROPPABLE_ID = '__states';
 export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
   children?: (state: InnovationFlowState) => React.ReactNode;
-  innovationFlowStates: InnovationFlowState[] | undefined;
-  currentState?: string | undefined;
+  innovationFlow:
+    | {
+        currentState: Pick<InnovationFlowState, 'displayName'>;
+        states: InnovationFlowState[];
+        settings: {
+          maximumNumberOfStates: number;
+          minimumNumberOfStates: number;
+        };
+      }
+    | undefined;
+
   croppedDescriptions?: boolean;
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCurrentState?: (state: string) => void;
@@ -59,9 +68,8 @@ const AddButton = (props: IconButtonProps) => {
 };
 
 const InnovationFlowDragNDropEditor = ({
-  innovationFlowStates,
+  innovationFlow,
   children,
-  currentState,
   croppedDescriptions,
   onUnhandledDragEnd,
   onUpdateFlowStateOrder,
@@ -72,11 +80,8 @@ const InnovationFlowDragNDropEditor = ({
   disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
-
-  // Dialogs for Flow States management:
-
-  // TODO: get the max from the innovation flow data
-  const MAX_INNOVATIONFLOW_STATES = 10;
+  const innovationFlowStates = innovationFlow?.states;
+  const currentState = innovationFlow?.currentState.displayName;
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
   const [createFlowState, setCreateFlowState] = useState<
@@ -140,6 +145,7 @@ const InnovationFlowDragNDropEditor = ({
                                 onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
                                 onEdit={() => setEditFlowState(state)}
                                 onDelete={() => setDeleteFlowState(state.displayName)}
+                                disableStateNumberChange={disableStateNumberChange}
                               />
                             }
                           />
@@ -161,7 +167,9 @@ const InnovationFlowDragNDropEditor = ({
                 {!disableStateNumberChange && (
                   <AddButton
                     onClick={() => setCreateFlowState({ last: true })}
-                    disabled={(innovationFlowStates ?? [])?.length >= MAX_INNOVATIONFLOW_STATES}
+                    disabled={
+                      (innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0)
+                    }
                   />
                 )}
               </Box>

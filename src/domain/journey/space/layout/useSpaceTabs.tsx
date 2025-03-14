@@ -1,5 +1,5 @@
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { useSpace } from '../../../space/SpaceContext/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
@@ -38,7 +38,13 @@ const tabName = (
   return customName;
 };
 
-const useSpaceTabs = () => {
+type useSpaceTabsProvided = {
+  tabs: TabDefinition[];
+  getTabDescription: (tab: EntityPageSection) => string;
+  showSettings: boolean;
+};
+
+const useSpaceTabs = (): useSpaceTabsProvided => {
   const { t, i18n } = useTranslation();
 
   const { space, permissions } = useSpace();
@@ -99,9 +105,17 @@ const useSpaceTabs = () => {
     }
     return result;
   }, [t, i18n.language, space.id, spaceTabsData, spaceTabsLoading]);
-  console.log({ tabs });
+
+  const getTabDescription = useCallback(
+    (tab: EntityPageSection) => {
+      return tabs.find(t => t.value === tab)?.description ?? '';
+    },
+    [tabs]
+  );
+
   return {
     tabs,
+    getTabDescription,
     showSettings: permissions.canUpdate,
   };
 };
