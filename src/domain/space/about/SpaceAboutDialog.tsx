@@ -33,6 +33,7 @@ import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDa
 
 export interface SpaceAboutDialogProps {
   open: boolean;
+  fullScreen?: boolean;
   space: SpaceDashboardSpaceDetails;
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
@@ -49,6 +50,7 @@ const gradient = (theme: Theme) =>
 
 const SpaceAboutDialog = ({
   open,
+  fullScreen,
   space,
   loading = false,
   onClose,
@@ -143,6 +145,7 @@ const SpaceAboutDialog = ({
     <DialogWithGrid
       open={open}
       columns={8}
+      {...(fullScreen ? { fullWidth: true, fullHeight: true, fullScreen: true } : undefined)}
       sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
     >
@@ -190,23 +193,25 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Box display="flex" justifyContent="center" width="100%">
-                <ApplicationButtonContainer journeyId={space.id}>
-                  {(applicationButtonProps, loading) => {
-                    if (loading || applicationButtonProps.isMember) {
-                      return null;
-                    }
+                {hasReadPrivilege && (
+                  <ApplicationButtonContainer journeyId={space.id}>
+                    {(applicationButtonProps, loading) => {
+                      if (loading || applicationButtonProps.isMember) {
+                        return null;
+                      }
 
-                    return (
-                      <ApplicationButton
-                        ref={applicationButtonRef}
-                        {...applicationButtonProps}
-                        loading={loading}
-                        journeyId={space.id}
-                        spaceLevel={space.level}
-                      />
-                    );
-                  }}
-                </ApplicationButtonContainer>
+                      return (
+                        <ApplicationButton
+                          ref={applicationButtonRef}
+                          {...applicationButtonProps}
+                          loading={loading}
+                          journeyId={space.id}
+                          spaceLevel={space.level}
+                        />
+                      );
+                    }}
+                  </ApplicationButtonContainer>
+                )}
               </Box>
             </PageContentColumn>
 

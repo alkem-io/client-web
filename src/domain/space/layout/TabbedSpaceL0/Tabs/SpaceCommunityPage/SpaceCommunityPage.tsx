@@ -31,7 +31,6 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import useSpaceTabs from '@/domain/journey/space/layout/useSpaceTabs';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
@@ -39,6 +38,7 @@ const SpaceCommunityPage = () => {
   const {
     urlInfo,
     classificationTagsets,
+    tabDescription,
     flowStateForNewCallouts: flowStateForTab,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
@@ -139,14 +139,12 @@ const SpaceCommunityPage = () => {
     entitledToSaveAsTemplate,
   });
 
-  const { getTabDescription } = useSpaceTabs();
-
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <PageContent>
         <InfoColumn>
           <PageContentBlock accent>
-            <WrapperMarkdown>{getTabDescription(EntityPageSection.Community)}</WrapperMarkdown>
+            <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
           </PageContentBlock>
           <EntityDashboardLeadsSection
             usersHeader={t('community.leads')}

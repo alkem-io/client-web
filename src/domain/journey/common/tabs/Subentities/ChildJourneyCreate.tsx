@@ -5,24 +5,27 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import useSpaceTabs from '@/domain/journey/space/layout/useSpaceTabs';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 interface ChildJourneyCreateProps {
   canCreateSubentity: boolean;
   level: SpaceLevel;
   onCreateSubentity?: () => void;
+  tabDescription: string;
 }
 
-const ChildJourneyCreate = ({ canCreateSubentity, onCreateSubentity, level }: ChildJourneyCreateProps) => {
+const ChildJourneyCreate = ({
+  canCreateSubentity,
+  onCreateSubentity,
+  tabDescription,
+  level,
+}: ChildJourneyCreateProps) => {
   const { t } = useTranslation();
-  const { getTabDescription } = useSpaceTabs();
   const spaceType = t(`common.space-level.${level}`);
 
   return (
     <PageContentBlock accent>
       <WrapperMarkdown>
-        {getTabDescription(EntityPageSection.Subspaces) ||
+        {tabDescription ||
           t('pages.generic.sections.subEntities.description', {
             entities: spaceType,
           })}

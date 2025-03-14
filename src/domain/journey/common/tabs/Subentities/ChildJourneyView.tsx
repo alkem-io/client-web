@@ -25,6 +25,7 @@ import { Button, IconButton } from '@mui/material';
 import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChildJourneyCreate from './ChildJourneyCreate';
+import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTabProvider';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -68,7 +69,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
 
   const { t } = useTranslation();
   const { permissions } = useSpace();
-
+  const { tabDescription } = useSpaceTabProvider({ tabPosition: 2 });
   const filteredItems = useMemo(
     () =>
       childEntities
@@ -87,6 +88,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
     <PageContent>
       <InfoColumn>
         <ChildJourneyCreate
+          tabDescription={tabDescription}
           level={level}
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}

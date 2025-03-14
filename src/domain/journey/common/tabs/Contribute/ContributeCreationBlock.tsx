@@ -6,24 +6,20 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import useSpaceTabs from '@/domain/journey/space/layout/useSpaceTabs';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 type ContributeCreationBlockProps = {
   canCreate: boolean;
   handleCreate: () => void;
+  tabDescription: string;
 };
 
-export const ContributeCreationBlock = ({ canCreate, handleCreate }: ContributeCreationBlockProps) => {
+export const ContributeCreationBlock = ({ tabDescription, canCreate, handleCreate }: ContributeCreationBlockProps) => {
   const { t } = useTranslation();
-  const { getTabDescription } = useSpaceTabs();
 
   const { locations } = useConfig();
   return (
     <PageContentBlock accent>
-      <WrapperMarkdown>
-        {getTabDescription(EntityPageSection.KnowledgeBase) || t('pages.contribute.initial-text')}
-      </WrapperMarkdown>
+      <WrapperMarkdown>{tabDescription || t('pages.contribute.initial-text')}</WrapperMarkdown>
       {canCreate && (
         <Actions justifyContent="end">
           {locations?.inspiration && (

@@ -24,7 +24,7 @@ const SpaceAboutPage = () => {
   const loading = loadingSpace || loadingDetails;
   const spaceDetails = data?.lookup.space;
 
-  const backToParentPage = useBackWithDefaultUrl(permissions.canRead ? space.about.profile.url : '/home');
+  const backToParentPage = useBackWithDefaultUrl(permissions.canRead ? space.about.profile.url : undefined);
 
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
@@ -46,6 +46,7 @@ const SpaceAboutPage = () => {
         {spaceDetails && (
           <SpaceAboutDialog
             open
+            fullScreen
             space={spaceDetails}
             loading={loading}
             onClose={backToParentPage}

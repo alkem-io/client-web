@@ -26,6 +26,7 @@ const SpaceDashboardPage = ({
     calloutsSetId,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
+    tabDescription,
   } = useSpaceTabProvider({ tabPosition: 0 });
 
   const { spaceId, journeyPath, calendarEventId } = urlInfo;
@@ -72,6 +73,7 @@ const SpaceDashboardPage = ({
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardView
         space={space}
+        tabDescription={tabDescription}
         dashboardNavigation={dashboardNavigation}
         dashboardNavigationLoading={dashboardNavigationLoading}
         loading={loadingSpacePageQuery}

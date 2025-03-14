@@ -31,7 +31,6 @@ import { DashboardNavigationItem } from '../../../../../journey/space/spaceDashb
 import SpaceWelcomeDialog from '../../../../../journey/space/pages/SpaceWelcomeDialog';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
-import useSpaceTabs from '@/domain/journey/space/layout/useSpaceTabs';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 export type SpaceDashboardSpaceDetails = {
@@ -42,6 +41,7 @@ export type SpaceDashboardSpaceDetails = {
 
 type SpaceDashboardViewProps = {
   space?: SpaceDashboardSpaceDetails;
+  tabDescription?: string;
   flowStateForNewCallouts: InnovationFlowState | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
@@ -57,6 +57,7 @@ type SpaceDashboardViewProps = {
 
 const SpaceDashboardView = ({
   space,
+  tabDescription,
   dashboardNavigation,
   dashboardNavigationLoading,
   loading,
@@ -122,7 +123,6 @@ const SpaceDashboardView = ({
   const myMembershipStatus = membership?.myMembershipStatus;
   const communityId = membership?.communityID;
   const calloutsSetId = calloutsSetProvided.calloutsSetId;
-  const { getTabDescription } = useSpaceTabs();
 
   return (
     <>
@@ -151,9 +151,11 @@ const SpaceDashboardView = ({
           </ApplicationButtonContainer>
         )}
         <InfoColumn>
-          <PageContentBlock accent>
-            <WrapperMarkdown>{getTabDescription(EntityPageSection.Dashboard)}</WrapperMarkdown>
-          </PageContentBlock>
+          {tabDescription && (
+            <PageContentBlock accent>
+              <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
+            </PageContentBlock>
+          )}
           <PageContentBlock>
             <JourneyDashboardWelcomeBlock
               description={what}

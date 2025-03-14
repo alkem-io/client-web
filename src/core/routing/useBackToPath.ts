@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import useNavigate from './useNavigate';
 import useCanGoBack from './useCanGoBack';
 import { normalizeLink } from '../utils/links';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 /**
  * Goes back only if the previous history item has the specified URL.
@@ -37,7 +38,7 @@ export const useBackToStaticPath = (parentPagePath: string) => {
  * Useful to close dialogs.
  * Will navigate back using the history API if possible, but will navigate to the default URL if it's not possible or if the previous URL is the same as the current one.
  */
-export const useBackWithDefaultUrl = (parentPagePath: string) => {
+export const useBackWithDefaultUrl = (parentPagePath: string = `/${TopLevelRoutePath.Home}`) => {
   const navigate = useNavigate();
   const canGoBack = useCanGoBack();
 
@@ -45,6 +46,7 @@ export const useBackWithDefaultUrl = (parentPagePath: string) => {
     parentPagePath = normalizeLink(parentPagePath);
     if (!canGoBack) {
       navigate(parentPagePath);
+      return;
     }
     const currentUrl = window.location.pathname;
     const handlePopState = () => {
@@ -57,7 +59,7 @@ export const useBackWithDefaultUrl = (parentPagePath: string) => {
     };
     window.addEventListener('popstate', handlePopState);
     navigate(-1);
-  }, []);
+  }, [parentPagePath]);
 };
 
 export default useBackToPath;

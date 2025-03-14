@@ -32,6 +32,7 @@ const SpaceSubspacesPage = () => {
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
   } = useSpaceTabProvider({ tabPosition: 2 });
+
   const { spaceId, journeyPath } = urlInfo;
 
   const { permissions, visibility } = useSpace();

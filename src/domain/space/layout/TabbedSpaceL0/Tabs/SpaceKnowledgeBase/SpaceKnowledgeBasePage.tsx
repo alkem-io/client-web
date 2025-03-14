@@ -19,10 +19,16 @@ type KnowledgeBasePageProps = {
 };
 
 const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
-  const { urlInfo, classificationTagsets, entitledToSaveAsTemplate, flowStateForNewCallouts, canSaveAsTemplate } =
-    useSpaceTabProvider({
-      tabPosition: 3,
-    });
+  const {
+    urlInfo,
+    classificationTagsets,
+    entitledToSaveAsTemplate,
+    flowStateForNewCallouts,
+    canSaveAsTemplate,
+    tabDescription,
+  } = useSpaceTabProvider({
+    tabPosition: 3,
+  });
   const { journeyPath, calloutsSetId } = urlInfo;
 
   const { t } = useTranslation();
@@ -52,7 +58,11 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
         <MembershipBackdrop show={loading} blockName={t('common.space')}>
           <PageContent>
             <InfoColumn>
-              <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
+              <ContributeCreationBlock
+                canCreate={canCreateCallout}
+                handleCreate={handleCreate}
+                tabDescription={tabDescription}
+              />
               <PageContentBlock>
                 <CalloutsList
                   callouts={callouts}

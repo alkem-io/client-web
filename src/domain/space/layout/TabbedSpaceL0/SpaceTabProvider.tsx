@@ -22,6 +22,7 @@ interface SpaceTabProvided {
   calloutsSetId: string | undefined;
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
+  tabDescription: string;
 
   refetch: () => Promise<unknown>;
   loading: boolean;
@@ -73,6 +74,9 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     ];
   }
 
+  const tabDescription =
+    spaceTabData?.lookup.space?.collaboration.innovationFlow.states[tabPosition]?.description ?? '';
+
   return {
     myPrivileges,
     canReadSpace: canReadSpace || false,
@@ -82,6 +86,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     urlInfo,
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
+    tabDescription,
     calloutsSetId,
     classificationTagsets,
     flowStateForNewCallouts: flowState,
