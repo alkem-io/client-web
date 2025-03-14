@@ -1,5 +1,5 @@
 import {
-  useCommunityUserPrivilegesQuery,
+  useApplicationButtonQuery,
   useJoinRoleSetMutation,
   useSpacePageLazyQuery,
   useSubspacePageLazyQuery,
@@ -48,7 +48,7 @@ export const ApplicationButtonContainer = ({
     data: _communityPrivileges,
     loading: communityPrivilegesLoading,
     refetch,
-  } = useCommunityUserPrivilegesQuery({
+  } = useApplicationButtonQuery({
     variables: {
       spaceId: journeyId!,
       parentSpaceId,
@@ -104,14 +104,14 @@ export const ApplicationButtonContainer = ({
   // but you are at least at challenge level to have a parent application
   const parentApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === parentSpaceId);
 
-  const isMember = space?.community.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const isChildJourney = !!parentSpaceId;
-  const isParentMember = parentSpace?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isParentMember = parentSpace?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentUrl = parentSpace?.about.profile.url;
 
-  const rolesetPrivileges = space?.community?.roleSet?.authorization?.myPrivileges ?? [];
+  const rolesetPrivileges = space?.about.membership.myPrivileges ?? [];
 
   const canJoinCommunity =
     (isChildJourney && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin)) ||
@@ -119,13 +119,13 @@ export const ApplicationButtonContainer = ({
 
   // Changed from parent to current space
   const canAcceptInvitation =
-    space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
+    space?.about.membership.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
   const canApplyToCommunity =
     (isChildJourney && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply)) ||
     (!isChildJourney && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply));
 
-  const parentRoleSetPrivileges = parentSpace?.community.roleSet?.authorization?.myPrivileges ?? [];
+  const parentRoleSetPrivileges = parentSpace?.about.membership.myPrivileges ?? [];
 
   const canJoinParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin);
   const canApplyToParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply);
@@ -134,7 +134,7 @@ export const ApplicationButtonContainer = ({
     loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
 
   const handleJoin = async () => {
-    const roleSetId = space?.community.roleSet.id;
+    const roleSetId = space?.about.membership.roleSetID;
     if (!roleSetId) {
       throw new Error('Community is not loaded');
     }

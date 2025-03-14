@@ -3690,6 +3690,95 @@ export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutation,
   SchemaTypes.UpdateInnovationPackMutationVariables
 >;
+export const ApplicationButtonDocument = gql`
+  query ApplicationButton(
+    $spaceId: UUID!
+    $parentSpaceId: UUID! = "00000000-0000-0000-0000-000000000000"
+    $includeParentSpace: Boolean! = false
+  ) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        about {
+          ...SpaceAboutMinimalUrl
+          membership {
+            communityID
+            roleSetID
+            myMembershipStatus
+            myPrivileges
+          }
+        }
+      }
+    }
+    parentSpace: lookup @include(if: $includeParentSpace) {
+      space(ID: $parentSpaceId) {
+        id
+        about {
+          ...SpaceAboutMinimalUrl
+          membership {
+            communityID
+            roleSetID
+            myMembershipStatus
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+  ${SpaceAboutMinimalUrlFragmentDoc}
+`;
+
+/**
+ * __useApplicationButtonQuery__
+ *
+ * To run a query within a React component, call `useApplicationButtonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useApplicationButtonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useApplicationButtonQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      parentSpaceId: // value for 'parentSpaceId'
+ *      includeParentSpace: // value for 'includeParentSpace'
+ *   },
+ * });
+ */
+export function useApplicationButtonQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ApplicationButtonQuery, SchemaTypes.ApplicationButtonQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ApplicationButtonQuery, SchemaTypes.ApplicationButtonQueryVariables>(
+    ApplicationButtonDocument,
+    options
+  );
+}
+
+export function useApplicationButtonLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ApplicationButtonQuery,
+    SchemaTypes.ApplicationButtonQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ApplicationButtonQuery, SchemaTypes.ApplicationButtonQueryVariables>(
+    ApplicationButtonDocument,
+    options
+  );
+}
+
+export type ApplicationButtonQueryHookResult = ReturnType<typeof useApplicationButtonQuery>;
+export type ApplicationButtonLazyQueryHookResult = ReturnType<typeof useApplicationButtonLazyQuery>;
+export type ApplicationButtonQueryResult = Apollo.QueryResult<
+  SchemaTypes.ApplicationButtonQuery,
+  SchemaTypes.ApplicationButtonQueryVariables
+>;
+export function refetchApplicationButtonQuery(variables: SchemaTypes.ApplicationButtonQueryVariables) {
+  return { query: ApplicationButtonDocument, variables: variables };
+}
+
 export const ApplyForEntryRoleOnRoleSetDocument = gql`
   mutation ApplyForEntryRoleOnRoleSet($roleSetId: UUID!, $questions: [CreateNVPInput!]!) {
     applyForEntryRoleOnRoleSet(applicationData: { roleSetID: $roleSetId, questions: $questions }) {
@@ -10063,116 +10152,6 @@ export type CommunityUpdatesQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpdatesQueryVariables) {
   return { query: CommunityUpdatesDocument, variables: variables };
-}
-
-export const CommunityUserPrivilegesDocument = gql`
-  query CommunityUserPrivileges(
-    $spaceId: UUID!
-    $parentSpaceId: UUID! = "00000000-0000-0000-0000-000000000000"
-    $includeParentSpace: Boolean! = false
-  ) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        about {
-          ...SpaceAboutMinimalUrl
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          roleSet {
-            id
-            myMembershipStatus
-            authorization {
-              id
-              myPrivileges
-            }
-          }
-        }
-      }
-    }
-    parentSpace: lookup @include(if: $includeParentSpace) {
-      space(ID: $parentSpaceId) {
-        id
-        about {
-          ...SpaceAboutMinimalUrl
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          roleSet {
-            id
-            myMembershipStatus
-            authorization {
-              id
-              myPrivileges
-            }
-          }
-        }
-      }
-    }
-  }
-  ${SpaceAboutMinimalUrlFragmentDoc}
-`;
-
-/**
- * __useCommunityUserPrivilegesQuery__
- *
- * To run a query within a React component, call `useCommunityUserPrivilegesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityUserPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityUserPrivilegesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      parentSpaceId: // value for 'parentSpaceId'
- *      includeParentSpace: // value for 'includeParentSpace'
- *   },
- * });
- */
-export function useCommunityUserPrivilegesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityUserPrivilegesQuery,
-    SchemaTypes.CommunityUserPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityUserPrivilegesQuery, SchemaTypes.CommunityUserPrivilegesQueryVariables>(
-    CommunityUserPrivilegesDocument,
-    options
-  );
-}
-
-export function useCommunityUserPrivilegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityUserPrivilegesQuery,
-    SchemaTypes.CommunityUserPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CommunityUserPrivilegesQuery,
-    SchemaTypes.CommunityUserPrivilegesQueryVariables
-  >(CommunityUserPrivilegesDocument, options);
-}
-
-export type CommunityUserPrivilegesQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesQuery>;
-export type CommunityUserPrivilegesLazyQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesLazyQuery>;
-export type CommunityUserPrivilegesQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityUserPrivilegesQuery,
-  SchemaTypes.CommunityUserPrivilegesQueryVariables
->;
-export function refetchCommunityUserPrivilegesQuery(variables: SchemaTypes.CommunityUserPrivilegesQueryVariables) {
-  return { query: CommunityUserPrivilegesDocument, variables: variables };
 }
 
 export const SpaceApplicationDocument = gql`

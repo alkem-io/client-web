@@ -193,25 +193,23 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Box display="flex" justifyContent="center" width="100%">
-                {hasReadPrivilege && (
-                  <ApplicationButtonContainer journeyId={space.id}>
-                    {(applicationButtonProps, loading) => {
-                      if (loading || applicationButtonProps.isMember) {
-                        return null;
-                      }
+                <ApplicationButtonContainer journeyId={space.id}>
+                  {(applicationButtonProps, loading) => {
+                    if (loading || applicationButtonProps.isMember) {
+                      return null;
+                    }
 
-                      return (
-                        <ApplicationButton
-                          ref={applicationButtonRef}
-                          {...applicationButtonProps}
-                          loading={loading}
-                          journeyId={space.id}
-                          spaceLevel={space.level}
-                        />
-                      );
-                    }}
-                  </ApplicationButtonContainer>
-                )}
+                    return (
+                      <ApplicationButton
+                        ref={applicationButtonRef}
+                        {...applicationButtonProps}
+                        loading={loading}
+                        journeyId={space.id}
+                        spaceLevel={space.level}
+                      />
+                    );
+                  }}
+                </ApplicationButtonContainer>
               </Box>
             </PageContentColumn>
 

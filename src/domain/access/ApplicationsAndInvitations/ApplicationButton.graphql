@@ -1,0 +1,65 @@
+query ApplicationButton(
+  $spaceId: UUID!
+  $parentSpaceId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $includeParentSpace: Boolean! = false
+) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        ...SpaceAboutMinimalUrl
+        membership {
+          communityID
+          roleSetID
+          myMembershipStatus
+          myPrivileges
+        }
+      }
+      #//!!
+      # community {
+      #   id
+      #   authorization {
+      #     id
+      #     myPrivileges
+      #   }
+      #   roleSet {
+      #     id
+      #     myMembershipStatus
+      #     authorization {
+      #       id
+      #       myPrivileges
+      #     }
+      #   }
+      # }
+    }
+  }
+  parentSpace: lookup @include(if: $includeParentSpace) {
+    space(ID: $parentSpaceId) {
+      id
+      about {
+        ...SpaceAboutMinimalUrl
+        membership {
+          communityID
+          roleSetID
+          myMembershipStatus
+          myPrivileges
+        }
+      }
+      # community {
+      #   id
+      #   authorization {
+      #     id
+      #     myPrivileges
+      #   }
+      #   roleSet {
+      #     id
+      #     myMembershipStatus
+      #     authorization {
+      #       id
+      #       myPrivileges
+      #     }
+      #   }
+      # }
+    }
+  }
+}

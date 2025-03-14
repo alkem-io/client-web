@@ -7842,6 +7842,70 @@ export type InnovationPackCardFragment = {
       };
 };
 
+export type ApplicationButtonQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  parentSpaceId?: Scalars['UUID'];
+  includeParentSpace?: Scalars['Boolean'];
+}>;
+
+export type ApplicationButtonQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
+          };
+        }
+      | undefined;
+  };
+  parentSpace: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   questions: Array<CreateNvpInput> | CreateNvpInput;
@@ -16147,86 +16211,6 @@ export type CommunityUpdatesQuery = {
                     }
                   | undefined;
               }>;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CommunityUserPrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-  parentSpaceId?: Scalars['UUID'];
-  includeParentSpace?: Scalars['Boolean'];
-}>;
-
-export type CommunityUserPrivilegesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              tagline?: string | undefined;
-              url: string;
-            };
-          };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            };
-          };
-        }
-      | undefined;
-  };
-  parentSpace: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              tagline?: string | undefined;
-              url: string;
-            };
-          };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
             };
           };
         }
