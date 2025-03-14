@@ -1,11 +1,12 @@
-query CommunityProviderDetails(
+query SpaceEntitlements(
   $spaceId: UUID!
 ) {
   lookup {
     space(ID: $spaceId) {
       id
-      provider {
-        ...RoleSetMemberOrganization
+      license {
+        id
+        availableEntitlements
       }
     }
   }

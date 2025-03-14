@@ -6,6 +6,10 @@ query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
         id
         myPrivileges
       }
+      license {
+        id
+        availableEntitlements
+      }
       about {
         ...SpaceAboutLight
       }

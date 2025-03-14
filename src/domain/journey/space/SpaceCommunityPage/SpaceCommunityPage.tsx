@@ -16,6 +16,7 @@ import useCommunityMembersAsCardProps from '@/domain/community/community/utils/u
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
+  LicenseEntitlementType,
   RoleName,
   RoleSetContributorType,
   SearchVisibility,
@@ -59,8 +60,10 @@ const SpaceCommunityPage = () => {
     skip: !spaceId,
   });
 
+  const spaceData = data?.lookup.space;
+
   const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
-    roleSetId: data?.lookup.space?.community?.roleSet.id,
+    roleSetId: spaceData?.community?.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
       RoleSetContributorType.User,
@@ -81,7 +84,7 @@ const SpaceCommunityPage = () => {
     }
   );
 
-  const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
+  const calloutsSetId = spaceData?.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -95,27 +98,27 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(
-    () => data?.lookup.space?.provider && [data.lookup.space.provider],
-    [data?.lookup.space?.provider]
-  );
+  const hostOrganizations = useMemo(() => spaceData?.provider && [spaceData.provider], [spaceData?.provider]);
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.lookup.space?.community?.id);
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(spaceData?.community?.id);
 
-  const hasReadPrivilege = data?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  // VC privileges and entitlements
+  const hasReadPrivilege = spaceData?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
       memberVirtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
   }
-
   const hasInvitePrivilege = myPrivileges?.some(privilege =>
     [AuthorizationPrivilege.RolesetEntryRoleInvite, AuthorizationPrivilege.CommunityAssignVcFromAccount].includes(
       privilege
     )
   );
-
-  const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
+  const spaceEntitlements: LicenseEntitlementType[] | undefined = spaceData?.license?.availableEntitlements;
+  const hasVcSpaceEntitlement = spaceEntitlements?.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess);
+  const showVirtualContributorsBlock =
+    hasReadPrivilege && hasVcSpaceEntitlement && (virtualContributors?.length > 0 || hasInvitePrivilege);
+  const showInviteOption = hasInvitePrivilege && hasVcSpaceEntitlement;
 
   useAboutRedirect({ spaceId, currentSection: EntityPageSection.Community, skip: resolving || !spaceId });
 
@@ -145,10 +148,10 @@ const SpaceCommunityPage = () => {
                 <VirtualContributorsBlock
                   virtualContributors={virtualContributors}
                   loading={loadingCommunity}
-                  showInviteOption={hasInvitePrivilege}
+                  showInviteOption={showInviteOption}
                 />
               )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={spaceData?.about.profile.url} />
             </InfoColumn>
             <ContentColumn>
               <RoleSetContributorsBlockWide
