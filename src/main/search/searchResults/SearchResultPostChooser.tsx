@@ -4,11 +4,7 @@ import { useHydrateCard } from './useHydratedCard';
 import { SearchResultMetaType } from '../SearchView';
 import { SearchResultType } from '@/core/apollo/generated/graphql-schema';
 
-const SearchResultPostChooser = ({
-  result,
-}: {
-  result: SearchResultMetaType | undefined;
-}): React.ReactElement | null => {
+const SearchResultPostChooser = ({ result }: { result: SearchResultMetaType | undefined }) => {
   const {
     hydrateSpaceCard,
     hydrateUserCard,
