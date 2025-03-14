@@ -16,6 +16,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import SpaceSkeletonLayout from '../layout/Skeletons/SpaceSkeletonLayout';
+import SubSpaceSkeletonLayout from '../layout/Skeletons/SubSpaceSkeletonLayout';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
@@ -52,6 +53,7 @@ const SpaceTabbedLayoutRoute = ({ spaceId }: { spaceId: string }) => {
   if (tabsLoading) {
     return (
       <Routes>
+        <Route path="challenges/*" element={<SubSpaceSkeletonLayout />} />
         <Route path="*" element={<SpaceSkeletonLayout />} />
       </Routes>
     );

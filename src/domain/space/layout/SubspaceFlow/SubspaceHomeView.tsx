@@ -83,6 +83,7 @@ const SubspaceHomeView = ({
     classificationTagsets: classificationTagsets,
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
+    skip: !selectedInnovationFlowState,
   });
 
   // If it's mobile the ManageFlow action will be consumed somewhere else,
