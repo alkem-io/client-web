@@ -203,7 +203,6 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       },
     },
     fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true,
     skip: hasNoTermsLength || resolvingSpace,
   });
 
