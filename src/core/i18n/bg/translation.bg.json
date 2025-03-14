@@ -11,8 +11,13 @@
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "menu": {
-      "clear": "Clear conversation",
+      "clear": "New Chat",
       "close": "Затваряне на прозореца"
+    },
+    "confirmNewChat": {
+      "title": "Start a new chat?",
+      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
+      "confirm": "Yes, start new chat"
     },
     "references": [
       {

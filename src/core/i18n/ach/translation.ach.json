@@ -11,8 +11,13 @@
       "tooltip": "crwdns17366:0crwdne17366:0"
     },
     "menu": {
-      "clear": "crwdns17368:0crwdne17368:0",
+      "clear": "crwdns36759:0crwdne36759:0",
       "close": "crwdns17370:0crwdne17370:0"
+    },
+    "confirmNewChat": {
+      "title": "crwdns36761:0crwdne36761:0",
+      "description": "crwdns36763:0crwdne36763:0",
+      "confirm": "crwdns36765:0crwdne36765:0"
     },
     "references": [
       {
