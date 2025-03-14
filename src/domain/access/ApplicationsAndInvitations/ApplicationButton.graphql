@@ -15,22 +15,6 @@ query ApplicationButton(
           myPrivileges
         }
       }
-      #//!!
-      # community {
-      #   id
-      #   authorization {
-      #     id
-      #     myPrivileges
-      #   }
-      #   roleSet {
-      #     id
-      #     myMembershipStatus
-      #     authorization {
-      #       id
-      #       myPrivileges
-      #     }
-      #   }
-      # }
     }
   }
   parentSpace: lookup @include(if: $includeParentSpace) {
@@ -45,21 +29,6 @@ query ApplicationButton(
           myPrivileges
         }
       }
-      # community {
-      #   id
-      #   authorization {
-      #     id
-      #     myPrivileges
-      #   }
-      #   roleSet {
-      #     id
-      #     myMembershipStatus
-      #     authorization {
-      #       id
-      #       myPrivileges
-      #     }
-      #   }
-      # }
     }
   }
 }

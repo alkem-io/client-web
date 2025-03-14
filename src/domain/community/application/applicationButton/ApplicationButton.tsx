@@ -295,7 +295,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           <ApplicationDialog
             open={isApplicationDialogOpen}
             onClose={handleClose}
-            journeyId={journeyId}
+            spaceId={journeyId}
             canJoinCommunity={canJoinCommunity}
             onJoin={onJoin}
             onApply={handleOpenApplicationSubmittedDialog}

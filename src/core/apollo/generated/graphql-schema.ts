@@ -16218,11 +16218,11 @@ export type CommunityUpdatesQuery = {
   };
 };
 
-export type SpaceApplicationQueryVariables = Exact<{
+export type ApplicationDialogQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type SpaceApplicationQuery = {
+export type ApplicationDialogQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -16233,39 +16233,30 @@ export type SpaceApplicationQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
+              applicationForm: {
+                __typename?: 'Form';
+                id: string;
+                description?: string | undefined;
+                questions: Array<{
+                  __typename?: 'FormQuestion';
+                  required: boolean;
+                  question: string;
+                  sortOrder: number;
+                  explanation: string;
+                  maxLength: number;
+                }>;
+              };
+            };
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               tagline?: string | undefined;
               url: string;
-            };
-          };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: { __typename?: 'RoleSet'; id: string };
-            guidelines: {
-              __typename?: 'CommunityGuidelines';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                references?:
-                  | Array<{
-                      __typename?: 'Reference';
-                      id: string;
-                      name: string;
-                      uri: string;
-                      description?: string | undefined;
-                    }>
-                  | undefined;
-              };
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
             };
           };
         }
@@ -19870,44 +19861,6 @@ export type SpaceAndCommunityPrivilegesQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SpaceApplicationTemplateQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceApplicationTemplateQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              applicationForm: {
-                __typename?: 'Form';
-                id: string;
-                description?: string | undefined;
-                questions: Array<{
-                  __typename?: 'FormQuestion';
-                  required: boolean;
-                  question: string;
-                  sortOrder: number;
-                  explanation: string;
-                  maxLength: number;
-                }>;
-              };
-            };
           };
         }
       | undefined;

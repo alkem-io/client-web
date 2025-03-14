@@ -10154,77 +10154,82 @@ export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpd
   return { query: CommunityUpdatesDocument, variables: variables };
 }
 
-export const SpaceApplicationDocument = gql`
-  query SpaceApplication($spaceId: UUID!) {
+export const ApplicationDialogDocument = gql`
+  query ApplicationDialog($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
         about {
           ...SpaceAboutMinimalUrl
-        }
-        community {
-          id
-          roleSet {
-            id
-          }
-          guidelines {
-            ...CommunityGuidelinesDetails
+          membership {
+            communityID
+            roleSetID
+            applicationForm {
+              id
+              description
+              questions {
+                required
+                question
+                sortOrder
+                explanation
+                maxLength
+              }
+            }
           }
         }
       }
     }
   }
   ${SpaceAboutMinimalUrlFragmentDoc}
-  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
- * __useSpaceApplicationQuery__
+ * __useApplicationDialogQuery__
  *
- * To run a query within a React component, call `useSpaceApplicationQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useApplicationDialogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useApplicationDialogQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceApplicationQuery({
+ * const { data, loading, error } = useApplicationDialogQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSpaceApplicationQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>
+export function useApplicationDialogQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ApplicationDialogQuery, SchemaTypes.ApplicationDialogQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
-    SpaceApplicationDocument,
+  return Apollo.useQuery<SchemaTypes.ApplicationDialogQuery, SchemaTypes.ApplicationDialogQueryVariables>(
+    ApplicationDialogDocument,
     options
   );
 }
 
-export function useSpaceApplicationLazyQuery(
+export function useApplicationDialogLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceApplicationQuery,
-    SchemaTypes.SpaceApplicationQueryVariables
+    SchemaTypes.ApplicationDialogQuery,
+    SchemaTypes.ApplicationDialogQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
-    SpaceApplicationDocument,
+  return Apollo.useLazyQuery<SchemaTypes.ApplicationDialogQuery, SchemaTypes.ApplicationDialogQueryVariables>(
+    ApplicationDialogDocument,
     options
   );
 }
 
-export type SpaceApplicationQueryHookResult = ReturnType<typeof useSpaceApplicationQuery>;
-export type SpaceApplicationLazyQueryHookResult = ReturnType<typeof useSpaceApplicationLazyQuery>;
-export type SpaceApplicationQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceApplicationQuery,
-  SchemaTypes.SpaceApplicationQueryVariables
+export type ApplicationDialogQueryHookResult = ReturnType<typeof useApplicationDialogQuery>;
+export type ApplicationDialogLazyQueryHookResult = ReturnType<typeof useApplicationDialogLazyQuery>;
+export type ApplicationDialogQueryResult = Apollo.QueryResult<
+  SchemaTypes.ApplicationDialogQuery,
+  SchemaTypes.ApplicationDialogQueryVariables
 >;
-export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplicationQueryVariables) {
-  return { query: SpaceApplicationDocument, variables: variables };
+export function refetchApplicationDialogQuery(variables: SchemaTypes.ApplicationDialogQueryVariables) {
+  return { query: ApplicationDialogDocument, variables: variables };
 }
 
 export const RoleSetApplicationFormDocument = gql`
@@ -15094,85 +15099,6 @@ export function refetchSpaceAndCommunityPrivilegesQuery(
   variables: SchemaTypes.SpaceAndCommunityPrivilegesQueryVariables
 ) {
   return { query: SpaceAndCommunityPrivilegesDocument, variables: variables };
-}
-
-export const SpaceApplicationTemplateDocument = gql`
-  query SpaceApplicationTemplate($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-          roleSet {
-            id
-            applicationForm {
-              id
-              description
-              questions {
-                required
-                question
-                sortOrder
-                explanation
-                maxLength
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceApplicationTemplateQuery__
- *
- * To run a query within a React component, call `useSpaceApplicationTemplateQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceApplicationTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceApplicationTemplateQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceApplicationTemplateQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceApplicationTemplateQuery,
-    SchemaTypes.SpaceApplicationTemplateQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceApplicationTemplateQuery, SchemaTypes.SpaceApplicationTemplateQueryVariables>(
-    SpaceApplicationTemplateDocument,
-    options
-  );
-}
-
-export function useSpaceApplicationTemplateLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceApplicationTemplateQuery,
-    SchemaTypes.SpaceApplicationTemplateQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceApplicationTemplateQuery,
-    SchemaTypes.SpaceApplicationTemplateQueryVariables
-  >(SpaceApplicationTemplateDocument, options);
-}
-
-export type SpaceApplicationTemplateQueryHookResult = ReturnType<typeof useSpaceApplicationTemplateQuery>;
-export type SpaceApplicationTemplateLazyQueryHookResult = ReturnType<typeof useSpaceApplicationTemplateLazyQuery>;
-export type SpaceApplicationTemplateQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceApplicationTemplateQuery,
-  SchemaTypes.SpaceApplicationTemplateQueryVariables
->;
-export function refetchSpaceApplicationTemplateQuery(variables: SchemaTypes.SpaceApplicationTemplateQueryVariables) {
-  return { query: SpaceApplicationTemplateDocument, variables: variables };
 }
 
 export const SubspacesInSpaceDocument = gql`

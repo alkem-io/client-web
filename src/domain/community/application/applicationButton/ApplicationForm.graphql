@@ -1,11 +1,12 @@
-query SpaceApplicationTemplate($spaceId: UUID!) {
+query ApplicationDialog($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      community {
-        id
-        roleSet {
-          id
+      about {
+        ...SpaceAboutMinimalUrl
+        membership {
+          communityID
+          roleSetID
           applicationForm {
             id
             description
@@ -19,6 +20,13 @@ query SpaceApplicationTemplate($spaceId: UUID!) {
           }
         }
       }
+      #community {
+      #  id
+      #  guidelines {
+      #    ...CommunityGuidelinesDetails
+      #  }
+      #}
     }
   }
 }
+
