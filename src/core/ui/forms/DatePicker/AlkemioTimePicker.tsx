@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, BoxProps, MenuItem, Select, SelectProps, styled } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import ScheduleIcon from '@mui/icons-material/Schedule';
@@ -12,7 +12,8 @@ export interface AlkemioTimePickerProps
   onChange?: (date: Date) => void;
   onBlur?: () => void;
   minTime?: Dayjs;
-  error?: ReactNode;
+  // @ts-ignore react-18 allow string and translations (hard to type)
+  error?: unknown;
   containerProps?: BoxProps;
 }
 

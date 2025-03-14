@@ -16,7 +16,7 @@ type CharacterCountContextValue = {
 
 const CharacterCountContext = createContext<CharacterCountContextValue | null>(null);
 
-export const CharacterCountContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const CharacterCountContextProvider = ({ children }: PropsWithChildren) => {
   const [characterCount, setCharacterCount] = useState(0);
 
   const contextValue = useMemo<CharacterCountContextValue>(

@@ -1,10 +1,10 @@
-import { FC } from 'react';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ApolloProvider } from '@apollo/client';
-import { useGraphQLClient } from '../hooks/useGraphQLClient';
+import { FC, PropsWithChildren } from 'react';
 import { PlatformFeatureFlagName } from '../generated/graphql-schema';
+import { useGraphQLClient } from '../hooks/useGraphQLClient';
 
-interface Props {
+interface Props extends PropsWithChildren {
   apiUrl: string;
 }
 

@@ -1,4 +1,3 @@
-import React, { FC, useMemo } from 'react';
 import {
   useSpaceCommunityIdsQuery,
   useSpaceQuery,
@@ -12,6 +11,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import React, { PropsWithChildren, useMemo } from 'react';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -35,9 +35,11 @@ interface SpaceContextProps {
   roleSetId: string;
   isPrivate?: boolean;
   permissions: SpacePermissions;
-  profile: {
-    displayName: string;
-    url: string;
+  about: {
+    profile: {
+      displayName: string;
+      url: string;
+    };
   };
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
@@ -52,9 +54,11 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   calloutsSetId: '',
   roleSetId: '',
   isPrivate: undefined,
-  profile: {
-    displayName: '',
-    url: '',
+  about: {
+    profile: {
+      displayName: '',
+      url: '',
+    },
   },
   permissions: {
     canRead: false,
@@ -70,11 +74,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   loading: false,
 });
 
-interface SpaceProviderProps {}
-
 const NO_PRIVILEGES = [];
 
-const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
+const SpaceContextProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated } = useUserContext();
   const { levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
@@ -133,12 +135,15 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     };
   }, [spacePrivileges, canCreateTemplates, communityPrivileges, collaborationPrivileges]);
 
-  const profile = useMemo(() => {
+  // TODO: expose only profile? revise the props used from About
+  const about = useMemo(() => {
     return {
-      displayName: space?.profile.displayName ?? '',
-      url: space?.profile.url ?? '',
+      profile: {
+        displayName: space?.about.profile.displayName ?? '',
+        url: space?.about.profile.url ?? '',
+      },
     };
-  }, [space?.profile]);
+  }, [space?.about.profile]);
 
   const loading = urlResolverLoading || loadingSpaceQuery || communityLoading;
   return (
@@ -146,7 +151,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       value={{
         spaceId,
         spaceNameId,
-        profile,
+        about,
         communityId,
         collaborationId,
         calloutsSetId,
@@ -163,4 +168,4 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   );
 };
 
-export { SpaceContextProvider, SpaceContext };
+export { SpaceContext, SpaceContextProvider };

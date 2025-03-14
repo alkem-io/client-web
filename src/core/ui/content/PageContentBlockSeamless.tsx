@@ -7,7 +7,7 @@ import { SystemCssProperties } from '@mui/system/styleFunctionSx/styleFunctionSx
 export interface PageContentBlockSeamlessProps
   extends BasePageContentBlockProps,
     Omit<BoxProps, 'flexWrap' | 'flex'>,
-    PropsWithChildren<{}> {}
+    PropsWithChildren {}
 
 const PageContentBlockSeamless = forwardRef<HTMLDivElement, PageContentBlockSeamlessProps>(
   (props: PageContentBlockSeamlessProps, ref) => {

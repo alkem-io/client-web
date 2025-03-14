@@ -1,4 +1,4 @@
-import { ComponentType, DOMAttributes, forwardRef, Ref, useCallback, useState } from 'react';
+import { ComponentType, DOMAttributes, forwardRef, useCallback, useState } from 'react';
 
 export const INITIAL_ELEVATION = 1;
 export const FINAL_ELEVATION = 8;
@@ -17,7 +17,7 @@ interface Options {
 }
 
 const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: ComponentType<P>, options: Options = {}) =>
-  forwardRef((props: WithElevationProps<El, P>, ref: Ref<El>) => {
+  forwardRef<El, WithElevationProps<El, P>>((props, ref) => {
     const { initialElevation = INITIAL_ELEVATION, finalElevation = FINAL_ELEVATION } = options;
 
     const { elevationDisabled = false, ...componentProps } = props;
@@ -45,7 +45,7 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
         elevation={elevation}
         onMouseOver={setFinalElevation}
         onMouseOut={setInitialElevation}
-        {...(componentProps as P)}
+        {...(componentProps as unknown as P)}
       />
     );
   });

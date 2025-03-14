@@ -18,7 +18,7 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 
-const MAX_USERS_SHOWN = 10;
+const MAX_USERS_SHOWN = 20;
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
 

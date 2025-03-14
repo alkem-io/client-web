@@ -6,8 +6,8 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
       id
       profile {
         id
-        displayName,
-        url,
+        displayName
+        url
         visual(type: CARD) {
           ...VisualUri
         }
@@ -17,21 +17,16 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
   space {
     id
     level
-    profile {
-      id
-      displayName,
-      url,
-      visual(type: CARD) {
-        ...VisualUri
-      }
+    about {
+      ...SpaceAboutCardBanner
     }
   }
   triggeredBy {
     id
     profile {
       id
-      displayName,
-      url,
+      displayName
+      url
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -44,8 +39,8 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
     id
     profile {
       id
-      displayName,
-      url,
+      displayName
+      url
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -54,13 +49,8 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
   space {
     id
     level
-    profile {
-      id
-      displayName,
-      url,
-      visual(type: CARD) {
-        ...VisualUri
-      }
+    about {
+      ...SpaceAboutCardBanner
     }
   }
   actor {
@@ -68,8 +58,8 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
     __typename # do not remove
     profile {
       id
-      displayName,
-      url,
+      displayName
+      url
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -82,8 +72,8 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
     id
     profile {
       id
-      displayName,
-      url,
+      displayName
+      url
       visual(type: AVATAR) {
         ...VisualUri
       }

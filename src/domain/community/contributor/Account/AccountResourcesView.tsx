@@ -16,6 +16,8 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const VISIBLE_SPACE_LIMIT = 6;
 
@@ -33,13 +35,11 @@ export interface AccountResourcesProps {
   id: string;
   spaces: {
     id: string;
-    profile: AccountProfile;
+    about: SpaceAboutLightModel;
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile & {
-      tagline?: string;
-    };
+    profile: AccountProfile;
   }[];
   innovationPacks: {
     id: string;
@@ -60,9 +60,7 @@ export interface AccountResourcesProps {
     spaceVisibilityFilter?: SpaceVisibility;
     spaceListFilter?: {
       id: string;
-      profile: {
-        displayName: string;
-      };
+      about: SpaceAboutMinimalUrlModel;
     }[];
     subdomain: string;
   }[];
@@ -97,11 +95,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
               <JourneyTile
                 key={contributionItem.id}
                 journey={{
-                  profile: {
-                    displayName: contributionItem.profile.displayName,
-                    url: contributionItem.profile.url,
-                    cardBanner: contributionItem.profile.cardBanner,
-                  },
+                  about: contributionItem.about,
                   level: SpaceLevel.L0,
                 }}
               />

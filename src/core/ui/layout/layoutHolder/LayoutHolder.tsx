@@ -44,7 +44,7 @@ const createLayoutHolder = () => {
     return <Component {...layout.props} />;
   };
 
-  const LayoutHolder = ({ children }: PropsWithChildren<{}>) => {
+  const LayoutHolder = ({ children }: PropsWithChildren) => {
     const [layout, setLayout] = useState<LayoutState<Record<string, unknown>>>();
 
     const contextValue = useMemo(() => ({ layout, setLayout }), [layout, setLayout]);

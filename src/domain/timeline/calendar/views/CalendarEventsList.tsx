@@ -20,6 +20,7 @@ import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';
+import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 type CalendarEventsListProps = {
   events: {
@@ -33,9 +34,7 @@ type CalendarEventsListProps = {
       description?: string;
     };
     subspace?: {
-      profile: {
-        displayName: string;
-      };
+      about: SpaceAboutMinimalUrlModel;
     };
   }[];
   highlightedDay?: Date | null;

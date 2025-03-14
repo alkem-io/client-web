@@ -1,4 +1,4 @@
-import { ComponentType, Ref, useEffect } from 'react';
+import { ElementType, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface Options {
@@ -8,7 +8,7 @@ interface Options {
   fetchMore: () => Promise<unknown>;
 }
 
-const useLazyLoading = <RefValue,>(Loader: ComponentType<{ ref: Ref<RefValue> }>, options: Options) => {
+const useLazyLoading = (Loader: ElementType, options: Options) => {
   const { hasMore, loading, updating = false, fetchMore } = options;
 
   const { ref, inView } = useInView();
@@ -19,7 +19,7 @@ const useLazyLoading = <RefValue,>(Loader: ComponentType<{ ref: Ref<RefValue> }>
     }
   }, [inView, loading, fetchMore]);
 
-  return hasMore && !updating ? <Loader ref={ref as Ref<RefValue>} /> : null;
+  return hasMore && !updating ? <Loader ref={ref} /> : null;
 };
 
 export default useLazyLoading;

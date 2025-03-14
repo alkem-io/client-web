@@ -63,23 +63,10 @@ fragment SpaceExplorerSpace on Space {
     myPrivileges
   }
   type
-  profile {
-    id
-    url
-    tagline
-    displayName
-    type
-    tagset {
-      id
-      tags
-    }
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
-    }
-  }
-  context {
-    id
-    vision
+  level
+  about {
+    why
+    ...SpaceAboutCardBanner
   }
   visibility
   community {
@@ -99,27 +86,15 @@ fragment SpaceExplorerSpace on Space {
 fragment SpaceExplorerSubspace on Space {
   id
   type
-  profile {
-    id
-    url
-    tagline
-    displayName
-    description
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
+  level
+  about {
+    ...SpaceAboutCardBanner
+    why
+    profile {
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
     }
-    type
-    tagset {
-      id
-      tags
-    }
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  context {
-    id
-    vision
   }
   community {
     id
@@ -139,12 +114,10 @@ query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      profile {
-        id
-        url
-        displayName
+      level
+      about {
+        ...SpaceAboutLight
       }
     }
   }
 }
-

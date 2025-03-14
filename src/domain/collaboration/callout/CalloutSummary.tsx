@@ -1,8 +1,8 @@
-import { ComponentType } from 'react';
-import { useTranslation } from 'react-i18next';
-import { styled, Typography, Box } from '@mui/material';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Box, Typography, styled } from '@mui/material';
+import { ComponentType, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export type CalloutSummaryFields = {
   framing: {
@@ -45,6 +45,6 @@ export const CalloutSummary = ({
   );
 };
 
-const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
+const TypographyTitle = styled((props: PropsWithChildren) => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
 }));

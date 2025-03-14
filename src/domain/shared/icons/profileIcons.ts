@@ -2,8 +2,6 @@ import { ComponentType } from 'react';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
-import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
-import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import {
@@ -31,8 +29,6 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return CalloutIcon;
     case ProfileType.Template:
       return Campaign;
-    case ProfileType.Challenge:
-      return SubspaceIcon;
     case ProfileType.Discussion:
       return ChatBubbleOutline;
     case ProfileType.InnovationFlow:
@@ -41,13 +37,11 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return HubOutlined;
     case ProfileType.InnovationPack:
       return InventoryOutlined;
-    case ProfileType.Opportunity:
-      return OpportunityIcon;
     case ProfileType.Organization:
       return CorporateFareOutlined;
     case ProfileType.Post:
       return calloutIcons.POST;
-    case ProfileType.Space:
+    case ProfileType.SpaceAbout:
       return SpaceIcon;
     case ProfileType.User:
       return PersonOutline;

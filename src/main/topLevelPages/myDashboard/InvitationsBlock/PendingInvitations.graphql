@@ -3,7 +3,11 @@ query PendingInvitations {
     communityInvitations(states: ["invited"]) {
       id
       spacePendingMembershipInfo {
-        ...NewMembershipsBasicSpace
+        id
+        level
+        about {
+          ...SpaceAboutLight
+        }
       }
       invitation {
         id
@@ -16,16 +20,5 @@ query PendingInvitations {
         createdDate
       }
     }
-  }
-}
-
-fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
-  id
-  level
-  profile {
-    id
-    displayName
-    tagline
-    url
   }
 }

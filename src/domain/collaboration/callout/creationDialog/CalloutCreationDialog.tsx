@@ -229,15 +229,18 @@ const CalloutCreationDialog = ({
                 onSelect={handleSelectCalloutType}
                 availableCalloutTypes={availableCalloutTypes}
                 extraButtons={
-                  <Button
-                    size="large"
-                    startIcon={<TipsAndUpdatesOutlinedIcon />}
-                    variant="outlined"
-                    sx={{ textTransform: 'none', justifyContent: 'start' }}
-                    onClick={() => setImportCalloutDialogOpen(true)}
-                  >
-                    {t('components.calloutTypeSelect.callout-templates-library')}
-                  </Button>
+                  // Show the import button only if there are no provided callout types
+                  !availableCalloutTypes?.length && (
+                    <Button
+                      size="large"
+                      startIcon={<TipsAndUpdatesOutlinedIcon />}
+                      variant="outlined"
+                      sx={{ textTransform: 'none', justifyContent: 'start' }}
+                      onClick={() => setImportCalloutDialogOpen(true)}
+                    >
+                      {t('components.calloutTypeSelect.callout-templates-library')}
+                    </Button>
+                  )
                 }
               />
             </Gutters>

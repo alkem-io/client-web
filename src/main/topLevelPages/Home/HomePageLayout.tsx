@@ -10,7 +10,7 @@ import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPage
 import { useUserContext } from '@/domain/community/user';
 import SearchDialog from '@/main/search/SearchDialog';
 
-const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
+const HomePageLayout = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [title, setTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticated'));
   const [subTitle, setSubTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticatedSubtitle'));

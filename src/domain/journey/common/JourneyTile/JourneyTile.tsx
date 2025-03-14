@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { Visual } from '@/domain/common/visual/Visual';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import GridItem from '@/core/ui/grid/GridItem';
@@ -12,15 +11,12 @@ import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from './PrivacyIcon';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 type JourneyTileProps = {
   journey:
     | {
-        profile: {
-          displayName: string;
-          url: string;
-          cardBanner?: Visual;
-        };
+        about: SpaceAboutLightModel;
         level?: SpaceLevel;
       }
     | undefined;
@@ -38,7 +34,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
     <GridItem columns={columns}>
       <ElevatedPaper
         component={RouterLink}
-        to={journey?.profile.url ?? ''}
+        to={journey?.about.profile.url ?? ''}
         sx={{
           position: 'relative',
         }}
@@ -53,7 +49,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={journey.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
+              src={journey.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
               variant="square"
             >
@@ -80,7 +76,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
               }}
             >
               <BlockTitle component="div" sx={webkitLineClamp(2)}>
-                {journey.profile.displayName}
+                {journey.about.profile.displayName}
               </BlockTitle>
             </Box>
           </>

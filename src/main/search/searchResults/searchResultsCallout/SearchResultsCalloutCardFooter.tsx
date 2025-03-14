@@ -14,9 +14,11 @@ export interface SearchResultsCalloutCardFooterProps {
   callout: CalloutContributionsProps['callout'];
   matchedTerms?: string[];
   space?: {
-    profile: {
-      displayName: string;
-      url: string;
+    about: {
+      profile: {
+        displayName: string;
+        url: string;
+      };
     };
     level: SpaceLevel;
   };
@@ -92,7 +94,7 @@ const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: Search
         {space && (
           <Caption
             component={RouterLink}
-            to={space.profile.url}
+            to={space.about.profile.url}
             display="flex"
             alignItems="center"
             gap={1}
@@ -101,7 +103,7 @@ const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: Search
             minWidth={0}
           >
             {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
-            {space.profile.displayName}
+            {space.about.profile.displayName}
           </Caption>
         )}
         <CalloutContributions callout={callout} />

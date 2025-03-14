@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Close } from '@mui/icons-material';
 import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
-import { BlockTitle } from '@/core/ui/typography';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
@@ -45,6 +45,19 @@ const ContributionDetailsCard = ({
       <CardRibbon text={t(`common.enums.space-visibility.${visibility}` as const)} />
     ) : undefined;
 
+  const leaveCommunityDialogTitle =
+    level === SpaceLevel.L0
+      ? t('pages.user-profile.membership.space.confirmation-dialog.title', {
+          space: displayName,
+        })
+      : t('pages.user-profile.membership.subspace.confirmation-dialog.title', {
+          space: displayName,
+        });
+  const leaveCommunityDialogTextKey =
+    level === SpaceLevel.L0
+      ? 'pages.user-profile.membership.space.confirmation-dialog.text'
+      : 'pages.user-profile.membership.subspace.confirmation-dialog.text';
+
   return (
     <>
       <JourneyCard
@@ -77,14 +90,19 @@ const ContributionDetailsCard = ({
         <JourneyCardTagline>{tagline}</JourneyCardTagline>
       </JourneyCard>
       {enableLeave && (
-        <Dialog open={leavingCommunityDialogOpen} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-          <DialogHeader onClose={() => onLeaveCommunityDialogOpen?.(false)}>
-            {t('components.associated-organization.confirmation-dialog.title', {
-              organization: displayName,
-            })}
-          </DialogHeader>
+        <Dialog open={leavingCommunityDialogOpen} maxWidth="xs" aria-label="confirm-leave-space">
+          <DialogHeader onClose={() => onLeaveCommunityDialogOpen?.(false)}>{leaveCommunityDialogTitle}</DialogHeader>
           <DialogContent sx={{ paddingX: 2 }}>
-            {t('components.associated-organization.confirmation-dialog.text')}
+            <Caption>
+              <Trans
+                i18nKey={leaveCommunityDialogTextKey}
+                components={{
+                  b: <strong />,
+                  br: <br />,
+                }}
+                values={{ space: displayName }}
+              />
+            </Caption>
           </DialogContent>
           <DialogActions>
             <Button

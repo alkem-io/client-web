@@ -19,11 +19,6 @@ const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
         </SpaceSettingsLayout>
       );
     case SpaceLevel.L1:
-      return (
-        <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
-          {loading ? <Skeleton /> : <SpaceSettingsView spaceLevel={spaceLevel} />}
-        </SubspaceSettingsLayout>
-      );
     case SpaceLevel.L2:
       return (
         <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>

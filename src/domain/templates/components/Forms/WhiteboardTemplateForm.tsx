@@ -38,7 +38,7 @@ const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTempl
   const initialValues: WhiteboardTemplateFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfile(template?.profile),
     whiteboard: {
-      content: template?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
+      content: template?.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
     },
   };
 

@@ -4,9 +4,12 @@ query LatestContributionsSpacesFlat {
       id
       space {
         id
-        profile {
+        about {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }

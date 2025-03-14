@@ -12,6 +12,7 @@ type CalloutsSetAuthorizationType = {
   loading: boolean;
 };
 
+// TODO: Additional Auth Check
 export const useCalloutsSetAuthorization = ({
   calloutsSetId,
 }: CalloutsSetAuthorizationParams): CalloutsSetAuthorizationType => {

@@ -7,11 +7,6 @@ const OpportunityMetrics: MetricsItemSpec[] = [
     type: MetricType.Member,
     color: 'neutralMedium',
   },
-  {
-    label: 'common.interests',
-    type: MetricType.Relation,
-    color: 'primary',
-  },
 ];
 
 export default OpportunityMetrics;

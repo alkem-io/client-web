@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash';
-import { PropsWithChildren, useMemo } from 'react';
+import { useMemo } from 'react';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   useUpdatePreferenceOnUserMutation,
@@ -27,7 +27,7 @@ export interface UserNotificationsContainerProps
     UserNotificationsContainerState
   > {}
 
-const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotificationsContainerProps>) => {
+const UserNotificationsContainer = ({ children }: UserNotificationsContainerProps) => {
   const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { data, loading } = useUserNotificationsPreferencesQuery({
     variables: {

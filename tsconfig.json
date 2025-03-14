@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     // Basic settings
-    "target": "ES2016",
+    "target": "ES2020",
     "module": "ESNext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
 
     // Paths & modules

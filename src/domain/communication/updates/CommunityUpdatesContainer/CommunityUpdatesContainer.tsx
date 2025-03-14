@@ -1,5 +1,3 @@
-import React, { PropsWithChildren, useCallback } from 'react';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
@@ -7,9 +5,11 @@ import {
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { Community, Message, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import React, { useCallback } from 'react';
 
 export interface CommunityUpdatesContainerProps {
   communityId: string | undefined;
@@ -39,10 +39,7 @@ export interface CommunityUpdatesEntities {
 
 const EMPTY = [];
 
-export const CommunityUpdatesContainer = ({
-  communityId,
-  children,
-}: PropsWithChildren<CommunityUpdatesContainerProps>) => {
+export const CommunityUpdatesContainer = ({ communityId, children }: CommunityUpdatesContainerProps) => {
   const { isFeatureEnabled } = useConfig();
 
   const { data, loading } = useCommunityUpdatesQuery({
