@@ -57,13 +57,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   if (globalSearch) {
     return (
-      <Gutters
-        disablePadding
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
+      <Gutters disablePadding sx={{ display: 'flex', alignItems: 'center' }}>
         <CardLayoutContainer {...layoutProps} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           {createButton}
           {cards}
