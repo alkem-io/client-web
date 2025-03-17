@@ -40,6 +40,8 @@ const defaultValue: SubspaceContextProps = {
         tagline: '',
         url: '',
       },
+      who: '',
+      why: '',
       membership: {
         myMembershipStatus: undefined,
         roleSetID: '',
@@ -102,6 +104,8 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         location: subspaceData?.about.profile.location,
         url: subspaceData?.about.profile.url ?? '',
       },
+      who: subspaceData?.about.who ?? '',
+      why: subspaceData?.about.why ?? '',
       isContentPublic: subspaceData?.about.isContentPublic ?? true,
       membership: {
         myMembershipStatus: subspaceData?.about.membership.myMembershipStatus,
