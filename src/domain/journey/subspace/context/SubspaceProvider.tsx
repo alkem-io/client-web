@@ -8,6 +8,7 @@ interface SubspacePermissions {
   canUpdate: boolean;
   canCreate: boolean;
   canCreateSubspace: boolean;
+  canRead: boolean;
 }
 
 interface SubspaceContextProps {
@@ -23,7 +24,7 @@ interface SubspaceContextProps {
   permissions: SubspacePermissions;
 }
 
-export const SubspaceContext = React.createContext<SubspaceContextProps>({
+const defaultValue: SubspaceContextProps = {
   loading: true,
   subspace: {
     id: '',
@@ -50,8 +51,11 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
     canUpdate: false,
     canCreate: false,
     canCreateSubspace: false,
+    canRead: false,
   },
-});
+};
+
+export const SubspaceContext = React.createContext<SubspaceContextProps>(defaultValue);
 
 interface SubspaceProviderProps extends PropsWithChildren {}
 
@@ -76,6 +80,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
       canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
+      canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges: subspaceData?.about.authorization?.myPrivileges ?? [],
     }),
     [myPrivileges, subspaceData]
@@ -102,24 +107,26 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         myMembershipStatus: subspaceData?.about.membership.myMembershipStatus,
       },
     };
+
     return {
       id: subspaceData?.id ?? '',
       level: subspaceData?.level ?? SpaceLevel.L1,
       about,
     };
-  }, [subspaceData?.about.profile]);
+  }, [subspaceData]);
 
-  return (
-    <SubspaceContext.Provider
-      value={{
-        subspace,
-        permissions,
-        loading: loading || urlResolverLoading,
-      }}
-    >
-      {children}
-    </SubspaceContext.Provider>
-  );
+  let state = {
+    subspace,
+    permissions,
+    loading: loading || urlResolverLoading,
+  };
+
+  // don't provide space L0 as subspace
+  if (subspaceData?.level === SpaceLevel.L0) {
+    state = defaultValue;
+  }
+
+  return <SubspaceContext.Provider value={state}>{children}</SubspaceContext.Provider>;
 };
 
 export default SubspaceProvider;

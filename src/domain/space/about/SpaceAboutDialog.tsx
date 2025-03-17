@@ -61,6 +61,7 @@ const SpaceAboutDialog = ({
   const navigate = useNavigate();
 
   const isLevelZeroSpace = space.level === SpaceLevel.L0;
+  const spaceLevel = space.level || SpaceLevel.L0;
   const { about } = space;
   const metrics = about?.metrics || [];
   const membership = about?.membership;
@@ -113,7 +114,7 @@ const SpaceAboutDialog = ({
             <InfoOutlinedIcon color="primary" />
           </Tooltip>
         }
-        leadOrganizations={leadOrganizations}
+        leadOrganizations={provider ? [provider] : undefined}
         leadUsers={undefined}
       >
         {provider && (
@@ -138,8 +139,6 @@ const SpaceAboutDialog = ({
       </EntityDashboardLeadsSection>
     );
   };
-
-  const spaceLevel = space.level || SpaceLevel.L0;
 
   return (
     <DialogWithGrid
