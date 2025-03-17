@@ -37,6 +37,7 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from './SpaceWelcomeDialog';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
@@ -111,6 +112,8 @@ const SpaceDashboardView = ({
     setOpenWelcome(false);
     removeSpaceWelcomeCache();
   };
+
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Dashboard, skip: !spaceId });
 
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
