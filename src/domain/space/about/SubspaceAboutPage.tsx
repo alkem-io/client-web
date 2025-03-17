@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSubSpace } from '../../journey/subspace/hooks/useSubSpace';
-import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
@@ -10,8 +10,6 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 const SubspaceAboutPage = () => {
   const { subspace, loading } = useSubSpace();
   const { about } = subspace;
-
-  const backToParentPage = useBackToStaticPath(about.profile.url);
 
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
@@ -25,13 +23,15 @@ const SubspaceAboutPage = () => {
   const canReadSpace = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canUpdateSpace = spacePrivileges.includes(AuthorizationPrivilege.Update);
 
+  const backToParentPage = useBackWithDefaultUrl(canReadSpace ? about.profile.url : undefined);
+
   return (
     <>
       <SpaceAboutDialog
         open
         space={space}
         loading={loading}
-        onClose={canReadSpace ? backToParentPage : undefined}
+        onClose={backToParentPage}
         hasReadPrivilege={canReadSpace}
         hasEditPrivilege={canUpdateSpace}
       />
