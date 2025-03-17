@@ -17552,7 +17552,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 >;
 export const AdminSpacesListDocument = gql`
   query adminSpacesList {
-    spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...AdminSpace
     }
   }
