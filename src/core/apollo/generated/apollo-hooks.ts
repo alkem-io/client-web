@@ -1801,6 +1801,8 @@ export const SpaceAboutLightFragmentDoc = gql`
     membership {
       myMembershipStatus
       myPrivileges
+      communityID
+      roleSetID
     }
   }
   ${VisualUriFragmentDoc}

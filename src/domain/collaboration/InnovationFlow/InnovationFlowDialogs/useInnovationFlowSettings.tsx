@@ -225,11 +225,6 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         stateUpdatedData: newState,
       },
     });
-    for (const callout of callouts) {
-      if (callout.flowState?.currentState === oldState.displayName) {
-        await handleUpdateCalloutFlowState(callout.id, newState.displayName, callout.sortOrder);
-      }
-    }
     refetch({ collaborationId: collaborationId! });
   };
 

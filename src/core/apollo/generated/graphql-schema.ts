@@ -9270,6 +9270,8 @@ export type AccountInformationQuery = {
                       __typename?: 'SpaceAboutMembership';
                       myMembershipStatus?: CommunityMembershipStatus | undefined;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      communityID?: string | undefined;
+                      roleSetID?: string | undefined;
                     };
                   };
                 }>
@@ -17230,6 +17232,8 @@ export type AccountResourcesInfoQuery = {
                       __typename?: 'SpaceAboutMembership';
                       myMembershipStatus?: CommunityMembershipStatus | undefined;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      communityID?: string | undefined;
+                      roleSetID?: string | undefined;
                     };
                   };
                 }>
@@ -18530,6 +18534,8 @@ export type BodyOfKnowledgeProfileQuery = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
         }
@@ -19493,6 +19499,8 @@ export type CreateSpaceMutation = {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID?: string | undefined;
+        roleSetID?: string | undefined;
       };
     };
   };
@@ -20182,6 +20190,8 @@ export type SpaceAccountQuery = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
           activeSubscription?:
@@ -20755,6 +20765,8 @@ export type AdminSpacesListQuery = {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID?: string | undefined;
+        roleSetID?: string | undefined;
       };
     };
     authorization?:
@@ -20800,6 +20812,8 @@ export type AdminSpaceFragment = {
       __typename?: 'SpaceAboutMembership';
       myMembershipStatus?: CommunityMembershipStatus | undefined;
       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      communityID?: string | undefined;
+      roleSetID?: string | undefined;
     };
   };
   authorization?:
@@ -21475,6 +21489,8 @@ export type SpaceAboutBaseQuery = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
           authorization?:
@@ -21833,6 +21849,8 @@ export type SpaceAboutLightFragment = {
     __typename?: 'SpaceAboutMembership';
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+    communityID?: string | undefined;
+    roleSetID?: string | undefined;
   };
 };
 
@@ -21982,6 +22000,8 @@ export type SpaceTabQuery = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
           collaboration: {
@@ -24977,6 +24997,8 @@ export type SpaceCalendarEventsQuery = {
                             __typename?: 'SpaceAboutMembership';
                             myMembershipStatus?: CommunityMembershipStatus | undefined;
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            communityID?: string | undefined;
+                            roleSetID?: string | undefined;
                           };
                         };
                       }
@@ -25061,6 +25083,8 @@ export type CollaborationTimelineInfoFragment = {
                   __typename?: 'SpaceAboutMembership';
                   myMembershipStatus?: CommunityMembershipStatus | undefined;
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID?: string | undefined;
+                  roleSetID?: string | undefined;
                 };
               };
             }
@@ -25134,6 +25158,8 @@ export type CalendarEventInfoFragment = {
             __typename?: 'SpaceAboutMembership';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            communityID?: string | undefined;
+            roleSetID?: string | undefined;
           };
         };
       }
@@ -25362,6 +25388,8 @@ export type CalendarEventDetailsQuery = {
                     __typename?: 'SpaceAboutMembership';
                     myMembershipStatus?: CommunityMembershipStatus | undefined;
                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    communityID?: string | undefined;
+                    roleSetID?: string | undefined;
                   };
                 };
               }
@@ -25553,6 +25581,8 @@ export type CalendarEventDetailsFragment = {
             __typename?: 'SpaceAboutMembership';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            communityID?: string | undefined;
+            roleSetID?: string | undefined;
           };
         };
       }
@@ -25775,6 +25805,8 @@ export type CreateCalendarEventMutation = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
         }
@@ -25976,6 +26008,8 @@ export type UpdateCalendarEventMutation = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
         }
@@ -27271,6 +27305,8 @@ export type SearchQuery = {
                     __typename?: 'SpaceAboutMembership';
                     myMembershipStatus?: CommunityMembershipStatus | undefined;
                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    communityID?: string | undefined;
+                    roleSetID?: string | undefined;
                   };
                 };
               }
@@ -27389,6 +27425,8 @@ export type SearchQuery = {
                 __typename?: 'SpaceAboutMembership';
                 myMembershipStatus?: CommunityMembershipStatus | undefined;
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                communityID?: string | undefined;
+                roleSetID?: string | undefined;
               };
             };
           };
@@ -27558,6 +27596,8 @@ export type SearchQuery = {
                 __typename?: 'SpaceAboutMembership';
                 myMembershipStatus?: CommunityMembershipStatus | undefined;
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                communityID?: string | undefined;
+                roleSetID?: string | undefined;
               };
             };
           };
@@ -27637,6 +27677,8 @@ export type SearchResultPostFragment = {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID?: string | undefined;
+        roleSetID?: string | undefined;
       };
     };
   };
@@ -27677,6 +27719,8 @@ export type PostParentFragment = {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID?: string | undefined;
+        roleSetID?: string | undefined;
       };
     };
   };
@@ -27787,6 +27831,8 @@ export type SearchResultCalloutFragment = {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID?: string | undefined;
+        roleSetID?: string | undefined;
       };
     };
   };
@@ -27817,6 +27863,8 @@ export type CalloutParentFragment = {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID?: string | undefined;
+        roleSetID?: string | undefined;
       };
     };
   };
@@ -27914,6 +27962,8 @@ export type SearchResultSpaceFragment = {
             __typename?: 'SpaceAboutMembership';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            communityID?: string | undefined;
+            roleSetID?: string | undefined;
           };
         };
       }
@@ -28732,6 +28782,8 @@ export type PendingInvitationsQuery = {
             __typename?: 'SpaceAboutMembership';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            communityID?: string | undefined;
+            roleSetID?: string | undefined;
           };
         };
       };
@@ -30140,6 +30192,8 @@ export type NewVirtualContributorMySpacesQuery = {
                       __typename?: 'SpaceAboutMembership';
                       myMembershipStatus?: CommunityMembershipStatus | undefined;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      communityID?: string | undefined;
+                      roleSetID?: string | undefined;
                     };
                   };
                   community: {
@@ -30205,6 +30259,8 @@ export type AllSpaceSubspacesQuery = {
                   __typename?: 'SpaceAboutMembership';
                   myMembershipStatus?: CommunityMembershipStatus | undefined;
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID?: string | undefined;
+                  roleSetID?: string | undefined;
                 };
               };
               community: {
@@ -30245,6 +30301,8 @@ export type AllSpaceSubspacesQuery = {
                 __typename?: 'SpaceAboutMembership';
                 myMembershipStatus?: CommunityMembershipStatus | undefined;
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                communityID?: string | undefined;
+                roleSetID?: string | undefined;
               };
             };
             community: {
@@ -30293,6 +30351,8 @@ export type SpaceProfileCommunityDetailsFragment = {
       __typename?: 'SpaceAboutMembership';
       myMembershipStatus?: CommunityMembershipStatus | undefined;
       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      communityID?: string | undefined;
+      roleSetID?: string | undefined;
     };
   };
   community: {
@@ -30654,6 +30714,8 @@ export type SpaceExplorerWelcomeSpaceQuery = {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              communityID?: string | undefined;
+              roleSetID?: string | undefined;
             };
           };
         }

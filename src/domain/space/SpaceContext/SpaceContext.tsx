@@ -84,6 +84,8 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       isContentPublic: spaceData?.about.isContentPublic ?? true,
       membership: {
         myMembershipStatus: spaceData?.about.membership.myMembershipStatus,
+        roleSetID: spaceData?.about.membership.roleSetID,
+        communityID: spaceData?.about.membership.communityID,
       },
       profile: {
         displayName: spaceData?.about.profile.displayName ?? '',
