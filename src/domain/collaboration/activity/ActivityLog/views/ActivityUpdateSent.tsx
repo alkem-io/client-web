@@ -9,8 +9,10 @@ export interface ActivityUpdateSentViewProps extends ActivityViewProps {
   message: string;
   type: ActivityEventType.UpdateSent;
   space?: {
-    profile?: {
-      url: string | undefined;
+    about?: {
+      profile?: {
+        url: string | undefined;
+      };
     };
   };
 }
@@ -21,7 +23,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   type,
   ...rest
 }) => {
-  const url = buildUpdatesUrl(rest.space?.profile?.url || '');
+  const url = buildUpdatesUrl(rest.space?.about?.profile?.url || '');
 
   return (
     <ActivityBaseView

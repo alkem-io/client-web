@@ -1,11 +1,11 @@
-import { ReactNode, useMemo } from 'react';
-import { useField } from 'formik';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import HelpButton from '@/core/ui/button/HelpButton';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import HelpButton from '@/core/ui/button/HelpButton';
+import { useField } from 'formik';
+import { ReactNode, useMemo } from 'react';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 
 export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
@@ -86,7 +86,9 @@ export const FormikInputField = ({
         {...rest}
       />
       <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
-        <FormHelperText error={isError}>{helperText}</FormHelperText>
+        <FormHelperText error={isError}>
+          <>{helperText}</>
+        </FormHelperText>
       </CharacterCounter>
     </Box>
   );

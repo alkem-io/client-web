@@ -74,7 +74,7 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
-      <DialogHeader title={title} onClose={handleClose} />
+      <DialogHeader title={String(title)} onClose={handleClose} />
       <DialogContent ref={containerRef} sx={{ overflowX: 'hidden', display: 'flex', flexFlow: 'column nowrap' }}>
         <Slide
           direction="right"
@@ -83,7 +83,9 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
           container={containerRef.current}
         >
           <Box>
-            <DialogContentText>{content}</DialogContentText>
+            <DialogContentText>
+              <>{content}</>
+            </DialogContentText>
             {state?.isLoadingCredentialMetadata && <Loading text="Loading credential metadata" />}
             {!state?.isLoadingCredentialMetadata && credentialMetadata && (
               <List disablePadding>

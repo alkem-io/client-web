@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -13,12 +13,13 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
-import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Box, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import useNavigate from '@/core/routing/useNavigate';
 
 type InvitationDialogProps = {
   open: boolean;
@@ -44,18 +45,19 @@ const InvitationDialog = ({
   actions,
 }: InvitationDialogProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
-        journey: invitation?.space.profile.displayName,
+        journey: invitation?.space.about.profile.displayName,
       });
     }
 
     return t('community.pendingMembership.invitationDialog.title', {
-      journey: invitation?.space.profile.displayName,
+      journey: invitation?.space.about.profile.displayName,
     });
   };
 
@@ -67,15 +69,20 @@ const InvitationDialog = ({
     return t('community.pendingMembership.invitationDialog.actions.join');
   };
 
+  const onCardClick = useCallback(
+    (url: string) => {
+      if (url) {
+        navigate(url);
+        onClose();
+      }
+    },
+    [navigate, onClose]
+  );
+
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
       {invitation && (
-        <InvitationHydrator
-          invitation={invitation}
-          withJourneyDetails
-          withCommunityGuidelines
-          visualType={VisualType.Card}
-        >
+        <InvitationHydrator invitation={invitation} withCommunityGuidelines>
           {({ invitation, communityGuidelines }) =>
             invitation && (
               <>
@@ -96,19 +103,20 @@ const InvitationDialog = ({
                   >
                     <JourneyCard
                       iconComponent={spaceIconByLevel[invitation.space.level]}
-                      header={invitation.space.profile.displayName}
-                      tags={invitation.space.profile.tagset?.tags ?? []}
-                      banner={invitation.space.profile.visual}
-                      journeyUri={invitation.space.profile.url}
+                      header={invitation.space.about.profile.displayName}
+                      tags={invitation.space.about.profile.tagset?.tags ?? []}
+                      banner={invitation.space.about.profile.cardBanner}
+                      journeyUri={invitation.space.about.profile.url}
+                      onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >
-                      <JourneyCardTagline>{invitation.space.profile.tagline ?? ''}</JourneyCardTagline>
+                      <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
                     </JourneyCard>
                     <Gutters disablePadding>
                       <Caption>
                         <DetailedActivityDescription
                           i18nKey="community.pendingMembership.invitationTitle"
-                          journeyDisplayName={invitation.space.profile.displayName}
-                          journeyUrl={invitation.space.profile.url}
+                          journeyDisplayName={invitation.space.about.profile.displayName}
+                          journeyUrl={invitation.space.about.profile.url}
                           spaceLevel={invitation.space.level}
                           createdDate={invitation.invitation.createdDate}
                           author={{ displayName: invitation.userDisplayName }}
@@ -148,7 +156,7 @@ const InvitationDialog = ({
                   </LoadingButton>
                   <LoadingButton
                     startIcon={<CheckOutlined />}
-                    onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.profile.url)}
+                    onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.about.profile.url)}
                     variant="contained"
                     loading={accepting}
                     disabled={updating && !accepting}

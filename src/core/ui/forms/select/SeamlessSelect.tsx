@@ -1,15 +1,15 @@
-import { Box, MenuItem, Select, SelectProps, TypographyProps } from '@mui/material';
-import { SelectOption } from '@mui/base';
-import { ExpandMore } from '@mui/icons-material';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import React, { ComponentType, ReactNode, useMemo } from 'react';
+import { SelectOption } from '@mui/base';
+import { ExpandMore } from '@mui/icons-material';
+import { Box, MenuItem, Select, SelectProps, TypographyProps } from '@mui/material';
+import { ComponentType, ReactNode, useMemo } from 'react';
 
-interface SeamlessSelectProps<Option extends string | number> extends SelectProps {
+type SeamlessSelectProps<Option extends string | number> = {
   label?: ReactNode;
   options: Partial<SelectOption<Option>>[];
   typographyComponent?: ComponentType<TypographyProps>;
-}
+} & SelectProps;
 
 const SeamlessSelect = <Option extends string | number>({
   value,

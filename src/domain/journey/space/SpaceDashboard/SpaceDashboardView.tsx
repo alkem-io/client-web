@@ -1,42 +1,43 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   CalloutGroupName,
   CalloutsQueryVariables,
   CommunityMembershipStatus,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
-import PageContent from '@/core/ui/content/PageContent';
-import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import { Theme } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { InfoOutlined } from '@mui/icons-material';
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import RouterLink from '@/core/ui/link/RouterLink';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import JourneyDashboardWelcomeBlock, {
   JourneyDashboardWelcomeBlockProps,
 } from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import RouterLink from '@/core/ui/link/RouterLink';
+import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
+import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
+import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
+import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import InfoColumn from '@/core/ui/content/InfoColumn';
-import ContentColumn from '@/core/ui/content/ContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
+import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
 import {
   getVCCreationCache,
   removeVCCreationCache,
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
-import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
-import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
+import { InfoOutlined } from '@mui/icons-material';
+import { Theme } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from './SpaceWelcomeDialog';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
@@ -45,7 +46,7 @@ type SpaceDashboardViewProps = {
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
-  vision?: string;
+  what?: string;
   communityId?: string;
   organization?: unknown;
   host: ContributorViewProps | undefined;
@@ -74,7 +75,7 @@ const SpaceDashboardView = ({
   level,
   collaborationId,
   calloutsSetId,
-  vision = '',
+  what = '',
   dashboardNavigation,
   dashboardNavigationLoading,
   communityId = '',
@@ -112,6 +113,8 @@ const SpaceDashboardView = ({
     removeSpaceWelcomeCache();
   };
 
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Dashboard, skip: !spaceId });
+
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
     const cachedVCId = getVCCreationCache();
@@ -138,7 +141,7 @@ const SpaceDashboardView = ({
       {directMessageDialog}
       <PageContent>
         <ApplicationButtonContainer journeyId={spaceId}>
-          {({ applicationButtonProps }, { loading }) => {
+          {(applicationButtonProps, loading) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
             }
@@ -160,7 +163,7 @@ const SpaceDashboardView = ({
         <InfoColumn>
           <PageContentBlock accent>
             <JourneyDashboardWelcomeBlock
-              vision={vision}
+              description={what}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
@@ -174,6 +177,7 @@ const SpaceDashboardView = ({
             component={RouterLink}
             to={EntityPageSection.About}
             variant="contained"
+            sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
             {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>

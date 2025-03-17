@@ -26,12 +26,17 @@ query AccountInformation($accountId: UUID!) {
           id
           myPrivileges
         }
-        profile {
-          ...AccountItemProfile
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
+        about {
+          id
+          profile {
+            id
+            displayName
+            url
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+            tagline
           }
-          tagline
         }
         license {
           id
@@ -82,9 +87,8 @@ query AccountInformation($accountId: UUID!) {
         spaceVisibilityFilter
         spaceListFilter {
           id
-          profile {
-            id
-            displayName
+          about {
+            ...SpaceAboutLight
           }
         }
         subdomain

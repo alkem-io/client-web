@@ -1,15 +1,15 @@
-import React, { FC } from 'react';
-import { useConfig } from '@/domain/platform/config/useConfig';
+import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { useUserContext } from '@/domain/community/user';
 import UserPageBanner from '@/domain/community/user/layout/UserPageBanner';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { UserAdminTabs } from '../UserAdminTabs';
 
 const tabs = [
@@ -23,7 +23,7 @@ const tabs = [
   return UserAdminTabs.find(tab => tab.section === section)!;
 });
 
-interface UserAdminLayoutProps {
+interface UserAdminLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 }

@@ -22,11 +22,11 @@ import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 
-const FormikEffect = FormikEffectFactory<FormValues>();
+const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
-type FormValues = Pick<
+type CreateSubspaceFormValues = Pick<
   JourneyFormValues,
-  'displayName' | 'tagline' | 'background' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
@@ -41,21 +41,21 @@ export const CreateSubspaceForm = ({
 
   const validationRequiredString = t('forms.validations.required');
 
-  const handleChanged = (value: FormValues) =>
+  const handleChanged = (value: CreateSubspaceFormValues) =>
     onChanged({
       displayName: value.displayName,
       tagline: value.tagline,
-      background: value.background,
+      description: value.description,
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
       visuals: value.visuals,
     });
 
-  const initialValues: FormValues = {
+  const initialValues: CreateSubspaceFormValues = {
     displayName: '',
     tagline: '',
-    background: '',
+    description: '',
     tags: [],
     addTutorialCallouts: false,
     collaborationTemplateId: undefined,
@@ -77,7 +77,7 @@ export const CreateSubspaceForm = ({
       .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
       .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
     collaborationTemplateId: yup.string().nullable(),
   });
@@ -109,7 +109,7 @@ export const CreateSubspaceForm = ({
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikMarkdownField
-            name="background"
+            name="description"
             title={t(`context.${level}.description.title`)}
             rows={5}
             helperText={t(`context.${level}.description.description`)}

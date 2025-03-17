@@ -31,6 +31,7 @@ import VirtualContributorsBlock from '@/domain/community/community/VirtualContri
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceCommunityPage = () => {
   const { t } = useTranslation();
@@ -116,6 +117,8 @@ const SpaceCommunityPage = () => {
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
 
+  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Community, skip: resolving || !spaceId });
+
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer collaborationId={collaborationId}>
@@ -145,7 +148,7 @@ const SpaceCommunityPage = () => {
                   showInviteOption={hasInvitePrivilege}
                 />
               )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.profile.url} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.about.profile.url} />
             </InfoColumn>
             <ContentColumn>
               <RoleSetContributorsBlockWide

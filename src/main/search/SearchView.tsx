@@ -198,12 +198,12 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           <SearchResultsScope
             currentScope={
               <SearchResultsScopeCard
-                avatar={spaceDetails?.lookup.space?.profile.avatar}
+                avatar={spaceDetails?.lookup.space?.about.profile.avatar}
                 iconComponent={SpaceIcon}
                 loading={loading}
                 onDelete={handleSearchInPlatform}
               >
-                {spaceDetails?.lookup.space?.profile.displayName}
+                {spaceDetails?.lookup.space?.about.profile.displayName}
               </SearchResultsScopeCard>
             }
             alternativeScope={

@@ -1,54 +1,51 @@
-import { Children, createContext, PropsWithChildren, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
-import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
-import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
-import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import PageContent from '@/core/ui/content/PageContent';
-import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
-import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
-import { useTranslation } from 'react-i18next';
-import { KeyboardTab, Menu } from '@mui/icons-material';
-import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import InfoColumn from './InfoColumn';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import { Error404 } from '@/core/pages/Errors/Error404';
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import { gutters } from '@/core/ui/grid/utils';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
-import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
-import SwapColors from '@/core/ui/palette/SwapColors';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import DialogActionsMenu from './DialogActionsMenu';
-import Gutters from '@/core/ui/grid/Gutters';
-import createLayoutHolder from '@/core/ui/layout/layoutHolder/LayoutHolder';
-import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
-import DialogActionButtons from './DialogActionButtons';
-import unwrapFragment from '@/core/ui/utils/unwrapFragment';
-import { SubspaceDialog } from './SubspaceDialog';
-import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
-import produce from 'immer';
-import WelcomeBlock from './WelcomeBlock';
-import { UrlBaseProvider } from '@/core/ui/link/UrlBase';
-import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import { theme } from '@/core/ui/themes/default/Theme';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import createLayoutHolder from '@/core/ui/layout/layoutHolder/LayoutHolder';
+import { UrlBaseProvider } from '@/core/ui/link/UrlBase';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { theme } from '@/core/ui/themes/default/Theme';
+import unwrapFragment from '@/core/ui/utils/unwrapFragment';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
+import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
+import { KeyboardTab, Menu } from '@mui/icons-material';
+import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
+import produce from 'immer';
+import { Children, PropsWithChildren, ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import DialogActionButtons from './DialogActionButtons';
+import DialogActionsMenu from './DialogActionsMenu';
+import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
+import InfoColumn from './InfoColumn';
+import { SubspaceDialog } from './SubspaceDialog';
+import WelcomeBlock from './WelcomeBlock';
+import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
   parentSpaceId: string | undefined;
   levelZeroSpaceId: string | undefined;
-  spaceReadAccess: SpaceReadAccess;
   spaceLevel: SpaceLevel | undefined;
   journeyPath: JourneyPath | undefined;
-  journeyUrl?: string | undefined; // TODO make required
+  spaceUrl?: string | undefined; // TODO make required
   loading?: boolean;
   unauthorizedDialogDisabled?: boolean;
   welcome?: ReactNode;
@@ -62,7 +59,7 @@ const {
   createLayout,
 } = createLayoutHolder();
 
-export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren<{}>) => {
+export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren) => {
   return <>{children}</>;
 });
 
@@ -99,12 +96,10 @@ const SubspacePageLayout = ({
   journeyId,
   parentSpaceId,
   levelZeroSpaceId,
-  spaceReadAccess,
   journeyPath,
   spaceLevel,
-  journeyUrl,
+  spaceUrl: journeyUrl,
   loading = false,
-  unauthorizedDialogDisabled = false,
   welcome,
   actions,
   children,
@@ -155,6 +150,8 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
+  useAboutRedirect({ spaceId: journeyId, skip: !journeyId });
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
@@ -221,7 +218,7 @@ const SubspacePageLayout = ({
                     minWidth={0}
                   >
                     <ApplicationButtonContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
-                      {({ applicationButtonProps }, { loading }) => {
+                      {(applicationButtonProps, loading) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
                         }
@@ -272,18 +269,6 @@ const SubspacePageLayout = ({
                   </Paper>
                 )}
               </TopLevelLayout>
-              <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
-                {({ vision, ...props }) => (
-                  <JourneyUnauthorizedDialog
-                    journeyId={journeyId}
-                    parentSpaceId={parentSpaceId}
-                    description={vision}
-                    disabled={unauthorizedDialogDisabled}
-                    spaceLevel={spaceLevel}
-                    {...props}
-                  />
-                )}
-              </JourneyUnauthorizedDialogContainer>
               {isMobile && (
                 <SwapColors>
                   <GridProvider columns={GRID_COLUMNS_MOBILE}>

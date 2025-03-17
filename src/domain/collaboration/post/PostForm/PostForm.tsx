@@ -1,21 +1,21 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { Post, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Reference } from '@/domain/common/profile/Profile';
+import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
+import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { Formik, FormikConfig } from 'formik';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Formik, FormikConfig } from 'formik';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
-import { Post, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
-import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
-import { Reference } from '@/domain/common/profile/Profile';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import Gutters from '@/core/ui/grid/Gutters';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
 type FormValue = {
   name: string;
@@ -64,7 +64,7 @@ const PostForm = ({
   onRemoveReference,
   children,
   disableRichMedia,
-}: PropsWithChildren<PostFormProps>) => {
+}: PostFormProps) => {
   const { t } = useTranslation();
 
   const tagsets: Tagset[] = [

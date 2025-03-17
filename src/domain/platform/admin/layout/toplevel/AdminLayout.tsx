@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
-import { AdminSection, adminTabs } from './constants';
-import { useTranslation } from 'react-i18next';
-import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
-import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
-import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
+import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
+import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
 import AdminBreadcrumbs from '@/main/admin/AdminBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { FC, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AdminSection, adminTabs } from './constants';
 
-interface AdminLayoutProps {
+interface AdminLayoutProps extends PropsWithChildren {
   currentTab: AdminSection;
 }
 

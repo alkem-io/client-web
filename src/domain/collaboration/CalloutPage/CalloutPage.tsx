@@ -19,7 +19,6 @@ import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
-import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
@@ -112,12 +111,9 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
 
   const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
 
-  const spaceReadAccess = useCanReadSpace({ spaceId });
-
   if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
     return (
       <PageLayout
-        spaceReadAccess={spaceReadAccess}
         journeyId={spaceId}
         levelZeroSpaceId={levelZeroSpaceId}
         spaceLevel={spaceLevel}

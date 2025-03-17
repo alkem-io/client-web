@@ -20,15 +20,15 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
   return (
     <BadgeCardView
       component={LinkButton}
-      visual={<JourneyAvatar src={invitation.space.profile.visual?.uri} />}
+      visual={<JourneyAvatar src={invitation.space.about.profile.cardBanner?.uri} />}
       onClick={onClick}
       outlined
     >
       <BlockSectionTitle noWrap>
         <DetailedActivityDescription
           i18nKey="community.pendingMembership.invitationTitle"
-          journeyDisplayName={invitation.space.profile.displayName}
-          journeyUrl={invitation.space.profile.url}
+          journeyDisplayName={invitation.space.about.profile.displayName}
+          journeyUrl={invitation.space.about.profile.url}
           spaceLevel={invitation.space.level}
           createdDate={invitation.invitation.createdDate}
           author={{ displayName: invitation.userDisplayName }}
