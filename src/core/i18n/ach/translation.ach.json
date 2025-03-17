@@ -530,7 +530,8 @@
       "inviteExternalVC": "crwdns18214:0crwdne18214:0",
       "externalVCsInfo": "crwdns18216:0crwdne18216:0",
       "searchVC": "crwdns18218:0crwdne18218:0",
-      "inviteBtn": "crwdns18220:0crwdne18220:0"
+      "inviteBtn": "crwdns18220:0crwdne18220:0",
+      "permissionRequiredTooltip": "crwdns36767:0crwdne36767:0"
     },
     "application-form": {
       "title": "crwdns18222:0crwdne18222:0",
