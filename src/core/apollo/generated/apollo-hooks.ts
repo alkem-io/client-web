@@ -2605,6 +2605,27 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const InAppNotificationAllTypesFragmentDoc = gql`
+  fragment InAppNotificationAllTypes on InAppNotification {
+    id
+    type
+    category
+    state
+    triggeredAt
+    ... on InAppNotificationCalloutPublished {
+      ...InAppNotificationCalloutPublished
+    }
+    ... on InAppNotificationCommunityNewMember {
+      ...InAppNotificationCommunityNewMember
+    }
+    ... on InAppNotificationUserMentioned {
+      ...InAppNotificationUserMentioned
+    }
+  }
+  ${InAppNotificationCalloutPublishedFragmentDoc}
+  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -21681,8 +21702,6 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-<<<<<<< HEAD
-<<<<<<< HEAD
       spaceResults {
         cursor
         results {
@@ -21736,81 +21755,6 @@ export const SearchDocument = gql`
   ${SearchResultPostFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
-=======
-      contributorResults {
-        cursor
-        results {
-          ...SearchResults
-        }
-        total
-      }
-      contributionResults {
-        cursor
-        results {
-          ...SearchResults
-        }
-        total
-      }
-=======
->>>>>>> 3a0001d38 (finish functionality)
-      spaceResults {
-        cursor
-        results {
-          id
-          type
-          score
-          terms
-          ...SearchResultSpace
-        }
-        total
-      }
-      calloutResults {
-        cursor
-        results {
-          id
-          type
-          score
-          terms
-          ...SearchResultCallout
-        }
-        total
-      }
-      contributionResults {
-        cursor
-        results {
-          id
-          type
-          score
-          terms
-          ...SearchResultPost
-          ...SearchResultCallout
-        }
-        total
-      }
-      contributorResults {
-        cursor
-        results {
-          id
-          type
-          score
-          terms
-          ...SearchResultUser
-          ...SearchResultOrganization
-        }
-        total
-      }
-    }
-  }
-<<<<<<< HEAD
-  ${SearchResultsFragmentDoc}
->>>>>>> 562f620fc (update gql schema)
-=======
-  ${SearchResultSpaceFragmentDoc}
-  ${SearchResultCalloutFragmentDoc}
-  ${SearchResultPostFragmentDoc}
-  ${SearchResultUserFragmentDoc}
-  ${SearchResultOrganizationFragmentDoc}
->>>>>>> 3a0001d38 (finish functionality)
 `;
 
 /**
