@@ -126,6 +126,11 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const handleTermsChange = useCallback(
     (newValue: string[]) => {
+      setCalloutCanLoadMore(true);
+      setCanJourneyLoadMore(true);
+      setContributorCanLoadMore(true);
+      setCanContributionLoadMore(true);
+
       const params = new URLSearchParams(
         Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
       );
