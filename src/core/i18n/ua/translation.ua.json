@@ -530,7 +530,8 @@
       "inviteExternalVC": "Запросити зовнішнього віртуального учасника",
       "externalVCsInfo": "На даний час, лише Служба підтримки Alkemio може додати Віртуального Учасника до Вашого простору. Будь ласка, зверніться до Служби підтримки <click>за посиланням</click> якщо Ви бажаєте це зробити, ми будемо раді допомогти!",
       "searchVC": "Знайти Віртуального Учасника",
-      "inviteBtn": "Invite Virtual Contributor"
+      "inviteBtn": "Invite Virtual Contributor",
+      "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Форма заявки",
