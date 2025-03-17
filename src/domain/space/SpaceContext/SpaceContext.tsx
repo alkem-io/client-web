@@ -38,6 +38,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
       membership: {
         myMembershipStatus: undefined,
         communityID: '',
+        roleSetID: '',
       },
     },
     level: SpaceLevel.L0,
