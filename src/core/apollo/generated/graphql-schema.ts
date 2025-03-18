@@ -6180,6 +6180,8 @@ export type Subscription = {
   calloutPostCreated: CalloutPostCreated;
   /** Receive updates on Discussions */
   forumDiscussionUpdated: Discussion;
+  /** New in-app notification received for the currently authenticated user. */
+  inAppNotificationReceived: InAppNotification;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
