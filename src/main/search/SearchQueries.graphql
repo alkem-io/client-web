@@ -1,48 +1,54 @@
 query search($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    journeyResults {
-      id
-      score
-      terms
-      type
-      ... on SearchResultSpace {
+    spaceResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
         ...SearchResultSpace
       }
+      total
     }
-    journeyResultsCount
+
     calloutResults {
-      id
-      score
-      terms
-      type
-      ... on SearchResultCallout {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
         ...SearchResultCallout
       }
+      total
     }
-    calloutResultsCount
-    contributorResults {
-      id
-      score
-      terms
-      type
-      ... on SearchResultUser {
-        ...SearchResultUser
+
+    contributionResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultPost
+        ...SearchResultCallout
       }
-      ... on SearchResultOrganization {
+      total
+    }
+
+    contributorResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultUser
         ...SearchResultOrganization
       }
+      total
     }
-    contributorResultsCount
-    contributionResults {
-      id
-      score
-      terms
-      type
-      ... on SearchResultPost {
-        ...SearchResultPost
-      }
-    }
-    contributionResultsCount
   }
 }
 

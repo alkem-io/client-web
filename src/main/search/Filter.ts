@@ -1,8 +1,9 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { SearchResultType } from '@/core/apollo/generated/graphql-schema';
 
 export interface FilterDefinition {
   title: TranslationKey;
-  value: string[];
+  value: SearchResultType[];
   typename: string;
   disabled?: boolean;
 }
@@ -14,17 +15,17 @@ export interface FilterConfig {
 export const journeyFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['space', 'subspace'],
+    value: [SearchResultType.Space, SearchResultType.Subspace],
     typename: 'all',
   },
   space: {
     title: 'pages.search.filter.key.space',
-    value: ['space'],
+    value: [SearchResultType.Space],
     typename: 'space',
   },
   subspace: {
     title: 'pages.search.filter.key.subspace',
-    value: ['subspace'],
+    value: [SearchResultType.Subspace],
     typename: 'subspace',
   },
 };
@@ -32,7 +33,7 @@ export const journeyFilterConfig: FilterConfig = {
 export const calloutFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['callout'],
+    value: [SearchResultType.Callout],
     typename: 'all',
   },
 };
@@ -61,17 +62,17 @@ Object.values(CalloutType).reduce(
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['post'],
+    value: [SearchResultType.Post, SearchResultType.Whiteboard],
     typename: 'all',
   },
   post: {
     title: 'pages.search.filter.key.post',
-    value: ['post'],
+    value: [SearchResultType.Post],
     typename: 'post',
   },
   whiteboard: {
     title: 'pages.search.filter.key.whiteboard',
-    value: ['whiteboard'],
+    value: [SearchResultType.Whiteboard],
     typename: 'whiteboard',
     disabled: true, // TODO: Needs server work
   },
@@ -80,17 +81,17 @@ export const contributionFilterConfig: FilterConfig = {
 export const contributorFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['user', 'organization'],
+    value: [SearchResultType.User, SearchResultType.Organization],
     typename: 'all',
   },
   user: {
     title: 'pages.search.filter.key.user',
-    value: ['user'],
+    value: [SearchResultType.User],
     typename: 'user',
   },
   organization: {
     title: 'pages.search.filter.key.organization',
-    value: ['organization'],
+    value: [SearchResultType.Organization],
     typename: 'organization',
   },
 };
