@@ -58,12 +58,13 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     onRemoveVirtualContributor,
     getAvailableUsers,
     getAvailableOrganizations,
-    getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
     inviteExternalUser,
     inviteExistingUser,
   } = useCommunityAdmin({ roleSetId, spaceId, spaceLevel });
+
+  const { getAvailableVirtualContributors } = useCommunityAdmin({ roleSetId, spaceId: parentSpaceId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>
