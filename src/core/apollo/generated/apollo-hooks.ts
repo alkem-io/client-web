@@ -21771,51 +21771,58 @@ export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
       spaceResults {
-        id
-        score
-        terms
-        type
-        ...SearchResultSpace
-      }
-      spaceResultsCount
-      calloutResults {
-        id
-        score
-        terms
-        type
-        ...SearchResultCallout
-      }
-      calloutResultsCount
-      contributorResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultUser {
-          ...SearchResultUser
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultSpace
         }
-        ... on SearchResultOrganization {
+        total
+      }
+      calloutResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultCallout
+        }
+        total
+      }
+      contributionResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultPost
+          ...SearchResultCallout
+        }
+        total
+      }
+      contributorResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultUser
           ...SearchResultOrganization
         }
+        total
       }
-      contributorResultsCount
-      contributionResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultPost {
-          ...SearchResultPost
-        }
-      }
-      contributionResultsCount
     }
   }
   ${SearchResultSpaceFragmentDoc}
   ${SearchResultCalloutFragmentDoc}
+  ${SearchResultPostFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
-  ${SearchResultPostFragmentDoc}
 `;
 
 /**
@@ -22267,11 +22274,14 @@ export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
       spaceResults {
-        id
-        type
-        ... on SearchResultSpace {
+        cursor
+        results {
+          score
+          terms
+          type
           ...ExploreSpacesSearch
         }
+        total
       }
     }
   }
@@ -23324,10 +23334,14 @@ export const SpaceExplorerSearchDocument = gql`
   query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
       spaceResults {
-        id
-        type
-        terms
-        ...SpaceExplorerSearchSpace
+        cursor
+        results {
+          score
+          terms
+          type
+          ...SpaceExplorerSearchSpace
+        }
+        total
       }
     }
   }
