@@ -1859,7 +1859,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space, Challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
               "callout-template-import-subtitle": "Encuentra una plantilla para que la gente la use al contribuir a tu $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Plantilla importada correctamente"
             }
           },
