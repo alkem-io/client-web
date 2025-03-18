@@ -13,7 +13,6 @@ import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 const SpaceDashboardPage = ({
   dialog,
@@ -22,9 +21,8 @@ const SpaceDashboardPage = ({
 
   const backToDashboard = useBackToStaticPath(`${currentPath.pathname}/dashboard` ?? '');
 
-  const { spaceId, collaborationId, journeyPath, calendarEventId, loading } = useUrlResolver();
-
-  useAboutRedirect({ spaceId, currentSection: EntityPageSection.Dashboard, skip: loading || !spaceId });
+  // using the spaceId from here leads to side effects - updating requests with old spaceId
+  const { journeyPath, calendarEventId } = useUrlResolver();
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
@@ -32,8 +30,8 @@ const SpaceDashboardPage = ({
         {({ callouts, dashboardNavigation, about, ...entities }, state) => (
           <>
             <SpaceDashboardView
-              spaceId={spaceId}
-              collaborationId={collaborationId}
+              spaceId={entities.space?.id}
+              collaborationId={entities.space?.collaboration?.id}
               calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
               what={entities.space?.about.profile.description}
               dashboardNavigation={dashboardNavigation}
@@ -67,7 +65,7 @@ const SpaceDashboardPage = ({
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                journeyId={spaceId}
+                journeyId={entities.space?.id}
                 parentSpaceId={undefined}
                 parentPath={entities.space?.about.profile.url ?? ''}
                 calendarEventId={calendarEventId}
@@ -75,7 +73,7 @@ const SpaceDashboardPage = ({
             )}
             <SpaceAboutDialog
               open={dialog === 'about'}
-              spaceId={spaceId}
+              spaceId={entities.space?.id}
               spaceLevel={SpaceLevel.L0}
               about={about}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
