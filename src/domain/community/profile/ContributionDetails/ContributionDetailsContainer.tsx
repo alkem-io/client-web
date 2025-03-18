@@ -5,8 +5,6 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ContainerChildProps } from '@/core/container/container';
-import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
@@ -56,19 +54,8 @@ const ContributionDetailsContainer = ({ entities, children }: EntityDetailsConta
   const details = useMemo<ContributionDetails | undefined>(() => {
     if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
-      const { profile } = spaceData.lookup.space.about;
       return {
-        about: {
-          profile: {
-            description: undefined,
-            tagline: profile.tagline,
-            url: profile.url,
-            tagset: profile.tagset,
-            displayName: profile.displayName,
-            cardBanner: getVisualByType(VisualName.CARD, profile.visuals),
-            avatar: getVisualByType(VisualName.CARD, profile.visuals),
-          },
-        },
+        about: space.about,
         roleSetId: space.community?.roleSet.id,
         level: space.level,
       };
