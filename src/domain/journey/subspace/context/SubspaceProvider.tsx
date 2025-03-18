@@ -45,6 +45,9 @@ const defaultValue: SubspaceContextProps = {
       membership: {
         myMembershipStatus: undefined,
         roleSetID: '',
+        communityID: undefined,
+        leadUsers: [],
+        leadOrganizations: [],
       },
       isContentPublic: true,
     },
@@ -107,8 +110,11 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       who: subspaceData?.about.who ?? '',
       why: subspaceData?.about.why ?? '',
       isContentPublic: subspaceData?.about.isContentPublic ?? true,
+      provider: subspaceData?.about.provider,
       membership: {
         myMembershipStatus: subspaceData?.about.membership.myMembershipStatus,
+        leadOrganizations: subspaceData?.about.membership.leadOrganizations ?? [],
+        leadUsers: subspaceData?.about.membership.leadUsers ?? [],
         communityID: subspaceData?.about.membership.communityID,
         roleSetID: subspaceData?.about.membership.roleSetID,
       },

@@ -5,10 +5,9 @@ import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 const SubspaceAboutPage = () => {
-  const { subspace, loading } = useSubSpace();
+  const { subspace, permissions, loading } = useSubSpace();
   const { about } = subspace;
 
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
@@ -19,11 +18,7 @@ const SubspaceAboutPage = () => {
     level: subspace.level,
   };
 
-  const spacePrivileges = subspace.authorization?.myPrivileges || [];
-  const canReadSpace = spacePrivileges.includes(AuthorizationPrivilege.Read);
-  const canUpdateSpace = spacePrivileges.includes(AuthorizationPrivilege.Update);
-
-  const backToParentPage = useBackWithDefaultUrl(canReadSpace ? about.profile.url : undefined);
+  const backToParentPage = useBackWithDefaultUrl(permissions.canRead ? about.profile.url : undefined);
 
   return (
     <>
@@ -32,8 +27,8 @@ const SubspaceAboutPage = () => {
         space={space}
         loading={loading}
         onClose={backToParentPage}
-        hasReadPrivilege={canReadSpace}
-        hasEditPrivilege={canUpdateSpace}
+        hasReadPrivilege={permissions.canRead}
+        hasEditPrivilege={permissions.canUpdate}
       />
       <ContributorsDialog
         open={isContributorsDialogOpen}
