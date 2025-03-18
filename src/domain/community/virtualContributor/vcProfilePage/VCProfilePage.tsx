@@ -67,7 +67,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     { data, error, skip: urlResolverLoading || loading },
     data => data.lookup.virtualContributor?.authorization?.myPrivileges,
     {
-      requiredPrivilege: AuthorizationPrivilege.ReadAbout,
+      requiredPrivilege: AuthorizationPrivilege.Read,
     }
   );
 
