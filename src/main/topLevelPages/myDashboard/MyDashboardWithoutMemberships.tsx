@@ -16,6 +16,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { useCreateSpaceLink } from './useCreateSpaceLink/useCreateSpaceLink';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
+import MyResources from '@/main/topLevelPages/myDashboard/myResources/MyResources';
 
 const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
 
@@ -34,6 +35,7 @@ const MyDashboardWithoutMemberships = () => {
       {!isMobile && (
         <InfoColumn>
           <DashboardMenu compact />
+          <MyResources />
         </InfoColumn>
       )}
       <ContentColumn>

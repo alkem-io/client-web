@@ -11,8 +11,13 @@
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "menu": {
-      "clear": "Clear conversation",
+      "clear": "New Chat",
       "close": "Close window"
+    },
+    "confirmNewChat": {
+      "title": "Start a new chat?",
+      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
+      "confirm": "Yes, start new chat"
     },
     "references": [
       {
@@ -242,6 +247,7 @@
     "comment": "Comment",
     "comments": "Comments",
     "contributions": "Contributions",
+    "responses": "Responses",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
@@ -525,7 +531,8 @@
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor"
+      "inviteBtn": "Invite Virtual Contributor",
+      "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Application Form",
@@ -950,7 +957,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Search results for:",
@@ -1853,7 +1862,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -2667,13 +2676,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "Leaving Space {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this Space or its Subspaces. If this Space is public, you can rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Space, you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this Space or its Subspaces. If this Space is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Space, you will also be automatically removed from there."
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "Leaving Subspace {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this Subspace or its Subspaces. If this Subspace is public, you can rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Subspace, you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this Subspace or its Subspaces. If this Subspace is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Subspace, you will also be automatically removed from there."
           }
         }
       },

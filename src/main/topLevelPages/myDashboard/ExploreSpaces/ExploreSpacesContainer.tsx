@@ -6,7 +6,7 @@ import {
   useSpaceUrlResolverQuery,
   useWelcomeSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ExploreSpacesSearchFragment, SearchResultType } from '@/core/apollo/generated/graphql-schema';
+import { ExploreSpacesSearchFragment, SearchCategory, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '@/main/search/SearchView';
 import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
@@ -53,7 +53,12 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
       searchData: {
         terms: getTerms(searchTerms, selectedFilter),
         tagsetNames: ['skills', 'keywords'],
-        typesFilter: ['space'],
+        filters: [
+          {
+            category: SearchCategory.Spaces,
+            types: [SearchResultType.Space],
+          },
+        ],
       },
     },
     fetchPolicy: 'no-cache',
@@ -88,8 +93,8 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
   const hasMore = false;
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
-    if (shouldSearch && rawSearchResults?.search?.journeyResults) {
-      return rawSearchResults.search.journeyResults
+    if (shouldSearch && rawSearchResults?.search?.spaceResults) {
+      return rawSearchResults.search.spaceResults?.results
         .filter(
           (journey): journey is TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment> =>
             journey.type === SearchResultType.Space
