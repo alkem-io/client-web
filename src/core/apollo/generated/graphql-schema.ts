@@ -17400,17 +17400,8 @@ export type SpaceContributionDetailsQuery = {
               url: string;
               displayName: string;
               tagline?: string | undefined;
-              visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
           };
           community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };

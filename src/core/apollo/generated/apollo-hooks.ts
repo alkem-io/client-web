@@ -12202,11 +12202,12 @@ export const SpaceContributionDetailsDocument = gql`
             url
             displayName
             tagline
-            visuals {
+            cardBanner: visual(type: CARD) {
               ...VisualUri
             }
             tagset {
-              ...TagsetDetails
+              id
+              tags
             }
           }
         }
@@ -12220,7 +12221,6 @@ export const SpaceContributionDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
