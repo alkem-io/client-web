@@ -19716,6 +19716,7 @@ export type UpdateSpaceMutation = {
         | undefined;
       membership: {
         __typename?: 'SpaceAboutMembership';
+        roleSetID: string;
         communityID: string;
         myMembershipStatus?: CommunityMembershipStatus | undefined;
         leadOrganizations: Array<{
@@ -19946,6 +19947,7 @@ export type SpaceInfoFragment = {
       | undefined;
     membership: {
       __typename?: 'SpaceAboutMembership';
+      roleSetID: string;
       communityID: string;
       myMembershipStatus?: CommunityMembershipStatus | undefined;
       leadOrganizations: Array<{
@@ -21836,6 +21838,7 @@ export type SpaceAboutDetailsQuery = {
               | undefined;
             membership: {
               __typename?: 'SpaceAboutMembership';
+              roleSetID: string;
               communityID: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               leadOrganizations: Array<{
@@ -22089,6 +22092,7 @@ export type SpaceAboutFullQuery = {
               | undefined;
             membership: {
               __typename?: 'SpaceAboutMembership';
+              roleSetID: string;
               communityID: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
               leadOrganizations: Array<{
@@ -22354,6 +22358,7 @@ export type SpaceAboutDetailsFragment = {
     | undefined;
   membership: {
     __typename?: 'SpaceAboutMembership';
+    roleSetID: string;
     communityID: string;
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     leadOrganizations: Array<{

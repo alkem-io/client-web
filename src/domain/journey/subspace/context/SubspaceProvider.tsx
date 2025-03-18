@@ -109,6 +109,8 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       isContentPublic: subspaceData?.about.isContentPublic ?? true,
       membership: {
         myMembershipStatus: subspaceData?.about.membership.myMembershipStatus,
+        communityID: subspaceData?.about.membership.communityID,
+        roleSetID: subspaceData?.about.membership.roleSetID,
       },
     };
 

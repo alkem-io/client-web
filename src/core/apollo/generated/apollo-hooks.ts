@@ -1715,6 +1715,7 @@ export const SpaceAboutDetailsFragmentDoc = gql`
       myPrivileges
     }
     membership {
+      roleSetID
       communityID
       myMembershipStatus
       leadOrganizations {
