@@ -108,6 +108,8 @@ const SpaceDashboardPage = ({
         space={space}
         loading={loadingSpacePageQuery}
         onClose={backToDashboard}
+        hasReadPrivilege={permissions.spaceReadAccess}
+        hasEditPrivilege={permissions.canEdit}
       />
     </SpacePageLayout>
   );

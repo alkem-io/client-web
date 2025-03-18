@@ -11,7 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material/styles';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import References from '@/domain/shared/components/References/References';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
@@ -33,7 +33,6 @@ import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDa
 
 export interface SpaceAboutDialogProps {
   open: boolean;
-  fullScreen?: boolean;
   space: SpaceDashboardSpaceDetails;
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
@@ -50,7 +49,6 @@ const gradient = (theme: Theme) =>
 
 const SpaceAboutDialog = ({
   open,
-  fullScreen,
   space,
   loading = false,
   onClose,
@@ -144,7 +142,6 @@ const SpaceAboutDialog = ({
     <DialogWithGrid
       open={open}
       columns={8}
-      {...(fullScreen ? { fullWidth: true, fullHeight: true, fullScreen: true } : undefined)}
       sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
     >
@@ -182,6 +179,7 @@ const SpaceAboutDialog = ({
             <PageContentColumn columns={4}>
               <PageContentBlock accent>
                 <AboutDescription
+                  member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
                   description={aboutProfile?.description}
                   loading={loading}
                   location={aboutProfile?.location}

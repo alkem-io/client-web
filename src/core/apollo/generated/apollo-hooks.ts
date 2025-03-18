@@ -1715,9 +1715,58 @@ export const SpaceAboutDetailsFragmentDoc = gql`
       myPrivileges
     }
     membership {
+      communityID
       myMembershipStatus
+      leadOrganizations {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+      leadUsers {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
     }
     isContentPublic
+    provider {
+      id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
     profile {
       id
       url
@@ -1746,8 +1795,8 @@ export const SpaceAboutDetailsFragmentDoc = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
 `;
 export const SpaceInfoFragmentDoc = gql`
