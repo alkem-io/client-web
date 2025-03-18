@@ -46,7 +46,6 @@ const SpaceAboutPage = () => {
         {spaceDetails && (
           <SpaceAboutDialog
             open
-            fullScreen
             space={spaceDetails}
             loading={loading}
             onClose={backToParentPage}
