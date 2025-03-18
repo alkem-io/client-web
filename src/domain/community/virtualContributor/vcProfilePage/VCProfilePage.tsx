@@ -44,10 +44,6 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
   const isBokSpace =
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;
-  console.log('bokId', bokId, isBokSpace);
-  if (bokId && isBokSpace) {
-    debugger;
-  }
   // TODO: Additional Auth Check
   const { data: vcSpaceBoKAuthPrivileges } = useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
     variables: {
