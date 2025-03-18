@@ -16111,6 +16111,7 @@ export type CommunityProviderDetailsQuery = {
     space?:
       | {
           __typename?: 'Space';
+          id: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -16144,6 +16145,28 @@ export type CommunityProviderDetailsQuery = {
               }
             | { __typename?: 'User' }
             | { __typename?: 'VirtualContributor' };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceEntitlementsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceEntitlementsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
         }
       | undefined;
   };
@@ -19349,6 +19372,11 @@ export type SpaceCommunityPageQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -29874,17 +29902,7 @@ export type LatestContributionsSpacesFlatQuery = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            description?: string | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
         };
       };
     }>;
