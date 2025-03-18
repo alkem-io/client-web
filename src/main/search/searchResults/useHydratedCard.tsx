@@ -81,10 +81,7 @@ const _hydrateOrganizationCard = (
 };
 
 const hydrateSpaceCard = (
-  data: TypedSearchResult<
-    SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
-    SearchResultSpaceFragment
-  >
+  data: TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
 ) => {
   const space = data.space;
   const spaceProfile = space.about.profile;
@@ -96,10 +93,7 @@ const hydrateSpaceCard = (
   const isMember = space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentSegment = (
-    data: TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
-      SearchResultSpaceFragment
-    >
+    data: TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
   ) => {
     if (!data.parentSpace) {
       return null;
@@ -198,10 +192,7 @@ interface UseHydrateCardProvided {
   >;
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
   hydrateSpaceCard: HydratedCardGetter<
-    TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
-      SearchResultSpaceFragment
-    >
+    TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
   >;
 }
 

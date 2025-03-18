@@ -12202,11 +12202,12 @@ export const SpaceContributionDetailsDocument = gql`
             url
             displayName
             tagline
-            visuals {
+            cardBanner: visual(type: CARD) {
               ...VisualUri
             }
             tagset {
-              ...TagsetDetails
+              id
+              tags
             }
           }
         }
@@ -12220,7 +12221,6 @@ export const SpaceContributionDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -17641,7 +17641,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 >;
 export const AdminSpacesListDocument = gql`
   query adminSpacesList {
-    spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...AdminSpace
     }
   }
@@ -21770,56 +21770,59 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultSpace {
+      spaceResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
           ...SearchResultSpace
         }
+        total
       }
-      journeyResultsCount
       calloutResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultCallout {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
           ...SearchResultCallout
         }
+        total
       }
-      calloutResultsCount
-      contributorResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultUser {
-          ...SearchResultUser
+      contributionResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultPost
+          ...SearchResultCallout
         }
-        ... on SearchResultOrganization {
+        total
+      }
+      contributorResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultUser
           ...SearchResultOrganization
         }
+        total
       }
-      contributorResultsCount
-      contributionResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultPost {
-          ...SearchResultPost
-        }
-      }
-      contributionResultsCount
     }
   }
   ${SearchResultSpaceFragmentDoc}
   ${SearchResultCalloutFragmentDoc}
+  ${SearchResultPostFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
-  ${SearchResultPostFragmentDoc}
 `;
 
 /**
@@ -22270,12 +22273,15 @@ export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.Das
 export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
-        id
-        type
-        ... on SearchResultSpace {
+      spaceResults {
+        cursor
+        results {
+          score
+          terms
+          type
           ...ExploreSpacesSearch
         }
+        total
       }
     }
   }
@@ -23327,13 +23333,15 @@ export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.Challe
 export const SpaceExplorerSearchDocument = gql`
   query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
-        id
-        type
-        terms
-        ... on SearchResultSpace {
+      spaceResults {
+        cursor
+        results {
+          score
+          terms
+          type
           ...SpaceExplorerSearchSpace
         }
+        total
       }
     }
   }
