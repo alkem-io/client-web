@@ -1859,7 +1859,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Trouvez des modèles à utiliser dans votre hub, défi ou opportunité. Sélectionnez le modèle et cliquez sur « sélectionner» pour l'ajouter à votre jeu de modèles.",
               "callout-template-import-subtitle": "Trouver un modèle à utiliser lorsque vous contribuez à votre $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Modèle importé avec succès"
             }
           },
