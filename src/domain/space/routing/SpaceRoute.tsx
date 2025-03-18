@@ -4,8 +4,6 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpaceAboutPage from '../about/SpaceAboutPage';
 import SpaceTabbedLayoutRoute from './SpaceTabbedLayoutRoute';
-import SpaceSkeletonLayout from '../layout/Skeletons/SpaceSkeletonLayout';
-import SubSpaceSkeletonLayout from '@/domain/space/layout/Skeletons/SubSpaceSkeletonLayout';
 
 const routes = { ...EntityPageSection };
 
@@ -20,13 +18,13 @@ const SpaceRoute = () => {
     };
   }, [space, permissions, loading]);
 
+  // TODO: revise this conditional rendering on that route level
+  // everytime we navigate to different route, it rerenders the whole page
+  // ideally we should have this logic inside a component/s and keep the routes rendered once
+
+  // return null because of layout shift
   if (isLoading) {
-    return (
-      <Routes>
-        <Route path="challenges/*" element={<SubSpaceSkeletonLayout />} />
-        <Route path="*" element={<SpaceSkeletonLayout />} />
-      </Routes>
-    );
+    return null;
   }
 
   if (!canRead) {
