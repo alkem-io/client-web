@@ -16111,6 +16111,7 @@ export type CommunityProviderDetailsQuery = {
     space?:
       | {
           __typename?: 'Space';
+          id: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -16144,6 +16145,28 @@ export type CommunityProviderDetailsQuery = {
               }
             | { __typename?: 'User' }
             | { __typename?: 'VirtualContributor' };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceEntitlementsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceEntitlementsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
         }
       | undefined;
   };
@@ -17377,17 +17400,8 @@ export type SpaceContributionDetailsQuery = {
               url: string;
               displayName: string;
               tagline?: string | undefined;
-              visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
           };
           community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
@@ -19349,6 +19363,11 @@ export type SpaceCommunityPageQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
           about: {
             __typename?: 'SpaceAbout';
             id: string;

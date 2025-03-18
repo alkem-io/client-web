@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useCommunityProviderDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCommunityProviderDetailsQuery, useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   RoleName,
   RoleSetContributorType,
@@ -39,6 +39,13 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
       spaceId: spaceId!,
     },
     skip: !spaceId || spaceLevel !== SpaceLevel.L0,
+  });
+
+  const { data: spaceData } = useSpaceEntitlementsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
   });
 
   const {
@@ -174,6 +181,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    spaceEntitlements: spaceData?.lookup.space?.license?.availableEntitlements ?? [],
     applications,
     invitations,
     platformInvitations,

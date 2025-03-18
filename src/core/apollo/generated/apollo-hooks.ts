@@ -10374,6 +10374,7 @@ export const CommunityProviderDetailsDocument = gql`
   query CommunityProviderDetails($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
+        id
         provider {
           ...RoleSetMemberOrganization
         }
@@ -10433,6 +10434,69 @@ export type CommunityProviderDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityProviderDetailsQuery(variables: SchemaTypes.CommunityProviderDetailsQueryVariables) {
   return { query: CommunityProviderDetailsDocument, variables: variables };
+}
+
+export const SpaceEntitlementsDocument = gql`
+  query SpaceEntitlements($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        license {
+          id
+          availableEntitlements
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceEntitlementsQuery__
+ *
+ * To run a query within a React component, call `useSpaceEntitlementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceEntitlementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceEntitlementsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceEntitlementsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceEntitlementsQuery, SchemaTypes.SpaceEntitlementsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceEntitlementsQuery, SchemaTypes.SpaceEntitlementsQueryVariables>(
+    SpaceEntitlementsDocument,
+    options
+  );
+}
+
+export function useSpaceEntitlementsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceEntitlementsQuery,
+    SchemaTypes.SpaceEntitlementsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceEntitlementsQuery, SchemaTypes.SpaceEntitlementsQueryVariables>(
+    SpaceEntitlementsDocument,
+    options
+  );
+}
+
+export type SpaceEntitlementsQueryHookResult = ReturnType<typeof useSpaceEntitlementsQuery>;
+export type SpaceEntitlementsLazyQueryHookResult = ReturnType<typeof useSpaceEntitlementsLazyQuery>;
+export type SpaceEntitlementsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceEntitlementsQuery,
+  SchemaTypes.SpaceEntitlementsQueryVariables
+>;
+export function refetchSpaceEntitlementsQuery(variables: SchemaTypes.SpaceEntitlementsQueryVariables) {
+  return { query: SpaceEntitlementsDocument, variables: variables };
 }
 
 export const RoleSetApplicationFormDocument = gql`
@@ -12138,11 +12202,12 @@ export const SpaceContributionDetailsDocument = gql`
             url
             displayName
             tagline
-            visuals {
+            cardBanner: visual(type: CARD) {
               ...VisualUri
             }
             tagset {
-              ...TagsetDetails
+              id
+              tags
             }
           }
         }
@@ -12156,7 +12221,6 @@ export const SpaceContributionDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -14831,6 +14895,10 @@ export const SpaceCommunityPageDocument = gql`
         authorization {
           id
           myPrivileges
+        }
+        license {
+          id
+          availableEntitlements
         }
         about {
           ...SpaceAboutLight
@@ -17573,7 +17641,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 >;
 export const AdminSpacesListDocument = gql`
   query adminSpacesList {
-    spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...AdminSpace
     }
   }
