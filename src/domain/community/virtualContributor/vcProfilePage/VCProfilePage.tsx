@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
 import {
-  useBodyOfKnowledgeProfileAuthorizationQuery,
-  useBodyOfKnowledgeProfileQuery,
+  useSpaceBodyOfKnowledgeAboutQuery,
+  useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
@@ -44,20 +44,23 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
   const isBokSpace =
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;
-
+  console.log('bokId', bokId, isBokSpace);
+  if (bokId && isBokSpace) {
+    debugger;
+  }
   // TODO: Additional Auth Check
-  const { data: bokProfileAuthData } = useBodyOfKnowledgeProfileAuthorizationQuery({
+  const { data: vcSpaceBoKAuthPrivileges } = useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
     variables: {
       spaceId: bokId!,
     },
     skip: !bokId || !isBokSpace,
   });
 
-  const hasSpaceProfileReadAccess = bokProfileAuthData?.lookup.space?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Read
+  const hasSpaceProfileReadAccess = vcSpaceBoKAuthPrivileges?.lookup.myPrivileges?.space?.includes(
+    AuthorizationPrivilege.ReadAbout
   );
 
-  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
+  const { data: bokProfile } = useSpaceBodyOfKnowledgeAboutQuery({
     variables: {
       spaceId: bokId!,
     },

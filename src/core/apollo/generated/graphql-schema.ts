@@ -18507,31 +18507,25 @@ export type VirtualContributorProfileQuery = {
   };
 };
 
-export type BodyOfKnowledgeProfileAuthorizationQueryVariables = Exact<{
+export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type BodyOfKnowledgeProfileAuthorizationQuery = {
+export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
+    myPrivileges?:
+      | { __typename?: 'LookupMyPrivilegesQueryResults'; space?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
 };
 
-export type BodyOfKnowledgeProfileQueryVariables = Exact<{
+export type SpaceBodyOfKnowledgeAboutQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type BodyOfKnowledgeProfileQuery = {
+export type SpaceBodyOfKnowledgeAboutQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';

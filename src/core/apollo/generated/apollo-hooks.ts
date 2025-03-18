@@ -13299,80 +13299,76 @@ export function refetchVirtualContributorProfileQuery(variables: SchemaTypes.Vir
   return { query: VirtualContributorProfileDocument, variables: variables };
 }
 
-export const BodyOfKnowledgeProfileAuthorizationDocument = gql`
-  query BodyOfKnowledgeProfileAuthorization($spaceId: UUID!) {
+export const SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument = gql`
+  query SpaceBodyOfKnowledgeAuthorizationPrivileges($spaceId: UUID!) {
     lookup {
-      space(ID: $spaceId) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
+      myPrivileges {
+        space(ID: $spaceId)
       }
     }
   }
 `;
 
 /**
- * __useBodyOfKnowledgeProfileAuthorizationQuery__
+ * __useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery__
  *
- * To run a query within a React component, call `useBodyOfKnowledgeProfileAuthorizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useBodyOfKnowledgeProfileAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useBodyOfKnowledgeProfileAuthorizationQuery({
+ * const { data, loading, error } = useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useBodyOfKnowledgeProfileAuthorizationQuery(
+export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
-  >(BodyOfKnowledgeProfileAuthorizationDocument, options);
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
+  >(SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, options);
 }
 
-export function useBodyOfKnowledgeProfileAuthorizationLazyQuery(
+export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
-    SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
-  >(BodyOfKnowledgeProfileAuthorizationDocument, options);
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
+  >(SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, options);
 }
 
-export type BodyOfKnowledgeProfileAuthorizationQueryHookResult = ReturnType<
-  typeof useBodyOfKnowledgeProfileAuthorizationQuery
+export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryHookResult = ReturnType<
+  typeof useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery
 >;
-export type BodyOfKnowledgeProfileAuthorizationLazyQueryHookResult = ReturnType<
-  typeof useBodyOfKnowledgeProfileAuthorizationLazyQuery
+export type SpaceBodyOfKnowledgeAuthorizationPrivilegesLazyQueryHookResult = ReturnType<
+  typeof useSpaceBodyOfKnowledgeAuthorizationPrivilegesLazyQuery
 >;
-export type BodyOfKnowledgeProfileAuthorizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.BodyOfKnowledgeProfileAuthorizationQuery,
-  SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
+  SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
 >;
-export function refetchBodyOfKnowledgeProfileAuthorizationQuery(
-  variables: SchemaTypes.BodyOfKnowledgeProfileAuthorizationQueryVariables
+export function refetchSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery(
+  variables: SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
 ) {
-  return { query: BodyOfKnowledgeProfileAuthorizationDocument, variables: variables };
+  return { query: SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, variables: variables };
 }
 
-export const BodyOfKnowledgeProfileDocument = gql`
-  query BodyOfKnowledgeProfile($spaceId: UUID!) {
+export const SpaceBodyOfKnowledgeAboutDocument = gql`
+  query SpaceBodyOfKnowledgeAbout($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -13386,55 +13382,55 @@ export const BodyOfKnowledgeProfileDocument = gql`
 `;
 
 /**
- * __useBodyOfKnowledgeProfileQuery__
+ * __useSpaceBodyOfKnowledgeAboutQuery__
  *
- * To run a query within a React component, call `useBodyOfKnowledgeProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useBodyOfKnowledgeProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceBodyOfKnowledgeAboutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceBodyOfKnowledgeAboutQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useBodyOfKnowledgeProfileQuery({
+ * const { data, loading, error } = useSpaceBodyOfKnowledgeAboutQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useBodyOfKnowledgeProfileQuery(
+export function useSpaceBodyOfKnowledgeAboutQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.BodyOfKnowledgeProfileQuery,
-    SchemaTypes.BodyOfKnowledgeProfileQueryVariables
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.BodyOfKnowledgeProfileQuery, SchemaTypes.BodyOfKnowledgeProfileQueryVariables>(
-    BodyOfKnowledgeProfileDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
+  >(SpaceBodyOfKnowledgeAboutDocument, options);
 }
 
-export function useBodyOfKnowledgeProfileLazyQuery(
+export function useSpaceBodyOfKnowledgeAboutLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.BodyOfKnowledgeProfileQuery,
-    SchemaTypes.BodyOfKnowledgeProfileQueryVariables
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.BodyOfKnowledgeProfileQuery, SchemaTypes.BodyOfKnowledgeProfileQueryVariables>(
-    BodyOfKnowledgeProfileDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQuery,
+    SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
+  >(SpaceBodyOfKnowledgeAboutDocument, options);
 }
 
-export type BodyOfKnowledgeProfileQueryHookResult = ReturnType<typeof useBodyOfKnowledgeProfileQuery>;
-export type BodyOfKnowledgeProfileLazyQueryHookResult = ReturnType<typeof useBodyOfKnowledgeProfileLazyQuery>;
-export type BodyOfKnowledgeProfileQueryResult = Apollo.QueryResult<
-  SchemaTypes.BodyOfKnowledgeProfileQuery,
-  SchemaTypes.BodyOfKnowledgeProfileQueryVariables
+export type SpaceBodyOfKnowledgeAboutQueryHookResult = ReturnType<typeof useSpaceBodyOfKnowledgeAboutQuery>;
+export type SpaceBodyOfKnowledgeAboutLazyQueryHookResult = ReturnType<typeof useSpaceBodyOfKnowledgeAboutLazyQuery>;
+export type SpaceBodyOfKnowledgeAboutQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceBodyOfKnowledgeAboutQuery,
+  SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
 >;
-export function refetchBodyOfKnowledgeProfileQuery(variables: SchemaTypes.BodyOfKnowledgeProfileQueryVariables) {
-  return { query: BodyOfKnowledgeProfileDocument, variables: variables };
+export function refetchSpaceBodyOfKnowledgeAboutQuery(variables: SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables) {
+  return { query: SpaceBodyOfKnowledgeAboutDocument, variables: variables };
 }
 
 export const UpdateVirtualContributorDocument = gql`
