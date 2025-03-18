@@ -247,6 +247,7 @@
     "comment": "crwdns17724:0crwdne17724:0",
     "comments": "crwdns17726:0crwdne17726:0",
     "contributions": "crwdns17728:0crwdne17728:0",
+    "responses": "crwdns36771:0crwdne36771:0",
     "card": "crwdns17730:0crwdne17730:0",
     "cards": "crwdns17732:0crwdne17732:0",
     "create": "crwdns17734:0crwdne17734:0",
@@ -956,7 +957,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "crwdns18710:0crwdne18710:0"
+      "headerTitle": "crwdns18710:0crwdne18710:0",
+      "spacesAndSubspaces": "crwdns36773:0crwdne36773:0",
+      "collaborationTools": "crwdns36775:0crwdne36775:0"
     },
     "searchScope": {
       "currentScope": "crwdns18712:0crwdne18712:0",
