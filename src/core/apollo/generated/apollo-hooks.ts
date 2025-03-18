@@ -10226,12 +10226,16 @@ export const ApplicationDialogDocument = gql`
                 maxLength
               }
             }
+            communityGuidelines {
+              ...CommunityGuidelinesDetails
+            }
           }
         }
       }
     }
   }
   ${SpaceAboutMinimalUrlFragmentDoc}
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**

@@ -18,14 +18,11 @@ query ApplicationDialog($spaceId: UUID!) {
               maxLength
             }
           }
+          communityGuidelines {
+            ...CommunityGuidelinesDetails
+          }
         }
       }
-      #community {
-      #  id
-      #  guidelines {
-      #    ...CommunityGuidelinesDetails
-      #  }
-      #}
     }
   }
 }
