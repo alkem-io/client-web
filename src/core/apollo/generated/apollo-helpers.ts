@@ -3396,6 +3396,7 @@ export type SpaceAboutFieldPolicy = {
 };
 export type SpaceAboutMembershipKeySpecifier = (
   | 'applicationForm'
+  | 'communityGuidelines'
   | 'communityID'
   | 'leadOrganizations'
   | 'leadUsers'
@@ -3406,6 +3407,7 @@ export type SpaceAboutMembershipKeySpecifier = (
 )[];
 export type SpaceAboutMembershipFieldPolicy = {
   applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
   leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;

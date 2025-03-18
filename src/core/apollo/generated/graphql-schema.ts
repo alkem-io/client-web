@@ -5983,6 +5983,8 @@ export type SpaceAboutMembership = {
   __typename?: 'SpaceAboutMembership';
   /** The Form used for Applications to this Space. */
   applicationForm: Form;
+  /** The Form used for Applications to this Space. */
+  communityGuidelines: CommunityGuidelines;
   /** The identifier of the Community within the Space. */
   communityID: Scalars['UUID'];
   /** The Lead Organizations that are associated with this Space. */
@@ -16251,6 +16253,32 @@ export type ApplicationDialogQuery = {
                   explanation: string;
                   maxLength: number;
                 }>;
+              };
+              communityGuidelines: {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
               };
             };
             profile: {
