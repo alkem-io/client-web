@@ -1859,7 +1859,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Finden Sie Vorlagen für Hub, Challenge oder Chance. Wählen Sie die Vorlage aus und klicken Sie auf \"Auswählen\", um sie zu Ihrem Template-Set hinzuzufügen.",
               "callout-template-import-subtitle": "Finde eine Vorlage für Leute, die verwendet werden sollen, wenn sie zu deiner $tbeitragen (common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template erfolgreich importiert."
             }
           },
