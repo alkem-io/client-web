@@ -6,7 +6,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
@@ -29,7 +29,7 @@ const SpaceDashboardPage = ({
     tabDescription,
   } = useSpaceTabProvider({ tabPosition: 0 });
 
-  const { spaceId, journeyPath, calendarEventId } = urlInfo;
+  const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
 
   const { user } = useUserContext();
 
@@ -38,7 +38,7 @@ const SpaceDashboardPage = ({
       spaceId: spaceId!,
     },
     errorPolicy: 'all',
-    skip: !spaceId,
+    skip: !spaceId || spaceLevel !== SpaceLevel.L0,
   });
 
   const spaceData = spacePageData?.lookup.space;
