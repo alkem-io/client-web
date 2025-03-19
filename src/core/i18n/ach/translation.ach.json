@@ -254,6 +254,7 @@
     "create-new": "crwdns17736:0crwdne17736:0",
     "create-new-entity": "crwdns17738:0{{entity}}crwdne17738:0",
     "category": "crwdns17740:0crwdne17740:0",
+    "custom": "crwdns36777:0crwdne36777:0",
     "date": "crwdns17742:0crwdne17742:0",
     "description": "crwdns17744:0crwdne17744:0",
     "noDescription": "crwdns17746:0crwdne17746:0",
@@ -277,6 +278,7 @@
     "aspects": "crwdns17782:0crwdne17782:0",
     "prompt": "crwdns17784:0crwdne17784:0",
     "host": "crwdns17786:0crwdne17786:0",
+    "layout": "crwdns36779:0crwdne36779:0",
     "lead": "crwdns17788:0crwdne17788:0",
     "space": "crwdns17790:0crwdne17790:0",
     "spaces": "crwdns17792:0crwdne17792:0",
@@ -663,7 +665,8 @@
       "CONTRIBUTE": "crwdns18392:0crwdne18392:0",
       "COMMUNITY": "crwdns18394:0crwdne18394:0",
       "SUBSPACES": "crwdns18396:0crwdne18396:0",
-      "KNOWLEDGE": "crwdns18398:0crwdne18398:0"
+      "KNOWLEDGE": "crwdns18398:0crwdne18398:0",
+      "CUSTOM": "crwdns36781:0crwdne36781:0"
     },
     "calloutsList": {
       "title": "crwdns18400:0crwdne18400:0",
@@ -1836,6 +1839,10 @@
           "about": {
             "description": "crwdns36732:0{{entity}}crwdne36732:0"
           },
+          "layout": {
+            "description": "crwdns36783:0{{entity}}crwdne36783:0",
+            "innovationFlowEditor": "crwdns36785:0crwdne36785:0"
+          },
           "context": {
             "description": "crwdns19618:0{{entity}}crwdne19618:0"
           },
@@ -2046,6 +2053,9 @@
           "preferences": {
             "subtitle": "crwdns19816:0$t(common.space)crwdne19816:0"
           }
+        },
+        "aria": {
+          "tabs": "crwdns36787:0$t(common.space)crwdne36787:0"
         },
         "community": {
           "preferences": {
@@ -2478,6 +2488,13 @@
         "errorBlockName": "crwdns20290:0crwdne20290:0"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "crwdns36789:0$t(common.dashboard)crwdne36789:0",
+          "community": "crwdns36791:0$t(common.community)crwdne36791:0",
+          "contribute": "crwdns36793:0$t(common.contribute)crwdne36793:0",
+          "knowledgeBase": "crwdns36795:0$t(common.knowledge-base)crwdne36795:0",
+          "subspaces": "crwdns36797:0$t(common.subspaces)crwdne36797:0"
+        },
         "dashboard": {
           "organization": "crwdns20292:0crwdne20292:0",
           "hostTooltip": "crwdns20294:0crwdne20294:0",
