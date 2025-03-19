@@ -9715,22 +9715,6 @@ export type CalloutPageCalloutQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          classification?:
-            | {
-                __typename?: 'Classification';
-                id: string;
-                flowState?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              }
-            | undefined;
         }
       | undefined;
   };
@@ -11698,22 +11682,6 @@ export type UpdateCalloutMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    classification?:
-      | {
-          __typename?: 'Classification';
-          id: string;
-          flowState?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -12011,22 +11979,6 @@ export type UpdateCalloutVisibilityMutation = {
       | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    classification?:
-      | {
-          __typename?: 'Classification';
-          id: string;
-          flowState?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        }
       | undefined;
   };
 };
@@ -12699,28 +12651,13 @@ export type CreateCalloutMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    classification?:
-      | {
-          __typename?: 'Classification';
-          id: string;
-          flowState?:
-            | {
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
 export type CalloutsOnCalloutsSetUsingClassificationQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID'];
   classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+  withClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutsOnCalloutsSetUsingClassificationQuery = {
@@ -12786,26 +12723,11 @@ export type CalloutFragment = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
-  classification?:
-    | {
-        __typename?: 'Classification';
-        id: string;
-        flowState?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      }
-    | undefined;
 };
 
 export type CalloutDetailsQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
+  withClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutDetailsQuery = {
@@ -13388,22 +13310,6 @@ export type CalloutDetailsFragment = {
     | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-  classification?:
-    | {
-        __typename?: 'Classification';
-        id: string;
-        flowState?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      }
     | undefined;
 };
 

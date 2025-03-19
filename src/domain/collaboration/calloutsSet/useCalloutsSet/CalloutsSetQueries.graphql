@@ -1,6 +1,7 @@
 query CalloutsOnCalloutsSetUsingClassification(
   $calloutsSetId: UUID!
-  $classificationTagsets: [TagsetArgs!] = []
+  $classificationTagsets: [TagsetArgs!] = [],
+  $withClassification: Boolean = true,
 ) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
@@ -11,11 +12,11 @@ query CalloutsOnCalloutsSetUsingClassification(
       }
       callouts(classificationTagsets: $classificationTagsets) {
         ...Callout
+        ...ClassificationDetails @include(if: $withClassification)
       }
     }
   }
 }
-
 
 fragment Callout on Callout {
   id
@@ -34,14 +35,14 @@ fragment Callout on Callout {
       displayName
     }
   }
-  ...ClassificationDetails
   visibility
 }
 
-query CalloutDetails($calloutId: UUID!) {
+query CalloutDetails($calloutId: UUID!, $withClassification: Boolean = true) {
   lookup {
     callout(ID: $calloutId) {
       ...CalloutDetails
+      ...ClassificationDetails @include(if: $withClassification)
     }
   }
 }
@@ -79,7 +80,6 @@ fragment CalloutDetails on Callout {
       ...WhiteboardDetails
     }
   }
-  ...ClassificationDetails
   contributionPolicy {
     state
   }

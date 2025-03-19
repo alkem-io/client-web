@@ -39,6 +39,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   movable: boolean;
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
+  classificationTagsets: ClassificationTagsetModel[];
 };
 
 export type TypedCalloutDetails = TypedCallout &
@@ -63,6 +64,7 @@ export type TypedCalloutDetails = TypedCallout &
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
     comments?: CommentsWithMessagesFragment | undefined;
+    classificationTagsets: ClassificationTagsetModel[];
   };
 
 interface UseCalloutsSetParams {
@@ -96,10 +98,14 @@ const useCalloutsSet = ({
 }: UseCalloutsSetParams): UseCalloutsSetProvided => {
   const { canCreateCallout, loading: authorizationLoading } = useCalloutsSetAuthorization({ calloutsSetId });
 
+  const withClassificationDetails = classificationTagsets.length > 0;
+
   const variables: CalloutsOnCalloutsSetUsingClassificationQueryVariables = {
     calloutsSetId: calloutsSetId!,
     classificationTagsets,
+    withClassification: withClassificationDetails,
   } as const;
+
   const {
     data: calloutsData,
     loading: calloutsLoading,
@@ -118,6 +124,7 @@ const useCalloutsSet = ({
     getCalloutDetails({
       variables: {
         calloutId,
+        withClassification: withClassificationDetails,
       },
     });
   };
@@ -144,6 +151,7 @@ const useCalloutsSet = ({
             movable,
             canSaveAsTemplate,
             entitledToSaveAsTemplate,
+            classificationTagsets,
           };
           return result;
         }),

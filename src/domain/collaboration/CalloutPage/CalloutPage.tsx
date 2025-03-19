@@ -94,6 +94,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       movable: false,
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
+      classificationTagsets: [],
     };
     return result;
   }, [callout, locationState]);
