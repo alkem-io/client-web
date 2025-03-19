@@ -32,7 +32,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
   const { loading: isLoadingChallenge, subspace } = useSubSpace();
   const { about } = subspace;
   const roleSetId = about.membership.roleSetID!;
-  const communityId = about.membership.communityID!;
+  const communityGuidelinesId = about.guidelines.id;
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -118,7 +118,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             />
           </PageContentBlockSeamless>
         </PageContentColumn>
-        <CommunityGuidelinesContainer communityGuidelinesId={communityId}>
+        <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
           {({
             communityGuidelines,
             profileId,
