@@ -254,6 +254,7 @@
     "create-new": "Maak nieuwe aan",
     "create-new-entity": "Maak nieuwe {{entity}} aan",
     "category": "Categorie",
+    "custom": "Custom",
     "date": "Datum",
     "description": "Omschrijving",
     "noDescription": "Geen omschrijving",
@@ -277,6 +278,7 @@
     "aspects": "Kaarten",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Layout",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -663,7 +665,8 @@
       "CONTRIBUTE": "Bijdragen",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Kennisbank"
+      "KNOWLEDGE": "Kennisbank",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -1836,6 +1839,10 @@
           "about": {
             "description": "Hier kun je het openbare profiel voor deze {{entity}} aanpassen. Deze informatie is ook zichtbaar voor niet-leden."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Hier kan je de context aanpassen voor deze {{entity}}."
           },
@@ -2046,6 +2053,9 @@
           "preferences": {
             "subtitle": "Hier kan je de $t(common.space) authorisatie voorkeuren aanpassen"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2478,6 +2488,13 @@
         "errorBlockName": "de vragen"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Gehost door",
           "hostTooltip": "De host is de organisatie die verantwoordelijk is voor het aanmaken van de Space.",
