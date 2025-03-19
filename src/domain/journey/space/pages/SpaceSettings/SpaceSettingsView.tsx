@@ -1,11 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import useNavigate from '@/core/routing/useNavigate';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
-  refetchAdminSpaceSubspacesPageQuery,
-  refetchSpaceDashboardNavigationSubspacesQuery,
-  refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
@@ -71,7 +67,6 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const notify = useNotification();
-  const navigate = useNavigate();
 
   let isSubspace = spaceLevel !== SpaceLevel.L0;
 
@@ -91,21 +86,9 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const closeDialog = () => setOpenDeleteDialog(false);
 
   const [deleteSpace] = useDeleteSpaceMutation({
-    refetchQueries: [
-      refetchSubspacesInSpaceQuery({
-        spaceId,
-      }),
-      refetchAdminSpaceSubspacesPageQuery({
-        spaceId,
-      }),
-      refetchSpaceDashboardNavigationSubspacesQuery({
-        spaceId,
-      }),
-    ],
-    awaitRefetchQueries: true,
     onCompleted: () => {
       notify(t('pages.admin.space.notifications.space-removed'), 'success');
-      navigate(levelZeroSpaceUrl, { replace: true });
+      window.location.replace(levelZeroSpaceUrl);
     },
   });
 
