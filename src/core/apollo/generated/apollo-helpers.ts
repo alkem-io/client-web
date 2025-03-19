@@ -952,7 +952,6 @@ export type CommunityKeySpecifier = (
   | 'createdDate'
   | 'group'
   | 'groups'
-  | 'guidelines'
   | 'id'
   | 'roleSet'
   | 'updatedDate'
@@ -964,7 +963,6 @@ export type CommunityFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
-  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3351,6 +3349,7 @@ export type SpaceFieldPolicy = {
 export type SpaceAboutKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'guidelines'
   | 'id'
   | 'isContentPublic'
   | 'membership'
@@ -3365,6 +3364,7 @@ export type SpaceAboutKeySpecifier = (
 export type SpaceAboutFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContentPublic?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3377,7 +3377,6 @@ export type SpaceAboutFieldPolicy = {
 };
 export type SpaceAboutMembershipKeySpecifier = (
   | 'applicationForm'
-  | 'communityGuidelines'
   | 'communityID'
   | 'leadOrganizations'
   | 'leadUsers'
@@ -3388,7 +3387,6 @@ export type SpaceAboutMembershipKeySpecifier = (
 )[];
 export type SpaceAboutMembershipFieldPolicy = {
   applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
   leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -71,6 +71,7 @@ const SpaceCommunityPage = () => {
   const spaceData = dataCommunityPage?.lookup.space;
   const membership = spaceData?.about.membership;
   const communityId = membership?.communityID;
+  const communityGuidelinesId = dataCommunityPage?.lookup.space?.about.guidelines.id;
 
   const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
     roleSetId: membership?.roleSetID,
@@ -113,7 +114,7 @@ const SpaceCommunityPage = () => {
     [spaceData?.about.provider]
   );
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(spaceData?.about.membership.communityID);
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const hasReadPrivilege = spaceData?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   let virtualContributors: VirtualContributorProps[] = [];
@@ -171,7 +172,7 @@ const SpaceCommunityPage = () => {
             />
           )}
           <CommunityGuidelinesBlock
-            communityId={communityId}
+            communityGuidelinesId={communityGuidelinesId}
             spaceUrl={dataCommunityPage?.lookup.space?.about.profile.url}
           />
         </InfoColumn>

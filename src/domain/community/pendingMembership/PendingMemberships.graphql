@@ -1,4 +1,4 @@
-query PendingMembershipsSpace($spaceId: UUID!, $fetchCommunityGuidelines: Boolean! = false) {
+query PendingMembershipsSpace($spaceId: UUID!, $includeCommunityGuidelines: Boolean! = false) {
   lookup {
     space(ID: $spaceId) {
       id
@@ -9,10 +9,7 @@ query PendingMembershipsSpace($spaceId: UUID!, $fetchCommunityGuidelines: Boolea
             ...VisualUri
           }
         }
-      }
-      community @include(if: $fetchCommunityGuidelines) {
-        id
-        guidelines {
+        guidelines @include(if: $includeCommunityGuidelines) {
           ...CommunityGuidelinesSummary
         }
       }

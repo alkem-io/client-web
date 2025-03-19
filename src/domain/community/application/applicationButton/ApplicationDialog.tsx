@@ -54,7 +54,7 @@ const ApplicationDialog = ({
   const applicationForm = spaceAbout?.membership.applicationForm;
   const questions = applicationForm?.questions ?? [];
   const roleSetId = spaceAbout?.membership.roleSetID;
-  const communityGuidelines = spaceAbout?.membership?.communityGuidelines.profile;
+  const communityGuidelines = spaceAbout?.guidelines.profile;
 
   const { applyForEntryRoleOnRoleSet, isApplying } = useRoleSetApplicationsAndInvitations({});
 
