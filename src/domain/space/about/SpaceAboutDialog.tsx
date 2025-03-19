@@ -75,7 +75,7 @@ const SpaceAboutDialog = ({
   const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
 
   const aboutProfile = about?.profile;
-  const communityId = about?.membership.communityID;
+  const communityGuidelinesId = about?.guidelines.id;
 
   const openEditDialog = () => {
     if (aboutProfile?.url) {
@@ -249,7 +249,9 @@ const SpaceAboutDialog = ({
               </PageContentBlock>
             )}
 
-            {communityId && <CommunityGuidelinesBlock communityId={communityId} spaceUrl={aboutProfile?.url} />}
+            {communityGuidelinesId && (
+              <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={aboutProfile?.url} />
+            )}
 
             {hasReferences && (
               <PageContentBlock>

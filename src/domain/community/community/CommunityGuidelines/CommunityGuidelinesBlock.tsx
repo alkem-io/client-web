@@ -26,37 +26,36 @@ const CommunityGuidelinesSkeleton = () => {
 };
 
 export interface CommunityGuidelinesBlockProps {
-  communityId: string | undefined;
+  communityGuidelinesId: string | undefined;
   spaceUrl: string | undefined;
 }
 
-const CommunityGuidelinesBlock = ({ communityId, spaceUrl: journeyUrl }: CommunityGuidelinesBlockProps) => {
+const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl }: CommunityGuidelinesBlockProps) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
-    variables: { communityId: communityId! },
-    skip: !communityId,
+    variables: { communityGuidelinesId: communityGuidelinesId! },
+    skip: !communityGuidelinesId,
   });
 
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
-
-  const communityGuidelinesReferences = data?.lookup.community?.guidelines.profile.references;
-  const communityGuidelinesDescription = data?.lookup.community?.guidelines.profile.description;
+  const communityGuidelines = data?.lookup.communityGuidelines;
+  const communityGuidelinesReferences = communityGuidelines?.profile.references;
+  const communityGuidelinesDescription = communityGuidelines?.profile.description;
 
   const { t } = useTranslation();
 
-  const hasGuidelines = Boolean(data?.lookup.community?.guidelines.profile.description);
+  const hasGuidelines = Boolean(communityGuidelines?.profile.description);
   const isReadMoreVisible =
     Number(communityGuidelinesDescription?.length) > 0 || Number(communityGuidelinesReferences?.length) > 0;
   const showGuidelines =
-    hasGuidelines ||
-    data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
+    hasGuidelines || communityGuidelines?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
 
   return showGuidelines ? (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title={data?.lookup?.community?.guidelines?.profile.displayName} />
+        <PageContentBlockHeader title={communityGuidelines?.profile.displayName} />
         {isReadMoreVisible ? (
           <>
             <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -65,7 +64,7 @@ const CommunityGuidelinesBlock = ({ communityId, spaceUrl: journeyUrl }: Communi
                 <OverflowGradient maxHeight={gutters(6)}>
                   <Box sx={{ wordWrap: 'break-word' }}>
                     <WrapperMarkdown disableParagraphPadding>
-                      {data?.lookup?.community?.guidelines?.profile.description ?? ''}
+                      {communityGuidelines?.profile.description ?? ''}
                     </WrapperMarkdown>
                   </Box>
                 </OverflowGradient>
@@ -86,7 +85,7 @@ const CommunityGuidelinesBlock = ({ communityId, spaceUrl: journeyUrl }: Communi
       <CommunityGuidelinesInfoDialog
         open={isCommunityGuidelinesInfoDialogOpen}
         onClose={closeDialog}
-        guidelines={data?.lookup.community?.guidelines?.profile}
+        guidelines={communityGuidelines?.profile}
       />
     </>
   ) : (

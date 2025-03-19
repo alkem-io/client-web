@@ -19,6 +19,9 @@ query SpaceCommunityPage($spaceId: UUID!) {
         provider {
           ...ContributorDetails
         }
+        guidelines {
+          id
+        }
       }
       collaboration {
         id

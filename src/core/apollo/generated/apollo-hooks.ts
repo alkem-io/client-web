@@ -1791,6 +1791,9 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         country
       }
     }
+    guidelines {
+      id
+    }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -10233,9 +10236,9 @@ export const ApplicationDialogDocument = gql`
                 maxLength
               }
             }
-            communityGuidelines {
-              ...CommunityGuidelinesDetails
-            }
+          }
+          guidelines {
+            ...CommunityGuidelinesDetails
           }
         }
       }
@@ -10476,13 +10479,10 @@ export type UpdateApplicationFormOnRoleSetMutationOptions = Apollo.BaseMutationO
   SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
 >;
 export const CommunityGuidelinesDocument = gql`
-  query CommunityGuidelines($communityId: UUID!) {
+  query CommunityGuidelines($communityGuidelinesId: UUID!) {
     lookup {
-      community(ID: $communityId) {
-        id
-        guidelines {
-          ...CommunityGuidelinesDetails
-        }
+      communityGuidelines(ID: $communityGuidelinesId) {
+        ...CommunityGuidelinesDetails
       }
     }
   }
@@ -10501,7 +10501,7 @@ export const CommunityGuidelinesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityGuidelinesQuery({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      communityGuidelinesId: // value for 'communityGuidelinesId'
  *   },
  * });
  */
@@ -11902,7 +11902,7 @@ export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.Pend
 }
 
 export const PendingMembershipsSpaceDocument = gql`
-  query PendingMembershipsSpace($spaceId: UUID!, $fetchCommunityGuidelines: Boolean! = false) {
+  query PendingMembershipsSpace($spaceId: UUID!, $includeCommunityGuidelines: Boolean! = false) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -11913,10 +11913,7 @@ export const PendingMembershipsSpaceDocument = gql`
               ...VisualUri
             }
           }
-        }
-        community @include(if: $fetchCommunityGuidelines) {
-          id
-          guidelines {
+          guidelines @include(if: $includeCommunityGuidelines) {
             ...CommunityGuidelinesSummary
           }
         }
@@ -11941,7 +11938,7 @@ export const PendingMembershipsSpaceDocument = gql`
  * const { data, loading, error } = usePendingMembershipsSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
+ *      includeCommunityGuidelines: // value for 'includeCommunityGuidelines'
  *   },
  * });
  */
@@ -17745,6 +17742,9 @@ export const SpaceCommunityPageDocument = gql`
           }
           provider {
             ...ContributorDetails
+          }
+          guidelines {
+            id
           }
         }
         collaboration {
