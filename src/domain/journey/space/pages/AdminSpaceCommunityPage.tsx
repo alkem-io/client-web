@@ -40,7 +40,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   const spaceId = space.id;
   const { about } = space;
   const { membership } = about;
-  const communityId = membership?.communityID!;
   const roleSetId = membership?.roleSetID!;
 
   const {
@@ -53,6 +52,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    communityGuidelinesId,
     spaceEntitlements,
     onApplicationStateChange,
     onInvitationStateChange,
@@ -156,7 +156,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
 
-        <CommunityGuidelinesContainer communityGuidelinesId={communityId}>
+        <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
           {({
             communityGuidelines,
             profileId,
