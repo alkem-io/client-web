@@ -1420,28 +1420,24 @@ export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ISearchCategoryResultKeySpecifier = ('cursor' | 'results' | 'total' | ISearchCategoryResultKeySpecifier)[];
+export type ISearchCategoryResultFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ISearchResultsKeySpecifier = (
   | 'calloutResults'
-  | 'calloutResultsCount'
   | 'contributionResults'
-  | 'contributionResultsCount'
   | 'contributorResults'
-  | 'contributorResultsCount'
-  | 'groupResults'
-  | 'journeyResults'
-  | 'journeyResultsCount'
+  | 'spaceResults'
   | ISearchResultsKeySpecifier
 )[];
 export type ISearchResultsFieldPolicy = {
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  calloutResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  groupResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationKeySpecifier = (
   | 'category'
@@ -3283,21 +3279,6 @@ export type SearchResultUserFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchResultUserGroupKeySpecifier = (
-  | 'id'
-  | 'score'
-  | 'terms'
-  | 'type'
-  | 'userGroup'
-  | SearchResultUserGroupKeySpecifier
-)[];
-export type SearchResultUserGroupFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  terms?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3523,6 +3504,7 @@ export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
   | 'forumDiscussionUpdated'
+  | 'inAppNotificationReceived'
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
@@ -3533,6 +3515,7 @@ export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+  inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4558,6 +4541,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);
     fields?: GroupableFieldPolicy;
   };
+  ISearchCategoryResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ISearchCategoryResultKeySpecifier | (() => undefined | ISearchCategoryResultKeySpecifier);
+    fields?: ISearchCategoryResultFieldPolicy;
+  };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
@@ -4926,10 +4913,6 @@ export type StrictTypedTypePolicies = {
   SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
     fields?: SearchResultUserFieldPolicy;
-  };
-  SearchResultUserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultUserGroupKeySpecifier | (() => undefined | SearchResultUserGroupKeySpecifier);
-    fields?: SearchResultUserGroupFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);

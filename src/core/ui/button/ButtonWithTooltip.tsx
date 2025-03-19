@@ -5,14 +5,16 @@ import { ButtonTypeMap } from '@mui/material/Button/Button';
 import { Caption } from '../typography';
 
 interface ButtonWithTooltipProps {
-  tooltip: string;
+  tooltip?: string;
   iconButton?: boolean;
+  startIcon?: React.ReactNode;
   tooltipPlacement?: TooltipProps['placement'];
 }
 
 const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
   tooltip,
   iconButton,
+  startIcon,
   tooltipPlacement,
   sx,
   children,
@@ -46,6 +48,14 @@ const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultC
     '.MuiButton-startIcon': { margin: 0 },
   };
 
+  if (!tooltip) {
+    return (
+      <Button {...props} sx={buttonStyle} startIcon={(iconButton && children) || startIcon}>
+        {!iconButton && children}
+      </Button>
+    );
+  }
+
   return (
     <Tooltip
       arrow
@@ -54,7 +64,7 @@ const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultC
       placement={tooltipPlacement}
     >
       <Box>
-        <Button aria-label={tooltip} {...props} sx={buttonStyle} startIcon={iconButton && children}>
+        <Button aria-label={tooltip} {...props} sx={buttonStyle} startIcon={(iconButton && children) || startIcon}>
           {!iconButton && children}
         </Button>
       </Box>

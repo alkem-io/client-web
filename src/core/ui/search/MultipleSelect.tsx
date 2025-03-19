@@ -3,6 +3,7 @@ import Box, { BoxProps } from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import {
+  useCallback,
   ChangeEventHandler,
   KeyboardEventHandler,
   PropsWithChildren,
@@ -114,11 +115,11 @@ const MultipleSelect = ({
   };
 
   useEffect(() => {
-    if (value.length > MAX_TERMS_SEARCH) {
+    if (value.length > MAX_TERMS_SEARCH && !isTooltipShown) {
       setTooltipShown(true);
       setTimeout(() => setTooltipShown(false), 5000);
     }
-  }, [value.length]);
+  }, [value.length, isTooltipShown]);
 
   const handleSelect = (term: string): void => {
     if (checkMaxTermsReached()) return;
@@ -142,21 +143,24 @@ const MultipleSelect = ({
     setShrink(false);
   };
 
-  const handleSearch = (textInput?: string) => {
-    if (onSearchClick) {
-      const terms = [...value];
-      if (textInput && textInput.trim().length > 0) {
-        terms.push(textInput.trim());
+  const handleSearch = useCallback(
+    (textInput?: string) => {
+      if (!textInput || textInput.trim().length === 0) {
+        return;
       }
-      onSearchClick(terms);
-    }
 
-    if (!textInput || textInput.trim().length === 0) {
-      return;
-    }
+      if (onSearchClick) {
+        const terms = [...value];
+        if (textInput && textInput.trim().length > 0) {
+          terms.push(textInput.trim());
+        }
+        onSearchClick(terms);
+      }
 
-    return handleSelect(textInput);
-  };
+      return handleSelect(textInput);
+    },
+    [value, handleSelect, onSearchClick]
+  );
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = event => {
     if (textInput.length < minLength) {

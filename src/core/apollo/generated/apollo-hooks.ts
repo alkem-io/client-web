@@ -2605,6 +2605,27 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const InAppNotificationAllTypesFragmentDoc = gql`
+  fragment InAppNotificationAllTypes on InAppNotification {
+    id
+    type
+    category
+    state
+    triggeredAt
+    ... on InAppNotificationCalloutPublished {
+      ...InAppNotificationCalloutPublished
+    }
+    ... on InAppNotificationCommunityNewMember {
+      ...InAppNotificationCommunityNewMember
+    }
+    ... on InAppNotificationUserMentioned {
+      ...InAppNotificationUserMentioned
+    }
+  }
+  ${InAppNotificationCalloutPublishedFragmentDoc}
+  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -10353,6 +10374,7 @@ export const CommunityProviderDetailsDocument = gql`
   query CommunityProviderDetails($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
+        id
         provider {
           ...RoleSetMemberOrganization
         }
@@ -10412,6 +10434,69 @@ export type CommunityProviderDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityProviderDetailsQuery(variables: SchemaTypes.CommunityProviderDetailsQueryVariables) {
   return { query: CommunityProviderDetailsDocument, variables: variables };
+}
+
+export const SpaceEntitlementsDocument = gql`
+  query SpaceEntitlements($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        license {
+          id
+          availableEntitlements
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceEntitlementsQuery__
+ *
+ * To run a query within a React component, call `useSpaceEntitlementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceEntitlementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceEntitlementsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceEntitlementsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceEntitlementsQuery, SchemaTypes.SpaceEntitlementsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceEntitlementsQuery, SchemaTypes.SpaceEntitlementsQueryVariables>(
+    SpaceEntitlementsDocument,
+    options
+  );
+}
+
+export function useSpaceEntitlementsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceEntitlementsQuery,
+    SchemaTypes.SpaceEntitlementsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceEntitlementsQuery, SchemaTypes.SpaceEntitlementsQueryVariables>(
+    SpaceEntitlementsDocument,
+    options
+  );
+}
+
+export type SpaceEntitlementsQueryHookResult = ReturnType<typeof useSpaceEntitlementsQuery>;
+export type SpaceEntitlementsLazyQueryHookResult = ReturnType<typeof useSpaceEntitlementsLazyQuery>;
+export type SpaceEntitlementsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceEntitlementsQuery,
+  SchemaTypes.SpaceEntitlementsQueryVariables
+>;
+export function refetchSpaceEntitlementsQuery(variables: SchemaTypes.SpaceEntitlementsQueryVariables) {
+  return { query: SpaceEntitlementsDocument, variables: variables };
 }
 
 export const RoleSetApplicationFormDocument = gql`
@@ -12117,11 +12202,12 @@ export const SpaceContributionDetailsDocument = gql`
             url
             displayName
             tagline
-            visuals {
+            cardBanner: visual(type: CARD) {
               ...VisualUri
             }
             tagset {
-              ...TagsetDetails
+              id
+              tags
             }
           }
         }
@@ -12135,7 +12221,6 @@ export const SpaceContributionDetailsDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -14810,6 +14895,10 @@ export const SpaceCommunityPageDocument = gql`
         authorization {
           id
           myPrivileges
+        }
+        license {
+          id
+          availableEntitlements
         }
         about {
           ...SpaceAboutLight
@@ -17552,7 +17641,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 >;
 export const AdminSpacesListDocument = gql`
   query adminSpacesList {
-    spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...AdminSpace
     }
   }
@@ -21339,6 +21428,50 @@ export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.Guidance
   return { query: GuidanceRoomMessagesDocument, variables: variables };
 }
 
+export const InAppNotificationReceivedDocument = gql`
+  subscription InAppNotificationReceived {
+    inAppNotificationReceived {
+      ... on InAppNotification {
+        ...InAppNotificationAllTypes
+      }
+    }
+  }
+  ${InAppNotificationAllTypesFragmentDoc}
+`;
+
+/**
+ * __useInAppNotificationReceivedSubscription__
+ *
+ * To run a query within a React component, call `useInAppNotificationReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationReceivedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInAppNotificationReceivedSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.InAppNotificationReceivedSubscription,
+    SchemaTypes.InAppNotificationReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.InAppNotificationReceivedSubscription,
+    SchemaTypes.InAppNotificationReceivedSubscriptionVariables
+  >(InAppNotificationReceivedDocument, options);
+}
+
+export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
+  typeof useInAppNotificationReceivedSubscription
+>;
+export type InAppNotificationReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
   query InAppNotifications {
     notifications {
@@ -21637,56 +21770,59 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultSpace {
+      spaceResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
           ...SearchResultSpace
         }
+        total
       }
-      journeyResultsCount
       calloutResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultCallout {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
           ...SearchResultCallout
         }
+        total
       }
-      calloutResultsCount
-      contributorResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultUser {
-          ...SearchResultUser
+      contributionResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultPost
+          ...SearchResultCallout
         }
-        ... on SearchResultOrganization {
+        total
+      }
+      contributorResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultUser
           ...SearchResultOrganization
         }
+        total
       }
-      contributorResultsCount
-      contributionResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultPost {
-          ...SearchResultPost
-        }
-      }
-      contributionResultsCount
     }
   }
   ${SearchResultSpaceFragmentDoc}
   ${SearchResultCalloutFragmentDoc}
+  ${SearchResultPostFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
-  ${SearchResultPostFragmentDoc}
 `;
 
 /**
@@ -22137,12 +22273,15 @@ export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.Das
 export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
-        id
-        type
-        ... on SearchResultSpace {
+      spaceResults {
+        cursor
+        results {
+          score
+          terms
+          type
           ...ExploreSpacesSearch
         }
+        total
       }
     }
   }
@@ -23194,13 +23333,15 @@ export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.Challe
 export const SpaceExplorerSearchDocument = gql`
   query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      journeyResults {
-        id
-        type
-        terms
-        ... on SearchResultSpace {
+      spaceResults {
+        cursor
+        results {
+          score
+          terms
+          type
           ...SpaceExplorerSearchSpace
         }
+        total
       }
     }
   }

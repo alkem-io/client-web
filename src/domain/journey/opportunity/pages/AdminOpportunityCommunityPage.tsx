@@ -9,13 +9,13 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSubSpace } from '../../subspace/hooks/useSubSpace';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { spaceId, parentSpaceId } = useUrlResolver();
   const { loading: isLoadingChallenge, roleSetId } = useSubSpace();
-  const { spaceId } = useSpace();
 
   const {
     users,
@@ -36,10 +36,16 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     onRemoveVirtualContributor,
     getAvailableUsers,
     getAvailableOrganizations,
-    getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
   } = useCommunityAdmin({ spaceId, roleSetId, spaceLevel: SpaceLevel.L2 });
+
+  // get the VC filtered on the parent
+  const { getAvailableVirtualContributors } = useCommunityAdmin({
+    roleSetId,
+    spaceId: parentSpaceId,
+    spaceLevel: SpaceLevel.L2,
+  });
 
   if (!spaceId || isLoadingChallenge) {
     return null;

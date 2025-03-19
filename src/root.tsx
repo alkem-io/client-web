@@ -25,6 +25,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
+import { InAppNotificationSubscriber } from './main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 import { UrlResolverProvider } from './main/routing/urlResolver/UrlResolverProvider';
 
@@ -86,6 +87,7 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
+                                    <InAppNotificationSubscriber />
                                     <ApmUserSetter />
                                     <ScrollToTop />
                                     <InAppNotificationsDialog />
