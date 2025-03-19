@@ -254,6 +254,7 @@
     "create-new": "Créer nouveau",
     "create-new-entity": "Créer un nouveau {{entity}}",
     "category": "Category",
+    "custom": "Custom",
     "date": "Date",
     "description": "Description",
     "noDescription": "No description",
@@ -277,6 +278,7 @@
     "aspects": "Cartes",
     "prompt": "Prompt",
     "host": "Hôte",
+    "layout": "Layout",
     "lead": "Référent",
     "space": "Espace",
     "spaces": "Espaces",
@@ -663,7 +665,8 @@
       "CONTRIBUTE": "Contribute",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Base de connaissances"
+      "KNOWLEDGE": "Base de connaissances",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -1836,6 +1839,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Ici, vous pouvez modifier le profil pour cette {{entity}}."
           },
@@ -2046,6 +2053,9 @@
           "preferences": {
             "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.space)"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2478,6 +2488,13 @@
         "errorBlockName": "les questions"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Facilitating organization",
           "hostTooltip": "L'hôte est l'organisation responsable de la création de l'espace.",
