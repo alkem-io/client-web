@@ -254,6 +254,7 @@
     "create-new": "Criar novo",
     "create-new-entity": "Criar novo {{entity}}",
     "category": "Category",
+    "custom": "Custom",
     "date": "Data",
     "description": "Descrição",
     "noDescription": "No description",
@@ -277,6 +278,7 @@
     "aspects": "Cartões",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Layout",
     "lead": "Lead",
     "space": "Espaço",
     "spaces": "Espaços",
@@ -663,7 +665,8 @@
       "CONTRIBUTE": "Contribute",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Base de Conhecimento"
+      "KNOWLEDGE": "Base de Conhecimento",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -1836,6 +1839,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Aqui você pode editar o contexto para este {{entity}}."
           },
@@ -2046,6 +2053,9 @@
           "preferences": {
             "subtitle": "Esta seção te permite modificar as preferências de autorização do $t(common.space)"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2478,6 +2488,13 @@
         "errorBlockName": "as questões"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Hospedado por",
           "hostTooltip": "O host é a organização responsável pela criação do Espaço.",
