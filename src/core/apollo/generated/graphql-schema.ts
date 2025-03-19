@@ -8475,6 +8475,15 @@ export type AvailableVirtualContributorsInLibraryQuery = {
           location?:
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
         };
         aiPersona?:
           | {
@@ -8531,6 +8540,15 @@ export type AvailableVirtualContributorsQuery = {
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
                 };
                 aiPersona?:
                   | {
@@ -8569,6 +8587,15 @@ export type AvailableVirtualContributorsQuery = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
+                references?:
+                  | Array<{
+                      __typename?: 'Reference';
+                      id: string;
+                      name: string;
+                      uri: string;
+                      description?: string | undefined;
+                    }>
+                  | undefined;
               };
               aiPersona?:
                 | {
@@ -8606,6 +8633,9 @@ export type AvailableVirtualContributorsQuery = {
       location?:
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
     };
     aiPersona?:
       | {
@@ -8640,6 +8670,9 @@ export type VirtualContributorFullFragment = {
       | undefined;
     location?:
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
   };
   aiPersona?:

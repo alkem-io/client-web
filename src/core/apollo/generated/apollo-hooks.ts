@@ -165,6 +165,14 @@ export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
   }
   ${AvailableUserForRoleSetFragmentDoc}
 `;
+export const ReferenceDetailsFragmentDoc = gql`
+  fragment ReferenceDetails on Reference {
+    id
+    name
+    uri
+    description
+  }
+`;
 export const VirtualContributorFullFragmentDoc = gql`
   fragment VirtualContributorFull on VirtualContributor {
     id
@@ -184,6 +192,9 @@ export const VirtualContributorFullFragmentDoc = gql`
         country
       }
       url
+      references {
+        ...ReferenceDetails
+      }
     }
     aiPersona {
       bodyOfKnowledge
@@ -193,6 +204,7 @@ export const VirtualContributorFullFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
 `;
 export const RoleDefinitionPolicyFragmentDoc = gql`
   fragment RoleDefinitionPolicy on Role {
@@ -668,14 +680,6 @@ export const CalloutFragmentDoc = gql`
     visibility
   }
   ${TagsetDetailsFragmentDoc}
-`;
-export const ReferenceDetailsFragmentDoc = gql`
-  fragment ReferenceDetails on Reference {
-    id
-    name
-    uri
-    description
-  }
 `;
 export const WhiteboardProfileFragmentDoc = gql`
   fragment WhiteboardProfile on Profile {
