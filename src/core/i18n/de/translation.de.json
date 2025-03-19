@@ -254,6 +254,7 @@
     "create-new": "Neu erstellen",
     "create-new-entity": "Neue Datensätze erstellen",
     "category": "Category",
+    "custom": "Custom",
     "date": "Datum",
     "description": "Beschreibung",
     "noDescription": "No description",
@@ -277,6 +278,7 @@
     "aspects": "Karten",
     "prompt": "Prompt",
     "host": "Selbst hosten",
+    "layout": "Layout",
     "lead": "Blei",
     "space": "Leertaste",
     "spaces": "Leertaste",
@@ -663,7 +665,8 @@
       "CONTRIBUTE": "Contribute",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Wissensdatenbank"
+      "KNOWLEDGE": "Wissensdatenbank",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -1836,6 +1839,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Hier können Sie das Profil für diese {{entity}} bearbeiten."
           },
@@ -2046,6 +2053,9 @@
           "preferences": {
             "subtitle": "In diesem Abschnitt können Sie die Autorisierungseinstellungen $t(common.space) ändern"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2478,6 +2488,13 @@
         "errorBlockName": "die Frage"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Facilitating organization",
           "hostTooltip": "Die Person oder Organisation, die die Story geschrieben hat",
