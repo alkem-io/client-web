@@ -151,7 +151,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
 
-        <CommunityGuidelinesContainer communityId={communityId}>
+        <CommunityGuidelinesContainer communityGuidelinesId={communityId}>
           {({
             communityGuidelines,
             profileId,

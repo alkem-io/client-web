@@ -79,7 +79,7 @@ const WhiteboardDialogFooter = ({
       case SpaceLevel.L0:
         return spaceAbout.membership?.myMembershipStatus;
       default:
-        return subspaceAbout.membership.myMembershipStatus;
+        return subspaceAbout.membership?.myMembershipStatus;
     }
   };
 

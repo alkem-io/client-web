@@ -118,7 +118,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             />
           </PageContentBlockSeamless>
         </PageContentColumn>
-        <CommunityGuidelinesContainer communityId={communityId}>
+        <CommunityGuidelinesContainer communityGuidelinesId={communityId}>
           {({
             communityGuidelines,
             profileId,

@@ -1356,8 +1356,6 @@ export type Community = Groupable & {
   group: UserGroup;
   /** Groups of users related to a Community. */
   groups: Array<UserGroup>;
-  /** The guidelines for members of this Community. */
-  guidelines: CommunityGuidelines;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The RoleSet for this Community. */
@@ -5959,6 +5957,8 @@ export type SpaceAbout = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
+  /** The guidelines for members of this Community. */
+  guidelines: CommunityGuidelines;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Is the content of this Space visible to non-Members?. */
@@ -5983,8 +5983,6 @@ export type SpaceAboutMembership = {
   __typename?: 'SpaceAboutMembership';
   /** The Form used for Applications to this Space. */
   applicationForm: Form;
-  /** The Form used for Applications to this Space. */
-  communityGuidelines: CommunityGuidelines;
   /** The identifier of the Community within the Space. */
   communityID: Scalars['UUID'];
   /** The Lead Organizations that are associated with this Space. */
@@ -16254,32 +16252,28 @@ export type ApplicationDialogQuery = {
                   maxLength: number;
                 }>;
               };
-              communityGuidelines: {
-                __typename?: 'CommunityGuidelines';
+            };
+            guidelines: {
+              __typename?: 'CommunityGuidelines';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  references?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
-                        description?: string | undefined;
-                      }>
-                    | undefined;
-                };
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
+                displayName: string;
+                description?: string | undefined;
+                references?:
+                  | Array<{
+                      __typename?: 'Reference';
                       id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
+                      name: string;
+                      uri: string;
+                      description?: string | undefined;
+                    }>
                   | undefined;
               };
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
             };
             profile: {
               __typename?: 'Profile';
@@ -16349,39 +16343,35 @@ export type UpdateApplicationFormOnRoleSetMutation = {
 };
 
 export type CommunityGuidelinesQueryVariables = Exact<{
-  communityId: Scalars['UUID'];
+  communityGuidelinesId: Scalars['UUID'];
 }>;
 
 export type CommunityGuidelinesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    community?:
+    communityGuidelines?:
       | {
-          __typename?: 'Community';
+          __typename?: 'CommunityGuidelines';
           id: string;
-          guidelines: {
-            __typename?: 'CommunityGuidelines';
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
-            };
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            displayName: string;
+            description?: string | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
@@ -17401,7 +17391,7 @@ export type PendingInvitationsCountQuery = {
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
-  fetchCommunityGuidelines?: Scalars['Boolean'];
+  includeCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsSpaceQuery = {
@@ -17425,11 +17415,7 @@ export type PendingMembershipsSpaceQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
-          };
-          community?: {
-            __typename?: 'Community';
-            id: string;
-            guidelines: {
+            guidelines?: {
               __typename?: 'CommunityGuidelines';
               id: string;
               profile: {
@@ -19924,6 +19910,7 @@ export type UpdateSpaceMutation = {
           | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
           | undefined;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
   };
 };
@@ -20155,6 +20142,7 @@ export type SpaceInfoFragment = {
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
     };
+    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
 };
 
@@ -22052,6 +22040,7 @@ export type SpaceAboutDetailsQuery = {
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22306,6 +22295,7 @@ export type SpaceAboutFullQuery = {
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22566,6 +22556,7 @@ export type SpaceAboutDetailsFragment = {
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
       | undefined;
   };
+  guidelines: { __typename?: 'CommunityGuidelines'; id: string };
 };
 
 export type SpaceAboutLightFragment = {
@@ -22860,6 +22851,7 @@ export type SpaceCommunityPageQuery = {
                       | undefined;
                   };
                 };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -23175,6 +23167,7 @@ export type SpacePageQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -23530,6 +23523,7 @@ export type SpacePageFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }

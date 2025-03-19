@@ -50,6 +50,9 @@ const defaultValue: SubspaceContextProps = {
         leadOrganizations: [],
       },
       isContentPublic: true,
+      guidelines: {
+        id: '',
+      },
     },
   },
   permissions: {
@@ -117,6 +120,9 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         leadUsers: subspaceData?.about.membership.leadUsers ?? [],
         communityID: subspaceData?.about.membership.communityID,
         roleSetID: subspaceData?.about.membership.roleSetID,
+      },
+      guidelines: {
+        id: subspaceData?.about.guidelines.id ?? '',
       },
     };
 

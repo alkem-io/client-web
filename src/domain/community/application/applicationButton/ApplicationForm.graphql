@@ -18,9 +18,9 @@ query ApplicationDialog($spaceId: UUID!) {
               maxLength
             }
           }
-          communityGuidelines {
-            ...CommunityGuidelinesDetails
-          }
+        }
+        guidelines {
+          ...CommunityGuidelinesDetails
         }
       }
     }

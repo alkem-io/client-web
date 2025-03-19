@@ -87,4 +87,7 @@ fragment SpaceAboutDetails on SpaceAbout {
       country
     }
   }
+  guidelines {
+    id
+  }
 }

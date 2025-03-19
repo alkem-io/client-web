@@ -73,7 +73,7 @@ export const InvitationHydrator = ({
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: invitation.spacePendingMembershipInfo.id,
-      fetchCommunityGuidelines: withCommunityGuidelines,
+      includeCommunityGuidelines: withCommunityGuidelines,
     },
   });
 
@@ -107,7 +107,7 @@ export const InvitationHydrator = ({
     };
   }, [invitation, journey, createdBy]);
 
-  const communityGuidelines = journey?.community?.guidelines;
+  const communityGuidelines = journey?.about.guidelines;
 
   return <>{children({ invitation: hydratedInvitation, communityGuidelines })}</>;
 };

@@ -34,6 +34,9 @@ export type SpaceAboutFullModel = {
     leadUsers?: ContributorModel[];
     leadOrganizations?: ContributorModel[];
   };
+  guidelines: {
+    id: string;
+  };
   metrics?: {
     name: string;
     value: string;
