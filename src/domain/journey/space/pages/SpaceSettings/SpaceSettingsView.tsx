@@ -1,13 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import useNavigate from '@/core/routing/useNavigate';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
-  refetchAdminSpaceSubspacesPageQuery,
-  refetchSpaceDashboardNavigationSubspacesQuery,
-  refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
-  useSpaceHostQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useSpaceTemplatesManagerQuery,
@@ -37,7 +32,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import Gutters from '@/core/ui/grid/Gutters';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
@@ -72,17 +67,14 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const notify = useNotification();
-  const navigate = useNavigate();
 
   let isSubspace = spaceLevel !== SpaceLevel.L0;
 
-  const { subspaceId } = useSubSpace();
-  const {
-    spaceId,
-    about: {
-      profile: { url: levelZeroSpaceUrl },
-    },
-  } = useSpace();
+  const { subspace } = useSubSpace();
+  const subspaceId = subspace.id;
+  const { space } = useSpace();
+  const spaceId = space.id;
+  const levelZeroSpaceUrl = space.about.profile.url;
 
   // TODO: flaky logic here. We already faced a couple of bugs related to this multiple spaceIds logic.
   // It's better to use the URL resolver getting the spaceId (+ parent or levelZero if needed)
@@ -94,21 +86,9 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
   const closeDialog = () => setOpenDeleteDialog(false);
 
   const [deleteSpace] = useDeleteSpaceMutation({
-    refetchQueries: [
-      refetchSubspacesInSpaceQuery({
-        spaceId,
-      }),
-      refetchAdminSpaceSubspacesPageQuery({
-        spaceId,
-      }),
-      refetchSpaceDashboardNavigationSubspacesQuery({
-        spaceId,
-      }),
-    ],
-    awaitRefetchQueries: true,
     onCompleted: () => {
       notify(t('pages.admin.space.notifications.space-removed'), 'success');
-      navigate(levelZeroSpaceUrl, { replace: true });
+      window.location.replace(levelZeroSpaceUrl);
     },
   });
 
@@ -130,20 +110,16 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
     });
   };
 
-  const { data: hostData } = useSpaceHostQuery({
-    variables: { spaceId },
-    skip: !spaceId || isSubspace,
-  });
-  const hostId = hostData?.lookup.space?.provider.id;
-
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
       spaceId: currentSpaceId,
     },
     skip: !currentSpaceId,
   });
-  const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
+  const roleSetId = settingsData?.lookup.space?.about.membership.roleSetID;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
+  const provider = settingsData?.lookup.space?.about.provider;
+  const hostId = provider?.id;
 
   // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesManagerQuery({
@@ -363,7 +339,7 @@ export const SpaceSettingsView = ({ spaceLevel }: SpaceSettingsViewProps) => {
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostData?.lookup.space?.provider.profile.displayName,
+                            host: provider?.profile.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />

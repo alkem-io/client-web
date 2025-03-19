@@ -1,0 +1,31 @@
+query SpaceTab($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      about {
+        ...SpaceAboutLight
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
+          currentState {
+            displayName
+            description
+          }
+        }
+        calloutsSet {
+          id
+        }
+      }
+    }
+  }
+}

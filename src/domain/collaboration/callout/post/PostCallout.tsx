@@ -14,7 +14,7 @@ import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { TypedCalloutDetails } from '../../calloutsSet/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
 import { buildPostDashboardUrl } from '@/main/routing/urlBuilders';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import { sortBy } from 'lodash';

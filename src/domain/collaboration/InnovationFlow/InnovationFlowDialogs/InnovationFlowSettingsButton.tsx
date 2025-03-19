@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { ButtonProps } from '@mui/material';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import InnovationFlowSettingsDialog from './InnovationFlowSettingsDialog';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import { SvgIconComponent } from '@mui/icons-material';
 
 interface InnovationFlowSettingsButtonProps extends ButtonProps {
   collaborationId: string;
   templatesSetId: string | undefined;
-  filterCalloutGroups: CalloutGroupNameValuesMap[];
   tooltip: string;
   icon: SvgIconComponent;
 }
@@ -16,7 +14,6 @@ interface InnovationFlowSettingsButtonProps extends ButtonProps {
 const InnovationFlowSettingsButton = ({
   collaborationId,
   templatesSetId,
-  filterCalloutGroups,
   icon: SettingsIcon,
   tooltip,
   ...props
@@ -38,7 +35,6 @@ const InnovationFlowSettingsButton = ({
         open={isSettingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         collaborationId={collaborationId}
-        filterCalloutGroups={filterCalloutGroups}
       />
     </>
   );

@@ -1,0 +1,73 @@
+query SpacePage(
+  $spaceId: UUID!
+) {
+  lookup {
+    space(ID: $spaceId) {
+      ...SpacePage
+    }
+  }
+}
+
+query SpaceDashboardReferences($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        id
+        profile {
+          id
+          references {
+            id
+            name
+            uri
+            description
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment SpacePage on Space {
+  id
+  level
+  nameID # Used for SpaceEdit Page
+  about {
+    ...SpaceAboutDetails
+    membership {
+      communityID
+      roleSetID
+    }
+    profile {
+      location {
+        ...fullLocation
+      }
+    }
+    provider {
+      ...ContributorDetails
+    }
+    metrics {
+      id
+      name
+      value
+    }
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  collaboration {
+    id
+    innovationFlow {
+      id
+      states {
+        displayName
+      }
+      currentState {
+        displayName
+      }
+    }
+    ...DashboardTopCallouts
+    ...DashboardTimelineAuthorization
+  }
+}

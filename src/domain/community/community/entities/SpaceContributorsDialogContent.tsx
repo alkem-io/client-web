@@ -1,4 +1,4 @@
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import RoleSetContributorTypesView from '../RoleSetContributors/RoleSetContributorTypesView';
@@ -8,7 +8,8 @@ import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManage
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
-  const { roleSetId } = useSpace();
+  const { space } = useSpace();
+  const roleSetId = space?.about.membership?.roleSetID;
 
   const { usersByRole, organizationsByRole, loading } = useRoleSetManager({
     roleSetId,
