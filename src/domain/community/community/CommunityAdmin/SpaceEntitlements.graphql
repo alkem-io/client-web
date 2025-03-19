@@ -1,0 +1,13 @@
+query SpaceEntitlements(
+  $spaceId: UUID!
+) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      license {
+        id
+        availableEntitlements
+      }
+    }
+  }
+}

@@ -6,6 +6,10 @@ query SpaceCommunityPage($spaceId: UUID!) {
         id
         myPrivileges
       }
+      license {
+        id
+        availableEntitlements
+      }
       about {
         ...SpaceAboutLight
         membership {

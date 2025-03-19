@@ -10,11 +10,12 @@ query SpaceContributionDetails($spaceId: UUID!) {
           url
           displayName
           tagline
-          visuals {
+          cardBanner: visual(type: CARD) {
             ...VisualUri
           }
           tagset {
-            ...TagsetDetails
+            id
+            tags
           }
         }
         membership {

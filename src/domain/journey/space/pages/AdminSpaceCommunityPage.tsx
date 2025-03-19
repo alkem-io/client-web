@@ -26,7 +26,7 @@ import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -53,6 +53,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    spaceEntitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -110,6 +111,10 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
       setSaveAsTemplateDialogOpen(false);
     }
   };
+
+  const canAddVirtualContributors =
+    spaceEntitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
+    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
 
   if (!spaceId || isLoadingSpace) {
     return null;
@@ -266,9 +271,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
             <PageContentBlock>
               <CommunityVirtualContributors
                 virtualContributors={virtualContributors}
-                canAddVirtualContributors={
-                  permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
-                }
+                canAddVirtualContributors={canAddVirtualContributors}
                 onRemoveMember={onRemoveVirtualContributor}
                 spaceDisplayName={about.profile.displayName}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}

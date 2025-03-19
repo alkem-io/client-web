@@ -247,6 +247,7 @@
     "comment": "Comment",
     "comments": "Comments",
     "contributions": "Contributions",
+    "responses": "Responses",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
@@ -532,7 +533,8 @@
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor"
+      "inviteBtn": "Invite Virtual Contributor",
+      "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Application Form",
@@ -958,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Search results for:",
@@ -1865,7 +1869,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template imported successfully"
             }
           },

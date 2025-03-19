@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, IconButton, Link, TextField } from '@mui/material';
+import { Box, IconButton, Link, TextField } from '@mui/material';
 import {
   GridColDef,
   GridFilterModel,
@@ -22,6 +22,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
 import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 
 type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
 type GetterParams = GridValueGetterParams<string, ContributorViewProps>;
@@ -143,20 +144,27 @@ const CommunityVirtualContributors = ({
 
   const closeInvitationDialog = () => setIsInvitingExternal(false);
 
+  const renderInviteButton = (external: boolean = false) => (
+    <ButtonWithTooltip
+      tooltip={canAddVirtualContributors ? undefined : t('community.virtualContributors.permissionRequiredTooltip')}
+      tooltipPlacement="top"
+      variant="contained"
+      startIcon={<AddIcon />}
+      disabled={!canAddVirtualContributors}
+      onClick={() => openAvailableContributorsDialog(external)}
+    >
+      {external ? t('community.virtualContributors.inviteExternalVC') : t('common.add')}
+    </ButtonWithTooltip>
+  );
+
   return (
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.virtualContributors.blockTitle', { count: virtualContributors.length })}</BlockTitle>
-        {canAddVirtualContributors && (
-          <Actions>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog()}>
-              {t('common.add')}
-            </Button>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog(true)}>
-              {t('community.virtualContributors.inviteExternalVC')}
-            </Button>
-          </Actions>
-        )}
+        <Actions>
+          {renderInviteButton()}
+          {renderInviteButton(true)}
+        </Actions>
       </Box>
       <TextField
         value={filterString}

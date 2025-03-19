@@ -1,5 +1,5 @@
 query adminSpacesList {
-  spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
+  spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
     ...AdminSpace
   }
 }
