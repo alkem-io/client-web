@@ -254,7 +254,7 @@
     "create-new": "Maak nieuwe aan",
     "create-new-entity": "Maak nieuwe {{entity}} aan",
     "category": "Categorie",
-    "custom": "Custom",
+    "custom": "Aangepast",
     "date": "Datum",
     "description": "Omschrijving",
     "noDescription": "Geen omschrijving",
@@ -278,7 +278,7 @@
     "aspects": "Kaarten",
     "prompt": "Prompt",
     "host": "Host",
-    "layout": "Layout",
+    "layout": "Opmaak",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -666,7 +666,7 @@
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
       "KNOWLEDGE": "Kennisbank",
-      "CUSTOM": "Custom"
+      "CUSTOM": "Aangepast"
     },
     "calloutsList": {
       "title": "Index",
@@ -1840,7 +1840,7 @@
             "description": "Hier kun je het openbare profiel voor deze {{entity}} aanpassen. Deze informatie is ook zichtbaar voor niet-leden."
           },
           "layout": {
-            "description": "Here you can edit the layout for this {{entity}}.",
+            "description": "Hier kan je de opmaak aanpassen voor deze {{entity}}.",
             "innovationFlowEditor": "Space tabs"
           },
           "context": {
