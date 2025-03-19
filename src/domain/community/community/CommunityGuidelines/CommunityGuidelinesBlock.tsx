@@ -40,22 +40,22 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl 
 
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
-  const guidelines = data?.lookup.communityGuidelines;
-  const communityGuidelinesReferences = guidelines?.profile.references;
-  const communityGuidelinesDescription = guidelines?.profile.description;
+  const communityGuidelines = data?.lookup.communityGuidelines;
+  const communityGuidelinesReferences = communityGuidelines?.profile.references;
+  const communityGuidelinesDescription = communityGuidelines?.profile.description;
 
   const { t } = useTranslation();
 
-  const hasGuidelines = Boolean(guidelines?.profile.description);
+  const hasGuidelines = Boolean(communityGuidelines?.profile.description);
   const isReadMoreVisible =
     Number(communityGuidelinesDescription?.length) > 0 || Number(communityGuidelinesReferences?.length) > 0;
   const showGuidelines =
-    hasGuidelines || guidelines?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
+    hasGuidelines || communityGuidelines?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
 
   return showGuidelines ? (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title={guidelines?.profile.displayName} />
+        <PageContentBlockHeader title={communityGuidelines?.profile.displayName} />
         {isReadMoreVisible ? (
           <>
             <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -63,7 +63,9 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl 
               {!loading && (
                 <OverflowGradient maxHeight={gutters(6)}>
                   <Box sx={{ wordWrap: 'break-word' }}>
-                    <WrapperMarkdown disableParagraphPadding>{guidelines?.profile.description ?? ''}</WrapperMarkdown>
+                    <WrapperMarkdown disableParagraphPadding>
+                      {communityGuidelines?.profile.description ?? ''}
+                    </WrapperMarkdown>
                   </Box>
                 </OverflowGradient>
               )}
@@ -83,7 +85,7 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl 
       <CommunityGuidelinesInfoDialog
         open={isCommunityGuidelinesInfoDialogOpen}
         onClose={closeDialog}
-        guidelines={guidelines?.profile}
+        guidelines={communityGuidelines?.profile}
       />
     </>
   ) : (

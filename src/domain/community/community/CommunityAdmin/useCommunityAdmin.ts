@@ -88,6 +88,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
 
     return result;
   }, [organizations]);
+  const communityGuidelinesId = communityProviderData?.lookup.space?.about.guidelines.id;
 
   // Virtual Contributors community related extracted in useInviteContributors
   const {
@@ -166,6 +167,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     applications,
     invitations,
     platformInvitations,
+    communityGuidelinesId,
     onApplicationStateChange: applicationStateChange,
     onInvitationStateChange: invitationStateChange,
     onDeleteInvitation: deleteInvitation,
