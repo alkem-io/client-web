@@ -20742,16 +20742,6 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            community: {
-              __typename?: 'Community';
-              id: string;
-              roleSet: {
-                __typename?: 'RoleSet';
-                id: string;
-                myMembershipStatus?: CommunityMembershipStatus | undefined;
-                myRoles: Array<RoleName>;
-              };
-            };
           }>;
         }
       | undefined;

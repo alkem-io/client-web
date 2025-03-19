@@ -21,12 +21,6 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
           id
           myPrivileges
         }
-        community {
-          id
-          roleSet {
-            ...MyMembershipsRoleSet
-          }
-        }
       }
     }
   }

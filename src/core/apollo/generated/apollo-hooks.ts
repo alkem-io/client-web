@@ -16016,19 +16016,12 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
             id
             myPrivileges
           }
-          community {
-            id
-            roleSet {
-              ...MyMembershipsRoleSet
-            }
-          }
         }
       }
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
   ${SpaceAboutCardAvatarFragmentDoc}
-  ${MyMembershipsRoleSetFragmentDoc}
 `;
 
 /**
