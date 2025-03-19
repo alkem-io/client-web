@@ -27,20 +27,20 @@ const SpaceRoute = () => {
     return null;
   }
 
-  if (!canRead) {
-    return (
-      <Routes>
-        <Route path={routes.About} element={<SpaceAboutPage />} />
-        <Route path="*" element={<Navigate to={routes.About} replace />} />
-      </Routes>
-    );
-  }
-
   return (
     <Routes>
-      <Route path="*" element={<SpaceTabbedLayoutRoute spaceId={spaceId} />} />
+      <Route path={routes.About} element={<SpaceAboutPage />} />
+      <Route
+        path="*"
+        element={<ReadPrivilegeRoute element={<SpaceTabbedLayoutRoute spaceId={spaceId} />} canRead={canRead} />}
+      />
     </Routes>
   );
 };
 
 export default SpaceRoute;
+
+const ReadPrivilegeRoute = ({ element, canRead }) => {
+  if (!canRead) return <Navigate to={routes.About} />;
+  return element;
+};
