@@ -706,17 +706,6 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const ClassificationDetailsFragmentDoc = gql`
-  fragment ClassificationDetails on Callout {
-    classification {
-      id
-      flowState: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -735,10 +724,19 @@ export const CalloutFragmentDoc = gql`
         displayName
       }
     }
-    ...ClassificationDetails
     visibility
   }
-  ${ClassificationDetailsFragmentDoc}
+`;
+export const ClassificationDetailsFragmentDoc = gql`
+  fragment ClassificationDetails on Callout {
+    classification {
+      id
+      flowState: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
@@ -921,7 +919,6 @@ export const CalloutDetailsFragmentDoc = gql`
         ...WhiteboardDetails
       }
     }
-    ...ClassificationDetails
     contributionPolicy {
       state
     }
@@ -951,7 +948,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
-  ${ClassificationDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
@@ -7737,7 +7733,11 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutationVariables
 >;
 export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
-  query CalloutsOnCalloutsSetUsingClassification($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  query CalloutsOnCalloutsSetUsingClassification(
+    $calloutsSetId: UUID!
+    $classificationTagsets: [TagsetArgs!] = []
+    $withClassification: Boolean = true
+  ) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
         id
@@ -7747,11 +7747,13 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
         }
         callouts(classificationTagsets: $classificationTagsets) {
           ...Callout
+          ...ClassificationDetails @include(if: $withClassification)
         }
       }
     }
   }
   ${CalloutFragmentDoc}
+  ${ClassificationDetailsFragmentDoc}
 `;
 
 /**
@@ -7768,6 +7770,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
  *   variables: {
  *      calloutsSetId: // value for 'calloutsSetId'
  *      classificationTagsets: // value for 'classificationTagsets'
+ *      withClassification: // value for 'withClassification'
  *   },
  * });
  */
@@ -7814,14 +7817,16 @@ export function refetchCalloutsOnCalloutsSetUsingClassificationQuery(
 }
 
 export const CalloutDetailsDocument = gql`
-  query CalloutDetails($calloutId: UUID!) {
+  query CalloutDetails($calloutId: UUID!, $withClassification: Boolean = true) {
     lookup {
       callout(ID: $calloutId) {
         ...CalloutDetails
+        ...ClassificationDetails @include(if: $withClassification)
       }
     }
   }
   ${CalloutDetailsFragmentDoc}
+  ${ClassificationDetailsFragmentDoc}
 `;
 
 /**
@@ -7837,6 +7842,7 @@ export const CalloutDetailsDocument = gql`
  * const { data, loading, error } = useCalloutDetailsQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      withClassification: // value for 'withClassification'
  *   },
  * });
  */

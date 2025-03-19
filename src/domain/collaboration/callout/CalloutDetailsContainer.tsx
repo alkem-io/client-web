@@ -24,6 +24,7 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
   const { data, loading } = useCalloutDetailsQuery({
     variables: {
       calloutId: callout.id,
+      withClassification: callout.classificationTagsets.length > 0,
     },
     skip: !inView,
   });

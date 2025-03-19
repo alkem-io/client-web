@@ -115,6 +115,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       authorization: {
         myPrivileges: [],
       },
+      classificationTagsets: [],
     };
   }, [callout]);
 
