@@ -247,7 +247,7 @@
     "comment": "Opmerking",
     "comments": "Opmerkingen",
     "contributions": "Bijdragen",
-    "responses": "Responses",
+    "responses": "Reacties",
     "card": "Kaart",
     "cards": "Kaarten",
     "create": "Maak aan",
@@ -959,7 +959,7 @@
     "searchDialog": {
       "headerTitle": "Zoekresultaten",
       "spacesAndSubspaces": "Spaces & Subspaces",
-      "collaborationTools": "Collaboration Tools"
+      "collaborationTools": "Samenwerkingstools"
     },
     "searchScope": {
       "currentScope": "Zoekresultaten voor:",
