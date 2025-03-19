@@ -1862,7 +1862,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Zoek templates om te gebruiken in je Space of Subspace. Selecteer een template en klik op 'importeer' om deze toe te voegen.",
               "callout-template-import-subtitle": "Vind een template die mensen kunnen gebruiken voor het bijdragen aan jouw $t(common.callout)",
-              "noTemplates": "No templates in the Space library.",
+              "noTemplates": "Geen templates in de Space bibliotheek.",
               "imported-successfully-notification": "Template succesvol geïmporteerd"
             }
           },
