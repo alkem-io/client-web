@@ -1,14 +1,5 @@
-export type SpaceAboutMinimalModel = {
-  profile: {
-    id: string;
-    displayName: string;
-    tagline?: string | undefined;
-  };
-};
-
 export type SpaceAboutMinimalUrlModel = {
   profile: {
-    id: string;
     displayName: string;
     tagline?: string | undefined;
     url: string;
