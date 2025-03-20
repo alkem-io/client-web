@@ -6,7 +6,6 @@ import { FC } from 'react';
 import { AvailableMembers, EditMembers } from './EditMembers';
 
 export interface EditMemberUsersProps {
-  executorId?: string;
   members: Member[];
   availableMembers: {
     id: string;
@@ -21,10 +20,10 @@ export interface EditMemberUsersProps {
   onSearchTermChange: (term: string) => void;
   hasMore?: boolean;
   title?: string;
+  isRemoveDisabled?: boolean;
 }
 
 export const EditMemberUsers: FC<EditMemberUsersProps> = ({
-  executorId,
   members,
   availableMembers,
   updating = false,
@@ -36,6 +35,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
   onSearchTermChange,
   hasMore = false,
   title,
+  isRemoveDisabled = false,
 }) => {
   return (
     <>
@@ -49,7 +49,6 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
           Group members:
           <EditMembers
             members={members}
-            updating={updating}
             loading={loadingMembers}
             onRemove={onRemove}
             header={
@@ -92,7 +91,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
                 </TableCell>
               </>
             )}
-            isRemoveDisabled={m => m.id === executorId}
+            isRemoveDisabled={isRemoveDisabled}
           />
         </Grid>
 
