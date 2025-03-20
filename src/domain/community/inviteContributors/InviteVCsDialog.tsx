@@ -6,7 +6,7 @@ import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
@@ -29,7 +29,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const notify = useNotification();
 
   const { spaceId, spaceLevel, loading: urlResolverLoading } = useUrlResolver();
-  const { roleSetId } = useSpace();
+  const { space } = useSpace();
+  const roleSetId = space?.about.membership?.roleSetID!;
 
   const { virtualContributors } = useRoleSetManager({
     roleSetId,

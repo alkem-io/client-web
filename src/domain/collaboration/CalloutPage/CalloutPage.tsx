@@ -3,7 +3,7 @@ import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
-import { TypedCalloutDetails } from '../calloutsSet/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useLocation } from 'react-router-dom';
 import { DialogContent, Theme, useMediaQuery } from '@mui/material';
@@ -18,7 +18,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
-import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
@@ -27,8 +26,8 @@ type CalloutLocation = {
 };
 
 export interface CalloutPageProps {
-  renderPage: (calloutGroupName?: string) => ReactElement;
-  parentRoute: string | ((calloutGroup: string | undefined) => string);
+  renderPage: (calloutFlowState?: string) => ReactElement;
+  parentRoute: string | ((flowState: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
 
@@ -40,7 +39,6 @@ export interface LocationStateCachedCallout extends NavigationState {
 
 /**
  *
- * @param parentRoute
  * @param renderPage - defines what page is to be rendered behind the Callout dialog
  * @param children - Typical usage for the children fn is to render nested dialog/routes
  *                   (such as routes for Post/Whiteboard dialogs).
@@ -86,7 +84,6 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
 
     const draft = callout.visibility === CalloutVisibility.Draft;
     const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-
     const result: TypedCalloutDetails = {
       ...callout,
       authorization: {
@@ -97,10 +94,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       movable: false,
       canSaveAsTemplate: false,
       entitledToSaveAsTemplate: false,
-      flowStates: [],
-      groupName: getCalloutGroupNameValue(
-        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
-      ),
+      classificationTagsets: [],
     };
     return result;
   }, [callout, locationState]);
@@ -133,11 +127,9 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       </NotFoundPageLayout>
     );
   }
+  const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
 
-  const calloutGroupName = typedCalloutDetails && typedCalloutDetails.groupName;
-
-  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroupName) : parentRoute;
-
+  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutFlowState) : parentRoute;
   const handleClose = () => {
     backOrElse(parentPagePath);
   };
@@ -150,7 +142,6 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
   if (isApolloForbiddenError(error)) {
     return (
       <>
-        {renderPage(calloutGroupName)}
         <DialogWithGrid open onClose={handleClose}>
           <DialogHeader title={t('callout.accessForbidden.title')} onClose={handleClose} />
           <DialogContent sx={{ paddingTop: 0 }}>
@@ -162,12 +153,11 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
   }
 
   if (!typedCalloutDetails) {
-    return renderPage();
+    return renderPage(calloutFlowState);
   }
 
   return (
     <>
-      {renderPage(calloutGroupName)}
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCalloutDetails}

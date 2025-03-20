@@ -6,7 +6,7 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
 
-const SpaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const SpaceSettingsAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading } = useUrlResolver();
 
   return (
@@ -16,4 +16,4 @@ const SpaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   );
 };
 
-export default SpaceAboutPage;
+export default SpaceSettingsAboutPage;

@@ -108,9 +108,6 @@ fragment LibraryTemplates on TemplatesSet {
           tagset {
             ...TagsetDetails
           }
-          tagsets {
-            ...TagsetDetails
-          }
           storageBucket {
             id
           }

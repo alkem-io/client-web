@@ -13,12 +13,12 @@ import ChallengeOpportunitiesPage from '@/domain/journey/subspace/pages/Subspace
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
 export const ChallengeRoute: FC = () => {
-  const { subspace: challenge } = useSubSpace();
-  const communityId = challenge?.community?.id;
+  const { subspace } = useSubSpace();
+  const communityId = subspace?.about.membership.communityID;
 
   return (
-    <NonSpaceAdminRedirect spaceId={challenge?.id}>
-      <StorageConfigContextProvider locationType="journey" spaceId={challenge?.id}>
+    <NonSpaceAdminRedirect spaceId={subspace?.id}>
+      <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
         <Routes>
           <Route path={'/'}>
             <Route index element={<Navigate to="about" replace />} />

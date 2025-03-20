@@ -2,14 +2,22 @@ query SpaceSettings($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      about {
+        id
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        membership {
+          roleSetID
+          communityID
+        }
+      }
       settings {
         ...SpaceSettings
-      }
-      community {
-        id
-        roleSet {
-          id
-        }
       }
       collaboration {
         id

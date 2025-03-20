@@ -7,7 +7,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -36,18 +36,19 @@ import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/u
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { spaceId } = useSpace();
-  const { subspaceId } = useSubSpace();
+  const { space } = useSpace();
+  const { subspace } = useSubSpace();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
+  const spaceId = space?.id!;
 
   const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
-    variables: { spaceId: subspaceId },
-    skip: !subspaceId,
+    variables: { spaceId: subspace.id },
+    skip: !subspace.id,
   });
 
   const subsubspaces =
@@ -91,14 +92,14 @@ export const OpportunityList: FC = () => {
     onCompleted: () => {
       notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
     },
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: subspaceId })],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: subspace.id })],
     awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
-        spaceID: subspaceId,
+        spaceID: subspace.id,
         about: {
           profile: {
             displayName: value.displayName,
@@ -119,7 +120,7 @@ export const OpportunityList: FC = () => {
       }
       navigate(buildSettingsUrl(result.about.profile.url));
     },
-    [navigate, createSubspace, subspaceId]
+    [navigate, createSubspace, subspace.id]
   );
 
   // check for TemplateCreation privileges

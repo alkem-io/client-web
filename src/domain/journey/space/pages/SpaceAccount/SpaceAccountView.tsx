@@ -102,7 +102,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ spaceId }) => {
   const contactsLink = data?.platform.configuration.locations.support;
   const switchPlanLink = data?.platform.configuration.locations.switchplan;
 
-  const provider = data?.lookup.space?.provider;
+  const provider = data?.lookup.space?.about.provider;
   const [isHost, setIsHost] = useState(false);
   useEffect(() => {
     // TODO: After server #4471 we should be able to see account.type to check if the space provider is a User or an Organization, and this __typename can be removed from the query
@@ -205,11 +205,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ spaceId }) => {
               <BlockTitle>{t('pages.admin.generic.sections.account.hostTitle')}</BlockTitle>
               <ContributorCardHorizontal
                 profile={{
-                  displayName: space.provider.profile.displayName,
-                  avatar: space.provider.profile.avatar,
-                  location: space.provider.profile.location,
+                  displayName: space.about.provider.profile.displayName,
+                  avatar: space.about.provider.profile.avatar,
+                  location: space.about.provider.profile.location,
                   tagsets: undefined,
-                  url: space?.provider.profile.url,
+                  url: space?.about.provider.profile.url,
                 }}
                 seamless
               />

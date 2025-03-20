@@ -10,19 +10,25 @@ interface ChildJourneyCreateProps {
   canCreateSubentity: boolean;
   level: SpaceLevel;
   onCreateSubentity?: () => void;
+  tabDescription: string;
 }
 
-const ChildJourneyCreate = ({ canCreateSubentity, onCreateSubentity, level }: ChildJourneyCreateProps) => {
+const ChildJourneyCreate = ({
+  canCreateSubentity,
+  onCreateSubentity,
+  tabDescription,
+  level,
+}: ChildJourneyCreateProps) => {
   const { t } = useTranslation();
-
   const spaceType = t(`common.space-level.${level}`);
 
   return (
     <PageContentBlock accent>
       <WrapperMarkdown>
-        {t('pages.generic.sections.subEntities.description', {
-          entities: spaceType,
-        })}
+        {tabDescription ||
+          t('pages.generic.sections.subEntities.description', {
+            entities: spaceType,
+          })}
       </WrapperMarkdown>
       {canCreateSubentity && (
         <Box display="flex" justifyContent="flex-end">

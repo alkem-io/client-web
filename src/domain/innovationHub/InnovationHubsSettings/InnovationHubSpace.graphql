@@ -1,14 +1,14 @@
 fragment InnovationHubSpace on Space {
   id
   visibility
-  provider {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
   about {
     ...SpaceAboutMinimalUrl
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
   }
 }
