@@ -11,8 +11,13 @@
       "tooltip": "Dit bericht is automatisch gegenereerd op basis van de documentatie van Alkemio. Je feedback is zeer relevant voor ons!"
     },
     "menu": {
-      "clear": "Gesprek wissen",
+      "clear": "Nieuw gesprek",
       "close": "Sluit venster"
+    },
+    "confirmNewChat": {
+      "title": "Een nieuw gesprek beginnen?",
+      "description": "Als je een nieuw gesprek start, wordt je huidige gesprek geschiedenis gewist. Weet je zeker dat je wilt doorgaan?",
+      "confirm": "Ja, nieuw gesprek starten"
     },
     "references": [
       {
@@ -242,12 +247,14 @@
     "comment": "Opmerking",
     "comments": "Opmerkingen",
     "contributions": "Bijdragen",
+    "responses": "Reacties",
     "card": "Kaart",
     "cards": "Kaarten",
     "create": "Maak aan",
     "create-new": "Maak nieuwe aan",
     "create-new-entity": "Maak nieuwe {{entity}} aan",
     "category": "Categorie",
+    "custom": "Aangepast",
     "date": "Datum",
     "description": "Omschrijving",
     "noDescription": "Geen omschrijving",
@@ -271,6 +278,7 @@
     "aspects": "Kaarten",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Opmaak",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -525,7 +533,8 @@
       "inviteExternalVC": "Externe VC uitnodigen",
       "externalVCsInfo": "Op dit moment kan alleen Alkemio Support een externe Virtual Contributor toevoegen aan je Space. Neem <click>hier</click> contact op met Support, we helpen je graag!",
       "searchVC": "Vind Virtual Contributor",
-      "inviteBtn": "Virtual Contributor Uitnodigen"
+      "inviteBtn": "Virtual Contributor Uitnodigen",
+      "permissionRequiredTooltip": "Om Virtual Contributors te gebruiken, upgrade je licentie of neem contact op met het Alkemio-team voor ondersteuning."
     },
     "application-form": {
       "title": "Aanmeldingsformulier",
@@ -656,7 +665,8 @@
       "CONTRIBUTE": "Bijdragen",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Kennisbank"
+      "KNOWLEDGE": "Kennisbank",
+      "CUSTOM": "Aangepast"
     },
     "calloutsList": {
       "title": "Index",
@@ -950,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Zoekresultaten"
+      "headerTitle": "Zoekresultaten",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Samenwerkingstools"
     },
     "searchScope": {
       "currentScope": "Zoekresultaten voor:",
@@ -1805,7 +1817,7 @@
     },
     "innovationLibrary": {
       "shortName": "Bibliotheek",
-      "fullName": "Best practices",
+      "fullName": "Template Bibliotheek",
       "title": "De Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
       "subtitle": "Open de onderstaande Innovatiepakketten om alle templates voor whiteboards, posts en innovatie flows te verkennen. Als je meer wilt weten <click>klik dan hier</click>.",
       "useTemplateButton": "Vind dit template via de template bibliotheek in jouw Space om het te gebruiken.",
@@ -1826,6 +1838,10 @@
           },
           "about": {
             "description": "Hier kun je het openbare profiel voor deze {{entity}} aanpassen. Deze informatie is ook zichtbaar voor niet-leden."
+          },
+          "layout": {
+            "description": "Hier kan je de opmaak aanpassen voor deze {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
           },
           "context": {
             "description": "Hier kan je de context aanpassen voor deze {{entity}}."
@@ -1853,7 +1869,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Zoek templates om te gebruiken in je Space of Subspace. Selecteer een template en klik op 'importeer' om deze toe te voegen.",
               "callout-template-import-subtitle": "Vind een template die mensen kunnen gebruiken voor het bijdragen aan jouw $t(common.callout)",
-              "noTemplates": "Geen templates gevonden.",
+              "noTemplates": "Geen templates in de Space bibliotheek.",
               "imported-successfully-notification": "Template succesvol geïmporteerd"
             }
           },
@@ -2038,6 +2054,9 @@
             "subtitle": "Hier kan je de $t(common.space) authorisatie voorkeuren aanpassen"
           }
         },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
+        },
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
@@ -2105,7 +2124,7 @@
         "create": "Maak Innovatiepakket",
         "fields": {
           "provider": "Organisatie",
-          "listedInStore": "Vermeld in winkel",
+          "listedInStore": "Laat zien in de platform template bibliotheek",
           "searchVisibility": "Zoek zichtbaarheid"
         },
         "back-button": "Alle $t(common.innovation-packs)",
@@ -2446,7 +2465,7 @@
     "organization": {
       "profile": {
         "accountResources": {
-          "sectionTitle": "Hulpmiddelen die wij hosten"
+          "sectionTitle": "Wij hosten"
         }
       },
       "settings": {
@@ -2469,6 +2488,13 @@
         "errorBlockName": "de vragen"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Gehost door",
           "hostTooltip": "De host is de organisatie die verantwoordelijk is voor het aanmaken van de Space.",
@@ -2734,11 +2760,11 @@
         },
         "external": {
           "personality": {
-            "description": "This Virtual Contributor operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
+            "description": "Deze Virtual Contributor werkt met behulp van de volgende externe AI-service: <strong>Mistral</strong>. Alle vragen die bij deze Virtual Contributor worden ingediend, samen met eventuele gerelateerde opmerkingen in een threaded gesprek, zullen worden verzonden naar <strong>Mistral</strong>. Houd er rekening mee dat deze gegevens gebruikt kunnen worden om hun model te trainen en te verbeteren."
           },
           "privacy": {
             "description": "Bij Alkemio is het beschermen van je gegevens onze topprioriteit. We zijn volledig betrokken bij het waarborgen van de veiligheid en privacy van je informatie. Dit is hoe we omgaan met je gegevens wanneer we interactie hebben met een Virtual Contributor (VC):",
-            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+            "bullets": "<ul><li>Alleen de inhoud van je vraag en eventuele gerelateerde opmerkingen in een threaded gesprek worden gedeeld met de AI service die de Virtual Contributor aanstuurt.</li><li>Houd er rekening mee dat als de Virtual Contributor is gebaseerd op een externe AI service, zoals Mistral, de gegevens die worden gedeeld kunnen worden gebruikt om die dienst verder te trainen en te verbeteren.</li><li>Aanvullend. Houd er rekening mee dat vragen en antwoorden die worden uitgewisseld met de Virtual Contributor mogelijk toegankelijk zijn voor het Alkemio-team voor monitoring of hulp.</li></ul>"
           }
         }
       },

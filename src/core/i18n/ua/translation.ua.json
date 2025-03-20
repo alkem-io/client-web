@@ -11,8 +11,13 @@
       "tooltip": "Це повідомлення було автоматично згенеровано на основі документації Alkemio. Ваш відгук дуже важливий для нас!"
     },
     "menu": {
-      "clear": "Видалити розмову",
+      "clear": "New Chat",
       "close": "Закрити вікно"
+    },
+    "confirmNewChat": {
+      "title": "Start a new chat?",
+      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
+      "confirm": "Yes, start new chat"
     },
     "references": [
       {
@@ -242,12 +247,14 @@
     "comment": "Коментувати",
     "comments": "Коментарі",
     "contributions": "Внески",
+    "responses": "Responses",
     "card": "Карта",
     "cards": "Карти",
     "create": "Створи",
     "create-new": "Створити новий",
     "create-new-entity": "Створити новий {{entity}}",
     "category": "Category",
+    "custom": "Custom",
     "date": "Дата",
     "description": "Опис",
     "noDescription": "No description",
@@ -271,6 +278,7 @@
     "aspects": "Аспекти",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Layout",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -525,7 +533,8 @@
       "inviteExternalVC": "Запросити зовнішнього віртуального учасника",
       "externalVCsInfo": "На даний час, лише Служба підтримки Alkemio може додати Віртуального Учасника до Вашого простору. Будь ласка, зверніться до Служби підтримки <click>за посиланням</click> якщо Ви бажаєте це зробити, ми будемо раді допомогти!",
       "searchVC": "Знайти Віртуального Учасника",
-      "inviteBtn": "Invite Virtual Contributor"
+      "inviteBtn": "Invite Virtual Contributor",
+      "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Форма заявки",
@@ -656,7 +665,8 @@
       "CONTRIBUTE": "Contribute",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Knowledge Base"
+      "KNOWLEDGE": "Knowledge Base",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -950,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Search results for:",
@@ -1827,6 +1839,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Here you can edit the context for this {{entity}}."
           },
@@ -1853,7 +1869,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space, Challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -2037,6 +2053,9 @@
           "preferences": {
             "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2469,6 +2488,13 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Facilitating organization",
           "hostTooltip": "The host is the organization responsible for the creation of the Space.",

@@ -11,8 +11,13 @@
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "menu": {
-      "clear": "Clear conversation",
+      "clear": "New Chat",
       "close": "Close window"
+    },
+    "confirmNewChat": {
+      "title": "Start a new chat?",
+      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
+      "confirm": "Yes, start new chat"
     },
     "references": [
       {
@@ -242,12 +247,14 @@
     "comment": "Kommentar",
     "comments": "Comments",
     "contributions": "Konten",
+    "responses": "Responses",
     "card": "Karte",
     "cards": "Karten",
     "create": "Erstellen",
     "create-new": "Neu erstellen",
     "create-new-entity": "Neue Datensätze erstellen",
     "category": "Category",
+    "custom": "Custom",
     "date": "Datum",
     "description": "Beschreibung",
     "noDescription": "No description",
@@ -271,6 +278,7 @@
     "aspects": "Karten",
     "prompt": "Prompt",
     "host": "Selbst hosten",
+    "layout": "Layout",
     "lead": "Blei",
     "space": "Leertaste",
     "spaces": "Leertaste",
@@ -525,7 +533,8 @@
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor"
+      "inviteBtn": "Invite Virtual Contributor",
+      "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Bewerbungsformular",
@@ -656,7 +665,8 @@
       "CONTRIBUTE": "Contribute",
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Wissensdatenbank"
+      "KNOWLEDGE": "Wissensdatenbank",
+      "CUSTOM": "Custom"
     },
     "calloutsList": {
       "title": "Index",
@@ -950,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Search results for:",
@@ -1827,6 +1839,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Hier können Sie das Profil für diese {{entity}} bearbeiten."
           },
@@ -1853,7 +1869,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Finden Sie Vorlagen für Hub, Challenge oder Chance. Wählen Sie die Vorlage aus und klicken Sie auf \"Auswählen\", um sie zu Ihrem Template-Set hinzuzufügen.",
               "callout-template-import-subtitle": "Finde eine Vorlage für Leute, die verwendet werden sollen, wenn sie zu deiner $tbeitragen (common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template erfolgreich importiert."
             }
           },
@@ -2037,6 +2053,9 @@
           "preferences": {
             "subtitle": "In diesem Abschnitt können Sie die Autorisierungseinstellungen $t(common.space) ändern"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2469,6 +2488,13 @@
         "errorBlockName": "die Frage"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Facilitating organization",
           "hostTooltip": "Die Person oder Organisation, die die Story geschrieben hat",
