@@ -34,4 +34,11 @@ fragment SpaceMembership on Space {
       myMembershipStatus
     }
   }
+  community {
+    id
+    roleSet {
+      id
+      myRoles
+    }
+  }
 }
