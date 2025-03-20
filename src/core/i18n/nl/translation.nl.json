@@ -2124,7 +2124,7 @@
         "create": "Maak Innovatiepakket",
         "fields": {
           "provider": "Organisatie",
-          "listedInStore": "Vermeld in winkel",
+          "listedInStore": "Laat zien in de platform template bibliotheek",
           "searchVisibility": "Zoek zichtbaarheid"
         },
         "back-button": "Alle $t(common.innovation-packs)",
@@ -2465,7 +2465,7 @@
     "organization": {
       "profile": {
         "accountResources": {
-          "sectionTitle": "Hulpmiddelen die wij hosten"
+          "sectionTitle": "Wij hosten"
         }
       },
       "settings": {
