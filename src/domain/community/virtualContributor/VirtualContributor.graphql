@@ -97,19 +97,15 @@ query VirtualContributorProfile($id: UUID!) {
   }
 }
 
-query BodyOfKnowledgeProfileAuthorization($spaceId: UUID!) {
+query SpaceBodyOfKnowledgeAuthorizationPrivileges($spaceId: UUID!) {
   lookup {
-    space(ID: $spaceId) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
+    myPrivileges {
+      space(ID: $spaceId)
     }
   }
 }
 
-query BodyOfKnowledgeProfile($spaceId: UUID!) {
+query SpaceBodyOfKnowledgeAbout($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

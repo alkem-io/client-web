@@ -4,6 +4,26 @@ query SpaceAccount($spaceId: UUID!) {
       id
       about {
         ...SpaceAboutLight
+        provider {
+          id
+          __typename # do not remove. Used by SpaceAccountView.tsx
+          authorization {
+            myPrivileges
+          }
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              city
+              country
+            }
+            url
+          }
+        }
       }
       activeSubscription {
         name
@@ -14,26 +34,6 @@ query SpaceAccount($spaceId: UUID!) {
         myPrivileges
       }
       visibility
-      provider {
-        id
-        __typename # do not remove. Used by SpaceAccountView.tsx
-        authorization {
-          myPrivileges
-        }
-        profile {
-          id
-          displayName
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-          location {
-            id
-            city
-            country
-          }
-          url
-        }
-      }
     }
   }
   platform {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useCalloutEdit } from '../../callout/edit/useCalloutEdit/useCalloutEdit';
-import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
+import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCalloutsSet/useCalloutsSet';
 import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
 import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
@@ -14,7 +14,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { without } from 'lodash';
-import CalloutDetailsContainer from '../useCallouts/CalloutDetailsContainer';
+import CalloutDetailsContainer from '../../callout/CalloutDetailsContainer';
 
 const CalloutsViewSkeleton = () => (
   <PageContentBlock>

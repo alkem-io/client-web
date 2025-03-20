@@ -1,0 +1,17 @@
+query rolesOrganization($organizationId: UUID!) {
+  rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    id
+    spaces {
+      id
+      roles
+      displayName
+      visibility
+      subspaces {
+        id
+        displayName
+        roles
+        level
+      }
+    }
+  }
+}

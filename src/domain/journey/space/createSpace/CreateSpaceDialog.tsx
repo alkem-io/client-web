@@ -7,8 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
-import { SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
@@ -101,7 +100,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     return [
       {
         id: '',
-        name: DEFAULT_TAGSET,
+        name: TagsetReservedName.Default,
         tags: [],
         allowedValues: [],
         type: TagsetType.Freeform,

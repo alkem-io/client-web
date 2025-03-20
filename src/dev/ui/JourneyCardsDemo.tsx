@@ -7,9 +7,9 @@ import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import SpaceCard from '@/domain/journey/space/SpaceCard/SpaceCard';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SpaceSubspaceCard from '@/domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import UserCard from '@/domain/community/user/userCard/UserCard';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -40,9 +40,9 @@ const JourneyCardsDemo = () => {
                 journeyUri=""
                 spaceDisplayName="Parent Space"
                 spaceUri=""
+                level={SpaceLevel.L1}
                 avatarUris={['', '']}
                 locked
-                level={SpaceLevel.L1}
               />
               <SpaceSubspaceCard
                 banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
@@ -53,9 +53,9 @@ const JourneyCardsDemo = () => {
                 journeyUri=""
                 spaceDisplayName=""
                 spaceUri=""
+                level={SpaceLevel.L0}
                 isPrivate
                 avatarUris={['']}
-                level={SpaceLevel.L0}
               />
               <SpaceSubspaceCard
                 banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
@@ -78,8 +78,8 @@ const JourneyCardsDemo = () => {
                 journeyUri=""
                 spaceDisplayName="Parent Space"
                 spaceUri=""
-                avatarUris={['', '', '']}
                 level={SpaceLevel.L2}
+                avatarUris={['', '', '']}
               />
             </PageContentBlockGrid>
           </PageContentBlock>
