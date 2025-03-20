@@ -3058,6 +3058,13 @@ export const SpaceMembershipFragmentDoc = gql`
         myMembershipStatus
       }
     }
+    community {
+      id
+      roleSet {
+        id
+        myRoles
+      }
+    }
   }
   ${SpaceAboutCardBannerFragmentDoc}
 `;

@@ -30894,6 +30894,11 @@ export type MyMembershipsQuery = {
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           };
         };
+        community: {
+          __typename?: 'Community';
+          id: string;
+          roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+        };
       };
       childMemberships: Array<{
         __typename?: 'CommunityMembershipResult';
@@ -30921,6 +30926,11 @@ export type MyMembershipsQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
+          };
+          community: {
+            __typename?: 'Community';
+            id: string;
+            roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
           };
         };
         childMemberships: Array<{
@@ -30950,6 +30960,11 @@ export type MyMembershipsQuery = {
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
             };
+            community: {
+              __typename?: 'Community';
+              id: string;
+              roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+            };
           };
         }>;
       }>;
@@ -30977,6 +30992,11 @@ export type SpaceMembershipFragment = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     };
+  };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
   };
 };
 
