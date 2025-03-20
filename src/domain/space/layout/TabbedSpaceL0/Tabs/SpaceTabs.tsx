@@ -54,9 +54,9 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const { space } = useSpace();
+  const { space, permissions } = useSpace();
   const { id: spaceId, about } = space;
-  const { tabs, showSettings } = useSpaceTabs({ spaceId });
+  const { tabs, showSettings } = useSpaceTabs({ spaceId: permissions.canRead ? spaceId : undefined });
 
   const spaceUrl = about.profile.url;
   const { share, shareDialog } = useShare({ url: spaceUrl, entityTypeName: 'space' });

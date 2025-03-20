@@ -27,6 +27,8 @@ const SpaceDashboardPage = ({
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
     tabDescription,
+    canReadSpace,
+    loading,
   } = useSpaceTabProvider({ tabPosition: 0 });
 
   const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
@@ -38,7 +40,7 @@ const SpaceDashboardPage = ({
       spaceId: spaceId!,
     },
     errorPolicy: 'all',
-    skip: !spaceId || spaceLevel !== SpaceLevel.L0,
+    skip: !spaceId || spaceLevel !== SpaceLevel.L0 || !canReadSpace || loading,
   });
 
   const spaceData = spacePageData?.lookup.space;
