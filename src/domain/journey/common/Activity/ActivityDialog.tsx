@@ -24,7 +24,7 @@ const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps)
       spaceId: spaceId!,
     },
     errorPolicy: 'all',
-    skip: !spaceId,
+    skip: !open || !spaceId,
   });
 
   const collaborationID = _space?.lookup.space?.collaboration?.id;
