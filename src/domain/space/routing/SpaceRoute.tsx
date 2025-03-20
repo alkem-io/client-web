@@ -8,15 +8,14 @@ import SpaceTabbedLayoutRoute from './SpaceTabbedLayoutRoute';
 const routes = { ...EntityPageSection };
 
 const SpaceRoute = () => {
-  const { space, permissions, loading } = useSpace();
+  const { permissions, loading } = useSpace();
 
-  const { isLoading, canRead, spaceId } = useMemo(() => {
+  const { isLoading, canRead } = useMemo(() => {
     return {
       isLoading: loading,
       canRead: permissions.canRead,
-      spaceId: space.id,
     };
-  }, [space, permissions, loading]);
+  }, [permissions, loading]);
 
   // TODO: revise this conditional rendering on that route level
   // everytime we navigate to different route, it rerenders the whole page
@@ -38,7 +37,7 @@ const SpaceRoute = () => {
 
   return (
     <Routes>
-      <Route path="*" element={<SpaceTabbedLayoutRoute spaceId={spaceId} />} />
+      <Route path="*" element={<SpaceTabbedLayoutRoute />} />
     </Routes>
   );
 };

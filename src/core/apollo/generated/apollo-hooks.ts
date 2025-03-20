@@ -14456,11 +14456,7 @@ export const ChildJourneyPageBannerDocument = gql`
               tags
             }
           }
-        }
-        community {
-          id
-          roleSet {
-            id
+          membership {
             myMembershipStatus
           }
         }

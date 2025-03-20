@@ -15,16 +15,25 @@ import React, { Suspense, useMemo } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
-const SpaceTabbedLayoutRoute = ({ spaceId }: { spaceId: string }) => {
+const SpaceTabbedLayoutRoute = () => {
+  const { space, permissions, loading: loadingSpace } = useSpace();
+
+  const { spaceId } = useMemo(() => {
+    return {
+      spaceId: space.id,
+    };
+  }, [space?.id]);
+
   const { data: spaceTabsData } = useSpaceTabsQuery({
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId,
+    skip: !spaceId || loadingSpace || !permissions.canRead,
   });
 
   const defaultTab = useMemo(() => {
