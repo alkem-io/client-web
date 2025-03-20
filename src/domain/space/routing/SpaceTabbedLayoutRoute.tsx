@@ -15,16 +15,27 @@ import React, { Suspense, useMemo } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
+import ProtectedRoute from '@/domain/space/routing/ProtectedRoute';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
-const SpaceTabbedLayoutRoute = ({ spaceId }: { spaceId: string }) => {
+const SpaceTabbedLayoutRoute = () => {
+  const { space, permissions, loading } = useSpace();
+
+  const { spaceId } = useMemo(() => {
+    return {
+      spaceId: space?.id,
+    };
+  }, [space.id]);
+
   const { data: spaceTabsData } = useSpaceTabsQuery({
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId,
+    skip: !spaceId || !permissions.canRead || loading,
   });
 
   const defaultTab = useMemo(() => {
@@ -50,45 +61,48 @@ const SpaceTabbedLayoutRoute = ({ spaceId }: { spaceId: string }) => {
 
   return (
     <Routes>
-      <Route index element={<Navigate replace to={defaultTab} />} />
-      <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
-      <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
-      <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
-      <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
-      <Route
-        path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-        element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
-      />
-      <Route path="calendar" element={<SpaceDashboardPage dialog="calendar" />} />
-      <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<SpaceDashboardPage dialog="calendar" />} />
-      <Route path={routes.Community} element={<SpaceCommunityPage />} />
-      <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
-      <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
-      <Route
-        path={routes.KnowledgeBase}
-        element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
-      />
-      <Route path={routes.Custom} element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
-      <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
-      <Route
-        path="*"
-        element={
-          <NotFoundPageLayout>
-            <Error404 />
-          </NotFoundPageLayout>
-        }
-      />
-      <Route
-        path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
-        element={
-          <SubspaceProvider>
-            <Suspense fallback={null}>
-              <SubspaceRoute />
-            </Suspense>
-          </SubspaceProvider>
-        }
-      />
-      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+      <Route path={routes.About} element={<SpaceAboutPage />} />
+      <Route element={<ProtectedRoute canActivate={permissions.canRead} redirectPath={routes.About} />}>
+        <Route index element={<Navigate replace to={defaultTab} />} />
+        <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
+        <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
+        <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
+        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
+        <Route
+          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+          element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
+        />
+        <Route path="calendar" element={<SpaceDashboardPage dialog="calendar" />} />
+        <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<SpaceDashboardPage dialog="calendar" />} />
+        <Route path={routes.Community} element={<SpaceCommunityPage />} />
+        <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
+        <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
+        <Route
+          path={routes.KnowledgeBase}
+          element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
+        />
+        <Route path={routes.Custom} element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
+        <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
+        <Route
+          path="*"
+          element={
+            <NotFoundPageLayout>
+              <Error404 />
+            </NotFoundPageLayout>
+          }
+        />
+        <Route
+          path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
+          element={
+            <SubspaceProvider>
+              <Suspense fallback={null}>
+                <SubspaceRoute />
+              </Suspense>
+            </SubspaceProvider>
+          }
+        />
+        <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+      </Route>
     </Routes>
   );
 };

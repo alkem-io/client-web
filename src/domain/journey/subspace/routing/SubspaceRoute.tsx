@@ -15,69 +15,70 @@ import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import ProtectedRoute from '@/domain/space/routing/ProtectedRoute';
 
 const SubspaceRoute = () => {
   const { subspace, permissions, loading } = useSubSpace();
 
-  const { canRead, spaceId } = useMemo(() => {
+  const { spaceId } = useMemo(() => {
     return {
-      canRead: permissions.canRead,
-      spaceId: subspace.id,
+      spaceId: subspace?.id,
     };
-  }, [subspace, permissions]);
+  }, [subspace?.id]);
 
-  if (spaceId && !loading && !canRead) {
-    return (
-      <Routes>
-        <Route path={routes.About} element={<SubspaceAboutPage />} />
-        <Route path="*" element={<Navigate to={routes.About} replace />} />
-      </Routes>
-    );
+  if (loading || !subspace?.id) {
+    return null;
   }
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <Routes>
-        <Route index element={<SubspaceHomePage />} />
-        <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
-        <Route path={SubspaceDialog.Outline} element={<SubspaceHomePage dialog={SubspaceDialog.Outline} />} />
-        <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
-        <Route path={SubspaceDialog.Contributors} element={<SubspaceHomePage dialog={SubspaceDialog.Contributors} />} />
-        <Route path={SubspaceDialog.Activity} element={<SubspaceHomePage dialog={SubspaceDialog.Activity} />} />
-        <Route path={SubspaceDialog.Timeline} element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />} />
-        <Route path={SubspaceDialog.Share} element={<SubspaceHomePage dialog={SubspaceDialog.Share} />} />
-        <Route path={SubspaceDialog.ManageFlow} element={<SubspaceHomePage dialog={SubspaceDialog.ManageFlow} />} />
-        <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
-        <Route path={SubspaceDialog.Updates} element={<SubspaceHomePage dialog={SubspaceDialog.Updates} />} />
-        <Route
-          path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
-          element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
-        />
-        {/* Redirecting legacy dashboard links to Subspace Home */}
-        <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
-        <Route
-          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-          element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
-        />
-        <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
-        <Route
-          path="*"
-          element={
-            <NotFoundPageLayout>
-              <Error404 />
-            </NotFoundPageLayout>
-          }
-        />
-        <Route
-          path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
-          element={
-            <SubspaceProvider>
-              <SubspaceRoute />
-            </SubspaceProvider>
-          }
-        />
-        <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+        <Route path={routes.About} element={<SubspaceAboutPage />} />
+        <Route element={<ProtectedRoute canActivate={permissions.canRead} redirectPath={routes.About} />}>
+          <Route index element={<SubspaceHomePage />} />
+          <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
+          <Route path={SubspaceDialog.Outline} element={<SubspaceHomePage dialog={SubspaceDialog.Outline} />} />
+          <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
+          <Route
+            path={SubspaceDialog.Contributors}
+            element={<SubspaceHomePage dialog={SubspaceDialog.Contributors} />}
+          />
+          <Route path={SubspaceDialog.Activity} element={<SubspaceHomePage dialog={SubspaceDialog.Activity} />} />
+          <Route path={SubspaceDialog.Timeline} element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />} />
+          <Route path={SubspaceDialog.Share} element={<SubspaceHomePage dialog={SubspaceDialog.Share} />} />
+          <Route path={SubspaceDialog.ManageFlow} element={<SubspaceHomePage dialog={SubspaceDialog.ManageFlow} />} />
+          <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
+          <Route path={SubspaceDialog.Updates} element={<SubspaceHomePage dialog={SubspaceDialog.Updates} />} />
+          <Route
+            path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
+            element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
+          />
+          {/* Redirecting legacy dashboard links to Subspace Home */}
+          <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
+          <Route
+            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+            element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
+          />
+          <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
+          <Route
+            path="*"
+            element={
+              <NotFoundPageLayout>
+                <Error404 />
+              </NotFoundPageLayout>
+            }
+          />
+          <Route
+            path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
+            element={
+              <SubspaceProvider>
+                <SubspaceRoute />
+              </SubspaceProvider>
+            }
+          />
+          <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+        </Route>
       </Routes>
     </StorageConfigContextProvider>
   );
