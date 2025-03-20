@@ -2,7 +2,7 @@ import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import PostCallout from '../post/PostCallout';
 import WhiteboardCollectionCallout from '../whiteboard/WhiteboardCollectionCallout';
 import CommentsCallout from '../comments/CommentsCallout';
-import { TypedCalloutDetails } from '../../calloutsSet/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';

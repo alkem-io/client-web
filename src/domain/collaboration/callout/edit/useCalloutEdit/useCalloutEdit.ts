@@ -80,7 +80,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               postDescription: callout.contributionDefaults?.postDescription,
               whiteboardContent: callout.contributionDefaults?.whiteboardContent,
             },
-            groupName: callout.groupName,
           },
         },
       });
@@ -89,7 +88,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   );
 
   const [deleteCallout] = useDeleteCalloutMutation({
-    refetchQueries: ['Callouts'],
+    refetchQueries: ['CalloutsOnCalloutsSetUsingClassification'],
   });
 
   const handleDelete = useCallback(

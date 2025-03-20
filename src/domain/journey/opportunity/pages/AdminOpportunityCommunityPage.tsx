@@ -15,7 +15,8 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, parentSpaceId } = useUrlResolver();
-  const { loading: isLoadingChallenge, roleSetId } = useSubSpace();
+  const { loading: isLoadingChallenge, subspace } = useSubSpace();
+  const roleSetId = subspace?.about.membership.roleSetID!;
 
   const {
     users,

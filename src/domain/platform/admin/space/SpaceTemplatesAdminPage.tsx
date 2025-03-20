@@ -8,7 +8,7 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection'
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
@@ -48,11 +48,9 @@ const TemplateTypePermissions = {
 
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, routePrefix }) => {
   const { templateId, loading: resolvingTemplate } = useUrlResolver();
-  const {
-    about: {
-      profile: { url: spaceUrl },
-    },
-  } = useSpace();
+  const { space } = useSpace();
+  const about = space.about;
+  const spaceUrl = about.profile.url;
 
   const { data, loading: loadingSpace } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },

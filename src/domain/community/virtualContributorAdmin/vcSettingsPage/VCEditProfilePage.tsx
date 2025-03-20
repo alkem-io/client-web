@@ -1,6 +1,6 @@
 import Loading from '@/core/ui/loading/Loading';
 import {
-  useBodyOfKnowledgeProfileQuery,
+  useSpaceBodyOfKnowledgeAboutQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -28,7 +28,7 @@ export const VCSettingsPage = () => {
     skip: !vcId,
   });
 
-  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
+  const { data: bokProfile } = useSpaceBodyOfKnowledgeAboutQuery({
     variables: {
       spaceId: data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
     },

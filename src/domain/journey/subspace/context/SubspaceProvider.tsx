@@ -1,10 +1,6 @@
-import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CommunityMembershipStatus,
-  SpaceLevel,
-  SubspacePendingMembershipInfoFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { FC, PropsWithChildren, useMemo } from 'react';
 
@@ -12,70 +8,79 @@ interface SubspacePermissions {
   canUpdate: boolean;
   canCreate: boolean;
   canCreateSubspace: boolean;
-  canReadCommunity: boolean;
-  contextPrivileges: AuthorizationPrivilege[];
+  canRead: boolean;
 }
 
 interface SubspaceContextProps {
-  subspace?: SubspacePendingMembershipInfoFragment;
-  subspaceId: string;
-  level: SpaceLevel;
-  communityId: string;
-  roleSetId: string;
+  subspace: {
+    id: string;
+    level: SpaceLevel;
+    about: SpaceAboutFullModel;
+    authorization?: {
+      myPrivileges: AuthorizationPrivilege[];
+    };
+  };
   loading: boolean;
   permissions: SubspacePermissions;
-  about: SubspacePendingMembershipInfoFragment['about'];
-  myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
-export const SubspaceContext = React.createContext<SubspaceContextProps>({
+const defaultValue: SubspaceContextProps = {
   loading: true,
-  level: SpaceLevel.L1,
-  subspaceId: '',
-  communityId: '',
-  roleSetId: '',
+  subspace: {
+    id: '',
+    level: SpaceLevel.L1,
+    about: {
+      id: '',
+      profile: {
+        id: '',
+        displayName: '',
+        avatar: undefined,
+        banner: undefined,
+        cardBanner: undefined,
+        tagline: '',
+        url: '',
+      },
+      who: '',
+      why: '',
+      membership: {
+        myMembershipStatus: undefined,
+        roleSetID: '',
+        communityID: undefined,
+        leadUsers: [],
+        leadOrganizations: [],
+      },
+      isContentPublic: true,
+      guidelines: {
+        id: '',
+      },
+    },
+  },
   permissions: {
     canUpdate: false,
     canCreate: false,
     canCreateSubspace: false,
-    canReadCommunity: false,
-    contextPrivileges: [],
+    canRead: false,
   },
-  about: {
-    id: '',
-    profile: {
-      id: '',
-      displayName: '',
-      visuals: [],
-      tagline: '',
-      url: '',
-    },
-  },
-  myMembershipStatus: undefined,
-});
+};
+
+export const SubspaceContext = React.createContext<SubspaceContextProps>(defaultValue);
 
 interface SubspaceProviderProps extends PropsWithChildren {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { spaceId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { data, loading } = useSubspacePendingMembershipInfoQuery({
-    variables: { subspaceId: spaceId! },
+  const { data, loading } = useSpaceAboutDetailsQuery({
+    variables: { spaceId: spaceId! },
     errorPolicy: 'all',
     skip: !spaceId,
   });
 
-  const subspace = data?.lookup.space;
-  const communityId = subspace?.community?.id ?? '';
-  const roleSetId = subspace?.community?.roleSet?.id ?? '';
+  const subspaceData = data?.lookup.space;
 
   const myPrivileges = useMemo(
-    () => subspace?.authorization?.myPrivileges ?? [],
-    [subspace?.authorization?.myPrivileges]
-  );
-
-  const canReadCommunity = (subspace?.community?.authorization?.myPrivileges ?? []).includes(
-    AuthorizationPrivilege.Read
+    () => subspaceData?.authorization?.myPrivileges ?? [],
+    [subspaceData?.authorization?.myPrivileges]
   );
 
   const permissions = useMemo<SubspacePermissions>(
@@ -83,46 +88,63 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
       canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
       canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      canReadCommunity,
-      contextPrivileges: subspace?.about.authorization?.myPrivileges ?? [],
+      canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
+      contextPrivileges: subspaceData?.about.authorization?.myPrivileges ?? [],
     }),
-    [myPrivileges, subspace, canReadCommunity]
+    [myPrivileges, subspaceData]
   );
 
-  const about = useMemo(() => {
-    return {
-      id: subspace?.about.id ?? '',
+  const subspace = useMemo(() => {
+    const about: SpaceAboutFullModel = {
+      id: subspaceData?.about.id ?? '',
       profile: {
-        id: subspace?.about.profile.id ?? '',
-        displayName: subspace?.about.profile.displayName || '',
-        description: subspace?.about.profile.description,
-        tagset: subspace?.about.profile.tagset,
-        visuals: subspace?.about.profile.visuals ?? [],
-        tagline: subspace?.about.profile.tagline || '',
-        references: subspace?.about.profile.references ?? [],
-        location: subspace?.about.profile.location,
-        url: subspace?.about.profile.url ?? '',
+        id: subspaceData?.about.profile.id ?? '',
+        displayName: subspaceData?.about.profile.displayName || '',
+        description: subspaceData?.about.profile.description,
+        tagset: subspaceData?.about.profile.tagset,
+        avatar: subspaceData?.about.profile.avatar,
+        banner: subspaceData?.about.profile.banner,
+        cardBanner: subspaceData?.about.profile.cardBanner,
+        tagline: subspaceData?.about.profile.tagline || '',
+        references: subspaceData?.about.profile.references ?? [],
+        location: subspaceData?.about.profile.location,
+        url: subspaceData?.about.profile.url ?? '',
+      },
+      who: subspaceData?.about.who ?? '',
+      why: subspaceData?.about.why ?? '',
+      isContentPublic: subspaceData?.about.isContentPublic ?? true,
+      provider: subspaceData?.about.provider,
+      membership: {
+        myMembershipStatus: subspaceData?.about.membership.myMembershipStatus,
+        leadOrganizations: subspaceData?.about.membership.leadOrganizations ?? [],
+        leadUsers: subspaceData?.about.membership.leadUsers ?? [],
+        communityID: subspaceData?.about.membership.communityID,
+        roleSetID: subspaceData?.about.membership.roleSetID,
+      },
+      guidelines: {
+        id: subspaceData?.about.guidelines.id ?? '',
       },
     };
-  }, [subspace?.about.profile]);
 
-  return (
-    <SubspaceContext.Provider
-      value={{
-        subspace,
-        level: subspace?.level || SpaceLevel.L1,
-        subspaceId: spaceId ?? '',
-        communityId,
-        roleSetId,
-        permissions,
-        about,
-        loading: loading || urlResolverLoading,
-        myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
-      }}
-    >
-      {children}
-    </SubspaceContext.Provider>
-  );
+    return {
+      id: subspaceData?.id ?? '',
+      level: subspaceData?.level ?? SpaceLevel.L1,
+      about,
+    };
+  }, [subspaceData]);
+
+  let state = {
+    subspace,
+    permissions,
+    loading: loading || urlResolverLoading,
+  };
+
+  // don't provide space L0 as subspace
+  if (subspaceData?.level === SpaceLevel.L0) {
+    state = defaultValue;
+  }
+
+  return <SubspaceContext.Provider value={state}>{children}</SubspaceContext.Provider>;
 };
 
 export default SubspaceProvider;

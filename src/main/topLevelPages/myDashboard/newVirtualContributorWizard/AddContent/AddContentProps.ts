@@ -1,4 +1,4 @@
-import { CalloutGroupName, CalloutState, CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 
 export type PostValues = {
   title: string;
@@ -33,7 +33,6 @@ export const getPostCalloutRequestData = (title: string, description: string) =>
   contributionPolicy: {
     state: CalloutState.Closed,
   },
-  groupName: CalloutGroupName.Knowledge,
   visibility: CalloutVisibility.Published,
   sendNotification: false,
 });
@@ -51,7 +50,6 @@ export const getDocumentCalloutRequestData = (name: string) => ({
   contributionPolicy: {
     state: CalloutState.Open,
   },
-  groupName: CalloutGroupName.Knowledge,
   visibility: CalloutVisibility.Published,
   sendNotification: false,
 });

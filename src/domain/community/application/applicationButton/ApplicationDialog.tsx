@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import { CreateNvpInput } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
@@ -17,13 +16,15 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import { useApplicationDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
 type ApplicationDialogProps = {
   open: boolean;
   onClose: () => void;
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   canJoinCommunity?: boolean;
   onJoin: () => void;
   onApply?: () => void;
@@ -31,18 +32,29 @@ type ApplicationDialogProps = {
 
 const ApplicationDialog = ({
   open,
-  journeyId,
+  spaceId,
   onJoin,
   onClose,
   onApply,
   canJoinCommunity = false,
 }: ApplicationDialogProps) => {
   const { t } = useTranslation();
+  const ensurePresence = useEnsurePresence();
   const [applicationQuestions, setApplicationQuestions] = useState<CreateNvpInput[]>([]);
   const [isValid, setIsValid] = useState(false);
 
-  const { data } = useApplicationCommunityQuery(journeyId, canJoinCommunity);
-  const { description, questions = [], roleSetId = '', displayName: communityName, communityGuidelines } = data || {};
+  const { data } = useApplicationDialogQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !open || !spaceId || canJoinCommunity,
+  });
+  const spaceAbout = data?.lookup.space?.about;
+  const communityName = spaceAbout?.profile.displayName;
+  const applicationForm = spaceAbout?.membership.applicationForm;
+  const questions = applicationForm?.questions ?? [];
+  const roleSetId = spaceAbout?.membership.roleSetID;
+  const communityGuidelines = spaceAbout?.guidelines.profile;
 
   const { applyForEntryRoleOnRoleSet, isApplying } = useRoleSetApplicationsAndInvitations({});
 
@@ -89,8 +101,9 @@ const ApplicationDialog = ({
       onClose();
       return;
     }
+    const requiredRoleSetId = ensurePresence(roleSetId);
 
-    await applyForEntryRoleOnRoleSet(roleSetId, applicationQuestions);
+    await applyForEntryRoleOnRoleSet(requiredRoleSetId, applicationQuestions);
     onClose();
     onApply?.();
   };
@@ -117,8 +130,8 @@ const ApplicationDialog = ({
                   <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
                   {canJoinCommunity && <BlockTitle>{t('pages.space.application.subheaderJoin')}</BlockTitle>}
                   {!canJoinCommunity &&
-                    (description ? (
-                      <WrapperMarkdown>{description}</WrapperMarkdown>
+                    (applicationForm?.description ? (
+                      <WrapperMarkdown>{applicationForm.description}</WrapperMarkdown>
                     ) : (
                       <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
                     ))}

@@ -88,11 +88,6 @@ fragment PostParent on SearchResultPost {
     about {
       ...SpaceAboutLight
     }
-    settings {
-      privacy {
-        mode
-      }
-    }
   }
   callout {
     id
@@ -211,11 +206,6 @@ fragment SearchResultSpace on SearchResultSpace {
     about {
       ...SpaceAboutLight
     }
-    settings {
-      privacy {
-        mode
-      }
-    }
   }
   space {
     id
@@ -235,17 +225,9 @@ fragment SearchResultSpace on SearchResultSpace {
           ...VisualUri
         }
       }
-    }
-    community {
-      id
-      roleSet {
-        id
+      isContentPublic
+      membership {
         myMembershipStatus
-      }
-    }
-    settings {
-      privacy {
-        mode
       }
     }
     visibility

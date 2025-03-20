@@ -37,7 +37,6 @@ import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
 import InfoColumn from './InfoColumn';
 import { SubspaceDialog } from './SubspaceDialog';
 import WelcomeBlock from './WelcomeBlock';
-import useAboutRedirect from '@/core/routing/useAboutRedirect';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -150,8 +149,6 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-
-  useAboutRedirect({ spaceId: journeyId, skip: !journeyId });
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
