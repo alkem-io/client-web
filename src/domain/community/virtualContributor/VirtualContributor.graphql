@@ -1,3 +1,11 @@
+query AiPersona($id: UUID!) {
+  aiServer {
+    aiPersonaService(ID: $id) {
+      id
+      prompt
+    }
+  }
+}
 query VirtualContributor($id: UUID!) {
   lookup {
     virtualContributor(ID: $id) {
