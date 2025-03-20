@@ -12,6 +12,7 @@ import { SpaceTabsPlaceholder } from '../layout/TabbedSpaceL0/Tabs/SpaceTabs';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Box } from '@mui/material';
 
 const SpaceAboutPage = () => {
   const { journeyPath } = useUrlResolver();
@@ -42,6 +43,7 @@ const SpaceAboutPage = () => {
       }
       tabsComponent={SpaceTabsPlaceholder}
     >
+      <Box sx={{ height: 'calc(100vh - 400px)' }}>&nbsp;</Box>
       <StorageConfigContextProvider locationType="journey" spaceId={space.id}>
         {spaceDetails && (
           <SpaceAboutDialog
