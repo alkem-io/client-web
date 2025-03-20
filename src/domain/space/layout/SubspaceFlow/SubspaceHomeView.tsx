@@ -81,6 +81,7 @@ const SubspaceHomeView = ({
   const calloutsSetProvided = useCalloutsSet({
     calloutsSetId,
     classificationTagsets: classificationTagsets,
+    includeClassification: true,
     canSaveAsTemplate: false,
     entitledToSaveAsTemplate: false,
     skip: !selectedInnovationFlowState,

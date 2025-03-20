@@ -33,6 +33,11 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
       displayName: string;
     };
   };
+  classification?: {
+    flowState?: {
+      tags: string[];
+    };
+  };
   type: CalloutType;
   draft: boolean;
   editable: boolean;
@@ -70,6 +75,7 @@ export type TypedCalloutDetails = TypedCallout &
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
   classificationTagsets: ClassificationTagsetModel[];
+  includeClassification?: boolean | undefined;
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
   skip?: boolean;
@@ -92,13 +98,15 @@ export interface UseCalloutsSetProvided {
 const useCalloutsSet = ({
   calloutsSetId,
   classificationTagsets,
+  includeClassification,
   canSaveAsTemplate,
   entitledToSaveAsTemplate,
   skip,
 }: UseCalloutsSetParams): UseCalloutsSetProvided => {
   const { canCreateCallout, loading: authorizationLoading } = useCalloutsSetAuthorization({ calloutsSetId });
 
-  const withClassificationDetails = classificationTagsets.length > 0;
+  const withClassificationDetails =
+    includeClassification === undefined ? classificationTagsets.length > 0 : includeClassification;
 
   const variables: CalloutsOnCalloutsSetUsingClassificationQueryVariables = {
     calloutsSetId: calloutsSetId!,
