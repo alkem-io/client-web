@@ -86,7 +86,7 @@ const hydrateSpaceCard = (
   const spaceProfile = space.about.profile;
   const tagline = spaceProfile?.tagline ?? '';
   const name = spaceProfile.displayName;
-  const tags = data.terms; // TODO: add terms field to journey card
+  const tags = space.about.profile.tagset?.tags;
   const vision = space.about.why ?? '';
 
   const isMember = space.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
