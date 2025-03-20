@@ -19227,11 +19227,10 @@ export type ChildJourneyPageBannerQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
-          };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+            };
           };
         }
       | undefined;
