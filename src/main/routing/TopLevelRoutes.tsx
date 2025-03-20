@@ -57,7 +57,10 @@ const CreateSpaceDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
 );
 // TODO: this to load directly, and lazy load then the appropriate layout
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'), withUrlResolverParams);
+const SpaceRoute = lazyWithGlobalErrorHandler(
+  () => import('@/domain/space/routing/SpaceTabbedLayoutRoute'),
+  withUrlResolverParams
+);
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
