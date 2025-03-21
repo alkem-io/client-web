@@ -9,7 +9,6 @@ import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
-import { MAX_INNOVATIONFLOW_STATES } from '@/domain/templates/models/CollaborationTemplate';
 import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
@@ -26,8 +25,17 @@ const STATES_DROPPABLE_ID = '__states';
 export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
   children?: (state: InnovationFlowState) => React.ReactNode;
-  innovationFlowStates: InnovationFlowState[] | undefined;
-  currentState?: string | undefined;
+  innovationFlow:
+    | {
+        currentState: Pick<InnovationFlowState, 'displayName'>;
+        states: InnovationFlowState[];
+        settings: {
+          maximumNumberOfStates: number;
+          minimumNumberOfStates: number;
+        };
+      }
+    | undefined;
+
   croppedDescriptions?: boolean;
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCurrentState?: (state: string) => void;
@@ -37,6 +45,10 @@ export interface InnovationFlowDragNDropEditorProps {
   ) => Promise<unknown> | void;
   onEditFlowState: (oldState: InnovationFlowState, newState: InnovationFlowState) => Promise<unknown> | void;
   onDeleteFlowState: (state: string) => Promise<unknown> | void;
+  /**
+   * Prevents the user from changing the number of states, adding or removing
+   */
+  disableStateNumberChange?: boolean;
 }
 
 const AddButton = (props: IconButtonProps) => {
@@ -56,9 +68,8 @@ const AddButton = (props: IconButtonProps) => {
 };
 
 const InnovationFlowDragNDropEditor = ({
-  innovationFlowStates,
+  innovationFlow,
   children,
-  currentState,
   croppedDescriptions,
   onUnhandledDragEnd,
   onUpdateFlowStateOrder,
@@ -66,10 +77,11 @@ const InnovationFlowDragNDropEditor = ({
   onCreateFlowState,
   onEditFlowState,
   onDeleteFlowState,
+  disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
-
-  // Dialogs for Flow States management:
+  const innovationFlowStates = innovationFlow?.states;
+  const currentState = innovationFlow?.currentState.displayName;
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
   const [createFlowState, setCreateFlowState] = useState<
@@ -103,7 +115,12 @@ const InnovationFlowDragNDropEditor = ({
             <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
               <Box display="flex" flexDirection="row" gap={gutters()} alignItems="stretch">
                 {innovationFlowStates?.map((state, index) => (
-                  <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
+                  <Draggable
+                    key={state.displayName}
+                    draggableId={state.displayName}
+                    index={index}
+                    isDragDisabled={disableStateNumberChange}
+                  >
                     {parentProvider => {
                       const isCurrentState = currentState === state.displayName;
                       return (
@@ -128,6 +145,7 @@ const InnovationFlowDragNDropEditor = ({
                                 onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
                                 onEdit={() => setEditFlowState(state)}
                                 onDelete={() => setDeleteFlowState(state.displayName)}
+                                disableStateNumberChange={disableStateNumberChange}
                               />
                             }
                           />
@@ -146,10 +164,14 @@ const InnovationFlowDragNDropEditor = ({
                   </Draggable>
                 ))}
                 {parentDroppableProvided.placeholder}
-                <AddButton
-                  onClick={() => setCreateFlowState({ last: true })}
-                  disabled={(innovationFlowStates ?? [])?.length >= MAX_INNOVATIONFLOW_STATES}
-                />
+                {!disableStateNumberChange && (
+                  <AddButton
+                    onClick={() => setCreateFlowState({ last: true })}
+                    disabled={
+                      (innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0)
+                    }
+                  />
+                )}
               </Box>
             </Box>
           )}

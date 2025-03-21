@@ -56,8 +56,7 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,
   loading,
-  innovationFlowStates,
-  currentState,
+  innovationFlow,
   onUpdateCalloutFlowState,
   onUnhandledDragEnd,
   ...statesActions
@@ -87,8 +86,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   return (
     <InnovationFlowDragNDropEditor
       onUnhandledDragEnd={handleDragEnd}
-      currentState={currentState}
-      innovationFlowStates={innovationFlowStates}
+      innovationFlow={innovationFlow}
       croppedDescriptions
       {...statesActions}
     >

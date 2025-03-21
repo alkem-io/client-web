@@ -170,18 +170,10 @@ export const ForumPage = ({
           >
             <BlockTitle>{t('components.discussions-list.title', { count: discussions.length })}</BlockTitle>
             <DiscussionListView
-              entities={{
-                discussions,
-              }}
-              state={{
-                loading: loading,
-              }}
-              actions={{
-                onClickDiscussion: discussion => handleClickDiscussion(discussion.url),
-              }}
-              options={{
-                filterEnabled: true,
-              }}
+              discussions={discussions}
+              loading={loading}
+              onClickDiscussion={discussion => handleClickDiscussion(discussion.url)}
+              filterEnabled
             />
             {!loading && communicationId && (
               <NewDiscussionDialog

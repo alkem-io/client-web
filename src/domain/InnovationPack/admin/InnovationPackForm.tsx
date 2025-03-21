@@ -2,7 +2,13 @@ import { Box, TextField } from '@mui/material';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Reference, SearchVisibility, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import {
+  Reference,
+  SearchVisibility,
+  Tagset,
+  TagsetReservedName,
+  TagsetType,
+} from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -13,7 +19,6 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import Gutters from '@/core/ui/grid/Gutters';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
@@ -65,7 +70,13 @@ const InnovationPackForm = ({
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
       tagsets: [
-        profile?.tagset ?? { id: '', name: DEFAULT_TAGSET, tags: [], allowedValues: [], type: TagsetType.Freeform },
+        profile?.tagset ?? {
+          id: '',
+          name: TagsetReservedName.Default,
+          tags: [],
+          allowedValues: [],
+          type: TagsetType.Freeform,
+        },
       ],
       references: profile?.references ?? [],
     },

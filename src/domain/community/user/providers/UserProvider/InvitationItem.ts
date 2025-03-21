@@ -9,7 +9,7 @@ export interface InvitationItem extends Identifiable {
   };
   invitation: {
     id: string;
-    createdBy: Identifiable;
+    createdBy?: Identifiable;
     welcomeMessage?: string;
     createdDate: Date | string;
     state?: string;

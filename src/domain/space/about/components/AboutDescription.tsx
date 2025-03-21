@@ -19,7 +19,7 @@ export interface AboutDescriptionProps extends PropsWithChildren {
   description?: string;
   spaceLevel?: SpaceLevel;
   loading?: boolean;
-  member?: false;
+  member?: boolean;
   location?: {
     city?: string;
     country?: string;

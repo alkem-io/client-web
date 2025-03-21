@@ -30,11 +30,7 @@ query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
             tags
           }
         }
-      }
-      community {
-        id
-        roleSet {
-          id
+        membership {
           myMembershipStatus
         }
       }

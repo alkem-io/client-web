@@ -37,21 +37,8 @@ query AccountInformation($accountId: UUID!) {
             }
             tagline
           }
-        }
-        license {
-          id
-          entitlements {
-            ...EntitlementDetails
-          }
-        }
-        community {
-          id
-          roleSet {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
+          membership {
+            myPrivileges
           }
         }
       }

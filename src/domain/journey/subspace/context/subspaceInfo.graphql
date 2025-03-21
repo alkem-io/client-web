@@ -1,7 +1,0 @@
-query SubspacePendingMembershipInfo($subspaceId: UUID!) {
-  lookup {
-    space(ID: $subspaceId) {
-      ...SubspacePendingMembershipInfo
-    }
-  }
-}

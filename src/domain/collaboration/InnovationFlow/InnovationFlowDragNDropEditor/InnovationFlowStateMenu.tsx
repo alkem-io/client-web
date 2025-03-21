@@ -12,6 +12,7 @@ type InnovationFlowStateMenuProps = {
   onEdit: (state: string) => void;
   onDelete: (state: string) => void;
   onAddStateAfter: (stateBefore: string) => void;
+  disableStateNumberChange?: boolean;
 };
 
 export default function InnovationFlowStateMenu({
@@ -21,6 +22,7 @@ export default function InnovationFlowStateMenu({
   onEdit,
   onDelete,
   onAddStateAfter,
+  disableStateNumberChange = false,
 }: InnovationFlowStateMenuProps) {
   const { t } = useTranslation();
 
@@ -57,19 +59,23 @@ export default function InnovationFlowStateMenu({
               </ListItemIcon>
               {t('components.innovationFlowSettings.stateEditor.editState')}
             </MenuItem>
-            <MenuItem onClick={createMenuAction(onDelete)}>
-              <ListItemIcon>
-                <DeleteOutlined fontSize="small" />
-              </ListItemIcon>
-              {t('components.innovationFlowSettings.stateEditor.deleteState')}
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={createMenuAction(onAddStateAfter)}>
-              <ListItemIcon>
-                <AddCircleOutline fontSize="small" />
-              </ListItemIcon>
-              {t('components.innovationFlowSettings.stateEditor.addState')}
-            </MenuItem>
+            {!disableStateNumberChange && (
+              <>
+                <MenuItem onClick={createMenuAction(onDelete)}>
+                  <ListItemIcon>
+                    <DeleteOutlined fontSize="small" />
+                  </ListItemIcon>
+                  {t('components.innovationFlowSettings.stateEditor.deleteState')}
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={createMenuAction(onAddStateAfter)}>
+                  <ListItemIcon>
+                    <AddCircleOutline fontSize="small" />
+                  </ListItemIcon>
+                  {t('components.innovationFlowSettings.stateEditor.addState')}
+                </MenuItem>
+              </>
+            )}
           </>
         );
       }}

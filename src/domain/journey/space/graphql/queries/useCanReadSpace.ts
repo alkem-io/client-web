@@ -12,7 +12,6 @@ interface UseCanReadSpaceParams {
 
 export interface SpaceReadAccess {
   canReadSpace: boolean | undefined;
-  canReadCommunity: boolean | undefined;
   loading: boolean;
   error?: ApolloError;
 }
@@ -33,18 +32,13 @@ const useCanReadSpace = ({ spaceId }: UseCanReadSpaceParams): SpaceReadAccess =>
     AuthorizationPrivilege.Read
   );
 
-  const canReadCommunity = spacePrivilegesQueryData?.lookup.space?.community.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Read
-  );
-
   return useMemo<SpaceReadAccess>(
     () => ({
       canReadSpace,
-      canReadCommunity,
       loading: privilegesLoading,
       error: privilegesError,
     }),
-    [canReadSpace, canReadCommunity, privilegesLoading, privilegesError]
+    [canReadSpace, privilegesLoading, privilegesError]
   );
 };
 

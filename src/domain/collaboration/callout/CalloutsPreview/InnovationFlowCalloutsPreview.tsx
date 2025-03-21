@@ -17,9 +17,6 @@ type CalloutPreview = {
     profile: {
       displayName: string;
       description?: string;
-      flowStateTagset?: {
-        tags: string[];
-      };
     };
     whiteboard?: {
       profile: {
@@ -27,6 +24,11 @@ type CalloutPreview = {
           uri: string;
         };
       };
+    };
+  };
+  classification?: {
+    flowState?: {
+      tags: string[];
     };
   };
   sortOrder: number;
@@ -79,8 +81,8 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
       ?.filter(
         callout =>
           selectedState &&
-          callout.framing.profile.flowStateTagset?.tags &&
-          callout.framing.profile.flowStateTagset?.tags.includes(selectedState)
+          callout.classification?.flowState?.tags &&
+          callout.classification?.flowState?.tags.includes(selectedState)
       )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }, [callouts, selectedState]);

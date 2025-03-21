@@ -54,7 +54,7 @@ const getDashboardNavigationItemProps = (
     displayName: space.about.profile.displayName,
     avatar: space.about.profile.avatar,
     private: disabled,
-    member: space.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
+    member: space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member,
     canCreateSubspace: space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };

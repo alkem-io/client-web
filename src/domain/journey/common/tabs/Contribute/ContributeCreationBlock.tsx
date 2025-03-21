@@ -10,14 +10,16 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 type ContributeCreationBlockProps = {
   canCreate: boolean;
   handleCreate: () => void;
+  tabDescription: string;
 };
 
-export const ContributeCreationBlock = ({ canCreate, handleCreate }: ContributeCreationBlockProps) => {
+export const ContributeCreationBlock = ({ tabDescription, canCreate, handleCreate }: ContributeCreationBlockProps) => {
   const { t } = useTranslation();
+
   const { locations } = useConfig();
   return (
     <PageContentBlock accent>
-      <WrapperMarkdown>{t('pages.contribute.initial-text')}</WrapperMarkdown>
+      <WrapperMarkdown>{tabDescription || t('pages.contribute.initial-text')}</WrapperMarkdown>
       {canCreate && (
         <Actions justifyContent="end">
           {locations?.inspiration && (

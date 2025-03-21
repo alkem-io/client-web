@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Box, DialogContent } from '@mui/material';
 import {
   AuthorizationPrivilege,
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   ContributeTabPostFragment,
@@ -42,7 +41,6 @@ export interface CalloutLayoutProps {
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    groupName: CalloutGroupName;
     contributionPolicy: {
       state: CalloutState;
     };

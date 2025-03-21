@@ -22,21 +22,23 @@ import AccountResourcesView, {
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import Loading from '@/core/ui/loading/Loading';
-import {
-  OrganizationContainerEntities,
-  OrganizationContainerState,
-} from '../../contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
+import { UseOrganizationProvided } from '../../contributor/organization/useOrganization/useOrganization';
 
 type OrganizationPageViewProps = {
-  entities: OrganizationContainerEntities;
+  organizationProvided: UseOrganizationProvided;
   accountResources: AccountResourcesProps | undefined;
-  state: OrganizationContainerState;
+  loading: boolean;
 };
 
-export const OrganizationPageView = ({ entities, accountResources, state: { loading } }: OrganizationPageViewProps) => {
+export const OrganizationPageView = ({
+  organizationProvided,
+  accountResources,
+  loading,
+}: OrganizationPageViewProps) => {
   const { t } = useTranslation();
 
-  const { permissions, references, organization, capabilities, keywords, associates, contributions } = entities;
+  const { permissions, references, organization, capabilities, keywords, associates, contributions } =
+    organizationProvided;
 
   const tagsets = useMemo(
     () => [

@@ -1,11 +1,5 @@
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutGroupName,
-  CalloutState,
-  CalloutType,
-  CalloutVisibility,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -13,9 +7,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { Reference } from '@/domain/common/profile/Profile';
-import { findDefaultTagset } from '@/domain/common/tags/utils';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -50,7 +42,6 @@ export interface CalloutCreationDialogProps {
   onClose: () => void;
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
-  groupName: CalloutGroupName;
   flowState?: string;
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
@@ -62,7 +53,6 @@ const CalloutCreationDialog = ({
   onClose,
   onCreateCallout,
   loading,
-  groupName,
   flowState,
   availableCalloutTypes,
   disableRichMedia,
@@ -124,6 +114,9 @@ const CalloutCreationDialog = ({
       let result: Identifiable | undefined;
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
+          classification: {
+            tagsets: flowState ? [{ name: 'flow-state', tags: [flowState] }] : [],
+          },
           framing: {
             profile: {
               displayName: callout.displayName!,
@@ -133,7 +126,6 @@ const CalloutCreationDialog = ({
                 uri: ref.uri,
                 description: ref.description,
               })),
-              tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
             whiteboard: callout.type === CalloutType.Whiteboard && callout.whiteboard ? callout.whiteboard : undefined,
             tags: callout.tags ?? [],
@@ -147,7 +139,6 @@ const CalloutCreationDialog = ({
           contributionPolicy: {
             state: callout.state!,
           },
-          groupName,
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };
@@ -196,7 +187,7 @@ const CalloutCreationDialog = ({
     setCallout({
       displayName: templateCallout.framing.profile.displayName,
       description: templateCallout.framing.profile.description,
-      tags: findDefaultTagset(templateCallout.framing.profile.tagsets)?.tags,
+      tags: templateCallout.framing.profile.tagset?.tags,
       references,
       type: templateCallout.type,
       postDescription: templateCallout.contributionDefaults?.postDescription,

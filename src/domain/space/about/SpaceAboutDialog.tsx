@@ -8,12 +8,10 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Trans, useTranslation } from 'react-i18next';
-import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
 import { Theme } from '@mui/material/styles';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import References from '@/domain/shared/components/References/References';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
@@ -21,7 +19,6 @@ import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUser
 import LockOutlined from '@mui/icons-material/LockOutlined';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { SpaceAboutDetailsModel } from './model/spaceAboutFull.model';
 import AboutHeader from '@/domain/space/about/components/AboutHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import AboutDescription from '@/domain/space/about/components/AboutDescription';
@@ -32,16 +29,12 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useNavigate from '@/core/routing/useNavigate';
+import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
 
-export interface SpaceAboutDialogProps extends EntityDashboardLeads {
+export interface SpaceAboutDialogProps {
   open: boolean;
-  spaceId?: string;
-  parentSpaceId?: string; // needed for the application button on L2 level
-  communityId?: string;
-  spaceLevel: SpaceLevel | undefined;
-  about?: SpaceAboutDetailsModel | undefined;
-  sendMessageToCommunityLeads: (message: string) => Promise<void>;
-  metrics: Metric[] | undefined;
+  space: SpaceDashboardSpaceDetails;
+  parentSpaceId?: string;
   loading?: boolean;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
@@ -57,15 +50,8 @@ const gradient = (theme: Theme) =>
 
 const SpaceAboutDialog = ({
   open,
-  spaceId,
+  space,
   parentSpaceId,
-  communityId,
-  spaceLevel = SpaceLevel.L0,
-  about,
-  leadUsers,
-  leadOrganizations,
-  provider: host,
-  metrics,
   loading = false,
   onClose,
   hasReadPrivilege,
@@ -74,8 +60,13 @@ const SpaceAboutDialog = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const isSpace = spaceLevel === SpaceLevel.L0;
-  const leadOrganizationsHeader = isSpace
+  const isLevelZeroSpace = space.level === SpaceLevel.L0;
+  const spaceLevel = space.level || SpaceLevel.L0;
+  const { about } = space;
+  const metrics = about?.metrics || [];
+  const membership = about?.membership;
+
+  const leadOrganizationsHeader = isLevelZeroSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';
   const leadUsersHeader = 'community.leads';
@@ -86,6 +77,7 @@ const SpaceAboutDialog = ({
   const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
 
   const aboutProfile = about?.profile;
+  const communityGuidelinesId = about?.guidelines.id;
 
   const openEditDialog = () => {
     if (aboutProfile?.url) {
@@ -93,6 +85,9 @@ const SpaceAboutDialog = ({
     }
   };
 
+  const provider = about?.provider;
+  const leadOrganizations = membership?.leadOrganizations;
+  const leadUsers = membership?.leadUsers;
   const hasLeads = Boolean(leadOrganizations?.length || leadUsers?.length);
 
   const hasReferences = Boolean(aboutProfile?.references?.length);
@@ -103,7 +98,7 @@ const SpaceAboutDialog = ({
   };
 
   const renderHost = () => {
-    if (!host) {
+    if (!provider) {
       return null;
     }
 
@@ -119,19 +114,19 @@ const SpaceAboutDialog = ({
             <InfoOutlinedIcon color="primary" />
           </Tooltip>
         }
-        leadOrganizations={host && [host]}
+        leadOrganizations={provider ? [provider] : undefined}
         leadUsers={undefined}
       >
-        {host && (
+        {provider && (
           <Caption
             component={Link}
             onClick={() =>
               sendMessage('organization', {
-                id: host.id,
-                displayName: host.profile.displayName,
-                avatarUri: host.profile.avatar?.uri,
-                country: host.profile.location?.country,
-                city: host.profile.location?.city,
+                id: provider.id,
+                displayName: provider.profile.displayName,
+                avatarUri: provider.profile.avatar?.uri,
+                country: provider.profile.location?.country,
+                city: provider.profile.location?.city,
               })
             }
             sx={{ cursor: 'pointer' }}
@@ -186,6 +181,7 @@ const SpaceAboutDialog = ({
             <PageContentColumn columns={4}>
               <PageContentBlock accent>
                 <AboutDescription
+                  member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
                   description={aboutProfile?.description}
                   loading={loading}
                   location={aboutProfile?.location}
@@ -196,7 +192,7 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Box display="flex" justifyContent="center" width="100%">
-                <ApplicationButtonContainer journeyId={spaceId} parentSpaceId={parentSpaceId}>
+                <ApplicationButtonContainer journeyId={space.id} parentSpaceId={parentSpaceId}>
                   {(applicationButtonProps, loading) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
@@ -207,8 +203,8 @@ const SpaceAboutDialog = ({
                         ref={applicationButtonRef}
                         {...applicationButtonProps}
                         loading={loading}
-                        journeyId={spaceId}
-                        spaceLevel={spaceLevel}
+                        journeyId={space.id}
+                        spaceLevel={space.level}
                       />
                     );
                   }}
@@ -255,7 +251,9 @@ const SpaceAboutDialog = ({
               </PageContentBlock>
             )}
 
-            {communityId && <CommunityGuidelinesBlock communityId={communityId} journeyUrl={aboutProfile?.url} />}
+            {communityGuidelinesId && (
+              <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={aboutProfile?.url} />
+            )}
 
             {hasReferences && (
               <PageContentBlock>

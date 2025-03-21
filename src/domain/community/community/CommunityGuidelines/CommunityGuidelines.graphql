@@ -1,10 +1,7 @@
-query CommunityGuidelines($communityId: UUID!) {
+query CommunityGuidelines($communityGuidelinesId: UUID!) {
   lookup {
-    community(ID: $communityId) {
-      id
-      guidelines {
-        ...CommunityGuidelinesDetails
-      }
+    communityGuidelines(ID: $communityGuidelinesId) {
+      ...CommunityGuidelinesDetails
     }
   }
 }

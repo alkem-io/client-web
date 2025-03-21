@@ -28,7 +28,7 @@ interface WhiteboardTemplateFormProps {
 
 const validator = {
   whiteboard: yup.object().shape({
-    content: yup.string().required(),
+    content: yup.string(),
   }),
 };
 

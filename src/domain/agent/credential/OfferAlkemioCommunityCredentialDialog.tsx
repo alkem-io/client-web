@@ -3,9 +3,9 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
 import QRCode from '@/core/ui/qrCode/QRCode';
-import ContributionDetailsContainer, {
+import useContributionProvider, {
   ContributionDetails,
-} from '@/domain/community/profile/ContributionDetails/ContributionDetailsContainer';
+} from '@/domain/community/profile/useContributionProvider/useContributionProvider';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import {
   Box,
@@ -85,19 +85,12 @@ const OfferAlkemioCommunityCredentialDialog = ({
             {!state?.isLoadingContributions && contributions && (
               <List disablePadding>
                 {contributions.map((c, i) => (
-                  <ContributionDetailsContainer entities={c} key={i}>
-                    {({ details }) => (
-                      <ListItemButton
-                        onClick={() => setSelectedContribution(details)}
-                        selected={details === selectedContribution}
-                      >
-                        <ListItemText
-                          primary={details?.about.profile.displayName}
-                          secondary={details?.about.profile.tagline}
-                        />
-                      </ListItemButton>
-                    )}
-                  </ContributionDetailsContainer>
+                  <ContributionListItem
+                    key={i}
+                    contribution={c}
+                    selectedContribution={selectedContribution}
+                    setSelectedContribution={setSelectedContribution}
+                  />
                 ))}
               </List>
             )}
@@ -139,6 +132,16 @@ const OfferAlkemioCommunityCredentialDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
+  );
+};
+
+const ContributionListItem = ({ contribution, selectedContribution, setSelectedContribution }) => {
+  const { details } = useContributionProvider({ spaceHostedItem: contribution });
+
+  return (
+    <ListItemButton onClick={() => setSelectedContribution(details)} selected={details === selectedContribution}>
+      <ListItemText primary={details?.about.profile.displayName} secondary={details?.about.profile.tagline} />
+    </ListItemButton>
   );
 };
 

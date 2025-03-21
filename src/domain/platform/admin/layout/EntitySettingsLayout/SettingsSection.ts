@@ -17,4 +17,5 @@ export enum SettingsSection {
   InnovationFlow = 'innovation-flow',
   Account = 'account',
   Settings = 'settings',
+  Layout = 'layout',
 }

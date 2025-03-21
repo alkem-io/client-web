@@ -12,6 +12,7 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
 import { Identifiable } from '@/core/utils/Identifiable';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 export interface CommunityGuidelines {
   displayName: string;
@@ -35,46 +36,44 @@ interface CommunityGuidelinesContainerProvided {
 }
 
 interface CommunityGuidelinesContainerProps extends SimpleContainerProps<CommunityGuidelinesContainerProvided> {
-  communityId: string;
+  communityGuidelinesId: string | undefined;
 }
 
-const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidelinesContainerProps) => {
+const CommunityGuidelinesContainer = ({ communityGuidelinesId, children }: CommunityGuidelinesContainerProps) => {
   const { t } = useTranslation();
+  const ensurePresence = useEnsurePresence();
   const notify = useNotification();
 
   const { data, loading } = useCommunityGuidelinesQuery({
     variables: {
-      communityId,
+      communityGuidelinesId: communityGuidelinesId!,
     },
-    skip: !communityId,
+    skip: !communityGuidelinesId,
   });
 
-  const communityGuidelines = data?.lookup.community?.guidelines && {
-    id: data.lookup.community.guidelines.id,
-    displayName: data.lookup.community.guidelines.profile.displayName,
-    description: data.lookup.community.guidelines.profile.description,
-    references: (data.lookup.community.guidelines.profile.references ?? []).map(reference => ({
+  const profileId = data?.lookup.communityGuidelines?.profile.id;
+  // This mapping is needed for the form
+  const communityGuidelines = data?.lookup.communityGuidelines?.profile && {
+    displayName: data.lookup.communityGuidelines.profile.displayName,
+    description: data.lookup.communityGuidelines.profile.description,
+    references: (data.lookup.communityGuidelines.profile.references ?? []).map(reference => ({
       id: reference.id,
       name: reference.name,
       description: reference.description,
       uri: reference.uri,
     })),
   };
-  const communityGuidelinesId = communityGuidelines?.id;
-  const profileId = data?.lookup.community?.guidelines.profile.id;
 
   const [removeCommunityGuidelinesContent] = useRemoveCommunityGuidelinesContentMutation();
   const [updateGuidelines, { loading: submittingGuidelines }] = useUpdateCommunityGuidelinesMutation();
 
   const onUpdateCommunityGuidelines = async (values: CommunityGuidelines) => {
-    if (!communityGuidelinesId) {
-      return;
-    }
+    const requiredCommunityGuidelinesId = ensurePresence(communityGuidelinesId);
 
     return updateGuidelines({
       variables: {
         communityGuidelinesData: {
-          communityGuidelinesID: communityGuidelinesId,
+          communityGuidelinesID: requiredCommunityGuidelinesId,
           profile: {
             displayName: values.displayName,
             description: values.description,
@@ -91,26 +90,24 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
       awaitRefetchQueries: true,
       refetchQueries: [
         refetchCommunityGuidelinesQuery({
-          communityId,
+          communityGuidelinesId: requiredCommunityGuidelinesId,
         }),
       ],
     });
   };
 
   const onDeleteCommunityGuidelinesContent = async () => {
-    if (!communityGuidelinesId) {
-      return;
-    }
+    const requiredCommunityGuidelinesId = ensurePresence(communityGuidelinesId);
 
     await removeCommunityGuidelinesContent({
       variables: {
         communityGuidelinesData: {
-          communityGuidelinesID: communityGuidelinesId,
+          communityGuidelinesID: requiredCommunityGuidelinesId,
         },
       },
       onCompleted: () => notify(t('community.communityGuidelines.saveAndDeleteContentSuccessMessage'), 'success'),
       awaitRefetchQueries: true,
-      refetchQueries: [refetchCommunityGuidelinesQuery({ communityId })],
+      refetchQueries: [refetchCommunityGuidelinesQuery({ communityGuidelinesId: requiredCommunityGuidelinesId })],
     });
   };
 

@@ -10,6 +10,10 @@ query NewVirtualContributorMySpaces {
         }
         spaces {
           id
+          authorization {
+            id
+            myPrivileges
+          }
           license {
             id
             availableEntitlements
@@ -41,6 +45,10 @@ query AllSpaceSubspaces($spaceId: UUID!) {
 
 fragment spaceProfileCommunityDetails on Space {
   id
+  authorization {
+    id
+    myPrivileges
+  }
   about {
     ...SpaceAboutLight
   }

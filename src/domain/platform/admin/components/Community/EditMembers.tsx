@@ -52,21 +52,19 @@ interface CustomizedTable<Item> {
 
 export interface EditMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
   members: Member[];
-  updating: boolean;
   loading: boolean;
   onRemove: (memberId: string) => void; // TODO check usages
-  isRemoveDisabled?: (member: Member) => boolean;
+  isRemoveDisabled: boolean;
 }
 
 export const EditMembers = <Member extends Identifiable>({
   members,
-  updating,
   loading,
   onRemove,
   header,
   renderRow,
   renderEmptyRow,
-  isRemoveDisabled = () => false,
+  isRemoveDisabled, // Not used but leaving this in as it could be passed in to respect policy limits
 }: EditMembersProps<Member>) => {
   const { t } = useTranslation();
   const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
@@ -97,7 +95,7 @@ export const EditMembers = <Member extends Identifiable>({
                         <Cell>
                           <StyledButtonRemove
                             size="small"
-                            disabled={isRemoveDisabled(m) || updating}
+                            disabled={isRemoveDisabled}
                             onClick={() => onRemove(m.id)}
                             aria-label={t('buttons.remove')}
                           >

@@ -6,7 +6,7 @@ import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { SpaceLevel, SpaceVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../../../space/SpaceContext/useSpace';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';

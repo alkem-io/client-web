@@ -2,8 +2,6 @@ import { useInnovationFlowDetailsQuery } from '@/core/apollo/generated/apollo-ho
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowState } from '../InnovationFlow';
 
-export const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
-
 export interface UseInnovationFlowStatesProvided {
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;

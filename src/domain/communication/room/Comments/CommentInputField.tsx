@@ -9,7 +9,7 @@ import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/Prof
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import { HelpOutlineOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
@@ -156,8 +156,10 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
 
   const [queryUsers] = useMentionableUsersLazyQuery();
 
-  const { roleSetId: spaceRoleSetId } = useSpace();
-  const { roleSetId: subspaceRoleSetId } = useSubSpace();
+  const { space } = useSpace();
+  const spaceRoleSetId = space.about.membership?.roleSetID;
+  const { subspace } = useSubSpace();
+  const subspaceRoleSetId = subspace.about.membership?.roleSetID;
   const roleSetId = subspaceRoleSetId ? subspaceRoleSetId : spaceRoleSetId;
 
   const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>

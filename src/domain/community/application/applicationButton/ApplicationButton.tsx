@@ -26,8 +26,9 @@ export interface ApplicationButtonProps {
   parentApplicationState: string | undefined;
   applyUrl: string | undefined;
   parentUrl: string | undefined;
-  spaceName: string | undefined;
-  challengeName: string | undefined;
+  parentCommunityName: string | undefined;
+  parentCommunitySpaceLevel: SpaceLevel | undefined;
+  subspaceName: string | undefined;
   canJoinCommunity: boolean;
   canAcceptInvitation: boolean;
   canApplyToCommunity: boolean;
@@ -53,8 +54,9 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       parentUrl,
       isMember = false,
       isParentMember = false,
-      spaceName,
-      challengeName,
+      parentCommunityName,
+      parentCommunitySpaceLevel,
+      subspaceName,
       canJoinCommunity,
       canAcceptInvitation,
       canApplyToCommunity,
@@ -295,7 +297,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           <ApplicationDialog
             open={isApplicationDialogOpen}
             onClose={handleClose}
-            journeyId={journeyId}
+            spaceId={journeyId}
             canJoinCommunity={canJoinCommunity}
             onJoin={onJoin}
             onApply={handleOpenApplicationSubmittedDialog}
@@ -304,8 +306,9 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             open={isApplyParentDialogOpen}
             onClose={handleClose}
             dialogVariant={dialogVariant}
-            spaceName={spaceName}
-            challengeName={challengeName}
+            parentCommunityName={parentCommunityName}
+            parentCommunitySpaceLevel={parentCommunitySpaceLevel}
+            subspaceName={subspaceName}
             parentApplicationState={parentApplicationState}
             applyUrl={applyUrl}
             parentApplyUrl={parentUrl}

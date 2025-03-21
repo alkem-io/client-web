@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -19,8 +19,10 @@ const PreJoinParentDialog = ({ open, onClose, onJoin }: PreJoinParentDialogProps
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
 
-  const { about: spaceAbout } = useSpace();
-  const { about: subspaceAbout } = useSubSpace();
+  const { space } = useSpace();
+  const spaceAbout = space?.about;
+  const { subspace } = useSubSpace();
+  const subspaceAbout = subspace?.about;
 
   const parentCommunityName = spaceId ? subspaceAbout.profile.displayName : spaceAbout.profile.displayName;
   const buttonText = t(

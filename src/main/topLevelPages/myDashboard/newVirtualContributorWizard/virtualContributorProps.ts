@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface UserAccountProps {
   id: string;
@@ -9,17 +9,7 @@ export interface UserAccountProps {
   };
   spaces: Array<{
     id: string;
-    community: {
-      id: string;
-      roleSet: {
-        id: string;
-      };
-    };
-    about: SpaceAboutMinimalUrlModel;
-    license: {
-      id: string;
-      myEntitlements?: LicenseEntitlementType[] | undefined;
-    };
+    about: SpaceAboutLightModel;
     authorization?: {
       id: string;
       myPrivileges?: AuthorizationPrivilege[] | undefined;

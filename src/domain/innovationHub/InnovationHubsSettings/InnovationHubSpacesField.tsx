@@ -26,11 +26,6 @@ import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAbout
 
 export interface Space extends Identifiable {
   id: string;
-  provider: {
-    profile: {
-      displayName: string;
-    };
-  };
   visibility: SpaceVisibility;
   about: SpaceAboutMinimalUrlModel;
 }
@@ -88,8 +83,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
       renderHeader: () => <>{t('pages.admin.innovationHubs.fields.host')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.provider.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.provider.profile.displayName,
+      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.about.provider?.profile.displayName}</>,
+      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.about.provider?.profile.displayName,
       filterable: false,
       resizable: true,
     },
@@ -196,7 +191,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                         >
                           <TableCell>{space.about.profile.displayName}</TableCell>
                           <TableCell>{space.visibility}</TableCell>
-                          <TableCell>{space.provider.profile.displayName}</TableCell>
+                          <TableCell>{space.about.provider?.profile.displayName}</TableCell>
                           <TableCell>
                             <IconButton
                               color="warning"

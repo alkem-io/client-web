@@ -10,7 +10,6 @@ import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '@/domain/community/user';
 import EditMemberUsers from '../components/Community/EditMembersUsers';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 
@@ -22,10 +21,7 @@ const MANAGED_ROLES = RELEVANT_ROLES.Platform;
 
 const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) => {
   const { t } = useTranslation();
-  const { user: userMetadata } = useUserContext();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
-  const currentUser = userMetadata?.user;
-
   const { data, loading: loadingPlatformRoleSet } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
 
@@ -79,7 +75,6 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
                 <EditMemberUsers
                   members={usersByRole[role] ?? []}
                   availableMembers={availableMembers}
-                  executorId={currentUser?.id}
                   onAdd={userId => assignPlatformRoleToUser(userId, role)}
                   onRemove={userId => removePlatformRoleFromUser(userId, role)}
                   updating={updating}

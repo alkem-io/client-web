@@ -1,0 +1,29 @@
+query ApplicationDialog($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        ...SpaceAboutMinimalUrl
+        membership {
+          communityID
+          roleSetID
+          applicationForm {
+            id
+            description
+            questions {
+              required
+              question
+              sortOrder
+              explanation
+              maxLength
+            }
+          }
+        }
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
+      }
+    }
+  }
+}
+

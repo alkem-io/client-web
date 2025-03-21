@@ -10,7 +10,11 @@ type JourneyCalloutsListItemTitleProps = {
         displayName: string;
       };
     };
-    flowStates?: string[];
+    classification?: {
+      flowState?: {
+        tags: string[];
+      };
+    };
   };
 };
 
@@ -19,7 +23,7 @@ const SEPARATOR = ' — ';
 const JourneyCalloutsListItemTitle = ({ callout }: JourneyCalloutsListItemTitleProps) => {
   const { t, i18n } = useTranslation();
 
-  const [flowState] = callout.flowStates ?? [];
+  const [flowState] = callout.classification?.flowState?.tags ?? [];
 
   return (
     <EllipsableWithCount count={callout.activity}>
