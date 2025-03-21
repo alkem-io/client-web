@@ -64,6 +64,7 @@ export type TypedCalloutDetails = TypedCallout &
     classification?: {
       flowState?: {
         tags: string[];
+        allowedValues?: string[];
       };
     };
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
