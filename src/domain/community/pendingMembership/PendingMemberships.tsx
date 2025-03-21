@@ -94,13 +94,17 @@ export const InvitationHydrator = ({
 
   const journey = spaceData?.lookup.space;
 
+  const userId = invitation.invitation.createdBy?.id;
+
   const { data: userData } = usePendingMembershipsUserQuery({
-    variables: {
-      userId: invitation.invitation.createdBy.id,
-    },
+    variables: { userId },
+    skip: !userId,
   });
 
-  const createdBy = userData?.lookup.user;
+  let userDisplayName: string = 'This user no longer exists on the platform!';
+  if (userData && userData.lookup.user?.profile.displayName) {
+    userDisplayName = userData.lookup.user?.profile.displayName;
+  }
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
     if (!invitation) {
@@ -109,7 +113,7 @@ export const InvitationHydrator = ({
 
     return {
       ...invitation,
-      userDisplayName: createdBy?.profile.displayName,
+      userDisplayName,
       space: {
         ...invitation.spacePendingMembershipInfo,
         ...journey,
@@ -120,7 +124,7 @@ export const InvitationHydrator = ({
         },
       },
     };
-  }, [invitation, journey, createdBy]);
+  }, [invitation, journey]);
 
   const communityGuidelines = journey?.about.guidelines;
 
