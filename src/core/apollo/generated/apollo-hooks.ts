@@ -5630,12 +5630,6 @@ export const AccountInformationDocument = gql`
               myPrivileges
             }
           }
-          license {
-            id
-            entitlements {
-              ...EntitlementDetails
-            }
-          }
         }
         virtualContributors {
           id
@@ -5679,7 +5673,6 @@ export const AccountInformationDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
-  ${EntitlementDetailsFragmentDoc}
   ${AccountItemProfileFragmentDoc}
   ${SpaceAboutLightFragmentDoc}
 `;
