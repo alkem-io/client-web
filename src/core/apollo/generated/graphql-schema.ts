@@ -2718,7 +2718,7 @@ export type Invitation = {
   /** The type of contributor that is invited. */
   contributorType: RoleSetContributorType;
   /** The User who triggered the invitation. */
-  createdBy: User;
+  createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
   extraRole?: Maybe<RoleName>;
@@ -5312,6 +5312,8 @@ export type RelayPaginatedSpace = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -5946,6 +5948,8 @@ export type Space = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -8395,7 +8399,7 @@ export type UserPendingMembershipsQuery = {
         state: string;
         createdDate: Date;
         contributorType: RoleSetContributorType;
-        createdBy: { __typename?: 'User'; id: string };
+        createdBy?: { __typename?: 'User'; id: string } | undefined;
         contributor:
           | { __typename?: 'Organization'; id: string }
           | { __typename?: 'User'; id: string }
@@ -17403,11 +17407,9 @@ export type PendingMembershipsMembershipsFragment = {
       __typename?: 'Invitation';
       id: string;
       welcomeMessage?: string | undefined;
-      createdBy: {
-        __typename?: 'User';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      };
+      createdBy?:
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | undefined;
     }>;
   };
 };
@@ -17416,7 +17418,9 @@ export type PendingMembershipInvitationFragment = {
   __typename?: 'Invitation';
   id: string;
   welcomeMessage?: string | undefined;
-  createdBy: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type CommunityGuidelinesSummaryFragment = {
@@ -18029,7 +18033,7 @@ export type InvitationDataFragment = {
     state: string;
     createdDate: Date;
     contributorType: RoleSetContributorType;
-    createdBy: { __typename?: 'User'; id: string };
+    createdBy?: { __typename?: 'User'; id: string } | undefined;
     contributor:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -18663,7 +18667,7 @@ export type VcMembershipsQuery = {
         state: string;
         createdDate: Date;
         contributorType: RoleSetContributorType;
-        createdBy: { __typename?: 'User'; id: string };
+        createdBy?: { __typename?: 'User'; id: string } | undefined;
         contributor:
           | { __typename?: 'Organization'; id: string }
           | { __typename?: 'User'; id: string }
@@ -29725,7 +29729,7 @@ export type PendingInvitationsQuery = {
         contributorType: RoleSetContributorType;
         state: string;
         createdDate: Date;
-        createdBy: { __typename?: 'User'; id: string };
+        createdBy?: { __typename?: 'User'; id: string } | undefined;
       };
     }>;
   };
