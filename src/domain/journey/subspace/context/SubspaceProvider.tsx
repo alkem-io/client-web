@@ -21,6 +21,7 @@ interface SubspaceContextProps {
     };
   };
   loading: boolean;
+  parentSpaceId: string | undefined;
   permissions: SubspacePermissions;
 }
 
@@ -55,6 +56,7 @@ const defaultValue: SubspaceContextProps = {
       },
     },
   },
+  parentSpaceId: undefined,
   permissions: {
     canUpdate: false,
     canCreate: false,
@@ -68,7 +70,7 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>(default
 interface SubspaceProviderProps extends PropsWithChildren {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
-  const { spaceId, loading: urlResolverLoading } = useUrlResolver();
+  const { spaceId, loading: urlResolverLoading, parentSpaceId } = useUrlResolver();
 
   const { data, loading } = useSpaceAboutDetailsQuery({
     variables: { spaceId: spaceId! },
@@ -135,6 +137,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
 
   let state = {
     subspace,
+    parentSpaceId,
     permissions,
     loading: loading || urlResolverLoading,
   };
