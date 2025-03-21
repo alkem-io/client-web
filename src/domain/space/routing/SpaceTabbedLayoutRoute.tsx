@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, useLocation, useParams } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -17,6 +17,7 @@ import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/Spac
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/space/SpaceContext/useSpace';
 import SpaceSkeletonLayout from '../layout/Skeletons/SpaceSkeletonLayout';
+import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
@@ -38,7 +39,7 @@ const SpaceTabbedLayoutRoute = () => {
   const RESERVED_PATHS = ['home', 'spaces'];
 
   useEffect(() => {
-    if (!spaceNameId || RESERVED_PATHS.includes(spaceNameId)) {
+    if (!permissions.canRead || !spaceNameId || RESERVED_PATHS.includes(spaceNameId)) {
       return;
     }
 
@@ -78,12 +79,22 @@ const SpaceTabbedLayoutRoute = () => {
     const isExactSpaceRoot = currentPath === `/${spaceNameId}` || currentPath === `/${spaceNameId}/`;
 
     if (isExactSpaceRoot || (isAtTabLevel && lastTabForSpace !== newDefaultTab)) {
-      navigate(newDefaultTab, { replace: true });
+      navigate(`/${spaceNameId}/${newDefaultTab}`, { replace: true });
     }
 
     // always update cached tab after navigation logic
     lastVisitedTabRef.current[spaceNameId] = newDefaultTab;
-  }, [spaceTabsData, loadingSpace, location.pathname, spaceNameId, navigate]);
+  }, [spaceTabsData, loadingSpace, location.pathname, spaceNameId, navigate, permissions.canRead]);
+
+  // Explicitly redirect to "About" if no permission
+  if (!permissions.canRead) {
+    return (
+      <Routes>
+        <Route path={routes.About} element={<SpaceAboutPage />} />
+        <Route path="*" element={<Navigate to={`/${spaceNameId}/${routes.About}`} replace />} />
+      </Routes>
+    );
+  }
 
   return (
     <Routes>

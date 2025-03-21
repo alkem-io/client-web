@@ -31,6 +31,7 @@ import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNa
 import SpaceWelcomeDialog from '@/domain/journey/space/pages/SpaceWelcomeDialog';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import { useParams } from 'react-router-dom';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -66,6 +67,7 @@ const SpaceDashboardView = ({
   readUsersAccess,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
+  const { spaceNameId } = useParams<{ spaceNameId: string }>();
 
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
   const [openWelcome, setOpenWelcome] = useState(false);
@@ -163,7 +165,7 @@ const SpaceDashboardView = ({
           <FullWidthButton
             startIcon={<InfoOutlined />}
             component={RouterLink}
-            to={EntityPageSection.About}
+            to={`/${spaceNameId}/${EntityPageSection.About}`}
             variant="contained"
             sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
