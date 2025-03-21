@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation, useParams } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -23,7 +23,6 @@ const routes = { ...EntityPageSection };
 
 const SpaceTabbedLayoutRoute = () => {
   const { space, permissions, loading: loadingSpace } = useSpace();
-  const navigate = useNavigate();
 
   const { data: spaceTabsData } = useSpaceTabsQuery({
     variables: {
@@ -32,8 +31,17 @@ const SpaceTabbedLayoutRoute = () => {
     skip: !space.id || loadingSpace || !permissions.canRead,
   });
 
-  const defaultTabRef = useRef<string>(routes.Dashboard);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { spaceNameId } = useParams<{ spaceNameId: string }>();
+  const lastVisitedTabRef = useRef<Record<string, string>>({});
+  const RESERVED_PATHS = ['home', 'spaces'];
+
   useEffect(() => {
+    if (!spaceNameId || RESERVED_PATHS.includes(spaceNameId)) {
+      return;
+    }
+
     const defaultState = spaceTabsData?.lookup.space?.collaboration.innovationFlow.currentState.displayName;
     const defaultStateIndex = spaceTabsData?.lookup.space?.collaboration.innovationFlow.states.findIndex(
       state => state.displayName === defaultState
@@ -55,13 +63,27 @@ const SpaceTabbedLayoutRoute = () => {
       }
     })();
 
-    if (defaultTabRef.current !== newDefaultTab) {
-      defaultTabRef.current = newDefaultTab;
-      navigate(newDefaultTab);
-    } else {
-      // TODO: handle the edge-cases here
+    const currentPath = location.pathname;
+
+    // Check explicitly if we are on any of the valid top-level tabs
+    const isAtTabLevel = Object.values(routes).some(
+      tabRoute => currentPath === `/${spaceNameId}/${tabRoute}` || currentPath === `/${spaceNameId}/${tabRoute}/`
+    );
+
+    const lastTabForSpace = lastVisitedTabRef.current[spaceNameId];
+
+    // Navigate explicitly if:
+    // 1. Exactly at space root OR
+    // 2. On a valid top-level tab AND the default tab has changed
+    const isExactSpaceRoot = currentPath === `/${spaceNameId}` || currentPath === `/${spaceNameId}/`;
+
+    if (isExactSpaceRoot || (isAtTabLevel && lastTabForSpace !== newDefaultTab)) {
+      navigate(newDefaultTab, { replace: true });
     }
-  }, [spaceTabsData]);
+
+    // always update cached tab after navigation logic
+    lastVisitedTabRef.current[spaceNameId] = newDefaultTab;
+  }, [spaceTabsData, loadingSpace, location.pathname, spaceNameId, navigate]);
 
   return (
     <Routes>
