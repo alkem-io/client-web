@@ -7,36 +7,29 @@ import SpaceCommunityPage from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceCo
 import { useSpace } from '../../../space/SpaceContext/useSpace';
 import SpaceDashboardPage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 
-enum SpaceTab {
-  HOME = 'home',
-  SUBSPACES = 'subspaces',
-  COMMUNITY = 'community',
-  KNOWLEDGE = 'knowledge',
-}
-
-const getPageSection = (flowState: string | undefined): EntityPageSection => {
-  switch (flowState) {
-    case SpaceTab.HOME:
-      return EntityPageSection.Dashboard;
-    case SpaceTab.COMMUNITY:
+const getPageSection = (position: number | undefined): EntityPageSection => {
+  switch (position) {
+    case 1:
       return EntityPageSection.Community;
-    case SpaceTab.SUBSPACES:
+    case 2:
       return EntityPageSection.Subspaces;
-    default:
+    case 3:
       return EntityPageSection.KnowledgeBase;
+    default:
+      return EntityPageSection.Dashboard;
   }
 };
 
-const renderPage = (flowState: string | undefined) => {
-  switch (flowState) {
-    case SpaceTab.HOME:
-      return <SpaceDashboardPage />;
-    case SpaceTab.SUBSPACES:
-      return <SpaceSubspacesPage />;
-    case SpaceTab.COMMUNITY:
+const renderPage = (position: number | undefined) => {
+  switch (position) {
+    case 1:
       return <SpaceCommunityPage />;
-    default:
+    case 2:
+      return <SpaceSubspacesPage />;
+    case 3:
       return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
+    default:
+      return <SpaceDashboardPage />;
   }
 };
 
@@ -44,8 +37,8 @@ const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
   const { space } = useSpace();
   const about = space.about;
 
-  const getPageRoute = (flowState: string | undefined) => {
-    return `${about.profile.url}/${getPageSection(flowState)}`;
+  const getPageRoute = (position: number | undefined) => {
+    return `${about.profile.url}/${getPageSection(position)}`;
   };
 
   return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
