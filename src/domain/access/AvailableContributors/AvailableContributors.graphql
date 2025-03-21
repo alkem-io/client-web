@@ -26,14 +26,20 @@ query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilter
 query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
     roleSet(ID: $roleSetId) {
-      availableUsersForEntryRole (first: $first, after: $after, filter: $filter) {
+      availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
         ...AvailableUsersForRoleSetPaginated
       }
     }
   }
 }
 
-query AvailableUsersForElevatedRole($roleSetId: UUID!, $role: RoleName!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+query AvailableUsersForElevatedRole(
+  $roleSetId: UUID!
+  $role: RoleName!
+  $first: Int!
+  $after: UUID
+  $filter: UserFilterInput
+) {
   lookup {
     roleSet(ID: $roleSetId) {
       availableUsersForElevatedRole(role: $role, first: $first, after: $after, filter: $filter) {
@@ -115,6 +121,9 @@ fragment VirtualContributorFull on VirtualContributor {
       country
     }
     url
+    references {
+      ...ReferenceDetails
+    }
   }
   aiPersona {
     bodyOfKnowledge
@@ -122,5 +131,3 @@ fragment VirtualContributorFull on VirtualContributor {
     bodyOfKnowledgeID
   }
 }
-
-

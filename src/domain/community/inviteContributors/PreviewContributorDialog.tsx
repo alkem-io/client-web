@@ -1,4 +1,6 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import { useMemo, PropsWithChildren, ReactNode } from 'react';
+
+import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
@@ -13,6 +15,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import UserCard from '../user/userCard/UserCard';
 import { ContributorProps } from './InviteContributorsProps';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import References from '@/domain/shared/components/References/References';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
+import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 
 interface PreviewContributorDialogProps {
   open?: boolean;
@@ -20,6 +26,9 @@ interface PreviewContributorDialogProps {
   contributor: ContributorProps | undefined;
   actions?: ReactNode;
 }
+
+const OTHER_LINK_GROUP = 'other';
+const SOCIAL_LINK_GROUP = 'social';
 
 const PreviewContributorDialog = ({
   children,
@@ -32,8 +41,18 @@ const PreviewContributorDialog = ({
 
   const { profile } = contributor ?? {};
 
+  const references = profile?.references;
+
+  const links = useMemo(() => {
+    return groupBy(references, reference =>
+      isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
+    );
+  }, [references]);
+
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
+      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+
       <DialogContent>
         <PageContentBlockGrid disablePadding>
           <PageContentColumn columns={3}>
@@ -66,6 +85,12 @@ const PreviewContributorDialog = ({
             <PageContentBlockSeamless disablePadding disableGap>
               <BlockSectionTitle>{t('common.description')}</BlockSectionTitle>
               <WrapperMarkdown card>{profile?.description ?? ''}</WrapperMarkdown>
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding disableGap>
+              <References
+                references={links[OTHER_LINK_GROUP]}
+                noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+              />
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding disableGap>
               <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
