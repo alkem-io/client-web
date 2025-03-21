@@ -9197,20 +9197,6 @@ export type AccountInformationQuery = {
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
               };
             };
-            license: {
-              __typename?: 'License';
-              id: string;
-              entitlements: Array<{
-                __typename?: 'LicenseEntitlement';
-                id: string;
-                type: LicenseEntitlementType;
-                limit: number;
-                usage: number;
-                isAvailable: boolean;
-                dataType: LicenseEntitlementDataType;
-                enabled: boolean;
-              }>;
-            };
           }>;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
