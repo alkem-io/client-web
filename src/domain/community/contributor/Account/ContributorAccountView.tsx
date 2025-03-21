@@ -84,10 +84,6 @@ export interface AccountTabResourcesProps {
         tagline?: string;
       };
     };
-    license: {
-      id: string;
-      availableEntitlements?: LicenseEntitlementType[];
-    };
   }[];
   virtualContributors: {
     id: string;
