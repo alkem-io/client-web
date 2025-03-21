@@ -225,6 +225,11 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         stateUpdatedData: newState,
       },
     });
+    await Promise.all(
+      callouts
+        .filter(callout => callout.flowState?.currentState === oldState.displayName)
+        .map((callout, index) => handleUpdateCalloutFlowState(callout.id, newState.displayName, index))
+    );
     refetch({ collaborationId: collaborationId! });
   };
 
