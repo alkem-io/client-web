@@ -21,13 +21,11 @@ const SpaceDashboardPage = ({
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
   const {
     urlInfo,
+    canReadSpace,
     classificationTagsets,
     flowStateForNewCallouts,
     calloutsSetId,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
     tabDescription,
-    canReadSpace,
     loading,
   } = useSpaceTabProvider({ tabPosition: 0 });
 
@@ -61,8 +59,6 @@ const SpaceDashboardPage = ({
   const calloutsSetProvided = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   });
 
   const space: SpaceDashboardSpaceDetails = {

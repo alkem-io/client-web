@@ -19,14 +19,7 @@ type KnowledgeBasePageProps = {
 };
 
 const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
-  const {
-    urlInfo,
-    classificationTagsets,
-    entitledToSaveAsTemplate,
-    flowStateForNewCallouts,
-    canSaveAsTemplate,
-    tabDescription,
-  } = useSpaceTabProvider({
+  const { urlInfo, classificationTagsets, flowStateForNewCallouts, tabDescription } = useSpaceTabProvider({
     tabPosition: 3,
   });
   const { journeyPath, calloutsSetId } = urlInfo;
@@ -48,8 +41,6 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
   const { callouts, canCreateCallout, loading, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   });
 
   return (

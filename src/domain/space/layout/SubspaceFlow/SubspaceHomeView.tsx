@@ -82,8 +82,6 @@ const SubspaceHomeView = ({
     calloutsSetId,
     classificationTagsets: classificationTagsets,
     includeClassification: true,
-    canSaveAsTemplate: false,
-    entitledToSaveAsTemplate: false,
     skip: !selectedInnovationFlowState,
   });
 

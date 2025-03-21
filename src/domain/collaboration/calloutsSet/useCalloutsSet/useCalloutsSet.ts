@@ -19,6 +19,7 @@ import { cloneDeep } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../ClassificationTagset.model';
+import useSpacePermissionsAndEntitlements from '@/domain/space/permissions/useSpacePermissionsAndEntitlements';
 
 export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   authorization:
@@ -42,8 +43,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   draft: boolean;
   editable: boolean;
   movable: boolean;
-  canSaveAsTemplate: boolean;
-  entitledToSaveAsTemplate: boolean;
+  canBeSavedAsTemplate: boolean;
   classificationTagsets: ClassificationTagsetModel[];
 };
 
@@ -77,8 +77,6 @@ interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   includeClassification?: boolean | undefined;
-  canSaveAsTemplate: boolean;
-  entitledToSaveAsTemplate: boolean;
   skip?: boolean;
 }
 
@@ -100,8 +98,6 @@ const useCalloutsSet = ({
   calloutsSetId,
   classificationTagsets,
   includeClassification,
-  canSaveAsTemplate,
-  entitledToSaveAsTemplate,
   skip,
 }: UseCalloutsSetParams): UseCalloutsSetProvided => {
   const { canCreateCallout, loading: authorizationLoading } = useCalloutsSetAuthorization({ calloutsSetId });
@@ -138,6 +134,10 @@ const useCalloutsSet = ({
     });
   };
 
+  // If we are not in a space, these will be just empty arrays
+  const { permissions, entitlements } = useSpacePermissionsAndEntitlements();
+  const calloutsCanBeSavedAsTemplate = permissions.canCreateTemplates && entitlements.entitledToSaveAsTemplate;
+
   const calloutsSet = calloutsData?.lookup.calloutsSet;
 
   const callouts = useMemo(
@@ -158,13 +158,12 @@ const useCalloutsSet = ({
             draft,
             editable,
             movable,
-            canSaveAsTemplate,
-            entitledToSaveAsTemplate,
+            canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
             classificationTagsets,
           };
           return result;
         }),
-    [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate]
+    [calloutsSet, calloutsCanBeSavedAsTemplate]
   );
 
   const submitCalloutsSortOrder = useCallback(

@@ -1,6 +1,6 @@
-query CollaborationAuthorizationEntitlements($collaborationId: UUID!) {
+query SpacePermissionsAndEntitlements($spaceId: UUID!) {
   lookup {
-    collaboration(ID: $collaborationId) {
+    space(ID: $spaceId) {
       id
       authorization {
         id
@@ -10,7 +10,14 @@ query CollaborationAuthorizationEntitlements($collaborationId: UUID!) {
         id
         availableEntitlements
       }
-      calloutsSet {
+      collaboration {
+        id
+        license {
+          id
+          availableEntitlements
+        }
+      }
+      templatesManager {
         id
         authorization {
           id

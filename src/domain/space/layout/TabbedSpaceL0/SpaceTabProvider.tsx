@@ -12,7 +12,6 @@ type InnovationFlowState = {
 
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
-  myPrivileges: AuthorizationPrivilege[] | undefined;
   canReadSpace: boolean;
   innovationFlowStates: InnovationFlowState[] | undefined;
   innovationFlowCurrentState: InnovationFlowState | undefined;
@@ -20,10 +19,7 @@ interface SpaceTabProvided {
   about: SpaceAboutLightModel | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   calloutsSetId: string | undefined;
-  canSaveAsTemplate: boolean;
-  entitledToSaveAsTemplate: boolean;
   tabDescription: string;
-
   refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
@@ -50,7 +46,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
   });
   const myPrivileges = spaceTabData?.lookup.space?.authorization?.myPrivileges;
 
-  // By definition must have ReadAbout
   const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const innovationFlow = spaceTabData?.lookup.space?.collaboration.innovationFlow;
@@ -78,14 +73,11 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     spaceTabData?.lookup.space?.collaboration.innovationFlow.states[tabPosition]?.description ?? '';
 
   return {
-    myPrivileges,
     canReadSpace: canReadSpace || false,
     innovationFlowStates,
     innovationFlowCurrentState: innovationFlowCurrentState,
     about,
     urlInfo,
-    canSaveAsTemplate: false,
-    entitledToSaveAsTemplate: false,
     tabDescription,
     calloutsSetId,
     classificationTagsets,

@@ -29,8 +29,6 @@ const SpaceSubspacesPage = () => {
     flowStateForNewCallouts: flowStateForTab,
     classificationTagsets,
     calloutsSetId,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   } = useSpaceTabProvider({ tabPosition: 2 });
 
   const { spaceId, journeyPath } = urlInfo;
@@ -73,8 +71,6 @@ const SpaceSubspacesPage = () => {
   const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   });
 
   const { data, loading, error, subscribeToMore } = useSpaceSubspaceCardsQuery({
