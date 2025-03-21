@@ -7,7 +7,7 @@ import SubspaceContributorsDialogContent from '@/domain/community/community/enti
 import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
 
 const SubspaceAboutPage = () => {
-  const { subspace, permissions, loading } = useSubSpace();
+  const { subspace, permissions, loading, parentSpaceId } = useSubSpace();
   const { about } = subspace;
 
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
@@ -25,6 +25,7 @@ const SubspaceAboutPage = () => {
       <SpaceAboutDialog
         open
         space={space}
+        parentSpaceId={parentSpaceId}
         loading={loading}
         onClose={backToParentPage}
         hasReadPrivilege={permissions.canRead}
