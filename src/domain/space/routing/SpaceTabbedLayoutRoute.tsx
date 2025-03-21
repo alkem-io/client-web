@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -11,7 +11,7 @@ import SpaceCommunityPage from '../layout/TabbedSpaceL0/Tabs/SpaceCommunityPage/
 import SpaceKnowledgeBasePage from '@/domain/space/layout/TabbedSpaceL0/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardPage';
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -23,6 +23,7 @@ const routes = { ...EntityPageSection };
 
 const SpaceTabbedLayoutRoute = () => {
   const { space, permissions, loading: loadingSpace } = useSpace();
+  const navigate = useNavigate();
 
   const { data: spaceTabsData } = useSpaceTabsQuery({
     variables: {
@@ -31,34 +32,40 @@ const SpaceTabbedLayoutRoute = () => {
     skip: !space.id || loadingSpace || !permissions.canRead,
   });
 
-  const defaultTab = useMemo(() => {
+  const defaultTabRef = useRef<string>(routes.Dashboard);
+  useEffect(() => {
     const defaultState = spaceTabsData?.lookup.space?.collaboration.innovationFlow.currentState.displayName;
     const defaultStateIndex = spaceTabsData?.lookup.space?.collaboration.innovationFlow.states.findIndex(
       state => state.displayName === defaultState
     );
-    if (!defaultState || defaultStateIndex === undefined || defaultStateIndex === -1) {
-      return undefined;
-    }
 
-    switch (defaultStateIndex) {
-      case 0:
-        return routes.Dashboard;
-      case 1:
-        return routes.Community;
-      case 2:
-        return routes.Subspaces;
-      case 3:
-        return routes.KnowledgeBase;
-      case 4:
-        return routes.Custom;
-      default:
-        return undefined;
+    const newDefaultTab = (() => {
+      switch (defaultStateIndex) {
+        case 1:
+          return routes.Community;
+        case 2:
+          return routes.Subspaces;
+        case 3:
+          return routes.KnowledgeBase;
+        case 4:
+          return routes.Custom;
+        case 0:
+        default:
+          return routes.Dashboard;
+      }
+    })();
+
+    if (defaultTabRef.current !== newDefaultTab) {
+      defaultTabRef.current = newDefaultTab;
+      navigate(newDefaultTab);
+    } else {
+      // TODO: handle the edge-cases here
     }
-  }, [spaceTabsData, space.id]);
+  }, [spaceTabsData]);
 
   return (
     <Routes>
-      <Route index element={defaultTab ? <Navigate replace to={defaultTab} /> : <SpaceSkeletonLayout />} />
+      <Route path="/" element={<SpaceSkeletonLayout />} />
       <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
       <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
       <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
