@@ -8,7 +8,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { SpaceTabsPlaceholder } from '../layout/TabbedSpaceL0/Tabs/SpaceTabs';
+import { SpaceTabsPlaceholder } from '../layout/tabbedLayout/Tabs/SpaceTabs';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';

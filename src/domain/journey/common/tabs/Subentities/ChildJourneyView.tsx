@@ -25,7 +25,7 @@ import { Button, IconButton } from '@mui/material';
 import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChildJourneyCreate from './ChildJourneyCreate';
-import useSpaceTabProvider from '@/domain/space/layout/TabbedSpaceL0/SpaceTabProvider';
+import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 
 export interface JourneySubentitiesState {
   loading: boolean;

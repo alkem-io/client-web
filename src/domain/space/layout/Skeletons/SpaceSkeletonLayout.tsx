@@ -1,6 +1,6 @@
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import SpaceDashboardView from '../TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
+import SpaceDashboardView from '../tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 import { noop } from 'lodash';
 
 const SpaceSkeletonLayout = () => {

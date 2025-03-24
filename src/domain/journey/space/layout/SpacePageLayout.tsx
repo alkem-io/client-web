@@ -1,5 +1,5 @@
 import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
-import SpaceTabs, { SpaceTabsPlaceholder } from '../../../space/layout/TabbedSpaceL0/Tabs/SpaceTabs';
+import SpaceTabs, { SpaceTabsPlaceholder } from '../../../space/layout/tabbedLayout/Tabs/SpaceTabs';
 import { PropsWithChildren } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
