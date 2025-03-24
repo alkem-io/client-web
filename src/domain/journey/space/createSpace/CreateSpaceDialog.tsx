@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
-import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
+import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import SubspaceListView from './SubspaceListView';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';

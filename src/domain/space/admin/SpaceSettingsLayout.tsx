@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
-import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { TabDefinition } from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
 import RouterLink from '@/core/ui/link/RouterLink';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
@@ -12,7 +12,7 @@ import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
-import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
+import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';

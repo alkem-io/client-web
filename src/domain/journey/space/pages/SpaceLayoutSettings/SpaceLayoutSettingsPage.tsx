@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import SpaceLayoutSettingsEdit from './SpaceLayoutSettingsEdit';
-import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
+import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 

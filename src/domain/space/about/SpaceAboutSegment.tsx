@@ -18,7 +18,7 @@ export interface ContextSegmentProps {
   loading?: boolean;
 }
 
-export const ContextSegment = ({ loading, spaceLevel }: ContextSegmentProps & { spaceLevel: SpaceLevel }) => {
+export const SpaceAboutSegment = ({ loading, spaceLevel }: ContextSegmentProps & { spaceLevel: SpaceLevel }) => {
   const { t } = useTranslation();
 
   return (
