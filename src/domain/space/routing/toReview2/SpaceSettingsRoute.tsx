@@ -11,9 +11,9 @@ import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceSt
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage from '@/domain/journey/space/pages/AdminSpaceCommunityPage';
 import SpaceAccountPage from '@/domain/journey/space/pages/SpaceAccount/SpaceAccountPage';
-import ChallengesRoute from '@/domain/platform/admin/subspace/routing/ChallengesRoute';
-import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
-import SpaceLayoutSettingsPage from '../../space/pages/SpaceLayoutSettings/SpaceLayoutSettingsPage';
+import ChallengesRoute from '@/domain/space/routing/toReviewAdmin/ChallengesRoute';
+import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import SpaceLayoutSettingsPage from '../../../journey/space/pages/SpaceLayoutSettings/SpaceLayoutSettingsPage';
 
 const SpaceSettingsRoute: FC = () => {
   useTransactionScope({ type: 'admin' });

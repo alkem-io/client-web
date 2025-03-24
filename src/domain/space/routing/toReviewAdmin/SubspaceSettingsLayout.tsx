@@ -4,6 +4,9 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import { TabDefinition } from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
@@ -11,9 +14,6 @@ import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import { FC, PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
 
 interface SubspaceSettingsLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;

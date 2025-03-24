@@ -6,7 +6,7 @@ import OpportunityCommunicationsPage from '@/domain/journey/opportunity/pages/Op
 import OpportunityAboutPage from '@/domain/journey/opportunity/pages/OpportunityAboutPage';
 import OpportunitySettingsPage from '@/domain/journey/opportunity/pages/OpportunitySettings/OpportunitySettingsPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
 export const OpportunityRoute = () => {
   const { subspace } = useSubSpace();

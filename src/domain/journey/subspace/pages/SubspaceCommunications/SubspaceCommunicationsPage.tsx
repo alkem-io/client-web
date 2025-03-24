@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CommunityUpdatesPage, {
   CommunityUpdatesPageProps,
 } from '@/domain/platform/admin/community/CommunityUpdatesPage';
+import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 
 interface SubspaceCommunicationsPageProps extends SettingsPageProps, CommunityUpdatesPageProps {}
 

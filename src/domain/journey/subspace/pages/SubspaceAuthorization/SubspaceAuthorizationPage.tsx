@@ -1,4 +1,3 @@
-import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { Trans, useTranslation } from 'react-i18next';
@@ -8,6 +7,7 @@ import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/ap
 import { BlockTitle } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
+import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 
 interface SubspaceAuthorizationPageProps extends SettingsPageProps {}
 

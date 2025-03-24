@@ -9,7 +9,7 @@ import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../../journey/space/spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import SpaceKnowledgeBasePage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
-import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
+import SpaceSettingsRoute from '@/domain/space/routing/toReview2/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';

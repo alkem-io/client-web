@@ -7,11 +7,11 @@ import CommunityUsers from '@/domain/community/community/CommunityAdmin/Communit
 import useCommunityAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSubSpace } from '../../subspace/hooks/useSubSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, parentSpaceId } = useUrlResolver();

@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SpaceAboutEdit from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutEdit';
 import Loading from '@/core/ui/loading/Loading';
+import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 
 const SubspaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading } = useUrlResolver();
