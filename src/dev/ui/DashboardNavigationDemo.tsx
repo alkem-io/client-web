@@ -3,7 +3,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
-import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
+import DashboardNavigation from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { MouseEventHandler, useState } from 'react';
 import { useLocation } from 'react-router-dom';

@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import AdminOpportunityCommunityPage from '@/domain/journey/opportunity/pages/AdminOpportunityCommunityPage';
-import OpportunityCommunicationsPage from '@/domain/journey/opportunity/pages/OpportunityCommunications/OpportunityCommunicationsPage';
-import OpportunityAboutPage from '@/domain/journey/opportunity/pages/OpportunityAboutPage';
-import OpportunitySettingsPage from '@/domain/journey/opportunity/pages/OpportunitySettings/OpportunitySettingsPage';
+import AdminOpportunityCommunityPage from '@/domain/space/admin/AdminOpportunityCommunityPage';
+import OpportunityCommunicationsPage from '@/domain/space/pages/L2/OpportunityCommunications/OpportunityCommunicationsPage';
+import OpportunityAboutPage from '@/domain/space/pages/L2/OpportunityAboutPage';
+import OpportunitySettingsPage from '@/domain/space/admin/OpportunitySettings/OpportunitySettingsPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 

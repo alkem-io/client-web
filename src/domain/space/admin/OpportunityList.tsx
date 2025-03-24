@@ -12,7 +12,7 @@ import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
-import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
+import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchSpaceDashboardNavigationSubspacesQuery,

@@ -30,7 +30,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, {
   DashboardNavigationProps,
-} from '@/domain/journey/dashboardNavigation/DashboardNavigation';
+} from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from '../../../journey/subspace/layout/SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from '../../../journey/subspace/subspaceHome/dialogs/CreateJourney';

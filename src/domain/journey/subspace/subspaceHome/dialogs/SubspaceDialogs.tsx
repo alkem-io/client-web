@@ -8,7 +8,7 @@ import ActivityDialog from '@/domain/journey/common/Activity/ActivityDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
+import DashboardNavigation from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
