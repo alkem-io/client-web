@@ -9,7 +9,7 @@ import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/Prof
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import { HelpOutlineOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300

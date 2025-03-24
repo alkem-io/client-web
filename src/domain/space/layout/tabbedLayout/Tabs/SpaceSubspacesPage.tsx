@@ -7,7 +7,7 @@ import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDia
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
-import { useSpace } from '../../../SpaceContext/useSpace';
+import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../../../../journey/space/layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';

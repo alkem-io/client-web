@@ -12,7 +12,7 @@ import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMembersh
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
 import { useEffect, useMemo } from 'react';

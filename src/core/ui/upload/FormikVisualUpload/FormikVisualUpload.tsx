@@ -9,7 +9,7 @@ import { CropDialog } from '../VisualUpload/CropDialog';
 import { useField } from 'formik';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
 import { Caption } from '../../typography';
 import { gutters } from '../../grid/utils';
 

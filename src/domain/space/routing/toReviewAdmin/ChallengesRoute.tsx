@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
+import SubspaceProvider from '@/domain/space/context/SubspaceProvider';
 import SubspaceListPage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceSubspaces/SubspaceListPage';
 import { ChallengeRoute } from '@/domain/space/routing/toReview2/ChallengeRoute';
 

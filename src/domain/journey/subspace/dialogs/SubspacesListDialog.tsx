@@ -6,7 +6,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Loading from '@/core/ui/loading/Loading';
 import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
 import { journeyCardValueGetter } from '@/domain/journey/common/utils/journeyCardValueGetter';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';

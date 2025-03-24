@@ -18,7 +18,7 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { SpaceLevel, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
 
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
 
 const VISIBLE_COMMUNITY_ROLES = [RoleName.Admin, RoleName.Lead];
 

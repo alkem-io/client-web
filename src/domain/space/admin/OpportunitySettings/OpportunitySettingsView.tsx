@@ -11,7 +11,7 @@ import DeleteIcon from '@/domain/journey/space/pages/SpaceSettings/icon/DeleteIc
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import PageContent from '@/core/ui/content/PageContent';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 const OpportunitySettingsView = () => {
   const { t } = useTranslation();

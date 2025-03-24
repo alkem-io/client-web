@@ -8,7 +8,7 @@ import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayou
 import { SettingsPageProps } from '../../platform/admin/layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;

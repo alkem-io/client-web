@@ -32,7 +32,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 import Gutters from '@/core/ui/grid/Gutters';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';

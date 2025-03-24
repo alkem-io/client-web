@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceProvider from '../context/SubspaceProvider';
+import SubspaceProvider from '../../../space/context/SubspaceProvider';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';

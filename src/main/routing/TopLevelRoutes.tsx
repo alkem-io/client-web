@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { SpaceContextProvider } from '@/domain/space/SpaceContext/SpaceContext';
+import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';

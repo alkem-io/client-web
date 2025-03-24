@@ -1,5 +1,5 @@
 import { Route, Routes, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
-import SubspaceProvider from '@/domain/journey/subspace/context/SubspaceProvider';
+import SubspaceProvider from '@/domain/space/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
@@ -15,7 +15,7 @@ import React, { Suspense, useEffect, useRef } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage';
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceSkeletonLayout from '../layout/Skeletons/SpaceSkeletonLayout';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 

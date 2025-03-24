@@ -4,7 +4,7 @@ import SpaceKnowledgeBasePage from '@/domain/space/layout/tabbedLayout/Tabs/Spac
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
 import SpaceCommunityPage from '../../../space/layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
-import { useSpace } from '../../../space/SpaceContext/useSpace';
+import { useSpace } from '../../../space/context/useSpace';
 import SpaceDashboardPage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage';
 
 const getPageSection = (position: number | undefined): EntityPageSection => {

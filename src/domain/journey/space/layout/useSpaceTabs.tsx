@@ -1,6 +1,6 @@
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ReactNode, useMemo } from 'react';
-import { useSpace } from '../../../space/SpaceContext/useSpace';
+import { useSpace } from '../../../space/context/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';

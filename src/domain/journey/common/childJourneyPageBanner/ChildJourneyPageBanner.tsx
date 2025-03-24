@@ -1,7 +1,7 @@
 import JourneyPageBannerCard from '../PageBanner/JourneyPageBannerCard/JourneyPageBannerCard';
 import PageBanner, { PageBannerProps } from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useChildJourneyPageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 

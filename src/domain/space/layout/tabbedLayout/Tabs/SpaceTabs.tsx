@@ -25,7 +25,7 @@ import useShare from '@/core/utils/Share';
 import { EntityTabsProps } from '../../../../journey/common/EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../../journey/common/Activity/ActivityDialog';
-import { useSpace } from '../../../SpaceContext/useSpace';
+import { useSpace } from '../../../context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../../../../journey/space/layout/useSpaceTabs';
 
