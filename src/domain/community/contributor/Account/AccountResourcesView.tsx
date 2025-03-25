@@ -3,7 +3,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
+import JourneyTile from '@/domain/space/components/JourneyTile';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';

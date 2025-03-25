@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { Settings, VisibilityOutlined } from '@mui/icons-material';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
-import PageBannerCardWithVisual from '@/domain/journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
+import PageBannerCardWithVisual from '@/domain/space/components/JourneyPageBannerCard/PageBannerCardWithVisual';
 import { PageTitle } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';

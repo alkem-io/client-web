@@ -12,9 +12,9 @@ import {
   usePendingMemberships,
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
+import JourneyCard from '@/domain/space/components/JourneyCard/JourneyCard';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCardTagline from '@/domain/space/components/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';

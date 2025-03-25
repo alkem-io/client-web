@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
-import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
+import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalloutsGroupView from '../../../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';

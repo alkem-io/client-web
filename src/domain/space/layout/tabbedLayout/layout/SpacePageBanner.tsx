@@ -12,7 +12,7 @@ import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElement
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
-import { BasePageBannerProps } from '@/domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
+import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
 import { defaultVisualUrls } from '../../../icons/defaultVisuals/defaultVisualUrls';
 
 export const TITLE_HEIGHT = 6;

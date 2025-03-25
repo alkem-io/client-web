@@ -14,7 +14,7 @@ import SearchField from '@/core/ui/search/SearchField';
 import { Caption } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ValueType } from '@/core/utils/filtering/filterFn';
-import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
+import JourneyFilter from '@/domain/space/components/JourneyFilter';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useSpace } from '@/domain/space/context/useSpace';

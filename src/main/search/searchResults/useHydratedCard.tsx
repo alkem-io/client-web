@@ -19,7 +19,7 @@ import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
+import CardParentJourneySegment from '@/domain/space/components/SpaceChildJourneyCard/CardParentJourneySegment';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';

@@ -11,7 +11,7 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import JourneyDashboardWelcomeBlock from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import JourneyDashboardWelcomeBlock from '@/domain/space/components/JourneyDashboardWelcomeBlock';
 import DashboardNavigation from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';

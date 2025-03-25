@@ -10,7 +10,7 @@ import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { PrivacyIcon } from './PrivacyIcon';
+import { PrivacyIcon } from '../icons/PrivacyIcon';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 type JourneyTileProps = {

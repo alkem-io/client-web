@@ -1,8 +1,8 @@
-import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
+import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import SpaceTabs, { SpaceTabsPlaceholder } from '../Tabs/SpaceTabs';
 import { PropsWithChildren } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import JourneyBreadcrumbs from '@/domain/space/components/journeyBreadcrumbs/JourneyBreadcrumbs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';

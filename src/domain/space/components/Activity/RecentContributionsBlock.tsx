@@ -12,7 +12,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Box } from '@mui/material';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../journeyDashboard/constants';
+import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/constants';
 import { Actions } from '@/core/ui/actions/Actions';
 
 export interface RecentContributionsBlockProps extends ActivityComponentProps {

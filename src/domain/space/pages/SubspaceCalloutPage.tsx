@@ -1,6 +1,6 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
 import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
-import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
+import { JourneyCalloutDialogProps } from '@/domain/space/components/JourneyCalloutDialogProps';
 import { useSubSpace } from '../hooks/useSubSpace';
 
 const renderPage = () => <SubspaceHomePage />;

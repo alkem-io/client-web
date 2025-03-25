@@ -1,5 +1,5 @@
 import { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
-import JourneyAvatar from '@/domain/journey/common/JourneyAvatar/JourneyAvatar';
+import JourneyAvatar from '@/domain/space/components/JourneyAvatar';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';

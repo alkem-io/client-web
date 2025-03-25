@@ -16,7 +16,7 @@ import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayo
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
-import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import JourneyBreadcrumbs from '@/domain/space/components/journeyBreadcrumbs/JourneyBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';

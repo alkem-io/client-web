@@ -20,7 +20,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import JourneyCardHorizontal from '@/domain/space/components/JourneyCardHorizontal';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';

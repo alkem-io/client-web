@@ -5,7 +5,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import RecentContributionsBlock from './RecentContributionsBlock';
 import { ActivityEventType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../journeyDashboard/constants';
+import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 

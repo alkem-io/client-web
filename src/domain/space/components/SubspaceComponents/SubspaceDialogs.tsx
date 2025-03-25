@@ -4,7 +4,7 @@ import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { SubspaceDialog } from '@/domain/space/components/SubspaceComponents/SubspaceDialog';
 import SubspacesListDialog from '@/domain/space/components/SubspacesListDialog';
 import ContributorsToggleDialog from '@/domain/space/components/ContributorsToggleDialog';
-import ActivityDialog from '@/domain/journey/common/Activity/ActivityDialog';
+import ActivityDialog from '@/domain/space/components/Activity/ActivityDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';

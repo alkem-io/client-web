@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/journey/common/utils/journeyCardValueGetter';
+import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/journeyCardValueGetter';
 import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
-import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
+import ChildJourneyView from '@/domain/space/components/Subentities/ChildJourneyView';
 import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';

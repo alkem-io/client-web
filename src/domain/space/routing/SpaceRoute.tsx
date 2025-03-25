@@ -3,7 +3,7 @@ import SubspaceProvider from '@/domain/space/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
-import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
+import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';

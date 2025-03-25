@@ -11,7 +11,7 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
+import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/JourneyTile';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';

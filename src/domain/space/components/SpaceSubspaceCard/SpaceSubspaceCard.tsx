@@ -4,11 +4,11 @@ import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-sch
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
-import JourneyCardDescription from '@/domain/journey/common/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '@/domain/journey/common/JourneyCard/JourneyCardSpacing';
-import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCard, { JourneyCardProps } from '@/domain/space/components/JourneyCard/JourneyCard';
+import JourneyCardDescription from '@/domain/space/components/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '@/domain/space/components/JourneyCard/JourneyCardSpacing';
+import JourneyCardGoToButton from '@/domain/space/components/JourneyCard/JourneyCardGoToButton';
+import JourneyCardTagline from '@/domain/space/components/JourneyCard/JourneyCardTagline';
 import StackedAvatar from './StackedAvatar';
 import { ReactNode } from 'react';
 

@@ -13,7 +13,7 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/journey/common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/space/layout/EntityPageLayout';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';

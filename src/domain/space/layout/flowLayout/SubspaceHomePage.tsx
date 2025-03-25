@@ -2,8 +2,8 @@ import { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
-import { SubspacePageLayout } from '@/domain/journey/common/EntityPageLayout';
-import JourneyDashboardWelcomeBlock from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import { SubspacePageLayout } from '@/domain/space/layout/EntityPageLayout';
+import JourneyDashboardWelcomeBlock from '@/domain/space/components/JourneyDashboardWelcomeBlock';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,

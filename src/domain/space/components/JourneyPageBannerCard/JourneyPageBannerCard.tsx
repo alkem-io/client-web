@@ -1,4 +1,4 @@
-import JourneyAvatar from '@/domain/journey/common/JourneyAvatar/JourneyAvatar';
+import JourneyAvatar from '@/domain/space/components/JourneyAvatar';
 import { Visual } from '@/domain/common/visual/Visual';
 import { PageBannerCardWrapperProps } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import PageBannerCardWithVisual from './PageBannerCardWithVisual';

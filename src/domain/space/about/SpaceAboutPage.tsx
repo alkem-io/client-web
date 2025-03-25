@@ -6,8 +6,8 @@ import ContributorsDialog from '@/domain/community/community/ContributorsDialog/
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
-import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
+import JourneyBreadcrumbs from '@/domain/space/components/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { SpaceTabsPlaceholder } from '../layout/tabbedLayout/Tabs/SpaceTabs';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';

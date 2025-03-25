@@ -3,9 +3,9 @@ import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/Pen
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
+import JourneyCard from '@/domain/space/components/JourneyCard/JourneyCard';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCardTagline from '@/domain/space/components/JourneyCard/JourneyCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';

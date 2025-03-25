@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
+import JourneyCard, { JourneyCardProps } from '@/domain/space/components/JourneyCard/JourneyCard';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
-import JourneyCardDescription from '@/domain/journey/common/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '@/domain/journey/common/JourneyCard/JourneyCardSpacing';
+import JourneyCardTagline from '@/domain/space/components/JourneyCard/JourneyCardTagline';
+import JourneyCardDescription from '@/domain/space/components/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '@/domain/space/components/JourneyCard/JourneyCardSpacing';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
+import JourneyCardGoToButton from '@/domain/space/components/JourneyCard/JourneyCardGoToButton';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 

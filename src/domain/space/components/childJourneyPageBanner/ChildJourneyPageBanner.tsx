@@ -1,4 +1,4 @@
-import JourneyPageBannerCard from '../PageBanner/JourneyPageBannerCard/JourneyPageBannerCard';
+import JourneyPageBannerCard from '../JourneyPageBannerCard/JourneyPageBannerCard';
 import PageBanner, { PageBannerProps } from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';

@@ -22,9 +22,9 @@ import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined } from '@mui
 import useNavigate from '@/core/routing/useNavigate';
 import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
-import { EntityTabsProps } from '../../../../journey/common/EntityPageLayout';
+import { EntityTabsProps } from '../../EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
-import ActivityDialog from '../../../../journey/common/Activity/ActivityDialog';
+import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
