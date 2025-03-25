@@ -1,4 +1,4 @@
-import SubspacePageLayout from '@/domain/journey/subspace/layout/SubspacePageLayout';
+import SubspacePageLayout from '@/domain/space/layout/flowLayout/SubspacePageLayout';
 import { Skeleton } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 

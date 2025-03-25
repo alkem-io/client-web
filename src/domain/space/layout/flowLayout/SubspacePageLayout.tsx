@@ -31,12 +31,12 @@ import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/mater
 import produce from 'immer';
 import { Children, PropsWithChildren, ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogActionButtons from './DialogActionButtons';
-import DialogActionsMenu from './DialogActionsMenu';
-import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
-import InfoColumn from './InfoColumn';
-import { SubspaceDialog } from './SubspaceDialog';
-import WelcomeBlock from './WelcomeBlock';
+import DialogActionButtons from '../../components/SubspaceComponents/DialogActionButtons';
+import DialogActionsMenu from '../../components/SubspaceComponents/DialogActionsMenu';
+import { DialogDefinitionProps, isDialogDef } from '../../components/SubspaceComponents/DialogDefinition';
+import InfoColumn from '../../components/InfoColumn';
+import { SubspaceDialog } from '../../components/SubspaceComponents/SubspaceDialog';
+import WelcomeBlock from '../../../journey/subspace/layout/WelcomeBlock';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;

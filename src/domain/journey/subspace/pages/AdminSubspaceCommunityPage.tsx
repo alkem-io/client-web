@@ -10,7 +10,7 @@ import CommunityUsers from '@/domain/community/community/CommunityAdmin/Communit
 import useCommunityAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useSubSpace } from '../hooks/useSubSpace';
+import { useSubSpace } from '../../../space/hooks/useSubSpace';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';

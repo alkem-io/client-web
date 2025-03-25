@@ -11,8 +11,8 @@ import {
   RoleSetContributorType,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { DialogDef } from '../../../journey/subspace/layout/DialogDefinition';
-import { SubspaceDialog } from '../../../journey/subspace/layout/SubspaceDialog';
+import { DialogDef } from '../../components/SubspaceComponents/DialogDefinition';
+import { SubspaceDialog } from '../../components/SubspaceComponents/SubspaceDialog';
 import {
   AccountTreeOutlined,
   CalendarMonthOutlined,
@@ -31,7 +31,7 @@ import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboar
 import DashboardNavigation, {
   DashboardNavigationProps,
 } from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
-import { useConsumeAction } from '../../../journey/subspace/layout/SubspacePageLayout';
+import { useConsumeAction } from './SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from '../../../journey/subspace/subspaceHome/dialogs/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
@@ -39,7 +39,7 @@ import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);

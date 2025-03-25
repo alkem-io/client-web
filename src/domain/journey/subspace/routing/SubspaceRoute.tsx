@@ -12,9 +12,9 @@ import SubspaceHomePage from '../../../space/layout/flowLayout/SubspaceHomePage'
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
-import { SubspaceDialog } from '../layout/SubspaceDialog';
+import { SubspaceDialog } from '../../../space/components/SubspaceComponents/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 
 const SubspaceRoute = () => {
   const { subspace, permissions, loading } = useSubSpace();

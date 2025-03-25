@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CreateSubspaceForm } from '../../forms/CreateSubspaceForm';
+import { CreateSubspaceForm } from '../../../../space/components/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import SubspaceIcon2 from '../../../../space/icons/SubspaceIcon2';
 

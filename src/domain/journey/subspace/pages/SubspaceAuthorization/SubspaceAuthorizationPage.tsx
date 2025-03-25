@@ -1,7 +1,7 @@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { BlockTitle } from '@/core/ui/typography/components';

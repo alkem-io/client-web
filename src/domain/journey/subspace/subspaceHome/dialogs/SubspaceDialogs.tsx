@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import { SubspaceDialog } from '@/domain/journey/subspace/layout/SubspaceDialog';
-import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesListDialog';
-import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
+import { SubspaceDialog } from '@/domain/space/components/SubspaceComponents/SubspaceDialog';
+import SubspacesListDialog from '@/domain/space/components/SubspacesListDialog';
+import ContributorsToggleDialog from '@/domain/space/components/ContributorsToggleDialog';
 import ActivityDialog from '@/domain/journey/common/Activity/ActivityDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';

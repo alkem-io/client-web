@@ -3,7 +3,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
 import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { TabDefinition } from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';

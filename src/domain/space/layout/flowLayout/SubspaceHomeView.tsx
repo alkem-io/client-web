@@ -7,10 +7,10 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import React, { useEffect, useState } from 'react';
-import { SubspaceInnovationFlow, useConsumeAction } from '../../../journey/subspace/layout/SubspacePageLayout';
+import { SubspaceInnovationFlow, useConsumeAction } from './SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
-import { SubspaceDialog } from '../../../journey/subspace/layout/SubspaceDialog';
+import { SubspaceDialog } from '../../components/SubspaceComponents/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';

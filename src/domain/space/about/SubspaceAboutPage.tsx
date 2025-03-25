@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSubSpace } from '../../journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '../hooks/useSubSpace';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';

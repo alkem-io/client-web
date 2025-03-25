@@ -9,7 +9,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useSubSpace } from '../../journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '../hooks/useSubSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 

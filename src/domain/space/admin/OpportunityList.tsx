@@ -8,7 +8,7 @@ import SearchableList, { SearchableListItem } from '@/domain/platform/admin/comp
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
@@ -30,7 +30,7 @@ import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCrea
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
+import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 
 export const OpportunityList: FC = () => {

@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import AdminOpportunityCommunityPage from '@/domain/space/admin/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '@/domain/space/pages/L2/OpportunityCommunications/OpportunityCommunicationsPage';

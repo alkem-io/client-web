@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
-import SubspacePageLayout from '@/domain/journey/subspace/layout/SubspacePageLayout';
+import SubspacePageLayout from '@/domain/space/layout/flowLayout/SubspacePageLayout';
 
 const usePageLayoutByEntity = (isL0Space: boolean) =>
   useMemo(() => {

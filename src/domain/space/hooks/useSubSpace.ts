@@ -1,4 +1,4 @@
 import { useContext } from 'react';
-import { SubspaceContext } from '../../../space/context/SubspaceProvider';
+import { SubspaceContext } from '../context/SubspaceProvider';
 
 export const useSubSpace = () => useContext(SubspaceContext);

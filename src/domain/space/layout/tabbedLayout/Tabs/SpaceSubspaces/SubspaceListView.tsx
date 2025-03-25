@@ -20,7 +20,7 @@ import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreatio
 import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
+import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaceForm';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
