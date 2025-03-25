@@ -19,7 +19,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceSkeletonLayout from '@/domain/space/layout/loadingLayout/SpaceSkeletonLayout';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 
-const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/journey/subspace/routing/SubspaceRoute'));
+const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
 const SpaceTabbedLayoutRoute = () => {

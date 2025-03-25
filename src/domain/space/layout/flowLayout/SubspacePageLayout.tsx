@@ -36,7 +36,7 @@ import DialogActionsMenu from '../../components/SubspaceComponents/DialogActions
 import { DialogDefinitionProps, isDialogDef } from '../../components/SubspaceComponents/DialogDefinition';
 import InfoColumn from '../../components/InfoColumn';
 import { SubspaceDialog } from '../../components/SubspaceComponents/SubspaceDialog';
-import WelcomeBlock from '../../../journey/subspace/layout/WelcomeBlock';
+import WelcomeBlock from '../../components/WelcomeBlock';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;

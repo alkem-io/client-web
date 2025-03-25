@@ -25,7 +25,7 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import SubspaceDialogs from '../../../journey/subspace/subspaceHome/dialogs/SubspaceDialogs';
+import SubspaceDialogs from '../../components/SubspaceComponents/SubspaceDialogs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, {
@@ -33,7 +33,7 @@ import DashboardNavigation, {
 } from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from './SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import CreateJourney from '../../../journey/subspace/subspaceHome/dialogs/CreateJourney';
+import CreateJourney from '../../components/SubspaceCreationDialog/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';

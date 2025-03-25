@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CreateSubspaceForm } from '../../../../space/components/CreateSubspaceForm';
+import { CreateSubspaceForm } from '../CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
-import SubspaceIcon2 from '../../../../space/icons/SubspaceIcon2';
+import SubspaceIcon2 from '../../icons/SubspaceIcon2';
 
 export interface CreateJourneyProps {
   isVisible: boolean;

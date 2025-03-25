@@ -3,17 +3,17 @@ import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceProvider from '../../../space/context/SubspaceProvider';
+import SubspaceProvider from '../context/SubspaceProvider';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
-import SubspaceAboutPage from '../../../space/about/SubspaceAboutPage';
-import SubspaceHomePage from '../../../space/layout/flowLayout/SubspaceHomePage';
+import SubspaceAboutPage from '../about/SubspaceAboutPage';
+import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
-import { SubspaceDialog } from '../../../space/components/SubspaceComponents/SubspaceDialog';
-import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
+import SubspaceCalloutPage from '../pages/SubspaceCalloutPage';
+import { SubspaceDialog } from '../components/SubspaceComponents/SubspaceDialog';
+import SubspaceSettingsRoute from './SubspaceSettingsRoute';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 
 const SubspaceRoute = () => {

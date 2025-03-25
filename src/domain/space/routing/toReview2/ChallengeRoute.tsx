@@ -2,14 +2,14 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SubspaceCommunicationsPage from '@/domain/journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
-import SubspaceAboutPage from '@/domain/journey/subspace/pages/SubspaceAboutPage';
+import SubspaceCommunicationsPage from '@/domain/space/admin/SubspaceCommunications/SubspaceCommunicationsPage';
+import SubspaceAboutPage from '@/domain/space/about/settings/SubspaceAboutPage';
 
 import ChallengeAuthorizationRoute from '@/domain/space/routing/toReviewAdmin/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import AdminSubspaceCommunityPage from '@/domain/journey/subspace/pages/AdminSubspaceCommunityPage';
+import AdminSubspaceCommunityPage from '@/domain/space/admin/SpaceCommunity/AdminSubspaceCommunityPage';
 import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
-import ChallengeOpportunitiesPage from '@/domain/journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
+import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
 export const ChallengeRoute: FC = () => {

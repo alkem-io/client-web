@@ -12,7 +12,7 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
+import SubspaceCard from '@/domain/space/components/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 import useSpaceTabProvider from '../SpaceTabProvider';

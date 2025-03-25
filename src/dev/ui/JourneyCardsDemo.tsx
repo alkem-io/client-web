@@ -8,7 +8,7 @@ import SpaceCard from '@/domain/space/components/SpaceCard/SpaceCard';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SpaceSubspaceCard from '@/domain/space/components/SpaceSubspaceCard/SpaceSubspaceCard';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
+import SubspaceCard from '@/domain/space/components/SubspaceCard';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 
 const loremIpsum =
