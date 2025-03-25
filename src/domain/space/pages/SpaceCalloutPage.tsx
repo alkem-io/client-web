@@ -1,10 +1,10 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
-import SpaceSubspacesPage from '../../../space/layout/tabbedLayout/Tabs/SpaceSubspacesPage';
+import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import SpaceKnowledgeBasePage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
-import SpaceCommunityPage from '../../../space/layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
-import { useSpace } from '../../../space/context/useSpace';
+import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
+import { useSpace } from '../context/useSpace';
 import SpaceDashboardPage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage';
 
 const getPageSection = (position: number | undefined): EntityPageSection => {

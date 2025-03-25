@@ -8,7 +8,7 @@ import SubspaceAboutPage from '@/domain/journey/subspace/pages/SubspaceAboutPage
 import ChallengeAuthorizationRoute from '@/domain/space/routing/toReviewAdmin/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSubspaceCommunityPage from '@/domain/journey/subspace/pages/AdminSubspaceCommunityPage';
-import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
+import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '@/domain/journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 

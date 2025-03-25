@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import SpaceChildJourneyCard, {
   SpaceChildJourneyCardProps,
 } from '@/domain/journey/common/SpaceChildJourneyCard/SpaceChildJourneyCard';
-import { SubspaceIcon } from '../icon/SubspaceIcon';
+import { SubspaceIcon } from '../../../space/icons/SubspaceIcon';
 import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import CardActions from '@/core/ui/card/CardActions';

@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import JourneyAvatar from '../../../journey/common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
-import { DashboardNavigationItem } from '../../../journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 
 export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];

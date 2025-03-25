@@ -27,7 +27,7 @@ import {
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from '../../../journey/subspace/subspaceHome/dialogs/SubspaceDialogs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, {
   DashboardNavigationProps,
 } from '@/domain/space/components/dashboardNavigation/DashboardNavigation';

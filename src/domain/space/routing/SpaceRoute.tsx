@@ -6,7 +6,7 @@ import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Redirect from '@/core/routing/Redirect';
-import SpaceCalloutPage from '../../journey/space/spaceCalloutPage/SpaceCalloutPage';
+import SpaceCalloutPage from '../pages/SpaceCalloutPage';
 import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import SpaceKnowledgeBasePage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/space/routing/toReview2/SpaceSettingsRoute';

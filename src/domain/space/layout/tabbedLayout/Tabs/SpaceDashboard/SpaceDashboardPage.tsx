@@ -11,7 +11,7 @@ import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePage
 import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';

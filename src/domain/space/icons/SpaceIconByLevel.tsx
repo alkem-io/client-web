@@ -1,5 +1,5 @@
 import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
-import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
 import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';

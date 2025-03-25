@@ -1,4 +1,4 @@
-import { DashboardNavigationItem } from '../../../journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { gutters } from '@/core/ui/grid/utils';
 
 export const findCurrentPath = (

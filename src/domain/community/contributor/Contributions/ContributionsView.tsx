@@ -1,4 +1,4 @@
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';

@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useDeleteSpaceMutation, useSpacePrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import DeleteIcon from '@/domain/journey/space/pages/SpaceSettings/icon/DeleteIcon';
+import DeleteIcon from '@/domain/shared/icons/DeleteIcon';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import PageContent from '@/core/ui/content/PageContent';

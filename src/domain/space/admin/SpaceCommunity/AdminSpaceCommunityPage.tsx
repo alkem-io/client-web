@@ -5,7 +5,7 @@ import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/In
 import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useSpace } from '../../../space/context/useSpace';
+import { useSpace } from '../../context/useSpace';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';

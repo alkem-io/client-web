@@ -6,7 +6,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
-import { SubspaceIcon } from '../../../../journey/subspace/icon/SubspaceIcon';
+import { SubspaceIcon } from '../../../icons/SubspaceIcon';
 
 type TabDefinition = {
   value: EntityPageSection | string;

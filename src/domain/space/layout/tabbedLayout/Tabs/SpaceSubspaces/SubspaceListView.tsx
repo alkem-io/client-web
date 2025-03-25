@@ -17,7 +17,7 @@ import {
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
-import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
+import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';

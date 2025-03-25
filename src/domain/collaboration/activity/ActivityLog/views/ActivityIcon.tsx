@@ -9,7 +9,7 @@ import {
   NotesOutlined,
   PersonOutlined,
 } from '@mui/icons-material';
-import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
 import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';

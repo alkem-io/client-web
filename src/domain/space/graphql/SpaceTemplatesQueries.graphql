@@ -1,5 +1,3 @@
-
-
 query SpaceTemplatesManager($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {

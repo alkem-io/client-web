@@ -13,7 +13,7 @@ import Dialog from '@mui/material/Dialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
-import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
