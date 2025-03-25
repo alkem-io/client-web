@@ -1,4 +1,4 @@
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import RoleSetContributorTypesView from '../RoleSetContributors/RoleSetContributorTypesView';

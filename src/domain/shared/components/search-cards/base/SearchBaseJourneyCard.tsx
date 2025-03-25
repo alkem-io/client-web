@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
-import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
-import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCardGoToButton from '@/domain/space/components/JourneyCard/JourneyCardGoToButton';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
+import JourneyCard, { JourneyCardProps } from '@/domain/space/components/JourneyCard/JourneyCard';
+import JourneyCardTagline from '@/domain/space/components/JourneyCard/JourneyCardTagline';
 import { BlockTitle } from '@/core/ui/typography/components';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
-import JourneyCardDescription from '@/domain/journey/common/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '@/domain/journey/common/JourneyCard/JourneyCardSpacing';
+import JourneyCardDescription from '@/domain/space/components/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '@/domain/space/components/JourneyCard/JourneyCardSpacing';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 

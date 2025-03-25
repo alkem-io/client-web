@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import { joinNodes } from '@/domain/shared/utils/joinNodes';
 import { gutters } from '@/core/ui/grid/utils';
-import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
+import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
 import AdminBreadcrumbs from '../AdminBreadcrumbs';

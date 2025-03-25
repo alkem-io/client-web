@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Box } from '@mui/material';
 import CardImage from './CardImage';
-import JourneyCardBannerPlaceholder from '@/domain/journey/common/JourneyCard/JourneyCardBannerPlaceholder';
+import JourneyCardBannerPlaceholder from '@/domain/space/components/JourneyCard/JourneyCardBannerPlaceholder';
 
 type CardBannerProps = {
   src?: string;

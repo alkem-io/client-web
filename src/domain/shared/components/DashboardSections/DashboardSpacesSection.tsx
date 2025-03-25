@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SpaceCard, { SpaceCardProps } from '@/domain/journey/space/SpaceCard/SpaceCard';
+import SpaceCard, { SpaceCardProps } from '@/domain/space/components/SpaceCard/SpaceCard';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import { CommunityMembershipStatus, Nvp, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
