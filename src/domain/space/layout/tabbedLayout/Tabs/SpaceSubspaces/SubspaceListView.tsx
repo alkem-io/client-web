@@ -16,9 +16,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
-import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
+import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -32,7 +32,7 @@ import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import Gutters from '@/core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
-import EntityConfirmDeleteDialog from '../../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '../../../../../shared/components/EntityConfirmDeleteDialog';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import {
   AuthorizationPrivilege,

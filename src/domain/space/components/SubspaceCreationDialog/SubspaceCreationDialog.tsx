@@ -4,7 +4,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, DialogActions, DialogContent, SvgIconProps } from '@mui/material';
 import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationForm, JourneyFormValues } from './JourneyCreationForm';
+import { JourneyCreationForm, JourneyFormValues } from './SubspaceCreationForm';
 
 interface JourneyCreationDialogProps {
   open: boolean;

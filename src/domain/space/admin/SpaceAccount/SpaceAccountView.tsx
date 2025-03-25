@@ -28,7 +28,7 @@ import { useUserContext } from '@/domain/community/user';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 
 interface SpaceAccountPageProps {
   spaceId: string | undefined;

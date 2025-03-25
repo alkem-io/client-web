@@ -30,7 +30,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
-import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '../../../../shared/components/EntityConfirmDeleteDialog';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { useSpace } from '@/domain/space/context/useSpace';
 import Gutters from '@/core/ui/grid/Gutters';

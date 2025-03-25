@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
-import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
+import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
+import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../../forms/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';

@@ -39,7 +39,7 @@ import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { IconButton } from '@mui/material';

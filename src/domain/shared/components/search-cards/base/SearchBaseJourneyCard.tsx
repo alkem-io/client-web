@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
-import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import { BlockTitle } from '@/core/ui/typography/components';

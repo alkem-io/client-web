@@ -22,7 +22,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 
 const PendingMembershipsDialog = () => {
   const { t } = useTranslation();

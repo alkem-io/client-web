@@ -10,7 +10,7 @@ import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardT
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   tagline: string;

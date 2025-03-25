@@ -9,9 +9,9 @@ import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
+import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import {
   refetchAdminSpaceSubspacesPageQuery,
@@ -24,7 +24,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
