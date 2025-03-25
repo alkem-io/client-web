@@ -1,5 +1,5 @@
 import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
-import { usePlanAvailability } from '@/domain/journey/space/createSpace/usePlanAvailability';
+import { usePlanAvailability } from '@/domain/space/createSpace/usePlanAvailability';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
 

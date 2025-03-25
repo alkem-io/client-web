@@ -7,7 +7,7 @@ import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
+import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
 import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';

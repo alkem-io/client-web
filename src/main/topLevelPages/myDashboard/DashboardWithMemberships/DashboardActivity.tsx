@@ -10,7 +10,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();

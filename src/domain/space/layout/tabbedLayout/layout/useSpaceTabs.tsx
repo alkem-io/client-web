@@ -1,12 +1,12 @@
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ReactNode, useMemo } from 'react';
-import { useSpace } from '../../../space/context/useSpace';
+import { useSpace } from '../../../context/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
-import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';
+import { SubspaceIcon } from '../../../../journey/subspace/icon/SubspaceIcon';
 
 type TabDefinition = {
   value: EntityPageSection | string;

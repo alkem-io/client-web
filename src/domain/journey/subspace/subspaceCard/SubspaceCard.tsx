@@ -4,7 +4,7 @@ import SpaceChildJourneyCard, {
 } from '@/domain/journey/common/SpaceChildJourneyCard/SpaceChildJourneyCard';
 import { SubspaceIcon } from '../icon/SubspaceIcon';
 import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';

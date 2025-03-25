@@ -27,7 +27,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../../journey/common/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import useSpaceTabs from '../../../../journey/space/layout/useSpaceTabs';
+import useSpaceTabs from '../layout/useSpaceTabs';
 
 type TabDefinition = {
   label: ReactNode;

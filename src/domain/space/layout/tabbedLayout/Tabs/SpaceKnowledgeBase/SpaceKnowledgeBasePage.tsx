@@ -10,7 +10,7 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../../../../../collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
+import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 

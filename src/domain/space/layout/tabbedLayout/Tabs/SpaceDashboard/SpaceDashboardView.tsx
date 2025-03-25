@@ -13,7 +13,7 @@ import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessa
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import JourneyDashboardWelcomeBlock from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import DashboardNavigation from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
-import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
+import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';

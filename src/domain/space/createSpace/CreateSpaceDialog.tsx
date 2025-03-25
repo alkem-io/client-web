@@ -31,8 +31,8 @@ import { TagCategoryValues, info, error as logError } from '@/core/logging/sentr
 import { compact } from 'lodash';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Gutters from '@/core/ui/grid/Gutters';
-import { addSpaceWelcomeCache } from '@/domain/journey/space/createSpace/utils';
-import { useSpacePlans } from '@/domain/journey/space/createSpace/useSpacePlans';
+import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
+import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
 import { LoadingButton } from '@mui/lab';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 

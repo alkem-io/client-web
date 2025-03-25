@@ -2,7 +2,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
-import SpaceAboutEdit from '@/domain/journey/space/pages/SpaceAboutSettings/SpaceAboutEdit';
+import SpaceAboutEdit from '@/domain/space/admin/SpaceAboutSettings/SpaceAboutEdit';
 import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 
 const OpportunityAboutPage = ({ routePrefix = '../' }: SettingsPageProps) => {

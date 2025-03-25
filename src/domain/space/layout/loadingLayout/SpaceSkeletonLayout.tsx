@@ -1,4 +1,4 @@
-import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
+import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardView from '../tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 import { noop } from 'lodash';

@@ -15,7 +15,7 @@ import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';

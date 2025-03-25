@@ -23,12 +23,12 @@ import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTransla
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CachedIcon from '@mui/icons-material/Cached';
-import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import { SvgIconComponent } from '@mui/icons-material';
 import { useUserContext } from '@/domain/community/user';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 
 interface SpaceAccountPageProps {
   spaceId: string | undefined;

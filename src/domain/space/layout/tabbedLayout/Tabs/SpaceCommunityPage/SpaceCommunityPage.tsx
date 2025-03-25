@@ -20,7 +20,7 @@ import {
   RoleSetContributorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import SpacePageLayout from '../../../../../journey/space/layout/SpacePageLayout';
+import SpacePageLayout from '../../layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';

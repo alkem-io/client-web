@@ -1,4 +1,4 @@
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';

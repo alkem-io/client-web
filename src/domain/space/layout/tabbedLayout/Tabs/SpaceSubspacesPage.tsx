@@ -8,7 +8,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
 import { useSpace } from '../../../context/useSpace';
-import SpacePageLayout from '../../../../journey/space/layout/SpacePageLayout';
+import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
@@ -18,7 +18,7 @@ import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import useSubSpaceCreatedSubscription from '@/domain/journey/space/hooks/useSubSpaceCreatedSubscription';
+import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();

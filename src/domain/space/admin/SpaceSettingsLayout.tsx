@@ -15,7 +15,7 @@ import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined
 import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
-import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
+import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';

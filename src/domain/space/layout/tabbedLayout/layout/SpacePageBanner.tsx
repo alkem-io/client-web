@@ -6,14 +6,14 @@ import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { SpaceLevel, SpaceVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '../../../space/context/useSpace';
+import { useSpace } from '../../../context/useSpace';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
 import { BasePageBannerProps } from '@/domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
-import { defaultVisualUrls } from '../../../space/icons/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '../../../icons/defaultVisuals/defaultVisualUrls';
 
 export const TITLE_HEIGHT = 6;
 
