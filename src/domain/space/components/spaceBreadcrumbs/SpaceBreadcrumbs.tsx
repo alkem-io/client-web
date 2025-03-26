@@ -1,4 +1,4 @@
-import { useJourneyBreadcrumbs, UseJourneyBreadcrumbsParams } from './useJourneyBreadcrumbs';
+import { useSpaceBreadcrumbs, UseSpaceBreadcrumbsParams } from './useSpaceBreadcrumbs';
 import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
@@ -9,18 +9,18 @@ import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Settings } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-interface JourneyBreadcrumbsProps<ItemProps extends Expandable>
+interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
   extends BreadcrumbsProps<ItemProps>,
-    UseJourneyBreadcrumbsParams {
+    UseSpaceBreadcrumbsParams {
   settings?: boolean;
 }
 
-const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expandable>>(
+const SpaceBreadcrumbs = forwardRef<Collapsible, SpaceBreadcrumbsProps<Expandable>>(
   <ItemProps extends Expandable>(
-    { journeyPath, settings, loading, ...props }: JourneyBreadcrumbsProps<ItemProps>,
+    { journeyPath, settings, loading, ...props }: SpaceBreadcrumbsProps<ItemProps>,
     ref
   ) => {
-    const { breadcrumbs } = useJourneyBreadcrumbs({
+    const { breadcrumbs } = useSpaceBreadcrumbs({
       journeyPath,
       loading,
     });
@@ -44,7 +44,7 @@ const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expan
     );
   }
 ) as <ItemProps extends Expandable>(
-  props: JourneyBreadcrumbsProps<ItemProps> & { ref?: Ref<Collapsible> }
+  props: SpaceBreadcrumbsProps<ItemProps> & { ref?: Ref<Collapsible> }
 ) => ReactElement;
 
-export default JourneyBreadcrumbs;
+export default SpaceBreadcrumbs;

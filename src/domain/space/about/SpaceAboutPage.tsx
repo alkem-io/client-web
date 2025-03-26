@@ -7,7 +7,7 @@ import SubspaceContributorsDialogContent from '@/domain/community/community/enti
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
-import JourneyBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/JourneyBreadcrumbs';
+import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { SpaceTabsPlaceholder } from '../layout/tabbedLayout/Tabs/SpaceTabs';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -32,7 +32,7 @@ const SpaceAboutPage = () => {
   return (
     <EntityPageLayout
       currentSection={EntityPageSection.About}
-      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} />}
+      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
       pageBanner={
         <SpacePageBanner
           title={profile?.displayName}

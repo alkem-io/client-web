@@ -20,7 +20,7 @@ import unwrapFragment from '@/core/ui/utils/unwrapFragment';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
-import JourneyBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/JourneyBreadcrumbs';
+import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
@@ -163,7 +163,7 @@ const SubspacePageLayout = ({
           <DialogActionsContext.Provider value={actionsProvider}>
             <InnovationFlowHolder>
               <TopLevelLayout
-                breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
+                breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} loading={loading} />}
                 header={<SubspacePageBanner journeyId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
                 floatingActions={
                   <FloatingActionButtons

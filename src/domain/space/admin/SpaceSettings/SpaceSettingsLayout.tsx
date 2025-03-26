@@ -16,7 +16,7 @@ import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsL
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
-import JourneyBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/JourneyBreadcrumbs';
+import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
@@ -104,7 +104,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
         />
       }
       tabsComponent={SpaceTabs}
-      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
+      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
         <RouterLink
           to={`${profile?.url}/${EntityPageSection.Dashboard}`}

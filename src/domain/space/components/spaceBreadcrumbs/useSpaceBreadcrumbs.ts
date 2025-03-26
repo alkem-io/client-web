@@ -13,12 +13,12 @@ export interface BreadcrumbsItem {
   };
 }
 
-export interface UseJourneyBreadcrumbsParams {
+export interface UseSpaceBreadcrumbsParams {
   journeyPath: JourneyPath | undefined;
   loading?: boolean;
 }
 
-export const useJourneyBreadcrumbs = ({ journeyPath = [], loading = false }: UseJourneyBreadcrumbsParams) => {
+export const useSpaceBreadcrumbs = ({ journeyPath = [], loading = false }: UseSpaceBreadcrumbsParams) => {
   const currentJourneyIndex = journeyPath.length - 1;
 
   const { data, loading: isLoadingBreadcrumbs } = useJourneyBreadcrumbsSpaceQuery({
