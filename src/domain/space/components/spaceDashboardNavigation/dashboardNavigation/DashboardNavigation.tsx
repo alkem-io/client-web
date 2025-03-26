@@ -11,7 +11,7 @@ import DashboardNavigationItemView, {
   DashboardNavigationItemViewApi,
   DashboardNavigationItemViewProps,
 } from './DashboardNavigationItemView';
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { Actions } from '@/core/ui/actions/Actions';
 
 import produce from 'immer';

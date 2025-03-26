@@ -9,9 +9,9 @@ import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { JourneyCreationDialog } from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { JourneyFormValues } from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import {
   refetchAdminSpaceSubspacesPageQuery,
@@ -30,7 +30,7 @@ import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCrea
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaces/CreateSubspaceForm';
+import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 
 export const OpportunityList: FC = () => {

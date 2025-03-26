@@ -7,7 +7,7 @@ import { AddCircleOutlineOutlined } from '@mui/icons-material';
 import { ButtonBase, SxProps, Theme } from '@mui/material';
 import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getIndentStyle } from '../../../space/components/dashboardNavigation/utils';
+import { getIndentStyle } from '../../../space/components/spaceDashboardNavigation/dashboardNavigation/utils';
 
 interface DashboardAddButtonProps {
   url?: string;

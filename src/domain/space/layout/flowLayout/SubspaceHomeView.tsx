@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from './SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
-import { SubspaceDialog } from '../../components/SubspaceComponents/SubspaceDialog';
+import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';

@@ -5,12 +5,12 @@ import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVi
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useChildJourneyPageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 
-interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {
+interface SubspacePageBannerProps extends Omit<PageBannerProps, 'banner'> {
   journeyId: string | undefined;
   levelZeroSpaceId: string | undefined;
 }
 
-const ChildJourneyPageBanner = ({ journeyId, levelZeroSpaceId, ...props }: ChildJourneyPageBannerProps) => {
+const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspacePageBannerProps) => {
   const { data } = useChildJourneyPageBannerQuery({
     variables: {
       level0Space: levelZeroSpaceId!,
@@ -43,4 +43,4 @@ const ChildJourneyPageBanner = ({ journeyId, levelZeroSpaceId, ...props }: Child
   );
 };
 
-export default ChildJourneyPageBanner;
+export default SubspacePageBanner;

@@ -2,23 +2,23 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/cards/journeyCardValueGetter';
-import { JourneyCreationDialog } from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationDialog';
-import { JourneyFormValues } from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
-import ChildJourneyView from '@/domain/space/components/CreateSubspaces/SubspaceView';
 import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
-import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaces/CreateSubspaceForm';
+import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
+import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();

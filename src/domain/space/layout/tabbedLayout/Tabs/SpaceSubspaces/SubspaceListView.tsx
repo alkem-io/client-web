@@ -16,11 +16,11 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { JourneyCreationDialog } from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
-import { JourneyFormValues } from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaces/CreateSubspaceForm';
+import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';

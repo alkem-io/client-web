@@ -19,8 +19,8 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import unwrapFragment from '@/core/ui/utils/unwrapFragment';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import ChildJourneyPageBanner from '@/domain/space/components/childJourneyPageBanner/ChildJourneyPageBanner';
-import JourneyBreadcrumbs from '@/domain/space/components/journeyBreadcrumbs/JourneyBreadcrumbs';
+import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
+import JourneyBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/JourneyBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
@@ -31,11 +31,11 @@ import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/mater
 import produce from 'immer';
 import { Children, PropsWithChildren, ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogActionButtons from '../../components/SubspaceComponents/DialogActionButtons';
-import DialogActionsMenu from '../../components/SubspaceComponents/DialogActionsMenu';
-import { DialogDefinitionProps, isDialogDef } from '../../components/SubspaceComponents/DialogDefinition';
+import DialogActionButtons from '../../components/subspaces/DialogActionButtons';
+import DialogActionsMenu from '../../components/subspaces/DialogActionsMenu';
+import { DialogDefinitionProps, isDialogDef } from '../../components/subspaces/DialogDefinition';
 import InfoColumn from '../../components/InfoColumn';
-import { SubspaceDialog } from '../../components/SubspaceComponents/SubspaceDialog';
+import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
 import WelcomeBlock from '../../components/WelcomeBlock';
 
 export interface SubspacePageLayoutProps {
@@ -164,7 +164,7 @@ const SubspacePageLayout = ({
             <InnovationFlowHolder>
               <TopLevelLayout
                 breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
-                header={<ChildJourneyPageBanner journeyId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
+                header={<SubspacePageBanner journeyId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
                 floatingActions={
                   <FloatingActionButtons
                     visible

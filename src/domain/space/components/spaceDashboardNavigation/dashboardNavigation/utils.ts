@@ -1,4 +1,4 @@
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { gutters } from '@/core/ui/grid/utils';
 
 export const findCurrentPath = (

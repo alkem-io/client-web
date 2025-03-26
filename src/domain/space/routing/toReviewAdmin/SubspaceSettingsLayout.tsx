@@ -1,8 +1,8 @@
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
-import ChildJourneyPageBanner from '@/domain/space/components/childJourneyPageBanner/ChildJourneyPageBanner';
-import JourneyBreadcrumbs from '@/domain/space/components/journeyBreadcrumbs/JourneyBreadcrumbs';
+import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
+import JourneyBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/JourneyBreadcrumbs';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { TabDefinition } from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
@@ -66,7 +66,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     <EntitySettingsLayout
       entityTypeName="subspace"
       subheaderTabs={tabs}
-      pageBanner={<ChildJourneyPageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
+      pageBanner={<SubspacePageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
         <RouterLink to={entityAttrs.subspace.about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>

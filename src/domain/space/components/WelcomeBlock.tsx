@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useConsumeAction } from '../layout/flowLayout/SubspacePageLayout';
-import { SubspaceDialog } from './SubspaceComponents/SubspaceDialog';
+import { SubspaceDialog } from './subspaces/SubspaceDialog';
 import { Button } from '@mui/material';
 import RouterLink from '@/core/ui/link/RouterLink';
 

@@ -12,7 +12,7 @@ import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SubspaceCalloutPage from '../pages/SubspaceCalloutPage';
-import { SubspaceDialog } from '../components/SubspaceComponents/SubspaceDialog';
+import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import SubspaceSettingsRoute from './SubspaceSettingsRoute';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 

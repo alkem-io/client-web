@@ -4,10 +4,10 @@ import React, { forwardRef, MouseEventHandler, useImperativeHandle, useRef, useS
 import { useTranslation } from 'react-i18next';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption } from '@/core/ui/typography';
-import SpaceAvatar from '../SpaceAvatar';
+import SpaceAvatar from '../../SpaceAvatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
-import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 
 export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];

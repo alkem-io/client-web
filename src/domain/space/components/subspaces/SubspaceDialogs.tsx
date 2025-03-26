@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import { SubspaceDialog } from '@/domain/space/components/SubspaceComponents/SubspaceDialog';
+import { SubspaceDialog } from '@/domain/space/components/subspaces/SubspaceDialog';
 import SubspacesListDialog from '@/domain/space/components/SubspacesListDialog';
 import ContributorsToggleDialog from '@/domain/space/components/ContributorsToggleDialog';
 import ActivityDialog from '@/domain/space/components/Activity/ActivityDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import DashboardNavigation from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
+import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
