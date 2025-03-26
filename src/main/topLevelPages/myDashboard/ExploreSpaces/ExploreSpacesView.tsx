@@ -9,7 +9,7 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
-import JourneyTile from '@/domain/space/components/JourneyTile';
+import JourneyTile from '@/domain/space/components/cards/JourneyTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
 import { useColumns } from '@/core/ui/grid/GridContext';
 

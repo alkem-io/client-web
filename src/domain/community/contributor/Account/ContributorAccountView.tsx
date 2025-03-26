@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import JourneyCardHorizontal, { JourneyCardHorizontalSkeleton } from '@/domain/space/components/JourneyCardHorizontal';
+import JourneyCardHorizontal, {
+  JourneyCardHorizontalSkeleton,
+} from '@/domain/space/components/cards/JourneyCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {

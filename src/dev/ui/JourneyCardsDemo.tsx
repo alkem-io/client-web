@@ -4,11 +4,11 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
-import SpaceCard from '@/domain/space/components/SpaceCard/SpaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard/SpaceCard';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SpaceSubspaceCard from '@/domain/space/components/SpaceSubspaceCard/SpaceSubspaceCard';
+import SpaceSubspaceCard from '@/domain/space/components/cards/SpaceSubspaceCard/SpaceSubspaceCard';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SubspaceCard from '@/domain/space/components/SubspaceCard';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 
 const loremIpsum =

@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
 import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
-import JourneyCardHorizontal from '@/domain/space/components/JourneyCardHorizontal';
+import JourneyCardHorizontal from '@/domain/space/components/cards/JourneyCardHorizontal';
 import { Visual } from '@/domain/common/visual/Visual';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 

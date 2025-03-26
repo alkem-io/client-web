@@ -8,7 +8,7 @@ import CardTags from '@/core/ui/card/CardTags';
 import RouterLink from '@/core/ui/link/RouterLink';
 import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
-import JourneyCardDescription from '@/domain/space/components/JourneyCard/JourneyCardDescription';
+import JourneyCardDescription from '@/domain/space/components/cards/JourneyCard/JourneyCardDescription';
 
 export interface ContributorCardProps extends ContributeCardProps {
   displayName: string;

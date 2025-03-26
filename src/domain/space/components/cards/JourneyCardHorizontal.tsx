@@ -19,7 +19,7 @@ import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import JourneyAvatar from './JourneyAvatar';
+import JourneyAvatar from '../JourneyAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';

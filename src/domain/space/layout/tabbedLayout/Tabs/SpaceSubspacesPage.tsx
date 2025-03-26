@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/journeyCardValueGetter';
+import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/cards/journeyCardValueGetter';
 import { JourneyCreationDialog } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
@@ -12,7 +12,7 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import SubspaceCard from '@/domain/space/components/SubspaceCard';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/space/components/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 import useSpaceTabProvider from '../SpaceTabProvider';

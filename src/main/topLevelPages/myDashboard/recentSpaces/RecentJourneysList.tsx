@@ -6,7 +6,7 @@ import { Caption } from '@/core/ui/typography';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import GridItem from '@/core/ui/grid/GridItem';
-import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/JourneyTile';
+import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/JourneyTile';
 import { useMemo } from 'react';
 
 interface RecentJourneysListProps {

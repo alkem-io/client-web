@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import SpaceCard from '@/domain/space/components/SpaceCard/SpaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard/SpaceCard';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import RouterLink from '@/core/ui/link/RouterLink';
