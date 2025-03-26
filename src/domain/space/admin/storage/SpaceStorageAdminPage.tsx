@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import SpaceSettingsLayout from '../SpaceSettingsLayout';
+import SpaceSettingsLayout from '../SpaceSettings/SpaceSettingsLayout';
 import { Box, BoxProps, CircularProgress, IconButton, Link, LinkProps, Skeleton, useTheme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';

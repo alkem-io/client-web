@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
-import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettingsLayout';
+import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettings/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useSpace } from '../../context/useSpace';

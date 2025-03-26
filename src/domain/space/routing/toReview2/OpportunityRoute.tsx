@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import AdminOpportunityCommunityPage from '@/domain/space/admin/AdminOpportunityCommunityPage';
+import AdminOpportunityCommunityPage from '@/domain/space/admin/SpaceCommunity/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '@/domain/space/pages/L2/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityAboutPage from '@/domain/space/pages/L2/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
-import OpportunitySettingsPage from '../../admin/SpaceSubspaces/OpportunitySettings/OpportunitySettingsPage';
+import OpportunitySettingsPage from '../../admin/SpaceSubspaces/OpportunitySettingsPage';
 
 export const OpportunityRoute = () => {
   const { subspace } = useSubSpace();

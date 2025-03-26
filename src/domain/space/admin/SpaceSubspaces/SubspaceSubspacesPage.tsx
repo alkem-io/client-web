@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import OpportunityList from '@/domain/space/admin/OpportunityList';
+import OpportunityList from '@/domain/space/admin/SpaceSubspaces/OpportunityList';
 import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
 
 const ChallengeOpportunitiesPage: FC<SettingsPageProps> = ({ routePrefix }) => {
