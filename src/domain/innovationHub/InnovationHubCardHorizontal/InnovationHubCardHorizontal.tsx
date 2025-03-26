@@ -1,6 +1,6 @@
 import { Box, Skeleton } from '@mui/material';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import JourneyAvatar from '@/domain/space/components/JourneyAvatar';
+import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption, BlockTitle } from '@/core/ui/typography';
 import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
@@ -75,7 +75,7 @@ const InnovationHubCardHorizontal = ({
 }: InnovationHubCardHorizontalProps) => {
   return (
     <BadgeCardView
-      visual={<JourneyAvatar src={banner?.uri} size={size} />}
+      visual={<SpaceAvatar src={banner?.uri} size={size} />}
       component={RouterLink}
       to={buildInnovationHubUrl(subdomain)}
       target="_blank"

@@ -11,7 +11,7 @@ import SeeMore from '@/core/ui/content/SeeMore';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-export interface JourneyDashboardWelcomeBlockProps {
+export interface SpaceWelcomeBlockProps {
   level: SpaceLevel | undefined;
   description: string;
   leadUsers: ContributorViewProps[];
@@ -21,7 +21,7 @@ export interface JourneyDashboardWelcomeBlockProps {
   member?: boolean;
 }
 
-const JourneyDashboardWelcomeBlock = ({
+const SpaceWelcomeBlock = ({
   leadUsers,
   leadOrganizations,
   level,
@@ -29,7 +29,7 @@ const JourneyDashboardWelcomeBlock = ({
   onContactLeadOrganization,
   description,
   member = false,
-}: JourneyDashboardWelcomeBlockProps) => {
+}: SpaceWelcomeBlockProps) => {
   const leadOrganizationsUnique = useMemo(
     () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
     [leadOrganizations, leadUsers]
@@ -89,4 +89,4 @@ const JourneyDashboardWelcomeBlock = ({
   );
 };
 
-export default JourneyDashboardWelcomeBlock;
+export default SpaceWelcomeBlock;

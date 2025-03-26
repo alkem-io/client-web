@@ -4,7 +4,7 @@ import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Loading from '@/core/ui/loading/Loading';
-import JourneyFilter from '@/domain/space/components/JourneyFilter';
+import SpaceFilter from '@/domain/space/components/SpaceFilter';
 import { journeyCardValueGetter } from '@/domain/space/components/cards/journeyCardValueGetter';
 import { useSpace } from '@/domain/space/context/useSpace';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
@@ -43,7 +43,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
         <DialogContent>
           {loading && <Loading />}
           {!loading && subspaces.length > 0 && (
-            <JourneyFilter data={subspaces} valueGetter={journeyCardValueGetter}>
+            <SpaceFilter data={subspaces} valueGetter={journeyCardValueGetter}>
               {filteredEntities => (
                 <CardLayoutContainer>
                   {filteredEntities.map((subspace, index) => {
@@ -65,7 +65,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
                   })}
                 </CardLayoutContainer>
               )}
-            </JourneyFilter>
+            </SpaceFilter>
           )}
         </DialogContent>
       </>

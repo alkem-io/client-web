@@ -6,19 +6,14 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-interface ChildJourneyCreateProps {
+interface SubspaceCreateProps {
   canCreateSubentity: boolean;
   level: SpaceLevel;
   onCreateSubentity?: () => void;
   tabDescription: string;
 }
 
-const ChildJourneyCreate = ({
-  canCreateSubentity,
-  onCreateSubentity,
-  tabDescription,
-  level,
-}: ChildJourneyCreateProps) => {
+const SubspaceCreate = ({ canCreateSubentity, onCreateSubentity, tabDescription, level }: SubspaceCreateProps) => {
   const { t } = useTranslation();
   const spaceType = t(`common.space-level.${level}`);
 
@@ -41,4 +36,4 @@ const ChildJourneyCreate = ({
   );
 };
 
-export default ChildJourneyCreate;
+export default SubspaceCreate;

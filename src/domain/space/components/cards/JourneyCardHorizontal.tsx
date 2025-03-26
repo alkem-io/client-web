@@ -19,7 +19,7 @@ import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import JourneyAvatar from '../JourneyAvatar';
+import SpaceAvatar from '../SpaceAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
@@ -90,7 +90,7 @@ const JourneyCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
-          <JourneyAvatar size={size} src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri} />
+          <SpaceAvatar size={size} src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri} />
         }
         component={disableHoverState ? RouterLink : Wrapper}
         to={space.about.profile.url}

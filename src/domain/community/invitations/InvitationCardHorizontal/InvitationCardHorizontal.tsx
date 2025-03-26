@@ -1,5 +1,5 @@
 import { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
-import JourneyAvatar from '@/domain/space/components/JourneyAvatar';
+import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -20,7 +20,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
   return (
     <BadgeCardView
       component={LinkButton}
-      visual={<JourneyAvatar src={invitation.space.about.profile.cardBanner?.uri} />}
+      visual={<SpaceAvatar src={invitation.space.about.profile.cardBanner?.uri} />}
       onClick={onClick}
       outlined
     >

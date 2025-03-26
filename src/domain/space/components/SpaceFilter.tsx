@@ -18,7 +18,7 @@ export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTags
   title?: string;
 }
 
-const JourneyFilter = <T extends Identifiable>({
+const SpaceFilter = <T extends Identifiable>({
   data,
   title,
   inputFieldEnabled = true,
@@ -100,4 +100,4 @@ const JourneyFilter = <T extends Identifiable>({
   );
 };
 
-export default JourneyFilter;
+export default SpaceFilter;

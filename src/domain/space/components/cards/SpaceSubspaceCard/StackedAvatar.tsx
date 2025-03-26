@@ -1,12 +1,12 @@
 import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import JourneyAvatar from '@/domain/space/components/JourneyAvatar';
+import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
 
 const StackedAvatar = ({ avatarUris }: { avatarUris: string[] }) => (
   <Box sx={{ width: gutters(2), height: gutters(2), position: 'relative', flex: '0 0 15%' }}>
     {avatarUris.map((avatarUri, index) => {
       return (
-        <JourneyAvatar
+        <SpaceAvatar
           key={index}
           sx={{
             width: gutters(1.5),

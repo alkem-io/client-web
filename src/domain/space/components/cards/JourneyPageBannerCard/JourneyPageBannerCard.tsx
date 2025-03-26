@@ -1,4 +1,4 @@
-import JourneyAvatar from '@/domain/space/components/JourneyAvatar';
+import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
 import { Visual } from '@/domain/common/visual/Visual';
 import { PageBannerCardWrapperProps } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import PageBannerCardWithVisual from './PageBannerCardWithVisual';
@@ -12,7 +12,7 @@ export interface JourneyPageBannerCardProps extends PageBannerCardWrapperProps {
 
 const JourneyPageBannerCard = ({ displayName, tagline, avatar, ...props }: JourneyPageBannerCardProps) => (
   <PageBannerCardWithVisual
-    visual={<JourneyAvatar src={avatar?.uri} />}
+    visual={<SpaceAvatar src={avatar?.uri} />}
     title={displayName}
     subtitle={tagline}
     {...props}

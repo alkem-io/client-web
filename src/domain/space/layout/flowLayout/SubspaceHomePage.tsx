@@ -3,7 +3,7 @@ import SubspaceHomeView from './SubspaceHomeView';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '@/domain/space/layout/EntityPageLayout';
-import JourneyDashboardWelcomeBlock from '@/domain/space/components/JourneyDashboardWelcomeBlock';
+import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -33,7 +33,7 @@ import DashboardNavigation, {
 } from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from './SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import CreateJourney from '../../components/SubspaceCreationDialog/CreateJourney';
+import CreateJourney from '../../components/CreateSubspaces/SubspaceCreationDialog/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -132,7 +132,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
         parentSpaceId={parentSpaceId}
         loading={loading}
         welcome={
-          <JourneyDashboardWelcomeBlock
+          <SpaceWelcomeBlock
             description={about?.profile.description ?? ''}
             leadUsers={leadUsers}
             onContactLeadUser={receiver => sendMessage('user', receiver)}

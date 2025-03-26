@@ -11,7 +11,7 @@ import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {
   JourneyCreationForm,
   JourneyFormValues,
-} from '@/domain/space/components/SubspaceCreationDialog/SubspaceCreationForm';
+} from '@/domain/space/components/CreateSubspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';

@@ -11,7 +11,7 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import JourneyDashboardWelcomeBlock from '@/domain/space/components/JourneyDashboardWelcomeBlock';
+import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
 import DashboardNavigation from '@/domain/space/components/dashboardNavigation/DashboardNavigation';
 import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
@@ -152,7 +152,7 @@ const SpaceDashboardView = ({
         )}
         <InfoColumn>
           <PageContentBlock accent>
-            <JourneyDashboardWelcomeBlock
+            <SpaceWelcomeBlock
               description={tabDescription ?? ''}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}

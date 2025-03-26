@@ -4,7 +4,7 @@ import React, { forwardRef, MouseEventHandler, useImperativeHandle, useRef, useS
 import { useTranslation } from 'react-i18next';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption } from '@/core/ui/typography';
-import JourneyAvatar from '../JourneyAvatar';
+import SpaceAvatar from '../SpaceAvatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
 import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
@@ -123,7 +123,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
                 placement={tooltipPlacement}
                 arrow
               >
-                <JourneyAvatar src={avatar?.uri} size="medium" />
+                <SpaceAvatar src={avatar?.uri} size="medium" />
               </Tooltip>
             }
             visualRight={

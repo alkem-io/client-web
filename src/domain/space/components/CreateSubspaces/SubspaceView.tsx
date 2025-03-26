@@ -14,7 +14,7 @@ import SearchField from '@/core/ui/search/SearchField';
 import { Caption } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ValueType } from '@/core/utils/filtering/filterFn';
-import JourneyFilter from '@/domain/space/components/JourneyFilter';
+import SpaceFilter from '@/domain/space/components/SpaceFilter';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -24,10 +24,10 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ChildJourneyCreate from './ChildJourneyCreate';
+import SubspaceCreate from './CreateSubspace';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 
-export interface JourneySubentitiesState {
+export interface SubspacesState {
   loading: boolean;
   error?: ApolloError;
 }
@@ -36,7 +36,7 @@ interface BaseChildEntity extends Identifiable {
   about: SpaceAboutLightModel;
 }
 
-export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
+export interface SubspaceViewProps<ChildEntity extends BaseChildEntity> {
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
   level: SpaceLevel;
@@ -46,7 +46,7 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   childEntityCreateAccess?: boolean;
   childEntityOnCreate?: () => void;
   createSubentityDialog?: ReactElement;
-  state: JourneySubentitiesState;
+  state: SubspacesState;
   children?: ReactNode;
   onClickCreate?: (isOpen: boolean) => void;
 }
@@ -64,7 +64,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   state,
   children,
   onClickCreate,
-}: ChildJourneyViewProps<ChildEntity>) => {
+}: SubspaceViewProps<ChildEntity>) => {
   const [filter, setFilter] = useState('');
 
   const { t } = useTranslation();
@@ -87,7 +87,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   return (
     <PageContent>
       <InfoColumn>
-        <ChildJourneyCreate
+        <SubspaceCreate
           tabDescription={tabDescription}
           level={level}
           canCreateSubentity={childEntityCreateAccess}
@@ -123,7 +123,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
         {!state.loading && childEntities.length > 0 && (
           <PageContentBlock>
             {renderChildEntityCard && (
-              <JourneyFilter
+              <SpaceFilter
                 data={childEntities}
                 valueGetter={childEntityValueGetter}
                 tagsGetter={childEntityTagsGetter}
@@ -147,7 +147,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                     )}
                   </CardLayoutContainer>
                 )}
-              </JourneyFilter>
+              </SpaceFilter>
             )}
           </PageContentBlock>
         )}
