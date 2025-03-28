@@ -1,7 +1,7 @@
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import defaultJourneyAvatar from '@/domain/journey/defaultVisuals/Avatar.jpg';
-import defaultJourneyBanner from '@/domain/journey/defaultVisuals/Banner.jpg';
-import defaultJourneyCard from '@/domain/journey/defaultVisuals/Card.jpg';
+import defaultJourneyAvatar from './Avatar.jpg';
+import defaultJourneyBanner from './Banner.jpg';
+import defaultJourneyCard from './Card.jpg';
 
 export const defaultVisualUrls = {
   [VisualType.Avatar]: defaultJourneyAvatar,
