@@ -13,7 +13,7 @@ import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
 import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
-import { defaultVisualUrls } from '../../../icons/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
 
 export const TITLE_HEIGHT = 6;
 

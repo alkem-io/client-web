@@ -11,7 +11,7 @@ import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
 import { SpaceIcon } from '../../../icons/SpaceIcon';
