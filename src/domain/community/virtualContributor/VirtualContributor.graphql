@@ -1,8 +1,14 @@
-query AiPersona($id: UUID!) {
+query AiPersonaService($id: UUID!) {
   aiServer {
     aiPersonaService(ID: $id) {
       id
       prompt
+      engine
+      externalConfig {
+        apiKey
+        assistantId
+        model
+      }
     }
   }
 }
@@ -47,6 +53,7 @@ query VirtualContributor($id: UUID!) {
         bodyOfKnowledgeType
         bodyOfKnowledge
         engine
+        aiPersonaServiceID
       }
       profile {
         id
@@ -176,4 +183,11 @@ mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributo
 
 mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
   refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
+}
+
+mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
+  aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
+    id
+    prompt
+  }
 }

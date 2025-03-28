@@ -466,6 +466,7 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
   qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaKeySpecifier = (
+  | 'aiPersonaServiceID'
   | 'authorization'
   | 'bodyOfKnowledge'
   | 'bodyOfKnowledgeID'
@@ -480,6 +481,7 @@ export type AiPersonaKeySpecifier = (
   | AiPersonaKeySpecifier
 )[];
 export type AiPersonaFieldPolicy = {
+  aiPersonaServiceID?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -500,6 +502,7 @@ export type AiPersonaServiceKeySpecifier = (
   | 'createdDate'
   | 'dataAccessMode'
   | 'engine'
+  | 'externalConfig'
   | 'id'
   | 'prompt'
   | 'updatedDate'
@@ -513,6 +516,7 @@ export type AiPersonaServiceFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1372,6 +1376,19 @@ export type DocumentFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExternalConfigKeySpecifier = (
+  | 'apiKey'
+  | 'assistantId'
+  | 'externalConfig'
+  | 'model'
+  | ExternalConfigKeySpecifier
+)[];
+export type ExternalConfigFieldPolicy = {
+  apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
+  assistantId?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
+  model?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type FileStorageConfigKeySpecifier = ('maxFileSize' | FileStorageConfigKeySpecifier)[];
 export type FileStorageConfigFieldPolicy = {
@@ -4551,6 +4568,10 @@ export type StrictTypedTypePolicies = {
   Document?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DocumentKeySpecifier | (() => undefined | DocumentKeySpecifier);
     fields?: DocumentFieldPolicy;
+  };
+  ExternalConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ExternalConfigKeySpecifier | (() => undefined | ExternalConfigKeySpecifier);
+    fields?: ExternalConfigFieldPolicy;
   };
   FileStorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FileStorageConfigKeySpecifier | (() => undefined | FileStorageConfigKeySpecifier);

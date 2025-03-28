@@ -7,23 +7,31 @@ import { useTranslation } from 'react-i18next';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { Field, Formik } from 'formik';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { Formik } from 'formik';
 import { useMemo, useState } from 'react';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { AiPersonaEngine, OpenAiModel } from '@/core/apollo/generated/graphql-schema';
+import FormikSelect from '@/core/ui/forms/FormikSelect';
+
+type ExternalConfigProps = {
+  apiKey?: string;
+  assistantId?: string;
+  model?: OpenAiModel;
+};
 
 type FormValueType = {
-  prompt: string;
+  apiKey: string;
+  assistantId: string;
+  model: OpenAiModel;
 };
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-const PromptConfig = ({ vc }) => {
+const ExternalConfig = ({ vc }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [prompt, setPrompt] = useState('');
+  const [externalConfig, setExternalConfig] = useState<ExternalConfigProps>({});
   const [isValid, setIsValid] = useState(false);
   const aiPersonaServiceId = vc?.aiPersona?.aiPersonaServiceID;
 
@@ -32,25 +40,37 @@ const PromptConfig = ({ vc }) => {
     skip: !aiPersonaServiceId,
   });
   const aiPersonaService = data?.aiServer.aiPersonaService;
+  const isAssistantFieldAvailable = aiPersonaService?.engine === AiPersonaEngine.OpenaiAssistant;
 
   const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaServiceMutation();
 
   const initialValues: FormValueType = useMemo(
     () => ({
-      prompt: aiPersonaService?.prompt[0] || '',
+      apiKey: '',
+      model: aiPersonaService?.externalConfig?.model || OpenAiModel.O1,
+      assistantId: aiPersonaService?.externalConfig?.assistantId || '',
     }),
     [aiPersonaService?.id]
   );
+
   const validationSchema = yup.object().shape({
-    prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    apiKey: yup.string().notRequired(),
+    asissantId: isAssistantFieldAvailable ? yup.string().required() : yup.string().notRequired(),
+    model: yup.mixed<OpenAiModel>().oneOf(Object.values(OpenAiModel)).required(),
   });
 
   const handleSubmit = () => {
+    if (!externalConfig.apiKey || aiPersonaService?.externalConfig?.apiKey === externalConfig.apiKey) {
+      delete externalConfig.apiKey;
+    }
+    if (!isAssistantFieldAvailable) {
+      delete externalConfig.assistantId;
+    }
     updateAiPersonaService({
       variables: {
         aiPersonaServiceData: {
           ID: aiPersonaService?.id!,
-          prompt: [prompt],
+          externalConfig,
         },
       },
       onCompleted: () => {
@@ -66,31 +86,37 @@ const PromptConfig = ({ vc }) => {
     <PageContent background="background.paper">
       <PageContentColumn columns={12}>
         <PageContentBlock>
-          <BlockTitle>{t('pages.virtualContributorProfile.settings.prompt.title')}</BlockTitle>
-          <Caption>{t('pages.virtualContributorProfile.settings.prompt.infoText')}</Caption>
+          <BlockTitle>{t('pages.virtualContributorProfile.settings.externalConfig.title')}</BlockTitle>
+          <Caption>{t('pages.virtualContributorProfile.settings.externalConfig.infoText')}</Caption>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            initialTouched={{
-              prompt: initialValues.prompt !== '',
-            }}
             enableReinitialize
             validateOnMount
             onSubmit={() => {}}
           >
             <>
               <FormikEffect
-                onChange={(values: FormValueType) => setPrompt(values.prompt)}
+                onChange={(values: FormValueType) => setExternalConfig({ ...externalConfig, ...values })}
                 onStatusChange={(isValid: boolean) => setIsValid(isValid)}
               />
-              <Field
-                name="prompt"
-                title={t('pages.virtualContributorProfile.settings.prompt.title')}
-                rows={7}
-                as="textarea"
-                maxLength={MARKDOWN_TEXT_LENGTH}
-                temporaryLocation={false}
-                hideImageOptions
+              <FormikInputField
+                name="apiKey"
+                placeholder={t('pages.virtualContributorProfile.settings.externalConfig.apiKeyPlaceholder', {
+                  value: aiPersonaService?.externalConfig?.apiKey,
+                })}
+                title={t('pages.virtualContributorProfile.settings.externalConfig.apiKey')}
+              />
+              {isAssistantFieldAvailable && (
+                <FormikInputField
+                  name="assistantId"
+                  title={t('pages.virtualContributorProfile.settings.externalConfig.assistantId')}
+                />
+              )}
+              <FormikSelect
+                name="model"
+                title={t('pages.virtualContributorProfile.settings.externalConfig.model')}
+                values={Object.values(OpenAiModel).map(model => ({ id: model, name: model }))}
               />
               <Actions>
                 <LoadingButton
@@ -99,7 +125,7 @@ const PromptConfig = ({ vc }) => {
                   disabled={!isValid}
                   onClick={handleSubmit}
                 >
-                  {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
+                  {t('pages.virtualContributorProfile.settings.externalConfig.saveBtn')}
                 </LoadingButton>
               </Actions>
             </>
@@ -110,4 +136,4 @@ const PromptConfig = ({ vc }) => {
   );
 };
 
-export default PromptConfig;
+export default ExternalConfig;
