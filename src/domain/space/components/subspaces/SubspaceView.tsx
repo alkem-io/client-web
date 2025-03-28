@@ -15,7 +15,7 @@ import { Caption } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ValueType } from '@/core/utils/filtering/filterFn';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
-import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
+import defaultSubspaceAvatar from '@/domain/space/icons/defaultVisuals/Avatar.jpg';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { ApolloError } from '@apollo/client';
