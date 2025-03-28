@@ -15,7 +15,6 @@ import { Caption } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ValueType } from '@/core/utils/filtering/filterFn';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
-import defaultSubspaceAvatar from '@/domain/space/icons/defaultVisuals/Avatar.jpg';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { ApolloError } from '@apollo/client';
@@ -26,6 +25,7 @@ import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import SubspaceCreate from './CreateSubspace';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
+import { defaultVisualUrls } from '../../icons/defaultVisualUrls';
 
 export interface SubspacesState {
   loading: boolean;
@@ -78,7 +78,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           title: entity.about.profile.displayName,
           icon: childEntitiesIcon,
           uri: entity.about.profile.url,
-          cardBanner: entity.about.profile?.cardBanner?.uri || defaultSubspaceAvatar,
+          cardBanner: entity.about.profile?.cardBanner?.uri || defaultVisualUrls.AVATAR,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]
