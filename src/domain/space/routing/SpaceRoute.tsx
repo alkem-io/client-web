@@ -87,7 +87,7 @@ const SpaceTabbedLayoutRoute = () => {
   }, [spaceTabsData, loadingSpace, location.pathname, spaceNameId, navigate, permissions.canRead]);
 
   // Explicitly redirect to "About" if no permission
-  if (!permissions.canRead) {
+  if (!loadingSpace && !permissions.canRead) {
     return (
       <Routes>
         <Route path={routes.About} element={<SpaceAboutPage />} />
