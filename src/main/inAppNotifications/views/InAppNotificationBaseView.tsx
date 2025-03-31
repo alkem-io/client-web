@@ -18,7 +18,7 @@ import { InAppNotificationState } from '../../../core/apollo/generated/graphql-s
 import { useInAppNotifications } from '../useInAppNotifications';
 import { useInAppNotificationsContext } from '../InAppNotificationsContext';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import defaultJourneyAvatar from '@/domain/space/icons/defaultVisuals/Avatar.jpg';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 
 const MAX_LENGTH_COMMENT = 150; // 150 characters
 
@@ -164,7 +164,7 @@ export const InAppNotificationBaseView = ({
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
           >
-            <Avatar size="regular" src={space?.avatarUrl || defaultJourneyAvatar} />
+            <Avatar size="regular" src={space?.avatarUrl || defaultVisualUrls.AVATAR} />
           </Badge>
         }
       >

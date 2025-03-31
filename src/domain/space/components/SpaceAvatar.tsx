@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { SxProps, Theme } from '@mui/material';
 import Avatar, { AvatarSize, SizeableAvatarProps } from '@/core/ui/avatar/Avatar';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 interface SpaceAvatarProps extends SizeableAvatarProps {

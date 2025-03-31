@@ -18,6 +18,7 @@ import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceSkeletonLayout from '@/domain/space/layout/loadingLayout/SpaceSkeletonLayout';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
+import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
@@ -36,10 +37,9 @@ const SpaceTabbedLayoutRoute = () => {
   const navigate = useNavigate();
   const { spaceNameId } = useParams<{ spaceNameId: string }>();
   const lastVisitedTabRef = useRef<Record<string, string>>({});
-  const RESERVED_PATHS = ['home', 'spaces'];
 
   useEffect(() => {
-    if (!permissions.canRead || !spaceNameId || RESERVED_PATHS.includes(spaceNameId)) {
+    if (!permissions.canRead || !spaceNameId || reservedTopLevelRoutePaths.includes(spaceNameId)) {
       return;
     }
 
