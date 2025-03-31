@@ -3771,6 +3771,7 @@ export const ApplicationButtonDocument = gql`
     parentSpace: lookup @include(if: $includeParentSpace) {
       space(ID: $parentSpaceId) {
         id
+        level
         about {
           ...SpaceAboutMinimalUrl
           membership {
