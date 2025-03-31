@@ -41,8 +41,6 @@ const SpaceCommunityPage = () => {
     classificationTagsets,
     tabDescription,
     flowStateForNewCallouts: flowStateForTab,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   } = useSpaceTabProvider({
     tabPosition: 1,
   });
@@ -137,8 +135,6 @@ const SpaceCommunityPage = () => {
   const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout, loading } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   });
 
   return (

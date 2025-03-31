@@ -2737,7 +2737,7 @@ export type Invitation = {
   /** The type of contributor that is invited. */
   contributorType: RoleSetContributorType;
   /** The User who triggered the invitation. */
-  createdBy: User;
+  createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
   extraRole?: Maybe<RoleName>;
@@ -5359,6 +5359,8 @@ export type RelayPaginatedSpace = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -5993,6 +5995,8 @@ export type Space = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -7941,6 +7945,7 @@ export type ApplicationButtonQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -8442,7 +8447,7 @@ export type UserPendingMembershipsQuery = {
         state: string;
         createdDate: Date;
         contributorType: RoleSetContributorType;
-        createdBy: { __typename?: 'User'; id: string };
+        createdBy?: { __typename?: 'User'; id: string } | undefined;
         contributor:
           | { __typename?: 'Organization'; id: string }
           | { __typename?: 'User'; id: string }
@@ -9239,20 +9244,6 @@ export type AccountInformationQuery = {
                 __typename?: 'SpaceAboutMembership';
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
               };
-            };
-            license: {
-              __typename?: 'License';
-              id: string;
-              entitlements: Array<{
-                __typename?: 'LicenseEntitlement';
-                id: string;
-                type: LicenseEntitlementType;
-                limit: number;
-                usage: number;
-                isAvailable: boolean;
-                dataType: LicenseEntitlementDataType;
-                enabled: boolean;
-              }>;
             };
           }>;
           virtualContributors: Array<{
@@ -11435,38 +11426,6 @@ export type ActivityLogOnCollaborationQuery = {
         };
       }
   >;
-};
-
-export type CollaborationAuthorizationEntitlementsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
-}>;
-
-export type CollaborationAuthorizationEntitlementsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          license: {
-            __typename?: 'License';
-            id: string;
-            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
-          };
-          calloutsSet: {
-            __typename?: 'CalloutsSet';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
 };
 
 export type RemoveCommentFromCalloutMutationVariables = Exact<{
@@ -17450,11 +17409,9 @@ export type PendingMembershipsMembershipsFragment = {
       __typename?: 'Invitation';
       id: string;
       welcomeMessage?: string | undefined;
-      createdBy: {
-        __typename?: 'User';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      };
+      createdBy?:
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | undefined;
     }>;
   };
 };
@@ -17463,7 +17420,9 @@ export type PendingMembershipInvitationFragment = {
   __typename?: 'Invitation';
   id: string;
   welcomeMessage?: string | undefined;
-  createdBy: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type CommunityGuidelinesSummaryFragment = {
@@ -18076,7 +18035,7 @@ export type InvitationDataFragment = {
     state: string;
     createdDate: Date;
     contributorType: RoleSetContributorType;
-    createdBy: { __typename?: 'User'; id: string };
+    createdBy?: { __typename?: 'User'; id: string } | undefined;
     contributor:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -18745,7 +18704,7 @@ export type VcMembershipsQuery = {
         state: string;
         createdDate: Date;
         contributorType: RoleSetContributorType;
-        createdBy: { __typename?: 'User'; id: string };
+        createdBy?: { __typename?: 'User'; id: string } | undefined;
         contributor:
           | { __typename?: 'Organization'; id: string }
           | { __typename?: 'User'; id: string }
@@ -19309,11 +19268,10 @@ export type ChildJourneyPageBannerQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
-          };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+            };
           };
         }
       | undefined;
@@ -23598,6 +23556,53 @@ export type SpaceTabsQuery = {
               states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
             };
           };
+        }
+      | undefined;
+  };
+};
+
+export type SpacePermissionsAndEntitlementsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpacePermissionsAndEntitlementsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            license: {
+              __typename?: 'License';
+              id: string;
+              availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+            };
+          };
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -29808,7 +29813,7 @@ export type PendingInvitationsQuery = {
         contributorType: RoleSetContributorType;
         state: string;
         createdDate: Date;
-        createdBy: { __typename?: 'User'; id: string };
+        createdBy?: { __typename?: 'User'; id: string } | undefined;
       };
     }>;
   };
@@ -30977,6 +30982,11 @@ export type MyMembershipsQuery = {
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           };
         };
+        community: {
+          __typename?: 'Community';
+          id: string;
+          roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+        };
       };
       childMemberships: Array<{
         __typename?: 'CommunityMembershipResult';
@@ -31004,6 +31014,11 @@ export type MyMembershipsQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
+          };
+          community: {
+            __typename?: 'Community';
+            id: string;
+            roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
           };
         };
         childMemberships: Array<{
@@ -31033,6 +31048,11 @@ export type MyMembershipsQuery = {
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
             };
+            community: {
+              __typename?: 'Community';
+              id: string;
+              roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+            };
           };
         }>;
       }>;
@@ -31060,6 +31080,11 @@ export type SpaceMembershipFragment = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     };
+  };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
   };
 };
 

@@ -8,4 +8,9 @@ export interface CalloutInfo {
     };
   };
   activity: number;
+  classification?: {
+    flowState?: {
+      tags: string[];
+    };
+  };
 }

@@ -21,12 +21,12 @@ const SpaceDashboardPage = ({
 }: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
   const {
     urlInfo,
+    canReadSpace,
     classificationTagsets,
     flowStateForNewCallouts,
     calloutsSetId,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
     tabDescription,
+    loading,
   } = useSpaceTabProvider({ tabPosition: 0 });
 
   const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
@@ -38,7 +38,7 @@ const SpaceDashboardPage = ({
       spaceId: spaceId!,
     },
     errorPolicy: 'all',
-    skip: !spaceId || spaceLevel !== SpaceLevel.L0,
+    skip: !spaceId || spaceLevel !== SpaceLevel.L0 || !canReadSpace || loading,
   });
 
   const spaceData = spacePageData?.lookup.space;
@@ -59,8 +59,6 @@ const SpaceDashboardPage = ({
   const calloutsSetProvided = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
   });
 
   const space: SpaceDashboardSpaceDetails = {

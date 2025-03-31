@@ -15,8 +15,7 @@ const CalloutsListDialog = ({ open = false, onClose, calloutsSetId }: CalloutsLi
   const { callouts } = useCalloutsSet({
     calloutsSetId: calloutsSetId,
     classificationTagsets: [],
-    canSaveAsTemplate: false,
-    entitledToSaveAsTemplate: false,
+    includeClassification: true,
     skip: !open,
   });
 

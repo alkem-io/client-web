@@ -9,6 +9,7 @@ import {
   CommunityMembershipStatus,
   RoleName,
   RoleSetContributorType,
+  SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import { DialogDef } from '../../../journey/subspace/layout/DialogDefinition';
 import { SubspaceDialog } from '../../../journey/subspace/layout/SubspaceDialog';
@@ -38,6 +39,7 @@ import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);
@@ -49,6 +51,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
   const { spaceId, spaceLevel, journeyPath, parentSpaceId, levelZeroSpaceId, calendarEventId, loading } =
     useUrlResolver();
+  const { permissions } = useSubSpace();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -89,7 +92,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId,
+    skip: !spaceId || spaceLevel === SpaceLevel.L0 || !permissions.canRead,
   });
 
   const subspace = subspacePageData?.lookup.space;
@@ -109,14 +112,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
     fetchContributors: true,
   });
-
-  // TODO: THIS needs to be removed //!!
-  /*const calloutsSetProvided = useCalloutsSet({
-    calloutsSetId,
-    classificationTagsets: [],
-    canSaveAsTemplate: false,
-    entitledToSaveAsTemplate: false,
-  });*/
 
   return (
     <>

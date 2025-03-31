@@ -19,6 +19,7 @@ import { cloneDeep } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../ClassificationTagset.model';
+import useSpacePermissionsAndEntitlements from '@/domain/space/permissions/useSpacePermissionsAndEntitlements';
 
 export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   authorization:
@@ -33,12 +34,16 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
       displayName: string;
     };
   };
+  classification?: {
+    flowState?: {
+      tags: string[];
+    };
+  };
   type: CalloutType;
   draft: boolean;
   editable: boolean;
   movable: boolean;
-  canSaveAsTemplate: boolean;
-  entitledToSaveAsTemplate: boolean;
+  canBeSavedAsTemplate: boolean;
   classificationTagsets: ClassificationTagsetModel[];
 };
 
@@ -59,6 +64,7 @@ export type TypedCalloutDetails = TypedCallout &
     classification?: {
       flowState?: {
         tags: string[];
+        allowedValues?: string[];
       };
     };
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
@@ -70,8 +76,7 @@ export type TypedCalloutDetails = TypedCallout &
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
   classificationTagsets: ClassificationTagsetModel[];
-  canSaveAsTemplate: boolean;
-  entitledToSaveAsTemplate: boolean;
+  includeClassification?: boolean | undefined;
   skip?: boolean;
 }
 
@@ -92,13 +97,13 @@ export interface UseCalloutsSetProvided {
 const useCalloutsSet = ({
   calloutsSetId,
   classificationTagsets,
-  canSaveAsTemplate,
-  entitledToSaveAsTemplate,
+  includeClassification,
   skip,
 }: UseCalloutsSetParams): UseCalloutsSetProvided => {
   const { canCreateCallout, loading: authorizationLoading } = useCalloutsSetAuthorization({ calloutsSetId });
 
-  const withClassificationDetails = classificationTagsets.length > 0;
+  const withClassificationDetails =
+    includeClassification === undefined ? classificationTagsets.length > 0 : includeClassification;
 
   const variables: CalloutsOnCalloutsSetUsingClassificationQueryVariables = {
     calloutsSetId: calloutsSetId!,
@@ -129,6 +134,10 @@ const useCalloutsSet = ({
     });
   };
 
+  // If we are not in a space, these will be just empty arrays
+  const { permissions, entitlements } = useSpacePermissionsAndEntitlements();
+  const calloutsCanBeSavedAsTemplate = permissions.canCreateTemplates && entitlements.entitledToSaveAsTemplate;
+
   const calloutsSet = calloutsData?.lookup.calloutsSet;
 
   const callouts = useMemo(
@@ -149,13 +158,12 @@ const useCalloutsSet = ({
             draft,
             editable,
             movable,
-            canSaveAsTemplate,
-            entitledToSaveAsTemplate,
+            canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
             classificationTagsets,
           };
           return result;
         }),
-    [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate]
+    [calloutsSet, calloutsCanBeSavedAsTemplate]
   );
 
   const submitCalloutsSortOrder = useCallback(

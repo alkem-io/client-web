@@ -2972,6 +2972,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
+  | 'type'
   | 'updatedDate'
   | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
@@ -2996,6 +2997,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3336,6 +3338,7 @@ export type SpaceKeySpecifier = (
   | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
+  | 'type'
   | 'updatedDate'
   | 'visibility'
   | SpaceKeySpecifier
@@ -3360,6 +3363,7 @@ export type SpaceFieldPolicy = {
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };

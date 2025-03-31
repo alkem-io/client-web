@@ -31,7 +31,6 @@ import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNa
 import SpaceWelcomeDialog from '@/domain/journey/space/pages/SpaceWelcomeDialog';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -117,7 +116,6 @@ const SpaceDashboardView = ({
     }
   }, [space?.id]);
 
-  const what = about?.profile.description || '';
   const membership = about?.membership;
   const leadUsers = membership?.leadUsers || [];
   const myMembershipStatus = membership?.myMembershipStatus;
@@ -151,14 +149,9 @@ const SpaceDashboardView = ({
           </ApplicationButtonContainer>
         )}
         <InfoColumn>
-          {tabDescription && (
-            <PageContentBlock accent>
-              <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
-            </PageContentBlock>
-          )}
-          <PageContentBlock>
+          <PageContentBlock accent>
             <JourneyDashboardWelcomeBlock
-              description={what}
+              description={tabDescription ?? ''}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
