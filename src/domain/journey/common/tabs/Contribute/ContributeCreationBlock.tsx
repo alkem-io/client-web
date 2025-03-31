@@ -17,9 +17,13 @@ export const ContributeCreationBlock = ({ tabDescription, canCreate, handleCreat
   const { t } = useTranslation();
 
   const { locations } = useConfig();
+
+  if (!tabDescription && !canCreate) {
+    return null;
+  }
   return (
     <PageContentBlock accent>
-      <WrapperMarkdown>{tabDescription || t('pages.contribute.initial-text')}</WrapperMarkdown>
+      {tabDescription && <WrapperMarkdown>{tabDescription}</WrapperMarkdown>}
       {canCreate && (
         <Actions justifyContent="end">
           {locations?.inspiration && (
