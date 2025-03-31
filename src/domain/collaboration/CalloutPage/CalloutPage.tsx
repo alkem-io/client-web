@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useSpacePermissionsAndEntitlements from '@/domain/space/permissions/useSpacePermissionsAndEntitlements';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -74,6 +75,9 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
     errorPolicy: 'all',
   });
 
+  const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
+  const calloutsCanBeSavedAsTemplate = entitlements?.entitledToSaveAsTemplate && permissions.canCreateTemplates;
+
   const callout = calloutData?.lookup.callout;
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
@@ -94,12 +98,11 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
       draft,
       editable,
       movable: false,
-      canSaveAsTemplate: false,
-      entitledToSaveAsTemplate: false,
+      canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
       classificationTagsets: [],
     };
     return result;
-  }, [callout, locationState]);
+  }, [callout, locationState, calloutsCanBeSavedAsTemplate]);
 
   const backOrElse = useBackToPath();
 

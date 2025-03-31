@@ -11381,38 +11381,6 @@ export type ActivityLogOnCollaborationQuery = {
   >;
 };
 
-export type CollaborationAuthorizationEntitlementsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
-}>;
-
-export type CollaborationAuthorizationEntitlementsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          license: {
-            __typename?: 'License';
-            id: string;
-            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
-          };
-          calloutsSet: {
-            __typename?: 'CalloutsSet';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
 export type RemoveCommentFromCalloutMutationVariables = Exact<{
   messageData: RoomRemoveMessageInput;
 }>;
@@ -23506,6 +23474,53 @@ export type SpaceTabsQuery = {
               states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
             };
           };
+        }
+      | undefined;
+  };
+};
+
+export type SpacePermissionsAndEntitlementsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpacePermissionsAndEntitlementsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            license: {
+              __typename?: 'License';
+              id: string;
+              availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+            };
+          };
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
