@@ -2,15 +2,15 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Close } from '@mui/icons-material';
-import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
+import JourneyCard, { JourneyCardProps } from '@/domain/space/components/cards/JourneyCard/JourneyCard';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   tagline: string;

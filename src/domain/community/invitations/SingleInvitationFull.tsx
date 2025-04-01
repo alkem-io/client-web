@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCard from '@/domain/space/components/cards/JourneyCard/JourneyCard';
+import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';
@@ -17,7 +17,7 @@ import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 
 type SingleInvitationFullProps = {
   invitation: InvitationItem | undefined;

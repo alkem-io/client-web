@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { SpaceContextProvider } from '@/domain/space/SpaceContext/SpaceContext';
+import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
@@ -13,7 +13,7 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/journey/common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/space/layout/EntityPageLayout';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
@@ -53,10 +53,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes'),
   withUrlResolverParams
 );
-const CreateSpaceDialog = lazyWithGlobalErrorHandler(
-  () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
-);
-// TODO: this to load directly, and lazy load then the appropriate layout
+const CreateSpaceDialog = lazyWithGlobalErrorHandler(() => import('@/domain/space/createSpace/CreateSpaceDialog'));
 const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'), withUrlResolverParams);
 
 export const TopLevelRoutes = () => {
