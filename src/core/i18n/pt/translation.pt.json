@@ -659,15 +659,6 @@
     "singleWhiteboard": {
       "clickToSee": "Clique para ver o quadro completo"
     },
-    "callout-group": {
-      "HOME_TOP": "Recomendações do painel",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Contribute",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Base de Conhecimento",
-      "CUSTOM": "Custom"
-    },
     "calloutsList": {
       "title": "Index",
       "filter": {
@@ -1788,7 +1779,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
@@ -1808,7 +1798,6 @@
       }
     },
     "contribute": {
-      "initial-text": "Na Base de Conhecimento, você encontrará documentos, dicas e outros materiais relevantes sobre o tema. Os leads do Espaço podem fornecer o conteúdo, mas também membros da comunidade podem contribuir.",
       "innovationFlow": {
         "title": "Este {{entity}} é guiado pelo(a) <b>{{innovationFlowDisplayName}}</b>. Este Fluxo de Inovação gera as estruturas do processo e convida você a tomar ações específicas por estágio.",
         "readMore": "Leia mais sobre <b>{{innovationFlowDisplayName}}</b>"
