@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { RoleType } from '../constants/RoleType';
 
 const hasRole = (contribution: SpaceHostedItem, roles: RoleType[]) =>

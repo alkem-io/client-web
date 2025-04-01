@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 import UserAdminProfilePage from '../tabs/UserAdminProfilePage';
 import UserAdminAccountPage from '../tabs/UserAdminAccountPage';
 import UserAdminCredentialsPage from '../tabs/UserAdminCredentialsPage';

@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import useCanReadSpace from '@/domain/journey/space/graphql/queries/useCanReadSpace';
 import useNavigate from '@/core/routing/useNavigate';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import useCanReadSpace from '@/domain/space/graphql/queries/useCanReadSpace';
 
 /**
  * Custom hook to handle redirection to the "about" page if the user does not have read access to the space.

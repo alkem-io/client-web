@@ -5,14 +5,14 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
-} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+} from '@/domain/space/components/cards/JourneyCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '@/core/ui/actions/Actions';
-import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
+import CreateSpaceDialog from '@/domain/space/createSpace/CreateSpaceDialog';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
@@ -39,7 +39,7 @@ import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { IconButton } from '@mui/material';

@@ -7,7 +7,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import LocationCaption from '@/core/ui/location/LocationCaption';
 import { MetricViewItem } from '@/domain/platform/metrics/views/MetricsView';
 import { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
-import SpaceMetrics from '@/domain/journey/space/Metrics/SpaceMetrics';
+import SpaceMetrics from '@/domain/space/components/SpaceMetrics';
 import useMetricsItems from '@/domain/platform/metrics/utils/useMetricsItems';
 import { EditOutlined } from '@mui/icons-material';
 import { noop } from 'lodash';
