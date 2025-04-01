@@ -659,15 +659,6 @@
     "singleWhiteboard": {
       "clickToSee": "crwdns18386:0crwdne18386:0"
     },
-    "callout-group": {
-      "HOME_TOP": "crwdns18388:0crwdne18388:0",
-      "HOME": "crwdns18390:0crwdne18390:0",
-      "CONTRIBUTE": "crwdns18392:0crwdne18392:0",
-      "COMMUNITY": "crwdns18394:0crwdne18394:0",
-      "SUBSPACES": "crwdns18396:0crwdne18396:0",
-      "KNOWLEDGE": "crwdns18398:0crwdne18398:0",
-      "CUSTOM": "crwdns36781:0crwdne36781:0"
-    },
     "calloutsList": {
       "title": "crwdns18400:0crwdne18400:0",
       "filter": {
@@ -1788,7 +1779,6 @@
           "description": "crwdns19568:0crwdne19568:0"
         },
         "subEntities": {
-          "description": "crwdns19570:0{{entities}}crwdne19570:0",
           "list": "crwdns19572:0crwdne19572:0",
           "empty": "crwdns19574:0{{entities}}crwdne19574:0",
           "empty-list": "crwdns19576:0{{entities}}crwdne19576:0",
@@ -1808,7 +1798,6 @@
       }
     },
     "contribute": {
-      "initial-text": "crwdns19590:0crwdne19590:0",
       "innovationFlow": {
         "title": "crwdns19592:0{{entity}}crwdnd19592:0{{innovationFlowDisplayName}}crwdne19592:0",
         "readMore": "crwdns19594:0{{innovationFlowDisplayName}}crwdne19594:0"
