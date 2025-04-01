@@ -1,15 +1,7 @@
 query CommunityVirtualMembersList(
   $roleSetId: UUID!
-  $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
-  $includeSpaceHost: Boolean = false
 ) {
   lookup {
-    space(ID: $spaceId) @include(if: $includeSpaceHost) {
-      id
-      provider {
-        ...ContributorDetails
-      }
-    }
     roleSet(ID: $roleSetId) {
       authorization {
         id
@@ -21,7 +13,3 @@ query CommunityVirtualMembersList(
     }
   }
 }
-
-
-
-

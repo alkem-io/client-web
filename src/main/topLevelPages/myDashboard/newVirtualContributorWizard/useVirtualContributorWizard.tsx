@@ -3,7 +3,6 @@ import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
-  useSpaceUrlLazyQuery,
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
   useCreateLinkOnCalloutMutation,
@@ -11,6 +10,7 @@ import {
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
   useUploadVisualMutation,
+  useSpaceAboutBaseLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -57,15 +57,10 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  about: SpaceAboutMinimalUrlModel;
-  community: {
-    roleSet: {
-      id: string;
-      authorization?: {
-        myPrivileges?: AuthorizationPrivilege[];
-      };
-    };
+  authorization?: {
+    myPrivileges?: string[];
   };
+  about: SpaceAboutMinimalUrlModel;
   subspaces?: SelectableSpace[];
 };
 
@@ -135,10 +130,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const hasCommunityPrivilege = (space: SelectableSpace) => {
-    return space.community.roleSet?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.CommunityAssignVcFromAccount
-    );
+  const hasReadAboutPrivilege = (space: SelectableSpace) => {
+    return space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.ReadAbout);
   };
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
@@ -148,7 +141,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     return {
       myAccountId: account?.id,
       allAccountSpaces: accountSpaces,
-      availableSpaces: accountSpaces.filter(hasCommunityPrivilege),
+      availableSpaces: accountSpaces.filter(hasReadAboutPrivilege),
     };
   }, [data, user, targetAccount]);
 
@@ -165,7 +158,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           spaceId: space.id,
         },
       });
-      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasCommunityPrivilege) ?? [];
+      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasReadAboutPrivilege) ?? [];
 
       result.push({
         ...space,
@@ -338,7 +331,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   };
 
   // post creation navigation
-  const [getNewSpaceUrl] = useSpaceUrlLazyQuery();
+  const [getNewSpaceUrl] = useSpaceAboutBaseLazyQuery();
   const navigateToTryYourVC = async (url: string | undefined, spaceId: string | undefined) => {
     if (url) {
       navigate(url);

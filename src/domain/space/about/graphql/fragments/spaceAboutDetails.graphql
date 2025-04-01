@@ -6,6 +6,60 @@ fragment SpaceAboutDetails on SpaceAbout {
     id
     myPrivileges
   }
+  membership {
+    roleSetID
+    communityID
+    myMembershipStatus
+    leadOrganizations {
+      id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    leadUsers {
+      id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+  }
+  isContentPublic
+  provider {
+    id
+    profile {
+      id
+      url
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
   profile {
     id
     url
@@ -15,7 +69,13 @@ fragment SpaceAboutDetails on SpaceAbout {
     tagset {
       ...TagsetDetails
     }
-    visuals {
+    avatar: visual(type: AVATAR) {
+      ...VisualFull
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualFull
+    }
+    banner: visual(type: BANNER) {
       ...VisualFull
     }
     references {
@@ -26,5 +86,8 @@ fragment SpaceAboutDetails on SpaceAbout {
       city
       country
     }
+  }
+  guidelines {
+    id
   }
 }

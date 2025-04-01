@@ -84,16 +84,6 @@ export interface AccountTabResourcesProps {
         tagline?: string;
       };
     };
-    community: {
-      id: string;
-      roleSet: {
-        id: string;
-      };
-    };
-    license: {
-      id: string;
-      availableEntitlements?: LicenseEntitlementType[];
-    };
   }[];
   virtualContributors: {
     id: string;

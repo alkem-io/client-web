@@ -3,12 +3,13 @@ import AssociatedOrganizationsDashboardSection, {
 } from './AssociatedOrganizationsDashboardSection';
 import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
 import AssociatedOrganizationCard from './AssociatedOrganizationCard';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 interface AssociatedOrganizationsLazilyFetchedProps
   extends Omit<
     AssociatedOrganizationsDashboardSectionProps<
       OrganizationCardLazilyFetchedProps,
-      OrganizationCardLazilyFetchedProps & { key: string }
+      OrganizationCardLazilyFetchedProps & Identifiable
     >,
     'organizations' | 'organizationCardComponent'
   > {
@@ -37,7 +38,7 @@ export const AssociatedOrganizationsLazilyFetched = ({
   ...viewProps
 }: AssociatedOrganizationsLazilyFetchedProps) => {
   const organizations = organizationIds.map(
-    organizationId => ({ key: organizationId, organizationId, enableLeave }),
+    organizationId => ({ id: organizationId, organizationId, enableLeave }),
     [organizationIds]
   );
 

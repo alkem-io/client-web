@@ -11,11 +11,10 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
-  SpacePrivacyMode,
+  TagsetReservedName,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
 interface SubspaceCreationInput {
   spaceID: string;
@@ -120,13 +119,6 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         optimisticResponse: {
           createSubspace: {
             id: '',
-            metrics: [
-              {
-                id: '',
-                name: '',
-                value: '',
-              },
-            ],
             about: {
               id: '',
               why: value.about.why,
@@ -147,24 +139,15 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
                 },
                 tagset: {
                   id: '-1',
-                  name: DEFAULT_TAGSET,
+                  name: TagsetReservedName.Default,
                   tags: value.about.profile.tags ?? [],
                   allowedValues: [],
                   type: TagsetType.Freeform,
                 },
               },
-            },
-            community: {
-              id: '',
-              roleSet: {
-                id: '',
+              isContentPublic: true,
+              membership: {
                 myMembershipStatus: CommunityMembershipStatus.Member,
-              },
-            },
-
-            settings: {
-              privacy: {
-                mode: SpacePrivacyMode.Public,
               },
             },
           },

@@ -12,7 +12,6 @@ import {
   useCalloutCreation,
 } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import {
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -25,14 +24,13 @@ import {
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
-  collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   vcId: string;
   open: boolean;
@@ -67,13 +65,12 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     contributionPolicy: {
       state: CalloutState.Open,
     },
-    groupName: CalloutGroupName.Home,
     visibility: CalloutVisibility.Published,
     sendNotification: false,
   };
 
   const [deleteCallout] = useDeleteCalloutMutation({
-    refetchQueries: ['Callouts'],
+    refetchQueries: ['CalloutsOnCalloutsSetUsingClassification'],
   });
 
   const handleClose = () => {
@@ -112,13 +109,12 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       draft: callout.visibility === CalloutVisibility.Draft,
       editable: false,
       movable: false,
-      canSaveAsTemplate: false,
-      entitledToSaveAsTemplate: false,
+      canBeSavedAsTemplate: false,
       flowStates: undefined,
-      groupName: CalloutGroupName.Home,
       authorization: {
         myPrivileges: [],
       },
+      classificationTagsets: [],
     };
   }, [callout]);
 

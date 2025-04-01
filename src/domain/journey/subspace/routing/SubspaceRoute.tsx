@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -7,23 +8,31 @@ import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../../../space/about/SubspaceAboutPage';
-import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
+import SubspaceHomePage from '../../../space/layout/SubspaceFlow/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 
 const SubspaceRoute = () => {
-  const { spaceId, spaceLevel, loading } = useUrlResolver();
+  const { subspace, permissions, loading } = useSubSpace();
 
-  // This avoids race conditions when the url has just changed from space to a subspace,
-  // react router gets to execute this but the urlResolver is not yet done resolving
-  // TODO: revise this, we should not be delaying the route loading
-  if (spaceLevel === SpaceLevel.L0 || loading) {
-    return null; // with loading spinner the entire page is shifted down
+  const { canRead, spaceId } = useMemo(() => {
+    return {
+      canRead: permissions.canRead,
+      spaceId: subspace.id,
+    };
+  }, [subspace, permissions]);
+
+  if (spaceId && !loading && !canRead) {
+    return (
+      <Routes>
+        <Route path={routes.About} element={<SubspaceAboutPage />} />
+        <Route path="*" element={<Navigate to={routes.About} replace />} />
+      </Routes>
+    );
   }
 
   return (

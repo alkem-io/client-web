@@ -4,7 +4,6 @@ import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOffli
 import { Box, Collapse, Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
-  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -84,7 +83,6 @@ export interface CalloutSettingsContainerProps
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    groupName: CalloutGroupName;
     contributionPolicy: {
       state: CalloutState;
     };
@@ -100,8 +98,7 @@ export interface CalloutSettingsContainerProps
     draft: boolean;
     editable?: boolean;
     movable?: boolean;
-    canSaveAsTemplate?: boolean;
-    entitledToSaveAsTemplate?: boolean;
+    canBeSavedAsTemplate?: boolean;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
     };
@@ -314,7 +311,7 @@ const CalloutSettingsContainer = ({
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
         )}
-        {callout.canSaveAsTemplate && callout.entitledToSaveAsTemplate && (
+        {callout.canBeSavedAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
             iconComponent={DownloadForOfflineOutlinedIcon}
@@ -440,7 +437,6 @@ const CalloutSettingsContainer = ({
           callout={callout}
           onCalloutEdit={handleCalloutEdit}
           onDelete={() => setDeleteDialogOpen(true)}
-          canChangeCalloutLocation
           disableRichMedia={disableRichMedia}
           disablePostResponses={disablePostResponses && callout.type === CalloutType.Post}
         />

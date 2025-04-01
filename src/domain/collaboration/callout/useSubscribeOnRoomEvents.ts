@@ -22,12 +22,10 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
     shouldResubscribe: true,
     variables: { roomID: roomID! }, // Ensured by skip
     skip: !enabled,
-    onSubscriptionData: ({ subscriptionData, client }) => {
-      if (subscriptionData.error) {
-        return handleError(subscriptionData.error);
+    onData: ({ data: { data, error }, client }) => {
+      if (error) {
+        return handleError(error);
       }
-
-      const data = subscriptionData?.data;
 
       if (!data) {
         return;
