@@ -659,15 +659,6 @@
     "singleWhiteboard": {
       "clickToSee": "Cliquez pour voir le tableau complet"
     },
-    "callout-group": {
-      "HOME_TOP": "Dashboard recommandations",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Contribute",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Base de connaissances",
-      "CUSTOM": "Custom"
-    },
     "calloutsList": {
       "title": "Index",
       "filter": {
@@ -1788,7 +1779,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
@@ -1808,7 +1798,6 @@
       }
     },
     "contribute": {
-      "initial-text": "Dans la Base de Connaissances, vous trouverez des documents, des idées et d'autres documents pertinents sur le sujet. Les responsables de l'espace peuvent fournir le contenu, mais aussi les membres de la communauté peuvent contribuer.",
       "innovationFlow": {
         "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
         "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
