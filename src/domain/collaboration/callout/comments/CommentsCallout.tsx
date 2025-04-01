@@ -17,7 +17,7 @@ import usePostMessageMutations from '@/domain/communication/room/Comments/usePos
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
-import { useSpace } from '@/domain/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'vcInteractions';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragment, NeededFields>;

@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { DialogContent, Theme, useMediaQuery } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
+import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useBackToPath from '@/core/routing/useBackToPath';
 import usePageLayoutByEntity from '@/domain/shared/utils/usePageLayoutByEntity';

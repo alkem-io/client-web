@@ -13,7 +13,7 @@ import CardTags from '@/core/ui/card/CardTags';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
-import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
+import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 
 interface CollaborationTemplateCardProps extends TemplateCardProps {
   template: CollaborationTemplate;

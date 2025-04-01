@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router';
-import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';
 import OrganizationAdminRoutes from '@/domain/community/organizationAdmin/OrganizationAdminRoutes';

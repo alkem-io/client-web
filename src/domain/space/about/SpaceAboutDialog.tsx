@@ -29,7 +29,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useNavigate from '@/core/routing/useNavigate';
-import { SpaceDashboardSpaceDetails } from '../layout/TabbedSpaceL0/Tabs/SpaceDashboard/SpaceDashboardView';
+import { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 
 export interface SpaceAboutDialogProps {
   open: boolean;
