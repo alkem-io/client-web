@@ -659,15 +659,6 @@
     "singleWhiteboard": {
       "clickToSee": "Klik hier om het volledige whiteboard te zien"
     },
-    "callout-group": {
-      "HOME_TOP": "Dashboard - aanbevelingen",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Bijdragen",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Kennisbank",
-      "CUSTOM": "Aangepast"
-    },
     "calloutsList": {
       "title": "Index",
       "filter": {
@@ -1788,7 +1779,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Hier kun je de gehoste **{{entities}}** ontdekken. Filter op trefwoorden om alleen de onderwerpen te tonen waar je om geeft.",
           "list": "Lijst weergave",
           "empty": "Geen {{entities}} gevonden.",
           "empty-list": "Er zijn nog geen {{entities}}.",
@@ -1808,7 +1798,6 @@
       }
     },
     "contribute": {
-      "initial-text": "In de kennisbank vind je relevante documenten, inzichten en andere materialen over het onderwerp. De leads van de Space kunnen content plaatsen, maar de community kan ook een bijdrage leveren.",
       "innovationFlow": {
         "title": "Deze {{entity}} wordt geleid door de <b>{{innovationFlowDisplayName}}</b>. Deze methode of innovatie pipeline maakt het proces inzichtelijk en de acties per fase waaraan je kunt deelnemen.",
         "readMore": "Lees meer over de <b>{{innovationFlowDisplayName}}</b>"
