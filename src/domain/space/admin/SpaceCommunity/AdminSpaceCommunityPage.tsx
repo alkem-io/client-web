@@ -11,8 +11,8 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityUsers from '@/domain/space/admin/SpaceCommunity/CommunityUsers';
 import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
-import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
-import CommunityApplications from '@/domain/community/community/CommunityAdmin/CommunityApplications';
+import CommunityOrganizations from '@/domain/space/admin/SpaceCommunity/CommunityOrganizations';
+import CommunityApplications from '@/domain/space/admin/SpaceCommunity/CommunityApplications';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '@/domain/community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
@@ -21,7 +21,7 @@ import CommunityApplicationForm from '@/domain/community/community/CommunityAppl
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
+import CommunityVirtualContributors from '@/domain/space/admin/SpaceCommunity/CommunityVirtualContributors';
 import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
