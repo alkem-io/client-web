@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettings/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import CommunityUpdatesPage from '@/domain/space/pages/CommunityUpdatesPage';
+import CommunityUpdatesPage from '@/domain/space/admin/SpaceCommunication/CommunityUpdatesPage';
 
 interface SpaceCommunicationsPageProps extends SettingsPageProps {
   communityId: string;
