@@ -113,14 +113,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     fetchContributors: true,
   });
 
-  // TODO: THIS needs to be removed //!!
-  /*const calloutsSetProvided = useCalloutsSet({
-    calloutsSetId,
-    classificationTagsets: [],
-    canSaveAsTemplate: false,
-    entitledToSaveAsTemplate: false,
-  });*/
-
   return (
     <>
       <SubspacePageLayout
