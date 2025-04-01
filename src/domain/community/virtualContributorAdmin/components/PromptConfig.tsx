@@ -7,13 +7,13 @@ import { useTranslation } from 'react-i18next';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { Field, Formik } from 'formik';
+import { Formik } from 'formik';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { useMemo, useState } from 'react';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { OutlinedInput } from '@mui/material';
 
 type FormValueType = {
   prompt: string;
@@ -35,12 +35,13 @@ const PromptConfig = ({ vc }) => {
 
   const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaServiceMutation();
 
-  const initialValues: FormValueType = useMemo(
-    () => ({
+  const initialValues: FormValueType = useMemo(() => {
+    setPrompt(aiPersonaService?.prompt[0] || '');
+    return {
       prompt: aiPersonaService?.prompt[0] || '',
-    }),
-    [aiPersonaService?.id]
-  );
+    };
+  }, [aiPersonaService?.id]);
+
   const validationSchema = yup.object().shape({
     prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });
@@ -71,26 +72,20 @@ const PromptConfig = ({ vc }) => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            initialTouched={{
-              prompt: initialValues.prompt !== '',
-            }}
             enableReinitialize
             validateOnMount
             onSubmit={() => {}}
           >
             <>
-              <FormikEffect
-                onChange={(values: FormValueType) => setPrompt(values.prompt)}
-                onStatusChange={(isValid: boolean) => setIsValid(isValid)}
-              />
-              <Field
+              <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
+              <OutlinedInput
                 name="prompt"
+                value={prompt}
                 title={t('pages.virtualContributorProfile.settings.prompt.title')}
-                rows={7}
-                as="textarea"
-                maxLength={MARKDOWN_TEXT_LENGTH}
-                temporaryLocation={false}
-                hideImageOptions
+                onChange={e => setPrompt(e.target.value)}
+                multiline
+                minRows={10}
+                maxRows={35}
               />
               <Actions>
                 <LoadingButton

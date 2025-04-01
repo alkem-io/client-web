@@ -17,11 +17,13 @@ const VirtualContributorSettingsPage = () => {
   });
 
   const vc = data?.lookup.virtualContributor;
+
   const isExternalConfigAvailable = [
     AiPersonaEngine.LibraFlow,
     AiPersonaEngine.OpenaiAssistant,
     AiPersonaEngine.GenericOpenai,
   ].includes(vc?.aiPersona?.engine!);
+
   const isPromptConfigAvailable = [AiPersonaEngine.LibraFlow].includes(vc?.aiPersona?.engine!);
 
   if (!vc) {

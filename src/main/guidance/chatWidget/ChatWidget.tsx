@@ -40,6 +40,13 @@ import ChatWidgetTitle from './ChatWidgetTitle';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
+// Remove the default props from the Widget component as it's throwing a warning
+// we should revise using this library or fork and fix it properly - fixing it in source is
+// rather easy
+if (Widget.hasOwnProperty('defaultProps')) {
+  delete Widget['defaultProps'];
+}
+
 type FeedbackType = 'positive' | 'negative';
 
 interface FeedbackButtonProps {
@@ -279,6 +286,20 @@ const ChatWidget = () => {
     <>
       <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')} onClick={onWidgetContainerClick}>
         <Widget
+          senderPlaceHolder="Type a message..."
+          showCloseButton
+          fullScreenMode={false}
+          autofocus
+          chatId="rcw-chat-container"
+          launcherOpenLabel="Open chat"
+          launcherCloseLabel="Close chat"
+          launcherOpenImg=""
+          launcherCloseImg=""
+          sendButtonAlt="Send"
+          showTimeStamp
+          imagePreview={false}
+          zoomStep={80}
+          showBadge
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle={null}
