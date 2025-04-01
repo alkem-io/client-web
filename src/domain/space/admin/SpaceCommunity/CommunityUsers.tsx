@@ -16,9 +16,11 @@ import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
-import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
-import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
-import useCommunityPolicyChecker from './useCommunityPolicyChecker';
+import CommunityAddMembersDialog, {
+  CommunityAddMembersDialogProps,
+} from '../../../community/community/CommunityAdmin/CommunityAddMembersDialog';
+import CommunityMemberSettingsDialog from '../../../community/community/CommunityAdmin/CommunityMemberSettingsDialog';
+import useCommunityPolicyChecker from '../../../community/community/CommunityAdmin/useCommunityPolicyChecker';
 
 type RenderParams = GridRenderCellParams<string, CommunityMemberUserFragmentWithRoles>;
 type GetterParams = GridValueGetterParams<string, CommunityMemberUserFragmentWithRoles>;
