@@ -102,8 +102,8 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
               },
             }}
           >
-            {tabs.map(tab => (
-              <BottomNavigationAction key={tab.value} value={tab.value} label={tab.label} icon={tab.icon} />
+            {tabs.map((tab, index) => (
+              <BottomNavigationAction key={tab.value} value={index} label={tab.label} icon={tab.icon} />
             ))}
             {!showSettings && spaceUrl && (
               <BottomNavigationAction
@@ -197,8 +197,13 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         showSettings={showSettings}
         settingsUrl={settingsUrl}
       >
-        {tabs.map(tab => (
-          <HeaderNavigationTab key={tab.value} label={tab.label} value={tab.value} to={`${spaceUrl}/${tab.value}`} />
+        {tabs.map((tab, index) => (
+          <HeaderNavigationTab
+            key={tab.value}
+            label={tab.label}
+            value={tab.value}
+            to={`${spaceUrl}/?section=${index}`}
+          />
         ))}
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />

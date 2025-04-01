@@ -54,7 +54,6 @@ export type UrlResolverContextValue = {
   // Innovation Hubs
   innovationHubId: string | undefined;
 
-  setUrlParams: (url: string) => void;
   loading: boolean;
 };
 
@@ -81,9 +80,6 @@ const emptyResult: UrlResolverContextValue = {
   templatesSetId: undefined,
   templateId: undefined,
   innovationHubId: undefined,
-  setUrlParams: () => {
-    console.error('setUrlParams not implemented');
-  },
   loading: true,
 };
 
@@ -110,8 +106,7 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
-  const [queryUrl, setQueryUrl] = useState<string>();
-
+  const [currentUrl, setCurrentUrl] = useState<string>('');
   /**
    * Default Apollo's cache behavior will store the result of the URL resolver queries based on the Id of the space returned
    * And will fill the gaps of missing Ids when the user navigates to a different URL
@@ -128,29 +123,53 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
    * To avoid this, we have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
    * This way, the cache will store the entire result of the query based on the URL, and will not try to merge the results of different queries.
    */
+  console.log('useUrlResolverQuery url:', currentUrl);
   const {
     data: urlResolverData,
     error,
     loading: urlResolverLoading,
   } = useUrlResolverQuery({
     variables: {
-      url: queryUrl!,
+      url: currentUrl!,
     },
-    skip: !queryUrl,
+    skip: !currentUrl,
   });
   if (!urlResolverLoading && error && isUrlResolverError(error)) {
     throw new NotFoundError();
   }
 
-  const setUrlParams = (url: string) => {
-    setQueryUrl(url);
-  };
+  useEffect(() => {
+    console.log('useEffect for popstate');
+    const handleUrlChange = () => {
+      let nextUrl = window.location.origin + window.location.pathname;
 
-  const emptyWithSetParams = { ...emptyResult, setUrlParams }; // add the setUrlParams function for the initial state
-  // Store the result of the URL resolver query in a state to avoid screen shaking
-  const [value, setValue] = useState<UrlResolverContextValue>(emptyWithSetParams);
+      // Remove trailing slash because /:spaceNameId and /:spaceNameId/ are the same url
+      if (nextUrl.endsWith('/')) {
+        nextUrl = nextUrl.slice(0, -1);
+      }
 
-  const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
+      if (nextUrl !== currentUrl) {
+        setCurrentUrl(nextUrl); // Update the query URL state
+      }
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('locationchange', handleUrlChange); //!! maybe/probably not needed
+    var pushState = window.history.pushState;
+    window.history.pushState = function (...args) {
+      pushState.apply(window.history, args);
+      handleUrlChange();
+    };
+
+    handleUrlChange();
+
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('locationchange', handleUrlChange);
+    };
+  }, []);
+
+  const value = useMemo<UrlResolverContextValue>(() => {
+    console.log('useMemo urlResolver', currentUrl, urlResolverData);
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
       const data = urlResolverData.urlResolver;
@@ -216,19 +235,12 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
         // Forum:
         discussionId: data.discussionId,
-        setUrlParams: setUrlParams,
         loading: urlResolverLoading,
       };
     } else {
-      return undefined;
+      return emptyResult;
     }
   }, [urlResolverData, urlResolverLoading]);
-
-  useEffect(() => {
-    if (resolvingResult) {
-      setValue(resolvingResult);
-    }
-  }, [resolvingResult]);
 
   return <UrlResolverContext.Provider value={value}>{children}</UrlResolverContext.Provider>;
 };

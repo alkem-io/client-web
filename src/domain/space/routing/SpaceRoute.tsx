@@ -1,41 +1,72 @@
-import { Route, Routes, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom';
 import SubspaceProvider from '@/domain/space/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
-import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
-import SpaceKnowledgeBasePage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SpaceSettingsRoute from '@/domain/space/routing/toReview2/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { PropsWithChildren, ReactNode, Suspense } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage';
-import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/space/context/useSpace';
-import SpaceSkeletonLayout from '@/domain/space/layout/loadingLayout/SpaceSkeletonLayout';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
-import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import TabbedLayoutPage, { TabbedLayoutParams } from '../layout/tabbedLayout/TabbedLayoutPage';
+import Loading from '@/core/ui/loading/Loading';
+import { Box } from '@mui/material';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
 
+interface RestrictedRouteProps extends PropsWithChildren {
+  loading: boolean;
+  allowed: boolean;
+  baseUrl: string;
+  alwaysAllowedUrl: string;
+  notAllowedComponent: ReactNode;
+}
+
+const RestrictedRoute = ({
+  loading,
+  allowed,
+  baseUrl,
+  alwaysAllowedUrl,
+  notAllowedComponent,
+  children,
+}: RestrictedRouteProps) => {
+  if (loading) {
+    return undefined;
+  }
+  const baseUrlPath = new URL(baseUrl).pathname;
+  if (!allowed) {
+    return (
+      <>
+        <Route path={alwaysAllowedUrl} element={notAllowedComponent} />
+        <Route path="*" element={<Navigate to={`${baseUrlPath}/${alwaysAllowedUrl}`} replace />} />
+      </>
+    );
+  }
+
+  return <>{children}</>;
+};
+
 const SpaceTabbedLayoutRoute = () => {
+  const { loading: resolvingUrl } = useUrlResolver();
+
   const { space, permissions, loading: loadingSpace } = useSpace();
 
-  const { data: spaceTabsData } = useSpaceTabsQuery({
-    variables: {
-      spaceId: space.id!,
-    },
-    skip: !space.id || loadingSpace || !permissions.canRead,
-  });
+  const [params] = useSearchParams();
+  const section = params.get(TabbedLayoutParams.Section) ?? undefined; // avoid nulls here for typescript
+  const dialog = params.get(TabbedLayoutParams.Dialog) ?? undefined;
 
-  const location = useLocation();
+  const loading = resolvingUrl || loadingSpace;
+  console.log({ resolvingUrl, loadingSpace });
+  /*
   const navigate = useNavigate();
-  const { spaceNameId } = useParams<{ spaceNameId: string }>();
+  const { spaceNameId } = useParams<{ spaceNameId: string }>(); //!!
   const lastVisitedTabRef = useRef<Record<string, string>>({});
 
   useEffect(() => {
@@ -85,59 +116,62 @@ const SpaceTabbedLayoutRoute = () => {
     // always update cached tab after navigation logic
     lastVisitedTabRef.current[spaceNameId] = newDefaultTab;
   }, [spaceTabsData, loadingSpace, location.pathname, spaceNameId, navigate, permissions.canRead]);
-
-  // Explicitly redirect to "About" if no permission
-  if (!loadingSpace && !permissions.canRead) {
-    return (
-      <Routes>
-        <Route path={routes.About} element={<SpaceAboutPage />} />
-        <Route path="*" element={<Navigate to={`/${spaceNameId}/${routes.About}`} replace />} />
-      </Routes>
-    );
-  }
+*/
 
   return (
-    <Routes>
-      <Route path="/" element={<SpaceSkeletonLayout />} />
-      <Route path={routes.Dashboard} element={<SpaceDashboardPage />} />
-      <Route path={`${routes.Dashboard}/updates`} element={<SpaceDashboardPage dialog="updates" />} />
-      <Route path={`${routes.Dashboard}/contributors`} element={<SpaceDashboardPage dialog="contributors" />} />
-      <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
-      <Route
-        path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-        element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
-      />
-      <Route path="calendar" element={<SpaceDashboardPage dialog="calendar" />} />
-      <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<SpaceDashboardPage dialog="calendar" />} />
-      <Route path={routes.Community} element={<SpaceCommunityPage />} />
-      <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
-      <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
-      <Route
-        path={routes.KnowledgeBase}
-        element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />}
-      />
-      <Route path={routes.Custom} element={<SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />} />
-      <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
-      <Route
-        path="*"
-        element={
-          <NotFoundPageLayout>
-            <Error404 />
-          </NotFoundPageLayout>
-        }
-      />
-      <Route
-        path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
-        element={
-          <SubspaceProvider>
-            <Suspense fallback={null}>
-              <SubspaceRoute />
-            </Suspense>
-          </SubspaceProvider>
-        }
-      />
-      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
-    </Routes>
+    <Suspense
+      fallback={
+        <Box sx={{ background: 'red', height: '200px' }}>
+          <Loading text="Loading space....!!" />
+        </Box>
+      }
+    >
+      <Routes>
+        {RestrictedRoute({
+          loading: loading,
+          allowed: permissions.canRead,
+          notAllowedComponent: <SpaceAboutPage />,
+          baseUrl: space.about.profile.url,
+          alwaysAllowedUrl: routes.About,
+          children: (
+            <>
+              <Route index element={<TabbedLayoutPage section={section} dialog={dialog} />} />
+              <Route path={routes.About} element={<TabbedLayoutPage section={undefined} dialog="about" />} />
+              <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
+              <Route
+                path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+                element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
+              />
+              <Route path="calendar" element={<TabbedLayoutPage section={'1'} dialog="calendar" />} />
+              <Route
+                path={`calendar/:${nameOfUrl.calendarEventNameId}`}
+                element={<SpaceDashboardPage dialog="calendar" />}
+              />
+              <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
+              <Route
+                path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
+                element={
+                  <SubspaceProvider>
+                    <Suspense fallback={null}>
+                      <SubspaceRoute />
+                    </Suspense>
+                  </SubspaceProvider>
+                }
+              />
+              <Route path="explore/*" element={<Redirect to={routes.Contribute} />} /> {/* //!!?? */}
+              <Route
+                path="*"
+                element={
+                  <NotFoundPageLayout>
+                    <Error404 />
+                  </NotFoundPageLayout>
+                }
+              />
+            </>
+          ),
+        })}
+      </Routes>
+    </Suspense>
   );
 };
 

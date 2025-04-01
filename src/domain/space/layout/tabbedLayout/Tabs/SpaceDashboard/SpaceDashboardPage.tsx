@@ -15,10 +15,9 @@ import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboar
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
+import { TabbedLayoutDialogsType } from '../../TabbedLayoutPage';
 
-const SpaceDashboardPage = ({
-  dialog,
-}: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
+const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayoutDialogsType }>) => {
   const {
     urlInfo,
     canReadSpace,
