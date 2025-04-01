@@ -15,7 +15,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { AiPersonaEngine, OpenAiModel } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 
-type ExternalConfigProps = {
+type ExternalConfigFields = {
   apiKey?: string;
   assistantId?: string;
   model?: OpenAiModel;
@@ -26,14 +26,23 @@ type FormValueType = {
   assistantId: string;
   model: OpenAiModel;
 };
+
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-const ExternalConfig = ({ vc }) => {
+interface ExternalConfigProps {
+  vc?: {
+    aiPersona: {
+      aiPersonaServiceID: string;
+    };
+  };
+}
+
+const ExternalConfig = ({ vc }: ExternalConfigProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [externalConfig, setExternalConfig] = useState<ExternalConfigProps>({});
+  const [externalConfig, setExternalConfig] = useState<ExternalConfigFields>({});
   const [isValid, setIsValid] = useState(false);
-  const aiPersonaServiceId = vc?.aiPersona?.aiPersonaServiceID;
+  const aiPersonaServiceId = vc?.aiPersona?.aiPersonaServiceID!;
 
   const { data, loading } = useAiPersonaServiceQuery({
     variables: { id: aiPersonaServiceId },
@@ -55,7 +64,7 @@ const ExternalConfig = ({ vc }) => {
 
   const validationSchema = yup.object().shape({
     apiKey: yup.string().notRequired(),
-    asissantId: isAssistantFieldAvailable ? yup.string().required() : yup.string().notRequired(),
+    assisantId: isAssistantFieldAvailable ? yup.string().required() : yup.string().notRequired(),
     model: yup.mixed<OpenAiModel>().oneOf(Object.values(OpenAiModel)).required(),
   });
 
@@ -75,6 +84,9 @@ const ExternalConfig = ({ vc }) => {
       },
       onCompleted: () => {
         notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
+      },
+      onError: () => {
+        notify(t('pages.virtualContributorProfile.error'), 'error');
       },
     });
   };

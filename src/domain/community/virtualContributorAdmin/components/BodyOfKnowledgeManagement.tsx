@@ -15,7 +15,25 @@ import { LoadingButton } from '@mui/lab';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Box, Tooltip } from '@mui/material';
 
-const BodyOfKnowledgeManagement = ({ vc }) => {
+interface BodyOfKnowledgeManagementProps {
+  vc: {
+    id: string;
+    settings: {
+      privacy: {
+        knowledgeBaseContentVisible: boolean;
+      };
+    };
+    profile: {
+      displayName: string;
+    };
+    aiPersona: {
+      bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+      engine: AiPersonaEngine;
+    };
+  };
+}
+
+const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -24,7 +42,7 @@ const BodyOfKnowledgeManagement = ({ vc }) => {
     updateBodyOfKnowledge({
       variables: {
         refreshData: {
-          virtualContributorID: vc?.id ?? '',
+          virtualContributorID: vc.id ?? '',
         },
       },
       onCompleted: () => {
@@ -37,7 +55,7 @@ const BodyOfKnowledgeManagement = ({ vc }) => {
     updateSettings({
       variables: {
         settingsData: {
-          virtualContributorID: vc?.id ?? '',
+          virtualContributorID: vc.id ?? '',
           settings: {
             privacy: {
               knowledgeBaseContentVisible: isVisible,
@@ -48,11 +66,14 @@ const BodyOfKnowledgeManagement = ({ vc }) => {
       onCompleted: () => {
         notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
       },
+      onError: () => {
+        notify(t('pages.virtualContributorProfile.error'), 'error');
+      },
     });
   };
 
-  const type = vc?.aiPersona?.bodyOfKnowledgeType;
-  const isGuidanceType = vc?.aiPersona?.engine === AiPersonaEngine.Guidance;
+  const type = vc.aiPersona?.bodyOfKnowledgeType;
+  const isGuidanceType = vc.aiPersona?.engine === AiPersonaEngine.Guidance;
 
   const ingestionAvailable =
     isGuidanceType ||
@@ -73,7 +94,7 @@ const BodyOfKnowledgeManagement = ({ vc }) => {
               <>
                 <Box>
                   {t('pages.virtualContributorProfile.settings.privacy.tooltip1', {
-                    vcName: vc?.profile?.displayName,
+                    vcName: vc.profile?.displayName,
                   })}
                 </Box>
                 <Box>{t('pages.virtualContributorProfile.settings.privacy.tooltip2')}</Box>
@@ -85,7 +106,7 @@ const BodyOfKnowledgeManagement = ({ vc }) => {
               <SwitchSettingsGroup
                 options={{
                   listedInStore: {
-                    checked: !vc?.settings.privacy.knowledgeBaseContentVisible,
+                    checked: !vc.settings.privacy.knowledgeBaseContentVisible,
                     disabled: loadingSettings,
                     label: t('pages.virtualContributorProfile.settings.privacy.description'),
                   },

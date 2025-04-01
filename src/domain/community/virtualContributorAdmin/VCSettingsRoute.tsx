@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import VCEditProfilePage from './vcSettingsPage/VCEditProfilePage';
 import VCMembershipPage from '../virtualContributor/vcMembershipPage/VCMembershipPage';
-import VirtualContributorSettingsPage from './VirtualContributorSettingsPage//VirtualContributorSettingsPage';
+import VirtualContributorSettingsPage from './VirtualContributorSettingsPage/VirtualContributorSettingsPage';
 
 const VCSettingsRoute = () => (
   <Routes>
