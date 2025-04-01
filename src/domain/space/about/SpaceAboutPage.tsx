@@ -1,17 +1,18 @@
 import { useState } from 'react';
-import { useSpace } from '../SpaceContext/useSpace';
+import { useSpace } from '../context/useSpace';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
-import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { SpaceTabsPlaceholder } from '../layout/TabbedSpaceL0/Tabs/SpaceTabs';
-import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
+import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
+import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
+import { SpaceTabsPlaceholder } from '../layout/tabbedLayout/Tabs/SpaceTabs';
+import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Box } from '@mui/material';
 
 const SpaceAboutPage = () => {
   const { journeyPath } = useUrlResolver();
@@ -31,7 +32,7 @@ const SpaceAboutPage = () => {
   return (
     <EntityPageLayout
       currentSection={EntityPageSection.About}
-      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} />}
+      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
       pageBanner={
         <SpacePageBanner
           title={profile?.displayName}
@@ -42,6 +43,7 @@ const SpaceAboutPage = () => {
       }
       tabsComponent={SpaceTabsPlaceholder}
     >
+      <Box sx={{ height: 'calc(100vh - 400px)' }}>&nbsp;</Box>
       <StorageConfigContextProvider locationType="journey" spaceId={space.id}>
         {spaceDetails && (
           <SpaceAboutDialog

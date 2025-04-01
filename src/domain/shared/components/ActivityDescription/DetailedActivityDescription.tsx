@@ -2,7 +2,7 @@ import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { spaceLevelIcon } from '../SpaceIcon/SpaceIcon';
+import { spaceLevelIcon } from '../../../space/icons/SpaceIconByLevel';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 

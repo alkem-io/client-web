@@ -14,16 +14,16 @@ import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hoo
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
-import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
+import CardParentJourneySegment from '@/domain/space/components/cards/SpaceChildJourneyCard/CardParentJourneySegment';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 
@@ -86,7 +86,7 @@ const hydrateSpaceCard = (
   const spaceProfile = space.about.profile;
   const tagline = spaceProfile?.tagline ?? '';
   const name = spaceProfile.displayName;
-  const tags = data.terms; // TODO: add terms field to journey card
+  const tags = space.about.profile.tagset?.tags;
   const vision = space.about.why ?? '';
 
   const isMember = space.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;

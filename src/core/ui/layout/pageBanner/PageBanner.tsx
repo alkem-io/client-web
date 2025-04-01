@@ -11,7 +11,7 @@ import GridItem from '@/core/ui/grid/GridItem';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import Overlay from '@/core/ui/utils/Overlay';
-import { BasePageBannerProps } from '@/domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
+import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
 
 export interface PageBannerProps extends BasePageBannerProps {
   banner: Visual | undefined;

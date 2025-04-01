@@ -57,8 +57,8 @@ type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
-  authorization: {
-    myPrivileges: string[];
+  authorization?: {
+    myPrivileges?: string[];
   };
   about: SpaceAboutMinimalUrlModel;
   subspaces?: SelectableSpace[];
@@ -136,16 +136,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
-    const accountSpaces: SelectableSpace[] = [];
-    account?.spaces.forEach(space => {
-      accountSpaces.push({
-        id: space.id,
-        authorization: space.authorization ?? {
-          myPrivileges: [],
-        },
-        about: space.about,
-      });
-    });
+    const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
 
     return {
       myAccountId: account?.id,
@@ -167,18 +158,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           spaceId: space.id,
         },
       });
-      const availableSubspaces: SelectableSpace[] = [];
-      subspaceData?.data?.lookup.space?.subspaces.forEach(subspace => {
-        if (subspace.authorization?.myPrivileges?.includes(AuthorizationPrivilege.ReadAbout)) {
-          availableSubspaces.push({
-            id: space.id,
-            authorization: space.authorization ?? {
-              myPrivileges: [],
-            },
-            about: space.about,
-          });
-        }
-      });
+      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasReadAboutPrivilege) ?? [];
 
       result.push({
         ...space,

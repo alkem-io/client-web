@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router';
-import { PageLayoutHolderWithOutlet } from '../journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '../space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
 import AdminInnovationPackPage from './admin/AdminInnovationPackPage';

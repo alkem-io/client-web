@@ -3,9 +3,9 @@ import { SettingsSection } from './SettingsSection';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { EmptyLayout, EntityPageLayoutProps } from '@/domain/journey/common/EntityPageLayout';
+import { EmptyLayout, EntityPageLayoutProps } from '@/domain/space/layout/EntityPageLayout';
 import SettingsPageContent from './SettingsPageContent';
-import EntityPageLayout from '@/domain/journey/common/EntityPageLayout/EntityPageLayout';
+import EntityPageLayout from '@/domain/space/layout/EntityPageLayout/EntityPageLayout';
 import PageContent from '@/core/ui/content/PageContent';
 import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
 

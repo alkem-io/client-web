@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import UserProfilePage from '../userProfilePage/UserProfilePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import UserAdminRoute from '../../userAdmin/routing/UserAdminRoute';
-import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { nameOfUrl } from '@/main/routing/urlParams';
 

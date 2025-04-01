@@ -89,8 +89,9 @@ export const ApplicationButtonContainer = ({
   const parentSpace = _communityPrivileges?.parentSpace?.space;
 
   const applyUrl = space?.about.profile.url;
-  const challengeName = space?.about.profile.displayName;
-  const spaceName = parentSpace?.about.profile.displayName;
+  const subspaceName = space?.about.profile.displayName;
+  const parentCommunityName = parentSpace?.about.profile.displayName;
+  const parentCommunitySpaceLevel = parentSpace?.level;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinRoleSetMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
@@ -161,8 +162,9 @@ export const ApplicationButtonContainer = ({
     applicationState: userApplication?.application.state,
     userInvitation,
     parentApplicationState: parentApplication?.application.state,
-    spaceName,
-    challengeName,
+    parentCommunityName,
+    parentCommunitySpaceLevel,
+    subspaceName,
     canJoinCommunity,
     canAcceptInvitation,
     canApplyToCommunity,

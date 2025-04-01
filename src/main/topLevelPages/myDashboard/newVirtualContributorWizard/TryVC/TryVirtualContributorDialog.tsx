@@ -109,8 +109,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       draft: callout.visibility === CalloutVisibility.Draft,
       editable: false,
       movable: false,
-      canSaveAsTemplate: false,
-      entitledToSaveAsTemplate: false,
+      canBeSavedAsTemplate: false,
       flowStates: undefined,
       authorization: {
         myPrivileges: [],

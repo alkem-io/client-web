@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { ContextSegment, spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { SpaceAboutSegment, spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 interface SpaceAboutFormProps {
@@ -53,7 +53,7 @@ const SpaceAboutForm: FC<SpaceAboutFormProps> = ({ about, onSubmit, wireSubmit, 
           isSubmitWired = true;
         }
 
-        return <ContextSegment loading={loading} spaceLevel={spaceLevel ?? SpaceLevel.L0} />;
+        return <SpaceAboutSegment loading={loading} spaceLevel={spaceLevel ?? SpaceLevel.L0} />;
       }}
     </Formik>
   );

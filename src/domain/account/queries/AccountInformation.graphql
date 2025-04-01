@@ -41,12 +41,6 @@ query AccountInformation($accountId: UUID!) {
             myPrivileges
           }
         }
-        license {
-          id
-          entitlements {
-            ...EntitlementDetails
-          }
-        }
       }
       virtualContributors {
         id

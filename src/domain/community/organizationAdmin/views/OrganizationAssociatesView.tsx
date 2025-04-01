@@ -4,14 +4,12 @@ import { useOrganizationContext } from '@/domain/community/contributor/organizat
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { useUserContext } from '../../user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 
 export const OrganizationAssociatesView: FC = () => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
 
   const { roleSetId } = useOrganizationContext();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
@@ -46,7 +44,6 @@ export const OrganizationAssociatesView: FC = () => {
         members={usersByRole[RoleName.Associate] ?? []}
         availableMembers={availableAssociates ?? []}
         updating={updating}
-        executorId={user?.user?.id}
         onAdd={userId => assignRoleToUser(userId, RoleName.Associate)}
         onRemove={userId => removeRoleFromUser(userId, RoleName.Associate)}
         fetchMore={fetchMore}

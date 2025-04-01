@@ -3062,6 +3062,13 @@ export const SpaceMembershipFragmentDoc = gql`
         myMembershipStatus
       }
     }
+    community {
+      id
+      roleSet {
+        id
+        myRoles
+      }
+    }
   }
   ${SpaceAboutCardBannerFragmentDoc}
 `;
@@ -3768,6 +3775,7 @@ export const ApplicationButtonDocument = gql`
     parentSpace: lookup @include(if: $includeParentSpace) {
       space(ID: $parentSpaceId) {
         id
+        level
         about {
           ...SpaceAboutMinimalUrl
           membership {
@@ -5627,12 +5635,6 @@ export const AccountInformationDocument = gql`
               myPrivileges
             }
           }
-          license {
-            id
-            entitlements {
-              ...EntitlementDetails
-            }
-          }
         }
         virtualContributors {
           id
@@ -5676,7 +5678,6 @@ export const AccountInformationDocument = gql`
     }
   }
   ${VisualUriFragmentDoc}
-  ${EntitlementDetailsFragmentDoc}
   ${AccountItemProfileFragmentDoc}
   ${SpaceAboutLightFragmentDoc}
 `;
@@ -6792,89 +6793,6 @@ export function refetchActivityLogOnCollaborationQuery(
   variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
-}
-
-export const CollaborationAuthorizationEntitlementsDocument = gql`
-  query CollaborationAuthorizationEntitlements($collaborationId: UUID!) {
-    lookup {
-      collaboration(ID: $collaborationId) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        license {
-          id
-          availableEntitlements
-        }
-        calloutsSet {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useCollaborationAuthorizationEntitlementsQuery__
- *
- * To run a query within a React component, call `useCollaborationAuthorizationEntitlementsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCollaborationAuthorizationEntitlementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCollaborationAuthorizationEntitlementsQuery({
- *   variables: {
- *      collaborationId: // value for 'collaborationId'
- *   },
- * });
- */
-export function useCollaborationAuthorizationEntitlementsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CollaborationAuthorizationEntitlementsQuery,
-    SchemaTypes.CollaborationAuthorizationEntitlementsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CollaborationAuthorizationEntitlementsQuery,
-    SchemaTypes.CollaborationAuthorizationEntitlementsQueryVariables
-  >(CollaborationAuthorizationEntitlementsDocument, options);
-}
-
-export function useCollaborationAuthorizationEntitlementsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CollaborationAuthorizationEntitlementsQuery,
-    SchemaTypes.CollaborationAuthorizationEntitlementsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CollaborationAuthorizationEntitlementsQuery,
-    SchemaTypes.CollaborationAuthorizationEntitlementsQueryVariables
-  >(CollaborationAuthorizationEntitlementsDocument, options);
-}
-
-export type CollaborationAuthorizationEntitlementsQueryHookResult = ReturnType<
-  typeof useCollaborationAuthorizationEntitlementsQuery
->;
-export type CollaborationAuthorizationEntitlementsLazyQueryHookResult = ReturnType<
-  typeof useCollaborationAuthorizationEntitlementsLazyQuery
->;
-export type CollaborationAuthorizationEntitlementsQueryResult = Apollo.QueryResult<
-  SchemaTypes.CollaborationAuthorizationEntitlementsQuery,
-  SchemaTypes.CollaborationAuthorizationEntitlementsQueryVariables
->;
-export function refetchCollaborationAuthorizationEntitlementsQuery(
-  variables: SchemaTypes.CollaborationAuthorizationEntitlementsQueryVariables
-) {
-  return { query: CollaborationAuthorizationEntitlementsDocument, variables: variables };
 }
 
 export const RemoveCommentFromCalloutDocument = gql`
@@ -14460,11 +14378,7 @@ export const ChildJourneyPageBannerDocument = gql`
               tags
             }
           }
-        }
-        community {
-          id
-          roleSet {
-            id
+          membership {
             myMembershipStatus
           }
         }
@@ -18001,6 +17915,94 @@ export type SpaceTabsLazyQueryHookResult = ReturnType<typeof useSpaceTabsLazyQue
 export type SpaceTabsQueryResult = Apollo.QueryResult<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>;
 export function refetchSpaceTabsQuery(variables: SchemaTypes.SpaceTabsQueryVariables) {
   return { query: SpaceTabsDocument, variables: variables };
+}
+
+export const SpacePermissionsAndEntitlementsDocument = gql`
+  query SpacePermissionsAndEntitlements($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        license {
+          id
+          availableEntitlements
+        }
+        collaboration {
+          id
+          license {
+            id
+            availableEntitlements
+          }
+        }
+        templatesManager {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpacePermissionsAndEntitlementsQuery__
+ *
+ * To run a query within a React component, call `useSpacePermissionsAndEntitlementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpacePermissionsAndEntitlementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpacePermissionsAndEntitlementsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpacePermissionsAndEntitlementsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpacePermissionsAndEntitlementsQuery,
+    SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpacePermissionsAndEntitlementsQuery,
+    SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
+  >(SpacePermissionsAndEntitlementsDocument, options);
+}
+
+export function useSpacePermissionsAndEntitlementsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpacePermissionsAndEntitlementsQuery,
+    SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpacePermissionsAndEntitlementsQuery,
+    SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
+  >(SpacePermissionsAndEntitlementsDocument, options);
+}
+
+export type SpacePermissionsAndEntitlementsQueryHookResult = ReturnType<typeof useSpacePermissionsAndEntitlementsQuery>;
+export type SpacePermissionsAndEntitlementsLazyQueryHookResult = ReturnType<
+  typeof useSpacePermissionsAndEntitlementsLazyQuery
+>;
+export type SpacePermissionsAndEntitlementsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpacePermissionsAndEntitlementsQuery,
+  SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
+>;
+export function refetchSpacePermissionsAndEntitlementsQuery(
+  variables: SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
+) {
+  return { query: SpacePermissionsAndEntitlementsDocument, variables: variables };
 }
 
 export const JourneyStorageConfigDocument = gql`
