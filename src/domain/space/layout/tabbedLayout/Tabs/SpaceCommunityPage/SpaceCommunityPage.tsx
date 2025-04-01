@@ -145,9 +145,11 @@ const SpaceCommunityPage = () => {
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <PageContent>
         <InfoColumn>
-          <PageContentBlock accent>
-            <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
-          </PageContentBlock>
+          {tabDescription && (
+            <PageContentBlock accent>
+              <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
+            </PageContentBlock>
+          )}
           <EntityDashboardLeadsSection
             usersHeader={t('community.leads')}
             organizationsHeader={t('pages.space.sections.dashboard.organization')}

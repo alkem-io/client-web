@@ -43,7 +43,7 @@ const SpaceWelcomeBlock = ({
         overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
       >
         {member && <DashboardMemberIcon level={spaceLevel} />}
-        <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>
+        {description && <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>}
       </OverflowGradient>
       {leadUsers && leadUsers.length > 0 && (
         <Gutters flexWrap="wrap" row disablePadding>

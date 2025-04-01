@@ -89,7 +89,6 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
       <InfoColumn>
         <SubspaceCreate
           tabDescription={tabDescription}
-          level={level}
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}
         />
