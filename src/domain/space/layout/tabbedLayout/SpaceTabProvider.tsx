@@ -1,9 +1,11 @@
+import { useEffect, useMemo, useRef } from 'react';
 import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { SpaceTabQueryModel } from './spaceTabQuery.model';
 
 type InnovationFlowState = {
   displayName: string;
@@ -33,58 +35,75 @@ type useSpaceTabProviderParams = {
 const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): SpaceTabProvided => {
   const urlInfo = useUrlResolver();
   const { spaceId } = urlInfo;
+  const lastQueriedIdRef = useRef<string>();
+  const lastSpaceTabDataRef = useRef<SpaceTabQueryModel>();
+
+  const shouldSkip = skip || !spaceId || lastQueriedIdRef.current === spaceId;
 
   const {
     data: spaceTabData,
     loading: loadingSpaceTab,
     refetch: refetchSpaceTab,
   } = useSpaceTabQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: skip || !spaceId,
+    variables: { spaceId: spaceId! },
+    skip: shouldSkip,
   });
-  const myPrivileges = spaceTabData?.lookup.space?.authorization?.myPrivileges;
 
-  const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read);
+  useEffect(() => {
+    if (spaceId && !loadingSpaceTab && !skip) {
+      lastQueriedIdRef.current = spaceId;
+      lastSpaceTabDataRef.current = spaceTabData;
+    }
+  }, [spaceId, loadingSpaceTab, skip]);
 
-  const innovationFlow = spaceTabData?.lookup.space?.collaboration.innovationFlow;
-  const innovationFlowStates = innovationFlow?.states;
-  const innovationFlowCurrentState = innovationFlow?.currentState;
-  const about: SpaceAboutLightModel | undefined = spaceTabData?.lookup.space?.about;
-  const calloutsSetId = spaceTabData?.lookup.space?.collaboration.calloutsSet.id;
+  const dataToUse = spaceTabData || lastSpaceTabDataRef.current;
 
-  let flowState: InnovationFlowState | undefined = undefined;
-  if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
-    flowState = innovationFlowStates[tabPosition];
-  }
+  const memoizedData = useMemo(() => {
+    const space = dataToUse?.lookup.space;
 
-  let classificationTagsets: ClassificationTagsetModel[] = [];
-  if (flowState) {
-    classificationTagsets = [
-      {
-        name: TagsetReservedName.FlowState,
-        tags: [flowState.displayName],
-      },
-    ];
-  }
+    const myPrivileges = space?.authorization?.myPrivileges;
+    const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
+    const innovationFlow = space?.collaboration.innovationFlow;
+    const innovationFlowStates = innovationFlow?.states;
+    const innovationFlowCurrentState = innovationFlow?.currentState;
+    const about: SpaceAboutLightModel | undefined = space?.about;
+    const calloutsSetId = space?.collaboration.calloutsSet.id;
 
-  const tabDescription =
-    spaceTabData?.lookup.space?.collaboration.innovationFlow.states[tabPosition]?.description ?? '';
+    let flowState: InnovationFlowState | undefined = undefined;
+    if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
+      flowState = innovationFlowStates[tabPosition];
+    }
+
+    let classificationTagsets: ClassificationTagsetModel[] = [];
+    if (flowState) {
+      classificationTagsets = [
+        {
+          name: TagsetReservedName.FlowState,
+          tags: [flowState.displayName],
+        },
+      ];
+    }
+
+    const tabDescription = space?.collaboration.innovationFlow.states[tabPosition]?.description ?? '';
+
+    return {
+      canReadSpace,
+      innovationFlowStates,
+      innovationFlowCurrentState,
+      flowStateForNewCallouts: flowState,
+      about,
+      tabDescription,
+      calloutsSetId,
+      classificationTagsets,
+    };
+  }, [dataToUse, tabPosition]);
 
   return {
-    canReadSpace: canReadSpace || false,
-    innovationFlowStates,
-    innovationFlowCurrentState: innovationFlowCurrentState,
-    about,
     urlInfo,
-    tabDescription,
-    calloutsSetId,
-    classificationTagsets,
-    flowStateForNewCallouts: flowState,
     refetch: refetchSpaceTab,
     loading: loadingSpaceTab,
     updating: false,
+    ...memoizedData,
   };
 };
 
