@@ -2,7 +2,6 @@ import { PropsWithChildren } from 'react';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
@@ -67,7 +66,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   };
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 0 }}>
       <SpaceDashboardView
         space={space}
         tabDescription={tabDescription}

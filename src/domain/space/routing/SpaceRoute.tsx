@@ -119,14 +119,14 @@ const SpaceTabbedLayoutRoute = () => {
             redirectUrl={`${space.about.profile.url}/${routes.About}`}
           >
             <Routes>
-              <Route index element={<TabbedLayoutPage section={section} dialog={dialog} />} />
-              <Route path={routes.About} element={<TabbedLayoutPage section={undefined} dialog="about" />} />
+              <Route index element={<TabbedLayoutPage sectionNumber={section} dialog={dialog} />} />
+              <Route path={routes.About} element={<TabbedLayoutPage sectionNumber={undefined} dialog="about" />} />
               <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
               <Route
                 path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
                 element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
               />
-              <Route path="calendar" element={<TabbedLayoutPage section={'1'} dialog="calendar" />} />
+              <Route path="calendar" element={<TabbedLayoutPage sectionNumber={'1'} dialog="calendar" />} />
               <Route
                 path={`calendar/:${nameOfUrl.calendarEventNameId}`}
                 element={<SpaceDashboardPage dialog="calendar" />}
