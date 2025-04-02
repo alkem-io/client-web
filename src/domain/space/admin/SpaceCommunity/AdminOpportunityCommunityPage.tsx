@@ -10,13 +10,12 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import CommunityVirtualContributors from '@/domain/space/admin/SpaceCommunity/CommunityVirtualContributors';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSubSpace } from '../../hooks/useSubSpace';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, parentSpaceId } = useUrlResolver();
-  const { loading: isLoadingChallenge, subspace } = useSubSpace();
-  const roleSetId = subspace?.about.membership.roleSetID!;
+  const { loading: isLoadingChallenge, subspace, parentSpaceId } = useSubSpace();
+  const { id: spaceId } = subspace;
+  const { about } = subspace;
 
   const {
     users,
@@ -39,11 +38,11 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableOrganizations,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useCommunityAdmin({ spaceId, roleSetId, spaceLevel: SpaceLevel.L2 });
+  } = useCommunityAdmin({ spaceId, about, spaceLevel: SpaceLevel.L2 });
 
   // get the VC filtered on the parent
   const { getAvailableVirtualContributors } = useCommunityAdmin({
-    roleSetId,
+    about,
     spaceId: parentSpaceId,
     spaceLevel: SpaceLevel.L2,
   });

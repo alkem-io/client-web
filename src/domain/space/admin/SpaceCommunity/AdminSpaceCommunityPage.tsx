@@ -74,7 +74,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.L0 });
+  } = useCommunityAdmin({ about, spaceId, spaceLevel: SpaceLevel.L0 });
 
   const currentApplicationsUserIds = useMemo(
     () =>

@@ -14,11 +14,11 @@ import useRoleSetApplicationsAndInvitations, {
   InviteContributorsData,
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 
 interface useCommunityAdminParams {
-  roleSetId: string;
   spaceId?: string;
+  about: SpaceAboutLightModel;
   spaceLevel?: SpaceLevel;
 }
 
@@ -33,20 +33,14 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isLead: boolean;
 }
 
-const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
-  const { data: communityProviderData, loading: loadingCommunityProvider } = useSpaceCommunityPageQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: !spaceId || spaceLevel !== SpaceLevel.L0,
-  });
-
+const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminParams) => {
   const { data: spaceData } = useSpaceEntitlementsQuery({
     variables: {
       spaceId: spaceId!,
     },
     skip: !spaceId,
   });
+  const roleSetId = about.membership!.roleSetID!;
 
   const {
     users,
@@ -73,8 +67,6 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
 
-  // TODO: remove this? The account org is not automagically a member or lead of the community
-  const communityProvider = communityProviderData?.lookup.space?.about.provider;
   const communityUsers = useMemo(
     () =>
       users.map<CommunityMemberUserFragmentWithRoles>(user => ({
@@ -91,12 +83,11 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
       ...organization,
       isMember: organization.roles.includes(RoleName.Member),
       isLead: organization.roles.includes(RoleName.Lead),
-      isFacilitating: communityProvider?.__typename === 'Organization' && communityProvider.id === organization.id,
     }));
 
     return result;
   }, [organizations]);
-  const communityGuidelinesId = communityProviderData?.lookup.space?.about.guidelines.id;
+  const communityGuidelinesId = about.guidelines!.id;
 
   // Virtual Contributors community related extracted in useInviteContributors
   const {
@@ -196,7 +187,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
-    loading: loadingCommunityProvider || loading || loadingApplicationsAndInvitations,
+    loading: loading || loadingApplicationsAndInvitations,
   };
 };
 

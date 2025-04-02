@@ -11,6 +11,9 @@ export type SpaceAboutLightModel = {
     roleSetID?: string;
     communityID?: string;
   };
+  guidelines?: {
+    id: string;
+  };
   profile: {
     displayName: string;
     tagline?: string;

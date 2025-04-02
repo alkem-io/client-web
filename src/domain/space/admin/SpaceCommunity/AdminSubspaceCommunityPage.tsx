@@ -23,15 +23,13 @@ import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportT
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { spaceId, parentSpaceId, spaceLevel } = useUrlResolver();
-  const { loading: isLoadingChallenge, subspace } = useSubSpace();
+  const { loading: isLoadingChallenge, subspace, parentSpaceId } = useSubSpace();
+  const { id: spaceId, level: spaceLevel } = subspace;
   const { about } = subspace;
-  const roleSetId = about.membership.roleSetID!;
   const communityGuidelinesId = about.guidelines.id;
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
@@ -65,10 +63,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ roleSetId, spaceId, spaceLevel });
+  } = useCommunityAdmin({ about, spaceId, spaceLevel });
 
   // get the VC filtered on the parent
-  const { getAvailableVirtualContributors } = useCommunityAdmin({ roleSetId, spaceId: parentSpaceId, spaceLevel });
+  // TODO: needs to be fixed, but done properly. Code below could not work.
+  const { getAvailableVirtualContributors } = useCommunityAdmin({ about, spaceId: parentSpaceId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>
