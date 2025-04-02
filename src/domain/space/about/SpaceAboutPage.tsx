@@ -5,7 +5,6 @@ import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { SpaceTabsPlaceholder } from '../layout/tabbedLayout/Tabs/SpaceTabs';
@@ -31,7 +30,6 @@ const SpaceAboutPage = () => {
 
   return (
     <EntityPageLayout
-      currentSection={{ section: EntityPageSection.About }}
       breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
       pageBanner={
         <SpacePageBanner

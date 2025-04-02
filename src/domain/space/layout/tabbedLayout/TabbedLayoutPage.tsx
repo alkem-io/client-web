@@ -41,6 +41,7 @@ const TabbedLayoutPage = ({ sectionNumber, dialog: queryStringDialog }: TabbedLa
     case '4':
       return <SpaceKnowledgeBasePage sectionIndex={3} />;
     case '5':
+      // Still not fully implemented, but in the future spaces may have more tabs
       return <SpaceKnowledgeBasePage sectionIndex={4} />;
     default: {
       // Only redirect if defaultTab is already

@@ -73,11 +73,13 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
   }, [isDrawerOpen]);
 
   let selectedTab: EntityPageSection | number = -1;
-  if ('sectionIndex' in currentTab) {
-    selectedTab = currentTab.sectionIndex;
-  }
-  if ('section' in currentTab) {
-    selectedTab = currentTab.section;
+  if (currentTab) {
+    if ('sectionIndex' in currentTab) {
+      selectedTab = currentTab.sectionIndex;
+    }
+    if ('section' in currentTab) {
+      selectedTab = currentTab.section;
+    }
   }
 
   if (mobile) {
@@ -200,7 +202,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
     <>
       <HeaderNavigationTabs
         value={selectedTab}
-        defaultTab={EntityPageSection.Dashboard}
+        defaultTab={0}
         aria-label={t('pages.admin.space.aria.tabs')}
         showSettings={showSettings}
         settingsUrl={settingsUrl}

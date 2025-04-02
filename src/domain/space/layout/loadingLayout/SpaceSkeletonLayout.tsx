@@ -1,11 +1,10 @@
 import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardView from '../tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 import { noop } from 'lodash';
 
 const SpaceSkeletonLayout = () => {
   return (
-    <SpacePageLayout journeyPath={undefined} currentSection={{ section: EntityPageSection.About }} loading>
+    <SpacePageLayout journeyPath={undefined} currentSection={undefined} loading>
       <SpaceDashboardView
         space={undefined}
         flowStateForNewCallouts={undefined}
