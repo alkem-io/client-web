@@ -45,7 +45,7 @@ const TabbedLayoutPage = ({ sectionNumber, dialog: queryStringDialog }: TabbedLa
       return <SpaceKnowledgeBasePage sectionIndex={4} />;
     default: {
       // Only redirect if defaultTab is already
-      if (defaultTabIndex !== undefined && dialog === undefined) {
+      if (defaultTabIndex !== undefined && defaultTabIndex > -1 && dialog === undefined) {
         return <Navigate to={`./?section=${defaultTabIndex + 1}`} replace />;
       }
       return undefined;

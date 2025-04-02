@@ -101,7 +101,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     }
     return {
       tabs: result,
-      defaultTabIndex: currentStateIndex !== -1 ? currentStateIndex : 0, // Default to the first tab if the current state is not found or incorrect
+      defaultTabIndex: currentStateIndex,
     };
   }, [t, i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
 

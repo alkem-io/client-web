@@ -41,7 +41,8 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
                 content={latestMessage.message}
               />
             )}
-            <SeeMore subject={t('common.updates')} to="?dialog=updates" />
+            {/* TODO:SECTION update the link with something stable */}
+            <SeeMore subject={t('common.updates')} to="?dialog=updates&section=1" />
           </PageContentBlock>
         ) : (
           <></>
