@@ -1,3 +1,5 @@
+# TODO: most of this query is not needed I think.
+
 query SpaceCommunityPage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
