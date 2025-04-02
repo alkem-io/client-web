@@ -22,8 +22,6 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export const buildPostDashboardUrl = (postUrl: string) => `${postUrl}/dashboard`;
-
 export const buildUpdatesUrl = (journeyLocation: string) => {
   return `${journeyLocation}?dialog=updates`;
 };
