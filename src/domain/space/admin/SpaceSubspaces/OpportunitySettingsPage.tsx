@@ -1,7 +1,7 @@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import OpportunitySettingsView from './OpportunitySettingsView';
-import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const OpportunitySettingsPage = ({ routePrefix = '../' }: SettingsPageProps) => (
   <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>

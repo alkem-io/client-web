@@ -7,7 +7,7 @@ import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/ap
 import { BlockTitle } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
-import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 interface SubspaceAuthorizationPageProps extends SettingsPageProps {}
 

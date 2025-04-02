@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import SpaceSettingsView from './SpaceSettingsView';
-import SpaceSettingsLayout from '@/domain/space/admin/SpaceSettings/SpaceSettingsLayout';
+import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Skeleton } from '@mui/material';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceLevel, loading } = useUrlResolver();

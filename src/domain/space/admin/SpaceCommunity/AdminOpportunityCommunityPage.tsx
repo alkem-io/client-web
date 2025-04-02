@@ -11,7 +11,7 @@ import CommunityVirtualContributors from '@/domain/space/admin/SpaceCommunity/Co
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSubSpace } from '../../hooks/useSubSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, parentSpaceId } = useUrlResolver();

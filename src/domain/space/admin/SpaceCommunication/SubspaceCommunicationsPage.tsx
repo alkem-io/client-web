@@ -4,7 +4,7 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import CommunityUpdatesPage, {
   CommunityUpdatesPageProps,
 } from '@/domain/space/admin/SpaceCommunication/CommunityUpdatesPage';
-import SubspaceSettingsLayout from '@/domain/space/routing/toReviewAdmin/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 interface SubspaceCommunicationsPageProps extends SettingsPageProps, CommunityUpdatesPageProps {}
 
