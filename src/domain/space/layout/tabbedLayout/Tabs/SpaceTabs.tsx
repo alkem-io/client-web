@@ -100,7 +100,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 case EntityPageSection.Search:
                   return;
               }
-              navigate(`${spaceUrl}/${nextValue}`);
+              navigate(`${spaceUrl}/?section=${nextValue + 1}`);
             }}
             sx={{
               backgroundColor: navigationBackgroundColor,
