@@ -234,7 +234,7 @@ const CommunityVirtualContributors = ({
           open={isInvitingExternal}
           onClose={closeInvitationDialog}
           contributorId={selectedVirtualContributorId}
-          onInviteUser={inviteExistingUser}
+          onInviteVirtualContributor={inviteExistingUser}
         />
       )}
     </>

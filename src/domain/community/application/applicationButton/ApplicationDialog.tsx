@@ -53,10 +53,10 @@ const ApplicationDialog = ({
   const communityName = spaceAbout?.profile.displayName;
   const applicationForm = spaceAbout?.membership.applicationForm;
   const questions = applicationForm?.questions ?? [];
-  const roleSetId = spaceAbout?.membership.roleSetID;
+  const roleSetId = spaceAbout?.membership.roleSetID!;
   const communityGuidelines = spaceAbout?.guidelines.profile;
 
-  const { applyForEntryRoleOnRoleSet, isApplying } = useRoleSetApplicationsAndInvitations({});
+  const { applyForEntryRoleOnRoleSet, isApplying } = useRoleSetApplicationsAndInvitations({ roleSetId });
 
   const initialValues: Record<string, string> = useMemo(
     () => questions.reduce((acc, val) => ({ ...acc, [val.question]: '' }), {} as Record<string, string>),

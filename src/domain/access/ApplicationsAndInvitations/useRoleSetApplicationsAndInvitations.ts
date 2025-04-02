@@ -29,7 +29,7 @@ export interface InviteExternalUserData extends InviteUserData {
 }
 
 type useRoleSetApplicationsAndInvitationsParams = {
-  roleSetId?: string;
+  roleSetId: string;
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {
