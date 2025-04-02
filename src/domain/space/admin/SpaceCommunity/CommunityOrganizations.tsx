@@ -23,7 +23,6 @@ import { ContributorViewProps } from '../../../community/community/EntityDashboa
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
   isMember: boolean;
   isLead: boolean;
-  isFacilitating: boolean;
 }
 
 type RenderParams = GridRenderCellParams<string, OrganizationDetailsFragmentWithRoles>;
@@ -112,13 +111,6 @@ const CommunityOrganizations = ({
       headerName: t('common.role'),
       renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
-    },
-    {
-      field: 'isFacilitating',
-      headerName: t('common.authorization'),
-      renderHeader: () => <>{t('common.authorization')}</>,
-      renderCell: ({ row }: RenderParams) => <>{row.isFacilitating ? t('pages.community.space-host.title') : ''}</>,
-      width: 200,
     },
   ];
 

@@ -31,7 +31,6 @@ export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserF
 export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMemberOrganizationFragment {
   isMember: boolean;
   isLead: boolean;
-  isFacilitating: boolean; // TODO: what to do with this?!
 }
 
 const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
