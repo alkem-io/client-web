@@ -103,7 +103,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
             }}
           >
             {tabs.map((tab, index) => (
-              <BottomNavigationAction key={tab.value} value={index} label={tab.label} icon={tab.icon} />
+              <BottomNavigationAction key={tab.value} value={index + 1} label={tab.label} icon={tab.icon} />
             ))}
             {!showSettings && spaceUrl && (
               <BottomNavigationAction
@@ -202,7 +202,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
             key={tab.value}
             label={tab.label}
             value={tab.value}
-            to={`${spaceUrl}/?section=${index}`}
+            to={`${spaceUrl}/?section=${index + 1}`}
           />
         ))}
         {actions?.map((action, index) => (

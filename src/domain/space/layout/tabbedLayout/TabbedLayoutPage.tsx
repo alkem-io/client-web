@@ -28,15 +28,15 @@ const TabbedLayoutPage = ({ section, dialog: queryStringDialog }: TabbedLayoutPa
   const dialog = ensureParamType(queryStringDialog, TabbedLayoutDialogs);
 
   switch (section) {
-    case '1':
-      return <SpaceCommunityPage />;
     case '2':
-      return <SpaceSubspacesPage />;
+      return <SpaceCommunityPage />;
     case '3':
-      return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
+      return <SpaceSubspacesPage />;
     case '4':
+      return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
+    case '5':
       return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />;
-    case '0':
+    case '1':
     default:
       return <SpaceDashboardPage dialog={dialog} />;
   }
