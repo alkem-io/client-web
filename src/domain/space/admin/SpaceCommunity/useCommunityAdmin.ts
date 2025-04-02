@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   RoleName,
   RoleSetContributorType,
@@ -7,7 +6,7 @@ import {
   RoleSetMemberUserFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
+import useInviteContributors from '@/domain/space/admin/SpaceCommunity/_removeMe/useInviteContributors';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import useRoleSetApplicationsAndInvitations, {
@@ -34,12 +33,6 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
 }
 
 const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminParams) => {
-  const { data: spaceData } = useSpaceEntitlementsQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: !spaceId,
-  });
   const roleSetId = about.membership!.roleSetID!;
 
   const {
@@ -163,7 +156,6 @@ const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminPara
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    spaceEntitlements: spaceData?.lookup.space?.license?.availableEntitlements ?? [],
     applications,
     invitations,
     platformInvitations,

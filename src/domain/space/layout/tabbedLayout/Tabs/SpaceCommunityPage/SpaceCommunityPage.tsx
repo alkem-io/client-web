@@ -9,7 +9,6 @@ import {
   MessageReceiverChipData,
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
-import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
 import {
@@ -31,8 +30,11 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 const SpaceCommunityPage = () => {
+  const { space, entitlements } = useSpace();
+  const { about } = space;
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
   const {
@@ -40,13 +42,14 @@ const SpaceCommunityPage = () => {
     classificationTagsets,
     tabDescription,
     flowStateForNewCallouts: flowStateForTab,
+    calloutsSetId,
   } = useSpaceTabProvider({
     tabPosition: 1,
   });
 
-  const { spaceId, journeyPath, loading: resolving } = urlInfo;
+  const { journeyPath, loading: resolving } = urlInfo;
 
-  if (!spaceId && !resolving) {
+  if (!resolving) {
     throw new TypeError('Must be within a Space');
   }
 
@@ -58,21 +61,17 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
-  // TODO: a big part of this query MUST be taken from the About from the context; think most of this
-  // query is duplication.
-  const { data: dataCommunityPage, loading: loadingCommunity } = useSpaceCommunityPageQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: !spaceId,
-  });
-
-  const spaceData = dataCommunityPage?.lookup.space;
-  const membership = spaceData?.about.membership;
+  const membership = about.membership;
   const communityId = membership?.communityID;
-  const communityGuidelinesId = dataCommunityPage?.lookup.space?.about.guidelines.id;
+  const communityGuidelinesId = about.guidelines!.id;
 
-  const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
+  const {
+    usersByRole,
+    organizationsByRole,
+    virtualContributorsByRole,
+    myPrivileges,
+    loading: roleSetLoading,
+  } = useRoleSetManager({
     roleSetId: membership?.roleSetID,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
@@ -85,6 +84,7 @@ const SpaceCommunityPage = () => {
   const memberUsers = usersByRole[RoleName.Member];
   const leadUsers = usersByRole[RoleName.Lead];
   const memberOrganizations = organizationsByRole[RoleName.Member];
+  const leadOrganizations = organizationsByRole[RoleName.Lead];
   const memberVirtualContributors = virtualContributorsByRole[RoleName.Member];
   const { memberUsers: memberUserCards, memberOrganizations: memberOrganizationCards } = useCommunityMembersAsCardProps(
     { memberUsers, memberOrganizations },
@@ -93,8 +93,6 @@ const SpaceCommunityPage = () => {
       memberOrganizationsLimit: 0,
     }
   );
-
-  const calloutsSetId = spaceData?.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -108,29 +106,19 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(
-    () => spaceData?.about.provider && [spaceData.about.provider],
-    [spaceData?.about.provider]
-  );
-
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
-  const hasReadPrivilege = spaceData?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
-  let virtualContributors: VirtualContributorProps[] = [];
-  if (hasReadPrivilege) {
-    virtualContributors =
-      memberVirtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
-  }
+  let virtualContributors: VirtualContributorProps[] =
+    memberVirtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
   const hasInvitePrivilege = myPrivileges?.some(privilege =>
     [AuthorizationPrivilege.RolesetEntryRoleInvite, AuthorizationPrivilege.CommunityAssignVcFromAccount].includes(
       privilege
     )
   );
-  const spaceEntitlements: LicenseEntitlementType[] | undefined = spaceData?.license?.availableEntitlements;
-  const hasVcSpaceEntitlement = spaceEntitlements?.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess);
-  const showVirtualContributorsBlock =
-    hasReadPrivilege && hasVcSpaceEntitlement && (virtualContributors?.length > 0 || hasInvitePrivilege);
+
+  const hasVcSpaceEntitlement = entitlements?.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess);
+  const showVirtualContributorsBlock = hasVcSpaceEntitlement && (virtualContributors?.length > 0 || hasInvitePrivilege);
   const showInviteOption = hasInvitePrivilege && hasVcSpaceEntitlement;
 
   const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout, loading } = useCalloutsSet({
@@ -151,7 +139,7 @@ const SpaceCommunityPage = () => {
             usersHeader={t('community.leads')}
             organizationsHeader={t('pages.space.sections.dashboard.organization')}
             leadUsers={leadUsers}
-            leadOrganizations={hostOrganizations}
+            leadOrganizations={leadOrganizations}
           />
           <ContactLeadsButton onClick={openContactLeadsDialog}>
             {t('buttons.contact-leads', { contact: t('community.host') })}
@@ -166,14 +154,11 @@ const SpaceCommunityPage = () => {
           {showVirtualContributorsBlock && (
             <VirtualContributorsBlock
               virtualContributors={virtualContributors}
-              loading={loadingCommunity}
+              loading={roleSetLoading}
               showInviteOption={showInviteOption}
             />
           )}
-          <CommunityGuidelinesBlock
-            communityGuidelinesId={communityGuidelinesId}
-            spaceUrl={dataCommunityPage?.lookup.space?.about.profile.url}
-          />
+          <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
         </InfoColumn>
         <ContentColumn>
           <RoleSetContributorsBlockWide

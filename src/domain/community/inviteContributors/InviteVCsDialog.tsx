@@ -7,7 +7,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/space/context/useSpace';
-import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
+import useInviteContributors from '@/domain/space/admin/SpaceCommunity/_removeMe/useInviteContributors';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';

@@ -1,5 +1,10 @@
-import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { useSpaceAboutBaseQuery, useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SpaceLevel,
+  SpaceVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { PropsWithChildren, useMemo } from 'react';
@@ -20,6 +25,7 @@ interface SpaceContextProps {
     level: SpaceLevel;
   };
   permissions: SpacePermissions;
+  entitlements: LicenseEntitlementType[];
   visibility: SpaceVisibility;
   loading: boolean;
 }
@@ -43,6 +49,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     },
     level: SpaceLevel.L0,
   },
+  entitlements: [],
   permissions: {
     canRead: false,
     canUpdate: false,
@@ -61,6 +68,15 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
+
+  const { data: spaceEntitlementsData } = useSpaceEntitlementsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+
+  const entitlements = spaceEntitlementsData?.lookup.space?.license?.availableEntitlements ?? [];
 
   const spaceData = spaceAboutData?.lookup.space;
   const spaceNameId = spaceData?.nameID ?? '';
@@ -111,6 +127,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
         permissions,
         loading,
         visibility,
+        entitlements,
       }}
     >
       {children}

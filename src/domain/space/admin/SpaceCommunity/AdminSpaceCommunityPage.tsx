@@ -36,7 +36,7 @@ import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templat
 
 const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { t } = useTranslation();
-  const { space, loading: isLoadingSpace } = useSpace();
+  const { space, loading: isLoadingSpace, entitlements } = useSpace();
   const spaceId = space.id;
   const { about } = space;
   const { membership } = about;
@@ -53,7 +53,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     leadRoleDefinition,
     permissions,
     communityGuidelinesId,
-    spaceEntitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -113,7 +112,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   };
 
   const canAddVirtualContributors =
-    spaceEntitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
+    entitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
     (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
 
   if (!spaceId || isLoadingSpace) {

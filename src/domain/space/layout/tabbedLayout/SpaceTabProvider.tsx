@@ -1,5 +1,5 @@
 import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
@@ -12,7 +12,6 @@ type InnovationFlowState = {
 
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
-  canReadSpace: boolean;
   innovationFlowStates: InnovationFlowState[] | undefined;
   innovationFlowCurrentState: InnovationFlowState | undefined;
   flowStateForNewCallouts: InnovationFlowState | undefined;
@@ -44,9 +43,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     },
     skip: skip || !spaceId,
   });
-  const myPrivileges = spaceTabData?.lookup.space?.authorization?.myPrivileges;
-
-  const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const innovationFlow = spaceTabData?.lookup.space?.collaboration.innovationFlow;
   const innovationFlowStates = innovationFlow?.states;
@@ -73,7 +69,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     spaceTabData?.lookup.space?.collaboration.innovationFlow.states[tabPosition]?.description ?? '';
 
   return {
-    canReadSpace: canReadSpace || false,
     innovationFlowStates,
     innovationFlowCurrentState: innovationFlowCurrentState,
     about,
