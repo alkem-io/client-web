@@ -62,19 +62,25 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     return tabs;
   }, [spaceLevel]);
 
+  const spaceBannerElement = <SubspacePageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />;
+
+  const spaceBackButtonElement = (
+    <RouterLink to={entityAttrs.subspace.about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
+      <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
+        {t('navigation.admin.settingsMenu.quit')}
+      </BackButton>
+    </RouterLink>
+  );
+
+  const spaceBreadcrumbsElement = <SpaceBreadcrumbs journeyPath={journeyPath} settings />;
+
   return (
     <EntitySettingsLayout
       entityTypeName="subspace"
       subheaderTabs={tabs}
-      pageBanner={<SubspacePageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
-      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} settings />}
-      backButton={
-        <RouterLink to={entityAttrs.subspace.about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
-          <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
-            {t('navigation.admin.settingsMenu.quit')}
-          </BackButton>
-        </RouterLink>
-      }
+      pageBanner={spaceBannerElement}
+      breadcrumbs={spaceBreadcrumbsElement}
+      backButton={spaceBackButtonElement}
       {...entityAttrs}
       {...props}
     />

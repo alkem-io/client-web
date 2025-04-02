@@ -89,32 +89,35 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
 
   const loading = resolvingSpace || loadingSpace;
 
+  const spaceBannerElement = (
+    <SpacePageBanner
+      title={profile?.displayName}
+      tagline={profile?.tagline}
+      loading={loading}
+      bannerUrl={profile?.banner?.uri}
+      bannerAltText={profile?.banner?.alternativeText}
+      ribbon={ribbon}
+    />
+  );
+
+  const spaceBackButtonElement = (
+    <RouterLink to={`${profile?.url}/${EntityPageSection.Dashboard}`} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
+      <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
+        {t('navigation.admin.settingsMenu.quit')}
+      </BackButton>
+    </RouterLink>
+  );
+
+  const spaceBreadcrumbsElement = <SpaceBreadcrumbs journeyPath={journeyPath} settings />;
+
   return (
     <EntitySettingsLayout
       entityTypeName="space"
       subheaderTabs={tabs}
-      pageBanner={
-        <SpacePageBanner
-          title={profile?.displayName}
-          tagline={profile?.tagline}
-          loading={loading}
-          bannerUrl={profile?.banner?.uri}
-          bannerAltText={profile?.banner?.alternativeText}
-          ribbon={ribbon}
-        />
-      }
+      pageBanner={spaceBannerElement}
       tabsComponent={SpaceTabs}
-      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} settings />}
-      backButton={
-        <RouterLink
-          to={`${profile?.url}/${EntityPageSection.Dashboard}`}
-          sx={{ alignSelf: 'center', marginLeft: 'auto' }}
-        >
-          <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
-            {t('navigation.admin.settingsMenu.quit')}
-          </BackButton>
-        </RouterLink>
-      }
+      breadcrumbs={spaceBreadcrumbsElement}
+      backButton={spaceBackButtonElement}
       {...props}
     />
   );
