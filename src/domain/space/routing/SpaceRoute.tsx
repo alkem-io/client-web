@@ -52,7 +52,7 @@ const SpaceTabbedLayoutRoute = () => {
   const dialog = params.get(TabbedLayoutParams.Dialog) ?? undefined;
 
   const loading = resolvingUrl || loadingSpace;
-  console.log({ resolvingUrl, loadingSpace });
+
   /*
   const navigate = useNavigate();
   const { spaceNameId } = useParams<{ spaceNameId: string }>(); //!!

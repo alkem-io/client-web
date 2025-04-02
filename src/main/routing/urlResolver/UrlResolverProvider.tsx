@@ -123,7 +123,6 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
    * To avoid this, we have modified the typePolicies we have disabled the keyFields for the UrlResolver queries and we are using the URL as the key
    * This way, the cache will store the entire result of the query based on the URL, and will not try to merge the results of different queries.
    */
-  console.log('useUrlResolverQuery url:', currentUrl);
   const {
     data: urlResolverData,
     error,
@@ -139,7 +138,6 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
-    console.log('useEffect for popstate');
     const handleUrlChange = () => {
       let nextUrl = window.location.origin + window.location.pathname;
 
@@ -171,7 +169,6 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const value = useMemo<UrlResolverContextValue>(() => {
-    console.log('useMemo urlResolver', currentUrl, urlResolverData);
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
       const data = urlResolverData.urlResolver;
