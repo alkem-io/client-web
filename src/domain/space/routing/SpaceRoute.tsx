@@ -8,15 +8,13 @@ import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
 import SpaceSettingsRoute from '@/domain/space/routing/toReview2/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import React, { PropsWithChildren, ReactNode, Suspense } from 'react';
+import React, { PropsWithChildren, Suspense } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage';
 import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import TabbedLayoutPage, { TabbedLayoutParams } from '../layout/tabbedLayout/TabbedLayoutPage';
-import Loading from '@/core/ui/loading/Loading';
-import { Box } from '@mui/material';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
@@ -24,32 +22,23 @@ const routes = { ...EntityPageSection };
 interface RestrictedRouteProps extends PropsWithChildren {
   loading: boolean;
   allowed: boolean;
-  baseUrl: string;
-  alwaysAllowedUrl: string;
-  notAllowedComponent: ReactNode;
+  redirectUrl: string;
 }
 
-const RestrictedRoute = ({
-  loading,
-  allowed,
-  baseUrl,
-  alwaysAllowedUrl,
-  notAllowedComponent,
-  children,
-}: RestrictedRouteProps) => {
+const RestrictedRoute = ({ loading, allowed, redirectUrl, children }: RestrictedRouteProps) => {
   if (loading) {
+    // Careful returning <Loading /> here, react-router ads it to the layout without removing the previous one
     return undefined;
   }
-  const baseUrlPath = new URL(baseUrl).pathname;
   if (!allowed) {
-    return (
-      <>
-        <Route path={alwaysAllowedUrl} element={notAllowedComponent} />
-        <Route path="*" element={<Navigate to={`${baseUrlPath}/${alwaysAllowedUrl}`} replace />} />
-      </>
-    );
+    if (redirectUrl) {
+      const url = new URL(redirectUrl).pathname;
+      return <Navigate to={url} replace />;
+    } else {
+      // Wait for the next render, this url needs to be defined, but don't throw an exception because we may be just loading it
+      return undefined;
+    }
   }
-
   return <>{children}</>;
 };
 
@@ -119,22 +108,17 @@ const SpaceTabbedLayoutRoute = () => {
 */
 
   return (
-    <Suspense
-      fallback={
-        <Box sx={{ background: 'red', height: '200px' }}>
-          <Loading text="Loading space....!!" />
-        </Box>
-      }
-    >
-      <Routes>
-        {RestrictedRoute({
-          loading: loading,
-          allowed: permissions.canRead,
-          notAllowedComponent: <SpaceAboutPage />,
-          baseUrl: space.about.profile.url,
-          alwaysAllowedUrl: routes.About,
-          children: (
-            <>
+    <Routes>
+      <Route path={routes.About} element={<SpaceAboutPage />} />
+      <Route
+        path="*"
+        element={
+          <RestrictedRoute
+            loading={loading}
+            allowed={permissions.canRead}
+            redirectUrl={`${space.about.profile.url}/${routes.About}`}
+          >
+            <Routes>
               <Route index element={<TabbedLayoutPage section={section} dialog={dialog} />} />
               <Route path={routes.About} element={<TabbedLayoutPage section={undefined} dialog="about" />} />
               <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SpaceCalloutPage />} />
@@ -159,6 +143,9 @@ const SpaceTabbedLayoutRoute = () => {
                 }
               />
               <Route path="explore/*" element={<Redirect to={routes.Contribute} />} /> {/* //!!?? */}
+              {/* //!! Pending:
+              Some redirects here for urls /dashboard => ?section=1, /community => ?section=2, /subspaces => ?section=3, /knowledge-base => ?section=4, /custom => ?section=5
+            */}
               <Route
                 path="*"
                 element={
@@ -167,11 +154,11 @@ const SpaceTabbedLayoutRoute = () => {
                   </NotFoundPageLayout>
                 }
               />
-            </>
-          ),
-        })}
-      </Routes>
-    </Suspense>
+            </Routes>
+          </RestrictedRoute>
+        }
+      />
+    </Routes>
   );
 };
 
