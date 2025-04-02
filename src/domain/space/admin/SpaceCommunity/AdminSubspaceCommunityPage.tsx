@@ -30,44 +30,49 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
   const { loading: isLoadingChallenge, subspace, parentSpaceId } = useSubSpace();
   const { id: spaceId, level: spaceLevel } = subspace;
   const { about } = subspace;
-  const communityGuidelinesId = about.guidelines.id;
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const {
-    users,
-    organizations,
-    virtualContributors,
-    applications,
-    invitations,
-    platformInvitations,
-    memberRoleDefinition,
-    leadRoleDefinition,
+    userAdmin: {
+      members: users,
+      onLeadChange: onUserLeadChange,
+      onAuthorizationChange: onUserAuthorizationChange,
+      onAdd: onAddUser,
+      onRemove: onRemoveUser,
+      getAvailable: getAvailableUsers,
+      inviteExisting: inviteExistingUser,
+      inviteExternal: inviteExternalUser,
+    },
+    organizationAdmin: {
+      members: organizations,
+      onLeadChange: onOrganizationLeadChange,
+      onAdd: onAddOrganization,
+      onRemove: onRemoveOrganization,
+      getAvailable: getAvailableOrganizations,
+    },
+    virtualContributorAdmin: {
+      members: virtualContributors,
+      onAdd: onAddVirtualContributor,
+      onRemove: onRemoveVirtualContributor,
+      getAvailable: getAvailableVirtualContributors,
+      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+    },
+    membershipAdmin: {
+      applications,
+      invitations,
+      platformInvitations,
+      memberRoleDefinition,
+      leadRoleDefinition,
+      communityGuidelinesId,
+      onApplicationStateChange,
+      onInvitationStateChange,
+      onDeleteInvitation,
+      onDeletePlatformInvitation,
+    },
     permissions,
-    onApplicationStateChange,
-    onInvitationStateChange,
-    onDeleteInvitation,
-    onDeletePlatformInvitation,
-    onUserLeadChange,
-    onUserAuthorizationChange,
-    onOrganizationLeadChange,
-    onAddUser,
-    onAddOrganization,
-    onAddVirtualContributor,
-    onRemoveUser,
-    onRemoveOrganization,
-    onRemoveVirtualContributor,
-    getAvailableUsers,
-    getAvailableOrganizations,
-    getAvailableVirtualContributorsInLibrary,
     loading,
-    inviteExternalUser,
-    inviteExistingUser,
   } = useCommunityAdmin({ about, spaceId, spaceLevel });
-
-  // get the VC filtered on the parent
-  // TODO: needs to be fixed, but done properly. Code below could not work.
-  const { getAvailableVirtualContributors } = useCommunityAdmin({ about, spaceId: parentSpaceId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>

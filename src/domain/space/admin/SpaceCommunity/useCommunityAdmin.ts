@@ -1,24 +1,109 @@
 import { useMemo } from 'react';
 import {
+  AuthorizationPrivilege,
   RoleName,
   RoleSetContributorType,
   RoleSetMemberOrganizationFragment,
   RoleSetMemberUserFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import useInviteContributors from '@/domain/space/admin/SpaceCommunity/_removeMe/useInviteContributors';
-import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useRoleSetManager, {
+  RELEVANT_ROLES,
+  RoleSetMemberVirtualContributorFragmentWithRoles,
+} from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import useRoleSetApplicationsAndInvitations, {
   InviteContributorsData,
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
+import { RoleDefinition } from '@/domain/access/model/RoleDefinitionModel';
+import { ApplicationProvided } from '@/domain/access/model/ApplicationModel';
+import { InvitationProvided } from '@/domain/access/model/InvitationModel';
+import { PlatformInvitationProvided } from '@/domain/access/model/PlatformInvitationModel';
 
 interface useCommunityAdminParams {
   spaceId?: string;
   about: SpaceAboutLightModel;
   spaceLevel?: SpaceLevel;
+}
+
+export interface useCommunityAdminProvided {
+  userAdmin: {
+    members: CommunityMemberUserFragmentWithRoles[];
+    onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown>;
+    onAuthorizationChange: (memberId: string, isAdmin: boolean) => Promise<unknown>;
+    onAdd: (memberId: string) => Promise<unknown>;
+    onRemove: (memberId: string) => Promise<unknown>;
+    getAvailable: (filter: string | undefined) => Promise<
+      {
+        id: string;
+        profile: {
+          displayName: string;
+        };
+        email?: string;
+      }[]
+    >;
+    inviteExisting: (inviteData: InviteContributorsData) => Promise<unknown>;
+    inviteExternal: (inviteData: InviteExternalUserData) => Promise<unknown>;
+  };
+  organizationAdmin: {
+    members: CommunityMemberOrganizationFragmentWithRoles[];
+    onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown>;
+    onAdd: (memberId: string) => Promise<unknown>;
+    onRemove: (memberId: string) => Promise<unknown>;
+    getAvailable: (filter: string | undefined) => Promise<
+      {
+        id: string;
+        profile: {
+          displayName: string;
+        };
+      }[]
+    >;
+  };
+  virtualContributorAdmin: {
+    members: RoleSetMemberVirtualContributorFragmentWithRoles[];
+    onAdd: (memberId: string) => Promise<unknown>;
+    onRemove: (memberId: string) => Promise<unknown>;
+    getAvailable: (
+      filter?: string,
+      all?: boolean
+    ) => Promise<
+      {
+        id: string;
+        profile: {
+          displayName: string;
+          url: string;
+        };
+      }[]
+    >;
+    getAvailableInLibrary: (filter: string | undefined) => Promise<
+      {
+        id: string;
+        profile: {
+          displayName: string;
+          url: string;
+        };
+      }[]
+    >;
+  };
+  membershipAdmin: {
+    memberRoleDefinition: RoleDefinition | undefined;
+    leadRoleDefinition: RoleDefinition | undefined;
+    applications: ApplicationProvided[];
+    invitations: InvitationProvided[];
+    platformInvitations: PlatformInvitationProvided[];
+    communityGuidelinesId: string;
+    onApplicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
+    onInvitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
+    onDeleteInvitation: (invitationId: string) => Promise<unknown>;
+    onDeletePlatformInvitation: (invitationId: string) => Promise<unknown>;
+  };
+  permissions: {
+    canAddMembers: boolean;
+    canAddVirtualContributorsFromAccount: boolean;
+  };
+  loading: boolean;
 }
 
 export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
@@ -32,7 +117,7 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isLead: boolean;
 }
 
-const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminParams) => {
+const useCommunityAdmin = ({ about, spaceLevel }: useCommunityAdminParams): useCommunityAdminProvided => {
   const roleSetId = about.membership!.roleSetID!;
 
   const {
@@ -44,6 +129,8 @@ const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminPara
     removeRoleFromUser,
     assignRoleToOrganization,
     removeRoleFromOrganization,
+    assignRoleToVirtualContributor,
+    removeRoleFromVirtualContributor,
     loading,
   } = useRoleSetManager({
     roleSetId,
@@ -82,21 +169,13 @@ const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminPara
   }, [organizations]);
   const communityGuidelinesId = about.guidelines!.id;
 
-  // Virtual Contributors community related extracted in useInviteContributors
-  const {
-    permissions,
-    // virtualContributors,
-    getAvailableVirtualContributors,
-    getAvailableVirtualContributorsInLibrary,
-    onAddVirtualContributor,
-    onRemoveVirtualContributor,
-  } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
-
   // Available new members:
   const {
     refetch: refetchAvailableContributors,
     findAvailableUsersForRoleSetEntryRole,
     findAvailableOrganizationsForRoleSet,
+    findAvailableVirtualContributorsForRoleSet,
+    findAvailableVirtualContributorsInLibrary,
   } = useRoleSetAvailableContributors({
     roleSetId,
     filterCurrentMembers: [...communityUsers, ...communityOrganizations],
@@ -109,6 +188,14 @@ const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminPara
   const getAvailableOrganizations = async (filter: string | undefined) => {
     const { organizations } = await findAvailableOrganizationsForRoleSet(filter);
     return organizations;
+  };
+  const getAvailableVirtualContributors = async (filter?: string) => {
+    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(spaceLevel, filter);
+    return virtualContributors;
+  };
+  const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
+    const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
+    return virtualContributors;
   };
 
   // Adding new members:
@@ -129,10 +216,15 @@ const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminPara
   const onOrganizationLeadChange = (memberId: string, isLead: boolean) =>
     isLead ? assignRoleToOrganization(memberId, RoleName.Lead) : removeRoleFromOrganization(memberId, RoleName.Lead);
 
+  const onAddVirtualContributor = (memberId: string) => assignRoleToVirtualContributor(memberId, RoleName.Member);
+
+  const onRemoveVirtualContributor = (memberId: string) => removeRoleFromVirtualContributor(memberId, RoleName.Member);
+
   const {
     applications,
     invitations,
     platformInvitations,
+    authorizationPrivileges,
     applicationStateChange,
     inviteContributorOnRoleSet,
     inviteContributorOnPlatformRoleSet,
@@ -149,36 +241,53 @@ const useCommunityAdmin = ({ about, spaceId, spaceLevel }: useCommunityAdminPara
   const inviteExternalUser = (inviteData: InviteExternalUserData) =>
     inviteContributorOnPlatformRoleSet({ roleSetId, ...inviteData });
 
+  const permissions = {
+    canAddMembers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
+    // the following privilege allows Admins of a space without CommunityAddMember privilege, to
+    // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
+    canAddVirtualContributorsFromAccount: authorizationPrivileges.some(
+      priv => priv === AuthorizationPrivilege.CommunityAssignVcFromAccount
+    ),
+  };
+
   return {
-    users: communityUsers,
-    organizations: communityOrganizations,
-    virtualContributors,
-    memberRoleDefinition,
-    leadRoleDefinition,
+    userAdmin: {
+      members: communityUsers,
+      onLeadChange: onUserLeadChange,
+      onAuthorizationChange: onUserAuthorizationChange,
+      onAdd: onAddUser,
+      onRemove: onRemoveUser,
+      getAvailable: getAvailableUsers,
+      inviteExisting: inviteExistingUser,
+      inviteExternal: inviteExternalUser,
+    },
+    organizationAdmin: {
+      members: communityOrganizations,
+      onLeadChange: onOrganizationLeadChange,
+      onAdd: onAddOrganization,
+      onRemove: onRemoveOrganization,
+      getAvailable: getAvailableOrganizations,
+    },
+    virtualContributorAdmin: {
+      members: virtualContributors,
+      onAdd: onAddVirtualContributor,
+      onRemove: onRemoveVirtualContributor,
+      getAvailable: getAvailableVirtualContributors,
+      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+    },
+    membershipAdmin: {
+      memberRoleDefinition,
+      leadRoleDefinition,
+      applications,
+      invitations,
+      platformInvitations,
+      communityGuidelinesId,
+      onApplicationStateChange: applicationStateChange,
+      onInvitationStateChange: invitationStateChange,
+      onDeleteInvitation: deleteInvitation,
+      onDeletePlatformInvitation: deletePlatformInvitation,
+    },
     permissions,
-    applications,
-    invitations,
-    platformInvitations,
-    communityGuidelinesId,
-    onApplicationStateChange: applicationStateChange,
-    onInvitationStateChange: invitationStateChange,
-    onDeleteInvitation: deleteInvitation,
-    onDeletePlatformInvitation: deletePlatformInvitation,
-    onUserLeadChange,
-    onUserAuthorizationChange,
-    onOrganizationLeadChange,
-    onAddUser,
-    onAddOrganization,
-    onAddVirtualContributor,
-    onRemoveUser,
-    onRemoveOrganization,
-    onRemoveVirtualContributor,
-    getAvailableUsers,
-    getAvailableOrganizations,
-    getAvailableVirtualContributors,
-    getAvailableVirtualContributorsInLibrary,
-    inviteExistingUser,
-    inviteExternalUser,
     loading: loading || loadingApplicationsAndInvitations,
   };
 };

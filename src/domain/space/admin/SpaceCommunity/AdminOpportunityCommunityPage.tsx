@@ -13,39 +13,38 @@ import { useSubSpace } from '../../hooks/useSubSpace';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, subspace, parentSpaceId } = useSubSpace();
+  const { loading: isLoadingChallenge, subspace } = useSubSpace();
   const { id: spaceId } = subspace;
   const { about } = subspace;
 
   const {
-    users,
-    organizations,
-    virtualContributors,
-    memberRoleDefinition,
-    leadRoleDefinition,
+    userAdmin: {
+      members: users,
+      onLeadChange: onUserLeadChange,
+      onAuthorizationChange: onUserAuthorizationChange,
+      onAdd: onAddUser,
+      onRemove: onRemoveUser,
+      getAvailable: getAvailableUsers,
+      inviteExisting: inviteExistingUser,
+    },
+    organizationAdmin: {
+      members: organizations,
+      onLeadChange: onOrganizationLeadChange,
+      onAdd: onAddOrganization,
+      onRemove: onRemoveOrganization,
+      getAvailable: getAvailableOrganizations,
+    },
+    virtualContributorAdmin: {
+      members: virtualContributors,
+      onAdd: onAddVirtualContributor,
+      onRemove: onRemoveVirtualContributor,
+      getAvailable: getAvailableVirtualContributors,
+      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+    },
+    membershipAdmin: { memberRoleDefinition, leadRoleDefinition },
     permissions,
-    onUserLeadChange,
-    onUserAuthorizationChange,
-    onOrganizationLeadChange,
-    onAddUser,
-    onAddOrganization,
-    onAddVirtualContributor,
-    inviteExistingUser,
-    onRemoveUser,
-    onRemoveOrganization,
-    onRemoveVirtualContributor,
-    getAvailableUsers,
-    getAvailableOrganizations,
-    getAvailableVirtualContributorsInLibrary,
     loading,
   } = useCommunityAdmin({ spaceId, about, spaceLevel: SpaceLevel.L2 });
-
-  // get the VC filtered on the parent
-  const { getAvailableVirtualContributors } = useCommunityAdmin({
-    about,
-    spaceId: parentSpaceId,
-    spaceLevel: SpaceLevel.L2,
-  });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
