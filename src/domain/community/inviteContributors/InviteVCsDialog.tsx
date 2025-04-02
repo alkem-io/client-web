@@ -21,7 +21,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import SearchField from '@/core/ui/search/SearchField';
-import useVirtualContributorSpaceBoK from '@/domain/space/admin/SpaceCommunity/useVirtualContributorSpaceBoK';
+import useVirtualContributorSpaceBoK from '@/domain/community/virtualContributor/useVirtualContributorSpaceBoK';
 import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
