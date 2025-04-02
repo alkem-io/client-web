@@ -6,7 +6,7 @@ import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
-import SpaceSettingsRoute from '@/domain/space/routing/toReview2/SpaceSettingsRoute';
+import SpaceSettingsRoute from '@/domain/space/layout/adminLayout/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import React, { PropsWithChildren, Suspense } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';

@@ -1,17 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { TabDefinition } from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
 import RouterLink from '@/core/ui/link/RouterLink';
-import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
-import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
@@ -21,59 +11,12 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 };
-
-const tabs: TabDefinition<SettingsSection>[] = [
-  {
-    section: SettingsSection.About,
-    route: 'about',
-    icon: AssignmentIndOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Layout,
-    route: 'layout',
-    icon: DashboardOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Community,
-    route: 'community',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Communications,
-    route: 'communications',
-    icon: ForumOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Subspaces,
-    route: 'challenges',
-    icon: FlagOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Templates,
-    route: 'templates',
-    icon: WbIncandescentOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Storage,
-    route: 'storage',
-    icon: Inventory2OutlinedIcon,
-  },
-  {
-    section: SettingsSection.SpaceSettings,
-    route: 'settings',
-    icon: GppGoodOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Account,
-    route: 'account',
-    icon: LocalOfferOutlinedIcon,
-  },
-];
 
 const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>) => {
   const { t } = useTranslation();
@@ -109,6 +52,8 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
   );
 
   const spaceBreadcrumbsElement = <SpaceBreadcrumbs journeyPath={journeyPath} settings />;
+
+  const tabs = spaceAdminTabsL0;
 
   return (
     <EntitySettingsLayout

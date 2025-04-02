@@ -11,7 +11,7 @@ import SpaceStorageAdminPage from '@/domain/space/admin/storage/SpaceStorageAdmi
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage from '@/domain/space/admin/SpaceCommunity/AdminSpaceCommunityPage';
 import ChallengesRoute from '@/domain/space/routing/toReviewAdmin/ChallengesRoute';
-import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import NonSpaceAdminRedirect from '../../routing/toReview2/nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 import SpaceLayoutSettingsPage from '../../admin/SpaceLayoutSettings/SpaceLayoutSettingsPage';
 import SpaceAccountPage from '../../admin/SpaceAccount/SpaceAccountPage';
 
