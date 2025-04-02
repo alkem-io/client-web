@@ -6,11 +6,12 @@ import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBr
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { spaceAdminTabsL1 } from './SpaceAdminTabsL1';
 import { spaceAdminTabsL2 } from './SpaceAdminTabsL2';
+import { useSpace } from '../../context/useSpace';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 
 interface SubspaceSettingsLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;
@@ -18,11 +19,17 @@ interface SubspaceSettingsLayoutProps extends PropsWithChildren {
 }
 
 const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
+  const { space } = useSpace();
   const subspaceContext = useSubSpace();
-  const { about } = subspaceContext.subspace;
+  const { subspace, parentSpaceId } = subspaceContext;
+  const { id: spaceId, level: spaceLevel, about } = subspace;
+  const levelZeroSpaceId = space.id;
 
   const { t } = useTranslation();
-  const { spaceId, spaceLevel, journeyPath, levelZeroSpaceId } = useUrlResolver();
+
+  // TODO: this should ideally come from the SpaceContext
+  const journeyPath: JourneyPath =
+    spaceLevel === SpaceLevel.L1 ? [levelZeroSpaceId, spaceId] : [spaceId, parentSpaceId!, spaceId];
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
 

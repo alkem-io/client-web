@@ -7,11 +7,11 @@ import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
+import { useSpace } from '../../context/useSpace';
+import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
@@ -20,23 +20,21 @@ type SpaceSettingsLayoutProps = {
 
 const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>) => {
   const { t } = useTranslation();
-  const { spaceId, journeyPath, loading: resolvingSpace } = useUrlResolver();
-  const { data: spaceData, loading: loadingSpace } = useSpaceAboutDetailsQuery({
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
-  });
-  const profile = spaceData?.lookup.space?.about.profile;
-  const ribbon = useInnovationHubJourneyBannerRibbon({
-    spaceId,
-  });
+  const { space } = useSpace();
+  const { about } = space;
+  const profile = about.profile;
 
-  const loading = resolvingSpace || loadingSpace;
+  // TODO: get rid of this JourneyPath and bring it into the Space Context
+  const journeyPath: JourneyPath = [space.id];
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    spaceId: space.id,
+  });
 
   const spaceBannerElement = (
     <SpacePageBanner
       title={profile?.displayName}
       tagline={profile?.tagline}
-      loading={loading}
       bannerUrl={profile?.banner?.uri}
       bannerAltText={profile?.banner?.alternativeText}
       ribbon={ribbon}
