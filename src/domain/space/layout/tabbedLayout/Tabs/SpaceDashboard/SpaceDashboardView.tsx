@@ -5,7 +5,6 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import RouterLink from '@/core/ui/link/RouterLink';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
@@ -16,7 +15,6 @@ import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigat
 import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
 import {
   getVCCreationCache,
@@ -31,7 +29,7 @@ import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboar
 import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
-import { useParams } from 'react-router-dom';
+import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -53,6 +51,7 @@ type SpaceDashboardViewProps = {
   loading: boolean;
   shareUpdatesUrl: string;
   calloutsSetProvided: UseCalloutsSetProvided;
+  canEdit?: boolean;
 };
 
 const SpaceDashboardView = ({
@@ -65,10 +64,11 @@ const SpaceDashboardView = ({
   shareUpdatesUrl,
   flowStateForNewCallouts,
   readUsersAccess,
+  canEdit = false,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useParams<{ spaceNameId: string }>();
 
+  const [aboutDialogOpen, setAboutDialogOpen] = useState<boolean>(false);
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
   const [openWelcome, setOpenWelcome] = useState(false);
   const [vcId, setVcId] = useState<string>('');
@@ -106,7 +106,10 @@ const SpaceDashboardView = ({
       setTryVirtualContributorOpen(true);
     }
 
-    return onCloseTryVirtualContributor;
+    return () => {
+      setAboutDialogOpen(false);
+      onCloseTryVirtualContributor();
+    };
   }, []);
 
   useEffect(() => {
@@ -164,8 +167,7 @@ const SpaceDashboardView = ({
           </PageContentBlock>
           <FullWidthButton
             startIcon={<InfoOutlined />}
-            component={RouterLink}
-            to={`/${spaceNameId}/${EntityPageSection.About}`}
+            onClick={() => setAboutDialogOpen(true)}
             variant="contained"
             sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
@@ -201,6 +203,15 @@ const SpaceDashboardView = ({
           />
         )}
         {space?.id && openWelcome && <SpaceWelcomeDialog onClose={onCloseWelcome} />}
+        {space && (
+          <SpaceAboutDialog
+            open={aboutDialogOpen}
+            space={space}
+            onClose={() => setAboutDialogOpen(false)}
+            hasReadPrivilege
+            hasEditPrivilege={canEdit}
+          />
+        )}
       </PageContent>
     </>
   );

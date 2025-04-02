@@ -1,9 +1,6 @@
 import { PropsWithChildren } from 'react';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
-import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
@@ -75,6 +72,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
         loading={loadingSpacePageQuery}
         entityReadAccess={permissions.spaceReadAccess}
         readUsersAccess={permissions.readUsers}
+        canEdit={permissions.canEdit}
         calloutsSetProvided={calloutsSetProvided}
         flowStateForNewCallouts={flowStateForNewCallouts}
         shareUpdatesUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
@@ -86,11 +84,6 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
         shareUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
         loading={loadingSpacePageQuery}
       />
-      <ContributorsDialog
-        open={dialog === 'contributors'}
-        onClose={backToDashboard}
-        dialogContent={SpaceContributorsDialogContent}
-      />
       <CalendarDialog
         open={dialog === 'calendar'}
         onClose={backToDashboard}
@@ -98,14 +91,6 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
         parentSpaceId={undefined}
         parentPath={spaceData?.about.profile.url ?? ''}
         calendarEventId={calendarEventId}
-      />
-      <SpaceAboutDialog
-        open={dialog === 'about'}
-        space={space}
-        loading={loadingSpacePageQuery}
-        onClose={backToDashboard}
-        hasReadPrivilege={permissions.spaceReadAccess}
-        hasEditPrivilege={permissions.canEdit}
       />
     </SpacePageLayout>
   );
