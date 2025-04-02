@@ -3,7 +3,6 @@ import {
   useAssignRoleToVirtualContributorMutation,
   useCommunityVirtualMembersListQuery,
   useRemoveRoleFromVirtualContributorMutation,
-  refetchSpaceCommunityPageQuery,
   useSpaceBodyOfKnowledgeAboutLazyQuery,
   useSpaceBodyOfKnowledgeAuthorizationPrivilegesLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -102,7 +101,7 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
         contributorId: virtualContributorId,
         role: RoleName.Member,
       },
-      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceId: spaceId! })],
+      refetchQueries: [],
     });
 
     return refetchCommunityVirtualMembers();
