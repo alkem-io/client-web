@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import AdminOpportunityCommunityPage from '@/domain/space/admin/SpaceCommunity/AdminOpportunityCommunityPage';
-import OpportunityCommunicationsPage from '@/domain/space/pages/OpportunityCommunicationsPage';
+import OpportunityCommunicationsPage from '@/domain/space/admin/SpaceCommunication/OpportunityCommunicationsPage';
 import OpportunityAboutPage from '@/domain/space/pages/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';

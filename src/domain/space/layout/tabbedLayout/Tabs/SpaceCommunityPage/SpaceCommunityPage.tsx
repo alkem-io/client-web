@@ -58,6 +58,8 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
+  // TODO: a big part of this query MUST be taken from the About from the context; think most of this
+  // query is duplication.
   const { data: dataCommunityPage, loading: loadingCommunity } = useSpaceCommunityPageQuery({
     variables: {
       spaceId: spaceId!,
