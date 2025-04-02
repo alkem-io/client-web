@@ -44,7 +44,7 @@ const TabbedLayoutPage = ({ section, dialog: queryStringDialog }: TabbedLayoutPa
     case '5':
       return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />;
     default:
-      return defaultTab !== undefined ? <Navigate to={`./?section=${defaultTab + 1}`} /> : undefined;
+      return defaultTab !== undefined ? <Navigate to={`./?section=${defaultTab + 1}`} replace /> : undefined;
   }
 };
 

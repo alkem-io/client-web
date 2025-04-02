@@ -18,6 +18,7 @@ import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSit
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -56,6 +57,8 @@ export const TopLevelRoutes = () => {
       >
         <Route index element={<RedirectToLanding />} />
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
+        {IdentityRoute()}
+        {devRoute()}
         <Route
           path={TopLevelRoutePath.CreateSpace}
           element={
@@ -77,112 +80,6 @@ export const TopLevelRoutes = () => {
             <NonIdentity>
               <WithApmTransaction path={TopLevelRoutePath.Home}>
                 <HomePage />
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`:${nameOfUrl.spaceNameId}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                <SpaceContextProvider>
-                  <EntityPageLayoutHolder>
-                    <Suspense fallback={<Loading />}>
-                      <SpaceRoute />
-                    </Suspense>
-                    <RenderPoint />
-                  </EntityPageLayoutHolder>
-                </SpaceContextProvider>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Admin}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="/admin/*">
-                <Suspense fallback={<Loading />}>
-                  <AdminRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        {IdentityRoute()}
-        <Route
-          path={`/${TopLevelRoutePath.User}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
-                <NoIdentityRedirect>
-                  <Suspense fallback={<Loading />}>
-                    <UserRoute />
-                  </Suspense>
-                </NoIdentityRedirect>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.VirtualContributor}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
-                <NoIdentityRedirect>
-                  <Suspense fallback={<Loading />}>
-                    <VCRoute />
-                  </Suspense>
-                </NoIdentityRedirect>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Organization}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
-                <Suspense fallback={<Loading />}>
-                  <OrganizationRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.InnovationLibrary}`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
-                <Suspense fallback={<Loading />}>
-                  <InnovationLibraryPage />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`${TopLevelRoutePath.InnovationPacks}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={TopLevelRoutePath.InnovationPacks}>
-                <Suspense fallback={<Loading />}>
-                  <InnovationPackRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`${TopLevelRoutePath.InnovationHubs}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
-                <Suspense fallback={<Loading />}>
-                  <InnovationHubsRoutes />
-                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -219,18 +116,7 @@ export const TopLevelRoutes = () => {
             </NonIdentity>
           }
         />
-        <Route
-          path={`/${TopLevelRoutePath.Forum}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
-                <Suspense fallback={<Loading />}>
-                  <ForumRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
+
         <Route
           path={`/${TopLevelRoutePath.Restricted}`}
           element={
@@ -239,17 +125,128 @@ export const TopLevelRoutes = () => {
             </WithApmTransaction>
           }
         />
+
+        {/* Routes that require Server Url Resolution (should go last) */}
         <Route
           path="*"
           element={
-            <WithApmTransaction path="*">
-              <NotFoundPageLayout>
-                <Error404 />
-              </NotFoundPageLayout>
-            </WithApmTransaction>
+            <NonIdentity>
+              <UrlResolverProvider>
+                <Routes>
+                  <Route
+                    path={`/${TopLevelRoutePath.Admin}/*`}
+                    element={
+                      <WithApmTransaction path="/admin/*">
+                        <Suspense fallback={<Loading />}>
+                          <AdminRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.User}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
+                        <NoIdentityRedirect>
+                          <Suspense fallback={<Loading />}>
+                            <UserRoute />
+                          </Suspense>
+                        </NoIdentityRedirect>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.VirtualContributor}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
+                        <NoIdentityRedirect>
+                          <Suspense fallback={<Loading />}>
+                            <VCRoute />
+                          </Suspense>
+                        </NoIdentityRedirect>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.Organization}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
+                        <Suspense fallback={<Loading />}>
+                          <OrganizationRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.InnovationLibrary}`}
+                    element={
+                      <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
+                        <Suspense fallback={<Loading />}>
+                          <InnovationLibraryPage />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`${TopLevelRoutePath.InnovationPacks}/*`}
+                    element={
+                      <WithApmTransaction path={TopLevelRoutePath.InnovationPacks}>
+                        <Suspense fallback={<Loading />}>
+                          <InnovationPackRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`${TopLevelRoutePath.InnovationHubs}/*`}
+                    element={
+                      <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
+                        <Suspense fallback={<Loading />}>
+                          <InnovationHubsRoutes />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.Forum}/*`}
+                    element={
+                      <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
+                        <Suspense fallback={<Loading />}>
+                          <ForumRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`:${nameOfUrl.spaceNameId}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                        <SpaceContextProvider>
+                          <EntityPageLayoutHolder>
+                            <Suspense fallback={<Loading />}>
+                              <SpaceRoute />
+                            </Suspense>
+                            <RenderPoint />
+                          </EntityPageLayoutHolder>
+                        </SpaceContextProvider>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={
+                      <WithApmTransaction path="*">
+                        <NotFoundPageLayout>
+                          <Error404 />
+                        </NotFoundPageLayout>
+                      </WithApmTransaction>
+                    }
+                  />
+                </Routes>
+              </UrlResolverProvider>
+            </NonIdentity>
           }
         />
-        {devRoute()}
       </Route>
     </Routes>
   );
