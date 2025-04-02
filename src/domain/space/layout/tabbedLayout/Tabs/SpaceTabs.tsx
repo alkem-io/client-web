@@ -72,13 +72,21 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
     onMenuOpen?.(isDrawerOpen);
   }, [isDrawerOpen]);
 
+  let selectedTab: EntityPageSection | number = -1;
+  if ('sectionIndex' in currentTab) {
+    selectedTab = currentTab.sectionIndex;
+  }
+  if ('section' in currentTab) {
+    selectedTab = currentTab.section;
+  }
+
   if (mobile) {
     return (
       <>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
           <BottomNavigation
             showLabels
-            value={currentTab}
+            value={selectedTab}
             onChange={(event, nextValue) => {
               switch (nextValue) {
                 case NavigationActions.Share: {
@@ -103,7 +111,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
             }}
           >
             {tabs.map((tab, index) => (
-              <BottomNavigationAction key={index + 1} value={index + 1} label={tab.label} icon={tab.icon} />
+              <BottomNavigationAction key={index} value={index} label={tab.label} icon={tab.icon} />
             ))}
             {!showSettings && spaceUrl && (
               <BottomNavigationAction
@@ -112,7 +120,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 icon={<ShareOutlined />}
               />
             )}
-            {showSettings && currentTab !== EntityPageSection.Settings && (
+            {showSettings && selectedTab !== EntityPageSection.Settings && (
               <BottomNavigationAction
                 value={NavigationActions.More}
                 label={t('common.more')}
@@ -120,7 +128,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 onClick={() => setIsDrawerOpen(true)}
               />
             )}
-            {showSettings && currentTab === EntityPageSection.Settings && (
+            {showSettings && selectedTab === EntityPageSection.Settings && (
               <BottomNavigationAction
                 value={EntityPageSection.Settings}
                 label={t('common.settings')}
@@ -191,19 +199,14 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
   return (
     <>
       <HeaderNavigationTabs
-        value={currentTab}
+        value={selectedTab}
         defaultTab={EntityPageSection.Dashboard}
         aria-label={t('pages.admin.space.aria.tabs')}
         showSettings={showSettings}
         settingsUrl={settingsUrl}
       >
         {tabs.map((tab, index) => (
-          <HeaderNavigationTab
-            key={index + 1}
-            value={index + 1}
-            label={tab.label}
-            to={`${spaceUrl}/?section=${index + 1}`}
-          />
+          <HeaderNavigationTab key={index} value={index} label={tab.label} to={`${spaceUrl}/?section=${index + 1}`} />
         ))}
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />

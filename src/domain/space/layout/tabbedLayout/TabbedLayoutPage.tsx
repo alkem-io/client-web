@@ -3,7 +3,6 @@ import SpaceDashboardPage from './Tabs/SpaceDashboard/SpaceDashboardPage';
 import SpaceCommunityPage from './Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import SpaceSubspacesPage from './Tabs/SpaceSubspacesPage';
 import SpaceKnowledgeBasePage from './Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useSpaceTabs from './layout/useSpaceTabs';
 import { useSpace } from '../../context/useSpace';
 import { Navigate } from 'react-router-dom';
@@ -16,7 +15,7 @@ export enum TabbedLayoutParams {
   Dialog = 'dialog',
 }
 export type TabbedLayoutPageProps = {
-  section?: string;
+  sectionNumber?: string; // Base 1 tab number
   dialog?: string;
 };
 
@@ -27,12 +26,12 @@ const ensureParamType = <T extends string>(param: string | undefined, validValue
   return undefined;
 };
 
-const TabbedLayoutPage = ({ section, dialog: queryStringDialog }: TabbedLayoutPageProps) => {
+const TabbedLayoutPage = ({ sectionNumber, dialog: queryStringDialog }: TabbedLayoutPageProps) => {
   const { space } = useSpace();
-  const { defaultTab } = useSpaceTabs({ spaceId: space.id });
+  const { defaultTabIndex } = useSpaceTabs({ spaceId: space.id });
   const dialog = ensureParamType(queryStringDialog, TabbedLayoutDialogs);
 
-  switch (section) {
+  switch (sectionNumber) {
     case '1':
       return <SpaceDashboardPage dialog={dialog} />;
     case '2':
@@ -40,11 +39,16 @@ const TabbedLayoutPage = ({ section, dialog: queryStringDialog }: TabbedLayoutPa
     case '3':
       return <SpaceSubspacesPage />;
     case '4':
-      return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
+      return <SpaceKnowledgeBasePage sectionIndex={3} />;
     case '5':
-      return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.Custom} />;
-    default:
-      return defaultTab !== undefined ? <Navigate to={`./?section=${defaultTab + 1}`} replace /> : undefined;
+      return <SpaceKnowledgeBasePage sectionIndex={4} />;
+    default: {
+      // Only redirect if defaultTab is already
+      if (defaultTabIndex !== undefined && dialog === undefined) {
+        return <Navigate to={`./?section=${defaultTabIndex + 1}`} replace />;
+      }
+      return undefined;
+    }
   }
 };
 

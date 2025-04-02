@@ -117,6 +117,10 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
   const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
     val => val === calloutFlowState
   );
+  const currentSection =
+    calloutPosition && calloutPosition > -1
+      ? { sectionIndex: calloutPosition }
+      : { section: EntityPageSection.Contribute };
 
   useEffect(() => {
     if (calloutFlowState) {
@@ -132,7 +136,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
         spaceLevel={spaceLevel}
         journeyPath={journeyPath}
         parentSpaceId={parentSpaceId}
-        currentSection={EntityPageSection.Contribute}
+        currentSection={currentSection}
       >
         <Loading />
       </PageLayout>

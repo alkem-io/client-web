@@ -38,7 +38,7 @@ const tabName = (
 
 type useSpaceTabsProvided = {
   tabs: TabDefinition[];
-  defaultTab: number | undefined; // 0 based index of the tab. That is the currentState of the flow
+  defaultTabIndex: number | undefined; // 0 based index of the section. That is the currentState of the flow
   showSettings: boolean;
 };
 
@@ -54,7 +54,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     skip: !spaceId,
   });
 
-  const { tabs, defaultTab } = useMemo(() => {
+  const { tabs, defaultTabIndex } = useMemo(() => {
     const result: TabDefinition[] = [];
     const innovationFlowTabs =
       spaceTabsData?.lookup.space?.collaboration?.innovationFlow.states.map(state => ({
@@ -62,7 +62,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
         description: state.description,
       })) ?? [];
     const currentStateName = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState.displayName;
-    const defaultTabIndex = currentStateName
+    const currentStateIndex = currentStateName
       ? innovationFlowTabs.findIndex(state => state.displayName === currentStateName)
       : -1;
 
@@ -101,13 +101,13 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     }
     return {
       tabs: result,
-      defaultTab: defaultTabIndex !== -1 ? defaultTabIndex : 0, // Default to the first tab if the current state is not found or incorrect
+      defaultTabIndex: currentStateIndex !== -1 ? currentStateIndex : 0, // Default to the first tab if the current state is not found or incorrect
     };
   }, [t, i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
 
   return {
     tabs,
-    defaultTab,
+    defaultTabIndex,
     showSettings: permissions.canUpdate,
   };
 };

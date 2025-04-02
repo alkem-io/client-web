@@ -11,7 +11,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface SpacePageLayoutProps {
-  currentSection: EntityPageSection;
+  currentSection: { sectionIndex: number } | { section: EntityPageSection };
   journeyPath: JourneyPath | undefined;
   loading?: boolean;
 }

@@ -22,14 +22,19 @@ const getPageSection = (position: number | undefined): EntityPageSection => {
 
 const renderPage = (position: number | undefined) => {
   switch (position) {
+    case 0:
+      return <SpaceDashboardPage />;
     case 1:
       return <SpaceCommunityPage />;
     case 2:
       return <SpaceSubspacesPage />;
     case 3:
-      return <SpaceKnowledgeBasePage calloutsFlowState={EntityPageSection.KnowledgeBase} />;
-    default:
+    case 4:
+      return <SpaceKnowledgeBasePage sectionIndex={position} />;
+    default: {
+      console.error('Invalid tab position in renderPage', position);
       return <SpaceDashboardPage />;
+    }
   }
 };
 

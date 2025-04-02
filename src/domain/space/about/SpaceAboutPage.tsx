@@ -31,7 +31,7 @@ const SpaceAboutPage = () => {
 
   return (
     <EntityPageLayout
-      currentSection={EntityPageSection.About}
+      currentSection={{ section: EntityPageSection.About }}
       breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
       pageBanner={
         <SpacePageBanner

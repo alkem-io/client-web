@@ -3,7 +3,7 @@ import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/Platfor
 import { ComponentType, PropsWithChildren, ReactElement, ReactNode } from 'react';
 
 export interface EntityTabsProps {
-  currentTab: EntityPageSection;
+  currentTab: { sectionIndex: number } | { section: EntityPageSection };
   mobile?: boolean;
   onMenuOpen?: (open: boolean) => void;
   loading?: boolean;
@@ -14,7 +14,7 @@ export interface BasePageBannerProps {
 }
 
 export interface EntityPageLayoutProps extends PropsWithChildren {
-  currentSection: EntityPageSection;
+  currentSection: { sectionIndex: number } | { section: EntityPageSection };
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
   pageBannerComponent?: ComponentType<BasePageBannerProps>;
   pageBanner?: ReactElement<BasePageBannerProps>;
