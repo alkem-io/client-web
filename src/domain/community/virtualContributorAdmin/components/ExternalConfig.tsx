@@ -30,9 +30,9 @@ type FormValueType = {
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
 interface ExternalConfigProps {
-  vc?: {
-    aiPersona: {
-      aiPersonaServiceID: string;
+  vc: {
+    aiPersona?: {
+      aiPersonaServiceID?: string;
     };
   };
 }
@@ -42,6 +42,7 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
   const notify = useNotification();
   const [externalConfig, setExternalConfig] = useState<ExternalConfigFields>({});
   const [isValid, setIsValid] = useState(false);
+
   const aiPersonaServiceId = vc?.aiPersona?.aiPersonaServiceID!;
 
   const { data, loading } = useAiPersonaServiceQuery({

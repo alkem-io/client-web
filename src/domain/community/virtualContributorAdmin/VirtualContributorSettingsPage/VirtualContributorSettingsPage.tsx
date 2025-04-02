@@ -26,7 +26,7 @@ const VirtualContributorSettingsPage = () => {
 
   const isPromptConfigAvailable = [AiPersonaEngine.LibraFlow].includes(vc?.aiPersona?.engine!);
 
-  if (!vc) {
+  if (!vc || !vc.aiPersona) {
     return null;
   }
 

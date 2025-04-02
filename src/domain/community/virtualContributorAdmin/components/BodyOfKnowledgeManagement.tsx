@@ -26,8 +26,8 @@ interface BodyOfKnowledgeManagementProps {
     profile: {
       displayName: string;
     };
-    aiPersona: {
-      bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+    aiPersona?: {
+      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
       engine: AiPersonaEngine;
     };
   };
