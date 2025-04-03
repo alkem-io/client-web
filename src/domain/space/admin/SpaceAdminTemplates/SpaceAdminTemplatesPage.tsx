@@ -6,7 +6,7 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
-import SpaceSettingsLayout from '../layout/SpaceSettingsLayout';
+import SpaceSettingsLayout from '../layout/SpaceAdminLayoutSpace';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '@/domain/space/context/useSpace';
 

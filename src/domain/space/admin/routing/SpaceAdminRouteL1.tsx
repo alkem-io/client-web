@@ -11,7 +11,7 @@ import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
 import SubspaceCommunicationsPage from '../SpaceAdminCommunication/SubspaceCommunicationsPage';
 
-export const ChallengeRoute: FC = () => {
+export const SpaceAdminL1Route: FC = () => {
   const { subspace, loading } = useSubSpace();
   const communityId = subspace?.about.membership.communityID!;
 

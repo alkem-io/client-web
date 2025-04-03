@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
-import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import PageContent from '@/core/ui/content/PageContent';
@@ -33,6 +32,7 @@ import { toCreateTemplateMutationVariables } from '@/domain/templates/components
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import useCommunityAdmin from './hooks/useCommunityAdmin';
+import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 
 export type AdminSpaceCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -142,8 +142,10 @@ const AdminSpaceCommunityPage = ({
     return null;
   }
 
+  const useL0Layout = level === SpaceLevel.L0;
+
   return (
-    <SpaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
+    <LayoutSwitcher currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <PageContent background="transparent">
         {pendingMembershipsEnabled && (
           <PageContentColumn columns={12}>
@@ -312,7 +314,7 @@ const AdminSpaceCommunityPage = ({
           </PageContentColumn>
         }
       </PageContent>
-    </SpaceSettingsLayout>
+    </LayoutSwitcher>
   );
 };
 

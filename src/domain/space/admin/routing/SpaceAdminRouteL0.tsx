@@ -15,9 +15,9 @@ import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceLayoutSettingsPage from '../SpaceAdminLayout/SpaceLayoutSettingsPage';
 import SpaceAccountPage from '../SpaceAdminAccount/SpaceAccountPage';
-import SpaceCommunicationsPage from '../SpaceAdminCommunication/SpaceCommunicationsPage';
+import SpaceCommunicationsPage from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 
-const SpaceSettingsRoute: FC = () => {
+const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { space, loading } = useSpace();
   const spaceId = space.id!;
@@ -57,4 +57,4 @@ const SpaceSettingsRoute: FC = () => {
   );
 };
 
-export default SpaceSettingsRoute;
+export default SpaceAdminL0Route;

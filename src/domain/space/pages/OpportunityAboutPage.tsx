@@ -3,7 +3,7 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
 import SpaceAboutEdit from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutEdit';
-import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSubspace';
 
 const OpportunityAboutPage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { spaceId, loading } = useUrlResolver();

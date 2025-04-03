@@ -1,17 +1,17 @@
-import { ChallengeRoute } from '@/domain/space/admin/routing/SpaceAdminRouteL1';
+import { SpaceAdminL1Route } from '@/domain/space/admin/routing/SpaceAdminRouteL1';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
-import { OpportunityRoute } from '@/domain/space/admin/routing/SpaceAdminRouteL2';
+import { SpaceAdminL2Route } from '@/domain/space/admin/routing/SpaceAdminRouteL2';
 
 const SubspaceSettingsRoute = () => {
   const { spaceLevel, loading } = useUrlResolver();
 
   switch (spaceLevel) {
     case SpaceLevel.L1:
-      return <ChallengeRoute />;
+      return <SpaceAdminL1Route />;
     case SpaceLevel.L2:
-      return <OpportunityRoute />;
+      return <SpaceAdminL2Route />;
   }
 
   if (loading) {

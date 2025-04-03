@@ -5,7 +5,7 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SpaceAboutEdit from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutEdit';
 import Loading from '@/core/ui/loading/Loading';
-import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSubspace';
 
 const SubspaceAboutPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { spaceId, loading } = useUrlResolver();

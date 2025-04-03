@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
-import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceSettingsLayout';
+import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSpace';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import CommunityUpdatesPage from './CommunityUpdatesPage';
+import SpaceAdminCommunityUpdatesPage from './SpaceAdminCommunityUpdatesPage';
 
-interface SpaceCommunicationsPageProps extends SettingsPageProps {
+interface SpaceAdminCommunicationsPageProps extends SettingsPageProps {
   communityId: string;
 }
 
-const SpaceCommunicationsPage: FC<SpaceCommunicationsPageProps> = ({ communityId, routePrefix = '../' }) => {
+const SpaceCommunicationsPage: FC<SpaceAdminCommunicationsPageProps> = ({ communityId, routePrefix = '../' }) => {
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Communications} tabRoutePrefix={routePrefix}>
-      <CommunityUpdatesPage communityId={communityId} />
+      <SpaceAdminCommunityUpdatesPage communityId={communityId} />
     </SpaceSettingsLayout>
   );
 };

@@ -8,7 +8,7 @@ import OpportunitySettingsPage from '../SpaceAdminSubspaces/OpportunitySettingsP
 import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
 import OpportunityCommunicationsPage from '../SpaceAdminCommunication/OpportunityCommunicationsPage';
 
-export const OpportunityRoute = () => {
+export const SpaceAdminL2Route = () => {
   const { subspace, loading } = useSubSpace();
   const communityId = subspace.about.membership.communityID;
 
