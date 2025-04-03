@@ -5,7 +5,6 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceContextProvider from '../context/SubspaceContext';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
-import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../about/SubspaceAboutPage';
 import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
@@ -15,6 +14,13 @@ import SubspaceCalloutPage from '../pages/SubspaceCalloutPage';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import SubspaceSettingsRoute from './SubspaceSettingsRoute';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+
+const LegacyRoutesRedirects = () => (
+  <>
+    <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
+  </>
+);
 
 const SubspaceRoute = () => {
   const { subspace, permissions, loading } = useSubSpace();
@@ -29,8 +35,8 @@ const SubspaceRoute = () => {
   if (spaceId && !loading && !canRead) {
     return (
       <Routes>
-        <Route path={routes.About} element={<SubspaceAboutPage />} />
-        <Route path="*" element={<Navigate to={routes.About} replace />} />
+        <Route path={EntityPageSection.About} element={<SubspaceAboutPage />} />
+        <Route path="*" element={<Navigate to={EntityPageSection.About} replace />} />
       </Routes>
     );
   }
@@ -54,21 +60,16 @@ const SubspaceRoute = () => {
           element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
         />
         {/* Redirecting legacy dashboard links to Subspace Home */}
-        <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
+        <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
         <Route
-          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+          path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
+          element={<SubspaceCalloutPage />}
+        />
+        <Route
+          path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
           element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
         />
         <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
-        <Route
-          path="*"
-          element={
-            <NotFoundPageLayout>
-              <Error404 />
-            </NotFoundPageLayout>
-          }
-        />
         <Route
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
@@ -77,7 +78,15 @@ const SubspaceRoute = () => {
             </SubspaceContextProvider>
           }
         />
-        <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
+        {LegacyRoutesRedirects()}
+        <Route
+          path="*"
+          element={
+            <NotFoundPageLayout>
+              <Error404 />
+            </NotFoundPageLayout>
+          }
+        />
       </Routes>
     </StorageConfigContextProvider>
   );

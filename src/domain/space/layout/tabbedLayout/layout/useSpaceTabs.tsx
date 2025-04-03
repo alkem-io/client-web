@@ -62,9 +62,13 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
         description: state.description,
       })) ?? [];
     const currentStateName = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState.displayName;
-    const currentStateIndex = currentStateName
-      ? innovationFlowTabs.findIndex(state => state.displayName === currentStateName)
-      : -1;
+    let currentStateIndex = -1;
+    if (currentStateName && innovationFlowTabs.length > 0) {
+      currentStateIndex = innovationFlowTabs.findIndex(state => state.displayName === currentStateName);
+      if (currentStateIndex === -1) {
+        currentStateIndex = 0; // If the current state is incorrect, default to the first tab
+      }
+    }
 
     result.push({
       label: tabName(t, innovationFlowTabs?.[0]?.displayName, 'pages.space.sections.tabs.dashboard'),

@@ -7,6 +7,7 @@ import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFr
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
 import ShareButton from '../ShareDialog/ShareButton';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 
 export interface DashboardUpdatesSectionProps {
   communityId: string | undefined;
@@ -41,8 +42,8 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
                 content={latestMessage.message}
               />
             )}
-            {/* TODO:SECTION update the link with something stable */}
-            <SeeMore subject={t('common.updates')} to="?dialog=updates&section=1" />
+            {/* The Updates dialog is in the first tab, SpaceDashboardPage */}
+            <SeeMore subject={t('common.updates')} to={buildSpaceSectionUrl(shareUrl, 1, 'updates')} />
           </PageContentBlock>
         ) : (
           <></>

@@ -1,6 +1,7 @@
 import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
+import { TabbedLayoutParams } from '@/domain/space/layout/tabbedLayout/TabbedLayoutPage';
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 
 export const buildSettingsUrl = (entityUrl: string) => {
@@ -28,6 +29,31 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
 
 export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
+};
+
+export const buildSpaceSectionUrl = (
+  spaceUrl: string = '',
+  sectionNumber: number = 0,
+  dialog: string | undefined = undefined
+) => {
+  let result = '';
+  const params = new URLSearchParams();
+
+  try {
+    const url = new URL(spaceUrl); // Parse the URL and extract the pathname if it's absolute
+    result = url.pathname;
+  } catch {
+    result = spaceUrl; // If the URL is not absolute, use it as is
+  }
+
+  if (sectionNumber) {
+    params.set(TabbedLayoutParams.Section, sectionNumber.toString());
+  }
+  if (dialog) {
+    params.set(TabbedLayoutParams.Dialog, dialog);
+  }
+
+  return `${result}?${params.toString()}`;
 };
 
 export const buildInnovationPackSettingsUrl = buildSettingsUrl;
