@@ -5,8 +5,8 @@ import OpportunityCommunicationsPage from '@/domain/space/admin/SpaceCommunicati
 import OpportunityAboutPage from '@/domain/space/pages/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
-import OpportunitySettingsPage from '../SpaceSubspaces/OpportunitySettingsPage';
-import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceCommunity/AdminSpaceCommunityPage';
+import OpportunitySettingsPage from '../SpaceAdminSubspaces/OpportunitySettingsPage';
+import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
 
 export const OpportunityRoute = () => {
   const { subspace, loading } = useSubSpace();

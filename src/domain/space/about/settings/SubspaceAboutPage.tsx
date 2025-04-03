@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import SpaceAboutEdit from '@/domain/space/admin/SpaceAboutSettings/SpaceAboutEdit';
+import SpaceAboutEdit from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutEdit';
 import Loading from '@/core/ui/loading/Loading';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 

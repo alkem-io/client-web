@@ -6,10 +6,10 @@ import SubspaceCommunicationsPage from '@/domain/space/admin/SpaceCommunication/
 import SubspaceAboutPage from '@/domain/space/about/settings/SubspaceAboutPage';
 import ChallengeAuthorizationRoute from '@/domain/space/routing/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
-import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceSubspaces/SubspaceSubspacesPage';
+import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSettingsPage';
+import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceAdminSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
-import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceCommunity/AdminSpaceCommunityPage';
+import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
 
 export const ChallengeRoute: FC = () => {
   const { subspace, loading } = useSubSpace();

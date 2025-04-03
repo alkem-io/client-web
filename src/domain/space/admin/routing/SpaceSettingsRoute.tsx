@@ -4,18 +4,18 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { useSpace } from '@/domain/space/context/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '@/domain/space/admin/SpaceCommunication/SpaceCommunicationsPage';
-import SpaceSettingsAboutPage from '@/domain/space/admin/SpaceAboutSettings/SpaceAboutPage';
-import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
-import SpaceTemplatesAdminRoutes from '@/domain/space/admin/SpaceTemplatesAdminRoutes';
-import SpaceStorageAdminPage from '@/domain/space/admin/storage/SpaceStorageAdminPage';
+import SpaceSettingsAboutPage from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutPage';
+import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSettingsPage';
+import SpaceTemplatesAdminRoutes from '@/domain/space/admin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
+import SpaceStorageAdminPage from '@/domain/space/admin/SpaceAdminStorage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage, {
   AdminSpaceCommunityPageProps,
-} from '@/domain/space/admin/SpaceCommunity/AdminSpaceCommunityPage';
+} from '@/domain/space/admin/SpaceAdminCommunity/AdminSpaceCommunityPage';
 import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
-import NonSpaceAdminRedirect from '../../admin/routing/NonSpaceAdminRedirect';
-import SpaceLayoutSettingsPage from '../../admin/SpaceLayoutSettings/SpaceLayoutSettingsPage';
-import SpaceAccountPage from '../../admin/SpaceAccount/SpaceAccountPage';
+import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
+import SpaceLayoutSettingsPage from '../SpaceAdminLayout/SpaceLayoutSettingsPage';
+import SpaceAccountPage from '../SpaceAdminAccount/SpaceAccountPage';
 
 const SpaceSettingsRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
