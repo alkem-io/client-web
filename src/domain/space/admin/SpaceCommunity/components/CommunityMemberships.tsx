@@ -15,10 +15,10 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
-import { MembershipType } from '../../../access/model/MembershipType';
-import { CommunityApplication } from '../../../access/model/CommunityApplicationModel';
-import { CommunityInvitation } from '../../../access/model/CommunityInvitationModel';
+import { MembershipTableItem } from '../../../../access/model/MembershipTableItem';
+import { MembershipType } from '../../../../access/model/MembershipType';
+import { CommunityApplication } from '../../../../access/model/CommunityApplicationModel';
+import { CommunityInvitation } from '../../../../access/model/CommunityInvitationModel';
 
 type RenderParams = GridRenderCellParams<string, MembershipTableItem>;
 type GetterParams = GridValueGetterParams<string, MembershipTableItem>;

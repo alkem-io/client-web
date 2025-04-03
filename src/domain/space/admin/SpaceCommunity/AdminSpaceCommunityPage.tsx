@@ -8,10 +8,9 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import CommunityUsers from '@/domain/space/admin/SpaceCommunity/CommunityUsers';
-import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
-import CommunityOrganizations from '@/domain/space/admin/SpaceCommunity/CommunityOrganizations';
-import CommunityMemberships from '@/domain/space/admin/SpaceCommunity/CommunityMemberships';
+import CommunityUsers from '@/domain/space/admin/SpaceCommunity/components/CommunityUsers';
+import CommunityOrganizations from '@/domain/space/admin/SpaceCommunity/components/CommunityOrganizations';
+import CommunityMemberships from '@/domain/space/admin/SpaceCommunity/components/CommunityMemberships';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '@/domain/community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
@@ -20,7 +19,7 @@ import CommunityApplicationForm from '@/domain/community/community/CommunityAppl
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityVirtualContributors from '@/domain/space/admin/SpaceCommunity/CommunityVirtualContributors';
+import CommunityVirtualContributors from '@/domain/space/admin/SpaceCommunity/components/CommunityVirtualContributors';
 import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
@@ -33,6 +32,7 @@ import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEd
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
+import useCommunityAdmin from './hooks/useCommunityAdmin';
 
 export type AdminSpaceCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;

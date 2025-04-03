@@ -1,4 +1,6 @@
-import { Avatar, Box, Button, IconButton, Link, TextField } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, Button, IconButton, Link, TextField } from '@mui/material';
 import {
   GridColDef,
   GridFilterModel,
@@ -7,26 +9,19 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
-import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
-import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
-import useCommunityPolicyChecker from './useCommunityPolicyChecker';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
+import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDialog';
+import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
+import { CommunityMemberUserFragmentWithRoles } from '../hooks/useCommunityAdmin';
 
-export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
-  isMember: boolean;
-  isLead: boolean;
-}
-
-type RenderParams = GridRenderCellParams<string, OrganizationDetailsFragmentWithRoles>;
-type GetterParams = GridValueGetterParams<string, OrganizationDetailsFragmentWithRoles>;
+type RenderParams = GridRenderCellParams<string, CommunityMemberUserFragmentWithRoles>;
+type GetterParams = GridValueGetterParams<string, CommunityMemberUserFragmentWithRoles>;
 
 const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
 
@@ -45,13 +40,14 @@ const initialState: GridInitialState = {
   },
 };
 
-interface CommunityOrganizationsProps {
-  organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
-  onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
+interface CommunityUsersProps {
+  users: CommunityMemberUserFragmentWithRoles[] | undefined;
+  onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onUserAuthorizationChange?: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onRemoveMember: (userId: string) => Promise<unknown> | void;
   canAddMembers: boolean;
-  onAddMember: (organizationId) => Promise<unknown> | undefined;
-  fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
-  onRemoveMember: (organizationId) => Promise<unknown> | void;
+  onAddMember: (memberId: string) => Promise<unknown> | undefined;
+  fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   memberRoleDefinition?: {
     organizationPolicy: { minimum: number; maximum: number };
     userPolicy: { minimum: number; maximum: number };
@@ -63,37 +59,26 @@ interface CommunityOrganizationsProps {
   loading?: boolean;
 }
 
-const CommunityOrganizations = ({
-  organizations = [],
-  onOrganizationLeadChange,
+const CommunityUsers = ({
+  users = [],
+  onUserLeadChange,
+  onUserAuthorizationChange,
+  onRemoveMember,
   canAddMembers,
   onAddMember,
-  fetchAvailableOrganizations,
-  onRemoveMember,
+  fetchAvailableUsers,
   memberRoleDefinition,
   leadRoleDefinition,
   loading,
-}: CommunityOrganizationsProps) => {
+}: CommunityUsersProps) => {
   const { t } = useTranslation();
-  const { canAddLeadOrganization, canRemoveLeadOrganization } = useCommunityPolicyChecker(
+  const { canAddLeadUser, canRemoveLeadUser } = useCommunityPolicyChecker(
     memberRoleDefinition,
     leadRoleDefinition,
-    organizations
+    users
   );
 
-  const organizationsColumns: GridColDef[] = [
-    {
-      field: 'avatar',
-      headerName: t('common.avatar'),
-      renderHeader: () => <>{t('common.avatar')}</>,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
-          <Avatar src={row.profile.avatar?.uri} alt={t('common.avatar-of', { user: row.profile.displayName })} />
-        </Link>
-      ),
-    },
+  const usersColumns: GridColDef[] = [
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
@@ -107,10 +92,22 @@ const CommunityOrganizations = ({
       resizable: true,
     },
     {
+      field: 'email',
+      headerName: t('common.email'),
+      renderHeader: () => <>{t('common.email')}</>,
+      resizable: true,
+    },
+    {
       field: 'isLead',
       headerName: t('common.role'),
       renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
+    },
+    {
+      field: 'isAdmin',
+      headerName: t('common.authorization'),
+      renderHeader: () => <>{t('common.authorization')}</>,
+      renderCell: ({ row }: RenderParams) => <>{row.isAdmin ? t('common.admin') : ''}</>,
     },
   ];
 
@@ -135,15 +132,15 @@ const CommunityOrganizations = ({
     }
   };
 
-  const [editingOrganization, setEditingOrganization] = useState<OrganizationDetailsFragmentWithRoles>();
-  const [isAddingNewOrganization, setAddingNewOrganization] = useState(false);
+  const [editingUser, setEditingUser] = useState<CommunityMemberUserFragmentWithRoles>();
+  const [isAddingNewUser, setAddingNewUser] = useState(false);
 
   return (
     <>
       <Box display="flex" justifyContent="space-between">
-        <BlockTitle>{t('community.memberOrganizations', { count: organizations.length })}</BlockTitle>
+        <BlockTitle>{t('community.memberUsers', { count: users.length })}</BlockTitle>
         {canAddMembers && (
-          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewOrganization(true)}>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewUser(true)}>
             {t('common.add')}
           </Button>
         )}
@@ -161,21 +158,20 @@ const CommunityOrganizations = ({
           <DataGridSkeleton />
         ) : (
           <DataGridTable
-            rows={organizations}
-            columns={organizationsColumns}
+            rows={users}
+            columns={usersColumns}
             actions={[
               {
                 name: 'edit',
-                render: ({ row }) => (
-                  <IconButton onClick={() => setEditingOrganization(row)} aria-label={t('buttons.edit')}>
-                    <EditIcon color="primary" />
-                  </IconButton>
-                ),
+                render: ({ row }: { row: CommunityMemberUserFragmentWithRoles }) => {
+                  return (
+                    <IconButton onClick={() => setEditingUser(row)} aria-label={t('buttons.edit')}>
+                      <EditIcon color="primary" />
+                    </IconButton>
+                  );
+                },
               },
             ]}
-            flex={{
-              'profile.displayName': 1,
-            }}
             initialState={initialState}
             filterModel={filterModel}
             pageSize={10}
@@ -183,25 +179,26 @@ const CommunityOrganizations = ({
           />
         )}
       </Box>
-      {editingOrganization && (
+      {editingUser && (
         <CommunityMemberSettingsDialog
-          member={editingOrganization}
-          onLeadChange={onOrganizationLeadChange}
-          canAddLead={canAddLeadOrganization}
-          canRemoveLead={canRemoveLeadOrganization}
+          member={editingUser}
+          onLeadChange={onUserLeadChange}
+          canAddLead={canAddLeadUser}
+          canRemoveLead={canRemoveLeadUser}
+          onAdminChange={onUserAuthorizationChange}
           onRemoveMember={onRemoveMember}
-          onClose={() => setEditingOrganization(undefined)}
+          onClose={() => setEditingUser(undefined)}
         />
       )}
-      {isAddingNewOrganization && (
+      {isAddingNewUser && (
         <CommunityAddMembersDialog
           onAdd={onAddMember}
-          fetchAvailableEntities={fetchAvailableOrganizations}
-          onClose={() => setAddingNewOrganization(false)}
+          fetchAvailableEntities={fetchAvailableUsers}
+          onClose={() => setAddingNewUser(false)}
         />
       )}
     </>
   );
 };
 
-export default CommunityOrganizations;
+export default CommunityUsers;

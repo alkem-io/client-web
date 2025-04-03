@@ -22,7 +22,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import SearchField from '@/core/ui/search/SearchField';
 import useVirtualContributorSpaceBoK from '@/domain/community/virtualContributor/useVirtualContributorSpaceBoK';
-import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
+import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/hooks/useCommunityAdmin';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();

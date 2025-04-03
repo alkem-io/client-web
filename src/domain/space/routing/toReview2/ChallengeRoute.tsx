@@ -4,14 +4,14 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '@/domain/space/admin/SpaceCommunication/SubspaceCommunicationsPage';
 import SubspaceAboutPage from '@/domain/space/about/settings/SubspaceAboutPage';
-
 import ChallengeAuthorizationRoute from '@/domain/space/routing/toReviewAdmin/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import AdminSubspaceCommunityPage from '@/domain/space/admin/SpaceCommunity/AdminSubspaceCommunityPage';
 import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
-import { AdminSpaceCommunityPageProps } from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
+import AdminSpaceCommunityPage, {
+  AdminSpaceCommunityPageProps,
+} from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
 
 export const ChallengeRoute: FC = () => {
   const { subspace, loading } = useSubSpace();
@@ -39,7 +39,7 @@ export const ChallengeRoute: FC = () => {
             <Route path="about" element={<SubspaceAboutPage />} />
             <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
-            <Route path="community" element={<AdminSubspaceCommunityPage {...communityPageProps} />} />
+            <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
             <Route path="settings" element={<SpaceSettingsPage />} />
             <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
             <Route path="*" element={<Error404 />} />

@@ -14,14 +14,14 @@ import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
-import CommunityAddMembersDialog from './CommunityAddMembersDialog';
+import CommunityAddMembersDialog from '../dialogs/CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
 import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { ContributorViewProps } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 
 type RenderParams = GridRenderCellParams<string, ContributorViewProps>;

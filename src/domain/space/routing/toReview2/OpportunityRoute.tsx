@@ -6,8 +6,9 @@ import OpportunityAboutPage from '@/domain/space/pages/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 import OpportunitySettingsPage from '../../admin/SpaceSubspaces/OpportunitySettingsPage';
-import AdminSubspaceCommunityPage from '../../admin/SpaceCommunity/AdminSubspaceCommunityPage';
-import { AdminSpaceCommunityPageProps } from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
+import AdminSpaceCommunityPage, {
+  AdminSpaceCommunityPageProps,
+} from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
 
 export const OpportunityRoute = () => {
   const { subspace, loading } = useSubSpace();
@@ -33,7 +34,7 @@ export const OpportunityRoute = () => {
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<OpportunityAboutPage />} />
           <Route path="communications" element={<OpportunityCommunicationsPage communityId={communityId} />} />
-          <Route path="community" element={<AdminSubspaceCommunityPage {...communityPageProps} />} />
+          <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
           <Route path="settings" element={<OpportunitySettingsPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
