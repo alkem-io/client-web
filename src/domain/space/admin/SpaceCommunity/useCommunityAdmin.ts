@@ -7,7 +7,7 @@ import {
   RoleSetMemberUserFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import useInviteContributors from '../../../access/_removeMe/useInviteContributors';
+import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import useRoleSetApplicationsAndInvitations, {
@@ -31,7 +31,7 @@ export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserF
 export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMemberOrganizationFragment {
   isMember: boolean;
   isLead: boolean;
-  isFacilitating: boolean;
+  isFacilitating: boolean; // TODO: what to do with this?!
 }
 
 const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
@@ -74,6 +74,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
 
+  // TODO: remove this? The account org is not automagically a member or lead of the community
   const communityProvider = communityProviderData?.lookup.space?.about.provider;
   const communityUsers = useMemo(
     () =>
