@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import SpaceSettingsLayout from '../layout/SpaceAdminLayoutSpace';
 import { Box, BoxProps, CircularProgress, IconButton, Link, LinkProps, Skeleton, useTheme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -21,9 +20,11 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 
-interface SpaceStorageAdminPageProps extends SettingsPageProps {
+export interface SpaceAdminStoragePageProps extends SettingsPageProps {
   spaceId: string;
+  useL0Layout: boolean;
 }
 
 type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
@@ -68,7 +69,7 @@ const TitleIndent = ({ row }: { row: RenderParams['row'] }) => (
   </>
 );
 
-const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routePrefix = '../' }) => {
+const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
 
   const { data, openBranch, closeBranch, loading, reload } = useStorageAdminTree({
@@ -139,7 +140,7 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
   );
 
   return (
-    <SpaceSettingsLayout currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix}>
+    <LayoutSwitcher currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <PageContentBlock>
         <PageContentBlockHeader title={t('pages.admin.generic.sections.storage.title')} />
         {/*
@@ -213,8 +214,8 @@ const SpaceStorageAdminPage: FC<SpaceStorageAdminPageProps> = ({ spaceId, routeP
           isLoading: isDeleting,
         }}
       />
-    </SpaceSettingsLayout>
+    </LayoutSwitcher>
   );
 };
 
-export default SpaceStorageAdminPage;
+export default SpaceAdminStoragePage;

@@ -1,6 +1,5 @@
 import produce from 'immer';
-import { SvgIconProps } from '@mui/material';
-import { ComponentType, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useSpaceStorageAdminPageLazyQuery,
   useStorageAggregatorLookupLazyQuery,
@@ -20,23 +19,7 @@ import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
 import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import { FolderCopyOutlined } from '@mui/icons-material';
-
-export interface StorageAdminTreeItem {
-  id: string;
-  displayName: string;
-  iconComponent?: ComponentType<SvgIconProps>;
-  childItems?: StorageAdminTreeItem[];
-  // Documents only
-  size: number;
-  uplodadedBy?: { url: string; displayName: string };
-  uploadedAt?: Date;
-  url: string | undefined;
-  // UI:
-  collapsible: boolean;
-  collapsed: boolean;
-  loaded: boolean;
-  loading?: boolean;
-}
+import { StorageAdminTreeItem } from './model/StorageAdminTreeItem';
 
 export interface StorageAdminGridRow extends Omit<StorageAdminTreeItem, 'childItems'> {
   nestLevel: number;

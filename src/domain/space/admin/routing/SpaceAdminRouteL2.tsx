@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import OpportunityAboutPage from '@/domain/space/pages/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
@@ -11,10 +10,12 @@ import SpaceAdminCommunicationsPage, {
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 import SpaceAdminSettingsPage, { SpaceAdminSettingsPageProps } from '../SpaceAdminSettings/SpaceAdminSettingsPage';
 import { useSpace } from '../../context/useSpace';
+import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
 
 export const SpaceAdminL2Route = () => {
   const { space } = useSpace();
   const { subspace, loading } = useSubSpace();
+  const subspaceId = subspace?.id!;
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
     about: subspace?.about,
@@ -42,12 +43,17 @@ export const SpaceAdminL2Route = () => {
     levelZeroSpaceUrl: space.about.profile?.url, // Needs to be L0
   };
 
+  const aboutPageProps: SpaceAdminAboutPageProps = {
+    useL0Layout: false,
+    spaceId: subspaceId,
+  };
+
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
       <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
-          <Route path="about" element={<OpportunityAboutPage />} />
+          <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />

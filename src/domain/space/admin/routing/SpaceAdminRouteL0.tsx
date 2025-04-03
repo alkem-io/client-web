@@ -3,12 +3,16 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SpaceSettingsAboutPage from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutPage';
+import SpaceAdminAboutPage, {
+  SpaceAdminAboutPageProps,
+} from '@/domain/space/admin/SpaceAdminAbout/SpaceAdminAboutPage';
 import SpaceAdminSettingsPage, {
   SpaceAdminSettingsPageProps,
 } from '@/domain/space/admin/SpaceAdminSettings/SpaceAdminSettingsPage';
 import SpaceTemplatesAdminRoutes from '@/domain/space/admin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
-import SpaceStorageAdminPage from '@/domain/space/admin/SpaceAdminStorage/SpaceStorageAdminPage';
+import SpaceAdminStoragePage, {
+  SpaceAdminStoragePageProps,
+} from '@/domain/space/admin/SpaceAdminStorage/SpaceAdminStoragePage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage, {
   AdminSpaceCommunityPageProps,
@@ -56,19 +60,29 @@ const SpaceAdminL0Route: FC = () => {
     useL0Layout: true,
   };
 
+  const storagePageProps: SpaceAdminStoragePageProps = {
+    useL0Layout: true,
+    spaceId: spaceId,
+  };
+
+  const aboutPageProps: SpaceAdminAboutPageProps = {
+    useL0Layout: true,
+    spaceId: spaceId,
+  };
+
   return (
     <NonSpaceAdminRedirect spaceId={spaceId}>
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
-          <Route path="about" element={<SpaceSettingsAboutPage />} />
+          <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
           <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
           <Route path="account" element={<SpaceAccountPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
-          <Route path="storage" element={<SpaceStorageAdminPage spaceId={spaceId} />} />
+          <Route path="storage" element={<SpaceAdminStoragePage {...storagePageProps} />} />
           <Route path="challenges/*" element={<ChallengesRoute />} />
           <Route path="*" element={<Error404 />} />
         </Routes>

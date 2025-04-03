@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SubspaceAboutPage from '@/domain/space/admin/SpaceAdminAbout/SubspaceAboutPage';
 import ChallengeAuthorizationRoute from '@/domain/space/admin/toReview/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceAdminSettingsPage, {
@@ -15,10 +14,12 @@ import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 import { useSpace } from '../../context/useSpace';
+import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
 
 export const SpaceAdminL1Route: FC = () => {
   const { space } = useSpace();
   const { subspace, loading } = useSubSpace();
+  const subspaceId = subspace?.id!;
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
     about: subspace?.about,
@@ -46,13 +47,18 @@ export const SpaceAdminL1Route: FC = () => {
     levelZeroSpaceUrl: space.about.profile?.url, // Needs to be L0
   };
 
+  const aboutPageProps: SpaceAdminAboutPageProps = {
+    useL0Layout: false,
+    spaceId: subspaceId,
+  };
+
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
       <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
         <Routes>
           <Route path={'/'}>
             <Route index element={<Navigate to="about" replace />} />
-            <Route path="about" element={<SubspaceAboutPage />} />
+            <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
             <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
             <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
