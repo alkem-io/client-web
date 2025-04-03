@@ -15,7 +15,7 @@ export interface SpaceWelcomeBlockProps {
   description: string;
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
-  onClickExpand?: () => void;
+  onClickReadMore: () => void;
   leadOrganizations: ContributorViewProps[] | undefined;
   onContactLeadOrganization: (receiver: MessageReceiverChipData) => void;
   member?: boolean;
@@ -27,7 +27,7 @@ const SpaceWelcomeBlock = ({
   level,
   onContactLeadUser,
   onContactLeadOrganization,
-  onClickExpand,
+  onClickReadMore,
   description,
   member = false,
 }: SpaceWelcomeBlockProps) => {
@@ -41,7 +41,7 @@ const SpaceWelcomeBlock = ({
     <>
       <OverflowGradient
         maxHeight={gutters(11)}
-        overflowMarker={<SeeMore label="buttons.readMore" onClick={onClickExpand} sx={{ marginTop: -1 }} />}
+        overflowMarker={<SeeMore label="buttons.readMore" onClick={onClickReadMore} sx={{ marginTop: -1 }} />}
       >
         {member && <DashboardMemberIcon level={spaceLevel} />}
         {description && <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>}
