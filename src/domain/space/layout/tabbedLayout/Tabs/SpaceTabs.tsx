@@ -26,13 +26,13 @@ import { EntityTabsProps } from '../../EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
 
 type TabDefinition = {
   label: ReactNode;
   icon: TabProps['icon'];
-  section?: EntityPageSection;
+  section: EntityPageSection;
 };
 
 export interface ActionDefinition extends TabDefinition {
@@ -100,7 +100,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 case EntityPageSection.Search:
                   return;
               }
-              navigate(`${spaceUrl}/?section=${nextValue + 1}`);
+              navigate(buildSpaceSectionUrl(spaceUrl, nextValue + 1));
             }}
             sx={{
               backgroundColor: navigationBackgroundColor,
@@ -208,7 +208,12 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         settingsUrl={settingsUrl}
       >
         {tabs.map((tab, index) => (
-          <HeaderNavigationTab key={index} value={index} label={tab.label} to={`${spaceUrl}/?section=${index + 1}`} />
+          <HeaderNavigationTab
+            key={index}
+            value={index}
+            label={tab.label}
+            to={buildSpaceSectionUrl(spaceUrl, index + 1)}
+          />
         ))}
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />

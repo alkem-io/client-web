@@ -161,6 +161,7 @@ const SpaceDashboardView = ({
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+              onClickExpand={() => setAboutDialogOpen(true)}
               level={level}
               member={myMembershipStatus === CommunityMembershipStatus.Member}
             />
