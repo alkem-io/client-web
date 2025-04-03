@@ -14,7 +14,11 @@ export const VCKnowledgeBaseRoute = () => {
         element={
           <VCProfilePage openKnowledgeBaseDialog>
             {(vc?: { profile: { url: string } }) => (
-              <CalloutPage parentRoute={buildVCKnowledgeBaseUrl(vc?.profile.url)} renderPage={() => <></>} />
+              <CalloutPage
+                parentRoute={buildVCKnowledgeBaseUrl(vc?.profile.url)}
+                renderPage={() => <></>}
+                disableCalloutsClassification
+              />
             )}
           </VCProfilePage>
         }

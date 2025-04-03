@@ -6019,14 +6019,16 @@ export function refetchUserSsiQuery(variables?: SchemaTypes.UserSsiQueryVariable
 }
 
 export const CalloutPageCalloutDocument = gql`
-  query CalloutPageCallout($calloutId: UUID!) {
+  query CalloutPageCallout($calloutId: UUID!, $includeClassification: Boolean = false) {
     lookup {
       callout(ID: $calloutId) {
         ...CalloutDetails
+        ...ClassificationDetails @include(if: $includeClassification)
       }
     }
   }
   ${CalloutDetailsFragmentDoc}
+  ${ClassificationDetailsFragmentDoc}
 `;
 
 /**
@@ -6042,6 +6044,7 @@ export const CalloutPageCalloutDocument = gql`
  * const { data, loading, error } = useCalloutPageCalloutQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      includeClassification: // value for 'includeClassification'
  *   },
  * });
  */
