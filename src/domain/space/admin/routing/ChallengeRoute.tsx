@@ -4,7 +4,7 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '@/domain/space/admin/SpaceCommunication/SubspaceCommunicationsPage';
 import SubspaceAboutPage from '@/domain/space/about/settings/SubspaceAboutPage';
-import ChallengeAuthorizationRoute from '@/domain/space/routing/toReviewAdmin/ChallengeAuthorizationRoute';
+import ChallengeAuthorizationRoute from '@/domain/space/routing/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceSubspaces/SubspaceSubspacesPage';

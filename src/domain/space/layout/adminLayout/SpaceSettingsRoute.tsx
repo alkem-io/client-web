@@ -12,7 +12,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import AdminSpaceCommunityPage, {
   AdminSpaceCommunityPageProps,
 } from '@/domain/space/admin/SpaceCommunity/AdminSpaceCommunityPage';
-import ChallengesRoute from '@/domain/space/routing/toReviewAdmin/ChallengesRoute';
+import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from '../../admin/routing/NonSpaceAdminRedirect';
 import SpaceLayoutSettingsPage from '../../admin/SpaceLayoutSettings/SpaceLayoutSettingsPage';
 import SpaceAccountPage from '../../admin/SpaceAccount/SpaceAccountPage';
