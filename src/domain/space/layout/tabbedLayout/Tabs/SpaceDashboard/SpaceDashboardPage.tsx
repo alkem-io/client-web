@@ -1,10 +1,6 @@
 import { PropsWithChildren } from 'react';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
-import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
@@ -15,10 +11,9 @@ import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboar
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
+import { TabbedLayoutDialogsType } from '../../TabbedLayoutPage';
 
-const SpaceDashboardPage = ({
-  dialog,
-}: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
+const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayoutDialogsType }>) => {
   const {
     urlInfo,
     canReadSpace,
@@ -68,7 +63,7 @@ const SpaceDashboardPage = ({
   };
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 0 }}>
       <SpaceDashboardView
         space={space}
         tabDescription={tabDescription}
@@ -77,6 +72,7 @@ const SpaceDashboardPage = ({
         loading={loadingSpacePageQuery}
         entityReadAccess={permissions.spaceReadAccess}
         readUsersAccess={permissions.readUsers}
+        canEdit={permissions.canEdit}
         calloutsSetProvided={calloutsSetProvided}
         flowStateForNewCallouts={flowStateForNewCallouts}
         shareUpdatesUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
@@ -88,11 +84,6 @@ const SpaceDashboardPage = ({
         shareUrl={buildUpdatesUrl(spaceData?.about.profile.url ?? '')}
         loading={loadingSpacePageQuery}
       />
-      <ContributorsDialog
-        open={dialog === 'contributors'}
-        onClose={backToDashboard}
-        dialogContent={SpaceContributorsDialogContent}
-      />
       <CalendarDialog
         open={dialog === 'calendar'}
         onClose={backToDashboard}
@@ -100,14 +91,6 @@ const SpaceDashboardPage = ({
         parentSpaceId={undefined}
         parentPath={spaceData?.about.profile.url ?? ''}
         calendarEventId={calendarEventId}
-      />
-      <SpaceAboutDialog
-        open={dialog === 'about'}
-        space={space}
-        loading={loadingSpacePageQuery}
-        onClose={backToDashboard}
-        hasReadPrivilege={permissions.spaceReadAccess}
-        hasEditPrivilege={permissions.canEdit}
       />
     </SpacePageLayout>
   );

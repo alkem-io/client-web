@@ -4,7 +4,6 @@ import useNavigate from '@/core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/cards/journeyCardValueGetter';
 import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
@@ -86,7 +85,7 @@ const SpaceSubspacesPage = () => {
   const level = space?.level ?? SpaceLevel.L0;
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
       <ChildJourneyView
         childEntities={subspaces}
         level={level}
