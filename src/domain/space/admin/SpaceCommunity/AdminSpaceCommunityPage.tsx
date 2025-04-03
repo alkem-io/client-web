@@ -38,7 +38,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   const { t } = useTranslation();
   const { space, loading: isLoadingSpace, entitlements } = useSpace();
   const spaceId = space.id;
-  const { about } = space;
+  const { about, level } = space;
   const { membership } = about;
   const roleSetId = membership?.roleSetID!;
 
@@ -123,6 +123,10 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     entitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
     (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
 
+  const areApplicationsInvitationsEnabled = level !== SpaceLevel.L2;
+  const areCommunityGuidelinesEnabled = level !== SpaceLevel.L2;
+  const areCommunityGuidelinesTemplatesEnabled = level === SpaceLevel.L0;
+
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -130,32 +134,34 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
-        <PageContentColumn columns={12}>
-          <PageContentBlock columns={8}>
-            <CommunityMemberships
-              applications={applications}
-              onApplicationStateChange={onApplicationStateChange}
-              canHandleInvitations
-              invitations={invitations}
-              platformInvitations={platformInvitations}
-              onInvitationStateChange={onInvitationStateChange}
-              onDeleteInvitation={onDeleteInvitation}
-              onDeletePlatformInvitation={onDeletePlatformInvitation}
-              loading={loading}
-            />
-          </PageContentBlock>
-          <PageContentBlockSeamless columns={4} disablePadding>
-            <InvitationOptionsBlock
-              spaceDisplayName={about.profile.displayName}
-              inviteExistingUser={inviteExistingUser}
-              inviteExternalUser={inviteExternalUser}
-              currentApplicationsUserIds={currentApplicationsUserIds}
-              currentInvitationsUserIds={currentInvitationsUserIds}
-              currentMembersIds={currentMembersIds}
-              parentSpaceId={undefined}
-            />
-          </PageContentBlockSeamless>
-        </PageContentColumn>
+        {areApplicationsInvitationsEnabled && (
+          <PageContentColumn columns={12}>
+            <PageContentBlock columns={8}>
+              <CommunityMemberships
+                applications={applications}
+                onApplicationStateChange={onApplicationStateChange}
+                canHandleInvitations
+                invitations={invitations}
+                platformInvitations={platformInvitations}
+                onInvitationStateChange={onInvitationStateChange}
+                onDeleteInvitation={onDeleteInvitation}
+                onDeletePlatformInvitation={onDeletePlatformInvitation}
+                loading={loading}
+              />
+            </PageContentBlock>
+            <PageContentBlockSeamless columns={4} disablePadding>
+              <InvitationOptionsBlock
+                spaceDisplayName={about.profile.displayName}
+                inviteExistingUser={inviteExistingUser}
+                inviteExternalUser={inviteExternalUser}
+                currentApplicationsUserIds={currentApplicationsUserIds}
+                currentInvitationsUserIds={currentInvitationsUserIds}
+                currentMembersIds={currentMembersIds}
+                parentSpaceId={undefined}
+              />
+            </PageContentBlockSeamless>
+          </PageContentColumn>
+        )}
         <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
           <Text marginBottom={gutters(2)}>
             <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
@@ -163,85 +169,89 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
 
-        <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
-          {({
-            communityGuidelines,
-            profileId,
-            loading,
-            onSelectCommunityGuidelinesTemplate,
-            onUpdateCommunityGuidelines,
-            onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
-          }) => {
-            return (
-              <>
-                <PageContentBlockCollapsible
-                  header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
-                  primaryAction={
-                    <>
-                      <Button
-                        variant="outlined"
-                        onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
-                        startIcon={<InnovationLibraryIcon />}
-                      >
-                        {t('common.library')}
-                      </Button>
-
-                      <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
-                        <IconButton
-                          aria-label={t('buttons.saveAsTemplate')}
-                          onClick={() => {
-                            currentCommunityGuidelines.current = communityGuidelines;
-                            setSaveAsTemplateDialogOpen(true);
-                          }}
-                          sx={{ marginLeft: gutters(0.5) }}
+        {areCommunityGuidelinesEnabled && (
+          <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
+            {({
+              communityGuidelines,
+              profileId,
+              loading,
+              onSelectCommunityGuidelinesTemplate,
+              onUpdateCommunityGuidelines,
+              onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
+            }) => {
+              return (
+                <>
+                  <PageContentBlockCollapsible
+                    header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                    primaryAction={
+                      <>
+                        <Button
+                          variant="outlined"
+                          onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                          startIcon={<InnovationLibraryIcon />}
                         >
-                          <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  }
-                >
-                  <CommunityGuidelinesForm
-                    data={communityGuidelines}
-                    loading={loading}
-                    profileId={profileId}
-                    onSubmit={onUpdateCommunityGuidelines}
-                    onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
+                          {t('common.library')}
+                        </Button>
+
+                        <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
+                          <IconButton
+                            aria-label={t('buttons.saveAsTemplate')}
+                            onClick={() => {
+                              currentCommunityGuidelines.current = communityGuidelines;
+                              setSaveAsTemplateDialogOpen(true);
+                            }}
+                            sx={{ marginLeft: gutters(0.5) }}
+                          >
+                            <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
+                          </IconButton>
+                        </Tooltip>
+                      </>
+                    }
+                  >
+                    <CommunityGuidelinesForm
+                      data={communityGuidelines}
+                      loading={loading}
+                      profileId={profileId}
+                      onSubmit={onUpdateCommunityGuidelines}
+                      onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
+                    />
+                  </PageContentBlockCollapsible>
+
+                  <ImportTemplatesDialog
+                    open={communityGuidelinesTemplatesDialogOpen}
+                    templateType={TemplateType.CommunityGuidelines}
+                    onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
+                    onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                    enablePlatformTemplates
+                    actionButton={
+                      <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                        {t('buttons.use')}
+                      </LoadingButton>
+                    }
                   />
-                </PageContentBlockCollapsible>
+                </>
+              );
+            }}
+          </CommunityGuidelinesContainer>
+        )}
 
-                <ImportTemplatesDialog
-                  open={communityGuidelinesTemplatesDialogOpen}
-                  templateType={TemplateType.CommunityGuidelines}
-                  onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
-                  onSelectTemplate={onSelectCommunityGuidelinesTemplate}
-                  enablePlatformTemplates
-                  actionButton={
-                    <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
-                      {t('buttons.use')}
-                    </LoadingButton>
-                  }
-                />
-              </>
-            );
-          }}
-        </CommunityGuidelinesContainer>
-
-        <CreateTemplateDialog
-          open={saveAsTemplateDialogOpen}
-          onClose={() => setSaveAsTemplateDialogOpen(false)}
-          templateType={TemplateType.CommunityGuidelines}
-          onSubmit={handleSaveAsTemplate}
-          getDefaultValues={() =>
-            Promise.resolve({
-              type: TemplateType.CommunityGuidelines,
-              communityGuidelines: {
-                id: '',
-                profile: currentCommunityGuidelines.current!,
-              },
-            })
-          }
-        />
+        {areCommunityGuidelinesTemplatesEnabled && (
+          <CreateTemplateDialog
+            open={saveAsTemplateDialogOpen}
+            onClose={() => setSaveAsTemplateDialogOpen(false)}
+            templateType={TemplateType.CommunityGuidelines}
+            onSubmit={handleSaveAsTemplate}
+            getDefaultValues={() =>
+              Promise.resolve({
+                type: TemplateType.CommunityGuidelines,
+                communityGuidelines: {
+                  id: '',
+                  profile: currentCommunityGuidelines.current!,
+                },
+              })
+            }
+          />
+        )}
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers
