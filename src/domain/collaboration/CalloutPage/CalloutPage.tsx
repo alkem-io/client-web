@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useSpacePermissionsAndEntitlements from '@/domain/space/permissions/useSpacePermissionsAndEntitlements';
+import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 
 type CalloutLocation = {
   parentPagePath: string;
