@@ -8,10 +8,8 @@ import ChallengeAuthorizationRoute from '@/domain/space/routing/toReviewAdmin/Ch
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceSubspaces/SubspaceSubspacesPage';
-import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
-import AdminSpaceCommunityPage, {
-  AdminSpaceCommunityPageProps,
-} from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
+import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
+import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceCommunity/AdminSpaceCommunityPage';
 
 export const ChallengeRoute: FC = () => {
   const { subspace, loading } = useSubSpace();

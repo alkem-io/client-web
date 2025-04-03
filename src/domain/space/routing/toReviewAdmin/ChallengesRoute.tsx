@@ -4,7 +4,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceContextProvider from '@/domain/space/context/SubspaceContext';
 import SubspaceListPage from '@/domain/space/layout/tabbedLayout/Tabs/SpaceSubspaces/SubspaceListPage';
-import { ChallengeRoute } from '@/domain/space/routing/toReview2/ChallengeRoute';
+import { ChallengeRoute } from '@/domain/space/admin/routing/ChallengeRoute';
 
 const ChallengesRoute = () => {
   return (

@@ -4,11 +4,9 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import OpportunityCommunicationsPage from '@/domain/space/admin/SpaceCommunication/OpportunityCommunicationsPage';
 import OpportunityAboutPage from '@/domain/space/pages/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
-import OpportunitySettingsPage from '../../admin/SpaceSubspaces/OpportunitySettingsPage';
-import AdminSpaceCommunityPage, {
-  AdminSpaceCommunityPageProps,
-} from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
+import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
+import OpportunitySettingsPage from '../SpaceSubspaces/OpportunitySettingsPage';
+import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceCommunity/AdminSpaceCommunityPage';
 
 export const OpportunityRoute = () => {
   const { subspace, loading } = useSubSpace();

@@ -13,7 +13,7 @@ import AdminSpaceCommunityPage, {
   AdminSpaceCommunityPageProps,
 } from '@/domain/space/admin/SpaceCommunity/AdminSpaceCommunityPage';
 import ChallengesRoute from '@/domain/space/routing/toReviewAdmin/ChallengesRoute';
-import NonSpaceAdminRedirect from '../../routing/toReview2/nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import NonSpaceAdminRedirect from '../../admin/routing/NonSpaceAdminRedirect';
 import SpaceLayoutSettingsPage from '../../admin/SpaceLayoutSettings/SpaceLayoutSettingsPage';
 import SpaceAccountPage from '../../admin/SpaceAccount/SpaceAccountPage';
 
