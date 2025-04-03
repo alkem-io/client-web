@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalloutsGroupView from '../../../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../../../../../collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../../../../../collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
@@ -15,12 +14,12 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import useSpaceTabProvider from '../../SpaceTabProvider';
 
 type KnowledgeBasePageProps = {
-  calloutsFlowState: EntityPageSection;
+  sectionIndex: number;
 };
 
-const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) => {
+const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, tabDescription } = useSpaceTabProvider({
-    tabPosition: 3,
+    tabPosition: sectionIndex,
   });
   const { journeyPath, calloutsSetId } = urlInfo;
 
@@ -44,7 +43,7 @@ const SpaceKnowledgeBasePage = ({ calloutsFlowState }: KnowledgeBasePageProps) =
   });
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={calloutsFlowState}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: sectionIndex }}>
       <>
         <MembershipBackdrop show={loading} blockName={t('common.space')}>
           <PageContent>

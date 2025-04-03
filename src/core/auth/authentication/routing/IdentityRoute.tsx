@@ -1,5 +1,4 @@
 import { Route } from 'react-router-dom';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
 import ErrorRoute from './ErrorRoute';
@@ -42,7 +41,6 @@ export const IdentityRoute = () => {
           </NoIdentityRedirect>
         }
       />
-      <Route path="*" element={<Error404 />} />
       <Route
         path={`${IdentityRoutes.SignUp}`}
         element={

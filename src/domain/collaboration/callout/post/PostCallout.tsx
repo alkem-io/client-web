@@ -15,7 +15,6 @@ import {
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { TypedCalloutDetails } from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
-import { buildPostDashboardUrl } from '@/main/routing/urlBuilders';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import { sortBy } from 'lodash';
 
@@ -63,7 +62,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
         [LocationStateKeyCachedCallout]: callout,
         keepScroll: true,
       };
-      navigate(buildPostDashboardUrl(post.profile.url), { state });
+      navigate(post.profile.url, { state });
     };
 
     const breakpoint = useCurrentBreakpoint();

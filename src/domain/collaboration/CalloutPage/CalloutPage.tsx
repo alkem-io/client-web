@@ -13,7 +13,6 @@ import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useBackToPath from '@/core/routing/useBackToPath';
 import usePageLayoutByEntity from '@/domain/shared/utils/usePageLayoutByEntity';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -117,6 +116,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
   const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
     val => val === calloutFlowState
   );
+  const currentSection = calloutPosition && calloutPosition > -1 ? { sectionIndex: calloutPosition } : undefined; // Will leave all the tabs unselected
 
   useEffect(() => {
     if (calloutFlowState) {
@@ -132,7 +132,7 @@ const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) =>
         spaceLevel={spaceLevel}
         journeyPath={journeyPath}
         parentSpaceId={parentSpaceId}
-        currentSection={EntityPageSection.Contribute}
+        currentSection={currentSection}
       >
         <Loading />
       </PageLayout>
