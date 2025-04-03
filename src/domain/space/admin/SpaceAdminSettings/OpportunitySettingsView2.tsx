@@ -13,7 +13,7 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import PageContent from '@/core/ui/content/PageContent';
 import { useSpace } from '@/domain/space/context/useSpace';
 
-const OpportunitySettingsView = () => {
+const OpportunitySettingsView2 = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { subspace } = useSubSpace();
@@ -73,4 +73,4 @@ const OpportunitySettingsView = () => {
   );
 };
 
-export default OpportunitySettingsView;
+export default OpportunitySettingsView2;

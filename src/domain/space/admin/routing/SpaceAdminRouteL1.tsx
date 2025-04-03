@@ -5,7 +5,9 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceAboutPage from '@/domain/space/admin/SpaceAdminAbout/SubspaceAboutPage';
 import ChallengeAuthorizationRoute from '@/domain/space/routing/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSettingsPage';
+import SpaceAdminSettingsPage, {
+  SpaceAdminSettingsPageProps,
+} from '@/domain/space/admin/SpaceAdminSettings/SpaceAdminSettingsPage';
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceAdminSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
@@ -35,6 +37,11 @@ export const SpaceAdminL1Route: FC = () => {
     communityId: subspace?.about.membership?.communityID!,
   };
 
+  const settingsPageProps: SpaceAdminSettingsPageProps = {
+    useL0Layout: false,
+    level: subspace?.level,
+  };
+
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
       <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
@@ -45,7 +52,7 @@ export const SpaceAdminL1Route: FC = () => {
             <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
             <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
-            <Route path="settings" element={<SpaceSettingsPage />} />
+            <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
             <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
             <Route path="*" element={<Error404 />} />
           </Route>

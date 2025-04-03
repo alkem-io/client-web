@@ -4,7 +4,9 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { useSpace } from '@/domain/space/context/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSettingsAboutPage from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutPage';
-import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSettingsPage';
+import SpaceAdminSettingsPage, {
+  SpaceAdminSettingsPageProps,
+} from '@/domain/space/admin/SpaceAdminSettings/SpaceAdminSettingsPage';
 import SpaceTemplatesAdminRoutes from '@/domain/space/admin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
 import SpaceStorageAdminPage from '@/domain/space/admin/SpaceAdminStorage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -43,6 +45,11 @@ const SpaceAdminL0Route: FC = () => {
     communityId: space?.about.membership?.communityID!,
   };
 
+  const settingsPageProps: SpaceAdminSettingsPageProps = {
+    useL0Layout: true,
+    level: space?.level,
+  };
+
   return (
     <NonSpaceAdminRedirect spaceId={spaceId}>
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
@@ -50,7 +57,7 @@ const SpaceAdminL0Route: FC = () => {
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<SpaceSettingsAboutPage />} />
           <Route path="layout" element={<SpaceLayoutSettingsPage />} />
-          <Route path="settings" element={<SpaceSettingsPage />} />
+          <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
           <Route path="account" element={<SpaceAccountPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
