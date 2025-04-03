@@ -1,4 +1,3 @@
-import React from 'react';
 import SpaceDashboardPage from './Tabs/SpaceDashboard/SpaceDashboardPage';
 import SpaceCommunityPage from './Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import SpaceSubspacesPage from './Tabs/SpaceSubspacesPage';
@@ -30,6 +29,14 @@ const ensureParamType = <T extends string>(param: string | undefined, validValue
   return undefined;
 };
 
+/**
+ * Component for rendering different space pages based on the section number, dialog query parameters and a defaultIndex.
+ *
+ * @param {TabbedLayoutPageProps} props - The props for the component.
+ * @param {string} [props.sectionNumber] - The base 1 tab number indicating which section to display.
+ * @param {string} [props.dialog] - The dialog query parameter indicating which dialog to display.
+ * Note that the defaultTabIndex is zero-based and we use + 1 to convert it to base 1.
+ */
 const TabbedLayoutPage = ({ sectionNumber, dialog: queryStringDialog }: TabbedLayoutPageProps) => {
   const { space } = useSpace();
   const { defaultTabIndex } = useSpaceTabs({ spaceId: space.id });
