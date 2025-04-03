@@ -15,7 +15,7 @@ import AdminSpaceCommunityPage, {
 } from '@/domain/space/admin/SpaceAdminCommunity/AdminSpaceCommunityPage';
 import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
-import SpaceLayoutSettingsPage from '../SpaceAdminLayout/SpaceLayoutSettingsPage';
+import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 import SpaceAccountPage from '../SpaceAdminAccount/SpaceAccountPage';
 import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
@@ -47,7 +47,13 @@ const SpaceAdminL0Route: FC = () => {
 
   const settingsPageProps: SpaceAdminSettingsPageProps = {
     useL0Layout: true,
-    level: space?.level,
+    spaceId: space?.id,
+    isSubspace: false,
+    levelZeroSpaceUrl: space.about.profile?.url,
+  };
+
+  const layoutPageProps: SpaceAdminLayoutPageProps = {
+    useL0Layout: true,
   };
 
   return (
@@ -56,7 +62,7 @@ const SpaceAdminL0Route: FC = () => {
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<SpaceSettingsAboutPage />} />
-          <Route path="layout" element={<SpaceLayoutSettingsPage />} />
+          <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
           <Route path="account" element={<SpaceAccountPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />

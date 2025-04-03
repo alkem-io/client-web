@@ -8,7 +8,6 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
-  SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
@@ -29,8 +28,6 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
@@ -44,26 +41,22 @@ import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
-  level: SpaceLevel;
   useL0Layout: boolean;
+  isSubspace: boolean;
+  spaceId: string;
+  levelZeroSpaceUrl: string;
 }
 
-const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({ level, useL0Layout, routePrefix = '../' }) => {
+const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
+  useL0Layout,
+  isSubspace,
+  levelZeroSpaceUrl,
+  spaceId,
+  routePrefix = '../',
+}) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const notify = useNotification();
-
-  let isSubspace = level !== SpaceLevel.L0;
-
-  const { subspace } = useSubSpace();
-  const subspaceId = subspace.id;
-  const { space } = useSpace();
-  const spaceId = space.id;
-  const levelZeroSpaceUrl = space.about.profile.url;
-
-  // TODO: flaky logic here. We already faced a couple of bugs related to this multiple spaceIds logic.
-  // It's better to use the URL resolver getting the spaceId (+ parent or levelZero if needed)
-  const currentSpaceId = isSubspace ? subspaceId : spaceId;
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -79,9 +72,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({ level, useL0L
 
   const { data } = useSpacePrivilegesQuery({
     variables: {
-      spaceId: subspaceId,
+      spaceId: spaceId,
     },
-    skip: !subspaceId,
+    skip: !spaceId,
   });
 
   const privileges = data?.lookup.space?.authorization?.myPrivileges ?? [];
@@ -97,9 +90,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({ level, useL0L
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId: currentSpaceId,
+      spaceId,
     },
-    skip: !currentSpaceId,
+    skip: !spaceId,
   });
   const roleSetId = settingsData?.lookup.space?.about.membership.roleSetID;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
@@ -182,31 +175,15 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({ level, useL0L
       } as SpaceSettingsCollaboration,
     };
 
-    switch (level) {
-      case SpaceLevel.L0: {
-        await updateSpaceSettings({
-          variables: {
-            settingsData: {
-              spaceID: spaceId,
-              settings: settingsVariable,
-            },
-          },
-        });
-        break;
-      }
-      case SpaceLevel.L1: {
-        await updateSpaceSettings({
-          variables: {
-            settingsData: {
-              spaceID: subspaceId,
-              settings: settingsVariable,
-            },
-          },
-        });
-        break;
-      }
-      // TODO: Add opportunity case
-    }
+    await updateSpaceSettings({
+      variables: {
+        settingsData: {
+          spaceID: spaceId,
+          settings: settingsVariable,
+        },
+      },
+    });
+
     if (showNotification) {
       notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
     }
@@ -468,7 +445,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({ level, useL0L
                 entity={t('common.subspace')}
                 open={openDeleteDialog}
                 onClose={closeDialog}
-                onDelete={() => handleDelete(subspaceId)}
+                onDelete={() => handleDelete(spaceId)}
               />
             )}
           </>

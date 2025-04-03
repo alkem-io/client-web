@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceAboutPage from '@/domain/space/admin/SpaceAdminAbout/SubspaceAboutPage';
-import ChallengeAuthorizationRoute from '@/domain/space/routing/ChallengeAuthorizationRoute';
+import ChallengeAuthorizationRoute from '@/domain/space/admin/toReview/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceAdminSettingsPage, {
   SpaceAdminSettingsPageProps,
@@ -14,8 +14,10 @@ import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceA
 import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
+import { useSpace } from '../../context/useSpace';
 
 export const SpaceAdminL1Route: FC = () => {
+  const { space } = useSpace();
   const { subspace, loading } = useSubSpace();
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
@@ -39,7 +41,9 @@ export const SpaceAdminL1Route: FC = () => {
 
   const settingsPageProps: SpaceAdminSettingsPageProps = {
     useL0Layout: false,
-    level: subspace?.level,
+    spaceId: subspace?.id,
+    isSubspace: false,
+    levelZeroSpaceUrl: space.about.profile?.url, // Needs to be L0
   };
 
   return (

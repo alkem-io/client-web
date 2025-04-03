@@ -10,8 +10,10 @@ import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 import SpaceAdminSettingsPage, { SpaceAdminSettingsPageProps } from '../SpaceAdminSettings/SpaceAdminSettingsPage';
+import { useSpace } from '../../context/useSpace';
 
 export const SpaceAdminL2Route = () => {
+  const { space } = useSpace();
   const { subspace, loading } = useSubSpace();
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
@@ -35,7 +37,9 @@ export const SpaceAdminL2Route = () => {
 
   const settingsPageProps: SpaceAdminSettingsPageProps = {
     useL0Layout: false,
-    level: subspace?.level,
+    spaceId: subspace?.id,
+    isSubspace: false,
+    levelZeroSpaceUrl: space.about.profile?.url, // Needs to be L0
   };
 
   return (
