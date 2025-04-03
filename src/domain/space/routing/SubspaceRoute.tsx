@@ -16,6 +16,12 @@ import SubspaceSettingsRoute from './SubspaceSettingsRoute';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
+const LegacyRoutesRedirects = () => (
+  <>
+    <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
+  </>
+);
+
 const SubspaceRoute = () => {
   const { subspace, permissions, loading } = useSubSpace();
 
@@ -65,14 +71,6 @@ const SubspaceRoute = () => {
         />
         <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
         <Route
-          path="*"
-          element={
-            <NotFoundPageLayout>
-              <Error404 />
-            </NotFoundPageLayout>
-          }
-        />
-        <Route
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
             <SubspaceProvider>
@@ -80,7 +78,15 @@ const SubspaceRoute = () => {
             </SubspaceProvider>
           }
         />
-        <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
+        {LegacyRoutesRedirects()}
+        <Route
+          path="*"
+          element={
+            <NotFoundPageLayout>
+              <Error404 />
+            </NotFoundPageLayout>
+          }
+        />
       </Routes>
     </StorageConfigContextProvider>
   );

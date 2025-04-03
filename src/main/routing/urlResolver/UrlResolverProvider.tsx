@@ -153,7 +153,6 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     window.addEventListener('popstate', handleUrlChange);
-    window.addEventListener('locationchange', handleUrlChange); //!! maybe/probably not needed
     var pushState = window.history.pushState;
     window.history.pushState = function (...args) {
       pushState.apply(window.history, args);
@@ -164,7 +163,6 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
     return () => {
       window.removeEventListener('popstate', handleUrlChange);
-      window.removeEventListener('locationchange', handleUrlChange);
     };
   }, []);
 
