@@ -1,7 +1,7 @@
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { useSpaceAboutFullQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import SpaceAboutForm, { SpaceAboutEditFormValuesType } from '@/domain/space/about/settings/SpaceAboutForm';
+import SpaceAboutForm, { SpaceAboutEditFormValuesType } from '@/domain/space/admin/SpaceAdminAbout/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import { Actions } from '@/core/ui/actions/Actions';

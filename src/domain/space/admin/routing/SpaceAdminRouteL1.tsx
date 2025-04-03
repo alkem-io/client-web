@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SubspaceAboutPage from '@/domain/space/about/settings/SubspaceAboutPage';
+import SubspaceAboutPage from '@/domain/space/admin/SpaceAdminAbout/SubspaceAboutPage';
 import ChallengeAuthorizationRoute from '@/domain/space/routing/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSettingsPage';
