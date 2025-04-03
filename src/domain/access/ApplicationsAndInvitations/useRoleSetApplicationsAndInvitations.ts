@@ -11,9 +11,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
-import { ApplicationProvided } from '../model/ApplicationModel';
-import { InvitationProvided } from '../model/InvitationModel';
-import { PlatformInvitationProvided } from '../model/PlatformInvitationModel';
+import { ApplicationModel } from '../model/ApplicationModel';
+import { InvitationModel } from '../model/InvitationModel';
+import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
 
 export interface InviteUserData {
   message: string;
@@ -33,9 +33,9 @@ type useRoleSetApplicationsAndInvitationsParams = {
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {
-  applications: ApplicationProvided[];
-  invitations: InvitationProvided[];
-  platformInvitations: PlatformInvitationProvided[];
+  applications: ApplicationModel[];
+  invitations: InvitationModel[];
+  platformInvitations: PlatformInvitationModel[];
   authorizationPrivileges: AuthorizationPrivilege[];
   applyForEntryRoleOnRoleSet: (
     roleSetId: string,

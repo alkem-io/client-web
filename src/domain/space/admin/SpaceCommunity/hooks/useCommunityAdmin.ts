@@ -17,9 +17,9 @@ import useRoleSetApplicationsAndInvitations, {
   InviteExternalUserData,
 } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { RoleDefinition } from '@/domain/access/model/RoleDefinitionModel';
-import { ApplicationProvided } from '@/domain/access/model/ApplicationModel';
-import { InvitationProvided } from '@/domain/access/model/InvitationModel';
-import { PlatformInvitationProvided } from '@/domain/access/model/PlatformInvitationModel';
+import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
+import { InvitationModel } from '@/domain/access/model/InvitationModel';
+import { PlatformInvitationModel } from '@/domain/access/model/PlatformInvitationModel';
 
 interface useCommunityAdminParams {
   level: SpaceLevel;
@@ -89,9 +89,9 @@ export interface useCommunityAdminProvided {
   membershipAdmin: {
     memberRoleDefinition: RoleDefinition | undefined;
     leadRoleDefinition: RoleDefinition | undefined;
-    applications: ApplicationProvided[];
-    invitations: InvitationProvided[];
-    platformInvitations: PlatformInvitationProvided[];
+    applications: ApplicationModel[];
+    invitations: InvitationModel[];
+    platformInvitations: PlatformInvitationModel[];
     onApplicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
     onInvitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
     onDeleteInvitation: (invitationId: string) => Promise<unknown>;

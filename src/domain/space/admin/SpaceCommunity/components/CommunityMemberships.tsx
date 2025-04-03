@@ -17,8 +17,8 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { MembershipTableItem } from '../../../../access/model/MembershipTableItem';
 import { MembershipType } from '../../../../access/model/MembershipType';
-import { CommunityApplication } from '../../../../access/model/CommunityApplicationModel';
-import { CommunityInvitation } from '../../../../access/model/CommunityInvitationModel';
+import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
+import { InvitationModel } from '@/domain/access/model/InvitationModel';
 
 type RenderParams = GridRenderCellParams<string, MembershipTableItem>;
 type GetterParams = GridValueGetterParams<string, MembershipTableItem>;
@@ -97,10 +97,10 @@ type PlatformInvitation = {
 };
 
 interface CommunityApplicationsProps {
-  applications: CommunityApplication[] | undefined;
+  applications: ApplicationModel[] | undefined;
   onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
   canHandleInvitations?: boolean;
-  invitations?: CommunityInvitation[] | undefined;
+  invitations?: InvitationModel[] | undefined;
   platformInvitations?: PlatformInvitation[] | undefined;
   onInvitationStateChange?: (invitationId: string, state: string) => Promise<unknown>;
   onDeleteInvitation?: (invitationId: string) => Promise<unknown>;
@@ -110,7 +110,7 @@ interface CommunityApplicationsProps {
 
 const NO_DATA_PLACEHOLDER = '—';
 
-const CreatePendingMembershipForApplication = (application: CommunityApplication) => {
+const CreatePendingMembershipForApplication = (application: ApplicationModel) => {
   const applicant = application.contributor;
   const result: MembershipTableItem = {
     id: application.id,
@@ -129,7 +129,7 @@ const CreatePendingMembershipForApplication = (application: CommunityApplication
   return result;
 };
 
-const CreatePendingMembershipForInvitation = (invitation: CommunityInvitation) => {
+const CreatePendingMembershipForInvitation = (invitation: InvitationModel) => {
   const contributor = invitation.contributor;
   const result: MembershipTableItem = {
     id: invitation.id,

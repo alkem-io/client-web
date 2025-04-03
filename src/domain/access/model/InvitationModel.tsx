@@ -1,6 +1,6 @@
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
-export type InvitationProvided = {
+export type InvitationModel = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
