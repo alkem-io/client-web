@@ -47,12 +47,6 @@ export type AdminSpaceCommunityPageProps = SettingsPageProps & {
   loading: boolean;
 };
 
-// const areCommunityGuidelinesEnabled = level !== SpaceLevel.L2;
-// const areCommunityGuidelinesTemplatesEnabled = level === SpaceLevel.L0;
-// const canAddVirtualContributors =
-// entitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
-// (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
-
 const AdminSpaceCommunityPage = ({
   about,
   roleSetId,
@@ -106,7 +100,7 @@ const AdminSpaceCommunityPage = ({
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ about, spaceId, level, roleSetId });
+  } = useCommunityAdmin({ level, roleSetId });
 
   const currentApplicationsUserIds = useMemo(
     () =>

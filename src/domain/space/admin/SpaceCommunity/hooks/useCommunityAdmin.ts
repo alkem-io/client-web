@@ -20,12 +20,9 @@ import { RoleDefinition } from '@/domain/access/model/RoleDefinitionModel';
 import { ApplicationProvided } from '@/domain/access/model/ApplicationModel';
 import { InvitationProvided } from '@/domain/access/model/InvitationModel';
 import { PlatformInvitationProvided } from '@/domain/access/model/PlatformInvitationModel';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 interface useCommunityAdminParams {
-  spaceId?: string;
-  about: SpaceAboutLightModel;
-  level?: SpaceLevel;
+  level: SpaceLevel;
   roleSetId: string;
 }
 

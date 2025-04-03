@@ -16,7 +16,6 @@ import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileC
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
@@ -28,9 +27,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, loading: urlResolverLoading } = useUrlResolver();
   const { space } = useSpace();
-  const { about } = space;
+  const { about, level } = space;
   const roleSetId = about?.membership!.roleSetID!;
 
   const {
@@ -43,7 +41,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ about, spaceId, roleSetId });
+  } = useCommunityAdmin({ roleSetId, level });
 
   const { getBoKProfile } = useVirtualContributorSpaceBoK();
 
@@ -129,8 +127,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const isLoading = loading || urlResolverLoading;
-  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !isLoading;
+  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !loading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -220,7 +217,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const isEmpty =
     (!availableOnAccount || availableOnAccount.length === 0) &&
     (!availableInLibrary || availableInLibrary.length === 0) &&
-    !isLoading;
+    !loading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -261,7 +258,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
             </Gutters>
           )}
 
-          {isLoading ? (
+          {loading ? (
             <Loading />
           ) : (
             <InviteContributorsList
