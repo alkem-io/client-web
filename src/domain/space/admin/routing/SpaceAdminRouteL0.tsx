@@ -53,7 +53,7 @@ const SpaceAdminL0Route: FC = () => {
     useL0Layout: true,
     spaceId: space?.id,
     isSubspace: false,
-    levelZeroSpaceUrl: space.about.profile?.url,
+    levelZeroSpaceUrl: space.about.profile?.url, // ToDO: should this become parent URL to redirect to after deletion?
   };
 
   const layoutPageProps: SpaceAdminLayoutPageProps = {
