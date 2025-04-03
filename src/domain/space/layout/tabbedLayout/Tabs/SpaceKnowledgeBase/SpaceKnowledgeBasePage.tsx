@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
-import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
-import CalloutsGroupView from '../../../../../collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CalloutCreationDialog from '../../../../../collaboration/callout/creationDialog/CalloutCreationDialog';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../../../../../collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
-import CalloutsList from '../../../../../collaboration/callout/calloutsList/CalloutsList';
+import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
+import Loading from '@/core/ui/loading/Loading';
 
 type KnowledgeBasePageProps = {
   sectionIndex: number;
@@ -45,37 +45,37 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: sectionIndex }}>
       <>
-        <MembershipBackdrop show={loading} blockName={t('common.space')}>
-          <PageContent>
-            <InfoColumn>
-              <ContributeCreationBlock
-                canCreate={canCreateCallout}
-                handleCreate={handleCreate}
-                tabDescription={tabDescription}
-              />
-              <PageContentBlock>
-                <CalloutsList
-                  callouts={callouts}
-                  emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
-                    entities: t('common.callouts'),
-                  })}
-                />
-              </PageContentBlock>
-            </InfoColumn>
-
-            <ContentColumn>
-              <CalloutsGroupView
-                calloutsSetId={calloutsSetId}
-                createInFlowState={flowStateForNewCallouts?.displayName}
+        <PageContent>
+          <InfoColumn>
+            <ContributeCreationBlock
+              canCreate={canCreateCallout}
+              handleCreate={handleCreate}
+              tabDescription={tabDescription}
+            />
+            <PageContentBlock>
+              <CalloutsList
                 callouts={callouts}
-                canCreateCallout={canCreateCallout}
                 loading={loading}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
+                emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
+                  entities: t('common.callouts'),
+                })}
               />
-            </ContentColumn>
-          </PageContent>
-        </MembershipBackdrop>
+            </PageContentBlock>
+          </InfoColumn>
+
+          <ContentColumn>
+            {loading && <Loading />}
+            <CalloutsGroupView
+              calloutsSetId={calloutsSetId}
+              createInFlowState={flowStateForNewCallouts?.displayName}
+              callouts={callouts}
+              canCreateCallout={canCreateCallout}
+              loading={loading}
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
+            />
+          </ContentColumn>
+        </PageContent>
         <CalloutCreationDialog
           open={isCalloutCreationDialogOpen}
           onClose={handleCreateCalloutClosed}
