@@ -25,6 +25,10 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
+/**
+ *
+ * @deprecated Can be removed + replaced with AdminSpaceCommunityPage when have a shared context for space / subspace
+ */
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { loading: isLoadingSubspace, subspace, parentSpaceId } = useSubSpace();
