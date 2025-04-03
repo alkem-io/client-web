@@ -27,7 +27,6 @@ import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationSubscriber } from './main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
-import { UrlResolverProvider } from './main/routing/urlResolver/UrlResolverProvider';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -98,9 +97,7 @@ const Root: FC = () => {
                                         </TopLevelLayout>
                                       }
                                     >
-                                      <UrlResolverProvider>
-                                        <TopLevelRoutes />
-                                      </UrlResolverProvider>
+                                      <TopLevelRoutes />
                                       <GlobalErrorDialog />
                                     </NotFoundErrorBoundary>
                                   </InAppNotificationsProvider>
