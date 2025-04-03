@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SubspaceCommunicationsPage from '@/domain/space/admin/SpaceCommunication/SubspaceCommunicationsPage';
 import SubspaceAboutPage from '@/domain/space/about/settings/SubspaceAboutPage';
 import ChallengeAuthorizationRoute from '@/domain/space/routing/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -10,10 +9,11 @@ import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSett
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceAdminSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
+import SubspaceCommunicationsPage from '../SpaceAdminCommunication/SubspaceCommunicationsPage';
 
 export const ChallengeRoute: FC = () => {
   const { subspace, loading } = useSubSpace();
-  const communityId = subspace?.about.membership.communityID;
+  const communityId = subspace?.about.membership.communityID!;
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
     about: subspace?.about,

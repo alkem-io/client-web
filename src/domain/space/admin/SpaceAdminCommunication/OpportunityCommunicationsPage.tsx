@@ -1,10 +1,8 @@
 import { PropsWithChildren } from 'react';
-import CommunityUpdatesPage, {
-  CommunityUpdatesPageProps,
-} from '@/domain/space/admin/SpaceCommunication/CommunityUpdatesPage';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
+import CommunityUpdatesPage, { CommunityUpdatesPageProps } from './CommunityUpdatesPage';
 
 interface OpportunityCommunicationsPageProps extends SettingsPageProps, CommunityUpdatesPageProps {}
 
