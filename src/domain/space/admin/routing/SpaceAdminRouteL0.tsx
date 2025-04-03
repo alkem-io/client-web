@@ -20,7 +20,7 @@ import AdminSpaceCommunityPage, {
 import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
-import SpaceAccountPage from '../SpaceAdminAccount/SpaceAccountPage';
+import SpaceAdminAccountPage, { SpaceAdminAccountPageProps } from '../SpaceAdminAccount/SpaceAdminAccountPage';
 import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
@@ -70,6 +70,15 @@ const SpaceAdminL0Route: FC = () => {
     spaceId: spaceId,
   };
 
+  const accountPageProps: SpaceAdminAccountPageProps = {
+    useL0Layout: true,
+    spaceId: spaceId,
+  };
+
+  // const subspacesPageProps: SpaceAdminSubspacesPageProps = {
+  //   useL0Layout: true,
+  // };
+
   return (
     <NonSpaceAdminRedirect spaceId={spaceId}>
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
@@ -78,7 +87,7 @@ const SpaceAdminL0Route: FC = () => {
           <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
           <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
-          <Route path="account" element={<SpaceAccountPage />} />
+          <Route path="account" element={<SpaceAdminAccountPage {...accountPageProps} />} />
           <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />

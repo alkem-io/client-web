@@ -26,7 +26,6 @@ import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSpace';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CachedIcon from '@mui/icons-material/Cached';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, CircularProgress, Link } from '@mui/material';
@@ -34,9 +33,12 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import LicenseActionBlock from './components/LicenseActionBlock';
 
-const SpaceAccountPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId } = useUrlResolver();
+export interface SpaceAdminAccountPageProps extends SettingsPageProps {
+  useL0Layout: boolean;
+  spaceId: string;
+}
 
+const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const notify = useNotification();
@@ -279,4 +281,4 @@ const SpaceAccountPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   );
 };
 
-export default SpaceAccountPage;
+export default SpaceAdminAccountPage;
