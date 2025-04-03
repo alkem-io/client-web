@@ -1,8 +1,13 @@
 import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
-import { TabbedLayoutParams } from '@/domain/space/layout/tabbedLayout/TabbedLayoutPage';
+
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
+
+// Keep these in sync with the consts in TabbedLayoutPage.tsx and don't import,
+// tests fail to import because they are in different modules
+const URL_PARAM_SECTION = 'tab';
+const URL_PARAM_DIALOG = 'dialog';
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
@@ -47,10 +52,10 @@ export const buildSpaceSectionUrl = (
   }
 
   if (sectionNumber) {
-    params.set(TabbedLayoutParams.Section, sectionNumber.toString());
+    params.set(URL_PARAM_SECTION, sectionNumber.toString());
   }
   if (dialog) {
-    params.set(TabbedLayoutParams.Dialog, dialog);
+    params.set(URL_PARAM_DIALOG, dialog);
   }
 
   return `${result}?${params.toString()}`;

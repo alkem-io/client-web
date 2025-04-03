@@ -7,8 +7,11 @@ import { useSpace } from '../../context/useSpace';
 import { Navigate } from 'react-router-dom';
 import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 
-const URL_PARAM_SECTION = 'tab';
-const URL_PARAM_DIALOG = 'dialog';
+// Keep these in sync with the consts in urlBuilders.ts and don't import,
+// tests fail to import because they are in different modules
+export const URL_PARAM_SECTION = 'tab';
+export const URL_PARAM_DIALOG = 'dialog';
+
 export enum TabbedLayoutParams {
   Section = URL_PARAM_SECTION,
   Dialog = URL_PARAM_DIALOG,
