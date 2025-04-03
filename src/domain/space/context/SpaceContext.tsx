@@ -69,7 +69,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
     skip: !spaceId,
   });
 
-  const { data: spaceEntitlementsData } = useSpaceEntitlementsQuery({
+  const { data: spaceEntitlementsData, loading: loadingSpaceEntitlementsQuery } = useSpaceEntitlementsQuery({
     variables: {
       spaceId: spaceId!,
     },
@@ -108,6 +108,9 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
         displayName: spaceData?.about.profile.displayName ?? '',
         url: spaceData?.about.profile.url ?? '',
       },
+      guidelines: {
+        id: spaceData?.about.guidelines?.id ?? '',
+      },
     };
 
     return {
@@ -119,7 +122,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
     };
   }, [spaceData]);
 
-  const loading = urlResolverLoading || loadingSpaceQuery || !spaceId;
+  const loading = urlResolverLoading || loadingSpaceQuery || loadingSpaceEntitlementsQuery || !spaceId;
   return (
     <SpaceContext.Provider
       value={{

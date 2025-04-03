@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import AdminOpportunityCommunityPage from '@/domain/space/admin/SpaceCommunity/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '@/domain/space/admin/SpaceCommunication/OpportunityCommunicationsPage';
 import OpportunityAboutPage from '@/domain/space/pages/OpportunityAboutPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 import OpportunitySettingsPage from '../../admin/SpaceSubspaces/OpportunitySettingsPage';
+import AdminSubspaceCommunityPage from '../../admin/SpaceCommunity/AdminSubspaceCommunityPage';
 
 export const OpportunityRoute = () => {
   const { subspace } = useSubSpace();
@@ -19,7 +19,7 @@ export const OpportunityRoute = () => {
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<OpportunityAboutPage />} />
           <Route path="communications" element={<OpportunityCommunicationsPage communityId={communityId} />} />
-          <Route path="community" element={<AdminOpportunityCommunityPage />} />
+          <Route path="community" element={<AdminSubspaceCommunityPage />} />
           <Route path="settings" element={<OpportunitySettingsPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>

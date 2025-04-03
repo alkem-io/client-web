@@ -1602,6 +1602,9 @@ export const SpaceAboutLightFragmentDoc = gql`
       communityID
       roleSetID
     }
+    guidelines {
+      id
+    }
   }
   ${VisualUriFragmentDoc}
 `;

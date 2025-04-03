@@ -1,5 +1,5 @@
 import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom';
-import SubspaceProvider from '@/domain/space/context/SubspaceProvider';
+import SubspaceContextProvider from '@/domain/space/context/SubspaceContext';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
@@ -135,11 +135,11 @@ const SpaceTabbedLayoutRoute = () => {
               <Route
                 path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
                 element={
-                  <SubspaceProvider>
+                  <SubspaceContextProvider>
                     <Suspense fallback={null}>
                       <SubspaceRoute />
                     </Suspense>
-                  </SubspaceProvider>
+                  </SubspaceContextProvider>
                 }
               />
               <Route path="explore/*" element={<Redirect to={routes.Contribute} />} /> {/* //!!?? */}

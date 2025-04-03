@@ -68,6 +68,30 @@ query AvailableVirtualContributorsInLibrary {
   }
 }
 
+query AvailableVirtualContributorsInSpace($spaceId: UUID!
+) {
+  lookup  {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        roleSet {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorFull
+          }
+        }
+      }
+      account {
+        id
+        virtualContributors {
+          ...VirtualContributorFull
+        }
+      }
+    }
+  }
+}
+
 query AvailableVirtualContributors(
   $filterSpace: Boolean = false
   $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
@@ -92,6 +116,7 @@ query AvailableVirtualContributors(
       }
     }
   }
+  # TODO: this field is only accessible to global admins...normal users must go via library
   virtualContributors @skip(if: $filterSpace) {
     ...VirtualContributorFull
   }

@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import CommunityApplications from '@/domain/space/admin/SpaceCommunity/CommunityApplications';
+import CommunityMemberships from '@/domain/space/admin/SpaceCommunity/CommunityMemberships';
 import CommunityOrganizations from '@/domain/space/admin/SpaceCommunity/CommunityOrganizations';
 import CommunityUsers from '@/domain/space/admin/SpaceCommunity/CommunityUsers';
 import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
@@ -22,14 +22,13 @@ import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuide
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { loading: isLoadingChallenge, subspace, parentSpaceId } = useSubSpace();
-  const { id: spaceId, level: spaceLevel } = subspace;
-  const { about } = subspace;
+  const { loading: isLoadingSubspace, subspace, parentSpaceId } = useSubSpace();
+  const { id: spaceId, level: spaceLevel, about } = subspace;
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -90,87 +89,94 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  if (!spaceId || isLoadingChallenge) {
+  const areApplicationsInvitationsEnabled = spaceLevel !== SpaceLevel.L2;
+  const areCommunityGuidelinesEnabled = spaceLevel !== SpaceLevel.L2;
+
+  if (!spaceId || isLoadingSubspace) {
     return null;
   }
 
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
-        <PageContentColumn columns={12}>
-          <PageContentBlock columns={8}>
-            <CommunityApplications
-              applications={applications}
-              onApplicationStateChange={onApplicationStateChange}
-              canHandleInvitations
-              invitations={invitations}
-              platformInvitations={platformInvitations}
-              onInvitationStateChange={onInvitationStateChange}
-              onDeleteInvitation={onDeleteInvitation}
-              onDeletePlatformInvitation={onDeletePlatformInvitation}
-              loading={loading}
-            />
-          </PageContentBlock>
-          <PageContentBlockSeamless columns={4} disablePadding>
-            <InvitationOptionsBlock
-              spaceDisplayName={about.profile.displayName}
-              inviteExistingUser={inviteExistingUser}
-              inviteExternalUser={inviteExternalUser}
-              currentApplicationsUserIds={currentApplicationsUserIds}
-              currentInvitationsUserIds={currentInvitationsContributorIds}
-              currentMembersIds={currentMembersIds}
-              parentSpaceId={parentSpaceId}
-              isSubspace
-            />
-          </PageContentBlockSeamless>
-        </PageContentColumn>
-        <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
-          {({
-            communityGuidelines,
-            profileId,
-            loading,
-            onSelectCommunityGuidelinesTemplate,
-            onUpdateCommunityGuidelines,
-            onDeleteCommunityGuidelinesContent,
-          }) => {
-            return (
-              <>
-                <PageContentBlockCollapsible
-                  header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
-                  primaryAction={
-                    <Button
-                      variant="outlined"
-                      onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
-                      startIcon={<InnovationLibraryIcon />}
-                    >
-                      {t('common.library')}
-                    </Button>
-                  }
-                >
-                  <CommunityGuidelinesForm
-                    data={communityGuidelines}
-                    loading={loading}
-                    onSubmit={onUpdateCommunityGuidelines}
-                    profileId={profileId}
-                    onDeleteCommunityGuidelines={onDeleteCommunityGuidelinesContent}
+        {areApplicationsInvitationsEnabled && (
+          <PageContentColumn columns={12}>
+            <PageContentBlock columns={8}>
+              <CommunityMemberships
+                applications={applications}
+                onApplicationStateChange={onApplicationStateChange}
+                canHandleInvitations
+                invitations={invitations}
+                platformInvitations={platformInvitations}
+                onInvitationStateChange={onInvitationStateChange}
+                onDeleteInvitation={onDeleteInvitation}
+                onDeletePlatformInvitation={onDeletePlatformInvitation}
+                loading={loading}
+              />
+            </PageContentBlock>
+            <PageContentBlockSeamless columns={4} disablePadding>
+              <InvitationOptionsBlock
+                spaceDisplayName={about.profile.displayName}
+                inviteExistingUser={inviteExistingUser}
+                inviteExternalUser={inviteExternalUser}
+                currentApplicationsUserIds={currentApplicationsUserIds}
+                currentInvitationsUserIds={currentInvitationsContributorIds}
+                currentMembersIds={currentMembersIds}
+                parentSpaceId={parentSpaceId}
+                isSubspace
+              />
+            </PageContentBlockSeamless>
+          </PageContentColumn>
+        )}
+        {areCommunityGuidelinesEnabled && (
+          <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
+            {({
+              communityGuidelines,
+              profileId,
+              loading,
+              onSelectCommunityGuidelinesTemplate,
+              onUpdateCommunityGuidelines,
+              onDeleteCommunityGuidelinesContent,
+            }) => {
+              return (
+                <>
+                  <PageContentBlockCollapsible
+                    header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                    primaryAction={
+                      <Button
+                        variant="outlined"
+                        onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                        startIcon={<InnovationLibraryIcon />}
+                      >
+                        {t('common.library')}
+                      </Button>
+                    }
+                  >
+                    <CommunityGuidelinesForm
+                      data={communityGuidelines}
+                      loading={loading}
+                      onSubmit={onUpdateCommunityGuidelines}
+                      profileId={profileId}
+                      onDeleteCommunityGuidelines={onDeleteCommunityGuidelinesContent}
+                    />
+                  </PageContentBlockCollapsible>
+                  <ImportTemplatesDialog
+                    open={communityGuidelinesTemplatesDialogOpen}
+                    templateType={TemplateType.CommunityGuidelines}
+                    onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
+                    onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                    enablePlatformTemplates
+                    actionButton={
+                      <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                        {t('buttons.use')}
+                      </LoadingButton>
+                    }
                   />
-                </PageContentBlockCollapsible>
-                <ImportTemplatesDialog
-                  open={communityGuidelinesTemplatesDialogOpen}
-                  templateType={TemplateType.CommunityGuidelines}
-                  onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
-                  onSelectTemplate={onSelectCommunityGuidelinesTemplate}
-                  enablePlatformTemplates
-                  actionButton={
-                    <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
-                      {t('buttons.use')}
-                    </LoadingButton>
-                  }
-                />
-              </>
-            );
-          }}
-        </CommunityGuidelinesContainer>
+                </>
+              );
+            }}
+          </CommunityGuidelinesContainer>
+        )}
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

@@ -9248,6 +9248,7 @@ export type AccountInformationQuery = {
                       communityID: string;
                       roleSetID: string;
                     };
+                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
                   };
                 }>
               | undefined;
@@ -17078,6 +17079,7 @@ export type AccountResourcesInfoQuery = {
                       communityID: string;
                       roleSetID: string;
                     };
+                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
                   };
                 }>
               | undefined;
@@ -18357,6 +18359,7 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
         }
       | undefined;
@@ -19293,6 +19296,7 @@ export type AdminSpacesListQuery = {
         communityID: string;
         roleSetID: string;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19340,6 +19344,7 @@ export type AdminSpaceFragment = {
       communityID: string;
       roleSetID: string;
     };
+    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19634,6 +19639,7 @@ export type SpaceAboutBaseQuery = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20429,6 +20435,7 @@ export type SpaceAboutLightFragment = {
     communityID: string;
     roleSetID: string;
   };
+  guidelines: { __typename?: 'CommunityGuidelines'; id: string };
 };
 
 export type SpaceAboutMinimalFragment = {
@@ -20530,6 +20537,7 @@ export type SpaceAccountQuery = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           activeSubscription?:
             | {
@@ -21631,6 +21639,7 @@ export type CreateSpaceMutation = {
         communityID: string;
         roleSetID: string;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
   };
 };
@@ -22442,6 +22451,7 @@ export type SubspacePageQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           collaboration: {
             __typename?: 'Collaboration';
@@ -22491,6 +22501,7 @@ export type SubspacePageSpaceFragment = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
+    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
   collaboration: { __typename?: 'Collaboration'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
   templatesManager?:
@@ -22539,6 +22550,7 @@ export type SpaceTabQuery = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
           collaboration: {
             __typename?: 'Collaboration';
@@ -25672,6 +25684,7 @@ export type SpaceCalendarEventsQuery = {
                             communityID: string;
                             roleSetID: string;
                           };
+                          guidelines: { __typename?: 'CommunityGuidelines'; id: string };
                         };
                       }
                     | undefined;
@@ -25758,6 +25771,7 @@ export type CollaborationTimelineInfoFragment = {
                   communityID: string;
                   roleSetID: string;
                 };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
               };
             }
           | undefined;
@@ -25833,6 +25847,7 @@ export type CalendarEventInfoFragment = {
             communityID: string;
             roleSetID: string;
           };
+          guidelines: { __typename?: 'CommunityGuidelines'; id: string };
         };
       }
     | undefined;
@@ -26063,6 +26078,7 @@ export type CalendarEventDetailsQuery = {
                     communityID: string;
                     roleSetID: string;
                   };
+                  guidelines: { __typename?: 'CommunityGuidelines'; id: string };
                 };
               }
             | undefined;
@@ -26256,6 +26272,7 @@ export type CalendarEventDetailsFragment = {
             communityID: string;
             roleSetID: string;
           };
+          guidelines: { __typename?: 'CommunityGuidelines'; id: string };
         };
       }
     | undefined;
@@ -26480,6 +26497,7 @@ export type CreateCalendarEventMutation = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
         }
       | undefined;
@@ -26683,6 +26701,7 @@ export type UpdateCalendarEventMutation = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
         }
       | undefined;
@@ -27986,6 +28005,7 @@ export type SearchQuery = {
                       communityID: string;
                       roleSetID: string;
                     };
+                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
                   };
                 }
               | undefined;
@@ -28104,6 +28124,7 @@ export type SearchQuery = {
                   communityID: string;
                   roleSetID: string;
                 };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
               };
             };
           }
@@ -28196,6 +28217,7 @@ export type SearchQuery = {
                   communityID: string;
                   roleSetID: string;
                 };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
               };
             };
           }
@@ -28270,6 +28292,7 @@ export type SearchQuery = {
                   communityID: string;
                   roleSetID: string;
                 };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
               };
             };
             callout: {
@@ -28426,6 +28449,7 @@ export type SearchResultPostFragment = {
         communityID: string;
         roleSetID: string;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
   };
   callout: {
@@ -28468,6 +28492,7 @@ export type PostParentFragment = {
         communityID: string;
         roleSetID: string;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
   };
   callout: {
@@ -28580,6 +28605,7 @@ export type SearchResultCalloutFragment = {
         communityID: string;
         roleSetID: string;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
   };
 };
@@ -28612,6 +28638,7 @@ export type CalloutParentFragment = {
         communityID: string;
         roleSetID: string;
       };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     };
   };
 };
@@ -28711,6 +28738,7 @@ export type SearchResultSpaceFragment = {
             communityID: string;
             roleSetID: string;
           };
+          guidelines: { __typename?: 'CommunityGuidelines'; id: string };
         };
       }
     | undefined;
@@ -29536,6 +29564,7 @@ export type PendingInvitationsQuery = {
             communityID: string;
             roleSetID: string;
           };
+          guidelines: { __typename?: 'CommunityGuidelines'; id: string };
         };
       };
       invitation: {
@@ -30966,6 +30995,7 @@ export type NewVirtualContributorMySpacesQuery = {
                       communityID: string;
                       roleSetID: string;
                     };
+                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
                   };
                   community: {
                     __typename?: 'Community';
@@ -31033,6 +31063,7 @@ export type AllSpaceSubspacesQuery = {
                   communityID: string;
                   roleSetID: string;
                 };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
               };
               community: {
                 __typename?: 'Community';
@@ -31075,6 +31106,7 @@ export type AllSpaceSubspacesQuery = {
                 communityID: string;
                 roleSetID: string;
               };
+              guidelines: { __typename?: 'CommunityGuidelines'; id: string };
             };
             community: {
               __typename?: 'Community';
@@ -31125,6 +31157,7 @@ export type SpaceProfileCommunityDetailsFragment = {
       communityID: string;
       roleSetID: string;
     };
+    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
   community: {
     __typename?: 'Community';
@@ -31492,6 +31525,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
               communityID: string;
               roleSetID: string;
             };
+            guidelines: { __typename?: 'CommunityGuidelines'; id: string };
           };
         }
       | undefined;

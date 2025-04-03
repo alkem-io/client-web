@@ -69,7 +69,7 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>(default
 
 interface SubspaceProviderProps extends PropsWithChildren {}
 
-const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
+const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { spaceId, loading: urlResolverLoading, parentSpaceId } = useUrlResolver();
 
   const { data, loading } = useSpaceAboutDetailsQuery({
@@ -150,4 +150,4 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   return <SubspaceContext.Provider value={state}>{children}</SubspaceContext.Provider>;
 };
 
-export default SubspaceProvider;
+export default SubspaceContextProvider;

@@ -12,7 +12,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityUsers from '@/domain/space/admin/SpaceCommunity/CommunityUsers';
 import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
 import CommunityOrganizations from '@/domain/space/admin/SpaceCommunity/CommunityOrganizations';
-import CommunityApplications from '@/domain/space/admin/SpaceCommunity/CommunityApplications';
+import CommunityMemberships from '@/domain/space/admin/SpaceCommunity/CommunityMemberships';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '@/domain/community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
@@ -132,7 +132,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
       <PageContent background="transparent">
         <PageContentColumn columns={12}>
           <PageContentBlock columns={8}>
-            <CommunityApplications
+            <CommunityMemberships
               applications={applications}
               onApplicationStateChange={onApplicationStateChange}
               canHandleInvitations

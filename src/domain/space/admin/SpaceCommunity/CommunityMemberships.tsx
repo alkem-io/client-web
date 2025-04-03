@@ -15,44 +15,10 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
-
-enum MembershipType {
-  Application,
-  Invitation,
-  PlatformInvitation,
-}
-
-type MembershipTableItem = {
-  id: string;
-  type: MembershipType;
-  contributorType: RoleSetContributorType;
-  url: string;
-  displayName: string;
-  state?: string;
-  nextEvents: string[];
-  email?: string;
-  createdDate: Date | undefined;
-  updatedDate?: Date;
-  questions: {
-    id: string;
-    name: string;
-    value: string;
-  }[];
-  contributor?: {
-    id: string;
-    profile: {
-      displayName: string;
-      avatar?: {
-        uri: string;
-      };
-      location?: {
-        city?: string;
-        country?: string;
-      };
-      url: string;
-    };
-  };
-};
+import { MembershipTableItem } from './model/MembershipTableItem';
+import { MembershipType } from './model/MembershipType';
+import { CommunityApplication } from './model/CommunityApplicationModel';
+import { CommunityInvitation } from './model/CommunityInvitationModel';
 
 type RenderParams = GridRenderCellParams<string, MembershipTableItem>;
 type GetterParams = GridValueGetterParams<string, MembershipTableItem>;
@@ -122,44 +88,6 @@ const sortState = (state: string | undefined) => {
     default:
       return 0;
   }
-};
-
-type CommunityApplication = {
-  id: string;
-  createdDate: Date;
-  updatedDate: Date;
-  state: string;
-  nextEvents: Array<string>;
-  contributorType: RoleSetContributorType;
-  contributor: {
-    id: string;
-    profile: {
-      displayName: string;
-      email?: string;
-      url: string;
-      avatar?: { uri: string; name: string };
-      location?: { city?: string; country?: string };
-    };
-  };
-  questions: { id: string; name: string; value: string }[];
-};
-
-type CommunityInvitation = {
-  id: string;
-  createdDate: Date;
-  updatedDate: Date;
-  state: string;
-  nextEvents: Array<string>;
-  contributorType: RoleSetContributorType;
-  contributor: {
-    id: string;
-    profile: {
-      displayName: string;
-      url: string;
-      avatar?: { uri: string };
-      location?: { city?: string; country?: string };
-    };
-  };
 };
 
 type PlatformInvitation = {
@@ -235,7 +163,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: PlatformInvita
   return result;
 };
 
-const CommunityApplications = ({
+const CommunityMemberships = ({
   applications = [],
   onApplicationStateChange,
   canHandleInvitations = false,
@@ -438,4 +366,4 @@ const CommunityApplications = ({
   );
 };
 
-export default CommunityApplications;
+export default CommunityMemberships;
