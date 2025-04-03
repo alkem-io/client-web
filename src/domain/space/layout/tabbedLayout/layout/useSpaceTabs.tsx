@@ -2,14 +2,12 @@ import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ReactNode, useMemo } from 'react';
 import { useSpace } from '../../../context/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { SubspaceIcon } from '../../../icons/SubspaceIcon';
 
 type TabDefinition = {
-  value: EntityPageSection | string;
   label: string;
   description: string;
   icon: ReactNode;
@@ -40,6 +38,7 @@ const tabName = (
 
 type useSpaceTabsProvided = {
   tabs: TabDefinition[];
+  defaultTabIndex: number | undefined; // 0 based index of the section. That is the currentState of the flow
   showSettings: boolean;
 };
 
@@ -55,37 +54,41 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     skip: !spaceId,
   });
 
-  const tabs = useMemo(() => {
+  const { tabs, defaultTabIndex } = useMemo(() => {
     const result: TabDefinition[] = [];
     const innovationFlowTabs =
       spaceTabsData?.lookup.space?.collaboration?.innovationFlow.states.map(state => ({
         displayName: state.displayName,
         description: state.description,
       })) ?? [];
+    const currentStateName = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState.displayName;
+    let currentStateIndex = -1;
+    if (currentStateName && innovationFlowTabs.length > 0) {
+      currentStateIndex = innovationFlowTabs.findIndex(state => state.displayName === currentStateName);
+      if (currentStateIndex === -1) {
+        currentStateIndex = 0; // If the current state is incorrect, default to the first tab
+      }
+    }
 
     result.push({
-      value: EntityPageSection.Dashboard,
       label: tabName(t, innovationFlowTabs?.[0]?.displayName, 'pages.space.sections.tabs.dashboard'),
       icon: <DashboardOutlined />,
       description: innovationFlowTabs?.[0]?.description ?? '',
     });
 
     result.push({
-      value: EntityPageSection.Community,
       label: tabName(t, innovationFlowTabs?.[1]?.displayName, 'pages.space.sections.tabs.community'),
       icon: <CalloutIcon />,
       description: innovationFlowTabs?.[1]?.description ?? '',
     });
 
     result.push({
-      value: EntityPageSection.Subspaces,
       label: tabName(t, innovationFlowTabs?.[2]?.displayName, 'pages.space.sections.tabs.subspaces'),
       icon: <SubspaceIcon />,
       description: innovationFlowTabs?.[2]?.description ?? '',
     });
 
     result.push({
-      value: EntityPageSection.KnowledgeBase,
       label: tabName(t, innovationFlowTabs?.[3]?.displayName, 'pages.space.sections.tabs.knowledgeBase'),
       icon: <SchoolOutlined />,
       description: innovationFlowTabs?.[3]?.description ?? '',
@@ -94,18 +97,21 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     if (innovationFlowTabs.length > 4) {
       innovationFlowTabs.slice(4).forEach(state => {
         result.push({
-          value: state.displayName,
           label: state.displayName,
           icon: <Tab />,
           description: state.description,
         });
       });
     }
-    return result;
+    return {
+      tabs: result,
+      defaultTabIndex: currentStateIndex,
+    };
   }, [t, i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
 
   return {
     tabs,
+    defaultTabIndex,
     showSettings: permissions.canUpdate,
   };
 };

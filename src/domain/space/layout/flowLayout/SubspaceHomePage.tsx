@@ -40,6 +40,8 @@ import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useNavigate } from 'react-router-dom';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);
@@ -49,6 +51,7 @@ const Outline = (props: DashboardNavigationProps) => {
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { spaceId, spaceLevel, journeyPath, parentSpaceId, levelZeroSpaceId, calendarEventId, loading } =
     useUrlResolver();
   const { permissions } = useSubSpace();
@@ -130,6 +133,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
             onContactLeadUser={receiver => sendMessage('user', receiver)}
             leadOrganizations={leadOrganizations}
             onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+            onClickReadMore={() => navigate(`./${EntityPageSection.About}`)}
             level={spaceLevel}
             member={about?.membership?.myMembershipStatus === CommunityMembershipStatus.Member}
           />

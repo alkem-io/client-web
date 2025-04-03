@@ -8,7 +8,6 @@ import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal'
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { MessageReceiverChipData } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import SeeMore from '@/core/ui/content/SeeMore';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceWelcomeBlockProps {
@@ -16,6 +15,7 @@ export interface SpaceWelcomeBlockProps {
   description: string;
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
+  onClickReadMore: () => void;
   leadOrganizations: ContributorViewProps[] | undefined;
   onContactLeadOrganization: (receiver: MessageReceiverChipData) => void;
   member?: boolean;
@@ -27,6 +27,7 @@ const SpaceWelcomeBlock = ({
   level,
   onContactLeadUser,
   onContactLeadOrganization,
+  onClickReadMore,
   description,
   member = false,
 }: SpaceWelcomeBlockProps) => {
@@ -40,7 +41,7 @@ const SpaceWelcomeBlock = ({
     <>
       <OverflowGradient
         maxHeight={gutters(11)}
-        overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
+        overflowMarker={<SeeMore label="buttons.readMore" onClick={onClickReadMore} sx={{ marginTop: -1 }} />}
       >
         {member && <DashboardMemberIcon level={spaceLevel} />}
         {description && <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>}

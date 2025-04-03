@@ -2164,8 +2164,9 @@ export type MutationKeySpecifier = (
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
   | 'cleanupCollections'
-  | 'convertChallengeToSpace'
-  | 'convertOpportunityToChallenge'
+  | 'convertSpaceL1ToSpaceL0'
+  | 'convertSpaceL1ToSpaceL2'
+  | 'convertSpaceL2ToSpaceL1'
   | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createCalloutOnCalloutsSet'
   | 'createChatGuidanceRoom'
@@ -2329,8 +2330,9 @@ export type MutationFieldPolicy = {
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
-  convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  convertSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
+  convertSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
+  convertSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createChatGuidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -19,8 +19,8 @@ import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePage
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BackButton from '@/core/ui/actions/BackButton';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
@@ -106,10 +106,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
       tabsComponent={SpaceTabs}
       breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
-        <RouterLink
-          to={`${profile?.url}/${EntityPageSection.Dashboard}`}
-          sx={{ alignSelf: 'center', marginLeft: 'auto' }}
-        >
+        <RouterLink to={buildSpaceSectionUrl(profile?.url, 1)} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
           <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
             {t('navigation.admin.settingsMenu.quit')}
           </BackButton>
