@@ -44,6 +44,7 @@ export type AdminSpaceCommunityPageProps = SettingsPageProps & {
   communityGuidelinesEnabled: boolean;
   communityGuidelinesTemplatesEnabled: boolean;
   addVirtualContributorsEnabled: boolean;
+  useL0Layout: boolean;
   loading: boolean;
 };
 
@@ -57,6 +58,7 @@ const AdminSpaceCommunityPage = ({
   communityGuidelinesEnabled,
   communityGuidelinesTemplatesEnabled,
   addVirtualContributorsEnabled,
+  useL0Layout,
   loading: isLoadingSpace,
   routePrefix = '../',
 }: AdminSpaceCommunityPageProps) => {
@@ -141,8 +143,6 @@ const AdminSpaceCommunityPage = ({
   if (!spaceId || isLoadingSpace) {
     return null;
   }
-
-  const useL0Layout = level === SpaceLevel.L0;
 
   return (
     <LayoutSwitcher currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>

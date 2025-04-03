@@ -1,19 +1,24 @@
 import React, { FC } from 'react';
-import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSpace';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SpaceAdminCommunityUpdatesPage from './SpaceAdminCommunityUpdatesPage';
+import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 
-interface SpaceAdminCommunicationsPageProps extends SettingsPageProps {
+export interface SpaceAdminCommunicationsPageProps extends SettingsPageProps {
   communityId: string;
+  useL0Layout: boolean;
 }
 
-const SpaceCommunicationsPage: FC<SpaceAdminCommunicationsPageProps> = ({ communityId, routePrefix = '../' }) => {
+const SpaceAdminCommunicationsPage: FC<SpaceAdminCommunicationsPageProps> = ({
+  useL0Layout,
+  communityId,
+  routePrefix = '../',
+}) => {
   return (
-    <SpaceSettingsLayout currentTab={SettingsSection.Communications} tabRoutePrefix={routePrefix}>
+    <LayoutSwitcher currentTab={SettingsSection.Communications} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <SpaceAdminCommunityUpdatesPage communityId={communityId} />
-    </SpaceSettingsLayout>
+    </LayoutSwitcher>
   );
 };
 
-export default SpaceCommunicationsPage;
+export default SpaceAdminCommunicationsPage;

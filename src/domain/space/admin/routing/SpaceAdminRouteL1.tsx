@@ -9,11 +9,12 @@ import SpaceSettingsPage from '@/domain/space/admin/SpaceAdminSettings/SpaceSett
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceAdminSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
-import SubspaceCommunicationsPage from '../SpaceAdminCommunication/SubspaceCommunicationsPage';
+import SpaceAdminCommunicationsPage, {
+  SpaceAdminCommunicationsPageProps,
+} from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 
 export const SpaceAdminL1Route: FC = () => {
   const { subspace, loading } = useSubSpace();
-  const communityId = subspace?.about.membership.communityID!;
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
     about: subspace?.about,
@@ -24,8 +25,14 @@ export const SpaceAdminL1Route: FC = () => {
     communityGuidelinesTemplatesEnabled: false,
     communityGuidelinesId: subspace?.about.guidelines.id,
     level: subspace?.level,
+    useL0Layout: false,
     addVirtualContributorsEnabled: false,
     loading,
+  };
+
+  const communicationsPageProps: SpaceAdminCommunicationsPageProps = {
+    useL0Layout: false,
+    communityId: subspace?.about.membership?.communityID!,
   };
 
   return (
@@ -35,7 +42,7 @@ export const SpaceAdminL1Route: FC = () => {
           <Route path={'/'}>
             <Route index element={<Navigate to="about" replace />} />
             <Route path="about" element={<SubspaceAboutPage />} />
-            <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
+            <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
             <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
             <Route path="settings" element={<SpaceSettingsPage />} />

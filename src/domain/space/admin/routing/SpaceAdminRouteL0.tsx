@@ -15,13 +15,14 @@ import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceLayoutSettingsPage from '../SpaceAdminLayout/SpaceLayoutSettingsPage';
 import SpaceAccountPage from '../SpaceAdminAccount/SpaceAccountPage';
-import SpaceCommunicationsPage from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
+import SpaceAdminCommunicationsPage, {
+  SpaceAdminCommunicationsPageProps,
+} from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 
 const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { space, loading } = useSpace();
   const spaceId = space.id!;
-  const communityId = space.about.membership?.communityID!;
 
   const communityPageProps: AdminSpaceCommunityPageProps = {
     about: space?.about,
@@ -32,8 +33,14 @@ const SpaceAdminL0Route: FC = () => {
     communityGuidelinesTemplatesEnabled: false,
     communityGuidelinesId: space?.about.guidelines!.id,
     level: space?.level,
+    useL0Layout: true,
     addVirtualContributorsEnabled: false,
     loading,
+  };
+
+  const communicationsPageProps: SpaceAdminCommunicationsPageProps = {
+    useL0Layout: true,
+    communityId: space?.about.membership?.communityID!,
   };
 
   return (
@@ -46,7 +53,7 @@ const SpaceAdminL0Route: FC = () => {
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="account" element={<SpaceAccountPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
-          <Route path="communications" element={<SpaceCommunicationsPage communityId={communityId} />} />
+          <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
           <Route path="storage" element={<SpaceStorageAdminPage spaceId={spaceId} />} />
           <Route path="challenges/*" element={<ChallengesRoute />} />
