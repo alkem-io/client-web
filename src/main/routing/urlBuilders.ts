@@ -33,28 +33,27 @@ export const buildAboutUrl = (journeyLocation: string | undefined) => {
 
 export const buildSpaceSectionUrl = (
   spaceUrl: string = '',
-  section: number = 0,
+  sectionNumber: number = 0,
   dialog: string | undefined = undefined
 ) => {
   let result = '';
+  const params = new URLSearchParams();
+
   try {
     const url = new URL(spaceUrl); // Parse the URL and extract the pathname if it's absolute
     result = url.pathname;
   } catch {
     result = spaceUrl; // If the URL is not absolute, use it as is
   }
-  result += result.endsWith('/') ? '?' : '/?';
 
-  if (section) {
-    result += `${TabbedLayoutParams.Section}=${section}`;
-  }
-  if (section && dialog) {
-    result += '&';
+  if (sectionNumber) {
+    params.set(TabbedLayoutParams.Section, sectionNumber.toString());
   }
   if (dialog) {
-    result += `${TabbedLayoutParams.Dialog}=${dialog}`;
+    params.set(TabbedLayoutParams.Dialog, dialog);
   }
-  return result;
+
+  return `${result}?${params.toString()}`;
 };
 
 export const buildInnovationPackSettingsUrl = buildSettingsUrl;
