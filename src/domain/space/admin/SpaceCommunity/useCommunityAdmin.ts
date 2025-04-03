@@ -25,7 +25,8 @@ import { PlatformInvitationProvided } from '@/domain/access/model/PlatformInvita
 interface useCommunityAdminParams {
   spaceId?: string;
   about: SpaceAboutLightModel;
-  spaceLevel?: SpaceLevel;
+  level?: SpaceLevel;
+  roleSetId: string;
 }
 
 export interface useCommunityAdminProvided {
@@ -94,7 +95,6 @@ export interface useCommunityAdminProvided {
     applications: ApplicationProvided[];
     invitations: InvitationProvided[];
     platformInvitations: PlatformInvitationProvided[];
-    communityGuidelinesId: string;
     onApplicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
     onInvitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
     onDeleteInvitation: (invitationId: string) => Promise<unknown>;
@@ -118,9 +118,7 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isLead: boolean;
 }
 
-const useCommunityAdmin = ({ about, spaceLevel }: useCommunityAdminParams): useCommunityAdminProvided => {
-  const roleSetId = about.membership!.roleSetID!;
-
+const useCommunityAdmin = ({ roleSetId, level }: useCommunityAdminParams): useCommunityAdminProvided => {
   const {
     users,
     organizations,
@@ -168,7 +166,6 @@ const useCommunityAdmin = ({ about, spaceLevel }: useCommunityAdminParams): useC
 
     return result;
   }, [organizations]);
-  const communityGuidelinesId = about.guidelines!.id;
 
   // Available new members:
   const {
@@ -191,7 +188,7 @@ const useCommunityAdmin = ({ about, spaceLevel }: useCommunityAdminParams): useC
     return organizations;
   };
   const getAvailableVirtualContributors = async (filter?: string) => {
-    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(spaceLevel, filter);
+    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(level, filter);
     return virtualContributors;
   };
   const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
@@ -286,7 +283,6 @@ const useCommunityAdmin = ({ about, spaceLevel }: useCommunityAdminParams): useC
       applications,
       invitations,
       platformInvitations,
-      communityGuidelinesId,
       onApplicationStateChange: applicationStateChange,
       onInvitationStateChange: invitationStateChange,
       onDeleteInvitation: deleteInvitation,

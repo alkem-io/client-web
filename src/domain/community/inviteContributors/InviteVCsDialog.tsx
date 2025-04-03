@@ -31,6 +31,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { spaceId, loading: urlResolverLoading } = useUrlResolver();
   const { space } = useSpace();
   const { about } = space;
+  const roleSetId = about?.membership!.roleSetID!;
 
   const {
     virtualContributorAdmin: {
@@ -42,7 +43,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ about, spaceId });
+  } = useCommunityAdmin({ about, spaceId, roleSetId });
 
   const { getBoKProfile } = useVirtualContributorSpaceBoK();
 

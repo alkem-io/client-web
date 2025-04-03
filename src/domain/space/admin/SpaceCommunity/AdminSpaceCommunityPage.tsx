@@ -5,7 +5,6 @@ import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/In
 import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceSettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { useSpace } from '../../context/useSpace';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -26,21 +25,48 @@ import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
+import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 
-const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => {
+export type AdminSpaceCommunityPageProps = SettingsPageProps & {
+  about: SpaceAboutLightModel;
+  roleSetId: string;
+  level: SpaceLevel;
+  spaceId: string;
+  communityGuidelinesId: string;
+  pendingMembershipsEnabled: boolean;
+  communityGuidelinesEnabled: boolean;
+  communityGuidelinesTemplatesEnabled: boolean;
+  addVirtualContributorsEnabled: boolean;
+  loading: boolean;
+};
+
+// const areCommunityGuidelinesEnabled = level !== SpaceLevel.L2;
+// const areCommunityGuidelinesTemplatesEnabled = level === SpaceLevel.L0;
+// const canAddVirtualContributors =
+// entitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
+// (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
+
+const AdminSpaceCommunityPage = ({
+  about,
+  roleSetId,
+  level,
+  spaceId,
+  pendingMembershipsEnabled,
+  communityGuidelinesId,
+  communityGuidelinesEnabled,
+  communityGuidelinesTemplatesEnabled,
+  addVirtualContributorsEnabled,
+  loading: isLoadingSpace,
+  routePrefix = '../',
+}: AdminSpaceCommunityPageProps) => {
   const { t } = useTranslation();
-  const { space, loading: isLoadingSpace, entitlements } = useSpace();
-  const spaceId = space.id;
-  const { about, level } = space;
-  const { membership } = about;
-  const roleSetId = membership?.roleSetID!;
 
   const {
     userAdmin: {
@@ -73,7 +99,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
       platformInvitations,
       memberRoleDefinition,
       leadRoleDefinition,
-      communityGuidelinesId,
       onApplicationStateChange,
       onInvitationStateChange,
       onDeleteInvitation,
@@ -81,7 +106,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ about, spaceId, spaceLevel: SpaceLevel.L0 });
+  } = useCommunityAdmin({ about, spaceId, level, roleSetId });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -119,14 +144,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     }
   };
 
-  const canAddVirtualContributors =
-    entitlements.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) &&
-    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
-
-  const areApplicationsInvitationsEnabled = level !== SpaceLevel.L2;
-  const areCommunityGuidelinesEnabled = level !== SpaceLevel.L2;
-  const areCommunityGuidelinesTemplatesEnabled = level === SpaceLevel.L0;
-
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -134,7 +151,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
-        {areApplicationsInvitationsEnabled && (
+        {pendingMembershipsEnabled && (
           <PageContentColumn columns={12}>
             <PageContentBlock columns={8}>
               <CommunityMemberships
@@ -169,7 +186,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
 
-        {areCommunityGuidelinesEnabled && (
+        {communityGuidelinesEnabled && (
           <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
             {({
               communityGuidelines,
@@ -235,7 +252,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           </CommunityGuidelinesContainer>
         )}
 
-        {areCommunityGuidelinesTemplatesEnabled && (
+        {communityGuidelinesTemplatesEnabled && (
           <CreateTemplateDialog
             open={saveAsTemplateDialogOpen}
             onClose={() => setSaveAsTemplateDialogOpen(false)}
@@ -288,7 +305,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
             <PageContentBlock>
               <CommunityVirtualContributors
                 virtualContributors={virtualContributors}
-                canAddVirtualContributors={canAddVirtualContributors}
+                canAddVirtualContributors={addVirtualContributorsEnabled}
                 onRemoveMember={onRemoveVirtualContributor}
                 spaceDisplayName={about.profile.displayName}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}

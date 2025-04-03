@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import PageContent from '@/core/ui/content/PageContent';
@@ -9,7 +9,6 @@ import CommunityOrganizations from '@/domain/space/admin/SpaceCommunity/Communit
 import CommunityUsers from '@/domain/space/admin/SpaceCommunity/CommunityUsers';
 import useCommunityAdmin from '@/domain/space/admin/SpaceCommunity/useCommunityAdmin';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../../hooks/useSubSpace';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import CommunityVirtualContributors from '@/domain/space/admin/SpaceCommunity/CommunityVirtualContributors';
@@ -22,17 +21,26 @@ import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuide
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SubspaceSettingsLayout from '@/domain/space/admin/layout/SubspaceSettingsLayout';
+import { AdminSpaceCommunityPageProps } from './AdminSpaceCommunityPage';
 
 /**
  *
  * @deprecated Can be removed + replaced with AdminSpaceCommunityPage when have a shared context for space / subspace
  */
-const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const AdminSubspaceCommunityPage = ({
+  about,
+  roleSetId,
+  level,
+  spaceId,
+  pendingMembershipsEnabled,
+  communityGuidelinesId,
+  communityGuidelinesEnabled,
+  routePrefix = '../',
+}: AdminSpaceCommunityPageProps) => {
   const { t } = useTranslation();
-  const { loading: isLoadingSubspace, subspace, parentSpaceId } = useSubSpace();
-  const { id: spaceId, level: spaceLevel, about } = subspace;
+  const { loading: isLoadingSubspace, parentSpaceId } = useSubSpace();
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -67,7 +75,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
       platformInvitations,
       memberRoleDefinition,
       leadRoleDefinition,
-      communityGuidelinesId,
       onApplicationStateChange,
       onInvitationStateChange,
       onDeleteInvitation,
@@ -75,7 +82,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ about, spaceId, spaceLevel });
+  } = useCommunityAdmin({ about, spaceId, level, roleSetId });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -93,9 +100,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  const areApplicationsInvitationsEnabled = spaceLevel !== SpaceLevel.L2;
-  const areCommunityGuidelinesEnabled = spaceLevel !== SpaceLevel.L2;
-
   if (!spaceId || isLoadingSubspace) {
     return null;
   }
@@ -103,7 +107,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
-        {areApplicationsInvitationsEnabled && (
+        {pendingMembershipsEnabled && (
           <PageContentColumn columns={12}>
             <PageContentBlock columns={8}>
               <CommunityMemberships
@@ -132,7 +136,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             </PageContentBlockSeamless>
           </PageContentColumn>
         )}
-        {areCommunityGuidelinesEnabled && (
+        {communityGuidelinesEnabled && (
           <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
             {({
               communityGuidelines,

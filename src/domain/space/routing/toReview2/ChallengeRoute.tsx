@@ -11,10 +11,24 @@ import AdminSubspaceCommunityPage from '@/domain/space/admin/SpaceCommunity/Admi
 import SpaceSettingsPage from '@/domain/space/admin/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '@/domain/space/admin/SpaceSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import { AdminSpaceCommunityPageProps } from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
 
 export const ChallengeRoute: FC = () => {
-  const { subspace } = useSubSpace();
+  const { subspace, loading } = useSubSpace();
   const communityId = subspace?.about.membership.communityID;
+
+  const communityPageProps: AdminSpaceCommunityPageProps = {
+    about: subspace?.about,
+    roleSetId: subspace?.about.membership.roleSetID!,
+    spaceId: subspace?.id,
+    pendingMembershipsEnabled: true,
+    communityGuidelinesEnabled: true,
+    communityGuidelinesTemplatesEnabled: false,
+    communityGuidelinesId: subspace?.about.guidelines.id,
+    level: subspace?.level,
+    addVirtualContributorsEnabled: false,
+    loading,
+  };
 
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
@@ -25,7 +39,7 @@ export const ChallengeRoute: FC = () => {
             <Route path="about" element={<SubspaceAboutPage />} />
             <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
-            <Route path="community" element={<AdminSubspaceCommunityPage />} />
+            <Route path="community" element={<AdminSubspaceCommunityPage {...communityPageProps} />} />
             <Route path="settings" element={<SpaceSettingsPage />} />
             <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
             <Route path="*" element={<Error404 />} />

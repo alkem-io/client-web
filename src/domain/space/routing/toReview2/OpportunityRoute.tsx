@@ -7,10 +7,24 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import NonSpaceAdminRedirect from './nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 import OpportunitySettingsPage from '../../admin/SpaceSubspaces/OpportunitySettingsPage';
 import AdminSubspaceCommunityPage from '../../admin/SpaceCommunity/AdminSubspaceCommunityPage';
+import { AdminSpaceCommunityPageProps } from '../../admin/SpaceCommunity/AdminSpaceCommunityPage';
 
 export const OpportunityRoute = () => {
-  const { subspace } = useSubSpace();
+  const { subspace, loading } = useSubSpace();
   const communityId = subspace.about.membership.communityID;
+
+  const communityPageProps: AdminSpaceCommunityPageProps = {
+    about: subspace?.about,
+    roleSetId: subspace?.about.membership.roleSetID!,
+    spaceId: subspace?.id,
+    pendingMembershipsEnabled: false,
+    communityGuidelinesEnabled: false,
+    communityGuidelinesTemplatesEnabled: false,
+    communityGuidelinesId: subspace?.about.guidelines.id,
+    level: subspace?.level,
+    addVirtualContributorsEnabled: false,
+    loading,
+  };
 
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
@@ -19,7 +33,7 @@ export const OpportunityRoute = () => {
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<OpportunityAboutPage />} />
           <Route path="communications" element={<OpportunityCommunicationsPage communityId={communityId} />} />
-          <Route path="community" element={<AdminSubspaceCommunityPage />} />
+          <Route path="community" element={<AdminSubspaceCommunityPage {...communityPageProps} />} />
           <Route path="settings" element={<OpportunitySettingsPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
