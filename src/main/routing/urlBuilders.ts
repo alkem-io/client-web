@@ -54,7 +54,6 @@ export const buildSpaceSectionUrl = (
   if (dialog) {
     result += `${TabbedLayoutParams.Dialog}=${dialog}`;
   }
-  console.log('buildSpaceSectionUrl', spaceUrl, section, dialog, result);
   return result;
 };
 
