@@ -2773,7 +2773,7 @@
         },
         "prompt": {
           "title": "Prompt",
-          "infoText": "Available variables: [available variables] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
           "saveBtn": "Save prompt"
         },
         "externalConfig": {

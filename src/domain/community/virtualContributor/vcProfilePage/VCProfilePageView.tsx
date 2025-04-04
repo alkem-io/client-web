@@ -38,9 +38,9 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
   const engine = virtualContributor?.aiPersona?.engine;
 
   const isExternal = [
+    AiPersonaEngine.GenericOpenai,
     AiPersonaEngine.OpenaiAssistant,
     AiPersonaEngine.LibraFlow,
-    AiPersonaEngine.OpenaiAssistant,
   ].includes(engine!);
 
   const hasSpaceKnowledge = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;

@@ -65,7 +65,7 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
 
   const validationSchema = yup.object().shape({
     apiKey: yup.string().notRequired(),
-    assisantId: isAssistantFieldAvailable ? yup.string().required() : yup.string().notRequired(),
+    assistantId: isAssistantFieldAvailable ? yup.string().required() : yup.string().notRequired(),
     model: yup.mixed<OpenAiModel>().oneOf(Object.values(OpenAiModel)).required(),
   });
 
