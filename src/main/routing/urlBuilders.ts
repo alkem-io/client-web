@@ -32,8 +32,8 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
   return `${journeyLocation}?dialog=updates`;
 };
 
-export const buildAboutUrl = (journeyLocation: string | undefined) => {
-  return journeyLocation && `${journeyLocation}/about`;
+export const buildUpdatesUrlLegacy = (journeyLocation: string) => {
+  return `${journeyLocation}/updates`;
 };
 
 export const buildSpaceSectionUrl = (

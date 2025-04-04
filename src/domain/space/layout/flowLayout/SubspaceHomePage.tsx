@@ -35,7 +35,7 @@ import { useConsumeAction } from './SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from '../../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
-import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import { buildUpdatesUrlLegacy } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
@@ -205,7 +205,10 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               onCreateSubspace={openCreateSubspace}
               onCurrentItemNotFound={dashboardNavigation.refetch}
             />
-            <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
+            <DashboardUpdatesSection
+              communityId={communityId}
+              shareUrl={buildUpdatesUrlLegacy(about?.profile?.url ?? '')}
+            />
           </>
         }
       >
