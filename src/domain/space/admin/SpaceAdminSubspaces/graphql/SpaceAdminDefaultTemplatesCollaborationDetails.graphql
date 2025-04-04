@@ -1,4 +1,4 @@
-query AdminSpaceSubspacesPage($spaceId: UUID!) {
+query SpaceAdminDefaultTemplatesCollaborationDetails($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
@@ -6,6 +6,9 @@ query AdminSpaceSubspacesPage($spaceId: UUID!) {
         id
         templatesSet {
           id
+          authorization {
+            myPrivileges
+          }
         }
         templateDefaults {
           id
@@ -44,6 +47,7 @@ query AdminSpaceSubspacesPage($spaceId: UUID!) {
                 profile {
                   id
                   displayName
+                  description
                 }
                 states {
                   displayName

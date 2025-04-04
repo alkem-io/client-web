@@ -2,12 +2,11 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { FC, useCallback, useState } from 'react';
 import {
-  refetchAdminSpaceSubspacesPageQuery,
+  refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery,
   refetchSubspacesInSpaceQuery,
-  useAdminSpaceSubspacesPageQuery,
+  useSpaceAdminDefaultTemplatesCollaborationDetailsQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
-  useSpaceTemplatesManagerQuery,
   useSubspacesInSpaceQuery,
   useUpdateTemplateDefaultMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -71,23 +70,10 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
 
-  const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
-
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId },
     skip: !spaceId,
   });
-
-  const { data, loading: adminTemplatesLoading } = useAdminSpaceSubspacesPageQuery({
-    variables: {
-      spaceId: spaceId,
-    },
-    skip: !spaceId || !templatesEnabled,
-  });
-  const templateDefaults = data?.lookup.space?.templatesManager?.templateDefaults;
-  const defaultSubspaceTemplate = templateDefaults?.find(
-    templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
-  );
 
   const subspaces =
     subspacesListQuery?.lookup.space?.subspaces?.map(s => ({
@@ -155,15 +141,20 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     [navigate, createSubspace, spaceId]
   );
 
-  // check for TemplateCreation privileges
-  const { data: templateData } = useSpaceTemplatesManagerQuery({
-    variables: { spaceId },
-    skip: !spaceId,
+  // Templates usage
+  const { data, loading: adminTemplatesLoading } = useSpaceAdminDefaultTemplatesCollaborationDetailsQuery({
+    variables: {
+      spaceId: spaceId,
+    },
+    skip: !spaceId || !templatesEnabled,
   });
-
-  const templateSetPrivileges =
-    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templatesManager = data?.lookup.space?.templatesManager;
+  const templateDefaults = templatesManager?.templateDefaults;
+  const templateSetPrivileges = templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
+  const defaultSubspaceTemplate = templateDefaults?.find(
+    templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
+  );
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
@@ -172,13 +163,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     setSaveAsTemplateDialogSelectedItem(undefined);
   };
 
-  const onDeleteConfirmation = () => {
-    if (deleteDialogSelectedItem) {
-      handleDelete(deleteDialogSelectedItem);
-      setDeleteDialogSelectedItem(undefined);
-    }
-  };
-
+  const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
   const getDefaultTemplateValues = async () => {
     if (saveAsTemplateDialogSelectedItem?.id) {
       const { data } = await fetchCollaborationId({
@@ -197,6 +182,13 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     }
   };
 
+  const onDeleteConfirmation = () => {
+    if (deleteDialogSelectedItem) {
+      handleDelete(deleteDialogSelectedItem);
+      setDeleteDialogSelectedItem(undefined);
+    }
+  };
+
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
   const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
     if (!defaultSubspaceTemplate) {
@@ -208,7 +200,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         templateID: collaborationTemplateId,
       },
       refetchQueries: [
-        refetchAdminSpaceSubspacesPageQuery({
+        refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery({
           spaceId,
         }),
       ],
@@ -219,9 +211,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
   const getSubSpaceActions = (item: SearchableListItem) => (
     <>
-      {/* <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
-          Duplicate Subspace
-        </MenuItemWithIcon> */}
       {canCreateTemplate && (
         <MenuItemWithIcon
           iconComponent={DownloadForOfflineOutlined}

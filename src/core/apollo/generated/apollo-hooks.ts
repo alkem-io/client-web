@@ -16111,8 +16111,8 @@ export function refetchSpaceDefaultTemplatesQuery(variables: SchemaTypes.SpaceDe
   return { query: SpaceDefaultTemplatesDocument, variables: variables };
 }
 
-export const AdminSpaceSubspacesPageDocument = gql`
-  query AdminSpaceSubspacesPage($spaceId: UUID!) {
+export const SpaceAdminDefaultTemplatesCollaborationDetailsDocument = gql`
+  query SpaceAdminDefaultTemplatesCollaborationDetails($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -16120,6 +16120,9 @@ export const AdminSpaceSubspacesPageDocument = gql`
           id
           templatesSet {
             id
+            authorization {
+              myPrivileges
+            }
           }
           templateDefaults {
             id
@@ -16158,6 +16161,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
                   profile {
                     id
                     displayName
+                    description
                   }
                   states {
                     displayName
@@ -16176,55 +16180,61 @@ export const AdminSpaceSubspacesPageDocument = gql`
 `;
 
 /**
- * __useAdminSpaceSubspacesPageQuery__
+ * __useSpaceAdminDefaultTemplatesCollaborationDetailsQuery__
  *
- * To run a query within a React component, call `useAdminSpaceSubspacesPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminSpaceSubspacesPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceAdminDefaultTemplatesCollaborationDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceAdminDefaultTemplatesCollaborationDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminSpaceSubspacesPageQuery({
+ * const { data, loading, error } = useSpaceAdminDefaultTemplatesCollaborationDetailsQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useAdminSpaceSubspacesPageQuery(
+export function useSpaceAdminDefaultTemplatesCollaborationDetailsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AdminSpaceSubspacesPageQuery,
-    SchemaTypes.AdminSpaceSubspacesPageQueryVariables
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQuery,
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminSpaceSubspacesPageQuery, SchemaTypes.AdminSpaceSubspacesPageQueryVariables>(
-    AdminSpaceSubspacesPageDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQuery,
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
+  >(SpaceAdminDefaultTemplatesCollaborationDetailsDocument, options);
 }
 
-export function useAdminSpaceSubspacesPageLazyQuery(
+export function useSpaceAdminDefaultTemplatesCollaborationDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AdminSpaceSubspacesPageQuery,
-    SchemaTypes.AdminSpaceSubspacesPageQueryVariables
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQuery,
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.AdminSpaceSubspacesPageQuery,
-    SchemaTypes.AdminSpaceSubspacesPageQueryVariables
-  >(AdminSpaceSubspacesPageDocument, options);
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQuery,
+    SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
+  >(SpaceAdminDefaultTemplatesCollaborationDetailsDocument, options);
 }
 
-export type AdminSpaceSubspacesPageQueryHookResult = ReturnType<typeof useAdminSpaceSubspacesPageQuery>;
-export type AdminSpaceSubspacesPageLazyQueryHookResult = ReturnType<typeof useAdminSpaceSubspacesPageLazyQuery>;
-export type AdminSpaceSubspacesPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminSpaceSubspacesPageQuery,
-  SchemaTypes.AdminSpaceSubspacesPageQueryVariables
+export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryHookResult = ReturnType<
+  typeof useSpaceAdminDefaultTemplatesCollaborationDetailsQuery
 >;
-export function refetchAdminSpaceSubspacesPageQuery(variables: SchemaTypes.AdminSpaceSubspacesPageQueryVariables) {
-  return { query: AdminSpaceSubspacesPageDocument, variables: variables };
+export type SpaceAdminDefaultTemplatesCollaborationDetailsLazyQueryHookResult = ReturnType<
+  typeof useSpaceAdminDefaultTemplatesCollaborationDetailsLazyQuery
+>;
+export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQuery,
+  SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
+>;
+export function refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery(
+  variables: SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
+) {
+  return { query: SpaceAdminDefaultTemplatesCollaborationDetailsDocument, variables: variables };
 }
 
 export const SpacePrivilegesDocument = gql`

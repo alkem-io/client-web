@@ -21214,11 +21214,11 @@ export type SpaceDefaultTemplatesQuery = {
   };
 };
 
-export type AdminSpaceSubspacesPageQueryVariables = Exact<{
+export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type AdminSpaceSubspacesPageQuery = {
+export type SpaceAdminDefaultTemplatesCollaborationDetailsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -21230,7 +21230,15 @@ export type AdminSpaceSubspacesPageQuery = {
             | {
                 __typename?: 'TemplatesManager';
                 id: string;
-                templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      authorization?:
+                        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                        | undefined;
+                    }
+                  | undefined;
                 templateDefaults: Array<{
                   __typename?: 'TemplateDefault';
                   id: string;
@@ -21322,7 +21330,12 @@ export type AdminSpaceSubspacesPageQuery = {
                               innovationFlow: {
                                 __typename?: 'InnovationFlow';
                                 id: string;
-                                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                                profile: {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  description?: string | undefined;
+                                };
                                 states: Array<{
                                   __typename?: 'InnovationFlowState';
                                   displayName: string;
