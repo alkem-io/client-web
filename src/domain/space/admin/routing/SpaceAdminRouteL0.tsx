@@ -28,7 +28,7 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { space, loading } = useSpace();
+  const { space, loading, entitlements } = useSpace();
   const spaceId = space.id!;
 
   const communityPageProps: SpaceAdminCommunityPageProps = {
@@ -41,7 +41,7 @@ const SpaceAdminL0Route: FC = () => {
     communityGuidelinesId: space?.about.guidelines!.id,
     level: space?.level,
     useL0Layout: true,
-    addVirtualContributorsEnabled: false,
+    spaceEntitlements: entitlements,
     loading,
   };
 

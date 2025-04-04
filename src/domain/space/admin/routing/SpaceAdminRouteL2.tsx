@@ -13,7 +13,7 @@ import { useSpace } from '../../context/useSpace';
 import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
 
 export const SpaceAdminL2Route = () => {
-  const { space } = useSpace();
+  const { space, entitlements } = useSpace();
   const { subspace, loading } = useSubSpace();
   const subspaceId = subspace?.id!;
 
@@ -27,7 +27,7 @@ export const SpaceAdminL2Route = () => {
     communityGuidelinesId: subspace?.about.guidelines.id,
     useL0Layout: false,
     level: subspace?.level,
-    addVirtualContributorsEnabled: false,
+    spaceEntitlements: entitlements,
     loading,
   };
 

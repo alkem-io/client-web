@@ -23,7 +23,7 @@ import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -43,7 +43,7 @@ export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   pendingMembershipsEnabled: boolean;
   communityGuidelinesEnabled: boolean;
   communityGuidelinesTemplatesEnabled: boolean;
-  addVirtualContributorsEnabled: boolean;
+  spaceEntitlements: LicenseEntitlementType[];
   useL0Layout: boolean;
   loading: boolean;
 };
@@ -57,7 +57,7 @@ const SpaceAdminCommunityPage = ({
   communityGuidelinesId,
   communityGuidelinesEnabled,
   communityGuidelinesTemplatesEnabled,
-  addVirtualContributorsEnabled,
+  spaceEntitlements,
   useL0Layout,
   loading: isLoadingSpace,
   routePrefix = '../',
@@ -103,6 +103,13 @@ const SpaceAdminCommunityPage = ({
     permissions,
     loading,
   } = useCommunityAdmin({ level, roleSetId });
+
+  const spaceVirtualContributorEntitlementEnabled = spaceEntitlements.includes(
+    LicenseEntitlementType.SpaceFlagVirtualContributorAccess
+  );
+  const addVirtualContributorsEnabled =
+    spaceVirtualContributorEntitlementEnabled &&
+    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
 
   const currentApplicationsUserIds = useMemo(
     () =>

@@ -19,7 +19,7 @@ import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbou
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export const SpaceAdminL1Route: FC = () => {
-  const { space } = useSpace();
+  const { space, entitlements } = useSpace();
   const { subspace, loading } = useSubSpace();
   const subspaceId = subspace?.id!;
 
@@ -33,7 +33,7 @@ export const SpaceAdminL1Route: FC = () => {
     communityGuidelinesId: subspace?.about.guidelines.id,
     level: subspace?.level,
     useL0Layout: false,
-    addVirtualContributorsEnabled: false,
+    spaceEntitlements: entitlements,
     loading,
   };
 
