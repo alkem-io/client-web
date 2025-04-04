@@ -8,8 +8,6 @@ import { Button, DialogContent } from '@mui/material';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { Actions } from '@/core/ui/actions/Actions';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
@@ -64,6 +62,9 @@ const PreviewContributorDialog = ({
               city={profile?.location?.city ?? ''}
               country={profile?.location?.country ?? ''}
               isContactable={false}
+              url={profile?.url}
+              onCardClick={onClose}
+              isExpandable={false}
             />
             <PageContentBlockSeamless disablePadding>
               <Actions justifyContent="end">
@@ -78,23 +79,12 @@ const PreviewContributorDialog = ({
                 {actions}
               </Actions>
             </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
-              <BlockSectionTitle>{t('common.title')}</BlockSectionTitle>
-              <CardText>{profile?.displayName}</CardText>
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
-              <BlockSectionTitle>{t('common.description')}</BlockSectionTitle>
-              <WrapperMarkdown card>{profile?.description ?? ''}</WrapperMarkdown>
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
+            <PageContentBlockSeamless disablePadding>
+              <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
               <References
                 references={links[OTHER_LINK_GROUP]}
                 noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
               />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
-              <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-              <TagsComponent tags={profile?.tagsets?.flatMap(tagset => tagset.tags) ?? []} height={gutters()} />
             </PageContentBlockSeamless>
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">

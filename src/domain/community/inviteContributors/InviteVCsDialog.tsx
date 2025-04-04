@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
@@ -23,6 +23,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import SearchField from '@/core/ui/search/SearchField';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -296,6 +298,15 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           contributor={selectedContributor}
           actions={renderActions()}
         >
+          {Boolean(selectedContributor?.profile?.description) && (
+            <PageContentBlock disableGap>
+              <ProfileDetail
+                title={t('components.profile.fields.description.title')}
+                value={selectedContributor?.profile?.description}
+                aria-label="description"
+              />
+            </PageContentBlock>
+          )}
           <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedContributor} />
         </PreviewContributorDialog>
       )}
