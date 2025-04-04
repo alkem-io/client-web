@@ -34,7 +34,7 @@ import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 
-export type AdminSpaceCommunityPageProps = SettingsPageProps & {
+export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
   roleSetId: string;
   level: SpaceLevel;
@@ -48,7 +48,7 @@ export type AdminSpaceCommunityPageProps = SettingsPageProps & {
   loading: boolean;
 };
 
-const AdminSpaceCommunityPage = ({
+const SpaceAdminCommunityPage = ({
   about,
   roleSetId,
   level,
@@ -61,7 +61,7 @@ const AdminSpaceCommunityPage = ({
   useL0Layout,
   loading: isLoadingSpace,
   routePrefix = '../',
-}: AdminSpaceCommunityPageProps) => {
+}: SpaceAdminCommunityPageProps) => {
   const { t } = useTranslation();
 
   const {
@@ -318,4 +318,4 @@ const AdminSpaceCommunityPage = ({
   );
 };
 
-export default AdminSpaceCommunityPage;
+export default SpaceAdminCommunityPage;

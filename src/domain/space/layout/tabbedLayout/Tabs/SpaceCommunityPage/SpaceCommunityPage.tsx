@@ -47,11 +47,7 @@ const SpaceCommunityPage = () => {
     tabPosition: 1,
   });
 
-  const { journeyPath, loading: resolving } = urlInfo;
-
-  if (!resolving) {
-    throw new TypeError('Must be within a Space');
-  }
+  const { journeyPath } = urlInfo;
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
   const openContactLeadsDialog = () => {

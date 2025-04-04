@@ -10,7 +10,7 @@ import SpaceAdminSubspacesPage, {
   SpaceAdminSubspacesPageProps,
 } from '@/domain/space/admin/SpaceAdminSubspaces/SpaceAdminSubspacesPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
-import AdminSpaceCommunityPage, { AdminSpaceCommunityPageProps } from '../SpaceAdminCommunity/AdminSpaceCommunityPage';
+import SpaceAdminCommunityPage, { SpaceAdminCommunityPageProps } from '../SpaceAdminCommunity/SpaceAdminCommunityPage';
 import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
@@ -22,7 +22,7 @@ export const SpaceAdminL1Route: FC = () => {
   const { subspace, loading } = useSubSpace();
   const subspaceId = subspace?.id!;
 
-  const communityPageProps: AdminSpaceCommunityPageProps = {
+  const communityPageProps: SpaceAdminCommunityPageProps = {
     about: subspace?.about,
     roleSetId: subspace?.about.membership.roleSetID!,
     spaceId: subspace?.id,
@@ -66,7 +66,7 @@ export const SpaceAdminL1Route: FC = () => {
             <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
             <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
             <Route path="opportunities/*" element={<SpaceAdminSubspacesPage {...subspacesPageProps} />} />
-            <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
+            <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />
             <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
             <Route path="*" element={<Error404 />} />
           </Route>

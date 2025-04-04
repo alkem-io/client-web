@@ -14,9 +14,9 @@ import SpaceAdminStoragePage, {
   SpaceAdminStoragePageProps,
 } from '@/domain/space/admin/SpaceAdminStorage/SpaceAdminStoragePage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import AdminSpaceCommunityPage, {
-  AdminSpaceCommunityPageProps,
-} from '@/domain/space/admin/SpaceAdminCommunity/AdminSpaceCommunityPage';
+import SpaceAdminCommunityPage, {
+  SpaceAdminCommunityPageProps,
+} from '@/domain/space/admin/SpaceAdminCommunity/SpaceAdminCommunityPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 import SpaceAdminAccountPage, { SpaceAdminAccountPageProps } from '../SpaceAdminAccount/SpaceAdminAccountPage';
@@ -30,13 +30,13 @@ const SpaceAdminL0Route: FC = () => {
   const { space, loading } = useSpace();
   const spaceId = space.id!;
 
-  const communityPageProps: AdminSpaceCommunityPageProps = {
+  const communityPageProps: SpaceAdminCommunityPageProps = {
     about: space?.about,
     roleSetId: space?.about.membership!.roleSetID!,
     spaceId: space?.id,
     pendingMembershipsEnabled: true,
     communityGuidelinesEnabled: true,
-    communityGuidelinesTemplatesEnabled: false,
+    communityGuidelinesTemplatesEnabled: true,
     communityGuidelinesId: space?.about.guidelines!.id,
     level: space?.level,
     useL0Layout: true,
@@ -88,7 +88,7 @@ const SpaceAdminL0Route: FC = () => {
           <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
           <Route path="account" element={<SpaceAdminAccountPage {...accountPageProps} />} />
-          <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
+          <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
           <Route path="storage" element={<SpaceAdminStoragePage {...storagePageProps} />} />
