@@ -1,6 +1,6 @@
 import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import { Divider, ListItemIcon } from '@mui/material';
+import { Divider, ListItemIcon, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
@@ -61,12 +61,19 @@ export default function InnovationFlowStateMenu({
             </MenuItem>
             {!disableStateNumberChange && (
               <>
-                <MenuItem onClick={createMenuAction(onDelete)} disabled={isCurrentState}>
-                  <ListItemIcon>
-                    <DeleteOutlined fontSize="small" />
-                  </ListItemIcon>
-                  {t('components.innovationFlowSettings.stateEditor.deleteState')}
-                </MenuItem>
+                <Tooltip
+                  title={t('components.innovationFlowSettings.stateEditor.deleteDialog.activeStateWarning')}
+                  disableHoverListener={!isCurrentState}
+                >
+                  <span>
+                    <MenuItem onClick={createMenuAction(onDelete)} disabled={isCurrentState}>
+                      <ListItemIcon>
+                        <DeleteOutlined fontSize="small" />
+                      </ListItemIcon>
+                      {t('components.innovationFlowSettings.stateEditor.deleteState')}
+                    </MenuItem>
+                  </span>
+                </Tooltip>
                 <Divider />
                 <MenuItem onClick={createMenuAction(onAddStateAfter)}>
                   <ListItemIcon>
