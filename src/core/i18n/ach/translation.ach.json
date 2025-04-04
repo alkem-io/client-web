@@ -1014,7 +1014,8 @@
         },
         "deleteDialog": {
           "title": "crwdns18774:0crwdne18774:0",
-          "text": "crwdns18776:0crwdne18776:0"
+          "text": "crwdns18776:0crwdne18776:0",
+          "activeStateWarning": "crwdns36799:0crwdne36799:0"
         },
         "selectDifferentFlow": {
           "title": "crwdns18778:0crwdne18778:0",
@@ -2728,6 +2729,7 @@
       "references": "crwdns20532:0crwdne20532:0",
       "host": "crwdns20534:0crwdne20534:0",
       "success": "crwdns20536:0{{entity}}crwdne20536:0",
+      "error": "crwdns36801:0crwdne36801:0",
       "sections": {
         "knowledge": {
           "title": "crwdns20538:0crwdne20538:0",
@@ -2778,6 +2780,20 @@
           "title": "crwdns24922:0crwdne24922:0",
           "infoText": "crwdns20586:0crwdne20586:0",
           "refreshBtn": "crwdns20588:0crwdne20588:0"
+        },
+        "prompt": {
+          "title": "crwdns36803:0crwdne36803:0",
+          "infoText": "crwdns36805:0{ }crwdne36805:0",
+          "saveBtn": "crwdns36807:0crwdne36807:0"
+        },
+        "externalConfig": {
+          "title": "crwdns36809:0crwdne36809:0",
+          "infoText": "crwdns36811:0crwdne36811:0",
+          "apiKey": "crwdns36813:0crwdne36813:0",
+          "apiKeyPlaceholder": "crwdns36815:0{{value}}crwdne36815:0",
+          "assistantId": "crwdns36817:0crwdne36817:0",
+          "model": "crwdns36819:0crwdne36819:0",
+          "saveBtn": "crwdns36821:0crwdne36821:0"
         },
         "privacy": {
           "title": "crwdns24924:0crwdne24924:0",
