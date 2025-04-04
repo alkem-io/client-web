@@ -32,7 +32,7 @@ import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import Gutters from '@/core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
-import EntityConfirmDeleteDialog from '../../../../../shared/components/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '../../../shared/components/EntityConfirmDeleteDialog';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import {
   AuthorizationPrivilege,

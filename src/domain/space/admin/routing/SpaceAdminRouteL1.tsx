@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import ChallengeAuthorizationRoute from '@/domain/space/admin/toReview/ChallengeAuthorizationRoute';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceAdminSettingsPage, {
   SpaceAdminSettingsPageProps,
@@ -69,7 +68,6 @@ export const SpaceAdminL1Route: FC = () => {
             <Route path="opportunities/*" element={<SpaceAdminSubspacesPage {...subspacesPageProps} />} />
             <Route path="community" element={<AdminSpaceCommunityPage {...communityPageProps} />} />
             <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
-            <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
             <Route path="*" element={<Error404 />} />
           </Route>
         </Routes>

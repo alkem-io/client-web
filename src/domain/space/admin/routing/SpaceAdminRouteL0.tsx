@@ -17,13 +17,13 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import AdminSpaceCommunityPage, {
   AdminSpaceCommunityPageProps,
 } from '@/domain/space/admin/SpaceAdminCommunity/AdminSpaceCommunityPage';
-import ChallengesRoute from '@/domain/space/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 import SpaceAdminAccountPage, { SpaceAdminAccountPageProps } from '../SpaceAdminAccount/SpaceAdminAccountPage';
 import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
+import SpaceAdminSubspacesPage, { SpaceAdminSubspacesPageProps } from '../SpaceAdminSubspaces/SpaceAdminSubspacesPage';
 
 const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -75,9 +75,9 @@ const SpaceAdminL0Route: FC = () => {
     spaceId: spaceId,
   };
 
-  // const subspacesPageProps: SpaceAdminSubspacesPageProps = {
-  //   useL0Layout: true,
-  // };
+  const subspacesPageProps: SpaceAdminSubspacesPageProps = {
+    useL0Layout: true,
+  };
 
   return (
     <NonSpaceAdminRedirect spaceId={spaceId}>
@@ -92,7 +92,7 @@ const SpaceAdminL0Route: FC = () => {
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
           <Route path="storage" element={<SpaceAdminStoragePage {...storagePageProps} />} />
-          <Route path="challenges/*" element={<ChallengesRoute />} />
+          <Route path="challenges/*" element={<SpaceAdminSubspacesPage {...subspacesPageProps} />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </StorageConfigContextProvider>
