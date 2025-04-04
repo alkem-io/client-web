@@ -18,7 +18,7 @@ import {
   SvgIconComponent,
 } from '@mui/icons-material';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import { warn } from '@/core/logging/sentry/log';
 
 export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {

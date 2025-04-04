@@ -3,7 +3,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import InnovationHubSettingsPage from './InnovationHubSettingsPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 
 const InnovationHubsRoutes = () => (
   <StorageConfigContextProvider locationType="platform">

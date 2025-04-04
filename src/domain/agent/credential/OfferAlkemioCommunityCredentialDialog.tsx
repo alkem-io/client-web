@@ -6,7 +6,7 @@ import QRCode from '@/core/ui/qrCode/QRCode';
 import useContributionProvider, {
   ContributionDetails,
 } from '@/domain/community/profile/useContributionProvider/useContributionProvider';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import {
   Box,
   Button,
