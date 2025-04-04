@@ -15,7 +15,7 @@ import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
 import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import { buildUpdatesUrlLegacy } from '@/main/routing/urlBuilders';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -89,7 +89,7 @@ const SubspaceDialogs = ({
         open={dialogOpen === SubspaceDialog.Updates}
         onClose={handleClose}
         communityId={communityId}
-        shareUrl={buildUpdatesUrl(journeyUrl ?? '')}
+        shareUrl={buildUpdatesUrlLegacy(journeyUrl ?? '')}
         loading={false}
       />
       <InnovationFlowSettingsDialog

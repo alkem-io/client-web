@@ -9468,6 +9468,7 @@ export type UserSsiQuery = {
 
 export type CalloutPageCalloutQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
+  includeClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutPageCalloutQuery = {
@@ -9763,6 +9764,22 @@ export type CalloutPageCalloutQuery = {
             | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                flowState?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              }
             | undefined;
         }
       | undefined;

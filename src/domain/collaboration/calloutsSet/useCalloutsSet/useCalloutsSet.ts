@@ -37,6 +37,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   classification?: {
     flowState?: {
       tags: string[];
+      allowedValues: string[];
     };
   };
   type: CalloutType;
@@ -64,7 +65,7 @@ export type TypedCalloutDetails = TypedCallout &
     classification?: {
       flowState?: {
         tags: string[];
-        allowedValues?: string[];
+        allowedValues: string[];
       };
     };
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
