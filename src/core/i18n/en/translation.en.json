@@ -1014,7 +1014,8 @@
         },
         "deleteDialog": {
           "title": "Delete Phase?",
-          "text": "This action cannot be undone."
+          "text": "This action cannot be undone.",
+          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
           "title": "Find subspace template",
