@@ -23,7 +23,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   type,
   ...rest
 }) => {
-  const url = buildUpdatesUrl(rest.space?.about?.profile?.url || '');
+  const url = buildUpdatesUrl(rest.space?.about?.profile?.url ?? '');
 
   return (
     <ActivityBaseView

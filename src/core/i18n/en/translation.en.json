@@ -1014,7 +1014,8 @@
         },
         "deleteDialog": {
           "title": "Delete Phase?",
-          "text": "This action cannot be undone."
+          "text": "This action cannot be undone.",
+          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
           "title": "Find subspace template",
@@ -2719,6 +2720,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "error": "An error occurred.",
       "sections": {
         "knowledge": {
           "title": "Knowledge",
@@ -2769,6 +2771,20 @@
           "title": "Body of Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "saveBtn": "Save prompt"
+        },
+        "externalConfig": {
+          "title": "External Configuration",
+          "infoText": "The Virtual Contributor is powered by an external AI service. Please provide the following information to connect to the service.",
+          "apiKey": "API Key",
+          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
+          "assistantId": "Assistant ID",
+          "model": "Model",
+          "saveBtn": "Save Configuration"
         },
         "privacy": {
           "title": "Privacy",

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import PageContent from '@/core/ui/content/PageContent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -140,7 +139,7 @@ const SpaceCommunityPage = () => {
   });
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 1 }}>
       <PageContent>
         <InfoColumn>
           {tabDescription && (

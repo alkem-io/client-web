@@ -34,12 +34,18 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
   const { hasReadAccess, knowledgeBaseDescription } = useKnowledgeBase({ id: virtualContributor?.id });
 
   const references = virtualContributor?.profile?.references;
-  const vcType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
-  const isExternal =
-    vcType === AiPersonaBodyOfKnowledgeType.None && virtualContributor?.aiPersona?.engine !== AiPersonaEngine.Guidance;
-  const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
-  const hasKnowledgeBase = vcType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
-  const isAssistant = virtualContributor?.aiPersona?.engine === AiPersonaEngine.OpenaiAssistant;
+  const bodyOfKnowledgeType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
+  const engine = virtualContributor?.aiPersona?.engine;
+
+  const isExternal = [
+    AiPersonaEngine.GenericOpenai,
+    AiPersonaEngine.OpenaiAssistant,
+    AiPersonaEngine.LibraFlow,
+  ].includes(engine!);
+
+  const hasSpaceKnowledge = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+  const hasKnowledgeBase = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
+  const isAssistant = engine === AiPersonaEngine.OpenaiAssistant;
 
   const links = useMemo(() => {
     return groupBy(references, reference =>

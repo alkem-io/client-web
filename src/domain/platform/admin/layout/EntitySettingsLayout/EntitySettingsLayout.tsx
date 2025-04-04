@@ -35,7 +35,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
 
   return (
     <>
-      <EntityPageLayout currentSection={EntityPageSection.Settings} {...props}>
+      <EntityPageLayout currentSection={{ section: EntityPageSection.Settings }} {...props}>
         <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
           <EntitySettingsTabs
             tabs={subheaderTabs}

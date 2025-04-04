@@ -41,7 +41,8 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
                 content={latestMessage.message}
               />
             )}
-            <SeeMore subject={t('common.updates')} to="dashboard/updates" />
+            {/* The Updates dialog is in the first tab, SpaceDashboardPage */}
+            <SeeMore subject={t('common.updates')} to={shareUrl} />
           </PageContentBlock>
         ) : (
           <></>
