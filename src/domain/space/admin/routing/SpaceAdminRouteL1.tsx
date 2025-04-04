@@ -16,6 +16,7 @@ import SpaceAdminCommunicationsPage, {
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 import { useSpace } from '../../context/useSpace';
 import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export const SpaceAdminL1Route: FC = () => {
   const { space } = useSpace();
@@ -55,6 +56,9 @@ export const SpaceAdminL1Route: FC = () => {
 
   const subspacesPageProps: SpaceAdminSubspacesPageProps = {
     useL0Layout: false,
+    spaceId: subspaceId,
+    templatesEnabled: false,
+    level: SpaceLevel.L1,
   };
 
   return (

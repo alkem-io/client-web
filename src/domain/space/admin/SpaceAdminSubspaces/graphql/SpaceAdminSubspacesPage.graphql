@@ -2,13 +2,6 @@ query AdminSpaceSubspacesPage($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      subspaces {
-        id
-        level
-        about {
-          ...SpaceAboutCardAvatar
-        }
-      }
       templatesManager {
         id
         templatesSet {

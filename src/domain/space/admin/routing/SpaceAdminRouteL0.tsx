@@ -24,6 +24,7 @@ import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 import SpaceAdminSubspacesPage, { SpaceAdminSubspacesPageProps } from '../SpaceAdminSubspaces/SpaceAdminSubspacesPage';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -77,6 +78,9 @@ const SpaceAdminL0Route: FC = () => {
 
   const subspacesPageProps: SpaceAdminSubspacesPageProps = {
     useL0Layout: true,
+    spaceId: spaceId,
+    templatesEnabled: true,
+    level: SpaceLevel.L0,
   };
 
   return (

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/cards/journeyCardValueGetter';
-import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
@@ -110,7 +110,7 @@ const SpaceSubspacesPage = () => {
         childEntityCreateAccess={permissions.canCreateSubspaces}
         childEntityOnCreate={() => setCreateDialogOpen(true)}
         createSubentityDialog={
-          <JourneyCreationDialog
+          <SubspaceCreationDialog
             open={isCreateDialogOpen}
             icon={<SubspaceIcon2 fill="primary" />}
             journeyName={t('common.subspace')}

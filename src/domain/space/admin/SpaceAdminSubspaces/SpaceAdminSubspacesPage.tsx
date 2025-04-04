@@ -1,17 +1,22 @@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import SubspaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSubspace';
 import { FC, useCallback, useState } from 'react';
 import {
   refetchAdminSpaceSubspacesPageQuery,
-  refetchSpaceDashboardNavigationSubspacesQuery,
   refetchSubspacesInSpaceQuery,
+  useAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
   useSpaceTemplatesManagerQuery,
   useSubspacesInSpaceQuery,
+  useUpdateTemplateDefaultMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  SpaceLevel,
+  TemplateDefaultType,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import Gutters from '@/core/ui/grid/Gutters';
 import Loading from '@/core/ui/loading/Loading';
@@ -21,43 +26,70 @@ import SearchableList, { SearchableListItem } from '@/domain/platform/admin/comp
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
-import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import { SubspaceCreationDialog } from '../../components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
+import SubspaceIcon2 from '../../icons/SubspaceIcon2';
+import { OpportunityIcon } from '../../icons/OpportunityIcon';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
+  spaceId: string;
+  templatesEnabled: boolean;
+  level: SpaceLevel;
 }
 
-const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix }) => {
+const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
+  spaceId,
+  useL0Layout,
+  routePrefix,
+  templatesEnabled,
+  level,
+}) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { space } = useSpace();
-  const { subspace } = useSubSpace();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [selectedState, setSelectedState] = useState<string>();
+  const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
+  const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
-  const spaceId = space?.id!;
 
   const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
-    variables: { spaceId: subspace.id },
-    skip: !subspace.id,
+    variables: { spaceId },
+    skip: !spaceId,
   });
 
-  const subsubspaces =
+  const { data, loading: adminTemplatesLoading } = useAdminSpaceSubspacesPageQuery({
+    variables: {
+      spaceId: spaceId,
+    },
+    skip: !spaceId || !templatesEnabled,
+  });
+  const templateDefaults = data?.lookup.space?.templatesManager?.templateDefaults;
+  const defaultSubspaceTemplate = templateDefaults?.find(
+    templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
+  );
+
+  const subspaces =
     subspacesListQuery?.lookup.space?.subspaces?.map(s => ({
       id: s.id,
       profile: {
@@ -70,15 +102,9 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
       level: s.level,
     })) || [];
 
-  const [deleteOpportunity] = useDeleteSpaceMutation({
+  const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
-        spaceId,
-      }),
-      refetchAdminSpaceSubspacesPageQuery({
-        spaceId,
-      }),
-      refetchSpaceDashboardNavigationSubspacesQuery({
         spaceId,
       }),
     ],
@@ -87,7 +113,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
   });
 
   const handleDelete = (item: SearchableListItem) => {
-    return deleteOpportunity({
+    return deleteSpace({
       variables: {
         spaceId: item.id,
       },
@@ -98,14 +124,14 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
     onCompleted: () => {
       notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
     },
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: subspace.id })],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: spaceId })],
     awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
-        spaceID: subspace.id,
+        spaceID: spaceId,
         about: {
           profile: {
             displayName: value.displayName,
@@ -126,7 +152,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
       }
       navigate(buildSettingsUrl(result.about.profile.url));
     },
-    [navigate, createSubspace, subspace.id]
+    [navigate, createSubspace, spaceId]
   );
 
   // check for TemplateCreation privileges
@@ -153,11 +179,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
     }
   };
 
-  // const onDuplicateClick = (_item: SearchableListItem) => {
-  //   // todo: implement
-  //   //setSelectedItem(item);
-  // };
-
   const getDefaultTemplateValues = async () => {
     if (saveAsTemplateDialogSelectedItem?.id) {
       const { data } = await fetchCollaborationId({
@@ -176,11 +197,31 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
     }
   };
 
-  const getActions = (item: SearchableListItem) => (
+  const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
+  const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
+    if (!defaultSubspaceTemplate) {
+      return;
+    }
+    await updateTemplateDefault({
+      variables: {
+        templateDefaultID: defaultSubspaceTemplate?.id,
+        templateID: collaborationTemplateId,
+      },
+      refetchQueries: [
+        refetchAdminSpaceSubspacesPageQuery({
+          spaceId,
+        }),
+      ],
+      awaitRefetchQueries: true,
+    });
+    setSelectCollaborationTemplateDialogOpen(false);
+  };
+
+  const getSubSpaceActions = (item: SearchableListItem) => (
     <>
       {/* <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
-        Duplicate Subspace
-      </MenuItemWithIcon> */}
+          Duplicate Subspace
+        </MenuItemWithIcon> */}
       {canCreateTemplate && (
         <MenuItemWithIcon
           iconComponent={DownloadForOfflineOutlined}
@@ -195,34 +236,89 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
     </>
   );
 
-  if (loading) return <Loading text={'Loading spaces'} />;
+  // Show the correct icon
+  const subspaceIcon = level === SpaceLevel.L0 ? <SubspaceIcon2 fill="primary" /> : <OpportunityIcon fill="primary" />;
+
+  if (loading || adminTemplatesLoading) return <Loading text={'Loading spaces'} />;
   return (
-    <SubspaceSettingsLayout currentTab={SettingsSection.Subsubspaces} tabRoutePrefix={routePrefix}>
+    <LayoutSwitcher currentTab={SettingsSection.Subsubspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <>
-        <Box display="flex" flexDirection="column">
-          <Button
-            startIcon={<AddOutlinedIcon />}
-            variant="contained"
-            onClick={() => setOpen(true)}
-            sx={{ alignSelf: 'end', marginBottom: 2 }}
-          >
-            {t('buttons.create')}
-          </Button>
-          <Gutters disablePadding>
-            <SearchableList data={subsubspaces} getActions={getActions} />
-          </Gutters>
-        </Box>
-        <JourneyCreationDialog
-          open={open}
-          icon={<OpportunityIcon />}
+        {templatesEnabled && (
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('pages.admin.space.sections.subspaces.defaultSettings.title')} />
+            <Caption>{t('pages.admin.space.sections.subspaces.defaultSettings.description')}</Caption>
+            {defaultSubspaceTemplate?.template ? (
+              <>
+                <BlockSectionTitle>{defaultSubspaceTemplate.template.profile.displayName}</BlockSectionTitle>
+                <InnovationFlowProfileView
+                  innovationFlow={defaultSubspaceTemplate.template.collaboration?.innovationFlow}
+                />
+                <InnovationFlowStates
+                  states={defaultSubspaceTemplate.template.collaboration?.innovationFlow.states}
+                  selectedState={selectedState}
+                  onSelectState={state =>
+                    setSelectedState(currentState =>
+                      currentState === state.displayName ? undefined : state.displayName
+                    )
+                  }
+                />
+                <InnovationFlowCalloutsPreview
+                  callouts={defaultSubspaceTemplate.template.collaboration?.calloutsSet.callouts}
+                  selectedState={selectedState}
+                  loading={loading}
+                />
+              </>
+            ) : (
+              <BlockSectionTitle>{t('context.L1.template.defaultTemplate')}</BlockSectionTitle>
+            )}
+
+            <Actions justifyContent="end">
+              <Button
+                variant="outlined"
+                startIcon={<Cached />}
+                onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
+              >
+                {t(
+                  'pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.selectDifferentTemplate'
+                )}
+              </Button>
+            </Actions>
+          </PageContentBlock>
+        )}
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('common.subspaces')} />
+          <Box display="flex" flexDirection="column">
+            <Button
+              startIcon={<AddOutlinedIcon />}
+              variant="contained"
+              onClick={() => setJourneyCreationDialogOpen(true)}
+              sx={{ alignSelf: 'end', marginBottom: 2 }}
+            >
+              {t('buttons.create')}
+            </Button>
+            <Gutters disablePadding>
+              <SearchableList data={subspaces} getActions={getSubSpaceActions} loading={loading} />
+            </Gutters>
+          </Box>
+        </PageContentBlock>
+        <SelectDefaultCollaborationTemplateDialog
+          spaceId={spaceId}
+          open={selectCollaborationTemplateDialogOpen}
+          defaultCollaborationTemplateId={defaultSubspaceTemplate?.template?.id}
+          onClose={() => setSelectCollaborationTemplateDialogOpen(false)}
+          onSelectCollaborationTemplate={handleSelectCollaborationTemplate}
+        />
+        <SubspaceCreationDialog
+          open={journeyCreationDialogOpen}
+          icon={subspaceIcon}
           journeyName={t('common.subspace')}
-          onClose={() => setOpen(false)}
+          onClose={() => setJourneyCreationDialogOpen(false)}
           onCreate={handleCreate}
           formComponent={CreateSubspaceForm}
         />
         <EntityConfirmDeleteDialog
-          entity={t('common.subsubspace')}
-          open={!!deleteDialogSelectedItem}
+          entity={t('common.subspace')}
+          open={Boolean(deleteDialogSelectedItem)}
           onClose={() => setDeleteDialogSelectedItem(undefined)}
           onDelete={onDeleteConfirmation}
           description={'components.deleteEntity.confirmDialog.descriptionShort'}
@@ -237,7 +333,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({ routePrefix
           />
         )}
       </>
-    </SubspaceSettingsLayout>
+    </LayoutSwitcher>
   );
 };
 

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../CreateSubspaceForm';
@@ -50,7 +50,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   );
 
   return (
-    <JourneyCreationDialog
+    <SubspaceCreationDialog
       icon={<SubspaceIcon2 fill="primary" />}
       open={isVisible}
       journeyName={t('common.subspace')}
