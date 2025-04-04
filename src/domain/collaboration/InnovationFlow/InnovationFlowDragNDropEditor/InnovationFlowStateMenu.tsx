@@ -61,7 +61,7 @@ export default function InnovationFlowStateMenu({
             </MenuItem>
             {!disableStateNumberChange && (
               <>
-                <MenuItem onClick={createMenuAction(onDelete)}>
+                <MenuItem onClick={createMenuAction(onDelete)} disabled={isCurrentState}>
                   <ListItemIcon>
                     <DeleteOutlined fontSize="small" />
                   </ListItemIcon>
