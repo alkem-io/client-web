@@ -9,8 +9,8 @@ import {
   NotesOutlined,
   PersonOutlined,
 } from '@mui/icons-material';
-import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
+import { SpaceL2Icon } from '@/domain/space/icons/SpaceL2Icon';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
@@ -24,8 +24,8 @@ const ActivityIcon: Record<
   [ActivityEventType.CalloutPostCreated]: NotesOutlined,
   [ActivityEventType.CalloutPostComment]: ChatBubbleOutlineOutlined,
   [ActivityEventType.CalloutLinkCreated]: LinkOutlined,
-  [ActivityEventType.ChallengeCreated]: SubspaceIcon,
-  [ActivityEventType.OpportunityCreated]: OpportunityIcon,
+  [ActivityEventType.ChallengeCreated]: SpaceL1Icon,
+  [ActivityEventType.OpportunityCreated]: SpaceL2Icon,
   [ActivityEventType.UpdateSent]: MicOutlined,
   [ActivityEventType.CalendarEventCreated]: CalendarMonthOutlined,
   [ActivityEventType.DiscussionComment]: ChatBubbleOutlineOutlined,

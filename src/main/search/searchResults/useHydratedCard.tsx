@@ -14,13 +14,13 @@ import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hoo
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
-import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '@/domain/space/components/cards/_deprecated/CardParentJourneySegment';
-import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
+import { CalloutIcon } from '@/domain/collaboration/_deprecated/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
@@ -98,16 +98,16 @@ const hydrateSpaceCard = (
       return null;
     }
 
-    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceIcon : SubspaceIcon;
+    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceL0Icon : SpaceL1Icon;
 
     return (
-      <CardParentJourneySegment
+      <CardParentSpaceSegment
         iconComponent={parentIcon}
-        parentJourneyUri={data.parentSpace?.about.profile.url ?? ''}
+        parentSpaceUri={data.parentSpace?.about.profile.url ?? ''}
         locked={!data.parentSpace?.about.isContentPublic}
       >
         {data.parentSpace?.about.profile.displayName}
-      </CardParentJourneySegment>
+      </CardParentSpaceSegment>
     );
   };
 
@@ -143,7 +143,7 @@ const getContributionParentInformation = (
     displayName: data.space.about.profile.displayName,
     locked: !data.space?.about.isContentPublic,
     url: data.space.about.profile.url,
-    icon: spaceLevelIcon[data.space.level] ?? SpaceIcon,
+    icon: spaceLevelIcon[data.space.level] ?? SpaceL0Icon,
   };
 };
 
@@ -168,12 +168,12 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
       url={data.post.profile.url}
       parentSegment={
         <CardContent>
-          <CardParentJourneySegment iconComponent={CalloutIcon} parentJourneyUri={data.callout.framing.profile.url}>
+          <CardParentSpaceSegment iconComponent={CalloutIcon} parentSpaceUri={data.callout.framing.profile.url}>
             {data.callout.framing.profile.displayName}
-          </CardParentJourneySegment>
-          <CardParentJourneySegment iconComponent={parent.icon} parentJourneyUri={parent.url} locked={parent.locked}>
+          </CardParentSpaceSegment>
+          <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>
             {parent.displayName}
-          </CardParentJourneySegment>
+          </CardParentSpaceSegment>
         </CardContent>
       }
     />

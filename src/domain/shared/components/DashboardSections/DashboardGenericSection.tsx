@@ -1,7 +1,7 @@
 import { Caption } from '@/core/ui/typography';
 import { Box } from '@mui/material';
 import React, { FC, PropsWithChildren } from 'react';
-import Section, { SectionSpacer } from '../Section/Section';
+import Section, { SectionSpacer } from '../_deprecated/Section';
 import SectionHeader from '../Section/SectionHeader';
 
 export interface DashboardGenericSectionProps extends PropsWithChildren {

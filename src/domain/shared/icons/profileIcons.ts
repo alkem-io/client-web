@@ -3,7 +3,7 @@ import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import { CalloutIcon } from '@/domain/collaboration/_deprecated/CalloutIcon';
 import {
   Campaign,
   ChatBubbleOutline,
@@ -18,7 +18,7 @@ import {
   SvgIconComponent,
 } from '@mui/icons-material';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { warn } from '@/core/logging/sentry/log';
 
 export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
@@ -42,7 +42,7 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
     case ProfileType.Post:
       return calloutIcons.POST;
     case ProfileType.SpaceAbout:
-      return SpaceIcon;
+      return SpaceL0Icon;
     case ProfileType.User:
       return PersonOutline;
     case ProfileType.UserGroup:

@@ -13,7 +13,7 @@ import CardTags from '@/core/ui/card/CardTags';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
-import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
+import SpaceL1Icon2 from '@/domain/space/_deprecated/SpaceL1Icon2';
 
 interface CollaborationTemplateCardProps extends TemplateCardProps {
   template: CollaborationTemplate;
@@ -29,7 +29,7 @@ const CollaborationTemplateCard = ({ template, innovationPack, loading, ...props
 
   return (
     <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName} iconComponent={SubspaceIcon2}>
+      <CardHeader title={template?.profile.displayName} iconComponent={SpaceL1Icon2}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}

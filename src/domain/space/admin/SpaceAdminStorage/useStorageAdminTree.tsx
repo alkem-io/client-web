@@ -15,9 +15,9 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '@/domain/shared/icons/profileIcons';
-import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
-import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import { OpportunityIcon } from '@/domain/space/icons/OpportunityIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
+import { SpaceL2Icon } from '@/domain/space/icons/SpaceL2Icon';
 import { FolderCopyOutlined } from '@mui/icons-material';
 import { StorageAdminTreeItem } from './model/StorageAdminTreeItem';
 
@@ -40,12 +40,12 @@ interface Provided {
 export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
   switch (level) {
     case SpaceLevel.L1:
-      return SubspaceIcon;
+      return SpaceL1Icon;
     case SpaceLevel.L2:
-      return OpportunityIcon;
+      return SpaceL2Icon;
     case SpaceLevel.L0:
     default:
-      return SpaceIcon;
+      return SpaceL0Icon;
   }
 };
 

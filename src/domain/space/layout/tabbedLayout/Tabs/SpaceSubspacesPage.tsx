@@ -1,10 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import {
-  journeyCardTagsGetter,
-  journeyCardValueGetter,
-} from '@/domain/space/components/cards/_deprecated/journeyCardValueGetter';
+import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/_deprecated/journeyCardValueGetter';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
@@ -12,9 +9,9 @@ import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
-import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
+import SpaceL1Icon2 from '@/domain/space/_deprecated/SpaceL1Icon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -92,7 +89,7 @@ const SpaceSubspacesPage = () => {
       <ChildJourneyView
         childEntities={subspaces}
         level={level}
-        childEntitiesIcon={<SubspaceIcon />}
+        childEntitiesIcon={<SpaceL1Icon />}
         childEntityValueGetter={journeyCardValueGetter}
         childEntityTagsGetter={journeyCardTagsGetter}
         state={{ loading: loading, error: error }}
@@ -115,7 +112,7 @@ const SpaceSubspacesPage = () => {
         createSubentityDialog={
           <SubspaceCreationDialog
             open={isCreateDialogOpen}
-            icon={<SubspaceIcon2 fill="primary" />}
+            icon={<SpaceL1Icon2 fill="primary" />}
             journeyName={t('common.subspace')}
             onClose={() => setCreateDialogOpen(false)}
             onCreate={handleCreate}

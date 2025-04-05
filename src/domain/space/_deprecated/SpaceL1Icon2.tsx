@@ -1,7 +1,10 @@
 import { SvgIconComponent } from '@mui/icons-material';
 import { SvgIcon, SvgIconProps } from '@mui/material';
 
-const SubspaceIcon2: SvgIconComponent = (props: SvgIconProps) => {
+/**
+ @deprecated remove one of the two L1 icons
+*/
+const SpaceL1Icon2: SvgIconComponent = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props}>
       <path
@@ -14,6 +17,6 @@ const SubspaceIcon2: SvgIconComponent = (props: SvgIconProps) => {
   );
 };
 
-SubspaceIcon2.muiName = 'subspace';
+SpaceL1Icon2.muiName = 'subspace';
 
-export default SubspaceIcon2;
+export default SpaceL1Icon2;
