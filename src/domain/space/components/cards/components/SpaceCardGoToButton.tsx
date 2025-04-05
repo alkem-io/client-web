@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import ButtonNarrow from '@/core/ui/actions/ButtonNarrow';
 import RouterLink from '@/core/ui/link/RouterLink';
 
-interface JourneyCardGoToButtonProps {
-  journeyUri: string;
+interface SpaceCardGoToButtonProps {
+  spaceUri: string;
   subspace?: boolean;
 }
 
-const JourneyCardGoToButton = ({ journeyUri, subspace }: JourneyCardGoToButtonProps) => {
+const SpaceCardGoToButton = ({ spaceUri: journeyUri, subspace }: SpaceCardGoToButtonProps) => {
   const { t } = useTranslation();
 
   return (
@@ -19,4 +19,4 @@ const JourneyCardGoToButton = ({ journeyUri, subspace }: JourneyCardGoToButtonPr
   );
 };
 
-export default JourneyCardGoToButton;
+export default SpaceCardGoToButton;

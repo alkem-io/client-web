@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import JourneyCard from '@/domain/space/components/cards/JourneyCard/JourneyCard';
-import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
+import SpaceCard2 from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';
@@ -87,15 +87,15 @@ const SingleInvitationFull = ({
                   flexDirection={isMobile ? 'column' : 'row'}
                   alignItems={isMobile ? 'center' : 'start'}
                 >
-                  <JourneyCard
+                  <SpaceCard2
                     iconComponent={spaceIconByLevel[invitation.space.level]}
                     header={invitation.space.about.profile.displayName}
                     tags={invitation.space.about.profile.tagset?.tags ?? []}
                     banner={invitation.space.about.profile.cardBanner}
                     journeyUri={invitation.space.about.profile.url}
                   >
-                    <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
-                  </JourneyCard>
+                    <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+                  </SpaceCard2>
                   <Gutters disablePadding>
                     <Caption>
                       <DetailedActivityDescription

@@ -25,7 +25,7 @@ import { AvatarSize } from '@/core/ui/avatar/Avatar';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
-export const JourneyCardHorizontalSkeleton = () => (
+export const SpaceCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
     <BadgeCardView
       visual={<Skeleton variant="rectangular" sx={{ borderRadius: 0.5, width: gutters(3), height: gutters(3) }} />}
@@ -36,7 +36,7 @@ export const JourneyCardHorizontalSkeleton = () => (
   </ElevatedPaper>
 );
 
-export interface JourneyCardHorizontalProps {
+export interface SpaceCardHorizontalProps {
   space: {
     about: SpaceAboutLightModel;
     community?: {
@@ -63,7 +63,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={RouterLink} {...props} />;
 
-const JourneyCardHorizontal = ({
+const SpaceCardHorizontal = ({
   space,
   deepness = !space.level || space.level === SpaceLevel.L1 ? 0 : 1,
   seamless,
@@ -72,7 +72,7 @@ const JourneyCardHorizontal = ({
   size,
   disableHoverState = false,
   disableTagline = false,
-}: JourneyCardHorizontalProps) => {
+}: SpaceCardHorizontalProps) => {
   const Icon = space.level ? spaceIconByLevel[space.level] : undefined;
 
   const { t } = useTranslation();
@@ -120,4 +120,4 @@ const JourneyCardHorizontal = ({
   );
 };
 
-export default JourneyCardHorizontal;
+export default SpaceCardHorizontal;

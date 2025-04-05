@@ -3,9 +3,9 @@ import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/Pen
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import JourneyCard from '@/domain/space/components/cards/JourneyCard/JourneyCard';
+import SpaceCard2 from '@/domain/space/components/cards/SpaceCard2';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
-import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';
@@ -101,7 +101,7 @@ const InvitationDialog = ({
                     flexDirection={isMobile ? 'column' : 'row'}
                     alignItems={isMobile ? 'center' : 'start'}
                   >
-                    <JourneyCard
+                    <SpaceCard2
                       iconComponent={spaceIconByLevel[invitation.space.level]}
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
@@ -109,8 +109,8 @@ const InvitationDialog = ({
                       journeyUri={invitation.space.about.profile.url}
                       onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >
-                      <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
-                    </JourneyCard>
+                      <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+                    </SpaceCard2>
                     <Gutters disablePadding>
                       <Caption>
                         <DetailedActivityDescription

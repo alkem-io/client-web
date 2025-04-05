@@ -4,15 +4,15 @@ import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-sch
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCard, { JourneyCardProps } from '@/domain/space/components/cards/JourneyCard/JourneyCard';
-import JourneyCardDescription from '@/domain/space/components/cards/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '@/domain/space/components/cards/JourneyCard/JourneyCardSpacing';
-import JourneyCardGoToButton from '@/domain/space/components/cards/JourneyCard/JourneyCardGoToButton';
-import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
-import StackedAvatar from './StackedAvatar';
+import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
+import SpaceCardSpacing from '@/domain/space/components/cards/components/SpaceCardSpacing';
+import SpaceCardGoToButton from '@/domain/space/components/cards/components/SpaceCardGoToButton';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import StackedAvatar from './components/StackedAvatar';
 import { ReactNode } from 'react';
 
-interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion'> {
+interface SpaceSubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
   tagline?: string;
   displayName: string;
   vision: string;
@@ -51,7 +51,7 @@ const SpaceSubspaceCard = ({
   const isSubspace = level !== SpaceLevel.L0;
 
   return (
-    <JourneyCard
+    <SpaceCard2
       iconComponent={HubOutlined}
       header={
         <>
@@ -68,13 +68,13 @@ const SpaceSubspaceCard = ({
       visual={<StackedAvatar avatarUris={avatarUris} />}
       expansion={
         <>
-          <JourneyCardDescription>{vision}</JourneyCardDescription>
-          <JourneyCardSpacing />
+          <SpaceCardDescription>{vision}</SpaceCardDescription>
+          <SpaceCardSpacing />
         </>
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} />
+          <SpaceCardGoToButton spaceUri={props.journeyUri} />
         </CardActions>
       }
       bannerOverlay={
@@ -85,8 +85,8 @@ const SpaceSubspaceCard = ({
       }
       {...props}
     >
-      <JourneyCardTagline>{tagline ?? ''}</JourneyCardTagline>
-    </JourneyCard>
+      <SpaceCardTagline>{tagline ?? ''}</SpaceCardTagline>
+    </SpaceCard2>
   );
 };
 

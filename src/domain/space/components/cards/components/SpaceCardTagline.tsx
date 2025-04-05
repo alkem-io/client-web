@@ -2,12 +2,12 @@ import React, { ReactNode } from 'react';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { CardText } from '@/core/ui/typography';
 
-interface JourneyCardTaglineProps {
+interface SpaceCardTaglineProps {
   children: Exclude<ReactNode, boolean | null | undefined>;
 }
 
-const JourneyCardTagline = ({ children }: JourneyCardTaglineProps) => {
+const SpaceCardTagline = ({ children }: SpaceCardTaglineProps) => {
   return <CardText sx={webkitLineClamp(3, { keepMinHeight: true })}>{children}</CardText>;
 };
 
-export default JourneyCardTagline;
+export default SpaceCardTagline;

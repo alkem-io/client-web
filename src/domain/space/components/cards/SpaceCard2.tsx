@@ -10,13 +10,13 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
-import { JourneyCardBanner } from './Banner';
+import { JourneyCardBanner } from './components/Banner';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
-import { SpaceIcon } from '../../../icons/SpaceIcon';
+import { SpaceIcon } from '../../icons/SpaceIcon';
 
-export interface JourneyCardProps extends ContributeCardProps {
+export interface SpaceCard2Props extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
   banner?: JourneyCardBanner;
@@ -32,7 +32,7 @@ export interface JourneyCardProps extends ContributeCardProps {
   visual?: ReactNode;
 }
 
-const JourneyCard = ({
+const SpaceCard2 = ({
   iconComponent: Icon = SpaceIcon,
   header,
   banner,
@@ -47,7 +47,7 @@ const JourneyCard = ({
   children,
   visual,
   ...containerProps
-}: PropsWithChildren<JourneyCardProps>) => {
+}: PropsWithChildren<SpaceCard2Props>) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -97,4 +97,4 @@ const JourneyCard = ({
   );
 };
 
-export default JourneyCard;
+export default SpaceCard2;

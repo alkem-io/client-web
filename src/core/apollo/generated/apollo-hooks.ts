@@ -16201,8 +16201,8 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
   return { query: SpacePrivilegesDocument, variables: variables };
 }
 
-export const ChildJourneyPageBannerDocument = gql`
-  query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
+export const SubspacePageBannerDocument = gql`
+  query SubspacePageBanner($level0Space: UUID!, $spaceId: UUID!) {
     lookup {
       level0Space: space(ID: $level0Space) {
         id
@@ -16244,56 +16244,56 @@ export const ChildJourneyPageBannerDocument = gql`
 `;
 
 /**
- * __useChildJourneyPageBannerQuery__
+ * __useSubspacePageBannerQuery__
  *
- * To run a query within a React component, call `useChildJourneyPageBannerQuery` and pass it any options that fit your needs.
- * When your component renders, `useChildJourneyPageBannerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubspacePageBannerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspacePageBannerQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChildJourneyPageBannerQuery({
+ * const { data, loading, error } = useSubspacePageBannerQuery({
  *   variables: {
  *      level0Space: // value for 'level0Space'
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useChildJourneyPageBannerQuery(
+export function useSubspacePageBannerQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChildJourneyPageBannerQuery,
-    SchemaTypes.ChildJourneyPageBannerQueryVariables
+    SchemaTypes.SubspacePageBannerQuery,
+    SchemaTypes.SubspacePageBannerQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChildJourneyPageBannerQuery, SchemaTypes.ChildJourneyPageBannerQueryVariables>(
-    ChildJourneyPageBannerDocument,
+  return Apollo.useQuery<SchemaTypes.SubspacePageBannerQuery, SchemaTypes.SubspacePageBannerQueryVariables>(
+    SubspacePageBannerDocument,
     options
   );
 }
 
-export function useChildJourneyPageBannerLazyQuery(
+export function useSubspacePageBannerLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChildJourneyPageBannerQuery,
-    SchemaTypes.ChildJourneyPageBannerQueryVariables
+    SchemaTypes.SubspacePageBannerQuery,
+    SchemaTypes.SubspacePageBannerQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChildJourneyPageBannerQuery, SchemaTypes.ChildJourneyPageBannerQueryVariables>(
-    ChildJourneyPageBannerDocument,
+  return Apollo.useLazyQuery<SchemaTypes.SubspacePageBannerQuery, SchemaTypes.SubspacePageBannerQueryVariables>(
+    SubspacePageBannerDocument,
     options
   );
 }
 
-export type ChildJourneyPageBannerQueryHookResult = ReturnType<typeof useChildJourneyPageBannerQuery>;
-export type ChildJourneyPageBannerLazyQueryHookResult = ReturnType<typeof useChildJourneyPageBannerLazyQuery>;
-export type ChildJourneyPageBannerQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChildJourneyPageBannerQuery,
-  SchemaTypes.ChildJourneyPageBannerQueryVariables
+export type SubspacePageBannerQueryHookResult = ReturnType<typeof useSubspacePageBannerQuery>;
+export type SubspacePageBannerLazyQueryHookResult = ReturnType<typeof useSubspacePageBannerLazyQuery>;
+export type SubspacePageBannerQueryResult = Apollo.QueryResult<
+  SchemaTypes.SubspacePageBannerQuery,
+  SchemaTypes.SubspacePageBannerQueryVariables
 >;
-export function refetchChildJourneyPageBannerQuery(variables: SchemaTypes.ChildJourneyPageBannerQueryVariables) {
-  return { query: ChildJourneyPageBannerDocument, variables: variables };
+export function refetchSubspacePageBannerQuery(variables: SchemaTypes.SubspacePageBannerQueryVariables) {
+  return { query: SubspacePageBannerDocument, variables: variables };
 }
 
 export const JourneyBreadcrumbsSpaceDocument = gql`
@@ -16464,78 +16464,6 @@ export function refetchSpaceDashboardNavigationSubspacesQuery(
   variables: SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
 ) {
   return { query: SpaceDashboardNavigationSubspacesDocument, variables: variables };
-}
-
-export const SpaceDashboardNavigationSubspacesAuthDocument = gql`
-  query SpaceDashboardNavigationSubspacesAuth($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceDashboardNavigationSubspacesAuthQuery__
- *
- * To run a query within a React component, call `useSpaceDashboardNavigationSubspacesAuthQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceDashboardNavigationSubspacesAuthQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceDashboardNavigationSubspacesAuthQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceDashboardNavigationSubspacesAuthQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
-  >(SpaceDashboardNavigationSubspacesAuthDocument, options);
-}
-
-export function useSpaceDashboardNavigationSubspacesAuthLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
-    SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
-  >(SpaceDashboardNavigationSubspacesAuthDocument, options);
-}
-
-export type SpaceDashboardNavigationSubspacesAuthQueryHookResult = ReturnType<
-  typeof useSpaceDashboardNavigationSubspacesAuthQuery
->;
-export type SpaceDashboardNavigationSubspacesAuthLazyQueryHookResult = ReturnType<
-  typeof useSpaceDashboardNavigationSubspacesAuthLazyQuery
->;
-export type SpaceDashboardNavigationSubspacesAuthQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceDashboardNavigationSubspacesAuthQuery,
-  SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
->;
-export function refetchSpaceDashboardNavigationSubspacesAuthQuery(
-  variables: SchemaTypes.SpaceDashboardNavigationSubspacesAuthQueryVariables
-) {
-  return { query: SpaceDashboardNavigationSubspacesAuthDocument, variables: variables };
 }
 
 export const SpaceEntitlementsDocument = gql`

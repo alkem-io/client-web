@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Box } from '@mui/material';
 import CardImage from './CardImage';
-import JourneyCardBannerPlaceholder from '@/domain/space/components/cards/JourneyCard/JourneyCardBannerPlaceholder';
+import SpaceCardBannerPlaceholder from '@/domain/space/components/cards/components/SpaceCardBannerPlaceholder';
 
 type CardBannerProps = {
   src?: string;
@@ -11,7 +11,7 @@ type CardBannerProps = {
 
 const CardBanner = ({ src, alt, overlay }: CardBannerProps) => (
   <Box position="relative">
-    {src ? <CardImage src={src} alt={alt} /> : <JourneyCardBannerPlaceholder />}
+    {src ? <CardImage src={src} alt={alt} /> : <SpaceCardBannerPlaceholder />}
     {overlay}
   </Box>
 );

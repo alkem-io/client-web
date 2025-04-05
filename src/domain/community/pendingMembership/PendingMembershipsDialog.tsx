@@ -12,9 +12,9 @@ import {
   usePendingMemberships,
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import JourneyCard from '@/domain/space/components/cards/JourneyCard/JourneyCard';
+import SpaceCard2 from '@/domain/space/components/cards/SpaceCard2';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -127,17 +127,15 @@ const PendingMembershipsDialog = () => {
                   <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
-                        <JourneyCard
+                        <SpaceCard2
                           iconComponent={spaceIconByLevel[hydratedApplication.space.level]}
                           header={hydratedApplication.space.about.profile.displayName}
                           tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.about.profile.cardBanner}
                           journeyUri={hydratedApplication.space.about.profile.url}
                         >
-                          <JourneyCardTagline>
-                            {hydratedApplication.space.about.profile.tagline ?? ''}
-                          </JourneyCardTagline>
-                        </JourneyCard>
+                          <SpaceCardTagline>{hydratedApplication.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+                        </SpaceCard2>
                       )
                     }
                   </ApplicationHydrator>

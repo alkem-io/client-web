@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 import SpaceChildJourneyCard, {
   SpaceChildJourneyCardProps,
-} from '@/domain/space/components/cards/SpaceChildJourneyCard/SpaceChildJourneyCard';
-import { SubspaceIcon } from '../../icons/SubspaceIcon';
-import CardParentJourneySegment from '@/domain/space/components/cards/SpaceChildJourneyCard/CardParentJourneySegment';
+} from '@/domain/space/components/cards/_deprecated/SpaceSubspaceCard2/SpaceChildJourneyCard';
+import { SubspaceIcon } from '../../../icons/SubspaceIcon';
+import CardParentJourneySegment from '@/domain/space/components/cards/_deprecated/SpaceSubspaceCard2/CardParentJourneySegment';
 import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardGoToButton from '@/domain/space/components/cards/JourneyCard/JourneyCardGoToButton';
+import SpaceCardGoToButton from '@/domain/space/components/cards/components/SpaceCardGoToButton';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ const SubspaceCard = ({ spaceDisplayName, spaceUri, spaceVisibility, ...props }:
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace />
+          <SpaceCardGoToButton spaceUri={props.journeyUri} subspace />
         </CardActions>
       }
       bannerOverlay={ribbon}

@@ -13,7 +13,7 @@ import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
-type JourneyTileProps = {
+type SpaceTileProps = {
   journey:
     | {
         about: SpaceAboutLightModel;
@@ -25,10 +25,10 @@ type JourneyTileProps = {
 
 export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
 
-const JOURNEY_TITLE_CLASS_NAME = 'JourneyTitle';
+const SPACE_TITLE_CLASS_NAME = 'JourneyTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const JourneyTile = ({ journey, columns = 3 }: JourneyTileProps) => {
+const SpaceTile = ({ journey, columns = 3 }: SpaceTileProps) => {
   const isPrivate = !journey?.about.isContentPublic;
   return (
     <GridItem columns={columns}>
@@ -64,7 +64,7 @@ const JourneyTile = ({ journey, columns = 3 }: JourneyTileProps) => {
               bottom={0}
               left={0}
               right={0}
-              className={JOURNEY_TITLE_CLASS_NAME}
+              className={SPACE_TITLE_CLASS_NAME}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -86,4 +86,4 @@ const JourneyTile = ({ journey, columns = 3 }: JourneyTileProps) => {
   );
 };
 
-export default memo(JourneyTile);
+export default memo(SpaceTile);

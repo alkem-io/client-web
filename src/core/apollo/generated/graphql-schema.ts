@@ -21274,12 +21274,12 @@ export type SpacePrivilegesQuery = {
   };
 };
 
-export type ChildJourneyPageBannerQueryVariables = Exact<{
+export type SubspacePageBannerQueryVariables = Exact<{
   level0Space: Scalars['UUID'];
   spaceId: Scalars['UUID'];
 }>;
 
-export type ChildJourneyPageBannerQuery = {
+export type SubspacePageBannerQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -21499,26 +21499,6 @@ export type SpaceDashboardNavigationSubspacesQuery = {
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           }>;
-        }
-      | undefined;
-  };
-};
-
-export type SpaceDashboardNavigationSubspacesAuthQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceDashboardNavigationSubspacesAuthQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
         }
       | undefined;
   };

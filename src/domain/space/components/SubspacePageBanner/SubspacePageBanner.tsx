@@ -1,9 +1,9 @@
-import JourneyPageBannerCard from '../cards/JourneyPageBannerCard/JourneyPageBannerCard';
+import SpacePageBannerCard from '../cards/components/SpacePageBannerCard';
 import PageBanner, { PageBannerProps } from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useChildJourneyPageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SubspacePageBannerProps extends Omit<PageBannerProps, 'banner'> {
   journeyId: string | undefined;
@@ -11,7 +11,7 @@ interface SubspacePageBannerProps extends Omit<PageBannerProps, 'banner'> {
 }
 
 const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspacePageBannerProps) => {
-  const { data } = useChildJourneyPageBannerQuery({
+  const { data } = useSubspacePageBannerQuery({
     variables: {
       level0Space: levelZeroSpaceId!,
       spaceId: journeyId!,
@@ -33,7 +33,7 @@ const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspaceP
   return (
     <PageBanner
       banner={bannerVisual}
-      cardComponent={JourneyPageBannerCard}
+      cardComponent={SpacePageBannerCard}
       displayName={data?.lookup.space?.about.profile.displayName ?? ''}
       tagline={data?.lookup.space?.about.profile.tagline ?? ''}
       avatar={data?.lookup.space?.about.profile.avatar}

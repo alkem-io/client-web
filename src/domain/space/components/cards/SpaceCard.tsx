@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import JourneyCard, { JourneyCardProps } from '@/domain/space/components/cards/JourneyCard/JourneyCard';
+import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
-import JourneyCardDescription from '@/domain/space/components/cards/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '@/domain/space/components/cards/JourneyCard/JourneyCardSpacing';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
+import SpaceCardSpacing from '@/domain/space/components/cards/components/SpaceCardSpacing';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardGoToButton from '@/domain/space/components/cards/JourneyCard/JourneyCardGoToButton';
+import SpaceCardGoToButton from '@/domain/space/components/cards/components/SpaceCardGoToButton';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 
-export interface SpaceCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion'> {
+export interface SpaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
   tagline: string;
   spaceId?: string;
   displayName: string;
@@ -37,7 +37,7 @@ const SpaceCard = ({
     ) : undefined;
 
   return (
-    <JourneyCard
+    <SpaceCard2
       iconComponent={HubOutlined}
       header={
         <>
@@ -51,20 +51,20 @@ const SpaceCard = ({
       }
       expansion={
         <>
-          <JourneyCardDescription>{vision}</JourneyCardDescription>
-          <JourneyCardSpacing />
+          <SpaceCardDescription>{vision}</SpaceCardDescription>
+          <SpaceCardSpacing />
         </>
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} />
+          <SpaceCardGoToButton spaceUri={props.journeyUri} />
         </CardActions>
       }
       bannerOverlay={ribbon}
       {...props}
     >
-      <JourneyCardTagline>{tagline}</JourneyCardTagline>
-    </JourneyCard>
+      <SpaceCardTagline>{tagline}</SpaceCardTagline>
+    </SpaceCard2>
   );
 };
 

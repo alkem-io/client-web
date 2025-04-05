@@ -2,17 +2,17 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Close } from '@mui/icons-material';
-import JourneyCard, { JourneyCardProps } from '@/domain/space/components/cards/JourneyCard/JourneyCard';
+import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardTagline from '@/domain/space/components/cards/JourneyCard/JourneyCardTagline';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 
-interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
+interface ContributionDetailsCardProps extends Omit<SpaceCard2Props, 'iconComponent' | 'header'> {
   tagline: string;
   displayName: string;
   enableLeave?: boolean;
@@ -60,7 +60,7 @@ const ContributionDetailsCard = ({
 
   return (
     <>
-      <JourneyCard
+      <SpaceCard2
         {...props}
         iconComponent={spaceIconByLevel[level || SpaceLevel.L0]}
         header={
@@ -87,8 +87,8 @@ const ContributionDetailsCard = ({
         }
         bannerOverlay={ribbon}
       >
-        <JourneyCardTagline>{tagline}</JourneyCardTagline>
-      </JourneyCard>
+        <SpaceCardTagline>{tagline}</SpaceCardTagline>
+      </SpaceCard2>
       {enableLeave && (
         <Dialog open={leavingCommunityDialogOpen} maxWidth="xs" aria-label="confirm-leave-space">
           <DialogHeader onClose={() => onLeaveCommunityDialogOpen?.(false)}>{leaveCommunityDialogTitle}</DialogHeader>

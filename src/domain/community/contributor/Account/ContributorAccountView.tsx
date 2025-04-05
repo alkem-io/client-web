@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import JourneyCardHorizontal, {
-  JourneyCardHorizontalSkeleton,
-} from '@/domain/space/components/cards/JourneyCardHorizontal';
+import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
@@ -506,11 +504,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             })}
           />
           <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
-            {loading && <JourneyCardHorizontalSkeleton />}
+            {loading && <SpaceCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
                 account?.spaces.map(space => (
-                  <JourneyCardHorizontal
+                  <SpaceCardHorizontal
                     key={space.id}
                     space={{ about: space.about, level: space.level }}
                     size="medium"
@@ -560,7 +558,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             })}
           />
           <Gutters disablePadding justifyContent="space-between" fullHeight>
-            {loading && <JourneyCardHorizontalSkeleton />}
+            {loading && <SpaceCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
                 virtualContributors?.map(vc => (
