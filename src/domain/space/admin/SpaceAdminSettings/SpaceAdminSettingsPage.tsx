@@ -36,7 +36,7 @@ import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import EntityConfirmDeleteDialog from '../../../shared/components/EntityConfirmDeleteDialog';
-import DeleteIcon from '../../../shared/icons/DeleteIcon';
+import DeleteIcon from '../../../../_deprecated/DeleteIcon';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 

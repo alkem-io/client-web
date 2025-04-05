@@ -5,9 +5,11 @@ import { Caption } from '@/core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import ContributionDetailsCard from '@/domain/community/profile/views/ProfileView/ContributionDetailsCard';
+import ContributionDetailsCard from '@/domain/community/profile/views/ContributionDetailsCard';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import useContributionProvider, { ContributionDetails } from '../../useContributionProvider/useContributionProvider';
+import useContributionProvider, {
+  ContributionDetails,
+} from '../domain/community/profile/useContributionProvider/useContributionProvider';
 
 type ContributionViewProps = {
   title: string;

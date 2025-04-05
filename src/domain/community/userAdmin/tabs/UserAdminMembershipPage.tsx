@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
+import { ContributionsView } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
