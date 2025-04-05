@@ -5,7 +5,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useLocation } from 'react-router-dom';
 import Gutters from '@/core/ui/grid/Gutters';
-import { useConfig } from '../platform/config/useConfig';
+import { useConfig } from '../../domain/platform/config/useConfig';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useTranslation } from 'react-i18next';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
