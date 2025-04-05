@@ -45,9 +45,10 @@ export interface ApplicationDialogProps {
 }
 /**
  * // TODO:
- * @deprecated Rewrite this with new components and put it somewhere else
+ * @deprecated There is another ApplicationDialog component: which one to keep?
+ *
  */
-export const ApplicationDialog = ({ app, onClose, onSetNewState, loading }: ApplicationDialogProps) => {
+export const ApplicationDialog2 = ({ app, onClose, onSetNewState, loading }: ApplicationDialogProps) => {
   const { t } = useTranslation();
 
   const appId = app?.id || '';
