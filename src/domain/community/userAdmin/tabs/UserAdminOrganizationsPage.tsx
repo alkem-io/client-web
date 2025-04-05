@@ -4,7 +4,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
-import { useUserMetadata } from '../../../../_deprecated/toKeep/useUserMetadata';
+import { useUserMetadata } from '../../../../_deprecatedToKeep/useUserMetadata';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useUserOrganizationIds from '../../user/userContributions/useUserOrganizationIds';
 

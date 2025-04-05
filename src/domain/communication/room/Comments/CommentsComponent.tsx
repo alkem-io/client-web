@@ -10,7 +10,7 @@ import PostMessageToCommentsForm from './PostMessageToCommentsForm';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CaptionSmall } from '@/core/ui/typography';
-import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
 import { gutters } from '@/core/ui/grid/utils';

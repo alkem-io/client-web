@@ -8,7 +8,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
-import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';

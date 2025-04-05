@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout from '../calloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '@/_deprecated/ScrollableCardsLayout';
+import ScrollableCardsLayout from '@/_deprecatedToKeep/ScrollableCardsLayout';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { CalloutState, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
@@ -9,7 +9,7 @@ import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
-import useCurrentBreakpoint from '@/_deprecated/toKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
 import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,

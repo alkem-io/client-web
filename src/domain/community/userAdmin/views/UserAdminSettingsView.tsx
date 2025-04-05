@@ -7,7 +7,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography/components';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserMetadata } from '@/_deprecated/toKeep/useUserMetadata';
+import { useUserMetadata } from '@/_deprecatedToKeep/useUserMetadata';
 
 const defaultUserSettings = {
   privacy: {

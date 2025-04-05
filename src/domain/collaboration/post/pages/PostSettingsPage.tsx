@@ -23,7 +23,7 @@ import {
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 

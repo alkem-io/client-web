@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import { Identifiable } from '@/core/utils/Identifiable';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '@/domain/shared/utils/scroll/useScrollToElement';
-import useCurrentBreakpoint from '@/_deprecated/toKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';

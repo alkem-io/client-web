@@ -11,7 +11,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
 import { ApplicationDialog2 } from '@/_deprecated/ApplicationDialog2';
-import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';

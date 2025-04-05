@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '@/core/routing/useBackToPath';
 import useBackToParentPage from '@/_deprecated/routing/useBackToParentPage';

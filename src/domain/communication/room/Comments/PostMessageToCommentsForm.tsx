@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { useUserContext } from '@/domain/community/user';
 import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecated/toKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
