@@ -4,7 +4,7 @@ import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/mate
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/toKeep/useCurrentBreakpoint';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
@@ -14,7 +14,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';

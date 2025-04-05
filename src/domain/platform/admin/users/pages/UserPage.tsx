@@ -13,7 +13,7 @@ import { UserModel } from '@/domain/community/user/models/User';
 import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 
 interface UserPageProps {
   readOnly?: boolean;

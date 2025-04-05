@@ -1,7 +1,7 @@
 import { Message } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import Avatar from '@/core/ui/avatar/Avatar';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';

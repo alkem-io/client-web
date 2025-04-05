@@ -13,7 +13,7 @@ import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
 import CardTags from '@/core/ui/card/CardTags';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { CalloutIcon } from '@/_deprecated/CalloutIcon';
+import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { gutters } from '@/core/ui/grid/utils';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { TemplateCardProps } from './TemplateCard';

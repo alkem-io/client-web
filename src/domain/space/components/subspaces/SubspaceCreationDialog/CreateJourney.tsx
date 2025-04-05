@@ -6,7 +6,7 @@ import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceC
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
-import SpaceL1Icon2 from '../../../../../_deprecated/SpaceL1Icon2';
+import SpaceL1Icon2 from '../../../../../_deprecated/icons/SpaceL1Icon2';
 
 export interface CreateJourneyProps {
   isVisible: boolean;

@@ -3,7 +3,7 @@ import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import { CalloutIcon } from '@/_deprecated/CalloutIcon';
+import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import {
   Campaign,
   ChatBubbleOutline,

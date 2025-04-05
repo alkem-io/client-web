@@ -9,7 +9,7 @@ import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import SpaceL1Icon2 from '@/_deprecated/SpaceL1Icon2';
+import SpaceL1Icon2 from '@/_deprecated/icons/SpaceL1Icon2';
 
 export interface EventCardHeaderProps {
   event:

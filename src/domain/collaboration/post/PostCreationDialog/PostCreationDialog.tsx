@@ -5,7 +5,7 @@ import PostForm, { PostFormOutput } from '../PostForm/PostForm';
 import { CalloutType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export type PostCreationType = Partial<CreatePostInput>;

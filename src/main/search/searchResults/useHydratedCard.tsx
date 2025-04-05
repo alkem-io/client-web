@@ -20,7 +20,7 @@ import ContributingUserCard from '@/domain/community/user/ContributingUserCard/C
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
-import { CalloutIcon } from '@/_deprecated/CalloutIcon';
+import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';

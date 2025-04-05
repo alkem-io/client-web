@@ -5,7 +5,7 @@ import TemplateForm, { AnyTemplateFormSubmittedValues } from '@/domain/templates
 import { getNewTemplate } from '@/domain/templates/models/common';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { Box, CircularProgress } from '@mui/material';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import { useTranslation } from 'react-i18next';
 
 interface CreateTemplateDialogProps {

@@ -34,7 +34,7 @@ import {
 } from '@mui/icons-material';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';

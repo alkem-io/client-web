@@ -14,7 +14,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import DashboardGenericSection from '@/_deprecated/DashboardGenericSection';
+import DashboardGenericSection from '@/_deprecated/DashboardGenericSection/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '@/CardsLayout';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import useUserContributions from '../../user/userContributions/useUserContributions';

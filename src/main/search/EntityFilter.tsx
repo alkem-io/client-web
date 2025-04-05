@@ -1,7 +1,7 @@
 import { gutters } from '@/core/ui/grid/utils';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { BlockTitle } from '@/core/ui/typography';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/toKeep/useCurrentBreakpoint';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import {
   Box,

@@ -10,7 +10,7 @@ import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks'
 import { AuthorizationPrivilege, DocumentDataFragment } from '@/core/apollo/generated/graphql-schema';
 import { formatFileSize } from '@/core/utils/Storage';
 import RouterLink from '@/core/ui/link/RouterLink';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { times } from 'lodash';
 import { formatDateTime } from '@/core/utils/time/utils';

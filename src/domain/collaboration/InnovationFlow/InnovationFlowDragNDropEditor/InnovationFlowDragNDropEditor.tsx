@@ -4,7 +4,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';

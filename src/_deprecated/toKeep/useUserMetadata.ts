@@ -1,5 +1,5 @@
 import { useUserProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import { toUserMetadata } from '../domain/community/user/hooks/useUserMetadataWrapper';
+import { toUserMetadata } from '../../domain/community/user/hooks/useUserMetadataWrapper';
 /**
  * @deprecated Try to avoid this one, refactor to remove it
  */
