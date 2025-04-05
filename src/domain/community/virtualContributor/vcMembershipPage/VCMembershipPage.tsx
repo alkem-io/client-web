@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ContributionsView } from '@/domain/community/profile/views';
+import { ContributionsView2 } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
@@ -103,7 +103,7 @@ const VCMembershipPage = () => {
 
   return (
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>
-      <ContributionsView
+      <ContributionsView2
         title={t('pages.virtualContributorProfile.membership.title')}
         emptyCaption={t('pages.virtualContributorProfile.membership.noMemberships')}
         contributions={memberships}
@@ -112,7 +112,7 @@ const VCMembershipPage = () => {
         onLeave={refetch}
         onContributionClick={onContributionClick}
       />
-      <ContributionsView
+      <ContributionsView2
         title={t('pages.virtualContributorProfile.membership.pendingInvitations')}
         emptyCaption={t('pages.virtualContributorProfile.membership.noPendingInvitations')}
         contributions={pendingInvitations}

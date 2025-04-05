@@ -49,7 +49,7 @@ const SkeletonItem = () => (
  * @deprecated This component is deprecated
  * Please use and extned the ContributionsView component in domain/community/contributor
  */
-export const ContributionsView = ({
+export const ContributionsView2 = ({
   title,
   subtitle,
   emptyCaption,
@@ -130,4 +130,4 @@ const ContributionCard = ({
   );
 };
 
-export default ContributionsView;
+export default ContributionsView2;
