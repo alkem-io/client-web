@@ -44,14 +44,18 @@ export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
   isSubspace: boolean;
   spaceId: string;
-  levelZeroSpaceUrl: string;
+  parentSpaceUrl: string;
+  membershipsEnabled: boolean;
+  subspacesEnabled: boolean;
 }
 
 const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   useL0Layout,
   isSubspace,
-  levelZeroSpaceUrl,
+  parentSpaceUrl,
   spaceId,
+  membershipsEnabled,
+  subspacesEnabled,
   routePrefix = '../',
 }) => {
   const { t } = useTranslation();
@@ -66,7 +70,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const [deleteSpace] = useDeleteSpaceMutation({
     onCompleted: () => {
       notify(t('pages.admin.space.notifications.space-removed'), 'success');
-      window.location.replace(levelZeroSpaceUrl);
+      window.location.replace(parentSpaceUrl);
     },
   });
 
@@ -133,6 +137,12 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
       defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
     allowEventsFromSubspaces = currentSettings?.collaboration?.allowEventsFromSubspaces ??
       defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
+    allowMembersToCreateSubspaces = currentSettings?.collaboration?.allowMembersToCreateSubspaces ??
+      defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
+    allowMembersToCreateCallouts = currentSettings?.collaboration?.allowMembersToCreateCallouts ??
+      defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
+    inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
+      defaultSpaceSettings.collaboration.inheritMembershipRights,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
@@ -144,6 +154,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     membershipPolicy?: CommunityMembershipPolicy;
     allowSubspaceAdminsToInviteMembers?: boolean;
     allowEventsFromSubspaces?: boolean;
+    allowMembersToCreateSubspaces?: boolean;
+    allowMembersToCreateCallouts?: boolean;
+    inheritMembershipRights?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
@@ -172,6 +185,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
         ...currentSettings.collaboration,
         ...collaborationSettings, // Overwrite with the passed values if any
         allowEventsFromSubspaces,
+        allowMembersToCreateSubspaces,
+        allowMembersToCreateCallouts,
+        inheritMembershipRights,
       } as SpaceSettingsCollaboration,
     };
 
@@ -187,40 +203,6 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     if (showNotification) {
       notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
     }
-  };
-
-  const getMemberActions = () => {
-    const spaceActions = {
-      allowMembersToCreateCallouts: {
-        checked:
-          currentSettings.collaboration?.allowMembersToCreateCallouts ??
-          defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
-        label: <Trans i18nKey="pages.admin.space.settings.memberActions.createBlocks" components={{ b: <strong /> }} />,
-      },
-      allowMembersToCreateSubspaces: {
-        checked:
-          currentSettings.collaboration?.allowMembersToCreateSubspaces ??
-          defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
-        label: (
-          <Trans i18nKey="pages.admin.space.settings.memberActions.createSubspaces" components={{ b: <strong /> }} />
-        ),
-      },
-    };
-
-    if (isSubspace) {
-      // show inheritMembershipRights only for subspaces
-      return {
-        ...spaceActions,
-        inheritMembershipRights: {
-          checked:
-            currentSettings.collaboration?.inheritMembershipRights ??
-            defaultSpaceSettings.collaboration.inheritMembershipRights,
-          label: <Trans i18nKey="pages.admin.space.settings.memberActions.inheritRights" />,
-        },
-      };
-    }
-
-    return spaceActions;
   };
 
   return (
@@ -254,33 +236,21 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               />
             </PageContentBlock>
 
-            <PageContentBlock>
-              <BlockTitle>{t('pages.admin.space.settings.membership.title')}</BlockTitle>
-              <RadioSettingsGroup
-                value={currentSettings?.membership?.policy}
-                options={{
-                  [CommunityMembershipPolicy.Open]: {
-                    label: (
-                      <Trans i18nKey="pages.admin.space.settings.membership.open" components={{ b: <strong /> }} />
-                    ),
-                  },
-                  [CommunityMembershipPolicy.Applications]: {
-                    label: (
-                      <Trans
-                        i18nKey="pages.admin.space.settings.membership.applications"
-                        components={{
-                          b: <strong />,
-                          community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
-                        }}
-                      />
-                    ),
-                  },
-                  ...(!isSubspace && {
-                    // Only show this option for top level spaces
-                    [CommunityMembershipPolicy.Invitations]: {
+            {membershipsEnabled && (
+              <PageContentBlock>
+                <BlockTitle>{t('pages.admin.space.settings.membership.title')}</BlockTitle>
+                <RadioSettingsGroup
+                  value={currentSettings?.membership?.policy}
+                  options={{
+                    [CommunityMembershipPolicy.Open]: {
+                      label: (
+                        <Trans i18nKey="pages.admin.space.settings.membership.open" components={{ b: <strong /> }} />
+                      ),
+                    },
+                    [CommunityMembershipPolicy.Applications]: {
                       label: (
                         <Trans
-                          i18nKey="pages.admin.space.settings.membership.invitations"
+                          i18nKey="pages.admin.space.settings.membership.applications"
                           components={{
                             b: <strong />,
                             community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
@@ -288,55 +258,63 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                         />
                       ),
                     },
-                  }),
-                }}
-                onChange={value => handleUpdateSettings({ membershipPolicy: value })}
-              />
-              {!isSubspace && (
-                <>
-                  <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
-                  <SwitchSettingsGroup
-                    options={{
-                      hostOrganizationTrusted: {
-                        checked: currentSettings.hostOrganizationTrusted,
+                    ...(!isSubspace && {
+                      // Only show this option for top level spaces
+                      [CommunityMembershipPolicy.Invitations]: {
                         label: (
                           <Trans
-                            t={t}
-                            i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
-                            values={{
-                              host: provider?.profile.displayName,
+                            i18nKey="pages.admin.space.settings.membership.invitations"
+                            components={{
+                              b: <strong />,
+                              community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
                             }}
-                            components={{ b: <strong />, i: <em /> }}
                           />
                         ),
                       },
-                    }}
-                    onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                  />
-                </>
-              )}
-            </PageContentBlock>
+                    }),
+                  }}
+                  onChange={value => handleUpdateSettings({ membershipPolicy: value })}
+                />
+                {!isSubspace && (
+                  <>
+                    <BlockSectionTitle>
+                      {t('pages.admin.space.settings.membership.trustedApplicants')}
+                    </BlockSectionTitle>
+                    <SwitchSettingsGroup
+                      options={{
+                        hostOrganizationTrusted: {
+                          checked: currentSettings.hostOrganizationTrusted,
+                          label: (
+                            <Trans
+                              t={t}
+                              i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
+                              values={{
+                                host: provider?.profile.displayName,
+                              }}
+                              components={{ b: <strong />, i: <em /> }}
+                            />
+                          ),
+                        },
+                      }}
+                      onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                    />
+                  </>
+                )}
+              </PageContentBlock>
+            )}
 
-            <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
-              <Text marginBottom={gutters(2)}>
-                <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
-              </Text>
-              <CommunityApplicationForm roleSetId={roleSetId!} />
-            </PageContentBlockCollapsible>
+            {membershipsEnabled && (
+              <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
+                <Text marginBottom={gutters(2)}>
+                  <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
+                </Text>
+                <CommunityApplicationForm roleSetId={roleSetId!} />
+              </PageContentBlockCollapsible>
+            )}
 
             <PageContentBlock disableGap>
               <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
-              <SwitchSettingsGroup
-                options={getMemberActions()}
-                onChange={async (setting, newValue) => {
-                  await handleUpdateSettings({
-                    collaborationSettings: {
-                      [setting]: newValue,
-                    },
-                  });
-                }}
-              />
-              {!isSubspace && (
+              {!isSubspace && membershipsEnabled && (
                 <SwitchSettingsGroup
                   options={{
                     allowSubspaceAdminsToInviteMembers: {
@@ -352,7 +330,54 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
                 />
               )}
-              {!isSubspace && (
+
+              <SwitchSettingsGroup
+                options={{
+                  allowMembersToCreateCallouts: {
+                    checked: currentSettings?.collaboration?.allowMembersToCreateCallouts || false,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.createBlocks"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+              {isSubspace && (
+                <SwitchSettingsGroup
+                  options={{
+                    inheritMembershipRights: {
+                      checked: currentSettings?.collaboration?.inheritMembershipRights || false,
+                      label: (
+                        <Trans
+                          i18nKey="pages.admin.space.settings.memberActions.inheritRights"
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              )}
+              {subspacesEnabled && (
+                <SwitchSettingsGroup
+                  options={{
+                    allowMembersToCreateSubspaces: {
+                      checked: currentSettings?.collaboration?.allowMembersToCreateSubspaces || false,
+                      label: (
+                        <Trans
+                          i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              )}
+              {!isSubspace && subspacesEnabled && (
                 <SwitchSettingsGroup
                   options={{
                     allowEventsFromSubspaces: {

@@ -47,7 +47,9 @@ export const SpaceAdminL1Route: FC = () => {
     useL0Layout: false,
     spaceId: subspace?.id,
     isSubspace: false,
-    levelZeroSpaceUrl: space.about.profile?.url, // Needs to be L0
+    membershipsEnabled: true,
+    subspacesEnabled: true,
+    parentSpaceUrl: space.about.profile?.url,
   };
 
   const aboutPageProps: SpaceAdminAboutPageProps = {
