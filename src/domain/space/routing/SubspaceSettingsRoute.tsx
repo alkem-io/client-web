@@ -1,8 +1,8 @@
-import { SpaceAdminL1Route } from '@/domain/space/admin/routing/SpaceAdminRouteL1';
+import { SpaceAdminL1Route } from '@/domain/spaceAdmin/routing/SpaceAdminRouteL1';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import Loading from '@/core/ui/loading/Loading';
-import { SpaceAdminL2Route } from '@/domain/space/admin/routing/SpaceAdminRouteL2';
+import { SpaceAdminL2Route } from '@/domain/spaceAdmin/routing/SpaceAdminRouteL2';
 
 const SubspaceSettingsRoute = () => {
   const { spaceLevel, loading } = useUrlResolver();

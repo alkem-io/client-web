@@ -13,7 +13,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import TabbedLayoutPage, { TabbedLayoutParams } from '../layout/tabbedLayout/TabbedLayoutPage';
-import SpaceAdminL0Route from '../admin/routing/SpaceAdminRouteL0';
+import SpaceAdminL0Route from '../../spaceAdmin/routing/SpaceAdminRouteL0';
 import SubspaceContextProvider from '../context/SubspaceContext';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoute'));

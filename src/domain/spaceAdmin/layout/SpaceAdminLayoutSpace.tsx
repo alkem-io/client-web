@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import RouterLink from '@/core/ui/link/RouterLink';
-import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
@@ -10,7 +10,7 @@ import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBr
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
-import { useSpace } from '../../context/useSpace';
+import { useSpace } from '../../space/context/useSpace';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 
 type SpaceSettingsLayoutProps = {

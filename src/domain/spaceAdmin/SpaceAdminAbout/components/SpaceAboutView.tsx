@@ -3,7 +3,7 @@ import { useSpaceAboutFullQuery, useUpdateSpaceMutation } from '@/core/apollo/ge
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SpaceAboutForm, {
   SpaceAboutEditFormValuesType,
-} from '@/domain/space/admin/SpaceAdminAbout/components/SpaceAboutForm';
+} from '@/domain/spaceAdmin/SpaceAdminAbout/components/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import { Actions } from '@/core/ui/actions/Actions';

@@ -9,7 +9,7 @@ import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettings
 import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpace } from '../../context/useSpace';
+import { useSpace } from '../../space/context/useSpace';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 
 export interface SpaceAdminLayoutPageProps extends SettingsPageProps {

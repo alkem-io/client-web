@@ -21,8 +21,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import SearchField from '@/core/ui/search/SearchField';
 import useVirtualContributorSpaceBoK from '@/domain/community/virtualContributor/useVirtualContributorSpaceBoK';
-import useCommunityAdmin from '@/domain/space/admin/SpaceAdminCommunity/hooks/useCommunityAdmin';
-import useVirtualContributorsAdmin from '@/domain/space/admin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
+import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
+import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();

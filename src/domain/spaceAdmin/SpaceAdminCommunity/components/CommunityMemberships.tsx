@@ -15,8 +15,8 @@ import ConfirmationDialog from '@/_deprecated/toKeep/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { MembershipTableItem } from '../../../../access/model/MembershipTableItem';
-import { MembershipType } from '../../../../access/model/MembershipType';
+import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
+import { MembershipType } from '../../../access/model/MembershipType';
 import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import { InvitationModel } from '@/domain/access/model/InvitationModel';
 

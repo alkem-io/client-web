@@ -35,8 +35,8 @@ import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import EntityConfirmDeleteDialog from '../../../shared/components/EntityConfirmDeleteDialog';
-import DeleteIcon from '../../../../_deprecated/icons/DeleteIcon';
+import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDeleteDialog';
+import DeleteIcon from '../../../_deprecated/icons/DeleteIcon';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 

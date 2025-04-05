@@ -3,20 +3,18 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SpaceAdminAboutPage, {
-  SpaceAdminAboutPageProps,
-} from '@/domain/space/admin/SpaceAdminAbout/SpaceAdminAboutPage';
+import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '@/domain/spaceAdmin/SpaceAdminAbout/SpaceAdminAboutPage';
 import SpaceAdminSettingsPage, {
   SpaceAdminSettingsPageProps,
-} from '@/domain/space/admin/SpaceAdminSettings/SpaceAdminSettingsPage';
-import SpaceTemplatesAdminRoutes from '@/domain/space/admin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
+} from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage';
+import SpaceTemplatesAdminRoutes from '@/domain/spaceAdmin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
 import SpaceAdminStoragePage, {
   SpaceAdminStoragePageProps,
-} from '@/domain/space/admin/SpaceAdminStorage/SpaceAdminStoragePage';
+} from '@/domain/spaceAdmin/SpaceAdminStorage/SpaceAdminStoragePage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SpaceAdminCommunityPage, {
   SpaceAdminCommunityPageProps,
-} from '@/domain/space/admin/SpaceAdminCommunity/SpaceAdminCommunityPage';
+} from '@/domain/spaceAdmin/SpaceAdminCommunity/SpaceAdminCommunityPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 import SpaceAdminAccountPage, { SpaceAdminAccountPageProps } from '../SpaceAdminAccount/SpaceAdminAccountPage';

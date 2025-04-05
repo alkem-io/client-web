@@ -18,7 +18,7 @@ import { BlockTitle } from '@/core/ui/typography';
 import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
-import { ContributorViewProps } from '../../../../community/community/EntityDashboardContributorsSection/Types';
+import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
   isMember: boolean;

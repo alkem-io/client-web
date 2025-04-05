@@ -1,24 +1,18 @@
-import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import SpaceAdminSettingsPage, {
-  SpaceAdminSettingsPageProps,
-} from '@/domain/space/admin/SpaceAdminSettings/SpaceAdminSettingsPage';
-import SpaceAdminSubspacesPage, {
-  SpaceAdminSubspacesPageProps,
-} from '@/domain/space/admin/SpaceAdminSubspaces/SpaceAdminSubspacesPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 import SpaceAdminCommunityPage, { SpaceAdminCommunityPageProps } from '../SpaceAdminCommunity/SpaceAdminCommunityPage';
+
 import SpaceAdminCommunicationsPage, {
   SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
-import { useSpace } from '../../context/useSpace';
+import SpaceAdminSettingsPage, { SpaceAdminSettingsPageProps } from '../SpaceAdminSettings/SpaceAdminSettingsPage';
+import { useSpace } from '../../space/context/useSpace';
 import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-export const SpaceAdminL1Route: FC = () => {
+export const SpaceAdminL2Route = () => {
   const { space, entitlements } = useSpace();
   const { subspace, loading } = useSubSpace();
   const subspaceId = subspace?.id!;
@@ -28,12 +22,12 @@ export const SpaceAdminL1Route: FC = () => {
     roleSetId: subspace?.about.membership.roleSetID!,
     spaceId: subspace?.id,
     spaceL0Id: space?.id,
-    pendingMembershipsEnabled: true,
-    communityGuidelinesEnabled: true,
+    pendingMembershipsEnabled: false,
+    communityGuidelinesEnabled: false,
     communityGuidelinesTemplatesEnabled: false,
     communityGuidelinesId: subspace?.about.guidelines.id,
-    level: subspace?.level,
     useL0Layout: false,
+    level: subspace?.level,
     spaceEntitlements: entitlements,
     loading,
   };
@@ -47,9 +41,9 @@ export const SpaceAdminL1Route: FC = () => {
     useL0Layout: false,
     spaceId: subspace?.id,
     isSubspace: false,
-    membershipsEnabled: true,
-    subspacesEnabled: true,
-    parentSpaceUrl: space.about.profile?.url,
+    membershipsEnabled: false,
+    subspacesEnabled: false,
+    parentSpaceUrl: space.about.profile?.url, // Should be L1
   };
 
   const aboutPageProps: SpaceAdminAboutPageProps = {
@@ -57,26 +51,16 @@ export const SpaceAdminL1Route: FC = () => {
     spaceId: subspaceId,
   };
 
-  const subspacesPageProps: SpaceAdminSubspacesPageProps = {
-    useL0Layout: false,
-    spaceId: subspaceId,
-    templatesEnabled: false,
-    level: SpaceLevel.L1,
-  };
-
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
       <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
         <Routes>
-          <Route path={'/'}>
-            <Route index element={<Navigate to="about" replace />} />
-            <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
-            <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
-            <Route path="opportunities/*" element={<SpaceAdminSubspacesPage {...subspacesPageProps} />} />
-            <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />
-            <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
-            <Route path="*" element={<Error404 />} />
-          </Route>
+          <Route index element={<Navigate to="about" replace />} />
+          <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
+          <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
+          <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />
+          <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />
+          <Route path="*" element={<Error404 />} />
         </Routes>
       </StorageConfigContextProvider>
     </NonSpaceAdminRedirect>

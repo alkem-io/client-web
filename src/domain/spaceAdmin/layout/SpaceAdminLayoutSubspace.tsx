@@ -10,7 +10,7 @@ import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { spaceAdminTabsL1 } from './SpaceAdminTabsL1';
 import { spaceAdminTabsL2 } from './SpaceAdminTabsL2';
-import { useSpace } from '../../context/useSpace';
+import { useSpace } from '../../space/context/useSpace';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 
 interface SubspaceSettingsLayoutProps extends PropsWithChildren {

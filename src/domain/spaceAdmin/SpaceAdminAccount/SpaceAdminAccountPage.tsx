@@ -25,7 +25,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-import SpaceSettingsLayout from '@/domain/space/admin/layout/SpaceAdminLayoutSpace';
+import SpaceSettingsLayout from '@/domain/spaceAdmin/layout/SpaceAdminLayoutSpace';
 import CachedIcon from '@mui/icons-material/Cached';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, CircularProgress, Link } from '@mui/material';

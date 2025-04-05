@@ -35,7 +35,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
-import { SubspaceCreationDialog } from '../../components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { SubspaceCreationDialog } from '../../space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -44,8 +44,8 @@ import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innovati
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
-import SpaceL1Icon2 from '../../../../_deprecated/icons/SpaceL1Icon2';
-import { SpaceL2Icon } from '../../icons/SpaceL2Icon';
+import SpaceL1Icon2 from '../../../_deprecated/icons/SpaceL1Icon2';
+import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
