@@ -8,13 +8,12 @@ import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SpaceSubspaceCard from '@/domain/space/components/cards/SpaceSubspaceCard';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SubspaceCard from '@/domain/space/components/cards/_deprecated/SubspaceCard';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
-const JourneyCardsDemo = () => {
+const SpaceCardsDemo = () => {
   return (
     <>
       <PageTitle textAlign="center" paddingY={GUTTER_MUI}>
@@ -136,29 +135,27 @@ const JourneyCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Challenge Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceSubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Challenge Card"
                 tags={['challenge', 'card']}
-                innovationFlowState="Innovation Flow State"
                 journeyUri=""
                 spaceDisplayName="Parent Space"
                 spaceUri=""
               />
-              <SubspaceCard
+              <SpaceSubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name"
                 tags={['challenge', 'card']}
-                innovationFlowState="Innovation Flow State"
                 journeyUri=""
                 spaceDisplayName="Parent Space"
                 spaceUri=""
               />
-              <SubspaceCard
+              <SpaceSubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -175,7 +172,6 @@ const JourneyCardsDemo = () => {
                   'dont even fit',
                   'on 2 lines',
                 ]}
-                innovationFlowState="Innovation Flow State"
                 journeyUri=""
                 spaceDisplayName="Parent Space"
                 spaceUri=""
@@ -188,4 +184,4 @@ const JourneyCardsDemo = () => {
   );
 };
 
-export default JourneyCardsDemo;
+export default SpaceCardsDemo;

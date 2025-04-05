@@ -13,7 +13,6 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import SubspaceCard from '@/domain/space/components/cards/_deprecated/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
@@ -21,6 +20,7 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
 import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
+import SpaceSubspaceCard from '@/domain/space/components/cards/SpaceSubspaceCard';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -97,7 +97,7 @@ const SpaceSubspacesPage = () => {
         childEntityTagsGetter={journeyCardTagsGetter}
         state={{ loading: loading, error: error }}
         renderChildEntityCard={item => (
-          <SubspaceCard
+          <SpaceSubspaceCard
             displayName={item.about.profile.displayName}
             banner={item.about.profile.cardBanner}
             tags={item.about.profile.tagset?.tags!}

@@ -23,7 +23,7 @@ interface SpaceSubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconC
   spaceUri?: string;
   hideJoin?: boolean;
   isPrivate?: boolean;
-  avatarUris: string[];
+  avatarUris?: string[];
   label?: ReactNode;
   level?: SpaceLevel;
 }
@@ -65,7 +65,7 @@ const SpaceSubspaceCard = ({
           )}
         </>
       }
-      visual={<StackedAvatar avatarUris={avatarUris} />}
+      visual={<StackedAvatar avatarUris={avatarUris!} />}
       expansion={
         <>
           <SpaceCardDescription>{vision}</SpaceCardDescription>

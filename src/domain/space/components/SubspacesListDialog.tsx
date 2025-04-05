@@ -7,9 +7,9 @@ import Loading from '@/core/ui/loading/Loading';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
 import { journeyCardValueGetter } from '@/domain/space/components/cards/_deprecated/journeyCardValueGetter';
 import { useSpace } from '@/domain/space/context/useSpace';
-import SubspaceCard from '@/domain/space/components/cards/_deprecated/SubspaceCard';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import SpaceSubspaceCard from './cards/SpaceSubspaceCard';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
@@ -49,7 +49,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
                   {filteredEntities.map((subspace, index) => {
                     const key = subspace ? subspace.id : `__loading_${index}`;
                     return (
-                      <SubspaceCard
+                      <SpaceSubspaceCard
                         key={key}
                         displayName={subspace.about.profile.displayName}
                         banner={subspace.about.profile.cardBanner}
