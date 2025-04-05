@@ -1,4 +1,4 @@
-import { CardLayoutContainer, CardLayoutItem } from '@/CardsLayout';
+import { CardLayoutContainer, CardLayoutItem } from '@/_deprecatedToKeep/CardsLayout';
 import CredentialCard from '@/domain/agent/credential/CredentialCard';
 import CredentialProfileCard, { ProfileCardProps } from '@/domain/agent/credential/CredentialProfileCard';
 import UserCredentialsContainer from '@/domain/agent/credential/verifiedCredentials/UserCredentialsContainer';

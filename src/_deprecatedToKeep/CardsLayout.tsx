@@ -7,7 +7,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import { Box, BoxProps } from '@mui/material';
 import { FC, ReactElement, ReactNode, cloneElement, useMemo } from 'react';
-import Gutters from './core/ui/grid/Gutters';
+import Gutters from '../core/ui/grid/Gutters';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   extends Omit<PageContentBlockGridProps, 'children'> {
