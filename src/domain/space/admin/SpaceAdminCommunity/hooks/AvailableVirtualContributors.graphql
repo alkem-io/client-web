@@ -1,0 +1,43 @@
+query AvailableVirtualContributorsInLibrary {
+  platform {
+    id
+    library {
+      id
+      virtualContributors {
+        searchVisibility
+        ...VirtualContributorFull
+      }
+    }
+  }
+}
+
+query AvailableVirtualContributorsInSpaceAccount($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      account {
+        id
+        virtualContributors {
+          ...VirtualContributorFull
+        }
+      }
+    }
+  }
+}
+
+query AvailableVirtualContributorsInSpaceL0($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        roleSet {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorFull
+          }
+        }
+      }
+    }
+  }
+}

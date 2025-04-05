@@ -55,8 +55,8 @@ type CommunityVirtualContributorsProps = {
   virtualContributors: ContributorViewProps[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
-  fetchAvailableVirtualContributorsOnAccount: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
-  fetchAvailableVirtualContributors: (filter?: string) => Promise<Entity[] | undefined>;
+  fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
+  fetchAvailableVirtualContributorsInLibrary: (filter?: string) => Promise<Entity[] | undefined>;
   onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
   inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
@@ -67,8 +67,8 @@ const CommunityVirtualContributors = ({
   virtualContributors = [],
   onRemoveMember,
   canAddVirtualContributors,
+  fetchAvailableVirtualContributorsInLibrary,
   fetchAvailableVirtualContributors,
-  fetchAvailableVirtualContributorsOnAccount,
   onAddMember,
   loading,
   inviteExistingUser,
@@ -126,9 +126,9 @@ const CommunityVirtualContributors = ({
 
   const getFilteredVirtualContributors = async (filter?: string) => {
     if (allVirtualContributors) {
-      return fetchAvailableVirtualContributors(filter);
+      return fetchAvailableVirtualContributorsInLibrary(filter);
     } else {
-      return fetchAvailableVirtualContributorsOnAccount(filter, false);
+      return fetchAvailableVirtualContributors(filter, false);
     }
   };
 

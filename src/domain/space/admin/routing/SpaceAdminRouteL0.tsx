@@ -35,6 +35,7 @@ const SpaceAdminL0Route: FC = () => {
     about: space?.about,
     roleSetId: space?.about.membership!.roleSetID!,
     spaceId: space?.id,
+    spaceL0Id: space?.id,
     pendingMembershipsEnabled: true,
     communityGuidelinesEnabled: true,
     communityGuidelinesTemplatesEnabled: true,

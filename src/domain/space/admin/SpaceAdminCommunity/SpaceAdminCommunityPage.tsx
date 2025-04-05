@@ -33,12 +33,14 @@ import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templat
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
   roleSetId: string;
   level: SpaceLevel;
   spaceId: string;
+  spaceL0Id: string;
   communityGuidelinesId: string;
   pendingMembershipsEnabled: boolean;
   communityGuidelinesEnabled: boolean;
@@ -53,6 +55,7 @@ const SpaceAdminCommunityPage = ({
   roleSetId,
   level,
   spaceId,
+  spaceL0Id,
   pendingMembershipsEnabled,
   communityGuidelinesId,
   communityGuidelinesEnabled,
@@ -86,8 +89,6 @@ const SpaceAdminCommunityPage = ({
       members: virtualContributors,
       onAdd: onAddVirtualContributor,
       onRemove: onRemoveVirtualContributor,
-      getAvailable: getAvailableVirtualContributors,
-      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
     },
     membershipAdmin: {
       applications,
@@ -102,7 +103,14 @@ const SpaceAdminCommunityPage = ({
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ level, roleSetId });
+  } = useCommunityAdmin({ roleSetId });
+
+  const {
+    virtualContributorAdmin: {
+      getAvailable: getAvailableVirtualContributors,
+      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+    },
+  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceL0Id });
 
   const spaceVirtualContributorEntitlementEnabled = spaceEntitlements.includes(
     LicenseEntitlementType.SpaceFlagVirtualContributorAccess
@@ -311,8 +319,8 @@ const SpaceAdminCommunityPage = ({
                 canAddVirtualContributors={addVirtualContributorsEnabled}
                 onRemoveMember={onRemoveVirtualContributor}
                 spaceDisplayName={about.profile.displayName}
-                fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}
-                fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 onAddMember={onAddVirtualContributor}
                 inviteExistingUser={inviteExistingUser}
                 loading={loading}

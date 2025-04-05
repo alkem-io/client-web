@@ -26,14 +26,20 @@ query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilter
 query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
     roleSet(ID: $roleSetId) {
-      availableUsersForEntryRole (first: $first, after: $after, filter: $filter) {
+      availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
         ...AvailableUsersForRoleSetPaginated
       }
     }
   }
 }
 
-query AvailableUsersForElevatedRole($roleSetId: UUID!, $role: RoleName!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+query AvailableUsersForElevatedRole(
+  $roleSetId: UUID!
+  $role: RoleName!
+  $first: Int!
+  $after: UUID
+  $filter: UserFilterInput
+) {
   lookup {
     roleSet(ID: $roleSetId) {
       availableUsersForElevatedRole(role: $role, first: $first, after: $after, filter: $filter) {
@@ -54,98 +60,3 @@ query AvailableOrganizations($first: Int!, $after: UUID, $filter: OrganizationFi
     }
   }
 }
-
-query AvailableVirtualContributorsInLibrary {
-  platform {
-    id
-    library {
-      id
-      virtualContributors {
-        searchVisibility
-        ...VirtualContributorFull
-      }
-    }
-  }
-}
-
-query AvailableVirtualContributorsInSpace($spaceId: UUID!
-) {
-  lookup  {
-    space(ID: $spaceId) {
-      id
-      community {
-        id
-        roleSet {
-          id
-          virtualContributorsInRole(role: MEMBER) {
-            ...VirtualContributorFull
-          }
-        }
-      }
-      account {
-        id
-        virtualContributors {
-          ...VirtualContributorFull
-        }
-      }
-    }
-  }
-}
-
-query AvailableVirtualContributors(
-  $filterSpace: Boolean = false
-  $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
-) {
-  lookup @include(if: $filterSpace) {
-    space(ID: $filterSpaceId) {
-      id
-      community {
-        id
-        roleSet {
-          id
-          virtualContributorsInRole(role: MEMBER) {
-            ...VirtualContributorFull
-          }
-        }
-      }
-      account {
-        id
-        virtualContributors {
-          ...VirtualContributorFull
-        }
-      }
-    }
-  }
-  # TODO: this field is only accessible to global admins...normal users must go via library
-  virtualContributors @skip(if: $filterSpace) {
-    ...VirtualContributorFull
-  }
-}
-
-fragment VirtualContributorFull on VirtualContributor {
-  id
-  profile {
-    id
-    displayName
-    description
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-    tagsets {
-      ...TagsetDetails
-    }
-    location {
-      id
-      city
-      country
-    }
-    url
-  }
-  aiPersona {
-    bodyOfKnowledge
-    bodyOfKnowledgeType
-    bodyOfKnowledgeID
-  }
-}
-
-

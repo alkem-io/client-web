@@ -22,6 +22,7 @@ import { Caption } from '@/core/ui/typography';
 import SearchField from '@/core/ui/search/SearchField';
 import useVirtualContributorSpaceBoK from '@/domain/community/virtualContributor/useVirtualContributorSpaceBoK';
 import useCommunityAdmin from '@/domain/space/admin/SpaceAdminCommunity/hooks/useCommunityAdmin';
+import useVirtualContributorsAdmin from '@/domain/space/admin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -35,13 +36,18 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     virtualContributorAdmin: {
       members: virtualContributors,
       onAdd: onAddVirtualContributor,
-      getAvailable: getAvailableVirtualContributors,
-      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
       inviteExisting: inviteExistingVirtualContributor,
     },
     permissions,
     loading,
-  } = useCommunityAdmin({ roleSetId, level });
+  } = useCommunityAdmin({ roleSetId });
+
+  const {
+    virtualContributorAdmin: {
+      getAvailable: getAvailableVirtualContributors,
+      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+    },
+  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceL0Id: space.id });
 
   const { getBoKProfile } = useVirtualContributorSpaceBoK();
 
@@ -169,7 +175,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     const fetchVirtualContributors = async () => {
       try {
         const [accountVCs, libraryVCs] = await Promise.all([
-          getAvailableVirtualContributors(undefined, false),
+          getAvailableVirtualContributors(undefined),
           getAvailableVirtualContributorsInLibrary(undefined),
         ]);
 

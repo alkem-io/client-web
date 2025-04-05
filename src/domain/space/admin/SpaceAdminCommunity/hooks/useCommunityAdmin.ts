@@ -5,7 +5,6 @@ import {
   RoleSetContributorType,
   RoleSetMemberOrganizationFragment,
   RoleSetMemberUserFragment,
-  SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager, {
   RELEVANT_ROLES,
@@ -22,7 +21,6 @@ import { InvitationModel } from '@/domain/access/model/InvitationModel';
 import { PlatformInvitationModel } from '@/domain/access/model/PlatformInvitationModel';
 
 interface useCommunityAdminParams {
-  level: SpaceLevel;
   roleSetId: string;
 }
 
@@ -63,27 +61,6 @@ export interface useCommunityAdminProvided {
     members: RoleSetMemberVirtualContributorFragmentWithRoles[];
     onAdd: (memberId: string) => Promise<unknown>;
     onRemove: (memberId: string) => Promise<unknown>;
-    getAvailable: (
-      filter?: string,
-      all?: boolean
-    ) => Promise<
-      {
-        id: string;
-        profile: {
-          displayName: string;
-          url: string;
-        };
-      }[]
-    >;
-    getAvailableInLibrary: (filter: string | undefined) => Promise<
-      {
-        id: string;
-        profile: {
-          displayName: string;
-          url: string;
-        };
-      }[]
-    >;
     inviteExisting: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   membershipAdmin: {
@@ -115,7 +92,7 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isLead: boolean;
 }
 
-const useCommunityAdmin = ({ roleSetId, level }: useCommunityAdminParams): useCommunityAdminProvided => {
+const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunityAdminProvided => {
   const {
     users,
     organizations,
@@ -169,8 +146,6 @@ const useCommunityAdmin = ({ roleSetId, level }: useCommunityAdminParams): useCo
     refetch: refetchAvailableContributors,
     findAvailableUsersForRoleSetEntryRole,
     findAvailableOrganizationsForRoleSet,
-    findAvailableVirtualContributorsForRoleSet,
-    findAvailableVirtualContributorsInLibrary,
   } = useRoleSetAvailableContributors({
     roleSetId,
     filterCurrentMembers: [...communityUsers, ...communityOrganizations],
@@ -183,14 +158,6 @@ const useCommunityAdmin = ({ roleSetId, level }: useCommunityAdminParams): useCo
   const getAvailableOrganizations = async (filter: string | undefined) => {
     const { organizations } = await findAvailableOrganizationsForRoleSet(filter);
     return organizations;
-  };
-  const getAvailableVirtualContributors = async (filter?: string) => {
-    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(level, filter);
-    return virtualContributors;
-  };
-  const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
-    const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
-    return virtualContributors;
   };
 
   // Adding new members:
@@ -270,8 +237,6 @@ const useCommunityAdmin = ({ roleSetId, level }: useCommunityAdminParams): useCo
       members: virtualContributors,
       onAdd: onAddVirtualContributor,
       onRemove: onRemoveVirtualContributor,
-      getAvailable: getAvailableVirtualContributors,
-      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
       inviteExisting: inviteExistingVirtualContributor,
     },
     membershipAdmin: {

@@ -559,6 +559,8 @@ export enum AgentType {
 
 export type AiPersona = {
   __typename?: 'AiPersona';
+  /** The ID of the AiPersonaService. */
+  aiPersonaServiceID?: Maybe<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A overview of knowledge provided by this AI Persona. */
@@ -602,6 +604,7 @@ export enum AiPersonaEngine {
   Expert = 'EXPERT',
   GenericOpenai = 'GENERIC_OPENAI',
   Guidance = 'GUIDANCE',
+  LibraFlow = 'LIBRA_FLOW',
   OpenaiAssistant = 'OPENAI_ASSISTANT',
 }
 
@@ -625,6 +628,8 @@ export type AiPersonaService = {
   dataAccessMode: AiPersonaDataAccessMode;
   /** The AI Persona Engine being used by this AI Persona. */
   engine: AiPersonaEngine;
+  /** The ExternalConfig for this Virtual. */
+  externalConfig?: Maybe<ExternalConfig>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The prompt used by this Virtual Persona */
@@ -1585,7 +1590,7 @@ export type CreateAiPersonaServiceInput = {
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
   engine?: InputMaybe<AiPersonaEngine>;
-  externalConfig?: InputMaybe<ExternalConfig>;
+  externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -2336,10 +2341,24 @@ export type ExploreSpacesInput = {
 };
 
 export type ExternalConfig = {
+  __typename?: 'ExternalConfig';
+  /** The signature of the API key */
+  apiKey?: Maybe<Scalars['String']>;
+  /** The assistent ID backing the service in OpenAI`s assistant API */
+  assistantId?: Maybe<Scalars['String']>;
+  /** The ExternalConfig for this Virtual. */
+  externalConfig?: Maybe<ExternalConfig>;
+  /** The OpenAI model to use for the service */
+  model: OpenAiModel;
+};
+
+export type ExternalConfigInput = {
   /** The API key for the external LLM provider. */
   apiKey?: InputMaybe<Scalars['String']>;
   /** The assistent ID backing the service in OpenAI`s assistant API */
   assistantId?: InputMaybe<Scalars['String']>;
+  /** The OpenAI model to use for the service */
+  model?: OpenAiModel;
 };
 
 export type FileStorageConfig = {
@@ -4567,6 +4586,34 @@ export enum NotificationEventType {
   SpaceCreated = 'SPACE_CREATED',
 }
 
+export enum OpenAiModel {
+  Babbage_002 = 'BABBAGE_002',
+  DallE_2 = 'DALL_E_2',
+  DallE_3 = 'DALL_E_3',
+  Davinci_002 = 'DAVINCI_002',
+  Gpt_3_5Turbo = 'GPT_3_5_TURBO',
+  Gpt_4 = 'GPT_4',
+  Gpt_4O = 'GPT_4O',
+  Gpt_4OAudioPreview = 'GPT_4O_AUDIO_PREVIEW',
+  Gpt_4OMini = 'GPT_4O_MINI',
+  Gpt_4OMiniAudioPreview = 'GPT_4O_MINI_AUDIO_PREVIEW',
+  Gpt_4OMiniRealtimePreview = 'GPT_4O_MINI_REALTIME_PREVIEW',
+  Gpt_4ORealtimePreview = 'GPT_4O_REALTIME_PREVIEW',
+  Gpt_4_5Preview = 'GPT_4_5_PREVIEW',
+  Gpt_4Turbo = 'GPT_4_TURBO',
+  O1 = 'O1',
+  O1Mini = 'O1_MINI',
+  O3Mini = 'O3_MINI',
+  OmniModerationLatest = 'OMNI_MODERATION_LATEST',
+  TextEmbedding_3Large = 'TEXT_EMBEDDING_3_LARGE',
+  TextEmbedding_3Small = 'TEXT_EMBEDDING_3_SMALL',
+  TextEmbeddingAda_002 = 'TEXT_EMBEDDING_ADA_002',
+  TextModerationLatest = 'TEXT_MODERATION_LATEST',
+  Tts_1 = 'TTS_1',
+  Tts_1Hd = 'TTS_1_HD',
+  Whisper_1 = 'WHISPER_1',
+}
+
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
@@ -6542,7 +6589,7 @@ export type UpdateAiPersonaServiceInput = {
   bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   engine?: InputMaybe<AiPersonaEngine>;
-  externalConfig?: InputMaybe<ExternalConfig>;
+  externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -8547,312 +8594,6 @@ export type AvailableOrganizationsQuery = {
     }>;
     pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
   };
-};
-
-export type AvailableVirtualContributorsInLibraryQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AvailableVirtualContributorsInLibraryQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      virtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        searchVisibility: SearchVisibility;
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
-        aiPersona?:
-          | {
-              __typename?: 'AiPersona';
-              bodyOfKnowledge?: string | undefined;
-              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-              bodyOfKnowledgeID?: string | undefined;
-            }
-          | undefined;
-      }>;
-    };
-  };
-};
-
-export type AvailableVirtualContributorsInSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type AvailableVirtualContributorsInSpaceQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              virtualContributorsInRole: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                };
-                aiPersona?:
-                  | {
-                      __typename?: 'AiPersona';
-                      bodyOfKnowledge?: string | undefined;
-                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-                      bodyOfKnowledgeID?: string | undefined;
-                    }
-                  | undefined;
-              }>;
-            };
-          };
-          account: {
-            __typename?: 'Account';
-            id: string;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-              aiPersona?:
-                | {
-                    __typename?: 'AiPersona';
-                    bodyOfKnowledge?: string | undefined;
-                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-                    bodyOfKnowledgeID?: string | undefined;
-                  }
-                | undefined;
-            }>;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type AvailableVirtualContributorsQueryVariables = Exact<{
-  filterSpace?: InputMaybe<Scalars['Boolean']>;
-  filterSpaceId?: InputMaybe<Scalars['UUID']>;
-}>;
-
-export type AvailableVirtualContributorsQuery = {
-  __typename?: 'Query';
-  lookup?: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              virtualContributorsInRole: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                };
-                aiPersona?:
-                  | {
-                      __typename?: 'AiPersona';
-                      bodyOfKnowledge?: string | undefined;
-                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-                      bodyOfKnowledgeID?: string | undefined;
-                    }
-                  | undefined;
-              }>;
-            };
-          };
-          account: {
-            __typename?: 'Account';
-            id: string;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-              aiPersona?:
-                | {
-                    __typename?: 'AiPersona';
-                    bodyOfKnowledge?: string | undefined;
-                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-                    bodyOfKnowledgeID?: string | undefined;
-                  }
-                | undefined;
-            }>;
-          };
-        }
-      | undefined;
-  };
-  virtualContributors?: Array<{
-    __typename?: 'VirtualContributor';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-      location?:
-        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-        | undefined;
-    };
-    aiPersona?:
-      | {
-          __typename?: 'AiPersona';
-          bodyOfKnowledge?: string | undefined;
-          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-          bodyOfKnowledgeID?: string | undefined;
-        }
-      | undefined;
-  }>;
-};
-
-export type VirtualContributorFullFragment = {
-  __typename?: 'VirtualContributor';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-  };
-  aiPersona?:
-    | {
-        __typename?: 'AiPersona';
-        bodyOfKnowledge?: string | undefined;
-        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-        bodyOfKnowledgeID?: string | undefined;
-      }
-    | undefined;
 };
 
 export type AssignPlatformRoleToUserMutationVariables = Exact<{
@@ -18565,6 +18306,52 @@ export type RefreshBodyOfKnowledgeMutation = {
   refreshVirtualContributorBodyOfKnowledge: boolean;
 };
 
+export type VirtualContributorFullFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+  };
+  aiPersona?:
+    | {
+        __typename?: 'AiPersona';
+        bodyOfKnowledge?: string | undefined;
+        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+        bodyOfKnowledgeID?: string | undefined;
+      }
+    | undefined;
+};
+
+export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
+  virtualContributorID: Scalars['UUID'];
+}>;
+
+export type VirtualContributorUpdatesSubscription = {
+  __typename?: 'Subscription';
+  virtualContributorUpdated: {
+    __typename?: 'VirtualContributorUpdatedSubscriptionResult';
+    virtualContributor: { __typename?: 'VirtualContributor'; id: string; status: VirtualContributorStatus };
+  };
+};
+
 export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
   id: Scalars['UUID'];
 }>;
@@ -18671,18 +18458,6 @@ export type VcMembershipsQuery = {
           | { __typename?: 'VirtualContributor'; id: string };
       };
     }>;
-  };
-};
-
-export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
-  virtualContributorID: Scalars['UUID'];
-}>;
-
-export type VirtualContributorUpdatesSubscription = {
-  __typename?: 'Subscription';
-  virtualContributorUpdated: {
-    __typename?: 'VirtualContributorUpdatedSubscriptionResult';
-    virtualContributor: { __typename?: 'VirtualContributor'; id: string; status: VirtualContributorStatus };
   };
 };
 
@@ -20689,6 +20464,166 @@ export type SpaceAccountQuery = {
   };
 };
 
+export type AvailableVirtualContributorsInLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AvailableVirtualContributorsInLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        searchVisibility: SearchVisibility;
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+        };
+        aiPersona?:
+          | {
+              __typename?: 'AiPersona';
+              bodyOfKnowledge?: string | undefined;
+              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              bodyOfKnowledgeID?: string | undefined;
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type AvailableVirtualContributorsInSpaceAccountQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type AvailableVirtualContributorsInSpaceAccountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?:
+                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                  | undefined;
+              };
+              aiPersona?:
+                | {
+                    __typename?: 'AiPersona';
+                    bodyOfKnowledge?: string | undefined;
+                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    bodyOfKnowledgeID?: string | undefined;
+                  }
+                | undefined;
+            }>;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type AvailableVirtualContributorsInSpaceL0QueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type AvailableVirtualContributorsInSpaceL0Query = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              virtualContributorsInRole: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+                aiPersona?:
+                  | {
+                      __typename?: 'AiPersona';
+                      bodyOfKnowledge?: string | undefined;
+                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      bodyOfKnowledgeID?: string | undefined;
+                    }
+                  | undefined;
+              }>;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type SpaceSettingsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -21177,41 +21112,6 @@ export type DeleteDocumentMutationVariables = Exact<{
 export type DeleteDocumentMutation = {
   __typename?: 'Mutation';
   deleteDocument: { __typename?: 'Document'; id: string };
-};
-
-export type SpaceDefaultTemplatesQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceDefaultTemplatesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          templatesManager?:
-            | {
-                __typename?: 'TemplatesManager';
-                id: string;
-                templateDefaults: Array<{
-                  __typename?: 'TemplateDefault';
-                  id: string;
-                  type: TemplateDefaultType;
-                  template?:
-                    | {
-                        __typename?: 'Template';
-                        id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
-                      }
-                    | undefined;
-                }>;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
 };
 
 export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables = Exact<{
@@ -23785,6 +23685,41 @@ export type SpaceCollaborationTemplatesQuery = {
                       }>;
                     }
                   | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceDefaultTemplatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceDefaultTemplatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templateDefaults: Array<{
+                  __typename?: 'TemplateDefault';
+                  id: string;
+                  type: TemplateDefaultType;
+                  template?:
+                    | {
+                        __typename?: 'Template';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }>;
               }
             | undefined;
         }
