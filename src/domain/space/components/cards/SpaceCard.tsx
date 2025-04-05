@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
@@ -37,7 +37,7 @@ const SpaceCard = ({
     ) : undefined;
 
   return (
-    <SpaceCard2
+    <SpaceCardBase
       iconComponent={HubOutlined}
       header={
         <>
@@ -64,7 +64,7 @@ const SpaceCard = ({
       {...props}
     >
       <SpaceCardTagline>{tagline}</SpaceCardTagline>
-    </SpaceCard2>
+    </SpaceCardBase>
   );
 };
 

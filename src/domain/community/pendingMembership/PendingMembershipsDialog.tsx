@@ -12,7 +12,7 @@ import {
   usePendingMemberships,
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import SpaceCard2 from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
@@ -127,7 +127,7 @@ const PendingMembershipsDialog = () => {
                   <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
-                        <SpaceCard2
+                        <SpaceCardBase
                           iconComponent={spaceIconByLevel[hydratedApplication.space.level]}
                           header={hydratedApplication.space.about.profile.displayName}
                           tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
@@ -135,7 +135,7 @@ const PendingMembershipsDialog = () => {
                           journeyUri={hydratedApplication.space.about.profile.url}
                         >
                           <SpaceCardTagline>{hydratedApplication.space.about.profile.tagline ?? ''}</SpaceCardTagline>
-                        </SpaceCard2>
+                        </SpaceCardBase>
                       )
                     }
                   </ApplicationHydrator>

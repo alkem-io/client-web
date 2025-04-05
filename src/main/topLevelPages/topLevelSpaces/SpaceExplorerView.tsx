@@ -8,7 +8,7 @@ import { Box, Button, DialogContent, IconButton } from '@mui/material';
 import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceSubspaceCard from '@/domain/space/components/cards/SpaceSubspaceCard';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
@@ -156,7 +156,7 @@ export const SpaceExplorerView = ({
       const { profile, isContentPublic, membership } = about;
 
       vs.push(
-        <SpaceSubspaceCard
+        <SubspaceCard
           key={id}
           tagline={profile?.tagline ?? ''}
           displayName={profile?.displayName}

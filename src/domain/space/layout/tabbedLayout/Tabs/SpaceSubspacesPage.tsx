@@ -17,7 +17,7 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
 import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
-import SpaceSubspaceCard from '@/domain/space/components/cards/SpaceSubspaceCard';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -94,7 +94,7 @@ const SpaceSubspacesPage = () => {
         childEntityTagsGetter={journeyCardTagsGetter}
         state={{ loading: loading, error: error }}
         renderChildEntityCard={item => (
-          <SpaceSubspaceCard
+          <SubspaceCard
             displayName={item.about.profile.displayName}
             banner={item.about.profile.cardBanner}
             tags={item.about.profile.tagset?.tags!}

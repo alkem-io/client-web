@@ -32,7 +32,7 @@ export interface SpaceCard2Props extends ContributeCardProps {
   visual?: ReactNode;
 }
 
-const SpaceCard2 = ({
+const SpaceCardBase = ({
   iconComponent: Icon = SpaceL0Icon,
   header,
   banner,
@@ -97,4 +97,4 @@ const SpaceCard2 = ({
   );
 };
 
-export default SpaceCard2;
+export default SpaceCardBase;

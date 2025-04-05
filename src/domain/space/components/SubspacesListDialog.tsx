@@ -9,7 +9,7 @@ import { journeyCardValueGetter } from '@/_deprecated/journeyCardValueGetter';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import SpaceSubspaceCard from './cards/SpaceSubspaceCard';
+import SubspaceCard from './cards/SubspaceCard';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
@@ -49,7 +49,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
                   {filteredEntities.map((subspace, index) => {
                     const key = subspace ? subspace.id : `__loading_${index}`;
                     return (
-                      <SpaceSubspaceCard
+                      <SubspaceCard
                         key={key}
                         displayName={subspace.about.profile.displayName}
                         banner={subspace.about.profile.cardBanner}

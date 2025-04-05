@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Close } from '@mui/icons-material';
-import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
@@ -60,7 +60,7 @@ const ContributionDetailsCard = ({
 
   return (
     <>
-      <SpaceCard2
+      <SpaceCardBase
         {...props}
         iconComponent={spaceIconByLevel[level || SpaceLevel.L0]}
         header={
@@ -88,7 +88,7 @@ const ContributionDetailsCard = ({
         bannerOverlay={ribbon}
       >
         <SpaceCardTagline>{tagline}</SpaceCardTagline>
-      </SpaceCard2>
+      </SpaceCardBase>
       {enableLeave && (
         <Dialog open={leavingCommunityDialogOpen} maxWidth="xs" aria-label="confirm-leave-space">
           <DialogHeader onClose={() => onLeaveCommunityDialogOpen?.(false)}>{leaveCommunityDialogTitle}</DialogHeader>

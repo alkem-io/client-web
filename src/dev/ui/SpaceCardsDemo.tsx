@@ -6,7 +6,7 @@ import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SpaceSubspaceCard from '@/domain/space/components/cards/SpaceSubspaceCard';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 
@@ -30,7 +30,7 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Explore Spaces Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SpaceSubspaceCard
+              <SubspaceCard
                 banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -43,7 +43,7 @@ const SpaceCardsDemo = () => {
                 avatarUris={['', '']}
                 locked
               />
-              <SpaceSubspaceCard
+              <SubspaceCard
                 banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -56,7 +56,7 @@ const SpaceCardsDemo = () => {
                 isPrivate
                 avatarUris={['']}
               />
-              <SpaceSubspaceCard
+              <SubspaceCard
                 banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -135,7 +135,7 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Challenge Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SpaceSubspaceCard
+              <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -145,7 +145,7 @@ const SpaceCardsDemo = () => {
                 spaceDisplayName="Parent Space"
                 spaceUri=""
               />
-              <SpaceSubspaceCard
+              <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -155,7 +155,7 @@ const SpaceCardsDemo = () => {
                 spaceDisplayName="Parent Space"
                 spaceUri=""
               />
-              <SpaceSubspaceCard
+              <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}

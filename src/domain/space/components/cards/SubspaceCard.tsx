@@ -4,7 +4,7 @@ import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-sch
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import CardActions from '@/core/ui/card/CardActions';
-import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
 import SpaceCardSpacing from '@/domain/space/components/cards/components/SpaceCardSpacing';
 import SpaceCardGoToButton from '@/domain/space/components/cards/components/SpaceCardGoToButton';
@@ -12,7 +12,7 @@ import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCa
 import StackedAvatar from './components/StackedAvatar';
 import { ReactNode } from 'react';
 
-interface SpaceSubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
+interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
   tagline?: string;
   displayName: string;
   vision: string;
@@ -28,7 +28,7 @@ interface SpaceSubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconC
   level?: SpaceLevel;
 }
 
-const SpaceSubspaceCard = ({
+const SubspaceCard = ({
   displayName,
   vision,
   tagline,
@@ -40,7 +40,7 @@ const SpaceSubspaceCard = ({
   isPrivate,
   label,
   ...props
-}: SpaceSubspaceCardProps) => {
+}: SubspaceCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
@@ -51,7 +51,7 @@ const SpaceSubspaceCard = ({
   const isSubspace = level !== SpaceLevel.L0;
 
   return (
-    <SpaceCard2
+    <SpaceCardBase
       iconComponent={HubOutlined}
       header={
         <>
@@ -86,8 +86,8 @@ const SpaceSubspaceCard = ({
       {...props}
     >
       <SpaceCardTagline>{tagline ?? ''}</SpaceCardTagline>
-    </SpaceCard2>
+    </SpaceCardBase>
   );
 };
 
-export default SpaceSubspaceCard;
+export default SubspaceCard;

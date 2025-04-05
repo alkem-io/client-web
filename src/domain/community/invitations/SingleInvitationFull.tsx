@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import SpaceCard2 from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
@@ -87,7 +87,7 @@ const SingleInvitationFull = ({
                   flexDirection={isMobile ? 'column' : 'row'}
                   alignItems={isMobile ? 'center' : 'start'}
                 >
-                  <SpaceCard2
+                  <SpaceCardBase
                     iconComponent={spaceIconByLevel[invitation.space.level]}
                     header={invitation.space.about.profile.displayName}
                     tags={invitation.space.about.profile.tagset?.tags ?? []}
@@ -95,7 +95,7 @@ const SingleInvitationFull = ({
                     journeyUri={invitation.space.about.profile.url}
                   >
                     <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
-                  </SpaceCard2>
+                  </SpaceCardBase>
                   <Gutters disablePadding>
                     <Caption>
                       <DetailedActivityDescription

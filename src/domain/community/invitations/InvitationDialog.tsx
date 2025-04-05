@@ -3,7 +3,7 @@ import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/Pen
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import SpaceCard2 from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
@@ -101,7 +101,7 @@ const InvitationDialog = ({
                     flexDirection={isMobile ? 'column' : 'row'}
                     alignItems={isMobile ? 'center' : 'start'}
                   >
-                    <SpaceCard2
+                    <SpaceCardBase
                       iconComponent={spaceIconByLevel[invitation.space.level]}
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
@@ -110,7 +110,7 @@ const InvitationDialog = ({
                       onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >
                       <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
-                    </SpaceCard2>
+                    </SpaceCardBase>
                     <Gutters disablePadding>
                       <Caption>
                         <DetailedActivityDescription

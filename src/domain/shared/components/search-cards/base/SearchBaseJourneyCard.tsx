@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import CardActions from '@/core/ui/card/CardActions';
 import SpaceCardGoToButton from '@/domain/space/components/cards/components/SpaceCardGoToButton';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import SpaceCard2, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCard2';
+import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockTitle } from '@/core/ui/typography/components';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
@@ -40,7 +40,7 @@ const SearchBaseJourneyCard = ({
     ) : undefined;
 
   return (
-    <SpaceCard2
+    <SpaceCardBase
       iconComponent={spaceLevelIcon[spaceLevel]}
       header={
         <BlockTitle component="div" sx={webkitLineClamp(2)}>
@@ -58,7 +58,7 @@ const SearchBaseJourneyCard = ({
     >
       <SpaceCardTagline>{tagline}</SpaceCardTagline>
       {parentSegment ?? <SpaceCardSpacing height={2} />}
-    </SpaceCard2>
+    </SpaceCardBase>
   );
 };
 
