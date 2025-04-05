@@ -55,6 +55,7 @@ const SpaceAdminL0Route: FC = () => {
     isSubspace: false,
     membershipsEnabled: true,
     subspacesEnabled: true,
+    privateSettingsEnabled: true,
     parentSpaceUrl: space.about.profile?.url,
   };
 

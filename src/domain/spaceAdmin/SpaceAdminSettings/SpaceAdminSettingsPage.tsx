@@ -47,6 +47,7 @@ export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   parentSpaceUrl: string;
   membershipsEnabled: boolean;
   subspacesEnabled: boolean;
+  privateSettingsEnabled: boolean;
 }
 
 const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
@@ -56,6 +57,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   spaceId,
   membershipsEnabled,
   subspacesEnabled,
+  privateSettingsEnabled,
   routePrefix = '../',
 }) => {
   const { t } = useTranslation();
@@ -210,31 +212,35 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
       <PageContent background="transparent">
         {!loading && (
           <>
-            <PageContentBlock>
-              <BlockTitle>{t('pages.admin.space.settings.visibility.title')}</BlockTitle>
-              <RadioSettingsGroup
-                value={currentSettings?.privacy?.mode}
-                options={{
-                  [SpacePrivacyMode.Public]: {
-                    label: (
-                      <Trans
-                        i18nKey={`pages.admin.space.settings.visibility.${isSubspace ? 'publicSubspace' : 'public'}`}
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                  [SpacePrivacyMode.Private]: {
-                    label: (
-                      <Trans
-                        i18nKey={`pages.admin.space.settings.visibility.${isSubspace ? 'privateSubspace' : 'private'}`}
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                }}
-                onChange={value => handleUpdateSettings({ privacyMode: value })}
-              />
-            </PageContentBlock>
+            {privateSettingsEnabled && (
+              <PageContentBlock>
+                <BlockTitle>{t('pages.admin.space.settings.visibility.title')}</BlockTitle>
+                <RadioSettingsGroup
+                  value={currentSettings?.privacy?.mode}
+                  options={{
+                    [SpacePrivacyMode.Public]: {
+                      label: (
+                        <Trans
+                          i18nKey={`pages.admin.space.settings.visibility.${isSubspace ? 'publicSubspace' : 'public'}`}
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                    [SpacePrivacyMode.Private]: {
+                      label: (
+                        <Trans
+                          i18nKey={`pages.admin.space.settings.visibility.${
+                            isSubspace ? 'privateSubspace' : 'private'
+                          }`}
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={value => handleUpdateSettings({ privacyMode: value })}
+                />
+              </PageContentBlock>
+            )}
 
             {membershipsEnabled && (
               <PageContentBlock>
