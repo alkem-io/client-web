@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '@/main/test/testUtils';
 import { ApplicationButton, ApplicationButtonProps } from './ApplicationButton';
 import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../constants/ApplicationState';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../access/ApplicationState';
 import { expect, test } from 'vitest';
 
 test.skip('buttons is loading', () => {

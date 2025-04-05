@@ -10,7 +10,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
-import { ApplicationDialog } from '@/domain/community/application/dialogs/ApplicationDialog';
+import { ApplicationDialog } from '@/domain/access/ApplicationsAndInvitations/ApplicationDialog';
 import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
