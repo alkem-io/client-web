@@ -11,7 +11,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 type CommunityGuidelinesFormProps = {

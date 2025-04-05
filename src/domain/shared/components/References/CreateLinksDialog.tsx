@@ -14,7 +14,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';

@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';

@@ -2,7 +2,7 @@ import { forwardRef, useMemo } from 'react';
 import { sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '@/core/ui/card/cardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayout from '@/_deprecated/ScrollableCardsLayout';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CalloutState } from '@/core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';

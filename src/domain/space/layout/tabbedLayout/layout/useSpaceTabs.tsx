@@ -4,7 +4,7 @@ import { useSpace } from '../../../context/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { CalloutIcon } from '@/domain/collaboration/_deprecated/CalloutIcon';
+import { CalloutIcon } from '@/_deprecated/CalloutIcon';
 import { SpaceL1Icon } from '../../../icons/SpaceL1Icon';
 
 type TabDefinition = {

@@ -8,7 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import { SelectableSpace } from './useVirtualContributorWizard';
 import { SelectableKnowledgeSpace } from './ExistingSpace';
 

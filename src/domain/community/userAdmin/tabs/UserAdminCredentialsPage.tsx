@@ -15,7 +15,7 @@ import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
-import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
+import { CardLayoutContainer, CardLayoutItem } from '@/CardsLayout';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import useUserContributions from '../../user/userContributions/useUserContributions';
 

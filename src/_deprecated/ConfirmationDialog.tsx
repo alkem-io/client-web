@@ -4,10 +4,10 @@ import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Actions } from '../actions/Actions';
-import DialogHeader from '../dialog/DialogHeader';
-import { gutters } from '../grid/utils';
-import { BlockTitle } from '../typography';
+import { Actions } from '../core/ui/actions/Actions';
+import DialogHeader from '../core/ui/dialog/DialogHeader';
+import { gutters } from '../core/ui/grid/utils';
+import { BlockTitle } from '../core/ui/typography';
 /**
  * @deprecated Needs refactor, do not base other components on this Props.
  */

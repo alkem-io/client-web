@@ -8,7 +8,7 @@ import useInnovationFlowSettings from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';

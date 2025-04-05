@@ -44,7 +44,7 @@ import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innovati
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
-import SpaceL1Icon2 from '../../_deprecated/SpaceL1Icon2';
+import SpaceL1Icon2 from '../../../../_deprecated/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../icons/SpaceL2Icon';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {

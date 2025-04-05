@@ -16,7 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege, CalloutState } from '@/core/apollo/generated/graphql-schema';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';

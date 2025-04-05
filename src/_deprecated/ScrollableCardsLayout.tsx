@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
-import CardsLayout, { CardsLayoutProps } from './CardsLayout';
+import CardsLayout, { CardsLayoutProps } from '../CardsLayout';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 // If the width of the component is bigger than 600, scroll will be vertical

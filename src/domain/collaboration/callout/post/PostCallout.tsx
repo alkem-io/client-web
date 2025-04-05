@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout from '../calloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '@/core/ui/card/cardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayout from '@/_deprecated/ScrollableCardsLayout';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { CalloutState, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';

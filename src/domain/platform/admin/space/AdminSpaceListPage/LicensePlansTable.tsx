@@ -2,7 +2,7 @@ import DataGridTable from '@/core/ui/table/DataGridTable';
 import { GridColDef } from '@mui/x-data-grid';
 import CheckIcon from '@mui/icons-material/Check';
 import { useState } from 'react';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecated/ConfirmationDialog';
 
 export interface LicensePlan {
   id: string;

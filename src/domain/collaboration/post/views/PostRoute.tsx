@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
+import useBackToParentPage from '@/_deprecated/useBackToParentPage';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';
 import PostSharePage from '../pages/PostSharePage';
