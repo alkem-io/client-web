@@ -26,7 +26,6 @@ import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { useLocation } from 'react-router-dom';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
-import { FocusTrap } from '@mui/base/FocusTrap';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import Avatar from '@/core/ui/avatar/Avatar';
 import {
@@ -34,6 +33,7 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
+import FocusTrap from '@mui/material/Unstable_TrapFocus';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
