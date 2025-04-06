@@ -15,7 +15,6 @@ import {
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
 import React, { forwardRef, useMemo, useState } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
-import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { gutters } from '@/core/ui/grid/utils';
@@ -45,6 +44,16 @@ const Loader = forwardRef((props, ref) => {
   );
 });
 
+export interface RoleOption {
+  value: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
+  label: string;
+}
+
+export interface SpaceOption {
+  value: string | typeof SPACE_OPTION_ALL;
+  label: string;
+}
+
 const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
@@ -71,14 +80,14 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
       space: event.target.value as string | typeof SPACE_OPTION_ALL,
     }));
 
-  const spaceOptions = useMemo(() => {
-    const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
+  const spaceOptions = useMemo<SpaceOption[]>(() => {
+    const spaces: SpaceOption[] =
       spaceMemberships?.map(space => ({
         value: space.id,
         label: space.about.profile.displayName,
       })) ?? [];
 
-    spaces?.unshift({
+    spaces.unshift({
       value: SPACE_OPTION_ALL,
       label: t('pages.home.sections.latestContributions.filter.space.all'),
     });
@@ -104,8 +113,8 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
 
   const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });
 
-  const roleOptions = useMemo(() => {
-    const options: Partial<SelectOption<ActivityFeedRoles | typeof ROLE_OPTION_ALL>>[] = SELECTABLE_ROLES.map(role => ({
+  const roleOptions = useMemo<RoleOption[]>(() => {
+    const options: RoleOption[] = SELECTABLE_ROLES.map(role => ({
       value: role,
       label: t(`common.roles.${role}` as const),
     }));
