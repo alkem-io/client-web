@@ -3,7 +3,7 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 // TODO: add cardBanner if we want support of Spaces as BOK

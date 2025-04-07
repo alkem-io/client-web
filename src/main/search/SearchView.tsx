@@ -28,7 +28,7 @@ import {
 import useNavigate from '@/core/routing/useNavigate';
 import { useUserContext } from '@/domain/community/user';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
 import { useMemoizedQueryParams } from '@/core/routing/useQueryParams';

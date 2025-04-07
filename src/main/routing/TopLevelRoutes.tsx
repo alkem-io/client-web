@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { SpaceContextProvider } from '@/domain/space/SpaceContext/SpaceContext';
+import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
@@ -13,12 +13,12 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/journey/common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/space/layout/EntityPageLayout';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import withUrlResolverParams from '@/main/routing/urlResolver/withUrlResolverParams';
+import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -29,35 +29,18 @@ const InnovationLibraryPage = lazyWithGlobalErrorHandler(
 );
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
 const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platform/admin/routing/AdminRoute'));
-const UserRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/user/routing/UserRoute'),
-  withUrlResolverParams
-);
+const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
 const OrganizationRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/organization/routing/OrganizationRoute'),
-  withUrlResolverParams
+  () => import('@/domain/community/organization/routing/OrganizationRoute')
 );
-const VCRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/virtualContributor/VCRoute'),
-  withUrlResolverParams
-);
-const ForumRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/communication/discussion/routing/ForumRoute'),
-  withUrlResolverParams
-);
-const InnovationPackRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/InnovationPack/InnovationPackRoute'),
-  withUrlResolverParams
-);
+const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
+const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
+const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/InnovationPack/InnovationPackRoute'));
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
-  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes'),
-  withUrlResolverParams
+  () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
-const CreateSpaceDialog = lazyWithGlobalErrorHandler(
-  () => import('@/domain/journey/space/createSpace/CreateSpaceDialog')
-);
-// TODO: this to load directly, and lazy load then the appropriate layout
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'), withUrlResolverParams);
+const CreateSpaceDialog = lazyWithGlobalErrorHandler(() => import('@/domain/space/createSpace/CreateSpaceDialog'));
+const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -74,6 +57,8 @@ export const TopLevelRoutes = () => {
       >
         <Route index element={<RedirectToLanding />} />
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
+        {IdentityRoute()}
+        {devRoute()}
         <Route
           path={TopLevelRoutePath.CreateSpace}
           element={
@@ -95,112 +80,6 @@ export const TopLevelRoutes = () => {
             <NonIdentity>
               <WithApmTransaction path={TopLevelRoutePath.Home}>
                 <HomePage />
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`:${nameOfUrl.spaceNameId}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                <SpaceContextProvider>
-                  <EntityPageLayoutHolder>
-                    <Suspense fallback={<Loading />}>
-                      <SpaceRoute />
-                    </Suspense>
-                    <RenderPoint />
-                  </EntityPageLayoutHolder>
-                </SpaceContextProvider>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Admin}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="/admin/*">
-                <Suspense fallback={<Loading />}>
-                  <AdminRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        {IdentityRoute()}
-        <Route
-          path={`/${TopLevelRoutePath.User}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
-                <NoIdentityRedirect>
-                  <Suspense fallback={<Loading />}>
-                    <UserRoute />
-                  </Suspense>
-                </NoIdentityRedirect>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.VirtualContributor}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
-                <NoIdentityRedirect>
-                  <Suspense fallback={<Loading />}>
-                    <VCRoute />
-                  </Suspense>
-                </NoIdentityRedirect>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.Organization}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
-                <Suspense fallback={<Loading />}>
-                  <OrganizationRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.InnovationLibrary}`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
-                <Suspense fallback={<Loading />}>
-                  <InnovationLibraryPage />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`${TopLevelRoutePath.InnovationPacks}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={TopLevelRoutePath.InnovationPacks}>
-                <Suspense fallback={<Loading />}>
-                  <InnovationPackRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`${TopLevelRoutePath.InnovationHubs}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
-                <Suspense fallback={<Loading />}>
-                  <InnovationHubsRoutes />
-                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -237,18 +116,7 @@ export const TopLevelRoutes = () => {
             </NonIdentity>
           }
         />
-        <Route
-          path={`/${TopLevelRoutePath.Forum}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
-                <Suspense fallback={<Loading />}>
-                  <ForumRoute />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
+
         <Route
           path={`/${TopLevelRoutePath.Restricted}`}
           element={
@@ -257,17 +125,128 @@ export const TopLevelRoutes = () => {
             </WithApmTransaction>
           }
         />
+
+        {/* Routes that require Server Url Resolution (should go last) */}
         <Route
           path="*"
           element={
-            <WithApmTransaction path="*">
-              <NotFoundPageLayout>
-                <Error404 />
-              </NotFoundPageLayout>
-            </WithApmTransaction>
+            <NonIdentity>
+              <UrlResolverProvider>
+                <Routes>
+                  <Route
+                    path={`/${TopLevelRoutePath.Admin}/*`}
+                    element={
+                      <WithApmTransaction path="/admin/*">
+                        <Suspense fallback={<Loading />}>
+                          <AdminRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.User}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
+                        <NoIdentityRedirect>
+                          <Suspense fallback={<Loading />}>
+                            <UserRoute />
+                          </Suspense>
+                        </NoIdentityRedirect>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.VirtualContributor}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
+                        <NoIdentityRedirect>
+                          <Suspense fallback={<Loading />}>
+                            <VCRoute />
+                          </Suspense>
+                        </NoIdentityRedirect>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.Organization}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
+                        <Suspense fallback={<Loading />}>
+                          <OrganizationRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.InnovationLibrary}`}
+                    element={
+                      <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
+                        <Suspense fallback={<Loading />}>
+                          <InnovationLibraryPage />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`${TopLevelRoutePath.InnovationPacks}/*`}
+                    element={
+                      <WithApmTransaction path={TopLevelRoutePath.InnovationPacks}>
+                        <Suspense fallback={<Loading />}>
+                          <InnovationPackRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`${TopLevelRoutePath.InnovationHubs}/*`}
+                    element={
+                      <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
+                        <Suspense fallback={<Loading />}>
+                          <InnovationHubsRoutes />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`/${TopLevelRoutePath.Forum}/*`}
+                    element={
+                      <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
+                        <Suspense fallback={<Loading />}>
+                          <ForumRoute />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`:${nameOfUrl.spaceNameId}/*`}
+                    element={
+                      <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                        <SpaceContextProvider>
+                          <EntityPageLayoutHolder>
+                            <Suspense fallback={<Loading />}>
+                              <SpaceRoute />
+                            </Suspense>
+                            <RenderPoint />
+                          </EntityPageLayoutHolder>
+                        </SpaceContextProvider>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={
+                      <WithApmTransaction path="*">
+                        <NotFoundPageLayout>
+                          <Error404 />
+                        </NotFoundPageLayout>
+                      </WithApmTransaction>
+                    }
+                  />
+                </Routes>
+              </UrlResolverProvider>
+            </NonIdentity>
           }
         />
-        {devRoute()}
       </Route>
     </Routes>
   );

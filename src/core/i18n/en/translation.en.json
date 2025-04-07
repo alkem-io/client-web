@@ -659,15 +659,6 @@
     "singleWhiteboard": {
       "clickToSee": "Click to see the full whiteboard"
     },
-    "callout-group": {
-      "HOME_TOP": "Dashboard Recommendations",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Contribute",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Knowledge Base",
-      "CUSTOM": "Custom"
-    },
     "calloutsList": {
       "title": "Index",
       "filter": {
@@ -1023,7 +1014,8 @@
         },
         "deleteDialog": {
           "title": "Delete Phase?",
-          "text": "This action cannot be undone."
+          "text": "This action cannot be undone.",
+          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
           "title": "Find subspace template",
@@ -1788,7 +1780,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
@@ -1808,7 +1799,6 @@
       }
     },
     "contribute": {
-      "initial-text": "In the Knowledge Base you will find relevant documents, insights and other materials about the topic. The leads of the Space can provide the content, but also community members can contribute.",
       "innovationFlow": {
         "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
         "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"

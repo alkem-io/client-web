@@ -1,0 +1,42 @@
+# TODO: most of this query is not needed I think.
+
+query SpaceCommunityPage($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      license {
+        id
+        availableEntitlements
+      }
+      about {
+        ...SpaceAboutLight
+        membership {
+          communityID
+          roleSetID
+        }
+        provider {
+          ...ContributorDetails
+        }
+        guidelines {
+          id
+        }
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          states {
+            displayName
+          }
+        }
+        calloutsSet {
+          id
+        }
+      }
+    }
+  }
+}

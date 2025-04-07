@@ -54,7 +54,6 @@ export type UrlResolverContextValue = {
   // Innovation Hubs
   innovationHubId: string | undefined;
 
-  setUrlParams: (url: string) => void;
   loading: boolean;
 };
 
@@ -81,9 +80,6 @@ const emptyResult: UrlResolverContextValue = {
   templatesSetId: undefined,
   templateId: undefined,
   innovationHubId: undefined,
-  setUrlParams: () => {
-    console.error('setUrlParams not implemented');
-  },
   loading: true,
 };
 
@@ -110,8 +106,7 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
-  const [queryUrl, setQueryUrl] = useState<string>();
-
+  const [currentUrl, setCurrentUrl] = useState<string>('');
   /**
    * Default Apollo's cache behavior will store the result of the URL resolver queries based on the Id of the space returned
    * And will fill the gaps of missing Ids when the user navigates to a different URL
@@ -134,23 +129,44 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     loading: urlResolverLoading,
   } = useUrlResolverQuery({
     variables: {
-      url: queryUrl!,
+      url: currentUrl!,
     },
-    skip: !queryUrl,
+    skip: !currentUrl,
   });
   if (!urlResolverLoading && error && isUrlResolverError(error)) {
     throw new NotFoundError();
   }
 
-  const setUrlParams = (url: string) => {
-    setQueryUrl(url);
-  };
+  useEffect(() => {
+    const handleUrlChange = () => {
+      let nextUrl = window.location.origin + window.location.pathname;
 
-  const emptyWithSetParams = { ...emptyResult, setUrlParams }; // add the setUrlParams function for the initial state
-  // Store the result of the URL resolver query in a state to avoid screen shaking
-  const [value, setValue] = useState<UrlResolverContextValue>(emptyWithSetParams);
+      // Remove trailing slash because /:spaceNameId and /:spaceNameId/ are the same url
+      if (nextUrl.endsWith('/')) {
+        nextUrl = nextUrl.slice(0, -1);
+      }
+      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      nextUrl = nextUrl.replace(/\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/, '');
 
-  const resolvingResult = useMemo<UrlResolverContextValue | undefined>(() => {
+      if (nextUrl !== currentUrl) {
+        setCurrentUrl(nextUrl); // Update the query URL state
+      }
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    var pushState = window.history.pushState;
+    window.history.pushState = function (...args) {
+      pushState.apply(window.history, args);
+      handleUrlChange();
+    };
+
+    handleUrlChange();
+
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, []);
+
+  const value = useMemo<UrlResolverContextValue>(() => {
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
       const data = urlResolverData.urlResolver;
@@ -216,19 +232,12 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
         // Forum:
         discussionId: data.discussionId,
-        setUrlParams: setUrlParams,
         loading: urlResolverLoading,
       };
     } else {
-      return undefined;
+      return emptyResult;
     }
   }, [urlResolverData, urlResolverLoading]);
-
-  useEffect(() => {
-    if (resolvingResult) {
-      setValue(resolvingResult);
-    }
-  }, [resolvingResult]);
 
   return <UrlResolverContext.Provider value={value}>{children}</UrlResolverContext.Provider>;
 };

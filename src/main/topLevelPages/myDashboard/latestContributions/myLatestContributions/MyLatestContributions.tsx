@@ -14,7 +14,7 @@ import {
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
 import { Caption, CaptionSmall } from '@/core/ui/typography/components';
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import { SelectOption } from '@mui/base';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
