@@ -399,6 +399,11 @@
       "not-verified": ""
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Free",
+        "SPACE_PLUS": "Plus",
+        "SPACE_PREMIUM": "Premium"
+      },
       "innovationFlowState": {
         "new": "Nuevo",
         "beingRefined": "Siendo refinado",
@@ -1903,7 +1908,7 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "usageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
