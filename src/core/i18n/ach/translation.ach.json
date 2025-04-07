@@ -399,6 +399,11 @@
       "not-verified": "crwdns18012:0crwdne18012:0"
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "crwdns36823:0crwdne36823:0",
+        "SPACE_PLUS": "crwdns36825:0crwdne36825:0",
+        "SPACE_PREMIUM": "crwdns36827:0crwdne36827:0"
+      },
       "innovationFlowState": {
         "new": "crwdns18014:0crwdne18014:0",
         "beingRefined": "crwdns18016:0crwdne18016:0",
@@ -1903,7 +1908,7 @@
             "hostedSpaces": "crwdns19682:0crwdne19682:0",
             "virtualContributors": "crwdns19684:0crwdne19684:0",
             "innovationPacks": "crwdns19686:0$t(common.innovation-packs)crwdne19686:0",
-            "usageNotice": "crwdns19688:0{{usage}}crwdnd19688:0{{limit}}crwdnd19688:0{{type}}crwdne19688:0",
+            "usageNotice": "crwdns36829:0$t(common.spaces)crwdnd36829:0{{freeUsage}}crwdnd36829:0{{freeLimit}}crwdnd36829:0$t(common.spaces)crwdnd36829:0{{plusUsage}}crwdnd36829:0{{plusLimit}}crwdnd36829:0$t(common.spaces)crwdnd36829:0{{premiumUsage}}crwdnd36829:0{{premiumLimit}}crwdnd36829:0$t(common.spaces)crwdne36829:0",
             "limitNotice": "crwdns19690:0crwdne19690:0",
             "notAvailable": "crwdns19692:0crwdne19692:0",
             "notAvailableNotice": "crwdns19694:0crwdne19694:0",
