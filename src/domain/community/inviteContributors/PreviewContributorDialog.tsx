@@ -1,4 +1,4 @@
-import { useMemo, PropsWithChildren, ReactNode, useCallback, MouseEventHandler } from 'react';
+import React, { useMemo, PropsWithChildren, ReactNode, useCallback, MouseEventHandler, useEffect } from 'react';
 import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -16,12 +16,29 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import References from '@/domain/shared/components/References/References';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import { Location } from '@/core/ui/location/getLocationString';
+
+export type ProviderProfile =
+  | {
+      displayName: string;
+      avatar?: {
+        uri: string;
+      };
+      tagline?: string;
+      location?: Location;
+      tagsets?: { tags: string[] }[];
+      url?: string;
+    }
+  | undefined;
 
 interface PreviewContributorDialogProps {
   open?: boolean;
   onClose: () => void;
   contributor: ContributorProps | undefined;
   actions?: ReactNode;
+  provider?: ProviderProfile;
+  getProvider?: (vcId: string) => Promise<void> | void;
 }
 
 const OTHER_LINK_GROUP = 'other';
@@ -33,6 +50,8 @@ const PreviewContributorDialog = ({
   contributor,
   onClose,
   actions,
+  provider,
+  getProvider,
 }: PropsWithChildren<PreviewContributorDialogProps>) => {
   const { t } = useTranslation();
 
@@ -57,6 +76,12 @@ const PreviewContributorDialog = ({
     },
     [profile?.url]
   );
+
+  useEffect(() => {
+    if (open && contributor?.id) {
+      getProvider?.(contributor.id);
+    }
+  }, [open, contributor?.id]);
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
@@ -96,6 +121,9 @@ const PreviewContributorDialog = ({
                 references={links[OTHER_LINK_GROUP]}
                 noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
               />
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
+              <ContributorCardHorizontal profile={provider} seamless />
             </PageContentBlockSeamless>
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">
