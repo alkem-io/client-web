@@ -5593,6 +5593,10 @@ export const AccountInformationDocument = gql`
             id
             myPrivileges
           }
+          license {
+            id
+            availableEntitlements
+          }
           about {
             id
             profile {
@@ -12997,6 +13001,72 @@ export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQuer
   return { query: UserSettingsDocument, variables: variables };
 }
 
+export const AiPersonaServiceDocument = gql`
+  query AiPersonaService($id: UUID!) {
+    aiServer {
+      aiPersonaService(ID: $id) {
+        id
+        prompt
+        engine
+        externalConfig {
+          apiKey
+          assistantId
+          model
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAiPersonaServiceQuery__
+ *
+ * To run a query within a React component, call `useAiPersonaServiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAiPersonaServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAiPersonaServiceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAiPersonaServiceQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
+    AiPersonaServiceDocument,
+    options
+  );
+}
+
+export function useAiPersonaServiceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AiPersonaServiceQuery,
+    SchemaTypes.AiPersonaServiceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
+    AiPersonaServiceDocument,
+    options
+  );
+}
+
+export type AiPersonaServiceQueryHookResult = ReturnType<typeof useAiPersonaServiceQuery>;
+export type AiPersonaServiceLazyQueryHookResult = ReturnType<typeof useAiPersonaServiceLazyQuery>;
+export type AiPersonaServiceQueryResult = Apollo.QueryResult<
+  SchemaTypes.AiPersonaServiceQuery,
+  SchemaTypes.AiPersonaServiceQueryVariables
+>;
+export function refetchAiPersonaServiceQuery(variables: SchemaTypes.AiPersonaServiceQueryVariables) {
+  return { query: AiPersonaServiceDocument, variables: variables };
+}
+
 export const VirtualContributorDocument = gql`
   query VirtualContributor($id: UUID!) {
     lookup {
@@ -13039,6 +13109,7 @@ export const VirtualContributorDocument = gql`
           bodyOfKnowledgeType
           bodyOfKnowledge
           engine
+          aiPersonaServiceID
         }
         profile {
           id
@@ -13527,6 +13598,55 @@ export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaT
 export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RefreshBodyOfKnowledgeMutation,
   SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+>;
+export const UpdateAiPersonaServiceDocument = gql`
+  mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
+    aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
+      id
+      prompt
+    }
+  }
+`;
+export type UpdateAiPersonaServiceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAiPersonaServiceMutation,
+  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+>;
+
+/**
+ * __useUpdateAiPersonaServiceMutation__
+ *
+ * To run a mutation, you first call `useUpdateAiPersonaServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAiPersonaServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAiPersonaServiceMutation, { data, loading, error }] = useUpdateAiPersonaServiceMutation({
+ *   variables: {
+ *      aiPersonaServiceData: // value for 'aiPersonaServiceData'
+ *   },
+ * });
+ */
+export function useUpdateAiPersonaServiceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateAiPersonaServiceMutation,
+    SchemaTypes.UpdateAiPersonaServiceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateAiPersonaServiceMutation,
+    SchemaTypes.UpdateAiPersonaServiceMutationVariables
+  >(UpdateAiPersonaServiceDocument, options);
+}
+
+export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
+export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
+export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAiPersonaServiceMutation,
+  SchemaTypes.UpdateAiPersonaServiceMutationVariables
 >;
 export const VirtualContributorKnowledgeBaseDocument = gql`
   query VirtualContributorKnowledgeBase($id: UUID!) {

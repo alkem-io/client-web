@@ -559,6 +559,8 @@ export enum AgentType {
 
 export type AiPersona = {
   __typename?: 'AiPersona';
+  /** The ID of the AiPersonaService. */
+  aiPersonaServiceID?: Maybe<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A overview of knowledge provided by this AI Persona. */
@@ -602,6 +604,7 @@ export enum AiPersonaEngine {
   Expert = 'EXPERT',
   GenericOpenai = 'GENERIC_OPENAI',
   Guidance = 'GUIDANCE',
+  LibraFlow = 'LIBRA_FLOW',
   OpenaiAssistant = 'OPENAI_ASSISTANT',
 }
 
@@ -625,6 +628,8 @@ export type AiPersonaService = {
   dataAccessMode: AiPersonaDataAccessMode;
   /** The AI Persona Engine being used by this AI Persona. */
   engine: AiPersonaEngine;
+  /** The ExternalConfig for this Virtual. */
+  externalConfig?: Maybe<ExternalConfig>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The prompt used by this Virtual Persona */
@@ -1585,7 +1590,7 @@ export type CreateAiPersonaServiceInput = {
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
   engine?: InputMaybe<AiPersonaEngine>;
-  externalConfig?: InputMaybe<ExternalConfig>;
+  externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -2336,10 +2341,24 @@ export type ExploreSpacesInput = {
 };
 
 export type ExternalConfig = {
+  __typename?: 'ExternalConfig';
+  /** The signature of the API key */
+  apiKey?: Maybe<Scalars['String']>;
+  /** The assistent ID backing the service in OpenAI`s assistant API */
+  assistantId?: Maybe<Scalars['String']>;
+  /** The ExternalConfig for this Virtual. */
+  externalConfig?: Maybe<ExternalConfig>;
+  /** The OpenAI model to use for the service */
+  model: OpenAiModel;
+};
+
+export type ExternalConfigInput = {
   /** The API key for the external LLM provider. */
   apiKey?: InputMaybe<Scalars['String']>;
   /** The assistent ID backing the service in OpenAI`s assistant API */
   assistantId?: InputMaybe<Scalars['String']>;
+  /** The OpenAI model to use for the service */
+  model?: OpenAiModel;
 };
 
 export type FileStorageConfig = {
@@ -4567,6 +4586,34 @@ export enum NotificationEventType {
   SpaceCreated = 'SPACE_CREATED',
 }
 
+export enum OpenAiModel {
+  Babbage_002 = 'BABBAGE_002',
+  DallE_2 = 'DALL_E_2',
+  DallE_3 = 'DALL_E_3',
+  Davinci_002 = 'DAVINCI_002',
+  Gpt_3_5Turbo = 'GPT_3_5_TURBO',
+  Gpt_4 = 'GPT_4',
+  Gpt_4O = 'GPT_4O',
+  Gpt_4OAudioPreview = 'GPT_4O_AUDIO_PREVIEW',
+  Gpt_4OMini = 'GPT_4O_MINI',
+  Gpt_4OMiniAudioPreview = 'GPT_4O_MINI_AUDIO_PREVIEW',
+  Gpt_4OMiniRealtimePreview = 'GPT_4O_MINI_REALTIME_PREVIEW',
+  Gpt_4ORealtimePreview = 'GPT_4O_REALTIME_PREVIEW',
+  Gpt_4_5Preview = 'GPT_4_5_PREVIEW',
+  Gpt_4Turbo = 'GPT_4_TURBO',
+  O1 = 'O1',
+  O1Mini = 'O1_MINI',
+  O3Mini = 'O3_MINI',
+  OmniModerationLatest = 'OMNI_MODERATION_LATEST',
+  TextEmbedding_3Large = 'TEXT_EMBEDDING_3_LARGE',
+  TextEmbedding_3Small = 'TEXT_EMBEDDING_3_SMALL',
+  TextEmbeddingAda_002 = 'TEXT_EMBEDDING_ADA_002',
+  TextModerationLatest = 'TEXT_MODERATION_LATEST',
+  Tts_1 = 'TTS_1',
+  Tts_1Hd = 'TTS_1_HD',
+  Whisper_1 = 'WHISPER_1',
+}
+
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
@@ -6542,7 +6589,7 @@ export type UpdateAiPersonaServiceInput = {
   bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   engine?: InputMaybe<AiPersonaEngine>;
-  externalConfig?: InputMaybe<ExternalConfig>;
+  externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -9195,6 +9242,11 @@ export type AccountInformationQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            license: {
+              __typename?: 'License';
+              id: string;
+              availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+            };
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -18141,6 +18193,31 @@ export type UserSettingsQuery = {
   };
 };
 
+export type AiPersonaServiceQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+export type AiPersonaServiceQuery = {
+  __typename?: 'Query';
+  aiServer: {
+    __typename?: 'AiServer';
+    aiPersonaService: {
+      __typename?: 'AiPersonaService';
+      id: string;
+      prompt: Array<string>;
+      engine: AiPersonaEngine;
+      externalConfig?:
+        | {
+            __typename?: 'ExternalConfig';
+            apiKey?: string | undefined;
+            assistantId?: string | undefined;
+            model: OpenAiModel;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type VirtualContributorQueryVariables = Exact<{
   id: Scalars['UUID'];
 }>;
@@ -18259,6 +18336,7 @@ export type VirtualContributorQuery = {
                 bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                 bodyOfKnowledge?: string | undefined;
                 engine: AiPersonaEngine;
+                aiPersonaServiceID?: string | undefined;
               }
             | undefined;
           profile: {
@@ -18505,6 +18583,15 @@ export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
 export type RefreshBodyOfKnowledgeMutation = {
   __typename?: 'Mutation';
   refreshVirtualContributorBodyOfKnowledge: boolean;
+};
+
+export type UpdateAiPersonaServiceMutationVariables = Exact<{
+  aiPersonaServiceData: UpdateAiPersonaServiceInput;
+}>;
+
+export type UpdateAiPersonaServiceMutation = {
+  __typename?: 'Mutation';
+  aiServerUpdateAiPersonaService: { __typename?: 'AiPersonaService'; id: string; prompt: Array<string> };
 };
 
 export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
