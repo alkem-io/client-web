@@ -9275,6 +9275,11 @@ export type AccountInformationQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            license: {
+              __typename?: 'License';
+              id: string;
+              availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+            };
             about: {
               __typename?: 'SpaceAbout';
               id: string;
