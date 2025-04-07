@@ -15,7 +15,7 @@ import { Caption } from '@/core/ui/typography';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
-import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { LicenseEntitlementType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
@@ -24,6 +24,7 @@ import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
 import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { getSpaceSubscriptionLevel } from '@/domain/space/license/utils';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -45,6 +46,9 @@ export interface JourneyCardHorizontalProps {
       };
     };
     level: SpaceLevel;
+    license?: {
+      availableEntitlements?: LicenseEntitlementType[];
+    };
   };
   deepness?: number;
   seamless?: boolean;
@@ -79,6 +83,8 @@ const JourneyCardHorizontal = ({
 
   const [communityRole] = intersection(VISIBLE_COMMUNITY_ROLES, space.community?.roleSet?.myRoles);
 
+  const spaceSubscriptionLevel = getSpaceSubscriptionLevel(space.license?.availableEntitlements ?? []);
+
   const mergedSx: PaperProps['sx'] = {
     padding: gutters(),
     marginLeft: gutters(deepness * 2),
@@ -102,6 +108,14 @@ const JourneyCardHorizontal = ({
           sx={{ height: gutters(1.5) }}
         >
           <FlexSpacer />
+
+          {spaceSubscriptionLevel && (
+            <Chip
+              variant="filled"
+              color="default"
+              label={t(`common.enums.licenseEntitlementType.${spaceSubscriptionLevel}` as const)}
+            />
+          )}
           {communityRole && (
             <Chip
               variant="filled"

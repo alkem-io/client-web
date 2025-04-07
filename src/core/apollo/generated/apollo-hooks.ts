@@ -5593,6 +5593,10 @@ export const AccountInformationDocument = gql`
             id
             myPrivileges
           }
+          license {
+            id
+            availableEntitlements
+          }
           about {
             id
             profile {
