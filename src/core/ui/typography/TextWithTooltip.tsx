@@ -4,7 +4,7 @@ import React from 'react';
 
 const TextWithTooltip = ({ text, tooltip }: { text: string; tooltip: string }) => {
   return (
-    <Tooltip arrow title={<Caption>{tooltip}</Caption>} placement="top">
+    <Tooltip arrow title={<Caption sx={{ whiteSpace: 'pre-line' }}>{tooltip}</Caption>} placement="top">
       <Text>{text}</Text>
     </Tooltip>
   );
