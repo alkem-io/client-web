@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { HubOutlined } from '@mui/icons-material';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import CardRibbon from '@/core/ui/card/CardRibbon';
@@ -11,6 +10,7 @@ import SpaceCardGoToButton from '@/domain/space/components/cards/components/Spac
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import StackedAvatar from './components/StackedAvatar';
 import { ReactNode } from 'react';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
   tagline?: string;
@@ -52,20 +52,20 @@ const SubspaceCard = ({
 
   return (
     <SpaceCardBase
-      iconComponent={HubOutlined}
+      iconComponent={spaceLevelIcon[level ?? SpaceLevel.L0]}
       header={
         <>
           <BlockTitle noWrap component="dt">
             {displayName}
           </BlockTitle>
-          {isSubspace && (
+          {isSubspace && spaceDisplayName && (
             <Caption noWrap component="dd" sx={{ color: 'primary.main' }}>
               {t('components.card.parentSpace', { space: spaceDisplayName })}
             </Caption>
           )}
         </>
       }
-      visual={<StackedAvatar avatarUris={avatarUris!} />}
+      visual={avatarUris && Boolean(avatarUris.length) && <StackedAvatar avatarUris={avatarUris} />}
       expansion={
         <>
           <SpaceCardDescription>{vision}</SpaceCardDescription>

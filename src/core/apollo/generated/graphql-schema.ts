@@ -19495,6 +19495,7 @@ export type CreateSubspaceMutation = {
   createSubspace: {
     __typename?: 'Space';
     id: string;
+    level: SpaceLevel;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -20779,6 +20780,7 @@ export type SpaceSubspaceCardsQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
+            level: SpaceLevel;
             about: {
               __typename?: 'SpaceAbout';
               isContentPublic: boolean;
@@ -20809,6 +20811,7 @@ export type SpaceSubspaceCardsQuery = {
 export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
+  level: SpaceLevel;
   about: {
     __typename?: 'SpaceAbout';
     isContentPublic: boolean;
@@ -20838,6 +20841,7 @@ export type SubspacesOnSpaceFragment = {
   subspaces: Array<{
     __typename?: 'Space';
     id: string;
+    level: SpaceLevel;
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;

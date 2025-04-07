@@ -59,6 +59,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
                         journeyUri={subspace.about.profile.url}
                         locked={!subspace.about.isContentPublic}
                         spaceVisibility={visibility}
+                        level={subspace.level}
                         member={subspace.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
                       />
                     );

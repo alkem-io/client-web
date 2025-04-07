@@ -1795,6 +1795,7 @@ export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
+    level
     about {
       ...SpaceAboutCardBanner
       metrics {
