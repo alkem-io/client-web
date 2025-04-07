@@ -400,7 +400,7 @@
     },
     "enums": {
       "licenseEntitlementType": {
-        "SPACE_FREE": "Free",
+        "SPACE_FREE": "Gratis",
         "SPACE_PLUS": "Plus",
         "SPACE_PREMIUM": "Premium"
       },
@@ -1020,7 +1020,7 @@
         "deleteDialog": {
           "title": "Fase Verwijderen?",
           "text": "Deze actie kan niet ongedaan gemaakt worden.",
-          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
+          "activeStateWarning": "Deze fase is momenteel actief en kan niet worden verwijderd. Je kan het altijd hernoemen of een andere fase als actieve fase instellen."
         },
         "selectDifferentFlow": {
           "title": "Zoek Subspace Template",
@@ -1908,7 +1908,7 @@
             "hostedSpaces": "Gehoste Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "usageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
+            "usageNotice": "Vanuit de beschikbare $t(common.spaces) in je account, heb je aangemaakt:\n{{freeUsage}} van de {{freeLimit}} Gratis $t(common.spaces)\n{{plusUsage}} van de {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} van de {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Neem contact op met het Alkemio team om de limieten op uw account te verhogen",
             "notAvailable": "Niet beschikbaar",
             "notAvailableNotice": "Neem contact op met het Alkemio team om deze functie in te schakelen op je account",
@@ -2734,7 +2734,7 @@
       "references": "Referenties",
       "host": "Host",
       "success": "{{entity}} succesvol bijgewerkt.",
-      "error": "An error occurred.",
+      "error": "Er is een fout opgetreden.",
       "sections": {
         "knowledge": {
           "title": "Kennis",
@@ -2788,17 +2788,17 @@
         },
         "prompt": {
           "title": "Prompt",
-          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
-          "saveBtn": "Save prompt"
+          "infoText": "Beschikbare variabelen: [duur, publiek, workshop_type, rol] . Voeg geen alternatieve tekst toe tussen { } in de prompt, omdat dit de functionaliteit van deze Virtual Contributor zal verstoren.",
+          "saveBtn": "Bewaar prompt"
         },
         "externalConfig": {
-          "title": "External Configuration",
-          "infoText": "The Virtual Contributor is powered by an external AI service. Please provide the following information to connect to the service.",
-          "apiKey": "API Key",
-          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
-          "assistantId": "Assistant ID",
+          "title": "Externe configuratie",
+          "infoText": "De Virtual Contributor wordt aangedreven door een externe AI service. Geef de volgende informatie om verbinding te maken met de service.",
+          "apiKey": "API Sleutel",
+          "apiKeyPlaceholder": "Huidige sleutelhandtekening is '{{value}}'. Door deze waarde te wijzigen wordt de huidige sleutel overschreven en kan niet worden hersteld.",
+          "assistantId": "Assistent ID",
           "model": "Model",
-          "saveBtn": "Save Configuration"
+          "saveBtn": "Configuratie opslaan"
         },
         "privacy": {
           "title": "Privacy",
