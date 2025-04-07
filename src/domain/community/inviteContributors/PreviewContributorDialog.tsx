@@ -1,5 +1,4 @@
-import { useMemo, PropsWithChildren, ReactNode } from 'react';
-
+import { useMemo, PropsWithChildren, ReactNode, useCallback, MouseEventHandler } from 'react';
 import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -47,6 +46,18 @@ const PreviewContributorDialog = ({
     );
   }, [references]);
 
+  const navigateToProfile: MouseEventHandler = useCallback(
+    e => {
+      if (profile?.url) {
+        e?.preventDefault();
+        // the navigation is handled here as with the router
+        // it's throwing errors due to rerenders
+        window.location.href = profile.url;
+      }
+    },
+    [profile?.url]
+  );
+
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
@@ -63,7 +74,7 @@ const PreviewContributorDialog = ({
               country={profile?.location?.country ?? ''}
               isContactable={false}
               url={profile?.url}
-              onCardClick={onClose}
+              onCardClick={navigateToProfile}
               isExpandable={false}
             />
             <PageContentBlockSeamless disablePadding>
