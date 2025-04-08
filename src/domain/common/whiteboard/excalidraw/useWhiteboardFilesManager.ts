@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
-import {
+import type {
   BinaryFileData,
   BinaryFiles,
   DataURL,
