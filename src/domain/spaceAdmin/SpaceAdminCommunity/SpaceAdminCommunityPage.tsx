@@ -34,6 +34,7 @@ import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.mo
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -66,6 +67,7 @@ const SpaceAdminCommunityPage = ({
   routePrefix = '../',
 }: SpaceAdminCommunityPageProps) => {
   const { t } = useTranslation();
+  const [error, setError] = useState(false);
 
   const {
     userAdmin: {
@@ -85,11 +87,7 @@ const SpaceAdminCommunityPage = ({
       onRemove: onRemoveOrganization,
       getAvailable: getAvailableOrganizations,
     },
-    virtualContributorAdmin: {
-      members: virtualContributors,
-      onAdd: onAddVirtualContributor,
-      onRemove: onRemoveVirtualContributor,
-    },
+    virtualContributorAdmin: { members: virtualContributors, onAdd: onAddVC, onRemove: onRemoveVirtualContributor },
     membershipAdmin: {
       applications,
       invitations,
@@ -104,6 +102,18 @@ const SpaceAdminCommunityPage = ({
     permissions,
     loading,
   } = useCommunityAdmin({ roleSetId });
+
+  // instead of making the VC filtering logic more complex, we just show all VCs under the account
+  // and show an error message if the user is not allowed to add the VC
+  const onAddVirtualContributor = async (vcId: string) => {
+    try {
+      await onAddVC(vcId);
+    } catch (error) {
+      setError(true);
+
+      return;
+    }
+  };
 
   const {
     virtualContributorAdmin: {
@@ -311,23 +321,35 @@ const SpaceAdminCommunityPage = ({
             />
           </PageContentBlock>
         </PageContentColumn>
-        {
-          <PageContentColumn columns={6}>
-            <PageContentBlock>
-              <CommunityVirtualContributors
-                virtualContributors={virtualContributors}
-                canAddVirtualContributors={addVirtualContributorsEnabled}
-                onRemoveMember={onRemoveVirtualContributor}
-                spaceDisplayName={about.profile.displayName}
-                fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
-                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
-                onAddMember={onAddVirtualContributor}
-                inviteExistingUser={inviteExistingUser}
-                loading={loading}
-              />
-            </PageContentBlock>
-          </PageContentColumn>
-        }
+        <PageContentColumn columns={6}>
+          <PageContentBlock>
+            <CommunityVirtualContributors
+              virtualContributors={virtualContributors}
+              canAddVirtualContributors={addVirtualContributorsEnabled}
+              onRemoveMember={onRemoveVirtualContributor}
+              spaceDisplayName={about.profile.displayName}
+              fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
+              fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+              onAddMember={onAddVirtualContributor}
+              inviteExistingUser={inviteExistingUser}
+              loading={loading}
+            />
+          </PageContentBlock>
+        </PageContentColumn>
+        <ConfirmationDialog
+          actions={{
+            onCancel: () => setError(false),
+          }}
+          options={{
+            show: Boolean(error),
+          }}
+          entities={{
+            title: t('community.unableToAddMemberInfo.title'),
+            content: t('community.unableToAddMemberInfo.content'),
+            cancelButtonText: t('buttons.ok'),
+            confirmButtonText: '',
+          }}
+        />
       </PageContent>
     </LayoutSwitcher>
   );
