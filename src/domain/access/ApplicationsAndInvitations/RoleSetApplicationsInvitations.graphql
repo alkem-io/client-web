@@ -1,6 +1,10 @@
 query CommunityApplicationsInvitations($roleSetId: UUID!) {
   lookup {
     roleSet(ID: $roleSetId) {
+      id
+      authorization {
+        myPrivileges
+      }
       applications {
         ...AdminCommunityApplication
       }

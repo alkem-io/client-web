@@ -9,7 +9,7 @@ import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitatio
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
 import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';

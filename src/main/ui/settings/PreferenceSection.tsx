@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
+import DashboardGenericSection from '@/_deprecated/DashboardGenericSection/DashboardGenericSection';
 import { FormControl, FormControlLabel, FormGroup, Skeleton, Switch } from '@mui/material';
 import { Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
 

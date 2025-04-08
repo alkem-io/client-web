@@ -1,23 +1,23 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/space/components/cards/journeyCardValueGetter';
-import { JourneyCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
+import { journeyCardTagsGetter, journeyCardValueGetter } from '@/_deprecatedToKeep/journeyCardValueGetter';
+import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SubspaceIcon } from '@/domain/space/icons/SubspaceIcon';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
-import SubspaceIcon2 from '@/domain/space/icons/SubspaceIcon2';
+import SpaceL1Icon2 from '@/_deprecated/icons/SpaceL1Icon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
 import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -82,14 +82,26 @@ const SpaceSubspacesPage = () => {
   const space = data?.lookup.space;
 
   const subspaces = space?.subspaces ?? [];
-  const level = space?.level ?? SpaceLevel.L0;
+
+  const { level, childLevel } = useMemo(() => {
+    let childLevel = SpaceLevel.L1;
+
+    if (space?.level === SpaceLevel.L1) {
+      childLevel = SpaceLevel.L2;
+    }
+
+    return {
+      level: space?.level ?? SpaceLevel.L0,
+      childLevel,
+    };
+  }, [space?.level]);
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
       <ChildJourneyView
         childEntities={subspaces}
         level={level}
-        childEntitiesIcon={<SubspaceIcon />}
+        childEntitiesIcon={<SpaceL1Icon />}
         childEntityValueGetter={journeyCardValueGetter}
         childEntityTagsGetter={journeyCardTagsGetter}
         state={{ loading: loading, error: error }}
@@ -103,6 +115,7 @@ const SpaceSubspacesPage = () => {
             journeyUri={item.about.profile.url}
             locked={!item.about.isContentPublic}
             spaceVisibility={visibility}
+            level={childLevel}
             member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
           />
         )}
@@ -110,9 +123,9 @@ const SpaceSubspacesPage = () => {
         childEntityCreateAccess={permissions.canCreateSubspaces}
         childEntityOnCreate={() => setCreateDialogOpen(true)}
         createSubentityDialog={
-          <JourneyCreationDialog
+          <SubspaceCreationDialog
             open={isCreateDialogOpen}
-            icon={<SubspaceIcon2 fill="primary" />}
+            icon={<SpaceL1Icon2 fill="primary" />}
             journeyName={t('common.subspace')}
             onClose={() => setCreateDialogOpen(false)}
             onCreate={handleCreate}

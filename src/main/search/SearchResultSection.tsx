@@ -1,7 +1,7 @@
 import { FilterConfig, FilterDefinition } from './Filter';
 import { ComponentType, ReactNode } from 'react';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '@/core/ui/card/cardsLayout/CardsLayout';
+import CardsLayout from '@/_deprecatedToKeep/CardsLayout';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';

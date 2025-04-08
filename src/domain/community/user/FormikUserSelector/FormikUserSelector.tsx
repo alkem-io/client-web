@@ -9,7 +9,7 @@ import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
 import { useUserContext } from '../hooks/useUserContext';

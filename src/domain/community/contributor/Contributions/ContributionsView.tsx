@@ -3,7 +3,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import JourneyTile from '@/domain/space/components/cards/JourneyTile';
+import SpaceTile from '@/domain/space/components/cards/SpaceTile';
 import useContributionProvider from '../../profile/useContributionProvider/useContributionProvider';
 
 type ContributionViewProps = {
@@ -32,7 +32,7 @@ const ContributionItem = ({ contributionItem }) => {
   });
 
   return (
-    <JourneyTile
+    <SpaceTile
       key={contributionItem.id}
       journey={loading || !details ? undefined : { about: details.about, level: details.level }}
     />

@@ -626,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Remove Community Guidelines Content",
       "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {

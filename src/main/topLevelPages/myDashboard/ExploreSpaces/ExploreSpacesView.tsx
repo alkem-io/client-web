@@ -9,7 +9,7 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
-import JourneyTile from '@/domain/space/components/cards/JourneyTile';
+import SpaceTile from '@/domain/space/components/cards/SpaceTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
 import { useColumns } from '@/core/ui/grid/GridContext';
 
@@ -65,9 +65,7 @@ export const ExploreSpacesView = ({
   };
 
   const renderSkeleton = (size: number) =>
-    Array.from({ length: size }).map((_, index) => (
-      <JourneyTile key={index} journey={undefined} columns={cardColumns} />
-    ));
+    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} journey={undefined} columns={cardColumns} />);
 
   const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
@@ -116,12 +114,12 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && <JourneyTile journey={welcomeSpace} columns={cardColumns} />}
+        {visibleFirstWelcomeSpace && <SpaceTile journey={welcomeSpace} columns={cardColumns} />}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyTile key={space.id} journey={space} columns={cardColumns} />
+                <SpaceTile key={space.id} journey={space} columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}

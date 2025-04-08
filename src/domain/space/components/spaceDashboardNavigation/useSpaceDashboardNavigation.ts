@@ -1,6 +1,6 @@
 import {
   useSpaceDashboardNavigationSubspacesQuery,
-  useSpaceDashboardNavigationSubspacesAuthQuery,
+  useSpacePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   Authorization,
@@ -67,7 +67,7 @@ const useSpaceDashboardNavigation = ({
   skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
   // TODO: Additional Auth Check
-  const { data: subSpacesAuth, loading: subSpacesAuthLoading } = useSpaceDashboardNavigationSubspacesAuthQuery({
+  const { data: subSpacesAuth, loading: subSpacesAuthLoading } = useSpacePrivilegesQuery({
     variables: { spaceId: spaceId! },
     skip: skip || !spaceId,
   });

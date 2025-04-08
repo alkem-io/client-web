@@ -284,6 +284,8 @@ interface PropsByDomain {
 
 ## Containers vs hooks
 
+## **THIS SECTION IS NO LONGER CORRECT - moving away strongly from containers + layouts**
+
 Hooks were created to replace `Container` components or `High-Order Components (HOCs)` for several reasons:
 
 - they don't increase the tree size
