@@ -626,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "crwdns18326:0crwdne18326:0",
       "content": "crwdns18328:0crwdne18328:0"
+    },
+    "unableToAddMemberInfo": {
+      "title": "crwdns36835:0crwdne36835:0",
+      "content": "crwdns36837:0crwdne36837:0"
     }
   },
   "callout": {
