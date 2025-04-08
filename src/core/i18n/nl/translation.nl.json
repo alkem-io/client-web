@@ -626,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Verwijder Community Richtlijnen Inhoud",
       "content": "Weet je zeker dat je de Community Richtlijnen wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {
