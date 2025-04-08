@@ -1,9 +1,9 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
 import type {
-  StoreAction as ExcalidrawStoreAction,
-  getSceneVersion as ExcalidrawGetSceneVersion,
+  CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
+  hashElementsVersion as ExcalidrawHashElementsVersion,
 } from '@alkemio/excalidraw';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
@@ -12,8 +12,8 @@ const ANIMATION_ZOOM_FACTOR = 0.75;
 
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 type ExcalidrawUtils = {
-  StoreAction: typeof ExcalidrawStoreAction;
-  getSceneVersion: typeof ExcalidrawGetSceneVersion;
+  CaptureUpdateAction: typeof ExcalidrawCaptureUpdateAction;
+  hashElementsVersion: typeof ExcalidrawHashElementsVersion;
 };
 
 class WhiteboardMergeError extends Error {}
@@ -131,7 +131,7 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
 });
 
 const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
-  const { getSceneVersion, StoreAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
+  const { hashElementsVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
     () => import('@alkemio/excalidraw')
   );
 
@@ -156,7 +156,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     }
 
     const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
-    const sceneVersion = getSceneVersion(whiteboardApi.getSceneElementsIncludingDeleted());
+    const sceneVersion = hashElementsVersion(whiteboardApi.getSceneElementsIncludingDeleted());
 
     const currentElementsBBox = getBoundingBox(currentElements);
     const insertedWhiteboardBBox = getBoundingBox(parsedWhiteboard.elements);
@@ -173,7 +173,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     const newElements = [...currentElements, ...insertedElements];
     whiteboardApi.updateScene({
       elements: newElements,
-      storeAction: StoreAction.CAPTURE,
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     });
 
     if (insertedElements.length > 0) {

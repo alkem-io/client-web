@@ -1,4 +1,4 @@
-import type { ImportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
+import type { ImportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 
 const EmptyWhiteboard: ImportedDataState = {
   type: 'excalidraw',
@@ -6,7 +6,7 @@ const EmptyWhiteboard: ImportedDataState = {
   source: 'https://excalidraw.com',
   elements: [],
   appState: {
-    gridSize: null,
+    gridSize: 0,
     viewBackgroundColor: '#ffffff',
   },
   files: {},

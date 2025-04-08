@@ -2,8 +2,8 @@ import type {
   ExcalidrawElement,
   ExcalidrawImageElement,
   InitializedExcalidrawImageElement,
-} from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import type { FileId } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
+import type { FileId } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import { unstable_batchedUpdates } from 'react-dom';
 
 ///// This is copied from Excalidraw sources because VITE cannot import certain things from the package,
