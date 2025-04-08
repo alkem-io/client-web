@@ -505,7 +505,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={hostedSpaceUsage}
             limit={hostedSpaceLimit}
             isAvailable={canCreateSpace}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.spaceUsageNotice', {
               freeUsage: spaceFreeUsage,
               freeLimit: spaceFreeLimit,
               plusUsage: spacePlusUsage,
@@ -562,7 +562,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={vcUsage}
             limit={vcLimit}
             isAvailable={canCreateVirtualContributor}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.virtualContributors'),
               usage: vcUsage,
               limit: vcLimit,
@@ -605,7 +605,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={innovationPackUsage}
             limit={innovationPackLimit}
             isAvailable={canCreateInnovationPack}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.innovationPacks'),
               usage: innovationPackUsage,
               limit: innovationPackLimit,
@@ -646,7 +646,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={innovationHubUsage}
             limit={innovationHubLimit}
             isAvailable={canCreateInnovationHub}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.customHomepages'),
               usage: innovationHubUsage,
               limit: innovationHubLimit,
