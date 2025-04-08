@@ -3,7 +3,7 @@ import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidra
 import { v4 as uuidv4 } from 'uuid';
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
-  getSceneVersion as ExcalidrawGetSceneVersion,
+  hashElementsVersion as ExcalidrawHashElementsVersion,
 } from '@alkemio/excalidraw';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
@@ -13,7 +13,7 @@ const ANIMATION_ZOOM_FACTOR = 0.75;
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 type ExcalidrawUtils = {
   CaptureUpdateAction: typeof ExcalidrawCaptureUpdateAction;
-  getSceneVersion: typeof ExcalidrawGetSceneVersion; //todo remove
+  hashElementsVersion: typeof ExcalidrawHashElementsVersion;
 };
 
 class WhiteboardMergeError extends Error {}
@@ -131,7 +131,7 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
 });
 
 const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
-  const { getSceneVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
+  const { hashElementsVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
     () => import('@alkemio/excalidraw')
   );
 
@@ -156,7 +156,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     }
 
     const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
-    const sceneVersion = getSceneVersion(whiteboardApi.getSceneElementsIncludingDeleted());
+    const sceneVersion = hashElementsVersion(whiteboardApi.getSceneElementsIncludingDeleted());
 
     const currentElementsBBox = getBoundingBox(currentElements);
     const insertedWhiteboardBBox = getBoundingBox(parsedWhiteboard.elements);
