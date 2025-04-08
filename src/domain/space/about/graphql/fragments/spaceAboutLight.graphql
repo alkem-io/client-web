@@ -24,4 +24,7 @@ fragment SpaceAboutLight on SpaceAbout {
     communityID
     roleSetID
   }
+  guidelines {
+    id
+  }
 }

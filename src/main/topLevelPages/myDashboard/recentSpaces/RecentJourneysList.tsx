@@ -6,7 +6,7 @@ import { Caption } from '@/core/ui/typography';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import GridItem from '@/core/ui/grid/GridItem';
-import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/JourneyTile';
+import SpaceTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { useMemo } from 'react';
 
 interface RecentJourneysListProps {
@@ -26,7 +26,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
   return (
     <PageContentBlockSeamless row disablePadding>
       {data?.me.mySpaces.slice(0, visibleSpaces).map(result => (
-        <JourneyTile
+        <SpaceTile
           key={result.space.id}
           columns={cardColumns}
           journey={{

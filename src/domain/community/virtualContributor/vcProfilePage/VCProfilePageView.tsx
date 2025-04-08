@@ -1,5 +1,4 @@
 import React, { useMemo, useCallback } from 'react';
-
 import { groupBy } from 'lodash';
 import { Button, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +19,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import JourneyCardHorizontal from '@/domain/space/components/cards/JourneyCardHorizontal';
+import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -141,7 +140,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 </Caption>
 
                 <Gutters disableGap disablePadding paddingTop={1}>
-                  <JourneyCardHorizontal
+                  <SpaceCardHorizontal
                     space={{ about: { profile: rest?.bokProfile || defaultProfile }, level: SpaceLevel.L0 }}
                     size="small"
                     deepness={0}

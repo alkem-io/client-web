@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import JourneyCardHorizontal, {
-  JourneyCardHorizontalSkeleton,
-} from '@/domain/space/components/cards/JourneyCardHorizontal';
+import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
@@ -505,7 +503,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={hostedSpaceUsage}
             limit={hostedSpaceLimit}
             isAvailable={canCreateSpace}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.spaceUsageNotice', {
               freeUsage: spaceFreeUsage,
               freeLimit: spaceFreeLimit,
               plusUsage: spacePlusUsage,
@@ -515,11 +513,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             })}
           />
           <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
-            {loading && <JourneyCardHorizontalSkeleton />}
+            {loading && <SpaceCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
                 account?.spaces.map(space => (
-                  <JourneyCardHorizontal
+                  <SpaceCardHorizontal
                     key={space.id}
                     space={{ about: space.about, level: space.level, license: space.license }}
                     size="medium"
@@ -562,14 +560,14 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={vcUsage}
             limit={vcLimit}
             isAvailable={canCreateVirtualContributor}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.virtualContributors'),
               usage: vcUsage,
               limit: vcLimit,
             })}
           />
           <Gutters disablePadding justifyContent="space-between" fullHeight>
-            {loading && <JourneyCardHorizontalSkeleton />}
+            {loading && <SpaceCardHorizontalSkeleton />}
             <Gutters disablePadding>
               {!loading &&
                 virtualContributors?.map(vc => (
@@ -605,7 +603,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={innovationPackUsage}
             limit={innovationPackLimit}
             isAvailable={canCreateInnovationPack}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.innovationPacks'),
               usage: innovationPackUsage,
               limit: innovationPackLimit,
@@ -646,7 +644,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={innovationHubUsage}
             limit={innovationHubLimit}
             isAvailable={canCreateInnovationHub}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.customHomepages'),
               usage: innovationHubUsage,
               limit: innovationHubLimit,

@@ -18,7 +18,7 @@ import SwapColors from '@/core/ui/palette/SwapColors';
 import { theme } from '@/core/ui/themes/default/Theme';
 import unwrapFragment from '@/core/ui/utils/unwrapFragment';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';

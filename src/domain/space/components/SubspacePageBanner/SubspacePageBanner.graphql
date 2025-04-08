@@ -1,4 +1,4 @@
-query ChildJourneyPageBanner($level0Space: UUID!, $spaceId: UUID!) {
+query SubspacePageBanner($level0Space: UUID!, $spaceId: UUID!) {
   lookup {
     level0Space: space(ID: $level0Space) {
       id

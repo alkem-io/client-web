@@ -1,5 +1,10 @@
-import { useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { useSpaceAboutBaseQuery, useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  SpaceLevel,
+  SpaceVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { PropsWithChildren, useMemo } from 'react';
@@ -20,6 +25,7 @@ interface SpaceContextProps {
     level: SpaceLevel;
   };
   permissions: SpacePermissions;
+  entitlements: LicenseEntitlementType[];
   visibility: SpaceVisibility;
   loading: boolean;
 }
@@ -40,9 +46,13 @@ const SpaceContext = React.createContext<SpaceContextProps>({
         communityID: '',
         roleSetID: '',
       },
+      guidelines: {
+        id: '',
+      },
     },
     level: SpaceLevel.L0,
   },
+  entitlements: [],
   permissions: {
     canRead: false,
     canUpdate: false,
@@ -67,10 +77,20 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
   const visibility = spaceData?.visibility || SpaceVisibility.Active;
 
   const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
+  const canRead = spacePrivileges.includes(AuthorizationPrivilege.Read);
+
+  const { data: spaceEntitlementsData, loading: loadingSpaceEntitlementsQuery } = useSpaceEntitlementsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId || !canRead,
+  });
+
+  const entitlements = spaceEntitlementsData?.lookup.space?.license?.availableEntitlements ?? [];
 
   const permissions = useMemo<SpacePermissions>(() => {
     return {
-      canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
+      canRead: canRead,
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
       // TODO: This is a shortcut. Instead of accessing the TemplatesManager of a space,
@@ -92,6 +112,9 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
         displayName: spaceData?.about.profile.displayName ?? '',
         url: spaceData?.about.profile.url ?? '',
       },
+      guidelines: {
+        id: spaceData?.about.guidelines?.id ?? '',
+      },
     };
 
     return {
@@ -103,7 +126,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
     };
   }, [spaceData]);
 
-  const loading = urlResolverLoading || loadingSpaceQuery || !spaceId;
+  const loading = urlResolverLoading || loadingSpaceQuery || loadingSpaceEntitlementsQuery || !spaceId;
   return (
     <SpaceContext.Provider
       value={{
@@ -111,6 +134,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
         permissions,
         loading,
         visibility,
+        entitlements,
       }}
     >
       {children}
