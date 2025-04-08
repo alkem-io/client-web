@@ -11,13 +11,13 @@ import { useTick } from '@/core/utils/time/tick';
 import { useUserContext } from '@/domain/community/user';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import type {
   AppState,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';

@@ -5,7 +5,7 @@ import type {
   BinaryFiles,
   DataURL,
   ExcalidrawImperativeAPI,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
 import { error } from '@/core/logging/sentry/log';
