@@ -46,6 +46,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
         communityID: '',
         roleSetID: '',
       },
+      guidelines: {
+        id: '',
+      },
     },
     level: SpaceLevel.L0,
   },
