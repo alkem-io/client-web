@@ -73,8 +73,6 @@ const addContributorType = (
     case 'VirtualContributor':
       return RoleSetContributorType.Virtual;
     default: {
-      // TODO: Sentry logging?
-      console.error('Unknown contributor type', typename);
       return RoleSetContributorType.User;
     }
   }
