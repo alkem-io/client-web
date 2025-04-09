@@ -40,7 +40,7 @@ export const SpaceAdminL2Route = () => {
   const settingsPageProps: SpaceAdminSettingsPageProps = {
     useL0Layout: false,
     spaceId: subspace?.id,
-    isSubspace: false,
+    isSubspace: true,
     membershipsEnabled: false,
     subspacesEnabled: false,
     privateSettingsEnabled: false,

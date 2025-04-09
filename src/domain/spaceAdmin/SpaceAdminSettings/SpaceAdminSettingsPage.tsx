@@ -351,22 +351,6 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                 }}
                 onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
               />
-              {isSubspace && (
-                <SwitchSettingsGroup
-                  options={{
-                    inheritMembershipRights: {
-                      checked: currentSettings?.collaboration?.inheritMembershipRights || false,
-                      label: (
-                        <Trans
-                          i18nKey="pages.admin.space.settings.memberActions.inheritRights"
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              )}
               {subspacesEnabled && (
                 <SwitchSettingsGroup
                   options={{
@@ -375,6 +359,22 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                       label: (
                         <Trans
                           i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              )}
+              {!isSubspace && subspacesEnabled && (
+                <SwitchSettingsGroup
+                  options={{
+                    inheritMembershipRights: {
+                      checked: currentSettings?.collaboration?.inheritMembershipRights || false,
+                      label: (
+                        <Trans
+                          i18nKey="pages.admin.space.settings.memberActions.inheritRights"
                           components={{ b: <strong /> }}
                         />
                       ),
@@ -401,7 +401,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
                 />
               )}
-              {!isSubspace && (
+              {!isSubspace && subspacesEnabled && (
                 <SwitchSettingsGroup
                   options={{
                     allowPlatformSupportAsAdmin: {
