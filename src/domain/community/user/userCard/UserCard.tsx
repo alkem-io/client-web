@@ -29,7 +29,7 @@ export interface UserCardProps {
   isExpandable?: boolean;
   isContactable?: boolean;
   onContact?: () => void;
-  onCardClick?: () => void;
+  onCardClick?: MouseEventHandler;
 }
 
 const UserCard = ({

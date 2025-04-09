@@ -104,6 +104,33 @@ query VirtualContributorProfile($id: UUID!) {
   }
 }
 
+query VirtualContributorProvider($id: UUID!) {
+  lookup {
+    virtualContributor(ID: $id) {
+      id
+      provider {
+        id
+        profile {
+          id
+          displayName
+          url
+          location {
+            country
+            city
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+    }
+  }
+}
+
 query SpaceBodyOfKnowledgeAuthorizationPrivileges($spaceId: UUID!) {
   lookup {
     myPrivileges {
