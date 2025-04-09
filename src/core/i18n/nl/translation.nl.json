@@ -1747,7 +1747,7 @@
     "feedback": "Feedback",
     "support": "Ondersteuning",
     "about": "Over",
-    "copyright": "© 2024 Alkemio B.V."
+    "copyright": "© 2025 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
@@ -2336,7 +2336,16 @@
             "title": "...of zoek je Community hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovatie",
+            "Energie",
+            "Inclusief",
+            "3D",
+            "Community",
+            "Transitie",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -2995,27 +3004,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -3082,7 +3106,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": ["Tot 10 leden", "Diverse tools, waaronder standaard Whiteboards"],
+        "features": [
+          "Tot 10 leden",
+          "Diverse tools, waaronder standaard Whiteboards"
+        ],
         "disclaimer": "Gratis Spaces zijn beperkt tot 1 Space per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis Space hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },
