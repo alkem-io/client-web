@@ -1,5 +1,4 @@
 import React, { useMemo, PropsWithChildren, ReactNode, useCallback, MouseEventHandler, useEffect } from 'react';
-import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
@@ -41,9 +40,6 @@ interface PreviewContributorDialogProps {
   getProvider?: (vcId: string) => Promise<void> | void;
 }
 
-const OTHER_LINK_GROUP = 'other';
-const SOCIAL_LINK_GROUP = 'social';
-
 const PreviewContributorDialog = ({
   children,
   open = false,
@@ -57,12 +53,10 @@ const PreviewContributorDialog = ({
 
   const { profile } = contributor ?? {};
 
-  const references = profile?.references;
+  const references = profile?.references ?? [];
 
   const links = useMemo(() => {
-    return groupBy(references, reference =>
-      isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
-    );
+    return references.filter(reference => !isSocialNetworkSupported(reference.name));
   }, [references]);
 
   const navigateToProfile: MouseEventHandler = useCallback(
@@ -115,14 +109,17 @@ const PreviewContributorDialog = ({
                 {actions}
               </Actions>
             </PageContentBlockSeamless>
+            {links && links.length > 0 && (
+              <PageContentBlockSeamless disablePadding>
+                <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
+                <References
+                  references={links}
+                  noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+                />
+              </PageContentBlockSeamless>
+            )}
             <PageContentBlockSeamless disablePadding>
-              <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
-              <References
-                references={links[OTHER_LINK_GROUP]}
-                noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
+              <BlockSectionTitle>{t('pages.virtualContributorProfile.host')}</BlockSectionTitle>
               <ContributorCardHorizontal profile={provider} seamless />
             </PageContentBlockSeamless>
           </PageContentColumn>
