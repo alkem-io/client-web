@@ -82,6 +82,9 @@ export interface AccountTabResourcesProps {
         tagline?: string;
       };
     };
+    license: {
+      availableEntitlements?: LicenseEntitlementType[];
+    };
   }[];
   virtualContributors: {
     id: string;
@@ -215,12 +218,15 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const enableWingbackAccountCreation = !loading && !externalSubscriptionID;
 
-  // Temporarily we're ordering the priority in this way: Display usage/limit from FREE / PLUS / PREMIUM
-  const { limit: hostedSpaceLimit = 0, usage: hostedSpaceUsage = 0 } =
-    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree) ??
-    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus) ??
+  const { limit: spaceFreeLimit = 0, usage: spaceFreeUsage = 0 } =
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree) ?? {};
+  const { limit: spacePlusLimit = 0, usage: spacePlusUsage = 0 } =
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus) ?? {};
+  const { limit: spacePremiumLimit = 0, usage: spacePremiumUsage = 0 } =
     myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium) ??
     {};
+  const hostedSpaceLimit = spaceFreeLimit + spacePlusLimit + spacePremiumLimit;
+  const hostedSpaceUsage = spaceFreeUsage + spacePlusUsage + spacePremiumUsage;
 
   const { limit: vcLimit = 0, usage: vcUsage = 0 } =
     myAccountEntitlementDetails.find(
@@ -497,10 +503,13 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={hostedSpaceUsage}
             limit={hostedSpaceLimit}
             isAvailable={canCreateSpace}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.hostedSpaces'),
-              usage: hostedSpaceUsage,
-              limit: hostedSpaceLimit,
+            tooltip={t('pages.admin.generic.sections.account.spaceUsageNotice', {
+              freeUsage: spaceFreeUsage,
+              freeLimit: spaceFreeLimit,
+              plusUsage: spacePlusUsage,
+              plusLimit: spacePlusLimit,
+              premiumUsage: spacePremiumUsage,
+              premiumLimit: spacePremiumLimit,
             })}
           />
           <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
@@ -510,7 +519,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 account?.spaces.map(space => (
                   <SpaceCardHorizontal
                     key={space.id}
-                    space={{ about: space.about, level: space.level }}
+                    space={{ about: space.about, level: space.level, license: space.license }}
                     size="medium"
                     deepness={0}
                     seamless
@@ -551,7 +560,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={vcUsage}
             limit={vcLimit}
             isAvailable={canCreateVirtualContributor}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.virtualContributors'),
               usage: vcUsage,
               limit: vcLimit,
@@ -594,7 +603,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={innovationPackUsage}
             limit={innovationPackLimit}
             isAvailable={canCreateInnovationPack}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.innovationPacks'),
               usage: innovationPackUsage,
               limit: innovationPackLimit,
@@ -635,7 +644,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             usage={innovationHubUsage}
             limit={innovationHubLimit}
             isAvailable={canCreateInnovationHub}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+            tooltip={t('pages.admin.generic.sections.account.genericUsageNotice', {
               type: t('pages.admin.generic.sections.account.customHomepages'),
               usage: innovationHubUsage,
               limit: innovationHubLimit,

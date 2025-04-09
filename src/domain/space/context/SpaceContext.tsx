@@ -46,6 +46,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
         communityID: '',
         roleSetID: '',
       },
+      guidelines: {
+        id: '',
+      },
     },
     level: SpaceLevel.L0,
   },
@@ -69,24 +72,25 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
     skip: !spaceId,
   });
 
-  const { data: spaceEntitlementsData, loading: loadingSpaceEntitlementsQuery } = useSpaceEntitlementsQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: !spaceId,
-  });
-
-  const entitlements = spaceEntitlementsData?.lookup.space?.license?.availableEntitlements ?? [];
-
   const spaceData = spaceAboutData?.lookup.space;
   const spaceNameId = spaceData?.nameID ?? '';
   const visibility = spaceData?.visibility || SpaceVisibility.Active;
 
   const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
+  const canRead = spacePrivileges.includes(AuthorizationPrivilege.Read);
+
+  const { data: spaceEntitlementsData, loading: loadingSpaceEntitlementsQuery } = useSpaceEntitlementsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId || !canRead,
+  });
+
+  const entitlements = spaceEntitlementsData?.lookup.space?.license?.availableEntitlements ?? [];
 
   const permissions = useMemo<SpacePermissions>(() => {
     return {
-      canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
+      canRead: canRead,
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
       // TODO: This is a shortcut. Instead of accessing the TemplatesManager of a space,

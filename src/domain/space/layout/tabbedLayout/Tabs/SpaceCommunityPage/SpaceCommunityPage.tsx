@@ -59,7 +59,7 @@ const SpaceCommunityPage = () => {
 
   const membership = about.membership;
   const communityId = membership?.communityID;
-  const communityGuidelinesId = about.guidelines!.id;
+  const communityGuidelinesId = about.guidelines?.id;
 
   const {
     usersByRole,
@@ -154,7 +154,9 @@ const SpaceCommunityPage = () => {
               showInviteOption={showInviteOption}
             />
           )}
-          <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
+          {communityGuidelinesId && (
+            <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
+          )}
         </InfoColumn>
         <ContentColumn>
           <RoleSetContributorsBlockWide

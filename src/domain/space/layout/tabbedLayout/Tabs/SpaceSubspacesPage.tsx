@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '@/_deprecatedToKeep/journeyCardValueGetter';
@@ -82,7 +82,19 @@ const SpaceSubspacesPage = () => {
   const space = data?.lookup.space;
 
   const subspaces = space?.subspaces ?? [];
-  const level = space?.level ?? SpaceLevel.L0;
+
+  const { level, childLevel } = useMemo(() => {
+    let childLevel = SpaceLevel.L1;
+
+    if (space?.level === SpaceLevel.L1) {
+      childLevel = SpaceLevel.L2;
+    }
+
+    return {
+      level: space?.level ?? SpaceLevel.L0,
+      childLevel,
+    };
+  }, [space?.level]);
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
@@ -103,6 +115,7 @@ const SpaceSubspacesPage = () => {
             journeyUri={item.about.profile.url}
             locked={!item.about.isContentPublic}
             spaceVisibility={visibility}
+            level={childLevel}
             member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
           />
         )}
