@@ -3,7 +3,7 @@ import { SvgIconProps } from '@mui/material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 
 interface MenuItem {
@@ -25,7 +25,7 @@ const PLATFORM_NAVIGATION_MENU_ITEMS: MenuItem[] = [
   },
   {
     label: 'pages.exploreSpaces.fullName',
-    iconComponent: SpaceIcon,
+    iconComponent: SpaceL0Icon,
     route: '/spaces',
   },
   {

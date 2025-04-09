@@ -14,8 +14,8 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
-import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
+import DashboardGenericSection from '@/_deprecated/DashboardGenericSection/DashboardGenericSection';
+import { CardLayoutContainer, CardLayoutItem } from '@/_deprecatedToKeep/CardsLayout';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import useUserContributions from '../../user/userContributions/useUserContributions';
 
@@ -33,7 +33,7 @@ export const UserAdminCredentialsPage = () => {
 
   useProfileVerifiedCredentialSubscription({
     shouldResubscribe: true,
-    onSubscriptionData: async () => {
+    onData: async () => {
       await refetchUserSsiQuery();
       setRequestCredentialDialogOpen(false);
       notify(t('pages.user-credentials.added-successfully'), 'success');

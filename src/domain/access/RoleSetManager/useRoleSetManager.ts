@@ -11,7 +11,8 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManagerRolesAssignment, {
   useRoleSetManagerRolesAssignmentProvided,
-} from './RolesAssignament/useRoleSetManagerRolesAssignment';
+} from './RolesAssignment/useRoleSetManagerRolesAssignment';
+import { RoleDefinition } from '../model/RoleDefinitionModel';
 
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
@@ -26,18 +27,6 @@ export const RELEVANT_ROLES = {
     RoleName.PlatformVcCampaign,
   ],
 } as const;
-
-type RoleDefinition = {
-  name: RoleName;
-  organizationPolicy: {
-    minimum: number;
-    maximum: number;
-  };
-  userPolicy: {
-    minimum: number;
-    maximum: number;
-  };
-};
 
 export interface RoleSetMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
   roles: RoleName[];

@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';
@@ -17,7 +17,7 @@ import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 
 type SingleInvitationFullProps = {
   invitation: InvitationItem | undefined;
@@ -87,15 +87,15 @@ const SingleInvitationFull = ({
                   flexDirection={isMobile ? 'column' : 'row'}
                   alignItems={isMobile ? 'center' : 'start'}
                 >
-                  <JourneyCard
+                  <SpaceCardBase
                     iconComponent={spaceIconByLevel[invitation.space.level]}
                     header={invitation.space.about.profile.displayName}
                     tags={invitation.space.about.profile.tagset?.tags ?? []}
                     banner={invitation.space.about.profile.cardBanner}
                     journeyUri={invitation.space.about.profile.url}
                   >
-                    <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
-                  </JourneyCard>
+                    <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+                  </SpaceCardBase>
                   <Gutters disablePadding>
                     <Caption>
                       <DetailedActivityDescription

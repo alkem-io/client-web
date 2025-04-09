@@ -1,0 +1,61 @@
+query SpaceAccount($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        ...SpaceAboutLight
+        provider {
+          id
+          __typename # do not remove. Used by SpaceAccountView.tsx
+          authorization {
+            myPrivileges
+          }
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              city
+              country
+            }
+            url
+          }
+        }
+      }
+      activeSubscription {
+        name
+        expires
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      visibility
+    }
+  }
+  platform {
+    id
+    licensingFramework {
+      id
+      plans {
+        id
+        name
+        enabled
+        type
+        sortOrder
+        isFree
+        pricePerMonth
+        licenseCredential
+      }
+    }
+    configuration {
+      locations {
+        support
+        switchplan
+      }
+    }
+  }
+}

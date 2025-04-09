@@ -11,7 +11,7 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useCreateSpaceLink } from './useCreateSpaceLink/useCreateSpaceLink';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -51,7 +51,7 @@ const MyDashboardWithoutMemberships = () => {
           to={createSpaceLink}
           disabled={loading}
           variant="outlined"
-          startIcon={<SpaceIcon />}
+          startIcon={<SpaceL0Icon />}
           sx={{
             background: theme => theme.palette.background.paper,
             flex: 1,

@@ -11,13 +11,13 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
-import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'vcInteractions';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragment, NeededFields>;
@@ -42,7 +42,8 @@ const CommentsCallout = ({
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
-  const { myMembershipStatus } = useSpace();
+  const { space } = useSpace();
+  const myMembershipStatus = space?.about.membership?.myMembershipStatus;
   const user = userMetadata?.user;
 
   const commentsId = callout.comments?.id;

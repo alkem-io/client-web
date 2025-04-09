@@ -1,10 +1,9 @@
-import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
 import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/CalloutLayout';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
-import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import SaveButton from '@/core/ui/actions/SaveButton';
@@ -13,7 +12,7 @@ import { DialogActions, DialogContent } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -22,7 +21,6 @@ export interface CalloutEditDialogProps {
   onClose: () => void;
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
-  canChangeCalloutLocation?: boolean;
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }
@@ -34,7 +32,6 @@ const CalloutEditDialog = ({
   onClose,
   onDelete,
   onCalloutEdit,
-  canChangeCalloutLocation,
   disableRichMedia,
   disablePostResponses = false,
 }: CalloutEditDialogProps) => {
@@ -52,7 +49,6 @@ const CalloutEditDialog = ({
     tags: callout.framing.profile.tagset?.tags,
     postDescription: callout.contributionDefaults.postDescription ?? '',
     whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? EmptyWhiteboardString,
-    groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
@@ -77,7 +73,7 @@ const CalloutEditDialog = ({
         tagsets: [
           {
             id: callout.framing.profile.tagset?.id,
-            name: DEFAULT_TAGSET,
+            name: TagsetReservedName.Default,
             tags: newCallout.tags,
             allowedValues: [],
             type: TagsetType.Freeform,
@@ -89,7 +85,6 @@ const CalloutEditDialog = ({
         whiteboardContent: callout.type === CalloutType.WhiteboardCollection ? newCallout.whiteboardContent : undefined,
       },
       state: newCallout.state,
-      groupName: newCallout.groupName,
     });
     setLoading(false);
   }, [callout, newCallout, onCalloutEdit]);
@@ -114,7 +109,6 @@ const CalloutEditDialog = ({
               editMode
               onStatusChanged={handleStatusChanged}
               onChange={handleChange}
-              canChangeCalloutLocation={canChangeCalloutLocation}
               disableRichMedia={disableRichMedia}
               disablePostResponses={disablePostResponses}
             />

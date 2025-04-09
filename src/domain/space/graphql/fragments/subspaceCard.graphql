@@ -1,0 +1,18 @@
+fragment SubspaceCard on Space {
+  id
+  level
+  about {
+    ...SpaceAboutCardBanner
+    metrics {
+      id
+      name
+      value
+    }
+    membership {
+        myMembershipStatus
+        myPrivileges
+    }
+    isContentPublic
+    why
+  }
+}

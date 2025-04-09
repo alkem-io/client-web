@@ -10,7 +10,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();
@@ -59,7 +59,7 @@ const DashboardActivity = () => {
         : [renderSpaceActivityBlock(), renderMyActivityBlock()]}
 
       <MyMembershipsDialog
-        Icon={SpaceIcon}
+        Icon={SpaceL0Icon}
         loading={myMembershipsLoading}
         open={isMyMembershipsDialogOpen}
         title={t('pages.home.sections.myMemberships.title')}

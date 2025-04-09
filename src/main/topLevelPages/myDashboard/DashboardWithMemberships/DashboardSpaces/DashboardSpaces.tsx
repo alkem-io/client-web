@@ -10,9 +10,9 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
-import { SpacePrivacyMode, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import SpaceTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
 import { useEffect, useMemo } from 'react';
@@ -148,14 +148,13 @@ const DashboardSpaces = () => {
                   const { id, about, level } = subSpace;
 
                   return (
-                    <JourneyTile
+                    <SpaceTile
                       key={id}
                       columns={cardColumns}
                       journey={{
                         about: about,
                         level: level,
                       }}
-                      isPrivate={subSpace.settings.privacy.mode === SpacePrivacyMode.Private}
                     />
                   );
                 })}

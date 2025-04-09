@@ -1,0 +1,16 @@
+fragment SpaceCard on Space {
+  id
+  about {
+    ...SpaceAboutCardBanner
+    why
+    isContentPublic
+    metrics {
+      name
+      value
+    }
+    membership {
+      myMembershipStatus
+    }
+  }
+  visibility
+}

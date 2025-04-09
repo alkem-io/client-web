@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
-import PageBannerCardWithVisual from '@/domain/journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
+import PageBannerCardWithVisual from '@/domain/space/components/cards/components/PageBannerCardWithVisual';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { PageTitle } from '@/core/ui/typography';
 import LocationCaption from '@/core/ui/location/LocationCaption';

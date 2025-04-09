@@ -1,0 +1,27 @@
+query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      about {
+        ...SpaceAboutCardBanner
+      }
+      subspaces {
+        id
+        about {
+          ...SpaceAboutCardAvatar
+          membership {
+            myMembershipStatus
+          }
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}

@@ -2,9 +2,9 @@ import { Formik } from 'formik';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
-import { spaceAboutSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
@@ -13,7 +13,7 @@ import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { DEFAULT_TAGSET } from '../tags/tagset.constants';
+import { Reference } from './Profile';
 
 export interface ProfileFormValues {
   name: string;
@@ -24,7 +24,15 @@ export interface ProfileFormValues {
 }
 
 type ProfileFormProps = {
-  profile?: Omit<Profile, 'storageBucket' | 'url'>;
+  profile?: {
+    description?: string; // Maybe<Scalars['Markdown']>;
+    displayName: string;
+    id: string;
+    location?: { id: string; city?: string; country?: string };
+    references?: Reference[];
+    tagline?: string;
+    tagsets?: Tagset[];
+  };
   name?: string;
   tagset?: Tagset;
   onSubmit: (formData: ProfileFormValues) => void;
@@ -48,7 +56,7 @@ const ProfileForm = ({
     return [
       {
         id: '',
-        name: DEFAULT_TAGSET,
+        name: TagsetReservedName.Default,
         tags: [],
         allowedValues: [],
         type: TagsetType.Freeform,

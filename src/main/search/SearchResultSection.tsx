@@ -1,7 +1,7 @@
 import { FilterConfig, FilterDefinition } from './Filter';
-import React, { ComponentType, ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '@/core/ui/card/cardsLayout/CardsLayout';
+import CardsLayout from '@/_deprecatedToKeep/CardsLayout';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
@@ -12,27 +12,35 @@ interface ResultSectionProps<Result extends Identifiable> {
   results: Result[] | undefined;
   filterTitle?: string;
   count?: number;
+  tagId?: string;
   filterConfig: FilterConfig | undefined;
   currentFilter: FilterDefinition;
   onFilterChange: (value: FilterDefinition) => void;
   loading?: boolean;
   cardComponent: ComponentType<{ result: Result | undefined }>;
+  canLoadMore?: boolean;
+  onClickLoadMore?: () => void;
 }
 
 const SearchResultSection = <Result extends Identifiable>({
   title,
+  loading,
+  tagId = '',
   results = [],
   filterTitle,
   filterConfig,
   currentFilter,
   onFilterChange,
-  loading,
+  canLoadMore = true,
   cardComponent: Card,
+  onClickLoadMore,
 }: ResultSectionProps<Result>) => {
   const { t } = useTranslation();
+
   const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined;
+
   return (
-    <PageContentBlock>
+    <PageContentBlock id={tagId}>
       <PageContentBlockHeader
         title={title}
         disclaimer={resultDisclaimer}
@@ -47,11 +55,16 @@ const SearchResultSection = <Result extends Identifiable>({
           )
         }
       />
+
       <CardsLayout
+        globalSearch
+        loading={loading}
         items={loading ? [undefined, undefined] : results}
         deps={[currentFilter]}
         cards={false}
         disablePadding
+        isButtonDisabled={!canLoadMore}
+        onClickLoadMore={() => (canLoadMore ? onClickLoadMore?.() : undefined)}
       >
         {result => <Card result={result} />}
       </CardsLayout>

@@ -9,8 +9,11 @@ import {
   useInviteContributorsEntryRoleOnRoleSetMutation,
   useInviteUserToPlatformAndRoleSetMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
+import { ApplicationModel } from '../model/ApplicationModel';
+import { InvitationModel } from '../model/InvitationModel';
+import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
 
 export interface InviteUserData {
   message: string;
@@ -25,78 +28,15 @@ export interface InviteExternalUserData extends InviteUserData {
   email: string;
 }
 
-type ApplicationProvided = {
-  id: string;
-  createdDate: Date;
-  updatedDate: Date;
-  state: string;
-  nextEvents: Array<string>;
-  contributorType: RoleSetContributorType;
-  contributor: {
-    id: string;
-    profile: {
-      displayName: string;
-      email?: string;
-      url: string;
-      avatar?: {
-        id: string;
-        uri: string;
-        name: string;
-      };
-      location?: {
-        id: string;
-        city?: string | undefined;
-        country?: string | undefined;
-      };
-    };
-  };
-  questions: {
-    id: string;
-    name: string;
-    value: string;
-  }[];
-};
-
-type InvitationProvided = {
-  id: string;
-  createdDate: Date;
-  updatedDate: Date;
-  state: string;
-  nextEvents: string[];
-  contributorType: RoleSetContributorType;
-  contributor: {
-    id: string;
-    profile: {
-      id: string;
-      displayName: string;
-      email?: string;
-      url: string;
-      avatar?: {
-        id: string;
-        uri: string;
-      };
-      location?: {
-        city?: string | undefined;
-        country?: string | undefined;
-      };
-    };
-  };
-};
-
-type PlatformInvitationProvided = {
-  id: string;
-  createdDate?: Date;
-  email: string;
-};
-
 type useRoleSetApplicationsAndInvitationsParams = {
-  roleSetId?: string;
+  roleSetId: string;
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {
-  applications: ApplicationProvided[];
-  invitations: InvitationProvided[];
-  platformInvitations: PlatformInvitationProvided[];
+  applications: ApplicationModel[];
+  invitations: InvitationModel[];
+  platformInvitations: PlatformInvitationModel[];
+  authorizationPrivileges: AuthorizationPrivilege[];
   applyForEntryRoleOnRoleSet: (
     roleSetId: string,
     questions: { name: string; value: string; sortOrder: number }[]
@@ -133,8 +73,6 @@ const addContributorType = (
     case 'VirtualContributor':
       return RoleSetContributorType.Virtual;
     default: {
-      // TODO: Sentry logging?
-      console.error('Unknown contributor type', typename);
       return RoleSetContributorType.User;
     }
   }
@@ -282,6 +220,7 @@ const useRoleSetApplicationsAndInvitations = ({
     applications,
     invitations,
     platformInvitations,
+    authorizationPrivileges: data?.lookup.roleSet?.authorization?.myPrivileges ?? [],
     refetch,
     loading,
     applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
+import { ContributionsView2 } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -82,7 +82,7 @@ const UserAdminMembershipPage = () => {
   return (
     <UserAdminLayout currentTab={SettingsSection.Membership}>
       <Gutters>
-        <ContributionsView
+        <ContributionsView2
           title={t('common.my-memberships')}
           contributions={memberships}
           loading={loading}
@@ -90,7 +90,7 @@ const UserAdminMembershipPage = () => {
           onLeave={refetch}
           onContributionClick={onContributionClick}
         />
-        <ContributionsView
+        <ContributionsView2
           title={t('pages.user-profile.pending-applications.title')}
           contributions={applications}
           loading={loading}

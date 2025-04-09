@@ -247,12 +247,14 @@
     "comment": "Comment",
     "comments": "Comments",
     "contributions": "Contributions",
+    "responses": "Responses",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
     "category": "Category",
+    "custom": "Custom",
     "date": "Date",
     "description": "Description",
     "noDescription": "No description",
@@ -276,6 +278,7 @@
     "aspects": "Cards",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Layout",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -396,6 +399,11 @@
       "not-verified": ""
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Free",
+        "SPACE_PLUS": "Plus",
+        "SPACE_PREMIUM": "Premium"
+      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -618,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Remove Community Guidelines Content",
       "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {
@@ -655,14 +667,6 @@
     },
     "singleWhiteboard": {
       "clickToSee": "Click to see the full whiteboard"
-    },
-    "callout-group": {
-      "HOME_TOP": "Dashboard Recommendations",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Contribute",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Knowledge Base"
     },
     "calloutsList": {
       "title": "Index",
@@ -956,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Search results"
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Search results for:",
@@ -1017,7 +1023,8 @@
         },
         "deleteDialog": {
           "title": "Delete Phase?",
-          "text": "This action cannot be undone."
+          "text": "This action cannot be undone.",
+          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
           "title": "Find subspace template",
@@ -1782,7 +1789,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
@@ -1802,7 +1808,6 @@
       }
     },
     "contribute": {
-      "initial-text": "In the Knowledge Base you will find relevant documents, insights and other materials about the topic. The leads of the Space can provide the content, but also community members can contribute.",
       "innovationFlow": {
         "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This innovation flow structures the process and invites you to take specified actions per stage.",
         "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
@@ -1833,6 +1838,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-members."
           },
@@ -1859,7 +1868,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -1903,7 +1912,8 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "spaceUsageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
@@ -2043,6 +2053,9 @@
           "preferences": {
             "subtitle": "This section allows you to modify the $t(common.space) authorization preferences"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2466,6 +2479,13 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Hosted by",
           "hostTooltip": "The host is the organization responsible for the creation of the Space.",
@@ -2710,6 +2730,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "error": "An error occurred.",
       "sections": {
         "knowledge": {
           "title": "Knowledge",
@@ -2760,6 +2781,20 @@
           "title": "Body of Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "saveBtn": "Save prompt"
+        },
+        "externalConfig": {
+          "title": "External Configuration",
+          "infoText": "The Virtual Contributor is powered by an external AI service. Please provide the following information to connect to the service.",
+          "apiKey": "API Key",
+          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
+          "assistantId": "Assistant ID",
+          "model": "Model",
+          "saveBtn": "Save Configuration"
         },
         "privacy": {
           "title": "Privacy",

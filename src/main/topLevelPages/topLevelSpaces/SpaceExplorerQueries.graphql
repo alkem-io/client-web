@@ -11,13 +11,15 @@ query ChallengeExplorerPage {
 
 query SpaceExplorerSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    journeyResults {
-      id
-      type
-      terms
-      ... on SearchResultSpace {
+    spaceResults {
+      cursor
+      results {
+        score
+        terms
+        type
         ...SpaceExplorerSearchSpace
       }
+      total
     }
   }
 }
@@ -62,30 +64,20 @@ fragment SpaceExplorerSpace on Space {
     id
     myPrivileges
   }
-  type
   level
+  visibility
   about {
     why
     ...SpaceAboutCardBanner
-  }
-  visibility
-  community {
-    id
-    roleSet {
-      id
+    membership {
       myMembershipStatus
     }
-  }
-  settings {
-    privacy {
-      mode
-    }
+    isContentPublic
   }
 }
 
 fragment SpaceExplorerSubspace on Space {
   id
-  type
   level
   about {
     ...SpaceAboutCardBanner
@@ -95,18 +87,10 @@ fragment SpaceExplorerSubspace on Space {
         ...VisualUri
       }
     }
-  }
-  community {
-    id
-    roleSet {
-      id
+    membership {
       myMembershipStatus
     }
-  }
-  settings {
-    privacy {
-      mode
-    }
+    isContentPublic
   }
 }
 

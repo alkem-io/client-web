@@ -3,13 +3,12 @@ query RecentSpaces($limit: Float) {
     mySpaces(limit: $limit) {
       space {
         id
-        settings {
-          privacy {
-            mode
-          }
-        }
         about {
           ...SpaceAboutCardBanner
+          isContentPublic
+          membership {
+            myMembershipStatus
+          }
         }
         level
         __typename # do not remove

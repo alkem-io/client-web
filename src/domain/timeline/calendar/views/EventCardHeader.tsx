@@ -9,7 +9,7 @@ import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import SubspaceIcon2 from '@/domain/journey/subspace/icon/SubspaceIcon2';
+import SpaceL1Icon2 from '@/_deprecated/icons/SpaceL1Icon2';
 
 export interface EventCardHeaderProps {
   event:
@@ -71,9 +71,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
             )}
             {event?.subspace && (
               <CardHeaderDetail
-                iconComponent={
-                  <SubspaceIcon2 fill="primary" sx={{ maxHeight: gutters(0.7), maxWidth: gutters(0.7) }} />
-                }
+                iconComponent={<SpaceL1Icon2 fill="primary" sx={{ maxHeight: gutters(0.7), maxWidth: gutters(0.7) }} />}
               >
                 {event.subspace.about.profile.displayName}
               </CardHeaderDetail>

@@ -1,0 +1,63 @@
+query SpaceAdminDefaultTemplatesCollaborationDetails($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      templatesManager {
+        id
+        templatesSet {
+          id
+          authorization {
+            myPrivileges
+          }
+        }
+        templateDefaults {
+          id
+          type
+          template {
+            id
+            profile {
+              ...InnovationFlowProfile
+            }
+            collaboration {
+              id
+              calloutsSet {
+                id
+                callouts {
+                  id
+                  type
+                  sortOrder
+                  classification {
+                    id
+                    flowState: tagset(tagsetName: FLOW_STATE) {
+                      ...TagsetDetails
+                    }
+                  }
+                  framing {
+                    id
+                    profile {
+                      id
+                      displayName
+                      description
+                    }
+                  }
+                }
+              }
+              innovationFlow {
+                id
+                profile {
+                  id
+                  displayName
+                  description
+                }
+                states {
+                  displayName
+                  description
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

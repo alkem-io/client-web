@@ -5,7 +5,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useUserContext } from '@/domain/community/user';
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 
 const MyResources = () => {
   const { accountId } = useUserContext();
@@ -41,7 +41,7 @@ const MyResources = () => {
         <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />
       ))}
       {spaces.map(space => (
-        <JourneyCardHorizontal
+        <SpaceCardHorizontal
           key={space.id}
           space={{ about: space.about, level: space.level }}
           size="small"

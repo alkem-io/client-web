@@ -6,7 +6,6 @@ import {
   SearchResultType,
   SearchResultUserFragment,
   SpaceLevel,
-  SpacePrivacyMode,
   UserRolesSearchCardsQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
@@ -15,16 +14,16 @@ import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hoo
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
-import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
-import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
+import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 
@@ -81,40 +80,34 @@ const _hydrateOrganizationCard = (
 };
 
 const hydrateSpaceCard = (
-  data: TypedSearchResult<
-    SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
-    SearchResultSpaceFragment
-  >
+  data: TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
 ) => {
   const space = data.space;
   const spaceProfile = space.about.profile;
   const tagline = spaceProfile?.tagline ?? '';
   const name = spaceProfile.displayName;
-  const tags = data.terms; // TODO: add terms field to journey card
+  const tags = space.about.profile.tagset?.tags;
   const vision = space.about.why ?? '';
 
-  const isMember = space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentSegment = (
-    data: TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
-      SearchResultSpaceFragment
-    >
+    data: TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
   ) => {
     if (!data.parentSpace) {
       return null;
     }
 
-    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceIcon : SubspaceIcon;
+    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceL0Icon : SpaceL1Icon;
 
     return (
-      <CardParentJourneySegment
+      <CardParentSpaceSegment
         iconComponent={parentIcon}
-        parentJourneyUri={data.parentSpace?.about.profile.url ?? ''}
-        locked={data.parentSpace?.settings.privacy?.mode === SpacePrivacyMode.Private}
+        parentSpaceUri={data.parentSpace?.about.profile.url ?? ''}
+        locked={!data.parentSpace?.about.isContentPublic}
       >
         {data.parentSpace?.about.profile.displayName}
-      </CardParentJourneySegment>
+      </CardParentSpaceSegment>
     );
   };
 
@@ -129,7 +122,7 @@ const hydrateSpaceCard = (
       tags={tags}
       matchedTerms
       vision={vision}
-      locked={space.settings.privacy?.mode === SpacePrivacyMode.Private}
+      locked={!space.about.isContentPublic}
       spaceVisibility={space.visibility}
       parentSegment={parentSegment(data)}
     />
@@ -148,9 +141,9 @@ const getContributionParentInformation = (
 ): ContributionParentInformation => {
   return {
     displayName: data.space.about.profile.displayName,
-    locked: data.space?.settings.privacy?.mode === SpacePrivacyMode.Private,
+    locked: !data.space?.about.isContentPublic,
     url: data.space.about.profile.url,
-    icon: spaceLevelIcon[data.space.level] ?? SpaceIcon,
+    icon: spaceLevelIcon[data.space.level] ?? SpaceL0Icon,
   };
 };
 
@@ -175,12 +168,12 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
       url={data.post.profile.url}
       parentSegment={
         <CardContent>
-          <CardParentJourneySegment iconComponent={CalloutIcon} parentJourneyUri={data.callout.framing.profile.url}>
+          <CardParentSpaceSegment iconComponent={CalloutIcon} parentSpaceUri={data.callout.framing.profile.url}>
             {data.callout.framing.profile.displayName}
-          </CardParentJourneySegment>
-          <CardParentJourneySegment iconComponent={parent.icon} parentJourneyUri={parent.url} locked={parent.locked}>
+          </CardParentSpaceSegment>
+          <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>
             {parent.displayName}
-          </CardParentJourneySegment>
+          </CardParentSpaceSegment>
         </CardContent>
       }
     />
@@ -198,10 +191,7 @@ interface UseHydrateCardProvided {
   >;
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
   hydrateSpaceCard: HydratedCardGetter<
-    TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
-      SearchResultSpaceFragment
-    >
+    TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
   >;
 }
 

@@ -1,0 +1,11 @@
+mutation updateSpace($input: UpdateSpaceInput!) {
+  updateSpace(spaceData: $input) {
+    ...SpaceInfo
+  }
+}
+
+fragment SpaceInfo on Space {
+  about {
+    ...SpaceAboutDetails
+  }
+}

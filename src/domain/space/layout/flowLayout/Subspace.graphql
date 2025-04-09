@@ -1,0 +1,41 @@
+query SubspacePage($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      ...SubspacePageSpace
+    }
+  }
+}
+
+fragment SubspacePageSpace on Space {
+  id
+  level
+  authorization {
+    id
+    myPrivileges
+  }
+  about {
+    ...SpaceAboutLight
+    why
+    metrics {
+      id
+      name
+      value
+    }
+    membership {
+      roleSetID
+      communityID
+    }
+  }
+  collaboration {
+    id
+    calloutsSet {
+      id
+    }
+  }
+  templatesManager {
+    id
+    templatesSet {
+      id
+    }
+  }
+}

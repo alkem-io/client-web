@@ -9,10 +9,9 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
-import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
+import SpaceTile from '@/domain/space/components/cards/SpaceTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -65,12 +64,8 @@ export const ExploreSpacesView = ({
     setSelectedFilter(filter);
   };
 
-  const isPrivate = (space): boolean => space?.settings.privacy?.mode === SpacePrivacyMode.Private;
-
   const renderSkeleton = (size: number) =>
-    Array.from({ length: size }).map((_, index) => (
-      <JourneyTile key={index} journey={undefined} columns={cardColumns} />
-    ));
+    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} journey={undefined} columns={cardColumns} />);
 
   const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
@@ -119,14 +114,12 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && (
-          <JourneyTile journey={welcomeSpace} columns={cardColumns} isPrivate={isPrivate(welcomeSpace)} />
-        )}
+        {visibleFirstWelcomeSpace && <SpaceTile journey={welcomeSpace} columns={cardColumns} />}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyTile key={space.id} journey={space} columns={cardColumns} isPrivate={isPrivate(space)} />
+                <SpaceTile key={space.id} journey={space} columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}

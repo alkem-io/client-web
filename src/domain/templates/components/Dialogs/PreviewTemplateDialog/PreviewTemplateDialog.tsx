@@ -15,7 +15,7 @@ import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponen
 import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import LinkNoUnderline from '@/domain/shared/components/LinkNoUnderline';
+import LinkNoUnderline from '@/_deprecated/LinkNoUnderline';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 
 export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPack {

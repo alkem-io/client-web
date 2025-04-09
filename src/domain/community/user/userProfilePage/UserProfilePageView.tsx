@@ -1,12 +1,12 @@
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { CredentialsView } from '@/domain/community/profile/views/ProfileView';
-import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/ProfileView/UserProfileView';
+import { CredentialsView } from '@/domain/community/profile/views';
+import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import ContributionsView from '@/domain/community/contributor/Contributions/ContributionsView';
 import { CaptionSmall } from '@/core/ui/typography';

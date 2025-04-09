@@ -3,9 +3,9 @@ import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/Pen
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
-import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
+import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';
@@ -101,7 +101,7 @@ const InvitationDialog = ({
                     flexDirection={isMobile ? 'column' : 'row'}
                     alignItems={isMobile ? 'center' : 'start'}
                   >
-                    <JourneyCard
+                    <SpaceCardBase
                       iconComponent={spaceIconByLevel[invitation.space.level]}
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
@@ -109,8 +109,8 @@ const InvitationDialog = ({
                       journeyUri={invitation.space.about.profile.url}
                       onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >
-                      <JourneyCardTagline>{invitation.space.about.profile.tagline ?? ''}</JourneyCardTagline>
-                    </JourneyCard>
+                      <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+                    </SpaceCardBase>
                     <Gutters disablePadding>
                       <Caption>
                         <DetailedActivityDescription

@@ -2,7 +2,7 @@ import { TabDefinition } from '../EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 
 export enum AdminSection {
@@ -20,7 +20,7 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
   {
     section: AdminSection.Space,
     route: '/admin/spaces',
-    icon: SpaceIcon,
+    icon: SpaceL0Icon,
   },
   {
     section: AdminSection.User,

@@ -1,0 +1,29 @@
+query SpacePermissionsAndEntitlements($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      license {
+        id
+        availableEntitlements
+      }
+      collaboration {
+        id
+        license {
+          id
+          availableEntitlements
+        }
+      }
+      templatesManager {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}

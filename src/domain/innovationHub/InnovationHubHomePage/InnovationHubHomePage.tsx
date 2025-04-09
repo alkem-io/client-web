@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import SpaceCard from '@/domain/journey/space/SpaceCard/SpaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -21,8 +21,8 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
-const isMember = (journey: { community?: { roleSet?: { myMembershipStatus?: CommunityMembershipStatus } } }) =>
-  journey.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
+const isMember = (about: { membership?: { myMembershipStatus?: CommunityMembershipStatus } }) =>
+  about.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
 
 const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
@@ -58,11 +58,11 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 banner={space.about.profile.cardBanner}
                 displayName={space.about.profile.displayName!}
                 vision={space.about.why!}
-                membersCount={getMetricCount(space.metrics, MetricType.Member)}
+                membersCount={getMetricCount(space.about.metrics, MetricType.Member)}
                 tagline={space.about.profile.tagline!}
                 tags={space.about.profile.tagset?.tags ?? []}
                 journeyUri={space.about.profile.url}
-                member={isMember(space)}
+                member={isMember(space.about)}
                 spaceVisibility={space.visibility}
               />
             ))}

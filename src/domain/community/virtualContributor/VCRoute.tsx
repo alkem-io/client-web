@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import VCProfilePage from './vcProfilePage/VCProfilePage';
-import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import VCSettingsRoute from '../virtualContributorAdmin/VCSettingsRoute';
 import { nameOfUrl } from '@/main/routing/urlParams';

@@ -1,11 +1,9 @@
 import { ReactElement } from 'react';
 import { Grid, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Identifiable } from '@/core/utils/Identifiable';
 
-export interface AssociatedOrganizationsViewProps<
-  Consumed extends {},
-  Organization extends Consumed & { key: string }
-> {
+export interface AssociatedOrganizationsViewProps<Consumed extends {}, Organization extends Consumed & Identifiable> {
   organizations: Organization[] | undefined;
   dense?: boolean;
   loading?: boolean;
@@ -19,7 +17,7 @@ const SkeletonItem = (props: { dense: boolean }) => (
   </Grid>
 );
 
-export const AssociatedOrganizationsView = <Consumed extends {}, Organization extends Consumed & { key: string }>({
+export const AssociatedOrganizationsView = <Consumed extends {}, Organization extends Consumed & Identifiable>({
   organizations,
   dense = false,
   loading,
@@ -33,8 +31,8 @@ export const AssociatedOrganizationsView = <Consumed extends {}, Organization ex
       {loading && <SkeletonItem dense />}
       {!loading &&
         organizations?.map(org => (
-          <Grid key={org.key} item xs={12} md={dense ? 6 : 12}>
-            <OrganizationCardComponent {...org} />
+          <Grid key={org.id} item xs={12} md={dense ? 6 : 12}>
+            <OrganizationCardComponent {...org} key={org.id} />
           </Grid>
         ))}
       {organizations?.length === 0 && (

@@ -28,9 +28,3 @@ export interface ContributorViewProps extends Identifiable {
   };
   isContactable?: boolean;
 }
-
-export interface EntityDashboardLeads {
-  leadUsers: ContributorViewProps[] | undefined;
-  leadOrganizations: ContributorViewProps[] | undefined;
-  provider?: ContributorViewProps;
-}

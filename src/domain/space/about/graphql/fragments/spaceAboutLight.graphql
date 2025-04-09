@@ -17,4 +17,14 @@ fragment SpaceAboutLight on SpaceAbout {
       ...VisualUri
     }
   }
+  isContentPublic
+  membership {
+    myMembershipStatus
+    myPrivileges
+    communityID
+    roleSetID
+  }
+  guidelines {
+    id
+  }
 }

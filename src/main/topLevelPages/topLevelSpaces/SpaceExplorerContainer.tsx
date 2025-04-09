@@ -8,12 +8,12 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user';
 import {
+  SearchCategory,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SearchResultType,
   SpaceExplorerSubspacesQuery,
   SpaceExplorerSearchSpaceFragment,
-  SpacePrivacyMode,
 } from '@/core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '@/main/search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
@@ -64,7 +64,12 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
       searchData: {
         terms: searchTerms,
         tagsetNames: ['skills', 'keywords'],
-        typesFilter: ['space', 'subspace'],
+        filters: [
+          {
+            category: SearchCategory.Spaces,
+            size: ITEMS_LIMIT,
+          },
+        ],
       },
     },
     fetchPolicy: 'no-cache',
@@ -148,7 +153,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch) {
-      return rawSearchResults?.search?.journeyResults.map(result => {
+      return rawSearchResults?.search?.spaceResults?.results.map(result => {
         const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
 
         if (entry.type === SearchResultType.Space || entry.type === SearchResultType.Subspace) {
@@ -188,11 +193,11 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
         return flattenedSpaces;
       }
       return flattenedSpaces?.filter(
-        space => space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member
+        space => space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member
       );
     }
     if (membershipFilter === SpacesExplorerMembershipFilter.Public) {
-      return flattenedSpaces?.filter(space => space.settings.privacy?.mode === SpacePrivacyMode.Public);
+      return flattenedSpaces?.filter(space => space.about.isContentPublic);
     }
     return flattenedSpaces;
   }, [flattenedSpaces, membershipFilter, shouldSearch]);
