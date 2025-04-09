@@ -8,6 +8,7 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
+  SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
@@ -42,7 +43,7 @@ import { defaultSpaceSettings } from './SpaceDefaultSettings';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
-  isSubspace: boolean;
+  level: SpaceLevel;
   spaceId: string;
   parentSpaceUrl: string;
   membershipsEnabled: boolean;
@@ -52,7 +53,7 @@ export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
 
 const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   useL0Layout,
-  isSubspace,
+  level,
   parentSpaceUrl,
   spaceId,
   membershipsEnabled,
@@ -68,6 +69,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
+  const isSubspace = level !== SpaceLevel.L0;
 
   const [deleteSpace] = useDeleteSpaceMutation({
     onCompleted: () => {
@@ -367,7 +369,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
                 />
               )}
-              {!isSubspace && subspacesEnabled && (
+              {level === SpaceLevel.L1 && (
                 <SwitchSettingsGroup
                   options={{
                     inheritMembershipRights: {
