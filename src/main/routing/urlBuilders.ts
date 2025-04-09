@@ -29,10 +29,6 @@ export const buildNewOrganizationUrl = () => {
 };
 
 export const buildUpdatesUrl = (journeyLocation: string) => {
-  return `${journeyLocation}?dialog=updates`;
-};
-
-export const buildUpdatesUrlLegacy = (journeyLocation: string) => {
   return `${journeyLocation}/updates`;
 };
 
