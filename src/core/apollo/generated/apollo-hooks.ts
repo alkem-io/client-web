@@ -1915,6 +1915,11 @@ export const SpaceAboutDetailsFragmentDoc = gql`
     guidelines {
       id
     }
+    metrics {
+      id
+      name
+      value
+    }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}

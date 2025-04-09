@@ -90,4 +90,9 @@ fragment SpaceAboutDetails on SpaceAbout {
   guidelines {
     id
   }
+  metrics {
+    id
+    name
+    value
+  }
 }
