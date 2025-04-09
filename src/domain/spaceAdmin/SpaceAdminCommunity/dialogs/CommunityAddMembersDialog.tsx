@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
-import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -19,7 +19,7 @@ interface Entity extends Identifiable {
 }
 
 type RenderParams = GridRenderCellParams<Entity>;
-type GetterParams = GridValueGetterParams<Entity>;
+type GetterParams = Entity | undefined;
 
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
@@ -74,7 +74,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => <>{createCellText(row)}</>,
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (row: GetterParams) => row?.profile.displayName,
       filterable: false,
       resizable: true,
     },

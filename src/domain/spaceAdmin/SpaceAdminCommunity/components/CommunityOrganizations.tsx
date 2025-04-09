@@ -5,7 +5,6 @@ import {
   GridInitialState,
   GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -26,7 +25,7 @@ export interface OrganizationDetailsFragmentWithRoles extends ContributorViewPro
 }
 
 type RenderParams = GridRenderCellParams<OrganizationDetailsFragmentWithRoles>;
-type GetterParams = GridValueGetterParams<OrganizationDetailsFragmentWithRoles>;
+type GetterParams = OrganizationDetailsFragmentWithRoles | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
@@ -105,7 +104,7 @@ const CommunityOrganizations = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (row: GetterParams) => row?.profile.displayName,
       resizable: true,
     },
     {

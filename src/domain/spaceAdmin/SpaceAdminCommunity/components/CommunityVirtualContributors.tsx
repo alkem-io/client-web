@@ -6,7 +6,6 @@ import {
   GridInitialState,
   GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +24,7 @@ import { ContributorViewProps } from '../../../community/community/EntityDashboa
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 
 type RenderParams = GridRenderCellParams<ContributorViewProps>;
-type GetterParams = GridValueGetterParams<ContributorViewProps>;
+type GetterParams = ContributorViewProps | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
@@ -88,7 +87,7 @@ const CommunityVirtualContributors = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (row: GetterParams) => row?.profile.displayName,
       resizable: true,
     },
   ];

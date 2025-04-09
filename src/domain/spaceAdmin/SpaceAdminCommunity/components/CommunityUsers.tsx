@@ -7,7 +7,6 @@ import {
   GridInitialState,
   GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +20,7 @@ import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
 import { CommunityMemberUserFragmentWithRoles } from '../hooks/useCommunityAdmin';
 
 type RenderParams = GridRenderCellParams<CommunityMemberUserFragmentWithRoles>;
-type GetterParams = GridValueGetterParams<CommunityMemberUserFragmentWithRoles>;
+type GetterParams = CommunityMemberUserFragmentWithRoles | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
@@ -90,7 +89,7 @@ const CommunityUsers = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (row: GetterParams) => row?.profile.displayName,
       resizable: true,
     },
     {

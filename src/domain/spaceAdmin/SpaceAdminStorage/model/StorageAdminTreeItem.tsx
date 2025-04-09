@@ -8,7 +8,7 @@ export interface StorageAdminTreeItem {
   childItems?: StorageAdminTreeItem[];
   // Documents only
   size: number;
-  uplodadedBy?: { url: string; displayName: string };
+  uploadedBy?: { url: string; displayName: string };
   uploadedAt?: Date;
   url: string | undefined;
   // UI:

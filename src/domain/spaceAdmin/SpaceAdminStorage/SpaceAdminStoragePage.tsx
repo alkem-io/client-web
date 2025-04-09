@@ -1,4 +1,4 @@
-import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -28,7 +28,7 @@ export interface SpaceAdminStoragePageProps extends SettingsPageProps {
 }
 
 type RenderParams = GridRenderCellParams<StorageAdminGridRow>;
-type GetterParams = GridValueGetterParams<StorageAdminGridRow>;
+type GetterParams = StorageAdminGridRow | undefined;
 
 const PAGE_SIZE = 100;
 const initialState: GridInitialState = {
@@ -119,12 +119,12 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         filterable: false,
       },
       {
-        field: 'uplodadedBy',
+        field: 'uploadedBy',
         headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
         minWidth: 150,
         renderCell: ({ row }: RenderParams) =>
-          row.uplodadedBy ? <RouterLink to={row.uplodadedBy.url}>{row.uplodadedBy.displayName}</RouterLink> : undefined,
-        valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
+          row.uploadedBy ? <RouterLink to={row.uploadedBy.url}>{row.uploadedBy.displayName}</RouterLink> : undefined,
+        valueGetter: (row: GetterParams) => row?.uploadedBy?.displayName,
         sortable: false,
         filterable: false,
       },
