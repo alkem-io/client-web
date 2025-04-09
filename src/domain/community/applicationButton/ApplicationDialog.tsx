@@ -52,7 +52,7 @@ const ApplicationDialog = ({
   const communityName = spaceAbout?.profile.displayName;
   const applicationForm = spaceAbout?.membership.applicationForm;
   const questions = applicationForm?.questions ?? [];
-  const roleSetId = spaceAbout?.membership.roleSetID!;
+  const roleSetId = spaceAbout?.membership.roleSetID;
   const communityGuidelines = spaceAbout?.guidelines.profile;
   const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation();
 
