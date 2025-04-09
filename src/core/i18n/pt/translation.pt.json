@@ -2336,16 +2336,7 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": [
-            "Innovation",
-            "Energy",
-            "Inclusive",
-            "3D",
-            "Community",
-            "Transition",
-            "SSI",
-            "Privacy"
-          ]
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -3004,42 +2995,27 @@
       {
         "key": "transição-energética",
         "name": "Transição Energética",
-        "tags": [
-          "Transição Energética",
-          "Transição Energética"
-        ]
+        "tags": ["Transição Energética", "Transição Energética"]
       },
       {
         "key": "sociedade-inclusiva",
         "name": "Sociedade Inclusiva",
-        "tags": [
-          "Sociedade Inclusiva",
-          "Sociedade Inclusiva"
-        ]
+        "tags": ["Sociedade Inclusiva", "Sociedade Inclusiva"]
       },
       {
         "key": "serviços-públicos",
         "name": "Serviços Públicos",
-        "tags": [
-          "Serviços Públicos",
-          "Serviços Públicos"
-        ]
+        "tags": ["Serviços Públicos", "Serviços Públicos"]
       },
       {
         "key": "inovação",
         "name": "Inovação",
-        "tags": [
-          "Inovação",
-          "Inovação"
-        ]
+        "tags": ["Inovação", "Inovação"]
       },
       {
         "key": "digitalização-da-sociedade",
         "name": "Digitalização da sociedade",
-        "tags": [
-          "Digitalização da sociedade",
-          "Digitalização"
-        ]
+        "tags": ["Digitalização da sociedade", "Digitalização"]
       }
     ]
   },
@@ -3106,10 +3082,7 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": [
-          "Up to 10 members",
-          "Various tools, including standard Whiteboards"
-        ],
+        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -3117,11 +3090,7 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": [
-          "Up to 100 members",
-          "Realtime, multi-user Whiteboards",
-          "Create your Virtual Contributor"
-        ],
+        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },
