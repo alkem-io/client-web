@@ -10,7 +10,7 @@ import SimpleSearchableTable, {
 } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import { IconButton } from '@mui/material';
 import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
 
 const AdminOrganizationsPage = () => {

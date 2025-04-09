@@ -13,7 +13,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
+import { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
 
 export interface ApplicationButtonContainerProps {
   parentSpaceId?: string;

@@ -25,15 +25,3 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
     }
   }
 }
-
-query SpaceDashboardNavigationSubspacesAuth($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-}

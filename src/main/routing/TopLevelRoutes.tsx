@@ -20,7 +20,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
-const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
+const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
 );

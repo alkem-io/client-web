@@ -70,10 +70,10 @@ const DetailedActivityDescription = ({
       mergedValues['journeyDisplayName'] = truncatedParentName;
     }
 
-    const JourneyIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
-    if (JourneyIcon) {
-      mergedComponents['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
-      mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;
+    const SpaceIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
+    if (SpaceIcon) {
+      mergedComponents['parenticon'] = <SpaceIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
+      mergedComponents['journeyicon'] = <SpaceIcon fontSize="inherit" />;
     }
 
     mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} /> : <span />;

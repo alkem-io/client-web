@@ -8,7 +8,7 @@ import CardTags from '@/core/ui/card/CardTags';
 import RouterLink from '@/core/ui/link/RouterLink';
 import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
-import JourneyCardDescription from '@/domain/space/components/cards/JourneyCard/JourneyCardDescription';
+import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
 
 export interface ContributorCardProps extends ContributeCardProps {
   displayName: string;
@@ -71,7 +71,7 @@ const ContributorCard = ({
             paddingLeft={gutters()}
             expansion={
               <>
-                {description && <JourneyCardDescription rows={3}>{description}</JourneyCardDescription>}
+                {description && <SpaceCardDescription rows={3}>{description}</SpaceCardDescription>}
                 {matchedTerms ? <CardTags tags={tags} rows={3} disableIndentation /> : undefined}
               </>
             }

@@ -14,7 +14,6 @@ type InnovationFlowState = {
 
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
-  canReadSpace: boolean;
   innovationFlowStates: InnovationFlowState[] | undefined;
   innovationFlowCurrentState: InnovationFlowState | undefined;
   flowStateForNewCallouts: InnovationFlowState | undefined;

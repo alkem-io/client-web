@@ -11,8 +11,13 @@
       "tooltip": "Esta mensagem foi gerada automaticamente com base na documentação do Alkemio. Sua opinião é altamente relevante para nós!"
     },
     "menu": {
-      "clear": "Clear conversation",
+      "clear": "New Chat",
       "close": "Close window"
+    },
+    "confirmNewChat": {
+      "title": "Start a new chat?",
+      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
+      "confirm": "Yes, start new chat"
     },
     "references": [
       {
@@ -242,12 +247,14 @@
     "comment": "Comentário",
     "comments": "Comentários",
     "contributions": "Contribuições",
+    "responses": "Responses",
     "card": "Cartão",
     "cards": "Cartões",
     "create": "Criar",
     "create-new": "Criar novo",
     "create-new-entity": "Criar novo {{entity}}",
     "category": "Category",
+    "custom": "Custom",
     "date": "Data",
     "description": "Descrição",
     "noDescription": "No description",
@@ -271,6 +278,7 @@
     "aspects": "Cartões",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Layout",
     "lead": "Lead",
     "space": "Espaço",
     "spaces": "Espaços",
@@ -391,6 +399,11 @@
       "not-verified": ""
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Free",
+        "SPACE_PLUS": "Plus",
+        "SPACE_PREMIUM": "Premium"
+      },
       "innovationFlowState": {
         "new": "Novo",
         "beingRefined": "Sendo Refinado",
@@ -525,7 +538,8 @@
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor"
+      "inviteBtn": "Invite Virtual Contributor",
+      "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Formulário de inscrição",
@@ -612,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Remove Community Guidelines Content",
       "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {
@@ -649,14 +667,6 @@
     },
     "singleWhiteboard": {
       "clickToSee": "Clique para ver o quadro completo"
-    },
-    "callout-group": {
-      "HOME_TOP": "Recomendações do painel",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Contribute",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Base de Conhecimento"
     },
     "calloutsList": {
       "title": "Index",
@@ -950,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Resultados da pesquisa"
+      "headerTitle": "Resultados da pesquisa",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
       "currentScope": "Pesquisar resultados para:",
@@ -1011,7 +1023,8 @@
         },
         "deleteDialog": {
           "title": "Delete Phase?",
-          "text": "This action cannot be undone."
+          "text": "This action cannot be undone.",
+          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
           "title": "Find subspace template",
@@ -1776,7 +1789,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
@@ -1796,7 +1808,6 @@
       }
     },
     "contribute": {
-      "initial-text": "Na Base de Conhecimento, você encontrará documentos, dicas e outros materiais relevantes sobre o tema. Os leads do Espaço podem fornecer o conteúdo, mas também membros da comunidade podem contribuir.",
       "innovationFlow": {
         "title": "Este {{entity}} é guiado pelo(a) <b>{{innovationFlowDisplayName}}</b>. Este Fluxo de Inovação gera as estruturas do processo e convida você a tomar ações específicas por estágio.",
         "readMore": "Leia mais sobre <b>{{innovationFlowDisplayName}}</b>"
@@ -1827,6 +1838,10 @@
           "about": {
             "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
+          },
           "context": {
             "description": "Aqui você pode editar o contexto para este {{entity}}."
           },
@@ -1853,7 +1868,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Encontre templates para usar no seu Espaço, Desafio ou oportunidade. Selecione o template e clique em 'selecionar' para adicioná-lo ao seu conjunto de templates.",
               "callout-template-import-subtitle": "Encontre um template para as pessoas usarem ao contribuir para o seu $t(common.callout)",
-              "noTemplates": "No templates found.",
+              "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template importado com sucesso"
             }
           },
@@ -1897,7 +1912,8 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "spaceUsageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
@@ -2037,6 +2053,9 @@
           "preferences": {
             "subtitle": "Esta seção te permite modificar as preferências de autorização do $t(common.space)"
           }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
         },
         "community": {
           "preferences": {
@@ -2317,16 +2336,7 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": [
-            "Innovation",
-            "Energy",
-            "Inclusive",
-            "3D",
-            "Community",
-            "Transition",
-            "SSI",
-            "Privacy"
-          ]
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -2469,6 +2479,13 @@
         "errorBlockName": "as questões"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Hospedado por",
           "hostTooltip": "O host é a organização responsável pela criação do Espaço.",
@@ -2713,6 +2730,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "error": "An error occurred.",
       "sections": {
         "knowledge": {
           "title": "Knowledge",
@@ -2763,6 +2781,20 @@
           "title": "Update Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "saveBtn": "Save prompt"
+        },
+        "externalConfig": {
+          "title": "External Configuration",
+          "infoText": "The Virtual Contributor is powered by an external AI service. Please provide the following information to connect to the service.",
+          "apiKey": "API Key",
+          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
+          "assistantId": "Assistant ID",
+          "model": "Model",
+          "saveBtn": "Save Configuration"
         },
         "privacy": {
           "title": "Privacy",
@@ -2963,42 +2995,27 @@
       {
         "key": "transição-energética",
         "name": "Transição Energética",
-        "tags": [
-          "Transição Energética",
-          "Transição Energética"
-        ]
+        "tags": ["Transição Energética", "Transição Energética"]
       },
       {
         "key": "sociedade-inclusiva",
         "name": "Sociedade Inclusiva",
-        "tags": [
-          "Sociedade Inclusiva",
-          "Sociedade Inclusiva"
-        ]
+        "tags": ["Sociedade Inclusiva", "Sociedade Inclusiva"]
       },
       {
         "key": "serviços-públicos",
         "name": "Serviços Públicos",
-        "tags": [
-          "Serviços Públicos",
-          "Serviços Públicos"
-        ]
+        "tags": ["Serviços Públicos", "Serviços Públicos"]
       },
       {
         "key": "inovação",
         "name": "Inovação",
-        "tags": [
-          "Inovação",
-          "Inovação"
-        ]
+        "tags": ["Inovação", "Inovação"]
       },
       {
         "key": "digitalização-da-sociedade",
         "name": "Digitalização da sociedade",
-        "tags": [
-          "Digitalização da sociedade",
-          "Digitalização"
-        ]
+        "tags": ["Digitalização da sociedade", "Digitalização"]
       }
     ]
   },
@@ -3065,10 +3082,7 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": [
-          "Up to 10 members",
-          "Various tools, including standard Whiteboards"
-        ],
+        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -3076,11 +3090,7 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": [
-          "Up to 100 members",
-          "Realtime, multi-user Whiteboards",
-          "Create your Virtual Contributor"
-        ],
+        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },

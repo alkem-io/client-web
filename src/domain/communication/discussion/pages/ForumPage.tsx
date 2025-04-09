@@ -20,7 +20,6 @@ import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
 import { useUserContext } from '@/domain/community/user';
-import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -30,7 +29,6 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { BlockTitle } from '@/core/ui/typography';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
-const grayedOutForumImgSrc = '/forum/forum-grayed.png';
 
 const useSubscriptionToForum = UseSubscriptionToSubEntity<
   PlatformDiscussionsQuery['platform']['forum'],
@@ -69,7 +67,7 @@ export const ForumPage = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
+  const { user: { hasPlatformPrivilege } = {}, loading: loadingUser } = useUserContext();
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
 
@@ -138,53 +136,39 @@ export const ForumPage = ({
           </TopLevelPageBreadcrumbs>
         }
       >
-        {!loading && !isAuthenticated ? (
-          <ImageBackdrop
-            src={grayedOutForumImgSrc}
-            backdropMessage={'login'}
-            blockName={'all-contributing-users'}
-            imageSx={{ filter: 'blur(2px)' }}
-            messageSx={theme => ({
-              [theme.breakpoints.up('sm')]: {
-                fontWeight: 'bold',
-              },
-            })}
-          />
-        ) : (
-          <DiscussionsLayout
-            canCreateDiscussion={!loading && canCreateDiscussion}
-            categorySelector={
-              <CategorySelector
-                categories={categories}
-                onSelect={category => {
-                  navigate(
-                    Object.keys(DiscussionCategoryPlatform).includes(category)
-                      ? `/forum/${DiscussionCategoryPlatform[category]}`
-                      : '/forum'
-                  );
-                }}
-                value={categorySelected}
-                showLabels={!mediumScreen}
-              />
-            }
-          >
-            <BlockTitle>{t('components.discussions-list.title', { count: discussions.length })}</BlockTitle>
-            <DiscussionListView
-              discussions={discussions}
-              loading={loading}
-              onClickDiscussion={discussion => handleClickDiscussion(discussion.url)}
-              filterEnabled
+        <DiscussionsLayout
+          canCreateDiscussion={!loading && canCreateDiscussion}
+          categorySelector={
+            <CategorySelector
+              categories={categories}
+              onSelect={category => {
+                navigate(
+                  Object.keys(DiscussionCategoryPlatform).includes(category)
+                    ? `/forum/${DiscussionCategoryPlatform[category]}`
+                    : '/forum'
+                );
+              }}
+              value={categorySelected}
+              showLabels={!mediumScreen}
             />
-            {!loading && communicationId && (
-              <NewDiscussionDialog
-                forumId={communicationId}
-                categories={discussionCreationCategories}
-                open={dialog === 'new'}
-                onClose={() => navigate('/forum')}
-              />
-            )}
-          </DiscussionsLayout>
-        )}
+          }
+        >
+          <BlockTitle>{t('components.discussions-list.title', { count: discussions.length })}</BlockTitle>
+          <DiscussionListView
+            discussions={discussions}
+            loading={loading}
+            onClickDiscussion={discussion => handleClickDiscussion(discussion.url)}
+            filterEnabled
+          />
+          {!loading && communicationId && (
+            <NewDiscussionDialog
+              forumId={communicationId}
+              categories={discussionCreationCategories}
+              open={dialog === 'new'}
+              onClose={() => navigate('/forum')}
+            />
+          )}
+        </DiscussionsLayout>
       </TopLevelPageLayout>
     </StorageConfigContextProvider>
   );

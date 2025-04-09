@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceProvider from '../context/SubspaceProvider';
+import SubspaceContextProvider from '../context/SubspaceContext';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../about/SubspaceAboutPage';
@@ -73,9 +73,9 @@ const SubspaceRoute = () => {
         <Route
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
-            <SubspaceProvider>
+            <SubspaceContextProvider>
               <SubspaceRoute />
-            </SubspaceProvider>
+            </SubspaceContextProvider>
           }
         />
         {LegacyRoutesRedirects()}

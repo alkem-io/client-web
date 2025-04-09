@@ -23,7 +23,7 @@ import AboutHeader from '@/domain/space/about/components/AboutHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import AboutDescription from '@/domain/space/about/components/AboutDescription';
 import Loading from '@/core/ui/loading/Loading';
-import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import RouterLink from '@/core/ui/link/RouterLink';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';

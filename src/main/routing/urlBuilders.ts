@@ -42,7 +42,7 @@ export const buildSpaceSectionUrl = (
   dialog: string | undefined = undefined
 ) => {
   let result = '';
-  const params = new URLSearchParams();
+  const params = new URLSearchParams(window.location.search);
 
   try {
     const url = new URL(spaceUrl); // Parse the URL and extract the pathname if it's absolute
@@ -56,6 +56,8 @@ export const buildSpaceSectionUrl = (
   }
   if (dialog) {
     params.set(URL_PARAM_DIALOG, dialog);
+  } else {
+    params.delete(URL_PARAM_DIALOG);
   }
 
   return `${result}?${params.toString()}`;
