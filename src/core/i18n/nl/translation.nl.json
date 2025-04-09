@@ -11,8 +11,13 @@
       "tooltip": "Dit bericht is automatisch gegenereerd op basis van de documentatie van Alkemio. Je feedback is zeer relevant voor ons!"
     },
     "menu": {
-      "clear": "Gesprek wissen",
+      "clear": "Nieuw gesprek",
       "close": "Sluit venster"
+    },
+    "confirmNewChat": {
+      "title": "Een nieuw gesprek beginnen?",
+      "description": "Als je een nieuw gesprek start, wordt je huidige gesprek geschiedenis gewist. Weet je zeker dat je wilt doorgaan?",
+      "confirm": "Ja, nieuw gesprek starten"
     },
     "references": [
       {
@@ -242,12 +247,14 @@
     "comment": "Opmerking",
     "comments": "Opmerkingen",
     "contributions": "Bijdragen",
+    "responses": "Reacties",
     "card": "Kaart",
     "cards": "Kaarten",
     "create": "Maak aan",
     "create-new": "Maak nieuwe aan",
     "create-new-entity": "Maak nieuwe {{entity}} aan",
     "category": "Categorie",
+    "custom": "Aangepast",
     "date": "Datum",
     "description": "Omschrijving",
     "noDescription": "Geen omschrijving",
@@ -271,6 +278,7 @@
     "aspects": "Kaarten",
     "prompt": "Prompt",
     "host": "Host",
+    "layout": "Opmaak",
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
@@ -391,6 +399,11 @@
       "not-verified": ""
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Gratis",
+        "SPACE_PLUS": "Plus",
+        "SPACE_PREMIUM": "Premium"
+      },
       "innovationFlowState": {
         "new": "Nieuw",
         "beingRefined": "Wordt uitgewerkt",
@@ -525,7 +538,8 @@
       "inviteExternalVC": "Externe VC uitnodigen",
       "externalVCsInfo": "Op dit moment kan alleen Alkemio Support een externe Virtual Contributor toevoegen aan je Space. Neem <click>hier</click> contact op met Support, we helpen je graag!",
       "searchVC": "Vind Virtual Contributor",
-      "inviteBtn": "Virtual Contributor Uitnodigen"
+      "inviteBtn": "Virtual Contributor Uitnodigen",
+      "permissionRequiredTooltip": "Om Virtual Contributors te gebruiken, upgrade je licentie of neem contact op met het Alkemio-team voor ondersteuning."
     },
     "application-form": {
       "title": "Aanmeldingsformulier",
@@ -612,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Verwijder Community Richtlijnen Inhoud",
       "content": "Weet je zeker dat je de Community Richtlijnen wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {
@@ -649,14 +667,6 @@
     },
     "singleWhiteboard": {
       "clickToSee": "Klik hier om het volledige whiteboard te zien"
-    },
-    "callout-group": {
-      "HOME_TOP": "Dashboard - aanbevelingen",
-      "HOME": "Dashboard",
-      "CONTRIBUTE": "Bijdragen",
-      "COMMUNITY": "Community",
-      "SUBSPACES": "Subspaces",
-      "KNOWLEDGE": "Kennisbank"
     },
     "calloutsList": {
       "title": "Index",
@@ -950,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "Zoekresultaten"
+      "headerTitle": "Zoekresultaten",
+      "spacesAndSubspaces": "Spaces & Subspaces",
+      "collaborationTools": "Samenwerkingstools"
     },
     "searchScope": {
       "currentScope": "Zoekresultaten voor:",
@@ -1011,7 +1023,8 @@
         },
         "deleteDialog": {
           "title": "Fase Verwijderen?",
-          "text": "Deze actie kan niet ongedaan gemaakt worden."
+          "text": "Deze actie kan niet ongedaan gemaakt worden.",
+          "activeStateWarning": "Deze fase is momenteel actief en kan niet worden verwijderd. Je kan het altijd hernoemen of een andere fase als actieve fase instellen."
         },
         "selectDifferentFlow": {
           "title": "Zoek Subspace Template",
@@ -1776,7 +1789,6 @@
           "description": ""
         },
         "subEntities": {
-          "description": "Hier kun je de gehoste **{{entities}}** ontdekken. Filter op trefwoorden om alleen de onderwerpen te tonen waar je om geeft.",
           "list": "Lijst weergave",
           "empty": "Geen {{entities}} gevonden.",
           "empty-list": "Er zijn nog geen {{entities}}.",
@@ -1796,7 +1808,6 @@
       }
     },
     "contribute": {
-      "initial-text": "In de kennisbank vind je relevante documenten, inzichten en andere materialen over het onderwerp. De leads van de Space kunnen content plaatsen, maar de community kan ook een bijdrage leveren.",
       "innovationFlow": {
         "title": "Deze {{entity}} wordt geleid door de <b>{{innovationFlowDisplayName}}</b>. Deze methode of innovatie pipeline maakt het proces inzichtelijk en de acties per fase waaraan je kunt deelnemen.",
         "readMore": "Lees meer over de <b>{{innovationFlowDisplayName}}</b>"
@@ -1805,7 +1816,7 @@
     },
     "innovationLibrary": {
       "shortName": "Bibliotheek",
-      "fullName": "Best practices",
+      "fullName": "Template Bibliotheek",
       "title": "De Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
       "subtitle": "Open de onderstaande Innovatiepakketten om alle templates voor whiteboards, posts en innovatie flows te verkennen. Als je meer wilt weten <click>klik dan hier</click>.",
       "useTemplateButton": "Vind dit template via de template bibliotheek in jouw Space om het te gebruiken.",
@@ -1826,6 +1837,10 @@
           },
           "about": {
             "description": "Hier kun je het openbare profiel voor deze {{entity}} aanpassen. Deze informatie is ook zichtbaar voor niet-leden."
+          },
+          "layout": {
+            "description": "Hier kan je de opmaak aanpassen voor deze {{entity}}.",
+            "innovationFlowEditor": "Space tabs"
           },
           "context": {
             "description": "Hier kan je de context aanpassen voor deze {{entity}}."
@@ -1853,7 +1868,7 @@
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Zoek templates om te gebruiken in je Space of Subspace. Selecteer een template en klik op 'importeer' om deze toe te voegen.",
               "callout-template-import-subtitle": "Vind een template die mensen kunnen gebruiken voor het bijdragen aan jouw $t(common.callout)",
-              "noTemplates": "Geen templates gevonden.",
+              "noTemplates": "Geen templates in de Space bibliotheek.",
               "imported-successfully-notification": "Template succesvol geïmporteerd"
             }
           },
@@ -1897,7 +1912,8 @@
             "hostedSpaces": "Gehoste Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "usageNotice": "Je hebt {{usage}} van je {{limit}} beschikbare {{type}} in je account aangemaakt.",
+            "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "spaceUsageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Neem contact op met het Alkemio team om de limieten op uw account te verhogen",
             "notAvailable": "Niet beschikbaar",
             "notAvailableNotice": "Neem contact op met het Alkemio team om deze functie in te schakelen op je account",
@@ -2038,6 +2054,9 @@
             "subtitle": "Hier kan je de $t(common.space) authorisatie voorkeuren aanpassen"
           }
         },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
+        },
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
@@ -2105,7 +2124,7 @@
         "create": "Maak Innovatiepakket",
         "fields": {
           "provider": "Organisatie",
-          "listedInStore": "Vermeld in winkel",
+          "listedInStore": "Laat zien in de platform template bibliotheek",
           "searchVisibility": "Zoek zichtbaarheid"
         },
         "back-button": "Alle $t(common.innovation-packs)",
@@ -2317,16 +2336,7 @@
             "title": "...of zoek je Community hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": [
-            "Innovatie",
-            "Energie",
-            "Inclusief",
-            "3D",
-            "Community",
-            "Transitie",
-            "SSI",
-            "Privacy"
-          ]
+          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -2446,7 +2456,7 @@
     "organization": {
       "profile": {
         "accountResources": {
-          "sectionTitle": "Hulpmiddelen die wij hosten"
+          "sectionTitle": "Wij hosten"
         }
       },
       "settings": {
@@ -2469,6 +2479,13 @@
         "errorBlockName": "de vragen"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
         "dashboard": {
           "organization": "Gehost door",
           "hostTooltip": "De host is de organisatie die verantwoordelijk is voor het aanmaken van de Space.",
@@ -2713,6 +2730,7 @@
       "references": "Referenties",
       "host": "Host",
       "success": "{{entity}} succesvol bijgewerkt.",
+      "error": "Er is een fout opgetreden.",
       "sections": {
         "knowledge": {
           "title": "Kennis",
@@ -2734,11 +2752,11 @@
         },
         "external": {
           "personality": {
-            "description": "This Virtual Contributor operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
+            "description": "Deze Virtual Contributor werkt met behulp van de volgende externe AI-service: <strong>Mistral</strong>. Alle vragen die bij deze Virtual Contributor worden ingediend, samen met eventuele gerelateerde opmerkingen in een threaded gesprek, zullen worden verzonden naar <strong>Mistral</strong>. Houd er rekening mee dat deze gegevens gebruikt kunnen worden om hun model te trainen en te verbeteren."
           },
           "privacy": {
             "description": "Bij Alkemio is het beschermen van je gegevens onze topprioriteit. We zijn volledig betrokken bij het waarborgen van de veiligheid en privacy van je informatie. Dit is hoe we omgaan met je gegevens wanneer we interactie hebben met een Virtual Contributor (VC):",
-            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+            "bullets": "<ul><li>Alleen de inhoud van je vraag en eventuele gerelateerde opmerkingen in een threaded gesprek worden gedeeld met de AI service die de Virtual Contributor aanstuurt.</li><li>Houd er rekening mee dat als de Virtual Contributor is gebaseerd op een externe AI service, zoals Mistral, de gegevens die worden gedeeld kunnen worden gebruikt om die dienst verder te trainen en te verbeteren.</li><li>Aanvullend. Houd er rekening mee dat vragen en antwoorden die worden uitgewisseld met de Virtual Contributor mogelijk toegankelijk zijn voor het Alkemio-team voor monitoring of hulp.</li></ul>"
           }
         }
       },
@@ -2763,6 +2781,20 @@
           "title": "Werk kennis bij",
           "infoText": "Door op de knop hieronder te klikken, zorg je ervoor dat je Virtual Contributor is gebaseerd op de nieuwste kennis in de Subspace.",
           "refreshBtn": "Werk kennis bij"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Beschikbare variabelen: [duur, publiek, workshop_type, rol] . Voeg geen alternatieve tekst toe tussen { } in de prompt, omdat dit de functionaliteit van deze Virtual Contributor zal verstoren.",
+          "saveBtn": "Bewaar prompt"
+        },
+        "externalConfig": {
+          "title": "Externe configuratie",
+          "infoText": "De Virtual Contributor wordt aangedreven door een externe AI service. Geef de volgende informatie om verbinding te maken met de service.",
+          "apiKey": "API Sleutel",
+          "apiKeyPlaceholder": "Huidige sleutelhandtekening is '{{value}}'. Door deze waarde te wijzigen wordt de huidige sleutel overschreven en kan niet worden hersteld.",
+          "assistantId": "Assistent ID",
+          "model": "Model",
+          "saveBtn": "Configuratie opslaan"
         },
         "privacy": {
           "title": "Privacy",
@@ -2963,42 +2995,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": [
-          "Publieke Dienstverlening",
-          "Publieke Dienstverlening"
-        ]
+        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },
@@ -3065,10 +3082,7 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": [
-          "Tot 10 leden",
-          "Diverse tools, waaronder standaard Whiteboards"
-        ],
+        "features": ["Tot 10 leden", "Diverse tools, waaronder standaard Whiteboards"],
         "disclaimer": "Gratis Spaces zijn beperkt tot 1 Space per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis Space hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },
