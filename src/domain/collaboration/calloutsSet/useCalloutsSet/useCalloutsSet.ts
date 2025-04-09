@@ -19,7 +19,7 @@ import { cloneDeep } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../ClassificationTagset.model';
-import useSpacePermissionsAndEntitlements from '@/domain/space/permissions/useSpacePermissionsAndEntitlements';
+import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 
 export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   authorization:

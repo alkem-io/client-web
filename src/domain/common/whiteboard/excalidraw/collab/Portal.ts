@@ -5,6 +5,8 @@ import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excali
 import { UserIdleState } from './utils';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
+import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 interface PortalProps {
   onRemoteSave: () => void;
@@ -36,6 +38,10 @@ interface SocketEventHandlers {
   'idle-state': (payload: SocketUpdateDataSource['IDLE_STATUS']['payload']) => void;
 }
 
+type ExcalidrawUtils = {
+  isInvisiblySmallElement: typeof ExcalidrawIsInvisiblySmallElement;
+};
+
 class Portal {
   onRemoteSave: (error?: string) => void;
   onCloseConnection: () => void;
@@ -47,6 +53,7 @@ class Portal {
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
   broadcastedFiles: Set<string> = new Set();
+  excalidrawAPI: ExcalidrawUtils | undefined;
 
   constructor({ onRemoteSave, onRoomUserChange, getSceneElements, getFiles, onCloseConnection }: PortalProps) {
     this.onRemoteSave = onRemoteSave;
@@ -54,6 +61,7 @@ class Portal {
     this.getSceneElements = getSceneElements;
     this.getFiles = getFiles;
     this.onCloseConnection = onCloseConnection;
+    this.excalidrawAPI = undefined;
   }
 
   open(connectionOptions: ConnectionOptions, eventHandlers: SocketEventHandlers) {
@@ -121,6 +129,12 @@ class Portal {
         this.close();
         this.onCloseConnection();
       });
+
+      // Initialize excalidrawAPI, lazy load utility functions
+      const { isInvisiblySmallElement } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
+        () => import('@alkemio/excalidraw')
+      );
+      this.excalidrawAPI = { isInvisiblySmallElement };
     });
   }
 
@@ -158,6 +172,11 @@ class Portal {
     allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
+    if (!this.excalidrawAPI) {
+      throw new Error('Excalidraw API not initialized');
+    }
+    const { isInvisiblySmallElement } = this.excalidrawAPI;
+
     // sync out only the elements we think we need to to save bandwidth.
     // periodically we'll resync the whole thing to make sure no one diverges
     // due to a dropped message (server goes down etc).
@@ -166,7 +185,7 @@ class Portal {
         (syncAll ||
           !this.broadcastedElementVersions.has(element.id) ||
           element.version > this.broadcastedElementVersions.get(element.id)!) &&
-        isSyncableElement(element)
+        isSyncableElement(element, isInvisiblySmallElement)
       ) {
         acc.push(element);
       }

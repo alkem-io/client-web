@@ -11,8 +11,13 @@
       "tooltip": "crwdns17366:0crwdne17366:0"
     },
     "menu": {
-      "clear": "crwdns17368:0crwdne17368:0",
+      "clear": "crwdns36759:0crwdne36759:0",
       "close": "crwdns17370:0crwdne17370:0"
+    },
+    "confirmNewChat": {
+      "title": "crwdns36761:0crwdne36761:0",
+      "description": "crwdns36763:0crwdne36763:0",
+      "confirm": "crwdns36765:0crwdne36765:0"
     },
     "references": [
       {
@@ -242,12 +247,14 @@
     "comment": "crwdns17724:0crwdne17724:0",
     "comments": "crwdns17726:0crwdne17726:0",
     "contributions": "crwdns17728:0crwdne17728:0",
+    "responses": "crwdns36771:0crwdne36771:0",
     "card": "crwdns17730:0crwdne17730:0",
     "cards": "crwdns17732:0crwdne17732:0",
     "create": "crwdns17734:0crwdne17734:0",
     "create-new": "crwdns17736:0crwdne17736:0",
     "create-new-entity": "crwdns17738:0{{entity}}crwdne17738:0",
     "category": "crwdns17740:0crwdne17740:0",
+    "custom": "crwdns36777:0crwdne36777:0",
     "date": "crwdns17742:0crwdne17742:0",
     "description": "crwdns17744:0crwdne17744:0",
     "noDescription": "crwdns17746:0crwdne17746:0",
@@ -271,6 +278,7 @@
     "aspects": "crwdns17782:0crwdne17782:0",
     "prompt": "crwdns17784:0crwdne17784:0",
     "host": "crwdns17786:0crwdne17786:0",
+    "layout": "crwdns36779:0crwdne36779:0",
     "lead": "crwdns17788:0crwdne17788:0",
     "space": "crwdns17790:0crwdne17790:0",
     "spaces": "crwdns17792:0crwdne17792:0",
@@ -391,6 +399,11 @@
       "not-verified": "crwdns18012:0crwdne18012:0"
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "crwdns36823:0crwdne36823:0",
+        "SPACE_PLUS": "crwdns36825:0crwdne36825:0",
+        "SPACE_PREMIUM": "crwdns36827:0crwdne36827:0"
+      },
       "innovationFlowState": {
         "new": "crwdns18014:0crwdne18014:0",
         "beingRefined": "crwdns18016:0crwdne18016:0",
@@ -525,7 +538,8 @@
       "inviteExternalVC": "crwdns18214:0crwdne18214:0",
       "externalVCsInfo": "crwdns18216:0crwdne18216:0",
       "searchVC": "crwdns18218:0crwdne18218:0",
-      "inviteBtn": "crwdns18220:0crwdne18220:0"
+      "inviteBtn": "crwdns18220:0crwdne18220:0",
+      "permissionRequiredTooltip": "crwdns36767:0crwdne36767:0"
     },
     "application-form": {
       "title": "crwdns18222:0crwdne18222:0",
@@ -612,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "crwdns18326:0crwdne18326:0",
       "content": "crwdns18328:0crwdne18328:0"
+    },
+    "unableToAddMemberInfo": {
+      "title": "crwdns36835:0crwdne36835:0",
+      "content": "crwdns36837:0crwdne36837:0"
     }
   },
   "callout": {
@@ -649,14 +667,6 @@
     },
     "singleWhiteboard": {
       "clickToSee": "crwdns18386:0crwdne18386:0"
-    },
-    "callout-group": {
-      "HOME_TOP": "crwdns18388:0crwdne18388:0",
-      "HOME": "crwdns18390:0crwdne18390:0",
-      "CONTRIBUTE": "crwdns18392:0crwdne18392:0",
-      "COMMUNITY": "crwdns18394:0crwdne18394:0",
-      "SUBSPACES": "crwdns18396:0crwdne18396:0",
-      "KNOWLEDGE": "crwdns18398:0crwdne18398:0"
     },
     "calloutsList": {
       "title": "crwdns18400:0crwdne18400:0",
@@ -950,7 +960,9 @@
       }
     },
     "searchDialog": {
-      "headerTitle": "crwdns18710:0crwdne18710:0"
+      "headerTitle": "crwdns18710:0crwdne18710:0",
+      "spacesAndSubspaces": "crwdns36773:0crwdne36773:0",
+      "collaborationTools": "crwdns36775:0crwdne36775:0"
     },
     "searchScope": {
       "currentScope": "crwdns18712:0crwdne18712:0",
@@ -1011,7 +1023,8 @@
         },
         "deleteDialog": {
           "title": "crwdns18774:0crwdne18774:0",
-          "text": "crwdns18776:0crwdne18776:0"
+          "text": "crwdns18776:0crwdne18776:0",
+          "activeStateWarning": "crwdns36799:0crwdne36799:0"
         },
         "selectDifferentFlow": {
           "title": "crwdns18778:0crwdne18778:0",
@@ -1776,7 +1789,6 @@
           "description": "crwdns19568:0crwdne19568:0"
         },
         "subEntities": {
-          "description": "crwdns19570:0{{entities}}crwdne19570:0",
           "list": "crwdns19572:0crwdne19572:0",
           "empty": "crwdns19574:0{{entities}}crwdne19574:0",
           "empty-list": "crwdns19576:0{{entities}}crwdne19576:0",
@@ -1796,7 +1808,6 @@
       }
     },
     "contribute": {
-      "initial-text": "crwdns19590:0crwdne19590:0",
       "innovationFlow": {
         "title": "crwdns19592:0{{entity}}crwdnd19592:0{{innovationFlowDisplayName}}crwdne19592:0",
         "readMore": "crwdns19594:0{{innovationFlowDisplayName}}crwdne19594:0"
@@ -1827,6 +1838,10 @@
           "about": {
             "description": "crwdns36732:0{{entity}}crwdne36732:0"
           },
+          "layout": {
+            "description": "crwdns36783:0{{entity}}crwdne36783:0",
+            "innovationFlowEditor": "crwdns36785:0crwdne36785:0"
+          },
           "context": {
             "description": "crwdns19618:0{{entity}}crwdne19618:0"
           },
@@ -1853,7 +1868,7 @@
               "title": "crwdns19636:0$t(common.templateLibrary)crwdnd19636:0{{templateType}}crwdne19636:0",
               "subtitle": "crwdns19638:0crwdne19638:0",
               "callout-template-import-subtitle": "crwdns19640:0$t(common.callout)crwdne19640:0",
-              "noTemplates": "crwdns19642:0crwdne19642:0",
+              "noTemplates": "crwdns36769:0crwdne36769:0",
               "imported-successfully-notification": "crwdns19644:0crwdne19644:0"
             }
           },
@@ -1897,7 +1912,8 @@
             "hostedSpaces": "crwdns19682:0crwdne19682:0",
             "virtualContributors": "crwdns19684:0crwdne19684:0",
             "innovationPacks": "crwdns19686:0$t(common.innovation-packs)crwdne19686:0",
-            "usageNotice": "crwdns19688:0{{usage}}crwdnd19688:0{{limit}}crwdnd19688:0{{type}}crwdne19688:0",
+            "genericUsageNotice": "crwdns36831:0{{usage}}crwdnd36831:0{{limit}}crwdnd36831:0{{type}}crwdne36831:0",
+            "spaceUsageNotice": "crwdns36833:0$t(common.spaces)crwdnd36833:0{{freeUsage}}crwdnd36833:0{{freeLimit}}crwdnd36833:0$t(common.spaces)crwdnd36833:0{{plusUsage}}crwdnd36833:0{{plusLimit}}crwdnd36833:0$t(common.spaces)crwdnd36833:0{{premiumUsage}}crwdnd36833:0{{premiumLimit}}crwdnd36833:0$t(common.spaces)crwdne36833:0",
             "limitNotice": "crwdns19690:0crwdne19690:0",
             "notAvailable": "crwdns19692:0crwdne19692:0",
             "notAvailableNotice": "crwdns19694:0crwdne19694:0",
@@ -2037,6 +2053,9 @@
           "preferences": {
             "subtitle": "crwdns19816:0$t(common.space)crwdne19816:0"
           }
+        },
+        "aria": {
+          "tabs": "crwdns36787:0$t(common.space)crwdne36787:0"
         },
         "community": {
           "preferences": {
@@ -2469,6 +2488,13 @@
         "errorBlockName": "crwdns20290:0crwdne20290:0"
       },
       "sections": {
+        "tabs": {
+          "dashboard": "crwdns36789:0$t(common.dashboard)crwdne36789:0",
+          "community": "crwdns36791:0$t(common.community)crwdne36791:0",
+          "contribute": "crwdns36793:0$t(common.contribute)crwdne36793:0",
+          "knowledgeBase": "crwdns36795:0$t(common.knowledge-base)crwdne36795:0",
+          "subspaces": "crwdns36797:0$t(common.subspaces)crwdne36797:0"
+        },
         "dashboard": {
           "organization": "crwdns20292:0crwdne20292:0",
           "hostTooltip": "crwdns20294:0crwdne20294:0",
@@ -2713,6 +2739,7 @@
       "references": "crwdns20532:0crwdne20532:0",
       "host": "crwdns20534:0crwdne20534:0",
       "success": "crwdns20536:0{{entity}}crwdne20536:0",
+      "error": "crwdns36801:0crwdne36801:0",
       "sections": {
         "knowledge": {
           "title": "crwdns20538:0crwdne20538:0",
@@ -2763,6 +2790,20 @@
           "title": "crwdns24922:0crwdne24922:0",
           "infoText": "crwdns20586:0crwdne20586:0",
           "refreshBtn": "crwdns20588:0crwdne20588:0"
+        },
+        "prompt": {
+          "title": "crwdns36803:0crwdne36803:0",
+          "infoText": "crwdns36805:0{ }crwdne36805:0",
+          "saveBtn": "crwdns36807:0crwdne36807:0"
+        },
+        "externalConfig": {
+          "title": "crwdns36809:0crwdne36809:0",
+          "infoText": "crwdns36811:0crwdne36811:0",
+          "apiKey": "crwdns36813:0crwdne36813:0",
+          "apiKeyPlaceholder": "crwdns36815:0{{value}}crwdne36815:0",
+          "assistantId": "crwdns36817:0crwdne36817:0",
+          "model": "crwdns36819:0crwdne36819:0",
+          "saveBtn": "crwdns36821:0crwdne36821:0"
         },
         "privacy": {
           "title": "crwdns24924:0crwdne24924:0",
@@ -2963,42 +3004,27 @@
       {
         "key": "crwdns20792:0crwdne20792:0",
         "name": "crwdns20794:0crwdne20794:0",
-        "tags": [
-          "crwdns20796:0crwdne20796:0",
-          "crwdns20798:0crwdne20798:0"
-        ]
+        "tags": ["crwdns20796:0crwdne20796:0", "crwdns20798:0crwdne20798:0"]
       },
       {
         "key": "crwdns20800:0crwdne20800:0",
         "name": "crwdns20802:0crwdne20802:0",
-        "tags": [
-          "crwdns20804:0crwdne20804:0",
-          "crwdns20806:0crwdne20806:0"
-        ]
+        "tags": ["crwdns20804:0crwdne20804:0", "crwdns20806:0crwdne20806:0"]
       },
       {
         "key": "crwdns20808:0crwdne20808:0",
         "name": "crwdns20810:0crwdne20810:0",
-        "tags": [
-          "crwdns20812:0crwdne20812:0",
-          "crwdns20814:0crwdne20814:0"
-        ]
+        "tags": ["crwdns20812:0crwdne20812:0", "crwdns20814:0crwdne20814:0"]
       },
       {
         "key": "crwdns20816:0crwdne20816:0",
         "name": "crwdns20818:0crwdne20818:0",
-        "tags": [
-          "crwdns20820:0crwdne20820:0",
-          "crwdns20822:0crwdne20822:0"
-        ]
+        "tags": ["crwdns20820:0crwdne20820:0", "crwdns20822:0crwdne20822:0"]
       },
       {
         "key": "crwdns20824:0crwdne20824:0",
         "name": "crwdns20826:0crwdne20826:0",
-        "tags": [
-          "crwdns20828:0crwdne20828:0",
-          "crwdns20830:0crwdne20830:0"
-        ]
+        "tags": ["crwdns20828:0crwdne20828:0", "crwdns20830:0crwdne20830:0"]
       }
     ]
   },
@@ -3065,10 +3091,7 @@
         "name": "crwdns20894:0crwdne20894:0",
         "displayName": "crwdns20896:0crwdne20896:0",
         "priceDescription": "crwdns20898:0crwdne20898:0",
-        "features": [
-          "crwdns20900:0crwdne20900:0",
-          "crwdns20902:0crwdne20902:0"
-        ],
+        "features": ["crwdns20900:0crwdne20900:0", "crwdns20902:0crwdne20902:0"],
         "disclaimer": "crwdns20904:0crwdne20904:0",
         "disabledDisclaimer": "crwdns20906:0crwdne20906:0"
       },
@@ -3076,11 +3099,7 @@
         "name": "crwdns20908:0crwdne20908:0",
         "displayName": "crwdns20910:0crwdne20910:0",
         "priceDescription": "crwdns20912:0crwdne20912:0",
-        "features": [
-          "crwdns20914:0crwdne20914:0",
-          "crwdns20916:0crwdne20916:0",
-          "crwdns20918:0crwdne20918:0"
-        ],
+        "features": ["crwdns20914:0crwdne20914:0", "crwdns20916:0crwdne20916:0", "crwdns20918:0crwdne20918:0"],
         "disclaimer": "crwdns20920:0crwdne20920:0",
         "disabledDisclaimer": "crwdns20922:0crwdne20922:0"
       },

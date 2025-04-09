@@ -6,7 +6,7 @@ import type {
   SocketId,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import {
+import type {
   hashElementsVersion as ExcalidrawHashElementsVersion,
   reconcileElements as ExcalidrawReconcileElements,
   restoreElements as ExcalidrawRestoreElements,
@@ -28,7 +28,7 @@ import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-import {
+import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
 } from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';

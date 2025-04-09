@@ -1,6 +1,6 @@
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
+import { CardLayoutContainer } from '@/_deprecatedToKeep/CardsLayout';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
@@ -113,7 +113,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           <PageContentBlockSeamless>
             <Caption textAlign="center">
               {t('pages.generic.sections.subEntities.empty', {
-                entities: t(`common.space-level.${level}`),
+                entities: t('common.space-level.L1'),
                 parentEntity: t(`common.space-level.${level}`),
               })}
             </Caption>
@@ -127,7 +127,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                 valueGetter={childEntityValueGetter}
                 tagsGetter={childEntityTagsGetter}
                 title={t('common.entitiesWithCount', {
-                  entityType: t(`common.space-level.${level}`),
+                  entityType: t('common.space-level.L1'),
                   count: childEntities.length,
                 })}
               >

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 
 interface CancelDialogProps {
   open: boolean;

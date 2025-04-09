@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { CredentialsView } from '@/domain/community/profile/views/ProfileView';
-import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/ProfileView/UserProfileView';
+import { CredentialsView } from '@/domain/community/profile/views';
+import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';

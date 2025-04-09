@@ -1,4 +1,4 @@
-import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
+import { RouterLink } from '@/_deprecated/routing/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { Box, Button, Link, Typography, styled } from '@mui/material';

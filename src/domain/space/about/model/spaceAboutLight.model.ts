@@ -11,6 +11,9 @@ export type SpaceAboutLightModel = {
     roleSetID?: string;
     communityID?: string;
   };
+  guidelines?: {
+    id: string;
+  };
   profile: {
     displayName: string;
     tagline?: string;
@@ -21,12 +24,15 @@ export type SpaceAboutLightModel = {
     };
     avatar?: {
       uri: string;
+      alternativeText?: string;
     };
     cardBanner?: {
       uri: string;
+      alternativeText?: string;
     };
     banner?: {
       uri: string;
+      alternativeText?: string;
     };
   };
 };

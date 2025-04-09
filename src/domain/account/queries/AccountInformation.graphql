@@ -26,6 +26,10 @@ query AccountInformation($accountId: UUID!) {
           id
           myPrivileges
         }
+        license {
+          id
+          availableEntitlements
+        }
         about {
           id
           profile {
