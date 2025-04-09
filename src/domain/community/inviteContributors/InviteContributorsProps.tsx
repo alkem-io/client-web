@@ -1,10 +1,6 @@
-import {
-  AiPersonaBodyOfKnowledgeType,
-  Reference,
-  RoleSetContributorType,
-  Tagset,
-} from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { Reference, Tagset } from '@/domain/common/profile/Profile';
 
 export interface InviteContributorDialogProps {
   type: RoleSetContributorType;

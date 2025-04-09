@@ -94,7 +94,7 @@ const PreviewContributorDialog = ({
               displayName={profile?.displayName}
               avatarSrc={profile?.avatar?.uri ?? ''}
               avatarAltText={profile?.displayName}
-              tags={profile?.tagsets?.flatMap(tagset => tagset.tags) ?? []}
+              tags={profile?.tagsets?.flatMap(tagset => tagset.tags ?? []) ?? []}
               city={profile?.location?.city ?? ''}
               country={profile?.location?.country ?? ''}
               isContactable={false}
