@@ -1,4 +1,4 @@
-import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -27,16 +27,18 @@ export interface SpaceAdminStoragePageProps extends SettingsPageProps {
   useL0Layout: boolean;
 }
 
-type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
-type GetterParams = GridValueGetterParams<string, StorageAdminGridRow>;
+type RenderParams = GridRenderCellParams<StorageAdminGridRow>;
+type GetterParams = GridValueGetterParams<StorageAdminGridRow>;
 
 const PAGE_SIZE = 100;
-const initialPagination = {
+const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: PAGE_SIZE,
+    paginationModel: {
+      page: 0,
+      pageSize: PAGE_SIZE,
+    },
   },
-} as const;
+};
 
 const IconWrapper = (props: BoxProps) => <Box {...props} width={gutters(1)} marginX={gutters(0.5)} />;
 
@@ -186,8 +188,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
               flex={{
                 displayName: 1,
               }}
-              initialState={initialPagination}
-              pageSize={PAGE_SIZE}
+              initialState={initialState}
               onDelete={file => setDeletingDocument(file)}
               canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete)}
               disableDelete={() => true}

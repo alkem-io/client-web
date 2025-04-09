@@ -3,7 +3,7 @@ import {
   GridColDef,
   GridFilterModel,
   GridInitialState,
-  GridLinkOperator,
+  GridLogicOperator,
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
@@ -25,15 +25,17 @@ export interface OrganizationDetailsFragmentWithRoles extends ContributorViewPro
   isLead: boolean;
 }
 
-type RenderParams = GridRenderCellParams<string, OrganizationDetailsFragmentWithRoles>;
-type GetterParams = GridValueGetterParams<string, OrganizationDetailsFragmentWithRoles>;
+type RenderParams = GridRenderCellParams<OrganizationDetailsFragmentWithRoles>;
+type GetterParams = GridValueGetterParams<OrganizationDetailsFragmentWithRoles>;
 
-const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
+const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: 10,
+    },
   },
   sorting: {
     sortModel: [
@@ -123,12 +125,12 @@ const CommunityOrganizations = ({
         items: [
           {
             id: 1,
-            columnField: 'profile.displayName',
-            operatorValue: 'contains',
+            field: 'profile.displayName',
+            operator: 'contains',
             value: terms,
           },
         ],
-        linkOperator: GridLinkOperator.And,
+        logicOperator: GridLogicOperator.And,
       });
     } else {
       setFilterModel(EmptyFilter);
@@ -178,7 +180,6 @@ const CommunityOrganizations = ({
             }}
             initialState={initialState}
             filterModel={filterModel}
-            pageSize={10}
             disableDelete={() => true}
           />
         )}

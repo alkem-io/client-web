@@ -65,8 +65,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.about.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.about.profile.displayName,
+      renderCell: ({ row }: GridRenderCellParams<Space>) => <>{row.about.profile.displayName}</>,
+      valueGetter: ({ row }: GridValueGetterParams<Space>) => row.about.profile.displayName,
       filterable: false,
       resizable: true,
     },
@@ -74,8 +74,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'visibility',
       headerName: t('pages.admin.space.settings.visibility.title'),
       renderHeader: () => <>{t('pages.admin.space.settings.visibility.title')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.visibility}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.visibility,
+      renderCell: ({ row }: GridRenderCellParams<Space>) => <>{row.visibility}</>,
+      valueGetter: ({ row }: GridValueGetterParams<Space>) => row.visibility,
       filterable: false,
       resizable: true,
     },
@@ -83,8 +83,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
       renderHeader: () => <>{t('pages.admin.innovationHubs.fields.host')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.about.provider?.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.about.provider?.profile.displayName,
+      renderCell: ({ row }: GridRenderCellParams<Space>) => <>{row.about.provider?.profile.displayName}</>,
+      valueGetter: ({ row }: GridValueGetterParams<Space>) => row.about.provider?.profile.displayName,
       filterable: false,
       resizable: true,
     },
@@ -161,7 +161,10 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                 },
               },
             ]}
-            pageSize={10}
+            paginationModel={{
+              page: 0,
+              pageSize: 10,
+            }}
             dependencies={[spaces, loadingItemId]}
           />
         </Gutters>

@@ -20,13 +20,15 @@ import { MembershipType } from '../../../access/model/MembershipType';
 import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import { InvitationModel } from '@/domain/access/model/InvitationModel';
 
-type RenderParams = GridRenderCellParams<string, MembershipTableItem>;
-type GetterParams = GridValueGetterParams<string, MembershipTableItem>;
+type RenderParams = GridRenderCellParams<MembershipTableItem>;
+type GetterParams = GridValueGetterParams<MembershipTableItem>;
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 5,
+    paginationModel: {
+      page: 0,
+      pageSize: 5,
+    },
   },
   sorting: {
     sortModel: [
@@ -329,7 +331,6 @@ const CommunityMemberships = ({
               },
             ]}
             initialState={initialState}
-            pageSize={10}
             disableDelete={() => true}
           />
         )}

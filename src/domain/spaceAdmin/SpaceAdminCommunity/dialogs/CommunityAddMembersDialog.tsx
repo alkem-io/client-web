@@ -18,8 +18,8 @@ interface Entity extends Identifiable {
   };
 }
 
-type RenderParams = GridRenderCellParams<string, Entity>;
-type GetterParams = GridValueGetterParams<string, Entity>;
+type RenderParams = GridRenderCellParams<Entity>;
+type GetterParams = GridValueGetterParams<Entity>;
 
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
@@ -30,8 +30,10 @@ export interface CommunityAddMembersDialogProps {
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: 10,
+    },
   },
   sorting: {
     sortModel: [
@@ -129,7 +131,6 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
                 },
               ]}
               initialState={initialState}
-              pageSize={10}
               disableDelete={() => true}
               dependencies={[availableEntities, loadingItemId]}
             />
