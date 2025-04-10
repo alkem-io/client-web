@@ -13,7 +13,9 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnHeaders': {
     color: theme.palette.primary.contrastText,
     background: theme.palette.primary.main,
-    borderRadius: 0,
+    '.MuiDataGrid-row--borderBottom': {
+      background: theme.palette.primary.main,
+    },
     '.MuiIconButton-root': {
       color: theme.palette.primary.contrastText,
     },
@@ -43,7 +45,6 @@ const actionDefaultProps: Partial<GridColDef> = {
   headerName: '',
   sortable: false,
   filterable: false,
-  hideable: false,
   disableColumnMenu: true,
 };
 
@@ -142,7 +143,6 @@ const DataGridTable = <Item extends Identifiable>({
       columns={mergedColumnDefinitions}
       columnHeaderHeight={getRowHeight()}
       getRowHeight={getRowHeight}
-      autoHeight
       {...props}
     />
   );
