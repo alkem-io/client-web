@@ -8,7 +8,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
-import ContributionsView from '@/domain/community/contributor/Contributions/ContributionsView';
+import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
 import { CaptionSmall } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -70,13 +70,13 @@ export const UserProfilePageView = ({
           />
         )}
         {filteredMemberships.length > 0 && (
-          <ContributionsView
+          <TilesContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}
             contributions={filteredMemberships}
           />
         )}
         {remainingMemberships.length > 0 ? (
-          <ContributionsView
+          <TilesContributionsView
             title={t('pages.user-profile.communities.allMembershipsTitle')}
             contributions={remainingMemberships}
           />

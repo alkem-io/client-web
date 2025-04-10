@@ -1,4 +1,4 @@
 export * from './AssociatesView';
-export * from '../../../../_deprecated/ContributionsView2';
+export * from '../../contributor/Contributions/ActionableContributionsView';
 export * from './OrganizationProfileView';
 export * from './CredentialsView';
