@@ -1915,6 +1915,11 @@ export const SpaceAboutDetailsFragmentDoc = gql`
     guidelines {
       id
     }
+    metrics {
+      id
+      name
+      value
+    }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -13044,6 +13049,90 @@ export type VirtualContributorProfileQueryResult = Apollo.QueryResult<
 >;
 export function refetchVirtualContributorProfileQuery(variables: SchemaTypes.VirtualContributorProfileQueryVariables) {
   return { query: VirtualContributorProfileDocument, variables: variables };
+}
+
+export const VirtualContributorProviderDocument = gql`
+  query VirtualContributorProvider($id: UUID!) {
+    lookup {
+      virtualContributor(ID: $id) {
+        id
+        provider {
+          id
+          profile {
+            id
+            displayName
+            url
+            location {
+              country
+              city
+            }
+            avatar: visual(type: AVATAR) {
+              ...VisualFull
+            }
+            tagsets {
+              id
+              tags
+            }
+          }
+        }
+      }
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorProviderQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorProviderQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorProviderQuery,
+    SchemaTypes.VirtualContributorProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorProviderQuery,
+    SchemaTypes.VirtualContributorProviderQueryVariables
+  >(VirtualContributorProviderDocument, options);
+}
+
+export function useVirtualContributorProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorProviderQuery,
+    SchemaTypes.VirtualContributorProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorProviderQuery,
+    SchemaTypes.VirtualContributorProviderQueryVariables
+  >(VirtualContributorProviderDocument, options);
+}
+
+export type VirtualContributorProviderQueryHookResult = ReturnType<typeof useVirtualContributorProviderQuery>;
+export type VirtualContributorProviderLazyQueryHookResult = ReturnType<typeof useVirtualContributorProviderLazyQuery>;
+export type VirtualContributorProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorProviderQuery,
+  SchemaTypes.VirtualContributorProviderQueryVariables
+>;
+export function refetchVirtualContributorProviderQuery(
+  variables: SchemaTypes.VirtualContributorProviderQueryVariables
+) {
+  return { query: VirtualContributorProviderDocument, variables: variables };
 }
 
 export const SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument = gql`
