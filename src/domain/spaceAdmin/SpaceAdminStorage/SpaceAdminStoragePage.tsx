@@ -52,7 +52,7 @@ const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: Lin
         </IconWrapper>
       ) : row.collapsible ? (
         <IconWrapper>
-          <Link onClick={onClick} sx={{ cursor: 'pointer' }}>
+          <Link onClick={onClick} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
             {row.collapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
           </Link>
         </IconWrapper>
@@ -168,11 +168,10 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
               actions={[
                 {
                   name: 'view',
-                  render: ({ row }) => {
-                    const data = row as RenderParams['row'];
-                    return data.url ? (
-                      <IconButton component={Link} href={data.url} target="_blank" aria-label={t('buttons.open')}>
-                        {data.collapsible ? (
+                  render: ({ row }: RenderParams) => {
+                    return row.url ? (
+                      <IconButton component={Link} href={row.url} target="_blank" aria-label={t('buttons.open')}>
+                        {row.collapsible ? (
                           <ArrowForwardIcon fontSize="small" color="primary" />
                         ) : (
                           <OpenInNewIcon fontSize="small" color="primary" />
@@ -190,7 +189,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
               }}
               initialState={initialState}
               onDelete={file => setDeletingDocument(file)}
-              canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete)}
+              canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false}
               disableDelete={() => true}
             />
           )}

@@ -185,7 +185,7 @@ const CommunityVirtualContributors = ({
             actions={[
               {
                 name: 'remove',
-                render: ({ row }: { row: ContributorViewProps }) => {
+                render: ({ row }: RenderParams) => {
                   return (
                     <IconButton onClick={() => setDeletingMemberId(row.id)} aria-label={t('buttons.remove')}>
                       <Remove color="primary" />

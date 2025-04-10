@@ -164,7 +164,7 @@ const CommunityUsers = ({
             actions={[
               {
                 name: 'edit',
-                render: ({ row }: { row: CommunityMemberUserFragmentWithRoles }) => {
+                render: ({ row }: RenderParams) => {
                   return (
                     <IconButton onClick={() => setEditingUser(row)} aria-label={t('buttons.edit')}>
                       <EditIcon color="primary" />
