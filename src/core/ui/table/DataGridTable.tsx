@@ -29,6 +29,11 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnSeparator': {
     color: 'transparent',
   },
+  '.MuiDataGrid-cell': {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   '.MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
     outline: 'none',
   },
@@ -54,12 +59,12 @@ type Formatters<Item extends {}> = {
 
 interface DataGridTableProps<Item extends Identifiable> extends Omit<DataGridProps<Item>, 'columns'> {
   rows: Item[];
-  columns: ((keyof Item & string) | GridColDef<Item>)[];
+  columns: GridColDef<Item>[];
   actions?: Action<Item>[];
   canDelete?: (item: Item) => boolean;
   disableDelete?: (item: Item) => boolean;
   onDelete?: (item: Item) => void;
-  flex?: Record<keyof Item & string, number>;
+  flex?: Record<string, number>;
   format?: Formatters<Item>;
   dependencies?: unknown[];
 }
@@ -113,7 +118,7 @@ const DataGridTable = <Item extends Identifiable>({
     if (onDelete) {
       actionDefinitions.push({
         name: 'delete',
-        render: ({ row }) =>
+        render: ({ row }: { row: Item }) =>
           canDelete(row) && (
             <IconButton onClick={() => onDelete(row)} disabled={disableDelete(row)} aria-label={t('buttons.delete')}>
               <DeleteOutlineIcon color={disableDelete(row) ? 'disabled' : 'warning'} />

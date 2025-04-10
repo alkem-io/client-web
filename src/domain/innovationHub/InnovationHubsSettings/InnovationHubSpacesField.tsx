@@ -151,7 +151,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
             actions={[
               {
                 name: 'add',
-                render: ({ row }: { row: Space }) => {
+                render: ({ row }: RenderParams) => {
                   if (itemIds.includes(row.id)) {
                     return <>{t('common.added')}</>;
                   } else {

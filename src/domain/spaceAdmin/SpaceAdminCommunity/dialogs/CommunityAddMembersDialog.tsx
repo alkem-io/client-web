@@ -113,7 +113,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
               actions={[
                 {
                   name: 'add',
-                  render: ({ row }: { row: Entity }) => {
+                  render: ({ row }: RenderParams) => {
                     if (addedMemberIds.includes(row.id)) {
                       return <>{t('common.added')}</>;
                     } else {

@@ -65,6 +65,9 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
   url: document.url,
   collapsed: false,
   loaded: true,
+  authorization: {
+    myPrivileges: document.authorization?.myPrivileges ?? [],
+  },
 });
 
 const newStorageBucketRow = (

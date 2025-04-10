@@ -167,7 +167,7 @@ const CommunityOrganizations = ({
             actions={[
               {
                 name: 'edit',
-                render: ({ row }) => (
+                render: ({ row }: RenderParams) => (
                   <IconButton onClick={() => setEditingOrganization(row)} aria-label={t('buttons.edit')}>
                     <EditIcon color="primary" />
                   </IconButton>

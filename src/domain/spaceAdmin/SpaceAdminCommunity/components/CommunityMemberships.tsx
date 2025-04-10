@@ -8,13 +8,11 @@ import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-
 import { gutters } from '@/core/ui/grid/utils';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
 import { ApplicationDialog2 } from '@/_deprecated/ApplicationDialog2';
 import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
 import { MembershipType } from '../../../access/model/MembershipType';
 import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
@@ -278,23 +276,6 @@ const CommunityMemberships = ({
     setDeletingItem(undefined);
   });
 
-  const renderDeleteColumn = (row: MembershipTableItem) => {
-    return (
-      // TODO: Disabled for approved Applications for now: see #2900
-      <IconButton
-        onClick={() => setDeletingItem(row)}
-        disabled={row?.state === 'approved'}
-        aria-label={t('buttons.delete')}
-      >
-        {row.type === MembershipType.Invitation && (row.state === 'approved' || row.state === 'rejected') ? (
-          <RemoveIcon color="error" />
-        ) : (
-          <DeleteIcon color={row?.state === 'approved' ? 'disabled' : 'error'} />
-        )}
-      </IconButton>
-    );
-  };
-
   return (
     <>
       <Box display="flex" justifyContent="space-between">
@@ -317,7 +298,7 @@ const CommunityMemberships = ({
             actions={[
               {
                 name: 'view',
-                render: ({ row }: { row: MembershipTableItem }) =>
+                render: ({ row }: RenderParams) =>
                   /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
                   row.type === MembershipType.Application && (
                     <IconButton onClick={() => setSelectedItem(row)} aria-label={t('buttons.view')}>
@@ -325,13 +306,11 @@ const CommunityMemberships = ({
                     </IconButton>
                   ),
               },
-              {
-                name: 'delete',
-                render: ({ row }: { row: MembershipTableItem }) => renderDeleteColumn(row),
-              },
             ]}
             initialState={initialState}
-            disableDelete={() => true}
+            canDelete={() => true}
+            disableDelete={(row: GetterParams) => row?.state === 'approved'}
+            onDelete={(row: GetterParams) => setDeletingItem(row)}
           />
         )}
       </Box>
