@@ -1,6 +1,6 @@
 import { styled, Tab, TabProps } from '@mui/material';
 import { forwardRef } from 'react';
-import { RouterLink } from '../../../_deprecated/routing/RouterLink';
+import { RouterLink } from '@/_deprecated/routing/RouterLink';
 
 interface NagivationTabProps extends TabProps {
   to: string;

@@ -16,7 +16,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import DashboardGenericSection from '@/_deprecated/DashboardGenericSection/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '@/_deprecatedToKeep/CardsLayout';
-import { useUserContext } from '../../user/hooks/useUserContext';
+import { useUserContext } from '@/domain/community/user';
 import useUserContributions from '../../user/userContributions/useUserContributions';
 
 export const UserAdminCredentialsPage = () => {

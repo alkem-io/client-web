@@ -9,7 +9,7 @@ import ContributionDetailsCard from '@/domain/community/profile/views/Contributi
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import useContributionProvider, {
   ContributionDetails,
-} from '../domain/community/profile/useContributionProvider/useContributionProvider';
+} from '@/domain/community/profile/useContributionProvider/useContributionProvider';
 
 type ContributionViewProps = {
   title: string;
