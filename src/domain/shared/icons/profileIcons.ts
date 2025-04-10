@@ -3,7 +3,6 @@ import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import {
   Campaign,
   ChatBubbleOutline,
@@ -26,7 +25,7 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
     case ProfileType.CalendarEvent:
       return CalendarIcon;
     case ProfileType.CalloutFraming:
-      return CalloutIcon;
+      return calloutIcons.POST;
     case ProfileType.Template:
       return Campaign;
     case ProfileType.Discussion:

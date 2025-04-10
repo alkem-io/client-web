@@ -36,9 +36,9 @@ import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDeleteDialog';
-import DeleteIcon from '../../../_deprecated/icons/DeleteIcon';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -466,7 +466,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   title={t('components.deleteEntity.title')}
                 />
                 <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
-                  <DeleteIcon />
+                  <DeleteOutlineIcon color="error" />
                   <Caption>{t('components.deleteEntity.description', { entity: t('common.subspace') })}</Caption>
                 </Box>
               </PageContentBlock>
