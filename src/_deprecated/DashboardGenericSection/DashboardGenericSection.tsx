@@ -1,43 +1,32 @@
 import { Caption } from '@/core/ui/typography';
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import React, { FC, PropsWithChildren } from 'react';
-import Section, { SectionSpacer } from './Section';
 import SectionHeader from '@/domain/shared/components/Section/SectionHeader';
 
 export interface DashboardGenericSectionProps extends PropsWithChildren {
-  bannerUrl?: string;
-  alwaysShowBanner?: boolean;
-  bannerOverlay?: React.ReactNode;
   headerText?: React.ReactNode;
-  headerSpacing?: 'double' | 'none' | 'default';
   primaryAction?: React.ReactNode;
   subHeaderText?: string | React.ReactNode;
 }
 
 /**
  * @deprecated - use PageContentBlock instead
+ * used only for the setting/credentials page, todo: remove?
  */
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
-  bannerUrl,
-  alwaysShowBanner,
-  bannerOverlay,
   headerText,
   subHeaderText,
-  headerSpacing = 'default',
   primaryAction,
   children,
 }) => {
   return (
-    <Section bannerUrl={bannerUrl} alwaysShowBanner={alwaysShowBanner} bannerOverlay={bannerOverlay}>
+    <Paper sx={{ padding: 2 }} variant="outlined">
       {headerText && <SectionHeader text={headerText}>{primaryAction}</SectionHeader>}
       {subHeaderText && typeof subHeaderText === 'string' ? <Caption>{subHeaderText}</Caption> : subHeaderText}
-      {(headerText || subHeaderText) && !(headerSpacing === 'none') && (
-        <SectionSpacer double={headerSpacing === 'double'} />
-      )}
       <Box paddingY={1} maxHeight="auto" textOverflow="ellipsis" overflow="hidden">
         {children}
       </Box>
-    </Section>
+    </Paper>
   );
 };
 
