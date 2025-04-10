@@ -32,9 +32,9 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 })) as typeof DataGrid;
 
-interface Action<Item extends Identifiable, V = unknown> {
+interface Action<Item extends Identifiable> {
   name: string;
-  render: (params: GridRenderCellParams<V, Item>) => ReactNode;
+  render: (params: GridRenderCellParams<Item>) => ReactNode;
 }
 
 const actionDefaultProps: Partial<GridColDef> = {
@@ -140,7 +140,7 @@ const DataGridTable = <Item extends Identifiable>({
       isRowSelectable={alwaysFalse}
       rows={rows}
       columns={mergedColumnDefinitions}
-      headerHeight={getRowHeight()}
+      columnHeaderHeight={getRowHeight()}
       getRowHeight={getRowHeight}
       autoHeight
       {...props}

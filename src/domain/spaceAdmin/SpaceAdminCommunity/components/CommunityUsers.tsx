@@ -5,9 +5,8 @@ import {
   GridColDef,
   GridFilterModel,
   GridInitialState,
-  GridLinkOperator,
+  GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,15 +19,17 @@ import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDia
 import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
 import { CommunityMemberUserFragmentWithRoles } from '../hooks/useCommunityAdmin';
 
-type RenderParams = GridRenderCellParams<string, CommunityMemberUserFragmentWithRoles>;
-type GetterParams = GridValueGetterParams<string, CommunityMemberUserFragmentWithRoles>;
+type RenderParams = GridRenderCellParams<CommunityMemberUserFragmentWithRoles>;
+type GetterParams = CommunityMemberUserFragmentWithRoles | undefined;
 
-const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
+const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: 10,
+    },
   },
   sorting: {
     sortModel: [
@@ -88,7 +89,7 @@ const CommunityUsers = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (row: GetterParams) => row?.profile.displayName,
       resizable: true,
     },
     {
@@ -120,12 +121,12 @@ const CommunityUsers = ({
         items: [
           {
             id: 1,
-            columnField: 'profile.displayName',
-            operatorValue: 'contains',
+            field: 'profile.displayName',
+            operator: 'contains',
             value: terms,
           },
         ],
-        linkOperator: GridLinkOperator.And,
+        logicOperator: GridLogicOperator.And,
       });
     } else {
       setFilterModel(EmptyFilter);
@@ -174,7 +175,6 @@ const CommunityUsers = ({
             ]}
             initialState={initialState}
             filterModel={filterModel}
-            pageSize={10}
             disableDelete={() => true}
           />
         )}

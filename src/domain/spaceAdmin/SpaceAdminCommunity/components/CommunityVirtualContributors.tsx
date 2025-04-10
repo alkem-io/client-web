@@ -4,9 +4,8 @@ import {
   GridColDef,
   GridFilterModel,
   GridInitialState,
-  GridLinkOperator,
+  GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,15 +23,17 @@ import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitatio
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 
-type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
-type GetterParams = GridValueGetterParams<string, ContributorViewProps>;
+type RenderParams = GridRenderCellParams<ContributorViewProps>;
+type GetterParams = ContributorViewProps | undefined;
 
-const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
+const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: 10,
+    },
   },
   sorting: {
     sortModel: [
@@ -86,7 +87,7 @@ const CommunityVirtualContributors = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (row: GetterParams) => row?.profile.displayName,
       resizable: true,
     },
   ];
@@ -100,12 +101,12 @@ const CommunityVirtualContributors = ({
         items: [
           {
             id: 1,
-            columnField: 'profile.displayName',
-            operatorValue: 'contains',
+            field: 'profile.displayName',
+            operator: 'contains',
             value: terms,
           },
         ],
-        linkOperator: GridLinkOperator.And,
+        logicOperator: GridLogicOperator.And,
       });
     } else {
       setFilterModel(EmptyFilter);
@@ -195,7 +196,6 @@ const CommunityVirtualContributors = ({
             ]}
             initialState={initialState}
             filterModel={filterModel}
-            pageSize={10}
             disableDelete={() => true}
           />
         )}

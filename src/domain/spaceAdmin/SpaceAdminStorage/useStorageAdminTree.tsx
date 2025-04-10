@@ -54,7 +54,7 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
   displayName: document.displayName,
   iconComponent: ImageIcon,
   size: document.size,
-  uplodadedBy: document.createdBy
+  uploadedBy: document.createdBy
     ? {
         url: document.createdBy.profile.url,
         displayName: document.createdBy.profile.displayName,

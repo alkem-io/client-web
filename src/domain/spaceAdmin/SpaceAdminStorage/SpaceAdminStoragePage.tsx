@@ -1,4 +1,4 @@
-import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -27,16 +27,18 @@ export interface SpaceAdminStoragePageProps extends SettingsPageProps {
   useL0Layout: boolean;
 }
 
-type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
-type GetterParams = GridValueGetterParams<string, StorageAdminGridRow>;
+type RenderParams = GridRenderCellParams<StorageAdminGridRow>;
+type GetterParams = StorageAdminGridRow | undefined;
 
 const PAGE_SIZE = 100;
-const initialPagination = {
+const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: PAGE_SIZE,
+    paginationModel: {
+      page: 0,
+      pageSize: PAGE_SIZE,
+    },
   },
-} as const;
+};
 
 const IconWrapper = (props: BoxProps) => <Box {...props} width={gutters(1)} marginX={gutters(0.5)} />;
 
@@ -117,12 +119,12 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         filterable: false,
       },
       {
-        field: 'uplodadedBy',
+        field: 'uploadedBy',
         headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
         minWidth: 150,
         renderCell: ({ row }: RenderParams) =>
-          row.uplodadedBy ? <RouterLink to={row.uplodadedBy.url}>{row.uplodadedBy.displayName}</RouterLink> : undefined,
-        valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
+          row.uploadedBy ? <RouterLink to={row.uploadedBy.url}>{row.uploadedBy.displayName}</RouterLink> : undefined,
+        valueGetter: (row: GetterParams) => row?.uploadedBy?.displayName,
         sortable: false,
         filterable: false,
       },
@@ -186,8 +188,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
               flex={{
                 displayName: 1,
               }}
-              initialState={initialPagination}
-              pageSize={PAGE_SIZE}
+              initialState={initialState}
               onDelete={file => setDeletingDocument(file)}
               canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete)}
               disableDelete={() => true}
