@@ -49,7 +49,7 @@ const columns: GridColDef<AdminUsersTableUser>[] = [
   },
   {
     headerName: 'Last Name',
-    field: 'name',
+    field: 'lastName',
   },
 ];
 
