@@ -1,6 +1,7 @@
 import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
+import { TabbedLayoutParams } from '@/domain/space/layout/tabbedLayout/TabbedLayoutPage';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 
@@ -34,6 +35,10 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
 
 export const buildUpdatesUrlLegacy = (journeyLocation: string) => {
   return `${journeyLocation}/updates`;
+};
+
+export const buildSpaceSectionNamedUrl = (spaceUrl: string, sectionNumber: number = 0) => {
+  return `${spaceUrl}/${TabbedLayoutParams.Section}/${sectionNumber}`;
 };
 
 export const buildSpaceSectionUrl = (

@@ -107,7 +107,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
       tabs: result,
       defaultTabIndex: currentStateIndex,
     };
-  }, [t, i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
+  }, [i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
 
   return {
     tabs,

@@ -118,6 +118,37 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <>
+      <SubspaceHomeView
+        spaceLevel={subspace?.level}
+        collaborationId={collaboration?.id}
+        templatesSetId={subspace?.templatesManager?.templatesSet?.id}
+        calloutsSetId={calloutsSetId}
+        innovationFlowStates={innovationFlowProvided.innovationFlowStates}
+        currentInnovationFlowState={innovationFlowProvided.currentInnovationFlowState}
+        loading={loading}
+      />
+      {directMessageDialog}
+      <CreateJourney
+        isVisible={createSpaceState.isDialogVisible}
+        onClose={onCreateJourneyClose}
+        parentSpaceId={createSpaceState.parentSpaceId}
+      />
+      <SubspaceDialogs
+        parentSpaceId={parentSpaceId}
+        dialogOpen={dialog}
+        calloutsSetId={calloutsSetId}
+        spaceId={spaceId}
+        journeyUrl={about?.profile?.url}
+        dashboardNavigation={dashboardNavigation}
+        communityId={about?.membership.communityID}
+        collaborationId={collaboration?.id}
+        calendarEventId={calendarEventId}
+      />
+    </>
+  );
+
+  return (
+    <>
       <SubspacePageLayout
         journeyId={spaceId}
         journeyPath={journeyPath}

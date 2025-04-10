@@ -59,7 +59,7 @@ const SpaceCommunityPage = () => {
 
   const membership = about.membership;
   const communityId = membership?.communityID;
-  const communityGuidelinesId = about.guidelines?.id;
+  const communityGuidelinesId = about.guidelines!.id;
 
   const {
     usersByRole,
@@ -121,62 +121,59 @@ const SpaceCommunityPage = () => {
     calloutsSetId,
     classificationTagsets,
   });
-
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 1 }}>
-      <PageContent>
-        <InfoColumn>
-          {tabDescription && (
-            <PageContentBlock accent>
-              <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
-            </PageContentBlock>
-          )}
-          <EntityDashboardLeadsSection
-            usersHeader={t('community.leads')}
-            organizationsHeader={t('pages.space.sections.dashboard.organization')}
-            leadUsers={leadUsers}
-            leadOrganizations={leadOrganizations}
+    <PageContent>
+      <InfoColumn>
+        {tabDescription && (
+          <PageContentBlock accent>
+            <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
+          </PageContentBlock>
+        )}
+        <EntityDashboardLeadsSection
+          usersHeader={t('community.leads')}
+          organizationsHeader={t('pages.space.sections.dashboard.organization')}
+          leadUsers={leadUsers}
+          leadOrganizations={leadOrganizations}
+        />
+        <ContactLeadsButton onClick={openContactLeadsDialog}>
+          {t('buttons.contact-leads', { contact: t('community.host') })}
+        </ContactLeadsButton>
+        <DirectMessageDialog
+          title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
+          open={isContactLeadUsersDialogOpen}
+          onClose={closeContactLeadsDialog}
+          onSendMessage={sendMessageToCommunityLeads}
+          messageReceivers={messageReceivers}
+        />
+        {showVirtualContributorsBlock && (
+          <VirtualContributorsBlock
+            virtualContributors={virtualContributors}
+            loading={roleSetLoading}
+            showInviteOption={showInviteOption}
           />
-          <ContactLeadsButton onClick={openContactLeadsDialog}>
-            {t('buttons.contact-leads', { contact: t('community.host') })}
-          </ContactLeadsButton>
-          <DirectMessageDialog
-            title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
-            open={isContactLeadUsersDialogOpen}
-            onClose={closeContactLeadsDialog}
-            onSendMessage={sendMessageToCommunityLeads}
-            messageReceivers={messageReceivers}
-          />
-          {showVirtualContributorsBlock && (
-            <VirtualContributorsBlock
-              virtualContributors={virtualContributors}
-              loading={roleSetLoading}
-              showInviteOption={showInviteOption}
-            />
-          )}
-          {communityGuidelinesId && (
-            <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
-          )}
-        </InfoColumn>
-        <ContentColumn>
-          <RoleSetContributorsBlockWide
-            users={memberUserCards}
-            showUsers={isAuthenticated}
-            organizations={memberOrganizationCards}
-          />
-          <CalloutsGroupView
-            calloutsSetId={calloutsSetId}
-            createInFlowState={flowStateForTab?.displayName}
-            callouts={callouts}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-          />
-        </ContentColumn>
-      </PageContent>
-    </SpacePageLayout>
+        )}
+        <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
+      </InfoColumn>
+      <ContentColumn>
+        <RoleSetContributorsBlockWide
+          users={memberUserCards}
+          showUsers={isAuthenticated}
+          organizations={memberOrganizationCards}
+        />
+        <CalloutsGroupView
+          calloutsSetId={calloutsSetId}
+          createInFlowState={flowStateForTab?.displayName}
+          callouts={callouts}
+          canCreateCallout={canCreateCallout}
+          loading={loading}
+          onSortOrderUpdate={onCalloutsSortOrderUpdate}
+          onCalloutUpdate={refetchCallout}
+        />
+      </ContentColumn>
+    </PageContent>
   );
 };
+
+SpaceCommunityPage.displayName = 'SpaceCommunityPage';
 
 export default SpaceCommunityPage;

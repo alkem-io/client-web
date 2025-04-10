@@ -1,5 +1,5 @@
 import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useContext, useState } from 'react';
 import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
 import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
 import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
+import { SpaceContext } from '@/domain/space/context/SpaceContext';
+import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 
 export const TITLE_HEIGHT = 6;
 
@@ -128,31 +130,26 @@ const WatermarkContainer = (props: BoxProps) => (
 );
 
 export interface JourneyPageBannerProps extends BasePageBannerProps {
-  title?: string;
-  tagline?: string;
-  bannerUrl?: string;
-  bannerAltText?: string;
-  ribbon?: ReactNode;
   loading?: boolean;
   level?: SpaceLevel;
   isAdmin?: boolean;
 }
 
-const SpacePageBanner = ({
-  title,
-  tagline,
-  bannerUrl,
-  bannerAltText,
-  ribbon,
-  level,
-  isAdmin,
-  loading: dataLoading = false,
-  watermark,
-}: JourneyPageBannerProps) => {
+const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, watermark }: JourneyPageBannerProps) => {
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
-
   const [imageLoading, setImageLoading] = useState(true);
+
+  const {
+    space: {
+      id: spaceId,
+      about: { profile },
+    },
+  } = useContext(SpaceContext);
+
+  const ribbon = useInnovationHubJourneyBannerRibbon({
+    spaceId,
+  });
 
   const imageLoadError = () => {
     setImageLoading(false);
@@ -167,8 +164,8 @@ const SpacePageBanner = ({
       </TopNotices>
       <Box>
         <ImageBlurredSides
-          src={bannerUrl || defaultVisualUrls[VisualType.Banner]}
-          alt={t('visuals-alt-text.banner.page.text', { altText: bannerAltText })}
+          src={profile.banner?.uri || defaultVisualUrls[VisualType.Banner]}
+          alt={t('visuals-alt-text.banner.page.text', { altText: profile.banner?.alternativeText })}
           onLoad={() => setImageLoading(false)}
           onError={imageLoadError}
           blurRadius={2}
@@ -180,11 +177,11 @@ const SpacePageBanner = ({
       </Box>
       <Title>
         <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
-          {title}
-          {!title && dataLoading && <Skeleton variant="text" animation="wave" />}
+          {profile?.displayName}
+          {!profile.displayName && dataLoading && <Skeleton variant="text" animation="wave" />}
         </PageTitle>
         <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
-          {tagline}
+          {profile?.tagline}
         </Tagline>
       </Title>
     </Root>
