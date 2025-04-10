@@ -24,11 +24,13 @@ const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }
     {
       headerName: 'Active',
       field: 'isActive',
-      valueGetter: (row: GetterParams) => isLicensePlanActive(row),
+      valueGetter: (_, row: GetterParams) => isLicensePlanActive(row),
       renderCell: ({ row }: RenderParams) => (isLicensePlanActive(row) ? <CheckIcon /> : <></>),
+      flex: 0,
     },
     {
       field: 'name',
+      flex: 1,
     },
   ];
 
@@ -49,7 +51,6 @@ const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }
         disableDelete={plan => !isLicensePlanActive(plan)}
         onDelete={plan => setDeletingPlanId(plan.id)}
         dependencies={[activeLicensePlanIds]}
-        flex={{ isActive: 0 }}
         hideFooter
       />
       <ConfirmationDialog

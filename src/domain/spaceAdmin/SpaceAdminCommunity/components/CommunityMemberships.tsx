@@ -75,7 +75,11 @@ const formatState = (item: MembershipTableItem, t: TFunction<'translation', unde
   }
 };
 
-const sortState = (state: string | undefined) => {
+const sortState = (item: MembershipTableItem | undefined): number => {
+  if (!item) {
+    return 0;
+  }
+  const state = item.state;
   switch (state) {
     case 'new':
       return 100;
@@ -85,8 +89,16 @@ const sortState = (state: string | undefined) => {
       return 50;
     case 'archived':
       return 10;
-    default:
-      return 0;
+    default: {
+      switch (item.type) {
+        case MembershipType.Application:
+          return 20;
+        case MembershipType.Invitation:
+          return 30;
+        case MembershipType.PlatformInvitation:
+          return 40;
+      }
+    }
   }
 };
 
@@ -191,7 +203,7 @@ const CommunityMemberships = ({
 
   const columnDefinitions: GridColDef[] = [
     {
-      field: 'user.profile.displayName',
+      field: 'displayName',
       headerName: t('fields.name'),
       renderHeader: () => <>{t('fields.name')}</>,
       renderCell: ({ row }: RenderParams) => {
@@ -204,16 +216,18 @@ const CommunityMemberships = ({
           </Link>
         );
       },
-      valueGetter: (row: GetterParams) => row?.displayName,
+      valueGetter: (_, row: GetterParams) => row?.displayName,
       resizable: true,
+      filterable: false,
     },
     {
-      field: 'user.email',
+      field: 'email',
       headerName: t('common.email'),
       renderHeader: () => <>{t('common.email')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.email}</>,
-      valueGetter: (row: GetterParams) => row?.email,
+      valueGetter: (_, row: GetterParams) => row?.email,
       resizable: true,
+      filterable: false,
     },
     {
       field: 'createdDate',
@@ -229,15 +243,15 @@ const CommunityMemberships = ({
       minWidth: 200,
       renderHeader: () => <>{t('common.status')}</>,
       renderCell: ({ row }: RenderParams) => formatState(row, t),
-      valueGetter: (row: GetterParams) => sortState(row?.state),
-      filterable: false, // TODO maybe... (has to be a combobox, maybe when we implement invitations)
+      valueGetter: (_, row: GetterParams) => sortState(row),
+      filterable: false,
     },
     {
       field: 'contributorType',
       headerName: t('common.type'),
       renderHeader: () => <>{t('common.type')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.contributorType}</>,
-      valueGetter: (row: GetterParams) => row?.contributorType,
+      valueGetter: (_, row: GetterParams) => row?.contributorType,
       filterable: false,
     },
   ];

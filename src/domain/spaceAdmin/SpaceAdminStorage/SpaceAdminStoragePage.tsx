@@ -91,7 +91,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
     setDeletingDocument(undefined);
   };
 
-  const columns: GridColDef[] = useMemo(
+  const columns = useMemo<GridColDef[]>(
     () => [
       {
         field: 'displayName',
@@ -109,6 +109,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         ),
         sortable: false,
         filterable: false,
+        flex: 1,
       },
       {
         field: 'size',
@@ -117,6 +118,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         width: 120,
         sortable: false,
         filterable: false,
+        renderCell: ({ row }: RenderParams) => <>{formatFileSize(row.size)}</>,
       },
       {
         field: 'uploadedBy',
@@ -124,7 +126,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         minWidth: 150,
         renderCell: ({ row }: RenderParams) =>
           row.uploadedBy ? <RouterLink to={row.uploadedBy.url}>{row.uploadedBy.displayName}</RouterLink> : undefined,
-        valueGetter: (row: GetterParams) => row?.uploadedBy?.displayName,
+        valueGetter: (_, row: GetterParams) => row?.uploadedBy?.displayName,
         sortable: false,
         filterable: false,
       },
@@ -181,12 +183,6 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
                   },
                 },
               ]}
-              format={{
-                size: file => formatFileSize(file.size),
-              }}
-              flex={{
-                displayName: 1,
-              }}
               initialState={initialState}
               onDelete={file => setDeletingDocument(file)}
               canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false}
