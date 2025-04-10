@@ -104,14 +104,16 @@ const CommunityOrganizations = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: (row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       resizable: true,
+      filterable: false,
     },
     {
       field: 'isLead',
       headerName: t('common.role'),
       renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
+      filterable: false,
     },
   ];
 
@@ -174,9 +176,6 @@ const CommunityOrganizations = ({
                 ),
               },
             ]}
-            flex={{
-              'profile.displayName': 1,
-            }}
             initialState={initialState}
             filterModel={filterModel}
             disableDelete={() => true}

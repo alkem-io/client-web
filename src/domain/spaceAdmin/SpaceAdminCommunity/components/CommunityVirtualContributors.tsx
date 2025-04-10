@@ -87,8 +87,9 @@ const CommunityVirtualContributors = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: (row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       resizable: true,
+      filterable: false,
     },
   ];
 
@@ -196,7 +197,6 @@ const CommunityVirtualContributors = ({
             ]}
             initialState={initialState}
             filterModel={filterModel}
-            disableDelete={() => true}
           />
         )}
       </Box>
