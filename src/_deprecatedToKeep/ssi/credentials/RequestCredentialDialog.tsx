@@ -5,7 +5,7 @@ import {
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
-import QRCode from '@/core/ui/qrCode/QRCode';
+import QRCode from '@/_deprecatedToKeep/ssi/qrCode/QRCode';
 import {
   Box,
   Button,

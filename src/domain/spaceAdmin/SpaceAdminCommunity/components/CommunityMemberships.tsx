@@ -10,7 +10,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
-import { ApplicationDialog2 } from '@/_deprecated/ApplicationDialog2';
+import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog';
 import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -335,7 +335,7 @@ const CommunityMemberships = ({
         )}
       </Box>
       {selectedItem && selectedItem.type === MembershipType.Application && (
-        <ApplicationDialog2
+        <CommunityApplicationDialog
           app={selectedItem}
           onClose={() => setSelectedItem(undefined)}
           onSetNewState={onApplicationStateChange}

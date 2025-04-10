@@ -1,13 +1,9 @@
-import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { CredentialsView } from '@/domain/community/profile/views';
 import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
-import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
 import { CaptionSmall } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -31,10 +27,6 @@ export const UserProfilePageView = ({
   accountResources,
 }: UserProfileViewPageProps) => {
   const { t } = useTranslation();
-  const { user } = entities.userMetadata;
-  const { id } = user;
-
-  const { isFeatureEnabled } = useConfig();
 
   const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [
     RoleType.Lead,
@@ -52,15 +44,6 @@ export const UserProfilePageView = ({
           title={t('pages.user-profile.associated-organizations.title')}
           helpText={t('pages.user-profile.associated-organizations.help')}
         />
-        {isFeatureEnabled(PlatformFeatureFlagName.Ssi) && (
-          <Grid item>
-            <CredentialsView
-              userID={id}
-              title={t('pages.user-profile.verifiable-credentials.title')}
-              helpText={t('pages.user-profile.verifiable-credentials.help')}
-            />
-          </Grid>
-        )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
         {hasAccountResources && (

@@ -3,8 +3,8 @@ import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogHeader from '../dialog/DialogHeader';
-import Loading from '../loading/Loading';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import Loading from '../../../core/ui/loading/Loading';
 import QRCode from './QRCode';
 
 type QRCodeDialogProps = {

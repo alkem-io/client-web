@@ -4,20 +4,20 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CredentialCard from '@/domain/agent/credential/CredentialCard';
-import OfferAlkemioCommunityCredentialDialog from '@/domain/agent/credential/OfferAlkemioCommunityCredentialDialog';
-import RequestCredentialDialog from '@/domain/agent/credential/RequestCredentialDialog';
-import QRCodeDialog from '@/core/ui/qrCode/QRCodeDialog';
+import CredentialCard from '@/_deprecatedToKeep/ssi/credentials/CredentialCard';
+import OfferAlkemioCommunityCredentialDialog from '@/_deprecatedToKeep/ssi/OfferAlkemioCommunityCredentialDialog';
+import RequestCredentialDialog from '@/_deprecatedToKeep/ssi/credentials/RequestCredentialDialog';
+import QRCodeDialog from '@/_deprecatedToKeep/ssi/qrCode/QRCodeDialog';
 import Loading from '@/core/ui/loading/Loading';
-import UserCredentialsContainer from '@/domain/agent/credential/verifiedCredentials/UserCredentialsContainer';
+import UserCredentialsContainer from '@/_deprecatedToKeep/ssi/credentials/verified/UserCredentialsContainer';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import DashboardGenericSection from '@/_deprecated/DashboardGenericSection/DashboardGenericSection';
+import DashboardGenericSection from '@/_deprecatedToKeep/ssi/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '@/_deprecatedToKeep/CardsLayout';
 import { useUserContext } from '@/domain/community/user';
-import useUserContributions from '../../user/userContributions/useUserContributions';
+import useUserContributions from '@/domain/community/user/userContributions/useUserContributions';
 
 export const UserAdminCredentialsPage = () => {
   const { t } = useTranslation();

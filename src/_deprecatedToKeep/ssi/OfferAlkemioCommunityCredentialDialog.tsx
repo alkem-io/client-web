@@ -2,7 +2,7 @@ import { AgentBeginVerifiedCredentialOfferOutput } from '@/core/apollo/generated
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
-import QRCode from '@/core/ui/qrCode/QRCode';
+import QRCode from '@/_deprecatedToKeep/ssi/qrCode/QRCode';
 import useContributionProvider, {
   ContributionDetails,
 } from '@/domain/community/profile/useContributionProvider/useContributionProvider';
