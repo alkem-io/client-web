@@ -1,12 +1,10 @@
 import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom';
-import SubspaceProvider from '@/domain/space/context/SubspaceProvider';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
-import SpaceSettingsRoute from '@/domain/space/routing/toReview2/SpaceSettingsRoute';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import React, { PropsWithChildren, Suspense } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
@@ -15,6 +13,8 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import TabbedLayoutPage, { TabbedLayoutParams } from '../layout/tabbedLayout/TabbedLayoutPage';
+import SpaceAdminL0Route from '../../spaceAdmin/routing/SpaceAdminRouteL0';
+import SubspaceContextProvider from '../context/SubspaceContext';
 
 const SubspaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoute'));
 const routes = { ...EntityPageSection };
@@ -50,6 +50,10 @@ const LegacyRoutesRedirects = (spaceNameId: string) => (
     <Route
       path={EntityPageSection.Contribute}
       element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
+    />
+    <Route
+      path={EntityPageSection.Updates}
+      element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1&dialog=updates`} replace />}
     />
     <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
   </>
@@ -108,15 +112,15 @@ const SpaceTabbedLayoutRoute = () => {
                 path={`calendar/:${nameOfUrl.calendarEventNameId}`}
                 element={<SpaceDashboardPage dialog="calendar" />}
               />
-              <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
+              <Route path={`${routes.Settings}/*`} element={<SpaceAdminL0Route />} />
               <Route
                 path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
                 element={
-                  <SubspaceProvider>
+                  <SubspaceContextProvider>
                     <Suspense fallback={null}>
                       <SubspaceRoute />
                     </Suspense>
-                  </SubspaceProvider>
+                  </SubspaceContextProvider>
                 }
               />
               <Route

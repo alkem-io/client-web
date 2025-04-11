@@ -25,7 +25,7 @@ type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteContributorsData) => Promise<unknown>;
+  onInviteVirtualContributor: (params: InviteContributorsData) => Promise<unknown>;
   title?: ReactNode;
   subtitle?: ReactNode;
   contributorId: string;
@@ -34,7 +34,7 @@ type MessageDialogProps = {
 const InviteVirtualContributorDialog = ({
   open,
   onClose,
-  onInviteUser,
+  onInviteVirtualContributor,
   title,
   subtitle,
   spaceDisplayName,
@@ -54,7 +54,7 @@ const InviteVirtualContributorDialog = ({
   });
 
   const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteUserData) => {
-    await onInviteUser({ ...values, contributorIds: [contributorId] });
+    await onInviteVirtualContributor({ ...values, contributorIds: [contributorId] });
     if (!error) {
       notify(t('community.invitationSent'), 'success');
       onClose();

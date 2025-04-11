@@ -6,7 +6,7 @@ import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JourneyCreationForm, JourneyFormValues } from './SubspaceCreationForm';
 
-interface JourneyCreationDialogProps {
+interface SubspaceCreationDialogProps {
   open: boolean;
   icon?: ReactElement<SvgIconProps>;
   journeyName: string;
@@ -15,7 +15,7 @@ interface JourneyCreationDialogProps {
   formComponent: React.ComponentType<JourneyCreationForm>;
 }
 
-export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
+export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   open,
   icon,
   journeyName,

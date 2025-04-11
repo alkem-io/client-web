@@ -7,7 +7,7 @@ import {
   AssociatesView,
   OrganizationProfileView,
   OrganizationProfileViewEntity,
-} from 'domain/community/profile/views/ProfileView';
+} from '@/domain/community/profile/views';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';

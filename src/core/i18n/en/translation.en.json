@@ -399,6 +399,11 @@
       "not-verified": ""
     },
     "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Free",
+        "SPACE_PLUS": "Plus",
+        "SPACE_PREMIUM": "Premium"
+      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -621,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Remove Community Guidelines Content",
       "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {
@@ -1738,7 +1747,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "About",
-    "copyright": "© 2024 Alkemio B.V."
+    "copyright": "© 2025 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
@@ -1903,7 +1912,8 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "spaceUsageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
@@ -2720,6 +2730,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "error": "An error occurred.",
       "sections": {
         "knowledge": {
           "title": "Knowledge",
@@ -2770,6 +2781,20 @@
           "title": "Body of Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "saveBtn": "Save prompt"
+        },
+        "externalConfig": {
+          "title": "External Configuration",
+          "infoText": "The Virtual Contributor is powered by an external AI service. Please provide the following information to connect to the service.",
+          "apiKey": "API Key",
+          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
+          "assistantId": "Assistant ID",
+          "model": "Model",
+          "saveBtn": "Save Configuration"
         },
         "privacy": {
           "title": "Privacy",

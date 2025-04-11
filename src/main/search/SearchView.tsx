@@ -28,7 +28,7 @@ import {
 import useNavigate from '@/core/routing/useNavigate';
 import { useUserContext } from '@/domain/community/user';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
 import { useMemoizedQueryParams } from '@/core/routing/useQueryParams';
@@ -471,7 +471,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           currentScope={
             <SearchResultsScopeCard
               avatar={spaceDetails?.lookup.space?.about.profile.avatar}
-              iconComponent={SpaceIcon}
+              iconComponent={SpaceL0Icon}
               loading={loading}
               onDelete={handleSearchInPlatform}
             >

@@ -3,7 +3,7 @@ import SpaceExplorerContainer from './SpaceExplorerContainer';
 import { SpaceExplorerView } from './SpaceExplorerView';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
-import { SpaceIcon } from '@/domain/space/icons/SpaceIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
@@ -14,13 +14,13 @@ const SpaceExplorerPage = () => {
 
   return (
     <TopLevelPageLayout
-      iconComponent={SpaceIcon}
+      iconComponent={SpaceL0Icon}
       title={t('pages.exploreSpaces.fullName')}
       subtitle={t('pages.exploreSpaces.subtitle')}
       ribbon={ribbon}
       breadcrumbs={
         <TopLevelPageBreadcrumbs>
-          <BreadcrumbsItem iconComponent={SpaceIcon}>{t('pages.exploreSpaces.shortName')}</BreadcrumbsItem>
+          <BreadcrumbsItem iconComponent={SpaceL0Icon}>{t('pages.exploreSpaces.shortName')}</BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }
     >

@@ -61,5 +61,6 @@ const BadgeCardView = forwardRef(
     );
   }
 );
+BadgeCardView.displayName = 'BadgeCardView';
 
 export default BadgeCardView;

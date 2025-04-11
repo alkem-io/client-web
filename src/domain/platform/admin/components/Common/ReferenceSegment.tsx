@@ -14,7 +14,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';

@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import React, { useMemo, PropsWithChildren, ReactNode, useCallback, MouseEventHandler, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
@@ -6,19 +6,38 @@ import { Button, DialogContent } from '@mui/material';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { Actions } from '@/core/ui/actions/Actions';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import UserCard from '../user/userCard/UserCard';
 import { ContributorProps } from './InviteContributorsProps';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import References from '@/domain/shared/components/References/References';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
+import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import { Location } from '@/core/ui/location/getLocationString';
+
+export type ProviderProfile =
+  | {
+      displayName: string;
+      avatar?: {
+        uri: string;
+      };
+      tagline?: string;
+      location?: Location;
+      tagsets?: { tags: string[] }[];
+      url?: string;
+    }
+  | undefined;
 
 interface PreviewContributorDialogProps {
   open?: boolean;
   onClose: () => void;
   contributor: ContributorProps | undefined;
   actions?: ReactNode;
+  provider?: ProviderProfile;
+  getProvider?: (vcId: string) => Promise<void> | void;
 }
 
 const PreviewContributorDialog = ({
@@ -27,13 +46,41 @@ const PreviewContributorDialog = ({
   contributor,
   onClose,
   actions,
+  provider,
+  getProvider,
 }: PropsWithChildren<PreviewContributorDialogProps>) => {
   const { t } = useTranslation();
 
   const { profile } = contributor ?? {};
 
+  const references = profile?.references ?? [];
+
+  const links = useMemo(() => {
+    return references.filter(reference => !isSocialNetworkSupported(reference.name));
+  }, [references]);
+
+  const navigateToProfile: MouseEventHandler = useCallback(
+    e => {
+      if (profile?.url) {
+        e?.preventDefault();
+        // the navigation is handled here as with the router
+        // it's throwing errors due to rerenders
+        window.location.href = profile.url;
+      }
+    },
+    [profile?.url]
+  );
+
+  useEffect(() => {
+    if (open && contributor?.id) {
+      getProvider?.(contributor.id);
+    }
+  }, [open, contributor?.id]);
+
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
+      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+
       <DialogContent>
         <PageContentBlockGrid disablePadding>
           <PageContentColumn columns={3}>
@@ -41,10 +88,13 @@ const PreviewContributorDialog = ({
               displayName={profile?.displayName}
               avatarSrc={profile?.avatar?.uri ?? ''}
               avatarAltText={profile?.displayName}
-              tags={profile?.tagsets?.flatMap(tagset => tagset.tags) ?? []}
+              tags={profile?.tagsets?.flatMap(tagset => tagset.tags ?? []) ?? []}
               city={profile?.location?.city ?? ''}
               country={profile?.location?.country ?? ''}
               isContactable={false}
+              url={profile?.url}
+              onCardClick={navigateToProfile}
+              isExpandable={false}
             />
             <PageContentBlockSeamless disablePadding>
               <Actions justifyContent="end">
@@ -59,17 +109,18 @@ const PreviewContributorDialog = ({
                 {actions}
               </Actions>
             </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
-              <BlockSectionTitle>{t('common.title')}</BlockSectionTitle>
-              <CardText>{profile?.displayName}</CardText>
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
-              <BlockSectionTitle>{t('common.description')}</BlockSectionTitle>
-              <WrapperMarkdown card>{profile?.description ?? ''}</WrapperMarkdown>
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
-              <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-              <TagsComponent tags={profile?.tagsets?.flatMap(tagset => tagset.tags) ?? []} height={gutters()} />
+            {links && links.length > 0 && (
+              <PageContentBlockSeamless disablePadding>
+                <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
+                <References
+                  references={links}
+                  noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+                />
+              </PageContentBlockSeamless>
+            )}
+            <PageContentBlockSeamless disablePadding>
+              <BlockSectionTitle>{t('pages.virtualContributorProfile.host')}</BlockSectionTitle>
+              <ContributorCardHorizontal profile={provider} seamless />
             </PageContentBlockSeamless>
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">

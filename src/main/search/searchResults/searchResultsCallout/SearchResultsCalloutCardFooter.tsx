@@ -86,7 +86,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
 };
 
 const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: SearchResultsCalloutCardFooterProps) => {
-  const JourneyIcon = space && spaceLevelIcon[space.level];
+  const SpaceIcon = space && spaceLevelIcon[space.level];
 
   return (
     <Gutters padding={1} gap={1}>
@@ -102,7 +102,7 @@ const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: Search
             flexShrink={1}
             minWidth={0}
           >
-            {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
+            {SpaceIcon && <SpaceIcon fontSize="small" color="primary" />}
             {space.about.profile.displayName}
           </Caption>
         )}
