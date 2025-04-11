@@ -13,10 +13,9 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
 import { Box, Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
@@ -253,7 +252,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 </Button>
               )}
               <FlexSpacer />
-              <LoadingButton
+              <Button
                 startIcon={<Save />}
                 onClick={() => handleSave(whiteboard!)}
                 loadingPosition="start"
@@ -262,7 +261,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 disabled={!isValid}
               >
                 {t('pages.whiteboard.state-actions.save')}
-              </LoadingButton>
+              </Button>
             </Actions>
           </>
         )}

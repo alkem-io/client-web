@@ -1,4 +1,3 @@
-import { SelectOption } from '@mui/base';
 import { useTranslation } from 'react-i18next';
 import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -12,9 +11,14 @@ import { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpanda
 import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from '@/main/search/constants';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
-enum SearchScope {
+export enum SearchScope {
   Platform,
   Space,
+}
+
+interface SearchOption {
+  value: SearchScope;
+  label: string;
 }
 
 const MINIMUM_TERM_LENGTH = 2;
@@ -32,7 +36,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
     const { space } = useSpace();
     const { about } = space;
 
-    const searchOptions = useMemo<Partial<SelectOption<SearchScope>>[] | undefined>(() => {
+    const searchOptions = useMemo<SearchOption[] | undefined>(() => {
       if (!space || !space.nameID) {
         return undefined;
       }
@@ -47,7 +51,7 @@ const PlatformSearch = forwardRef<Collapsible, PropsWithChildren<PlatformSearchP
           label: t('components.search.scope.platform'),
         },
       ];
-    }, [t, about.profile]);
+    }, [t, about.profile, space]);
 
     const defaultSearchOption = space.nameID ? SearchScope.Space : SearchScope.Platform;
 

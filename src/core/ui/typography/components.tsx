@@ -20,7 +20,7 @@ export const CardTitle = provideStaticProps(Typography, {
 
 export const CardText = provideStaticProps(Typography, {
   variant: 'body2',
-  color: theme => lighten(theme.palette.text.primary, 0.4),
+  sx: { color: theme => lighten(theme.palette.text.primary, 0.4) },
 }) as typeof Typography;
 
 export const RibbonText = provideStaticProps(Typography, {

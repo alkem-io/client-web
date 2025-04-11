@@ -1,13 +1,18 @@
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import { SelectOption } from '@mui/base';
+import { SearchScope } from '@/main/ui/platformSearch/PlatformSearch';
 import { ExpandMore } from '@mui/icons-material';
 import { Box, MenuItem, Select, SelectProps, TypographyProps } from '@mui/material';
 import { ComponentType, ReactNode, useMemo } from 'react';
 
-type SeamlessSelectProps<Option extends string | number> = {
+export interface CustomSelectOption<Option extends string | number | SearchScope> {
+  value: Option;
+  label: ReactNode;
+}
+
+type SeamlessSelectProps<Option extends string | number | SearchScope> = {
   label?: ReactNode;
-  options: Partial<SelectOption<Option>>[];
+  options: CustomSelectOption<Option>[];
   typographyComponent?: ComponentType<TypographyProps>;
 } & SelectProps;
 

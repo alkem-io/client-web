@@ -1,15 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { LoadingButton, LoadingButtonProps } from '@mui/lab';
+import { Button, ButtonProps } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
-const SendButton = ({ children, ...props }: LoadingButtonProps) => {
+const SendButton = ({ children, ...props }: ButtonProps) => {
   const { t } = useTranslation();
 
   return (
-    <LoadingButton startIcon={<SendIcon />} variant="contained" {...props}>
+    <Button startIcon={<SendIcon />} variant="contained" {...props}>
       {children ?? t('buttons.send')}
-    </LoadingButton>
+    </Button>
   );
 };
 

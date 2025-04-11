@@ -10,10 +10,9 @@ import Gutters from '@/core/ui/grid/Gutters';
 import References from '@/domain/shared/components/References/References';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@mui/material';
+import { Button, DialogContent } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useApplicationDialogQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import useEnsurePresence from '@/core/utils/ensurePresence';
@@ -166,7 +165,7 @@ const ApplicationDialog = ({
         </Formik>
       </DialogContent>
       <Actions padding={gutters()} justifyContent="end">
-        <LoadingButton
+        <Button
           loading={isApplying}
           loadingIndicator={`${t('buttons.processing')}...`}
           onClick={() => onSubmit()}
@@ -174,7 +173,7 @@ const ApplicationDialog = ({
           disabled={!isValid}
         >
           {canJoinCommunity ? t('components.application-button.join') : t('buttons.apply')}
-        </LoadingButton>
+        </Button>
       </Actions>
     </DialogWithGrid>
   );

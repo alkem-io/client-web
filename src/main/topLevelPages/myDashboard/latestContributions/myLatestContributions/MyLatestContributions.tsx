@@ -16,13 +16,13 @@ import {
 import { Caption, CaptionSmall } from '@/core/ui/typography/components';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
-import { SelectOption } from '@mui/base';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { useDashboardContext } from '../../DashboardContext';
 import { DashboardDialog } from '../../DashboardDialogs/DashboardDialogsProps';
+import { SpaceOption } from '../LatestContributions';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
 
@@ -79,8 +79,8 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
     return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeedGrouped]);
 
-  const spaceOptions = useMemo(() => {
-    const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
+  const spaceOptions = useMemo<SpaceOption[]>(() => {
+    const spaces: SpaceOption[] =
       spaceMemberships?.map(space => ({
         value: space.id,
         label: space.about.profile.displayName,

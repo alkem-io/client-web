@@ -12,7 +12,6 @@ import MuiMenuItem from './MuiMenuItem';
 import MuiPaper from './MuiPaper';
 import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
-import MuiTabPanel from './MuiTabPanel';
 import MuiSelect from './MuiSelect';
 import MuiBottomNavigationAction from './MuiBottomNavigationAction';
 import MuiFormHelperText from './MuiFormHelperText';
@@ -31,7 +30,6 @@ const componentsOverride: Components<Theme> = {
   MuiPaper,
   MuiTab,
   MuiSkeleton,
-  MuiTabPanel,
   MuiSelect,
   MuiBottomNavigationAction,
   MuiFormHelperText,

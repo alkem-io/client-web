@@ -9,7 +9,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { LoadingButton } from '@mui/lab';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
@@ -52,9 +51,9 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
             actionButton={
-              <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
-              </LoadingButton>
+              </Button>
             }
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}

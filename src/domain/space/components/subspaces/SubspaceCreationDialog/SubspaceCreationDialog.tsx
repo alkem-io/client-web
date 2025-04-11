@@ -1,6 +1,5 @@
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, DialogActions, DialogContent, SvgIconProps } from '@mui/material';
 import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +57,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
         <Button onClick={onClose} variant="text" disabled={submitting} sx={{ alignSelf: 'start' }}>
           {t('buttons.cancel')}
         </Button>
-        <LoadingButton
+        <Button
           onClick={handleCreate}
           variant="contained"
           loading={submitting}
@@ -66,7 +65,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
           sx={{ alignSelf: 'end' }}
         >
           {t('buttons.create')}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </DialogWithGrid>
   );

@@ -24,7 +24,6 @@ import CommunityGuidelinesContainer, {
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -262,9 +261,9 @@ const SpaceAdminCommunityPage = ({
                     onSelectTemplate={onSelectCommunityGuidelinesTemplate}
                     enablePlatformTemplates
                     actionButton={
-                      <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                      <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                         {t('buttons.use')}
-                      </LoadingButton>
+                      </Button>
                     }
                   />
                 </>

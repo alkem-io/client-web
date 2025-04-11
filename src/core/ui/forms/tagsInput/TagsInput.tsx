@@ -79,6 +79,7 @@ export const TagsInput = forwardRef(
                 {...getTagProps({ index })}
                 sx={{ borderColor: 'primary.main' }}
                 size="small"
+                key={index} // Unnecessary but avoids a console warning
               />
             ))
           }

@@ -19931,6 +19931,7 @@ export type SpaceAboutDetailsQuery = {
                 | undefined;
             };
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+            metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20186,6 +20187,7 @@ export type SpaceAboutFullQuery = {
                 | undefined;
             };
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+            metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20447,6 +20449,7 @@ export type SpaceAboutDetailsFragment = {
       | undefined;
   };
   guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
 export type SpaceAboutLightFragment = {
@@ -21214,6 +21217,7 @@ export type UpdateSpaceMutation = {
           | undefined;
       };
       guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -21446,6 +21450,7 @@ export type SpaceInfoFragment = {
         | undefined;
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 

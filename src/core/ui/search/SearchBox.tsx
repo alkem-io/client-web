@@ -3,18 +3,19 @@ import { Box, BoxProps, ClickAwayListener, Collapse, Divider, InputBase, InputBa
 import { Search } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { BlockSectionTitle } from '../typography';
-import { SelectOption } from '@mui/base';
 import NavigationItemContainer from '../navigation/NavigationItemContainer';
 import NavigationItemButton from '../navigation/NavigationItemButton';
 import { useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
 import { Collapsible } from '../navigation/Collapsible';
-import SeamlessSelect from '../forms/select/SeamlessSelect';
+import SeamlessSelect, { CustomSelectOption } from '../forms/select/SeamlessSelect';
+import { ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
+import { ROLE_OPTION_ALL } from '@/main/topLevelPages/myDashboard/latestContributions/LatestContributionsProps';
 
-interface SearchBoxProps<Option> {
+interface SearchBoxProps<Option extends string | number | ActivityFeedRoles | typeof ROLE_OPTION_ALL> {
   searchTerms: string;
   defaultSearchOption: Option;
-  searchOptions?: Partial<SelectOption<Option>>[];
+  searchOptions?: CustomSelectOption<Option>[];
   onSearch?: (searchOption: Option) => void;
   onChange?: InputBaseProps['onChange'];
   onExpand?: (isExpanded: boolean) => void;

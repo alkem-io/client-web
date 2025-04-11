@@ -4,7 +4,6 @@ import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlockSectionTitle, Text } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
@@ -67,9 +66,9 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
         <ImportTemplatesDialog
           templateType={TemplateType.Collaboration}
           actionButton={
-            <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+            <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
               {t('buttons.use')}
-            </LoadingButton>
+            </Button>
           }
           open={isDialogOpen}
           onSelectTemplate={handleSelectTemplate}

@@ -3,7 +3,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, Text } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { LoadingButton } from '@mui/lab';
 import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -90,9 +89,9 @@ const ApplyCollaborationTemplateDialog: React.FC<ApplyCollaborationTemplateDialo
         <Button variant="text" onClick={onClose}>
           {t('buttons.cancel')}
         </Button>
-        <LoadingButton variant="contained" onClick={handleConfirm} loading={loading}>
+        <Button variant="contained" onClick={handleConfirm} loading={loading}>
           {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.apply')}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

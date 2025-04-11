@@ -8,10 +8,10 @@ import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '../constants';
 import PLATFORM_NAVIGATION_MENU_ITEMS from './menuItems';
-import { FocusTrap } from '@mui/base/FocusTrap';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import { ExitToAppOutlined } from '@mui/icons-material';
 import { Caption } from '@/core/ui/typography';
+import FocusTrap from '@mui/material/Unstable_TrapFocus';
 
 type PlatformNavigationMenuItemProps = {
   iconComponent: ComponentType<SvgIconProps>;

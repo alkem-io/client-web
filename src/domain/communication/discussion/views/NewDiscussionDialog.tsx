@@ -37,7 +37,7 @@ const NewDiscussionDialog = ({ open, onClose, forumId, categories }: NewDiscussi
     });
     onClose();
     if (data?.createDiscussion) {
-      navigate(data.createDiscussion.profile.url, { replace: true });
+      navigate(data.createDiscussion.profile.url, { replace: false });
     }
   };
 

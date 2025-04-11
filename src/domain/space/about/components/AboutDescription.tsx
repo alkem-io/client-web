@@ -77,7 +77,6 @@ const AboutDescription = ({
       )}
       {description && <WrapperMarkdown>{description}</WrapperMarkdown>}
       {children}
-
       {(location || metrics) && (
         <Grid container spacing={1}>
           <Grid item xs={6}>

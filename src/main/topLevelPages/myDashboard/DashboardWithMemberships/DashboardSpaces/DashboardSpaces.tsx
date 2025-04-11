@@ -16,7 +16,6 @@ import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
 import { useEffect, useMemo } from 'react';
-import { LoadingButton } from '@mui/lab';
 import { Actions } from '@/core/ui/actions/Actions';
 import { useColumns } from '@/core/ui/grid/GridContext';
 
@@ -182,9 +181,9 @@ const DashboardSpaces = () => {
       })}
       {hasMore && (
         <Actions justifyContent="center" sx={{ width: '100%' }}>
-          <LoadingButton variant="contained" loading={loading} onClick={() => fetchSpaces(DASHBOARD_MEMBERSHIPS_ALL)}>
+          <Button variant="contained" loading={loading} onClick={() => fetchSpaces(DASHBOARD_MEMBERSHIPS_ALL)}>
             {t('buttons.load-more')}
-          </LoadingButton>
+          </Button>
         </Actions>
       )}
 
