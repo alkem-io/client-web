@@ -242,6 +242,7 @@ export const COUNTRIES: CountryType[] = [
   { name: 'Yemen', code: 'YE' },
   { name: 'Zambia', code: 'ZM' },
   { name: 'Zimbabwe', code: 'ZW' },
+  { name: '-', code: '' },
 ];
 
 const toByCode = () => {

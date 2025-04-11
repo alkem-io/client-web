@@ -21,11 +21,12 @@ import { InvitationModel } from '@/domain/access/model/InvitationModel';
 type RenderParams = GridRenderCellParams<MembershipTableItem>;
 type GetterParams = MembershipTableItem | undefined;
 
+const PAGE_SIZE = 5;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 5,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -327,6 +328,7 @@ const CommunityMemberships = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             canDelete={() => true}
             disableDelete={(row: GetterParams) => row?.state === 'approved'}
             onDelete={(row: GetterParams) => setDeletingItem(row)}

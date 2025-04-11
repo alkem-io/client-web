@@ -19,10 +19,10 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
       color: theme.palette.primary.contrastText,
     },
   },
-  '.MuiDataGrid-row:nth-child(odd)': {
+  '.MuiDataGrid-row:nth-of-type(odd)': {
     background: theme.palette.background.default,
   },
-  '.MuiDataGrid-row:nth-child(even)': {
+  '.MuiDataGrid-row:nth-of-type(even)': {
     background: theme.palette.background.paper,
   },
   '.MuiDataGrid-columnSeparator': {

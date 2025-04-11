@@ -38,6 +38,8 @@ interface InnovationHubSpacesFieldProps {
   onChange?: (spaces: string[]) => Promise<void>;
 }
 
+const PAGE_SIZE = 30;
+
 const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesFieldProps) => {
   const { t } = useTranslation();
 
@@ -168,8 +170,9 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
             ]}
             paginationModel={{
               page: 0,
-              pageSize: 10,
+              pageSize: PAGE_SIZE,
             }}
+            pageSizeOptions={[PAGE_SIZE]}
             dependencies={[spaces, loadingItemId]}
           />
         </Gutters>
