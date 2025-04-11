@@ -97,6 +97,8 @@ const sortState = (item: MembershipTableItem | undefined): number => {
           return 30;
         case MembershipType.PlatformInvitation:
           return 40;
+        default:
+          return 0;
       }
     }
   }
