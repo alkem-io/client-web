@@ -13,8 +13,8 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';

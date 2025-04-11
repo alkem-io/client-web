@@ -1,4 +1,4 @@
-import type { AppState } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { AppState } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { useTheme } from '@mui/material';
 
 const useWhiteboardDefaults = (): {
