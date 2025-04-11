@@ -9,9 +9,8 @@ export enum EntityPageSection {
   Contribute = 'contribute',
   KnowledgeBase = 'knowledge-base',
   Subspaces = 'subspaces',
-  Subsubspaces = 'subsubspaces',
-  Agreements = 'agreements',
   Profile = 'profile',
   Share = 'share',
   Search = 'search',
+  Updates = 'updates',
 }

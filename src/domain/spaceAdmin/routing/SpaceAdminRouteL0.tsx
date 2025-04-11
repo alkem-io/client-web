@@ -52,7 +52,7 @@ const SpaceAdminL0Route: FC = () => {
   const settingsPageProps: SpaceAdminSettingsPageProps = {
     useL0Layout: true,
     spaceId: space?.id,
-    isSubspace: false,
+    level: space.level,
     membershipsEnabled: true,
     subspacesEnabled: true,
     privateSettingsEnabled: true,

@@ -1500,6 +1500,12 @@ export const VirtualContributorFullFragmentDoc = gql`
         country
       }
       url
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
     aiPersona {
       bodyOfKnowledge

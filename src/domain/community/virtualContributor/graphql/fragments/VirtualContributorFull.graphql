@@ -16,6 +16,12 @@ fragment VirtualContributorFull on VirtualContributor {
       country
     }
     url
+    references {
+      id
+      name
+      uri
+      description
+    }
   }
   aiPersona {
     bodyOfKnowledge
