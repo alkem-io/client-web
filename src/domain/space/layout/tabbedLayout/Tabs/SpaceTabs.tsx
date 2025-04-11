@@ -212,7 +212,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
             key={index}
             value={index}
             label={tab.label}
-            to={buildSpaceSectionNamedUrl(spaceUrl, index + 1)}
+            to={buildSpaceSectionUrl(spaceUrl, index + 1)}
           />
         ))}
         {actions?.map((action, index) => (

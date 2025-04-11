@@ -131,28 +131,6 @@ const SpaceDashboardView = ({
     <>
       {directMessageDialog}
       <PageContent>
-        {!loading && (
-          <ApplicationButtonContainer journeyId={space?.id}>
-            {(applicationButtonProps, loading) => {
-              if (loading || applicationButtonProps.isMember) {
-                return null;
-              }
-
-              return (
-                <PageContentColumn columns={12}>
-                  <ApplicationButton
-                    {...applicationButtonProps}
-                    loading={loading}
-                    component={FullWidthButton}
-                    extended={hasExtendedApplicationButton}
-                    journeyId={space?.id}
-                    spaceLevel={level}
-                  />
-                </PageContentColumn>
-              );
-            }}
-          </ApplicationButtonContainer>
-        )}
         <InfoColumn>
           <PageContentBlock accent>
             <SpaceWelcomeBlock

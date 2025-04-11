@@ -56,10 +56,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     useUrlResolver();
   const { permissions } = useSubSpace();
 
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-    dialogTitle: t('send-message-dialog.direct-message-title'),
-  });
-
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
     skip: !spaceId,
@@ -127,7 +123,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
         currentInnovationFlowState={innovationFlowProvided.currentInnovationFlowState}
         loading={loading}
       />
-      {directMessageDialog}
       <CreateJourney
         isVisible={createSpaceState.isDialogVisible}
         onClose={onCreateJourneyClose}

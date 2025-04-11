@@ -9,8 +9,8 @@ import { KeyboardTab } from '@mui/icons-material';
 import DialogActionButtons from '../components/subspaces/DialogActionButtons';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
@@ -40,6 +40,7 @@ import {
 
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 
 const MENU_STATE_KEY = 'menuState';
 enum MenuState {
@@ -102,7 +103,9 @@ export const SubspacePageLayout = () => {
   return (
     <PageContent>
       <InfoColumn collapsed={isCollapsed}>
-        {!isCollapsed && <WelcomeBlock about={!isMobile}>{'welcome'}</WelcomeBlock>}
+        {!isCollapsed && (
+          <WelcomeBlock about={!isMobile}>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>
+        )}
         {!isCollapsed && (
           <FullWidthButton
             startIcon={<KeyboardTab />}
@@ -213,20 +216,6 @@ export const SubspacePageLayout = () => {
           }}
         </ApplicationButtonContainer>
 
-        {!isMobile && (
-          <Box
-            sx={{
-              position: 'sticky',
-              top: 0,
-              marginTop: gutters(-1),
-              paddingY: gutters(1),
-              background: theme.palette.background.default,
-              width: '100%',
-              zIndex: 1,
-              boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
-            }}
-          ></Box>
-        )}
         <Outlet />
       </PageContentColumnBase>
     </PageContent>

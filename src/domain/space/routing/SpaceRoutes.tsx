@@ -132,19 +132,31 @@ const SpaceProtectedRoutes = () => {
 
 // {/* <Routes> */}
 // {// {/* </Routes> */}
-
 const SpaceRoutes = () => {
+  const [searchParams] = useSearchParams();
+  const sectionIndex = searchParams.get(TabbedLayoutParams.Section) ?? '1';
+  // not ideal but at least all routing is in one place ^^
+  const getSpaceSection = () => {
+    switch (sectionIndex) {
+      case '1':
+        return <SpaceDashboardPage dialog={undefined} />;
+      case '2':
+        return <SpaceCommunityPage />;
+      case '3':
+        return <SpaceSubspacesPage />;
+      case '4':
+        return <SpaceKnowledgeBasePage sectionIndex={3} />;
+    }
+  };
   return (
     <SpaceContextProvider>
       <Routes>
-        <Route path="/" element={<SpacePageLayout />}>
+        {/* keep the logic around sections in one place - here*/}
+        <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(sectionIndex)} />}>
           <Route path={routes.About} element={<SpaceAboutPage />} />
           <Route element={<SpaceProtectedRoutes />}>
-            <Route index element={<Navigate to={`${TabbedLayoutParams.Section}/1`} />} />
-            <Route path={`${TabbedLayoutParams.Section}/1`} element={<SpaceDashboardPage dialog={undefined} />} />
-            <Route path={`${TabbedLayoutParams.Section}/2`} element={<SpaceCommunityPage />} />
-            <Route path={`${TabbedLayoutParams.Section}/3`} element={<SpaceSubspacesPage />} />
-            <Route path={`${TabbedLayoutParams.Section}/4`} element={<SpaceKnowledgeBasePage sectionIndex={3} />} />
+            <Route index element={getSpaceSection()} />
+
             <Route path={`${routes.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route
               path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
@@ -157,8 +169,6 @@ const SpaceRoutes = () => {
               }
             />
           </Route>
-          {/* <Route index element={<SpaceProtectedRoutes />} /> */}
-          {/* <SpaceProtectedRoutes /> */}
         </Route>
       </Routes>
     </SpaceContextProvider>

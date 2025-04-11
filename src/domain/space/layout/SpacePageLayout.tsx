@@ -1,5 +1,5 @@
 import PlatformNavigationBar from '@/main/ui/platformNavigation/PlatformNavigationBar';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import SpaceBreadcrumbs from '../components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SpacePageBanner from './tabbedLayout/layout/SpacePageBanner';
@@ -12,26 +12,31 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useState } from 'react';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import SpaceTabs from './tabbedLayout/Tabs/SpaceTabs';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
 
-export const SpacePageLayout = () => {
+// keep the logic around sections in one place - SpaceRoutes
+export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
-  const { loading, journeyPath } = useUrlResolver();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
-  const location = useLocation();
-  let sectionIndex;
-  if (location.pathname.includes('challenges')) {
-    sectionIndex = 2;
-  } else {
-    sectionIndex = parseInt(location.pathname.split('/').at(-1) || '1') - 1;
-  }
+  const { loading, journeyPath, spaceLevel } = useUrlResolver();
+
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const isLevelZero = spaceLevel === SpaceLevel.L0;
 
   return (
     <>
       <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />} />
-      <SpacePageBanner loading={loading} />
-      {!isMobile && <SpaceTabs currentTab={{ sectionIndex }} mobile={isMobile} onMenuOpen={setTabsMenuOpen} />}
+
+      {isLevelZero && <SpacePageBanner loading={loading} />}
+      {!isLevelZero && <SubspacePageBanner />}
+
+      {!isMobile && isLevelZero && (
+        <SpaceTabs currentTab={{ sectionIndex }} mobile={isMobile} onMenuOpen={setTabsMenuOpen} />
+      )}
+
       <Outlet />
+
       <PlatformFooter />
       <FloatingActionButtons
         {...(isMobile ? { bottom: gutters(3) } : {})}
