@@ -3,9 +3,8 @@ import {
   GridColDef,
   GridFilterModel,
   GridInitialState,
-  GridLinkOperator,
+  GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -25,15 +24,18 @@ export interface OrganizationDetailsFragmentWithRoles extends ContributorViewPro
   isLead: boolean;
 }
 
-type RenderParams = GridRenderCellParams<string, OrganizationDetailsFragmentWithRoles>;
-type GetterParams = GridValueGetterParams<string, OrganizationDetailsFragmentWithRoles>;
+type RenderParams = GridRenderCellParams<OrganizationDetailsFragmentWithRoles>;
+type GetterParams = OrganizationDetailsFragmentWithRoles | undefined;
 
-const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
+const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: PAGE_SIZE,
+    },
   },
   sorting: {
     sortModel: [
@@ -103,14 +105,17 @@ const CommunityOrganizations = ({
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      flex: 1,
       resizable: true,
+      filterable: false,
     },
     {
       field: 'isLead',
       headerName: t('common.role'),
       renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
+      filterable: false,
     },
   ];
 
@@ -123,12 +128,12 @@ const CommunityOrganizations = ({
         items: [
           {
             id: 1,
-            columnField: 'profile.displayName',
-            operatorValue: 'contains',
+            field: 'profile.displayName',
+            operator: 'contains',
             value: terms,
           },
         ],
-        linkOperator: GridLinkOperator.And,
+        logicOperator: GridLogicOperator.And,
       });
     } else {
       setFilterModel(EmptyFilter);
@@ -166,19 +171,16 @@ const CommunityOrganizations = ({
             actions={[
               {
                 name: 'edit',
-                render: ({ row }) => (
+                render: ({ row }: RenderParams) => (
                   <IconButton onClick={() => setEditingOrganization(row)} aria-label={t('buttons.edit')}>
                     <EditIcon color="primary" />
                   </IconButton>
                 ),
               },
             ]}
-            flex={{
-              'profile.displayName': 1,
-            }}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
-            pageSize={10}
             disableDelete={() => true}
           />
         )}

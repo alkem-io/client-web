@@ -11,7 +11,6 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import { tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { InnovationFlowProfile } from './InnovationFlowProfileBlock';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 
@@ -70,9 +69,9 @@ const InnovationFlowProfileForm = ({
                 <Button variant="text" onClick={onCancel}>
                   {t('buttons.cancel')}
                 </Button>
-                <LoadingButton loading={loading} variant="contained" onClick={() => handleSubmit()}>
+                <Button loading={loading} variant="contained" onClick={() => handleSubmit()}>
                   {t('buttons.save')}
-                </LoadingButton>
+                </Button>
               </Actions>
             </ActionsRenderer>
           </>

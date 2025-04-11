@@ -16,8 +16,8 @@ export const formatLocation = (data: Maybe<GraphQLLocation>): Partial<LocationMo
   }
 
   return {
-    city: data?.city,
-    country: COUNTRIES.find(x => x.code === data?.country),
+    city: data?.city ?? '',
+    country: data?.country ? COUNTRIES.find(x => x.code === data.country) : COUNTRIES.find(x => x.code === ''),
   };
 };
 

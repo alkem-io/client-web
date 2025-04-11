@@ -1,4 +1,4 @@
-import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -27,16 +27,18 @@ export interface SpaceAdminStoragePageProps extends SettingsPageProps {
   useL0Layout: boolean;
 }
 
-type RenderParams = GridRenderCellParams<string, StorageAdminGridRow>;
-type GetterParams = GridValueGetterParams<string, StorageAdminGridRow>;
+type RenderParams = GridRenderCellParams<StorageAdminGridRow>;
+type GetterParams = StorageAdminGridRow | undefined;
 
 const PAGE_SIZE = 100;
-const initialPagination = {
+const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: PAGE_SIZE,
+    paginationModel: {
+      page: 0,
+      pageSize: PAGE_SIZE,
+    },
   },
-} as const;
+};
 
 const IconWrapper = (props: BoxProps) => <Box {...props} width={gutters(1)} marginX={gutters(0.5)} />;
 
@@ -50,7 +52,7 @@ const ExpandButton = ({ row, onClick }: { row: RenderParams['row']; onClick: Lin
         </IconWrapper>
       ) : row.collapsible ? (
         <IconWrapper>
-          <Link onClick={onClick} sx={{ cursor: 'pointer' }}>
+          <Link onClick={onClick} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
             {row.collapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
           </Link>
         </IconWrapper>
@@ -89,7 +91,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
     setDeletingDocument(undefined);
   };
 
-  const columns: GridColDef[] = useMemo(
+  const columns = useMemo<GridColDef[]>(
     () => [
       {
         field: 'displayName',
@@ -107,6 +109,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         ),
         sortable: false,
         filterable: false,
+        flex: 1,
       },
       {
         field: 'size',
@@ -115,14 +118,15 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
         width: 120,
         sortable: false,
         filterable: false,
+        renderCell: ({ row }: RenderParams) => <>{formatFileSize(row.size)}</>,
       },
       {
-        field: 'uplodadedBy',
+        field: 'uploadedBy',
         headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
         minWidth: 150,
         renderCell: ({ row }: RenderParams) =>
-          row.uplodadedBy ? <RouterLink to={row.uplodadedBy.url}>{row.uplodadedBy.displayName}</RouterLink> : undefined,
-        valueGetter: ({ row }: GetterParams) => row.uplodadedBy?.displayName,
+          row.uploadedBy ? <RouterLink to={row.uploadedBy.url}>{row.uploadedBy.displayName}</RouterLink> : undefined,
+        valueGetter: (_, row: GetterParams) => row?.uploadedBy?.displayName,
         sortable: false,
         filterable: false,
       },
@@ -166,11 +170,10 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
               actions={[
                 {
                   name: 'view',
-                  render: ({ row }) => {
-                    const data = row as RenderParams['row'];
-                    return data.url ? (
-                      <IconButton component={Link} href={data.url} target="_blank" aria-label={t('buttons.open')}>
-                        {data.collapsible ? (
+                  render: ({ row }: RenderParams) => {
+                    return row.url ? (
+                      <IconButton component={Link} href={row.url} target="_blank" aria-label={t('buttons.open')}>
+                        {row.collapsible ? (
                           <ArrowForwardIcon fontSize="small" color="primary" />
                         ) : (
                           <OpenInNewIcon fontSize="small" color="primary" />
@@ -180,16 +183,10 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
                   },
                 },
               ]}
-              format={{
-                size: file => formatFileSize(file.size),
-              }}
-              flex={{
-                displayName: 1,
-              }}
-              initialState={initialPagination}
-              pageSize={PAGE_SIZE}
+              initialState={initialState}
+              pageSizeOptions={[PAGE_SIZE]}
               onDelete={file => setDeletingDocument(file)}
-              canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete)}
+              canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false}
               disableDelete={() => true}
             />
           )}
