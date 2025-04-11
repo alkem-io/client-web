@@ -221,6 +221,7 @@ const CommunityMemberships = ({
       valueGetter: (_, row: GetterParams) => row?.displayName,
       resizable: true,
       filterable: false,
+      flex: 1,
     },
     {
       field: 'email',
@@ -230,6 +231,7 @@ const CommunityMemberships = ({
       valueGetter: (_, row: GetterParams) => row?.email,
       resizable: true,
       filterable: false,
+      flex: 1,
     },
     {
       field: 'createdDate',
@@ -247,6 +249,7 @@ const CommunityMemberships = ({
       renderCell: ({ row }: RenderParams) => formatState(row, t),
       valueGetter: (_, row: GetterParams) => sortState(row),
       filterable: false,
+      flex: 1,
     },
     {
       field: 'contributorType',

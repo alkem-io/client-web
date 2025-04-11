@@ -105,6 +105,7 @@ const CommunityOrganizations = ({
         </Link>
       ),
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      flex: 1,
       resizable: true,
       filterable: false,
     },
