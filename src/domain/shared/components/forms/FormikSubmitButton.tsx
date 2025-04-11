@@ -1,8 +1,8 @@
-import { LoadingButton, LoadingButtonProps } from '@mui/lab';
+import { Button, ButtonProps } from '@mui/material';
 import { useFormikContext } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 
-export interface FormikSubmitButtonProps<Values extends unknown> extends LoadingButtonProps {
+export interface FormikSubmitButtonProps<Values extends unknown> extends ButtonProps {
   formik: FormikProps<Values>;
 }
 
@@ -15,10 +15,10 @@ export const FormikSubmitButtonPure = <Values extends unknown>({
   const isDisabled = !isValid || !dirty;
   const isLoading = isValidating || isSubmitting;
 
-  return <LoadingButton disabled={isDisabled} loading={isLoading} type="submit" {...props} />;
+  return <Button disabled={isDisabled} loading={isLoading} type="submit" {...props} />;
 };
 
-const FormikSubmitButton = (props: LoadingButtonProps) => {
+const FormikSubmitButton = (props: ButtonProps) => {
   const formik = useFormikContext();
 
   return <FormikSubmitButtonPure formik={formik} type="submit" {...props} />;

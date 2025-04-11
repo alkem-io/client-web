@@ -18,7 +18,6 @@ import type {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
-import { LoadingButton } from '@mui/lab';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
@@ -268,14 +267,14 @@ const CollaborativeExcalidrawWrapper = ({
           )}
         </DialogContent>
         <DialogActions>
-          <LoadingButton onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
+          <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
             Reconnect
             <Caption textTransform="none">
               {autoReconnectTime !== null &&
                 autoReconnectTime - time > 0 &&
                 ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
             </Caption>
-          </LoadingButton>
+          </Button>
           <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
         </DialogActions>
       </Dialog>

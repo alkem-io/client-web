@@ -3,11 +3,9 @@ import { useRef, useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import { Editor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
-import { Button, styled } from '@mui/material';
+import { Button, styled, TextareaAutosize } from '@mui/material';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SmartScreenOutlinedIcon from '@mui/icons-material/SmartScreenOutlined';
-import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-
 import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -47,7 +45,7 @@ export const InsertEmbedCodeButton = ({
     onDialogClose?.();
   };
 
-  const Textarea = styled(BaseTextareaAutosize)(
+  const Textarea = styled(TextareaAutosize)(
     ({ theme }) => `
     box-sizing: border-box;
     width: 100%;

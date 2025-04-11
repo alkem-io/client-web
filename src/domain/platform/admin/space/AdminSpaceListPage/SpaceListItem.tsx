@@ -18,7 +18,6 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import { BlockTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
-import { LoadingButton } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import LicensePlansTable, { LicensePlan } from './LicensePlansTable';
@@ -143,9 +142,9 @@ const SpaceListItem = ({
                 </Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={saving} onClick={() => handleSubmit()} disabled={!isValid}>
+                <Button variant="contained" loading={saving} onClick={() => handleSubmit()} disabled={!isValid}>
                   {t('buttons.save')}
-                </LoadingButton>
+                </Button>
               </Actions>
             </>
           )}

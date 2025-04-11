@@ -7,7 +7,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle, Text } from '@/core/ui/typography/components';
-import { LoadingButton } from '@mui/lab';
 import { Box, DialogContent } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -89,9 +88,9 @@ const CalloutVisibilityChangeDialog = ({
               <Button onClick={onClose} disabled={loading} variant="text">
                 {t('buttons.cancel')}
               </Button>
-              <LoadingButton type="submit" loading={loading} variant="contained" onClick={() => handleSubmit()}>
+              <Button type="submit" loading={loading} variant="contained" onClick={() => handleSubmit()}>
                 {t(`buttons.${callout?.draft ? '' : 'un'}publish` as const)}
-              </LoadingButton>
+              </Button>
             </Actions>
           </>
         )}

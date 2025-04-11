@@ -6,7 +6,6 @@ import PageContent from '@/core/ui/content/PageContent';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import { useMemo, useState } from 'react';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
@@ -14,6 +13,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { AiPersonaEngine, OpenAiModel } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
+import { Button } from '@mui/material';
 
 type ExternalConfigFields = {
   apiKey?: string;
@@ -132,14 +132,14 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
                 values={Object.values(OpenAiModel).map(model => ({ id: model, name: model }))}
               />
               <Actions>
-                <LoadingButton
+                <Button
                   variant="contained"
                   loading={loading || updateLoading}
                   disabled={!isValid}
                   onClick={handleSubmit}
                 >
                   {t('pages.virtualContributorProfile.settings.externalConfig.saveBtn')}
-                </LoadingButton>
+                </Button>
               </Actions>
             </>
           </Formik>

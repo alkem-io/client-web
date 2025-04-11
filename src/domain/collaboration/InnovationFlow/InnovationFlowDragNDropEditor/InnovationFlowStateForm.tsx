@@ -6,7 +6,6 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { InnovationFlowState } from '../InnovationFlow';
@@ -65,9 +64,9 @@ const InnovationFlowStateForm = ({
               <Button variant="text" onClick={onCancel}>
                 {t('buttons.cancel')}
               </Button>
-              <LoadingButton loading={loading} disabled={!isValid} variant="contained" onClick={() => handleSubmit()}>
+              <Button loading={loading} disabled={!isValid} variant="contained" onClick={() => handleSubmit()}>
                 {t('buttons.save')}
-              </LoadingButton>
+              </Button>
             </Actions>
           </Gutters>
         );

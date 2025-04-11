@@ -12,7 +12,6 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { LoadingButton } from '@mui/lab';
 import { Box, Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { useCallback, useLayoutEffect, useState } from 'react';
@@ -244,9 +243,9 @@ const CalloutCreationDialog = ({
             onSelectTemplate={handleSelectTemplate}
             enablePlatformTemplates
             actionButton={
-              <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
-              </LoadingButton>
+              </Button>
             }
           />
         </>
@@ -277,7 +276,7 @@ const CalloutCreationDialog = ({
           <Actions padding={gutters()}>
             <Button onClick={openConfirmCloseDialog}>{t('buttons.cancel')}</Button>
             <FlexSpacer />
-            <LoadingButton
+            <Button
               loading={loading}
               loadingIndicator={`${t('buttons.save-draft')}...`}
               onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
@@ -285,7 +284,7 @@ const CalloutCreationDialog = ({
               disabled={!isValid}
             >
               {t('buttons.save-draft')}
-            </LoadingButton>
+            </Button>
             <Button variant="contained" onClick={openPublishDialog} disabled={!isValid}>
               {t('buttons.publish')}
             </Button>
@@ -317,7 +316,7 @@ const CalloutCreationDialog = ({
             </DialogContent>
             <Actions padding={gutters()} justifyContent="end">
               <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
-              <LoadingButton
+              <Button
                 loading={loading}
                 loadingIndicator={`${t('buttons.publish')}...`}
                 onClick={() => handleSaveCallout(CalloutVisibility.Published, sendNotification)}
@@ -325,7 +324,7 @@ const CalloutCreationDialog = ({
                 disabled={!isValid}
               >
                 {t('buttons.publish')}
-              </LoadingButton>
+              </Button>
             </Actions>
           </Dialog>
           <Dialog open={isConfirmCloseDialogOpen}>

@@ -27,12 +27,12 @@ export interface CommunityAddMembersDialogProps {
   onAdd: (memberId: string) => Promise<unknown> | undefined | void;
   allowSearchByURL?: boolean;
 }
-
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 10,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -132,6 +132,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
                 },
               ]}
               initialState={initialState}
+              pageSizeOptions={[PAGE_SIZE]}
               disableDelete={() => true}
               dependencies={[availableEntities, loadingItemId]}
             />

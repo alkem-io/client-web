@@ -8,7 +8,6 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { useMemo } from 'react';
 import * as yup from 'yup';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { LoadingButton } from '@mui/lab';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
@@ -64,14 +63,14 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
                   <Button variant="text" onClick={onClose}>
                     {t('buttons.cancel')}
                   </Button>
-                  <LoadingButton
+                  <Button
                     loading={loading}
                     disabled={!isValid || loading}
                     variant="contained"
                     onClick={() => handleSubmit()}
                   >
                     {t('buttons.save')}
-                  </LoadingButton>
+                  </Button>
                 </Actions>
               </>
             );

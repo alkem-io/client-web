@@ -24,11 +24,12 @@ type GetterParams = CommunityMemberUserFragmentWithRoles | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 10,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -180,6 +181,7 @@ const CommunityUsers = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
             disableDelete={() => true}
           />

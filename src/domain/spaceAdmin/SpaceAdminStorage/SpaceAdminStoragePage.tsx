@@ -184,6 +184,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
                 },
               ]}
               initialState={initialState}
+              pageSizeOptions={[PAGE_SIZE]}
               onDelete={file => setDeletingDocument(file)}
               canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false}
               disableDelete={() => true}

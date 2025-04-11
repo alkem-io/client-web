@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { DialogActions, DialogContent } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Button, DialogActions, DialogContent } from '@mui/material';
 import SyncOutlinedIcon from '@mui/icons-material/SyncOutlined';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -86,14 +85,9 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
       </DialogContent>
       {canCreateCallout && (
         <DialogActions>
-          <LoadingButton
-            variant="outlined"
-            startIcon={<SyncOutlinedIcon />}
-            loading={ingestLoading}
-            onClick={ingestKnowledge}
-          >
+          <Button variant="outlined" startIcon={<SyncOutlinedIcon />} loading={ingestLoading} onClick={ingestKnowledge}>
             {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
-          </LoadingButton>
+          </Button>
         </DialogActions>
       )}
     </DialogWithGrid>

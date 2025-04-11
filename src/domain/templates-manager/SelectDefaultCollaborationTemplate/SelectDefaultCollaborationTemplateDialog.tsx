@@ -6,7 +6,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { LoadingButton } from '@mui/lab';
 import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -96,14 +95,14 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 <Button variant="text" onClick={onClose}>
                   {t('buttons.cancel')}
                 </Button>
-                <LoadingButton
+                <Button
                   variant="contained"
                   loading={loadingSelectCollaborationTemplate}
                   disabled={!isValid}
                   onClick={() => handleSelectCollaborationTemplate(values.collaborationTemplateSelectedId)}
                 >
                   {t('buttons.save')}
-                </LoadingButton>
+                </Button>
               </Actions>
             </Gutters>
           </Form>
