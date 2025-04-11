@@ -72,6 +72,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       valueGetter: (_, row: GetterParams) => row?.about.profile.displayName,
       filterable: false,
       resizable: true,
+      flex: 1,
     },
     {
       field: 'visibility',
@@ -90,6 +91,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       valueGetter: (_, row: GetterParams) => row?.about.provider?.profile.displayName,
       filterable: false,
       resizable: true,
+      flex: 1,
     },
   ];
 

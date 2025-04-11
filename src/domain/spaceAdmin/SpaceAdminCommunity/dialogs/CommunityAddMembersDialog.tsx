@@ -77,6 +77,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       filterable: false,
       resizable: true,
+      flex: 1,
     },
   ];
 
