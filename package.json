@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.87.1",
+  "version": "0.87.2",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "repository": {
     "type": "git",
@@ -84,7 +84,7 @@
     "@elastic/apm-rum-react": "^1.4.2",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
-    "@mui/icons-material": "^6.4.5",
+    "@mui/icons-material": "^6.4.11",
     "@mui/material": "6.4.11",
     "@mui/x-data-grid": "7.28.3",
     "@mui/x-date-pickers": "^7.28.1",
@@ -168,7 +168,6 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.12",
     "@graphql-codegen/typescript-operations": "^2.3.2",
     "@graphql-codegen/typescript-react-apollo": "^3.2.8",
-    "@mui/codemod": "^7.0.0",
     "@sentry/vite-plugin": "^2.7.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/js-cookie": "^3.0.2",
