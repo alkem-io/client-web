@@ -91,28 +91,26 @@ const SubspaceHomeView = ({
 
   return (
     <>
-      <SubspaceInnovationFlow>
-        {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && collaborationId && (
-          <InnovationFlowStates
-            states={innovationFlowStates}
-            currentState={currentInnovationFlowState}
-            selectedState={selectedInnovationFlowState}
-            onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
-            visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
-            createButton={calloutsSetProvided.canCreateCallout && createButton}
-            settingsButton={
-              manageFlowActionDef && (
-                <InnovationFlowSettingsButton
-                  collaborationId={collaborationId}
-                  templatesSetId={templatesSetId}
-                  tooltip={manageFlowActionDef.label}
-                  icon={manageFlowActionDef.icon}
-                />
-              )
-            }
-          />
-        )}
-      </SubspaceInnovationFlow>
+      {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && collaborationId && (
+        <InnovationFlowStates
+          states={innovationFlowStates}
+          currentState={currentInnovationFlowState}
+          selectedState={selectedInnovationFlowState}
+          onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
+          visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
+          createButton={calloutsSetProvided.canCreateCallout && createButton}
+          settingsButton={
+            manageFlowActionDef && (
+              <InnovationFlowSettingsButton
+                collaborationId={collaborationId}
+                templatesSetId={templatesSetId}
+                tooltip={manageFlowActionDef.label}
+                icon={manageFlowActionDef.icon}
+              />
+            )
+          }
+        />
+      )}
       <CalloutsGroupView
         calloutsSetId={calloutsSetId}
         callouts={calloutsSetProvided.callouts}

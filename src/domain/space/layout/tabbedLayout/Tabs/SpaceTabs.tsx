@@ -26,7 +26,7 @@ import { EntityTabsProps } from '../../EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
-import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSpaceSectionNamedUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
 
 type TabDefinition = {

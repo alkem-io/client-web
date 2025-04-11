@@ -56,10 +56,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     useUrlResolver();
   const { permissions } = useSubSpace();
 
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-    dialogTitle: t('send-message-dialog.direct-message-title'),
-  });
-
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
     skip: !spaceId,
@@ -115,6 +111,36 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
     fetchContributors: true,
   });
+
+  return (
+    <>
+      <SubspaceHomeView
+        spaceLevel={subspace?.level}
+        collaborationId={collaboration?.id}
+        templatesSetId={subspace?.templatesManager?.templatesSet?.id}
+        calloutsSetId={calloutsSetId}
+        innovationFlowStates={innovationFlowProvided.innovationFlowStates}
+        currentInnovationFlowState={innovationFlowProvided.currentInnovationFlowState}
+        loading={loading}
+      />
+      <CreateJourney
+        isVisible={createSpaceState.isDialogVisible}
+        onClose={onCreateJourneyClose}
+        parentSpaceId={createSpaceState.parentSpaceId}
+      />
+      <SubspaceDialogs
+        parentSpaceId={parentSpaceId}
+        dialogOpen={dialog}
+        calloutsSetId={calloutsSetId}
+        spaceId={spaceId}
+        journeyUrl={about?.profile?.url}
+        dashboardNavigation={dashboardNavigation}
+        communityId={about?.membership.communityID}
+        collaborationId={collaboration?.id}
+        calendarEventId={calendarEventId}
+      />
+    </>
+  );
 
   return (
     <>

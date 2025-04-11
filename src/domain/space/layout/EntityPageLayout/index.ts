@@ -12,11 +12,9 @@ const {
 } = createLayoutHolderWithOutlet();
 
 export const EntityPageLayout = createLayout(EntityPageLayoutImpl);
-
-export const NotFoundPageLayout = createLayout(TopLevelLayout);
-
 export const SubspacePageLayout = createLayout(SubspacePageLayoutImpl);
 
+export const NotFoundPageLayout = createLayout(TopLevelLayout);
 export const EmptyLayout = createLayout(() => null);
 
 export { EntityPageLayoutHolder, RenderPoint, PageLayoutHolderWithOutlet };
