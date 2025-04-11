@@ -7,6 +7,7 @@ import { GUTTER_MUI, GUTTER_PX } from '@/core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import DataGridTable from '@/core/ui/table/DataGridTable';
+import { GridColDef } from '@mui/x-data-grid';
 
 const DummyContent = (props: GridItemProps) => (
   <GridItem {...props}>
@@ -41,6 +42,16 @@ const users: AdminUsersTableUser[] = [
     invitationStatus: 'status',
   },
 ];
+const columns: GridColDef<AdminUsersTableUser>[] = [
+  {
+    headerName: 'First Name',
+    field: 'firstName',
+  },
+  {
+    headerName: 'Last Name',
+    field: 'lastName',
+  },
+];
 
 const TableDemo = () => {
   return (
@@ -70,7 +81,7 @@ const TableDemo = () => {
         <PageContentColumn columns={8}>
           <PageContentBlock>
             <BlockTitle>Block Title</BlockTitle>
-            <DataGridTable rows={users} columns={['firstName', 'lastName']} onDelete={() => {}} />
+            <DataGridTable rows={users} columns={columns} onDelete={() => {}} />
           </PageContentBlock>
         </PageContentColumn>
       </PageContent>

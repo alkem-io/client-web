@@ -4,29 +4,29 @@ import { TFunction, useTranslation } from 'react-i18next';
 import { BlockTitle } from '@/core/ui/typography';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
-import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { gutters } from '@/core/ui/grid/utils';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
 import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog';
 import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
 import { MembershipType } from '../../../access/model/MembershipType';
 import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import { InvitationModel } from '@/domain/access/model/InvitationModel';
 
-type RenderParams = GridRenderCellParams<string, MembershipTableItem>;
-type GetterParams = GridValueGetterParams<string, MembershipTableItem>;
+type RenderParams = GridRenderCellParams<MembershipTableItem>;
+type GetterParams = MembershipTableItem | undefined;
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 5,
+    paginationModel: {
+      page: 0,
+      pageSize: 5,
+    },
   },
   sorting: {
     sortModel: [
@@ -75,7 +75,11 @@ const formatState = (item: MembershipTableItem, t: TFunction<'translation', unde
   }
 };
 
-const sortState = (state: string | undefined) => {
+const sortState = (item: MembershipTableItem | undefined): number => {
+  if (!item) {
+    return 0;
+  }
+  const state = item.state;
   switch (state) {
     case 'new':
       return 100;
@@ -85,8 +89,18 @@ const sortState = (state: string | undefined) => {
       return 50;
     case 'archived':
       return 10;
-    default:
-      return 0;
+    default: {
+      switch (item.type) {
+        case MembershipType.Application:
+          return 20;
+        case MembershipType.Invitation:
+          return 30;
+        case MembershipType.PlatformInvitation:
+          return 40;
+        default:
+          return 0;
+      }
+    }
   }
 };
 
@@ -191,7 +205,7 @@ const CommunityMemberships = ({
 
   const columnDefinitions: GridColDef[] = [
     {
-      field: 'user.profile.displayName',
+      field: 'displayName',
       headerName: t('fields.name'),
       renderHeader: () => <>{t('fields.name')}</>,
       renderCell: ({ row }: RenderParams) => {
@@ -204,16 +218,20 @@ const CommunityMemberships = ({
           </Link>
         );
       },
-      valueGetter: ({ row }: GetterParams) => row.displayName,
+      valueGetter: (_, row: GetterParams) => row?.displayName,
       resizable: true,
+      filterable: false,
+      flex: 1,
     },
     {
-      field: 'user.email',
+      field: 'email',
       headerName: t('common.email'),
       renderHeader: () => <>{t('common.email')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.email}</>,
-      valueGetter: ({ row }: GetterParams) => row.email,
+      valueGetter: (_, row: GetterParams) => row?.email,
       resizable: true,
+      filterable: false,
+      flex: 1,
     },
     {
       field: 'createdDate',
@@ -229,15 +247,16 @@ const CommunityMemberships = ({
       minWidth: 200,
       renderHeader: () => <>{t('common.status')}</>,
       renderCell: ({ row }: RenderParams) => formatState(row, t),
-      valueGetter: ({ row }: GetterParams) => sortState(row.state),
-      filterable: false, // TODO maybe... (has to be a combobox, maybe when we implement invitations)
+      valueGetter: (_, row: GetterParams) => sortState(row),
+      filterable: false,
+      flex: 1,
     },
     {
       field: 'contributorType',
       headerName: t('common.type'),
       renderHeader: () => <>{t('common.type')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.contributorType}</>,
-      valueGetter: ({ row }: GetterParams) => row.contributorType,
+      valueGetter: (_, row: GetterParams) => row?.contributorType,
       filterable: false,
     },
   ];
@@ -276,23 +295,6 @@ const CommunityMemberships = ({
     setDeletingItem(undefined);
   });
 
-  const renderDeleteColumn = (row: MembershipTableItem) => {
-    return (
-      // TODO: Disabled for approved Applications for now: see #2900
-      <IconButton
-        onClick={() => setDeletingItem(row)}
-        disabled={row?.state === 'approved'}
-        aria-label={t('buttons.delete')}
-      >
-        {row.type === MembershipType.Invitation && (row.state === 'approved' || row.state === 'rejected') ? (
-          <RemoveIcon color="error" />
-        ) : (
-          <DeleteIcon color={row?.state === 'approved' ? 'disabled' : 'error'} />
-        )}
-      </IconButton>
-    );
-  };
-
   return (
     <>
       <Box display="flex" justifyContent="space-between">
@@ -315,7 +317,7 @@ const CommunityMemberships = ({
             actions={[
               {
                 name: 'view',
-                render: ({ row }: { row: MembershipTableItem }) =>
+                render: ({ row }: RenderParams) =>
                   /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
                   row.type === MembershipType.Application && (
                     <IconButton onClick={() => setSelectedItem(row)} aria-label={t('buttons.view')}>
@@ -323,14 +325,11 @@ const CommunityMemberships = ({
                     </IconButton>
                   ),
               },
-              {
-                name: 'delete',
-                render: ({ row }: { row: MembershipTableItem }) => renderDeleteColumn(row),
-              },
             ]}
             initialState={initialState}
-            pageSize={10}
-            disableDelete={() => true}
+            canDelete={() => true}
+            disableDelete={(row: GetterParams) => row?.state === 'approved'}
+            onDelete={(row: GetterParams) => setDeletingItem(row)}
           />
         )}
       </Box>
