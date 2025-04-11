@@ -1377,17 +1377,10 @@ export type DocumentFieldPolicy = {
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ExternalConfigKeySpecifier = (
-  | 'apiKey'
-  | 'assistantId'
-  | 'externalConfig'
-  | 'model'
-  | ExternalConfigKeySpecifier
-)[];
+export type ExternalConfigKeySpecifier = ('apiKey' | 'assistantId' | 'model' | ExternalConfigKeySpecifier)[];
 export type ExternalConfigFieldPolicy = {
   apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   assistantId?: FieldPolicy<any> | FieldReadFunction<any>;
-  externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   model?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type FileStorageConfigKeySpecifier = ('maxFileSize' | FileStorageConfigKeySpecifier)[];
@@ -2255,6 +2248,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
+  | 'updateClassificationTagset'
   | 'updateCollaborationFromTemplate'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
@@ -2421,6 +2415,7 @@ export type MutationFieldPolicy = {
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCollaborationFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;

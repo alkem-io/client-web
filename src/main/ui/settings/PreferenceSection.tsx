@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
-import DashboardGenericSection from '@/_deprecated/DashboardGenericSection/DashboardGenericSection';
-import { FormControl, FormControlLabel, FormGroup, Skeleton, Switch } from '@mui/material';
+import { FormControl, FormControlLabel, FormGroup, Paper, Skeleton, Switch } from '@mui/material';
 import { Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
+import SectionHeader from '@/domain/shared/components/Section/SectionHeader';
+import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface PreferenceSectionProps {
   headerText: string;
@@ -21,7 +23,7 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
   onUpdate,
 }) => {
   return (
-    <DashboardGenericSection headerText={headerText} subHeaderText={subHeaderText} headerSpacing="none">
+    <Paper variant="outlined" sx={{ padding: gutters() }}>
       {loading ? (
         <>
           <Skeleton />
@@ -29,27 +31,31 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
           <Skeleton />
         </>
       ) : (
-        <FormControl>
-          <FormGroup>
-            {preferences.map(({ value, definition, id }) => (
-              <FormControlLabel
-                key={id}
-                aria-label={`preference-${definition.type}`}
-                control={
-                  <Switch
-                    checked={value !== 'false'}
-                    name={definition.type}
-                    onChange={(event, checked) => onUpdate(id, event.target.name as PreferenceType, checked)}
-                    disabled={submitting}
-                  />
-                }
-                label={definition.description}
-              />
-            ))}
-          </FormGroup>
-        </FormControl>
+        <>
+          {headerText && <SectionHeader text={headerText} />}
+          {subHeaderText && <Caption sx={{ paddingBottom: gutters(0.5) }}>{subHeaderText}</Caption>}
+          <FormControl>
+            <FormGroup>
+              {preferences.map(({ value, definition, id }) => (
+                <FormControlLabel
+                  key={id}
+                  aria-label={`preference-${definition.type}`}
+                  control={
+                    <Switch
+                      checked={value !== 'false'}
+                      name={definition.type}
+                      onChange={(event, checked) => onUpdate(id, event.target.name as PreferenceType, checked)}
+                      disabled={submitting}
+                    />
+                  }
+                  label={definition.description}
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
+        </>
       )}
-    </DashboardGenericSection>
+    </Paper>
   );
 };
 

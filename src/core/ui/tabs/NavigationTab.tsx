@@ -1,6 +1,6 @@
 import { styled, Tab, TabProps } from '@mui/material';
 import { forwardRef } from 'react';
-import { RouterLink } from '../../../_deprecated/routing/RouterLink';
+import { Link } from 'react-router-dom';
 
 interface NagivationTabProps extends TabProps {
   to: string;
@@ -20,7 +20,7 @@ const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(
       <StyledTab
         ref={ref}
         iconPosition="start"
-        component={RouterLink}
+        component={Link}
         to={to}
         state={state}
         value={value}

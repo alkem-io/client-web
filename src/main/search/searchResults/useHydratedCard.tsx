@@ -20,7 +20,6 @@ import ContributingUserCard from '@/domain/community/user/ContributingUserCard/C
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
-import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
@@ -168,7 +167,7 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
       url={data.post.profile.url}
       parentSegment={
         <CardContent>
-          <CardParentSpaceSegment iconComponent={CalloutIcon} parentSpaceUri={data.callout.framing.profile.url}>
+          <CardParentSpaceSegment parentSpaceUri={data.callout.framing.profile.url}>
             {data.callout.framing.profile.displayName}
           </CardParentSpaceSegment>
           <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>

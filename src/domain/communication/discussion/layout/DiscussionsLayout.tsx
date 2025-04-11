@@ -1,9 +1,9 @@
 import { Button, Grid, Paper } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouterLink } from '@/_deprecated/routing/RouterLink';
 import AddIcon from '@mui/icons-material/Add';
 import Gutters from '@/core/ui/grid/Gutters';
+import { Link } from 'react-router-dom';
 
 type DiscussionsLayoutProps = {
   canCreateDiscussion?: boolean;
@@ -27,7 +27,7 @@ export const DiscussionsLayout = ({
         {canCreateDiscussion && (
           <Button
             variant="contained"
-            component={RouterLink}
+            component={Link}
             startIcon={<AddIcon />}
             to="/forum/new"
             sx={{ marginLeft: 'auto' }}

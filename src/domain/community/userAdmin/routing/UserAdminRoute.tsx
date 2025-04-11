@@ -1,19 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 import UserAdminProfilePage from '../tabs/UserAdminProfilePage';
 import UserAdminAccountPage from '../tabs/UserAdminAccountPage';
-import UserAdminCredentialsPage from '../tabs/UserAdminCredentialsPage';
 import UserAdminMembershipPage from '../tabs/UserAdminMembershipPage';
 import UserAdminNotificationsPage from '../tabs/UserAdminNotificationsPage';
 import UserAdminOrganizationsPage from '../tabs/UserAdminOrganizationsPage';
-import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import UserAdminSettingsPage from '../tabs/UserAdminSettingsPage';
 
 export const UserAdminRoute = () => {
-  const { isFeatureEnabled } = useConfig();
-
   return (
     <Routes>
       <Route path={'/'} element={<PageLayoutHolderWithOutlet />}>
@@ -24,9 +19,9 @@ export const UserAdminRoute = () => {
         <Route path={'organizations'} element={<UserAdminOrganizationsPage />} />
         <Route path={'notifications'} element={<UserAdminNotificationsPage />} />
         <Route path={'settings'} element={<UserAdminSettingsPage />} />
-        {isFeatureEnabled(PlatformFeatureFlagName.Ssi) && (
-          <Route path={'credentials'} element={<UserAdminCredentialsPage />} />
-        )}
+        {/*{isFeatureEnabled(PlatformFeatureFlagName.Ssi) && (*/}
+        {/*  <Route path={'credentials'} element={<UserAdminCredentialsPage />} />*/}
+        {/*)}*/}
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

@@ -1,5 +1,5 @@
 import { InAppNotificationCategory, NotificationEventType } from '@/core/apollo/generated/graphql-schema';
-import { warn as logWarn, TagCategoryValues } from '../../core/logging/sentry/log';
+import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { InAppNotificationProps } from './useInAppNotifications';
 import { CollaborationCalloutPublishedView } from './views/CollaborationCalloutPublishedView';
 import { CommunicationUserMentionView } from './views/CommunicationUserMentionView';

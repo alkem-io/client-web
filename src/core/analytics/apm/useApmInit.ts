@@ -6,7 +6,7 @@ import { useCookies } from 'react-cookie';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
-import { useUserGeo } from '@/core/analytics/geo/index';
+import { useUserGeo } from '@/core/analytics/geo';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { UserMetadata } from '@/domain/community/user';
 

@@ -1,11 +1,12 @@
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
 import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 import TemplatePreview from '@/domain/templates/components/Previews/TemplatePreview';
-import { Avatar, Button, DialogContent } from '@mui/material';
+import { Avatar, Button, DialogContent, styled } from '@mui/material';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -15,7 +16,6 @@ import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponen
 import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import LinkNoUnderline from '@/_deprecated/LinkNoUnderline';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 
 export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPack {
@@ -24,6 +24,11 @@ export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPac
   templateInfo?: ReactNode; // Extra information about the template, like why I can't import it (see DisabledTemplateInfo)
   actions?: ReactNode;
 }
+
+const StyledLink = styled(Link)({
+  textDecoration: 'none',
+  color: 'inherit',
+});
 
 const PreviewTemplateDialog = ({
   open = false,
@@ -85,7 +90,7 @@ const PreviewTemplateDialog = ({
                       {innovationPack.provider.profile.displayName[0]}
                     </Avatar>
                   }
-                  component={LinkNoUnderline}
+                  component={StyledLink}
                   to={innovationPack.provider.profile.url}
                 >
                   <BlockSectionTitle>{innovationPack.provider.profile.displayName}</BlockSectionTitle>

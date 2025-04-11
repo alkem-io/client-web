@@ -11,7 +11,7 @@ type ContributionViewProps = {
   title: string;
 };
 
-export const ContributionsView = ({ contributions, title }: ContributionViewProps) => {
+export const TilesContributionsView = ({ contributions, title }: ContributionViewProps) => {
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
@@ -39,4 +39,4 @@ const ContributionItem = ({ contributionItem }) => {
   );
 };
 
-export default ContributionsView;
+export default TilesContributionsView;

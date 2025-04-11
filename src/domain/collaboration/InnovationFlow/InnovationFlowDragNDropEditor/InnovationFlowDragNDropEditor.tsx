@@ -15,7 +15,7 @@ import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
 import { useState } from 'react';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';

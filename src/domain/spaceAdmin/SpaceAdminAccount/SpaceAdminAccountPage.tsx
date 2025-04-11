@@ -27,7 +27,7 @@ import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmD
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import SpaceSettingsLayout from '@/domain/spaceAdmin/layout/SpaceAdminLayoutSpace';
 import CachedIcon from '@mui/icons-material/Cached';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, CircularProgress, Link } from '@mui/material';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -243,7 +243,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                         }` as const
                       )}
                       disabled={!canDelete}
-                      icon={DeleteIcon}
+                      icon={DeleteOutlineIcon}
                       onClick={() => setDeleteDialogOpen(true)}
                     >
                       <Caption color={theme => theme.palette.error.dark} textAlign="right">
