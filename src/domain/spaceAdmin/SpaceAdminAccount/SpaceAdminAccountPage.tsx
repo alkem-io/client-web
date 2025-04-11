@@ -246,7 +246,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                       icon={DeleteIcon}
                       onClick={() => setDeleteDialogOpen(true)}
                     >
-                      <Caption color={theme => theme.palette.error.dark} textAlign="right">
+                      <Caption sx={{ color: theme => theme.palette.error.dark }} textAlign="right">
                         {t('components.deleteEntity.title')}
                       </Caption>
                     </LicenseActionBlock>

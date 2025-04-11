@@ -30,16 +30,20 @@ export const PlanPrice = ({
         <>
           {/* Free Plan */}
           <Price>{plan.pricePerMonth} &euro;</Price>
-          <Caption color={theme => theme.palette.neutral.light}>{t('plansTable.pricingPeriods.lifetime')}</Caption>
+          <Caption sx={{ color: theme => theme.palette.neutral.light }}>
+            {t('plansTable.pricingPeriods.lifetime')}
+          </Caption>
         </>
       ) : !plan.pricePerMonth ? (
         /* Enterprise Plan */
-        <Caption color={theme => theme.palette.neutral.light}>{t('plansTable.pricingPeriods.custom')}</Caption>
+        <Caption sx={{ color: theme => theme.palette.neutral.light }}>{t('plansTable.pricingPeriods.custom')}</Caption>
       ) : (
         <>
           {/* Rest of the plans */}
           <Price>{plan.pricePerMonth} &euro;</Price>
-          <Caption color={theme => theme.palette.neutral.light}>{t('plansTable.pricingPeriods.monthly')}</Caption>
+          <Caption sx={{ color: theme => theme.palette.neutral.light }}>
+            {t('plansTable.pricingPeriods.monthly')}
+          </Caption>
         </>
       )}
     </Box>
