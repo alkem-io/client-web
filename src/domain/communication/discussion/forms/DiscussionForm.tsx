@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Form, Formik } from 'formik';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
@@ -11,7 +11,6 @@ import { Discussion } from '../models/Discussion';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { LoadingButton } from '@mui/lab';
 
 export interface DiscussionFormValues {
   title: string;
@@ -86,13 +85,13 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
               />
             </Grid>
             <Grid item>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting} disabled={!isValid || !dirty}>
+              <Button type="submit" variant="contained" loading={isSubmitting} disabled={!isValid || !dirty}>
                 {isSubmitting
                   ? t('buttons.processing')
                   : editMode
                   ? t('components.updateDiscussion.buttons.post')
                   : t('components.newDiscussion.buttons.post')}
-              </LoadingButton>
+              </Button>
             </Grid>
           </Grid>
         </Form>

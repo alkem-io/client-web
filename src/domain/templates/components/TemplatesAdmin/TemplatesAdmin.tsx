@@ -34,7 +34,6 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { LoadingButton } from '@mui/lab';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 
@@ -433,9 +432,9 @@ const TemplatesAdmin = ({
           onSelectTemplate={handleImportTemplate}
           {...importTemplateOptions}
           actionButton={
-            <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+            <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
               {t('buttons.import')}
-            </LoadingButton>
+            </Button>
           }
         />
       )}

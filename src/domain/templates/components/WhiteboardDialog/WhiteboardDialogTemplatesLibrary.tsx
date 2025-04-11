@@ -8,7 +8,6 @@ import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardT
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
 export interface WhiteboardDialogTemplatesLibraryProps {
@@ -66,9 +65,9 @@ const WhiteboardDialogTemplatesLibrary = ({
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
             actionButton={
-              <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
-              </LoadingButton>
+              </Button>
             }
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}

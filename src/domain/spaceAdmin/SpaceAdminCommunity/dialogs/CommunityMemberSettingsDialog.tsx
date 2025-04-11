@@ -9,7 +9,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { LoadingButton } from '@mui/lab';
 import Gutters from '@/core/ui/grid/Gutters';
 
 interface CommunityMemberSettingsDialogProps {
@@ -117,9 +116,9 @@ const CommunityMemberSettingsDialog = ({
             <Button variant="text" onClick={onClose}>
               {t('buttons.cancel')}
             </Button>
-            <LoadingButton loading={isLoading} variant="contained" onClick={handleSave}>
+            <Button loading={isLoading} variant="contained" onClick={handleSave}>
               {t('buttons.save')}
-            </LoadingButton>
+            </Button>
           </Actions>
         </Gutters>
       </DialogWithGrid>

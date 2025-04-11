@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import {
   Tagset,
   TagsetReservedName,
@@ -204,9 +203,9 @@ export const VirtualContributorForm = ({
                             {t('buttons.back')}
                           </Button>
                         )}
-                        <LoadingButton loading={loading} type="submit" variant="contained">
+                        <Button loading={loading} type="submit" variant="contained">
                           {t('buttons.save')}
-                        </LoadingButton>
+                        </Button>
                       </Actions>
                     </Gutters>
                   </GridItem>

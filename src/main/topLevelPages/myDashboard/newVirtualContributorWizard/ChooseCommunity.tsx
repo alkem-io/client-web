@@ -4,7 +4,6 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
@@ -109,14 +108,14 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
             <Button variant="text" onClick={onCancel}>
               {t('createVirtualContributorWizard.chooseCommunity.cancelAddToCommunity')}
             </Button>
-            <LoadingButton
+            <Button
               variant="contained"
               disabled={loading || (hasAvailableSpaces && !values.spaceId)}
               loading={loading}
               onClick={() => onCreate(values)}
             >
               {t('createVirtualContributorWizard.chooseCommunity.addToCommunity')}
-            </LoadingButton>
+            </Button>
           </DialogActions>
           <ConfirmationDialog
             actions={{
