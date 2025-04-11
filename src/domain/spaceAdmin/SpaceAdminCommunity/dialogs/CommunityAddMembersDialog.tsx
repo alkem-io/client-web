@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
-import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -18,8 +18,8 @@ interface Entity extends Identifiable {
   };
 }
 
-type RenderParams = GridRenderCellParams<string, Entity>;
-type GetterParams = GridValueGetterParams<string, Entity>;
+type RenderParams = GridRenderCellParams<Entity>;
+type GetterParams = Entity | undefined;
 
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
@@ -30,8 +30,10 @@ export interface CommunityAddMembersDialogProps {
 
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: 10,
+    },
   },
   sorting: {
     sortModel: [
@@ -72,9 +74,10 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => <>{createCellText(row)}</>,
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       filterable: false,
       resizable: true,
+      flex: 1,
     },
   ];
 
@@ -111,7 +114,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
               actions={[
                 {
                   name: 'add',
-                  render: ({ row }: { row: Entity }) => {
+                  render: ({ row }: RenderParams) => {
                     if (addedMemberIds.includes(row.id)) {
                       return <>{t('common.added')}</>;
                     } else {
@@ -129,7 +132,6 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
                 },
               ]}
               initialState={initialState}
-              pageSize={10}
               disableDelete={() => true}
               dependencies={[availableEntities, loadingItemId]}
             />

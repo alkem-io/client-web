@@ -1,5 +1,5 @@
 import DataGridTable from '@/core/ui/table/DataGridTable';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import CheckIcon from '@mui/icons-material/Check';
 import { useState } from 'react';
 import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
@@ -8,6 +8,8 @@ export interface LicensePlan {
   id: string;
   name: string;
 }
+type RenderParams = GridRenderCellParams<LicensePlan>;
+type GetterParams = LicensePlan | undefined;
 
 interface LicensePlansTableProps {
   activeLicensePlanIds: string[] | undefined;
@@ -15,18 +17,20 @@ interface LicensePlansTableProps {
   onDelete?: (plan: LicensePlan) => void;
 }
 
-const LicensePlansTable = ({ licensePlans, activeLicensePlanIds, onDelete }: LicensePlansTableProps) => {
-  const isLicensePlanActive = plan => activeLicensePlanIds?.includes(plan.id);
+const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }: LicensePlansTableProps) => {
+  const isLicensePlanActive = (plan: GetterParams) => (plan?.id ? activeLicensePlanIds.includes(plan.id) : false);
 
   const columns: GridColDef<LicensePlan>[] = [
     {
       headerName: 'Active',
       field: 'isActive',
-      valueGetter: ({ row }) => isLicensePlanActive(row),
-      renderCell: ({ value }) => (value ? <CheckIcon /> : <></>),
+      valueGetter: (_, row: GetterParams) => isLicensePlanActive(row),
+      renderCell: ({ row }: RenderParams) => (isLicensePlanActive(row) ? <CheckIcon /> : <></>),
+      flex: 0,
     },
     {
       field: 'name',
+      flex: 1,
     },
   ];
 
