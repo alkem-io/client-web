@@ -8036,9 +8036,9 @@ export type InvitationStateEventMutation = {
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
-  emails: Array<Scalars['String']> | Scalars['String'];
-  message?: InputMaybe<Scalars['String']>;
+  invitedContributorIDs: Array<Scalars['UUID']> | Scalars['UUID'];
+  invitedUserEmails: Array<Scalars['String']> | Scalars['String'];
+  welcomeMessage?: InputMaybe<Scalars['String']>;
   extraRole?: InputMaybe<RoleName>;
 }>;
 

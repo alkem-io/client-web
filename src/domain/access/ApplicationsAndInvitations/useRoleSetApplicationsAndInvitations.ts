@@ -14,16 +14,6 @@ import { ApplicationModel } from '../model/ApplicationModel';
 import { InvitationModel } from '../model/InvitationModel';
 import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
 
-export interface InviteUserData {
-  message: string;
-  extraRole?: RoleName;
-}
-
-export interface InviteContributorsData extends InviteUserData {
-  contributorIds: string[];
-  invitedUserEmails: string[];
-}
-
 type useRoleSetApplicationsAndInvitationsParams = {
   roleSetId: string;
 };
@@ -40,9 +30,9 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   applicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
   inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
-    contributorIds: string[];
+    invitedContributorIDs: string[];
     invitedUserEmails: string[];
-    message: string;
+    welcomeMessage: string;
     extraRole?: RoleName;
   }) => Promise<unknown>;
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
@@ -160,15 +150,15 @@ const useRoleSetApplicationsAndInvitations = ({
   const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
   const handleInviteContributorsOnRoleSet = async ({
     roleSetId,
-    contributorIds,
+    invitedContributorIDs,
     invitedUserEmails,
-    message,
+    welcomeMessage,
     extraRole,
   }: {
     roleSetId: string;
-    contributorIds: string[];
+    invitedContributorIDs: string[];
     invitedUserEmails: string[];
-    message: string;
+    welcomeMessage: string;
     extraRole?: RoleName;
   }) => {
     const role = extraRole === RoleName.Member ? undefined : extraRole;
@@ -176,9 +166,9 @@ const useRoleSetApplicationsAndInvitations = ({
     await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
-        contributorIds,
+        invitedContributorIDs,
         invitedUserEmails,
-        message,
+        welcomeMessage,
         extraRole: role,
       },
       onCompleted: () => refetch(),

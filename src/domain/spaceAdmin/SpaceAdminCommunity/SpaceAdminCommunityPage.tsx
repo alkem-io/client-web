@@ -77,8 +77,7 @@ const SpaceAdminCommunityPage = ({
       onAdd: onAddUser,
       onRemove: onRemoveUser,
       getAvailable: getAvailableUsers,
-      inviteExisting: inviteExistingUser,
-      inviteExternal: inviteExternalUser,
+      inviteUsers,
     },
     organizationAdmin: {
       members: organizations,
@@ -190,8 +189,7 @@ const SpaceAdminCommunityPage = ({
             <PageContentBlockSeamless columns={4} disablePadding>
               <InvitationOptionsBlock
                 spaceDisplayName={about.profile.displayName}
-                inviteExistingUser={inviteExistingUser}
-                inviteExternalUser={inviteExternalUser}
+                inviteUsers={inviteUsers}
                 currentApplicationsUserIds={currentApplicationsUserIds}
                 currentInvitationsUserIds={currentInvitationsUserIds}
                 currentMembersIds={currentMembersIds}
@@ -331,7 +329,7 @@ const SpaceAdminCommunityPage = ({
               fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
               fetchAvailableVirtualContributors={getAvailableVirtualContributors}
               onAddMember={onAddVirtualContributor}
-              inviteExistingUser={inviteExistingUser}
+              inviteExistingUser={inviteUsers}
               loading={loading}
             />
           </PageContentBlock>

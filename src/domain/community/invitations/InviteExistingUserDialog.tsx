@@ -11,13 +11,13 @@ import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/core/ui/actions/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
-import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { sortBy } from 'lodash';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { gutters } from '@/core/ui/grid/utils';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 type MessageDialogProps = {
   open: boolean;
@@ -72,14 +72,15 @@ const InviteExistingUserDialog = ({
   };
 
   const validationSchema = yup.object().shape({
-    message: yup.string(),
-    contributorIds: yup.array().required(),
+    welcomeMessage: yup.string(),
+    invitedContributorIDs: yup.array().required(),
   });
 
   const initialValues: InviteContributorsData = {
-    contributorIds: [],
+    invitedContributorIDs: [],
+    invitedUserEmails: [],
     extraRole: RoleName.Member,
-    message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
+    welcomeMessage: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
   const getSortFact: Record<SortCriteria, ({ id }: Identifiable) => boolean> = {
@@ -157,7 +158,7 @@ const InviteExistingUserDialog = ({
               <Gutters disablePadding flexDirection={{ xs: 'column', sm: 'row' }} alignItems={'flex-start'}>
                 <Gutters disablePadding gap={gutters(0.5)} sx={{ width: '100%' }}>
                   <FormikUserSelector
-                    name="contributorIds"
+                    name="invitedContributorIDs"
                     sortUsers={sortUsers}
                     hydrateUsers={hydrateUsers}
                     sx={{ width: '100%', marginBottom: 0, flexGrow: 1 }}

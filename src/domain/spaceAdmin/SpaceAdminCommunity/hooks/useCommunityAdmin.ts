@@ -11,14 +11,12 @@ import useRoleSetManager, {
   RoleSetMemberVirtualContributorFragmentWithRoles,
 } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
-import useRoleSetApplicationsAndInvitations, {
-  InviteContributorsData,
-  InviteExternalUserData,
-} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { RoleDefinition } from '@/domain/access/model/RoleDefinitionModel';
 import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import { InvitationModel } from '@/domain/access/model/InvitationModel';
 import { PlatformInvitationModel } from '@/domain/access/model/PlatformInvitationModel';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 interface useCommunityAdminParams {
   roleSetId: string;
@@ -40,8 +38,7 @@ export interface useCommunityAdminProvided {
         email?: string;
       }[]
     >;
-    inviteExisting: (inviteData: InviteContributorsData) => Promise<unknown>;
-    inviteExternal: (inviteData: InviteExternalUserData) => Promise<unknown>;
+    inviteUsers: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   organizationAdmin: {
     members: CommunityMemberOrganizationFragmentWithRoles[];
@@ -188,8 +185,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     platformInvitations,
     authorizationPrivileges,
     applicationStateChange,
-    inviteContributorOnRoleSet,
-    inviteContributorOnPlatformRoleSet,
+    inviteContributorsOnRoleSet,
     invitationStateChange,
     deleteInvitation,
     deletePlatformInvitation,
@@ -198,13 +194,11 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     roleSetId,
   });
 
-  const inviteExistingUser = (inviteData: InviteContributorsData) =>
-    inviteContributorOnRoleSet({ roleSetId, ...inviteData });
-  const inviteExternalUser = (inviteData: InviteExternalUserData) =>
-    inviteContributorOnPlatformRoleSet({ roleSetId, ...inviteData });
+  const inviteExternalUser = (inviteData: InviteContributorsData) =>
+    inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
 
   const inviteExistingVirtualContributor = (inviteData: InviteContributorsData) =>
-    inviteContributorOnRoleSet({ roleSetId, ...inviteData });
+    inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
 
   const permissions = {
     canAddMembers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
@@ -223,8 +217,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onAdd: onAddUser,
       onRemove: onRemoveUser,
       getAvailable: getAvailableUsers,
-      inviteExisting: inviteExistingUser,
-      inviteExternal: inviteExternalUser,
+      inviteUsers: inviteExternalUser,
     },
     organizationAdmin: {
       members: communityOrganizations,

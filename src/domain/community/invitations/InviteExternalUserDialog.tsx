@@ -10,16 +10,16 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/core/ui/actions/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
-import { InviteExternalUserData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteExternalUserData) => Promise<unknown>;
+  onInviteUser: (params: InviteContributorsData) => Promise<unknown>;
   title?: ReactNode;
   subtitle?: ReactNode;
   communityRoles: readonly RoleName[];
@@ -39,9 +39,9 @@ const InviteExternalUserDialog = ({
   const [isMessageSent, setMessageSent] = useState(false);
 
   const [handleSendMessage, isLoading, error] = useLoadingState(
-    async (values: InviteExternalUserData, formikHelpers: FormikHelpers<InviteExternalUserData>) => {
+    async (values: InviteContributorsData, formikHelpers: FormikHelpers<InviteContributorsData>) => {
       try {
-        await onInviteUser({ ...values, email: values.email.trim() });
+        await onInviteUser({ ...values, invitedUserEmails: values.invitedUserEmails });
 
         if (!error) {
           setMessageSent(true);
@@ -63,10 +63,11 @@ const InviteExternalUserDialog = ({
     email: yup.string().required(),
   });
 
-  const initialValues: InviteExternalUserData = {
-    email: '',
+  const initialValues: InviteContributorsData = {
+    invitedUserEmails: [],
+    invitedContributorIDs: [],
     extraRole: RoleName.Member,
-    message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
+    welcomeMessage: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
   return (
