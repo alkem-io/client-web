@@ -6,25 +6,20 @@ mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
   }
 }
 
-mutation InviteContributorsEntryRoleOnRoleSet($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
-  inviteContributorsEntryRoleOnRoleSet(invitationData: {
-    invitedContributors: $contributorIds
+mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $contributorIds: [UUID!]!, $emails: [String!]!, $message: String, $extraRole: RoleName) {
+  inviteForEntryRoleOnRoleSet(invitationData:  {
+     invitedContributorIDs: $contributorIds
+     invitedUserEmails: $emails
     roleSetID: $roleSetId
     welcomeMessage: $message
     extraRole: $extraRole
-  }) {
-    id
-  }
-}
 
-mutation InviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
-  inviteUserToPlatformAndRoleSet(invitationData: {
-    email: $email
-    roleSetID: $roleSetId
-    welcomeMessage: $message
-    roleSetExtraRole: $extraRole
   }) {
-    ... on PlatformInvitation {
+    type
+    invitation {
+      id
+    }
+    platformInvitation {
       id
     }
   }

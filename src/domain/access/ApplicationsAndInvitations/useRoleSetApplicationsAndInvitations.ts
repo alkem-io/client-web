@@ -6,8 +6,7 @@ import {
   useDeletePlatformInvitationMutation,
   useEventOnApplicationMutation,
   useInvitationStateEventMutation,
-  useInviteContributorsEntryRoleOnRoleSetMutation,
-  useInviteUserToPlatformAndRoleSetMutation,
+  useInviteForEntryRoleOnRoleSetMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
@@ -22,10 +21,7 @@ export interface InviteUserData {
 
 export interface InviteContributorsData extends InviteUserData {
   contributorIds: string[];
-}
-
-export interface InviteExternalUserData extends InviteUserData {
-  email: string;
+  invitedUserEmails: string[];
 }
 
 type useRoleSetApplicationsAndInvitationsParams = {
@@ -42,15 +38,10 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     questions: { name: string; value: string; sortOrder: number }[]
   ) => Promise<unknown>;
   applicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
-  inviteContributorOnRoleSet: (inviteData: {
+  inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
     contributorIds: string[];
-    message: string;
-    extraRole?: RoleName;
-  }) => Promise<unknown>;
-  inviteContributorOnPlatformRoleSet: (inviteData: {
-    roleSetId: string;
-    email: string;
+    invitedUserEmails: string[];
     message: string;
     extraRole?: RoleName;
   }) => Promise<unknown>;
@@ -166,49 +157,27 @@ const useRoleSetApplicationsAndInvitations = ({
       onCompleted: () => refetch(),
     });
 
-  const [inviteContributorsEntryRoleOnRoleSet] = useInviteContributorsEntryRoleOnRoleSetMutation();
-  const handleInviteContributorOnRoleSet = async ({
+  const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
+  const handleInviteContributorsOnRoleSet = async ({
     roleSetId,
     contributorIds,
+    invitedUserEmails,
     message,
     extraRole,
   }: {
     roleSetId: string;
     contributorIds: string[];
+    invitedUserEmails: string[];
     message: string;
     extraRole?: RoleName;
   }) => {
     const role = extraRole === RoleName.Member ? undefined : extraRole;
 
-    await inviteContributorsEntryRoleOnRoleSet({
+    await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
         contributorIds,
-        message,
-        extraRole: role,
-      },
-      onCompleted: () => refetch(),
-    });
-  };
-
-  const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
-  const handleInviteContributorOnPlatformRoleSet = async ({
-    roleSetId,
-    email,
-    message,
-    extraRole,
-  }: {
-    roleSetId: string;
-    email: string;
-    message: string;
-    extraRole?: RoleName;
-  }) => {
-    const role = extraRole === RoleName.Member ? undefined : extraRole;
-
-    await inviteUserForRoleSetAndPlatform({
-      variables: {
-        roleSetId,
-        email,
+        invitedUserEmails,
         message,
         extraRole: role,
       },
@@ -225,8 +194,7 @@ const useRoleSetApplicationsAndInvitations = ({
     loading,
     applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,
     applicationStateChange: handleApplicationStateChange,
-    inviteContributorOnRoleSet: handleInviteContributorOnRoleSet,
-    inviteContributorOnPlatformRoleSet: handleInviteContributorOnPlatformRoleSet,
+    inviteContributorsOnRoleSet: handleInviteContributorsOnRoleSet,
     invitationStateChange: handleInvitationStateChange,
     deleteInvitation: handleDeleteInvitation,
     deletePlatformInvitation: handleDeletePlatformInvitation,
