@@ -60,7 +60,7 @@ type CommunityVirtualContributorsProps = {
   fetchAvailableVirtualContributorsInLibrary: (filter?: string) => Promise<Entity[] | undefined>;
   onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
-  inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
+  inviteContributors: (params: InviteContributorsData) => Promise<unknown>;
   spaceDisplayName?: string;
 };
 
@@ -72,7 +72,7 @@ const CommunityVirtualContributors = ({
   fetchAvailableVirtualContributors,
   onAddMember,
   loading,
-  inviteExistingUser,
+  inviteContributors,
   spaceDisplayName = '',
 }: CommunityVirtualContributorsProps) => {
   const { t } = useTranslation();
@@ -235,7 +235,7 @@ const CommunityVirtualContributors = ({
           open={isInvitingExternal}
           onClose={closeInvitationDialog}
           contributorId={selectedVirtualContributorId}
-          onInviteVirtualContributor={inviteExistingUser}
+          onInviteVirtualContributor={inviteContributors}
         />
       )}
     </>

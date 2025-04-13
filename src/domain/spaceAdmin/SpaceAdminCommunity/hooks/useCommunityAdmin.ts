@@ -38,7 +38,7 @@ export interface useCommunityAdminProvided {
         email?: string;
       }[]
     >;
-    inviteUsers: (inviteData: InviteContributorsData) => Promise<unknown>;
+    inviteContributors: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   organizationAdmin: {
     members: CommunityMemberOrganizationFragmentWithRoles[];
@@ -194,7 +194,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     roleSetId,
   });
 
-  const inviteExternalUser = (inviteData: InviteContributorsData) =>
+  const inviteContributors = (inviteData: InviteContributorsData) =>
     inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
 
   const inviteExistingVirtualContributor = (inviteData: InviteContributorsData) =>
@@ -217,7 +217,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onAdd: onAddUser,
       onRemove: onRemoveUser,
       getAvailable: getAvailableUsers,
-      inviteUsers: inviteExternalUser,
+      inviteContributors,
     },
     organizationAdmin: {
       members: communityOrganizations,

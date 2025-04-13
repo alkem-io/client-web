@@ -77,7 +77,7 @@ const SpaceAdminCommunityPage = ({
       onAdd: onAddUser,
       onRemove: onRemoveUser,
       getAvailable: getAvailableUsers,
-      inviteUsers,
+      inviteContributors: inviteUsers,
     },
     organizationAdmin: {
       members: organizations,
@@ -329,7 +329,7 @@ const SpaceAdminCommunityPage = ({
               fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
               fetchAvailableVirtualContributors={getAvailableVirtualContributors}
               onAddMember={onAddVirtualContributor}
-              inviteExistingUser={inviteUsers}
+              inviteContributors={inviteUsers}
               loading={loading}
             />
           </PageContentBlock>

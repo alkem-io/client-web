@@ -179,7 +179,7 @@ const InviteExistingUserDialog = ({
                 </Gutters>
               </Gutters>
               <FormikInputField
-                name="message"
+                name="welcomeMessage"
                 title={t('messaging.message')}
                 placeholder={t('messaging.message')}
                 multiline
