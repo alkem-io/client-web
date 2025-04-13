@@ -58,7 +58,7 @@ export interface useCommunityAdminProvided {
     members: RoleSetMemberVirtualContributorFragmentWithRoles[];
     onAdd: (memberId: string) => Promise<unknown>;
     onRemove: (memberId: string) => Promise<unknown>;
-    inviteExisting: (inviteData: InviteContributorsData) => Promise<unknown>;
+    inviteContributors: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   membershipAdmin: {
     memberRoleDefinition: RoleDefinition | undefined;
@@ -197,9 +197,6 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
   const inviteContributors = (inviteData: InviteContributorsData) =>
     inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
 
-  const inviteExistingVirtualContributor = (inviteData: InviteContributorsData) =>
-    inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
-
   const permissions = {
     canAddMembers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
@@ -230,7 +227,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       members: virtualContributors,
       onAdd: onAddVirtualContributor,
       onRemove: onRemoveVirtualContributor,
-      inviteExisting: inviteExistingVirtualContributor,
+      inviteContributors,
     },
     membershipAdmin: {
       memberRoleDefinition,
