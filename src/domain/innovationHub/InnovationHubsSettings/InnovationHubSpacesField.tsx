@@ -69,7 +69,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.about.profile.displayName}</>,
       valueGetter: (_, row: GetterParams) => row?.about.profile.displayName,
       filterable: false,
@@ -79,7 +78,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
     {
       field: 'visibility',
       headerName: t('pages.admin.space.settings.visibility.title'),
-      renderHeader: () => <>{t('pages.admin.space.settings.visibility.title')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.visibility}</>,
       valueGetter: (_, row: GetterParams) => row?.visibility,
       filterable: false,
@@ -88,7 +86,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
     {
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
-      renderHeader: () => <>{t('pages.admin.innovationHubs.fields.host')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile.displayName}</>,
       valueGetter: (_, row: GetterParams) => row?.about.provider?.profile.displayName,
       filterable: false,
