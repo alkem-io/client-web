@@ -173,7 +173,7 @@ class Portal {
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
     if (!this.excalidrawAPI) {
-      throw new Error('Excalidraw API not initialized');
+      return;
     }
     const { isInvisiblySmallElement } = this.excalidrawAPI;
 
