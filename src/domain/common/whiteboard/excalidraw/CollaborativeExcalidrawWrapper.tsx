@@ -17,7 +17,7 @@ import type {
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
