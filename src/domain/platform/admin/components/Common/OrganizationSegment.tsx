@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormRow from '@/_deprecated/FormRow';
+import FormRow from '@/_deprecatedToKeep/FormRow';
 
 export const organizationSegmentSchema = yup.object().shape({
   contactEmail: yup.string().email('Not a valid email').max(SMALL_TEXT_LENGTH),

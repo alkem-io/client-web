@@ -15,7 +15,7 @@ import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
 import CommunityAddMembersDialog from '../dialogs/CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
