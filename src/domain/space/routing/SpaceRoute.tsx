@@ -51,6 +51,10 @@ const LegacyRoutesRedirects = (spaceNameId: string) => (
       path={EntityPageSection.Contribute}
       element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
     />
+    <Route
+      path={EntityPageSection.Updates}
+      element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1&dialog=updates`} replace />}
+    />
     <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
   </>
 );
