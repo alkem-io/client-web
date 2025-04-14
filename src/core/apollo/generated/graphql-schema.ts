@@ -2342,12 +2342,10 @@ export type ExploreSpacesInput = {
 
 export type ExternalConfig = {
   __typename?: 'ExternalConfig';
-  /** The signature of the API key */
+  /** The API key for the external LLM provider. */
   apiKey?: Maybe<Scalars['String']>;
-  /** The assistent ID backing the service in OpenAI`s assistant API */
+  /** The assistant ID backing the service in OpenAI`s assistant API */
   assistantId?: Maybe<Scalars['String']>;
-  /** The ExternalConfig for this Virtual. */
-  externalConfig?: Maybe<ExternalConfig>;
   /** The OpenAI model to use for the service */
   model: OpenAiModel;
 };
@@ -2355,7 +2353,7 @@ export type ExternalConfig = {
 export type ExternalConfigInput = {
   /** The API key for the external LLM provider. */
   apiKey?: InputMaybe<Scalars['String']>;
-  /** The assistent ID backing the service in OpenAI`s assistant API */
+  /** The assistant ID backing the service in OpenAI`s assistant API */
   assistantId?: InputMaybe<Scalars['String']>;
   /** The OpenAI model to use for the service */
   model?: OpenAiModel;
@@ -3843,6 +3841,8 @@ export type Mutation = {
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
   updateCalloutsSortOrder: Array<Callout>;
+  /** Updates a Tagset on a Classification. */
+  updateClassificationTagset: Tagset;
   /** Updates the Collaboration, including InnovationFlow states, from the specified Collaboration Template. */
   updateCollaborationFromTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
@@ -3881,8 +3881,8 @@ export type Mutation = {
   updatePost: Post;
   /** Updates one of the Preferences on a Space */
   updatePreferenceOnUser: Preference;
-  /** Updates the specified Tagset. */
-  updateProfile: Tagset;
+  /** Updates the specified Profile. */
+  updateProfile: Profile;
   /** Updates the specified Reference. */
   updateReference: Reference;
   /** Updates the Space. */
@@ -4369,6 +4369,10 @@ export type MutationUpdateCalloutsSortOrderArgs = {
   sortOrderData: UpdateCalloutsSortOrderInput;
 };
 
+export type MutationUpdateClassificationTagsetArgs = {
+  updateData: UpdateClassificationSelectTagsetValueInput;
+};
+
 export type MutationUpdateCollaborationFromTemplateArgs = {
   updateData: UpdateCollaborationFromTemplateInput;
 };
@@ -4446,7 +4450,7 @@ export type MutationUpdatePreferenceOnUserArgs = {
 };
 
 export type MutationUpdateProfileArgs = {
-  updateData: UpdateClassificationSelectTagsetValueInput;
+  profileData: UpdateProfileDirectInput;
 };
 
 export type MutationUpdateReferenceArgs = {
@@ -6910,6 +6914,18 @@ export type UpdatePostInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateProfileDirectInput = {
+  description?: InputMaybe<Scalars['Markdown']>;
+  /** The display name for the entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<UpdateLocationInput>;
+  profileID: Scalars['UUID'];
+  references?: InputMaybe<Array<UpdateReferenceInput>>;
+  /** A memorable short description for this entity. */
+  tagline?: InputMaybe<Scalars['String']>;
+  tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateProfileInput = {
@@ -18484,6 +18500,7 @@ export type VirtualContributorFullFragment = {
         bodyOfKnowledge?: string | undefined;
         bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
         bodyOfKnowledgeID?: string | undefined;
+        engine: AiPersonaEngine;
       }
     | undefined;
 };
@@ -22647,6 +22664,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
               bodyOfKnowledge?: string | undefined;
               bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
               bodyOfKnowledgeID?: string | undefined;
+              engine: AiPersonaEngine;
             }
           | undefined;
       }>;
@@ -22708,6 +22726,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                     bodyOfKnowledge?: string | undefined;
                     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                     bodyOfKnowledgeID?: string | undefined;
+                    engine: AiPersonaEngine;
                   }
                 | undefined;
             }>;
@@ -22774,6 +22793,7 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                       bodyOfKnowledge?: string | undefined;
                       bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                       bodyOfKnowledgeID?: string | undefined;
+                      engine: AiPersonaEngine;
                     }
                   | undefined;
               }>;
