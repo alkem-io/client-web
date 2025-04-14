@@ -87,7 +87,6 @@ const CommunityOrganizations = ({
     {
       field: 'avatar',
       headerName: t('common.avatar'),
-      renderHeader: () => <>{t('common.avatar')}</>,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
@@ -99,7 +98,6 @@ const CommunityOrganizations = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
@@ -113,7 +111,6 @@ const CommunityOrganizations = ({
     {
       field: 'isLead',
       headerName: t('common.role'),
-      renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
       filterable: false,
     },

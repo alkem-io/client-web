@@ -2,7 +2,6 @@ import { IconButton, styled } from '@mui/material';
 import { DataGrid, DataGridProps, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ReactNode, useMemo } from 'react';
-import { CardText } from '../typography';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -85,7 +84,7 @@ const DataGridTable = <Item extends Identifiable>({
       columns.map(column => {
         return {
           headerName: t(`fields.${column.field}` as TranslationKey) as string,
-          renderHeader: ({ colDef }) => <CardText fontWeight="bold">{colDef.headerName}</CardText>,
+          renderHeader: ({ colDef }) => <>{colDef.headerName}</>,
           resizable: true,
           ...column,
         };

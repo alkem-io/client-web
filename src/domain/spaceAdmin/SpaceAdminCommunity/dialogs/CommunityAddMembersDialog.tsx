@@ -72,7 +72,6 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => <>{createCellText(row)}</>,
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       filterable: false,

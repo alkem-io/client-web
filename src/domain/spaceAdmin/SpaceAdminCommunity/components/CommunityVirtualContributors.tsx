@@ -82,7 +82,6 @@ const CommunityVirtualContributors = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
