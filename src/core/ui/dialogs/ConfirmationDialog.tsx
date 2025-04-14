@@ -8,9 +8,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
-/**
- * @deprecated Needs refactor, do not base other components on this Props.
- */
+
 export interface ConfirmationDialogProps {
   entities: {
     titleId?: TranslationKey;
