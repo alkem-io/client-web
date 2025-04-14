@@ -29,7 +29,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
 
   // TODO: this should ideally come from the SpaceContext
   const journeyPath: JourneyPath =
-    spaceLevel === SpaceLevel.L1 ? [levelZeroSpaceId, spaceId] : [spaceId, parentSpaceId!, spaceId];
+    spaceLevel === SpaceLevel.L1 ? [levelZeroSpaceId, spaceId] : [levelZeroSpaceId, parentSpaceId!, spaceId];
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
 

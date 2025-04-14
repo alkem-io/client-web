@@ -18377,6 +18377,9 @@ export type VirtualContributorFullFragment = {
     location?:
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
       | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
   };
   aiPersona?:
     | {
@@ -22531,6 +22534,15 @@ export type AvailableVirtualContributorsInLibraryQuery = {
           location?:
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
         };
         aiPersona?:
           | {
@@ -22582,6 +22594,15 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                   | undefined;
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                  | undefined;
+                references?:
+                  | Array<{
+                      __typename?: 'Reference';
+                      id: string;
+                      name: string;
+                      uri: string;
+                      description?: string | undefined;
+                    }>
                   | undefined;
               };
               aiPersona?:
@@ -22639,6 +22660,15 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                     | undefined;
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
                     | undefined;
                 };
                 aiPersona?:
