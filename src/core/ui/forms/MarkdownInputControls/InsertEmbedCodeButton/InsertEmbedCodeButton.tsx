@@ -100,8 +100,36 @@ export const InsertEmbedCodeButton = ({
       return;
     }
 
-    const srcOrigin = new URL(embedCodeSrc).origin;
-    const isValidSource = iframeAllowedUrls.some(vS => vS === srcOrigin);
+    const srcUrl = new URL(embedCodeSrc);
+    const srcOrigin = srcUrl.origin;
+
+    // Check if the source URL matches any of the allowed patterns
+    const isValidSource = iframeAllowedUrls.some(pattern => {
+      // Exact match
+      if (pattern === srcOrigin) {
+        return true;
+      }
+
+      // Handle wildcard patterns
+      if (pattern.includes('*')) {
+        // Convert the wildcard pattern to a regex pattern
+        const regexPattern = pattern.replace(/\./g, '\\.').replace(/\*/g, '.*');
+
+        const regex = new RegExp(`^${regexPattern}$`);
+
+        // Check against origin
+        if (regex.test(srcOrigin)) {
+          return true;
+        }
+
+        // Check against full URL if the pattern includes path components
+        if (pattern.includes('/') && regex.test(embedCodeSrc)) {
+          return true;
+        }
+      }
+
+      return false;
+    });
 
     if (!isValidSource) {
       notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
