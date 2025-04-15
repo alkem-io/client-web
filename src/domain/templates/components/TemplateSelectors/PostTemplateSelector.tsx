@@ -6,7 +6,6 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Caption, CardText } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
@@ -45,9 +44,9 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
           <ImportTemplatesDialog
             templateType={TemplateType.Post}
             actionButton={
-              <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
-              </LoadingButton>
+              </Button>
             }
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}

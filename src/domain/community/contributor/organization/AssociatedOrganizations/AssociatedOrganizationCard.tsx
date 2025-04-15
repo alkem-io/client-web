@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import CloseIcon from '@mui/icons-material/Close';
 import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
 import LabeledCount from '@/core/ui/content/LabeledCount';
@@ -50,7 +49,7 @@ const AssociatedOrganizationCard = ({
         enableLeave && (
           <>
             <Box display="flex" justifyContent="flex-end">
-              <LoadingButton
+              <Button
                 variant="outlined"
                 startIcon={<CloseIcon />}
                 onClick={event => {
@@ -60,7 +59,7 @@ const AssociatedOrganizationCard = ({
                 loading={removingFromOrganization}
               >
                 {t('common.disassociate')}
-              </LoadingButton>
+              </Button>
             </Box>
             <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
               <DialogHeader

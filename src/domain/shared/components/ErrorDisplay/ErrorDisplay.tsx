@@ -1,9 +1,9 @@
-import { RouterLink } from '@/_deprecated/routing/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { Box, Button, Link, Typography, styled } from '@mui/material';
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
 
 const FullscreenBox = styled(Box)(() => ({
   display: 'flex',

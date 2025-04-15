@@ -44,7 +44,7 @@ import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innovati
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
-import SpaceL1Icon2 from '../../../_deprecated/icons/SpaceL1Icon2';
+import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
@@ -230,7 +230,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
   if (loading || adminTemplatesLoading) return <Loading text={'Loading spaces'} />;
   return (
-    <LayoutSwitcher currentTab={SettingsSection.Subsubspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
+    <LayoutSwitcher currentTab={SettingsSection.Subspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <>
         {templatesEnabled && (
           <PageContentBlock>

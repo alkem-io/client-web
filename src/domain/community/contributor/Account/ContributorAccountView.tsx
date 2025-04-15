@@ -40,8 +40,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { IconButton } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Button, IconButton } from '@mui/material';
 import useNavigate from '@/core/routing/useNavigate';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
@@ -481,7 +480,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         {canCreateWingbackAccount && (
           <CreationButton
             buttonComponent={
-              <LoadingButton
+              <Button
                 variant="contained"
                 disabled={!enableWingbackAccountCreation}
                 loading={isWingbackCreating}
@@ -489,7 +488,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 onClick={onCreateWingbackAccountClick}
               >
                 <Caption noWrap>{t('pages.admin.generic.sections.account.addExternalSub')}</Caption>
-              </LoadingButton>
+              </Button>
             }
             disabled={!enableWingbackAccountCreation}
             disabledTooltip={t('pages.admin.generic.sections.account.externalSubExists')}

@@ -9,9 +9,9 @@ import ContributionDetailsCard from '@/domain/community/profile/views/Contributi
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import useContributionProvider, {
   ContributionDetails,
-} from '../domain/community/profile/useContributionProvider/useContributionProvider';
+} from '@/domain/community/profile/useContributionProvider/useContributionProvider';
 
-type ContributionViewProps = {
+type ActionableContributionsViewProps = {
   title: string;
   subtitle?: string;
   emptyCaption?: string;
@@ -46,10 +46,9 @@ const SkeletonItem = () => (
 );
 
 /**
- * @deprecated This component is deprecated
- * Please use and extned the ContributionsView component in domain/community/contributor
+ * This component is used mainly in admin area for actionable space cards
  */
-export const ContributionsView2 = ({
+export const ActionableContributionsView = ({
   title,
   subtitle,
   emptyCaption,
@@ -59,7 +58,7 @@ export const ContributionsView2 = ({
   onLeave,
   onContributionClick,
   cards,
-}: ContributionViewProps) => {
+}: ActionableContributionsViewProps) => {
   const [leavingRoleSetId, setLeavingRoleSetId] = useState<string>();
 
   return (
@@ -130,4 +129,4 @@ const ContributionCard = ({
   );
 };
 
-export default ContributionsView2;
+export default ActionableContributionsView;

@@ -16,10 +16,10 @@ import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '@/core/routing/useBackToPath';
-import useBackToParentPage from '@/_deprecated/routing/useBackToParentPage';
+import useBackToParentPage from '@/_deprecatedToKeep/useBackToParentPage';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -34,7 +34,6 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { LoadingButton } from '@mui/lab';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 
@@ -433,9 +432,9 @@ const TemplatesAdmin = ({
           onSelectTemplate={handleImportTemplate}
           {...importTemplateOptions}
           actionButton={
-            <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+            <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
               {t('buttons.import')}
-            </LoadingButton>
+            </Button>
           }
         />
       )}

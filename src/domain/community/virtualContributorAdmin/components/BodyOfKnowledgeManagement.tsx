@@ -11,9 +11,8 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Box, Tooltip } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 
 interface BodyOfKnowledgeManagementProps {
   vc: {
@@ -117,9 +116,9 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
           </Tooltip>
           <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
           <Actions>
-            <LoadingButton variant="contained" loading={updateLoading} onClick={refreshIngestion}>
+            <Button variant="contained" loading={updateLoading} onClick={refreshIngestion}>
               {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
-            </LoadingButton>
+            </Button>
           </Actions>
         </PageContentBlock>
       </PageContentColumn>

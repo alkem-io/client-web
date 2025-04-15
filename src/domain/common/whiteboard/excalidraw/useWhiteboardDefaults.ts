@@ -1,4 +1,4 @@
-import type { AppState } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { AppState } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { useTheme } from '@mui/material';
 
 const useWhiteboardDefaults = (): {
@@ -25,7 +25,6 @@ const useWhiteboardDefaults = (): {
       currentItemOpacity: theme.whiteboards.defaultOpacity,
       currentItemEndArrowhead: theme.whiteboards.defaultEndArrowhead,
       currentChartType: theme.whiteboards.defaultChartType,
-      hideLibraryButton: true, // requires @alkemio/excalidraw-fork@0.17.0-alkemio-4 or higher
     },
   };
 };

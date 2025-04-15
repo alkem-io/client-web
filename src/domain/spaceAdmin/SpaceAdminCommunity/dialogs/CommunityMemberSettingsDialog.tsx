@@ -6,10 +6,9 @@ import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileC
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { Button, Checkbox, FormControlLabel, Link } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { LoadingButton } from '@mui/lab';
 import Gutters from '@/core/ui/grid/Gutters';
 
 interface CommunityMemberSettingsDialogProps {
@@ -117,9 +116,9 @@ const CommunityMemberSettingsDialog = ({
             <Button variant="text" onClick={onClose}>
               {t('buttons.cancel')}
             </Button>
-            <LoadingButton loading={isLoading} variant="contained" onClick={handleSave}>
+            <Button loading={isLoading} variant="contained" onClick={handleSave}>
               {t('buttons.save')}
-            </LoadingButton>
+            </Button>
           </Actions>
         </Gutters>
       </DialogWithGrid>

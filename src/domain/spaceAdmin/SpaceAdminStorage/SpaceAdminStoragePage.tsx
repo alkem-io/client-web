@@ -10,7 +10,7 @@ import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks'
 import { AuthorizationPrivilege, DocumentDataFragment } from '@/core/apollo/generated/graphql-schema';
 import { formatFileSize } from '@/core/utils/Storage';
 import RouterLink from '@/core/ui/link/RouterLink';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { times } from 'lodash';
 import { formatDateTime } from '@/core/utils/time/utils';
@@ -184,6 +184,7 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
                 },
               ]}
               initialState={initialState}
+              pageSizeOptions={[PAGE_SIZE]}
               onDelete={file => setDeletingDocument(file)}
               canDelete={file => file.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false}
               disableDelete={() => true}

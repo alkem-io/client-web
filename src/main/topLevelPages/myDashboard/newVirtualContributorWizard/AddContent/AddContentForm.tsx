@@ -6,7 +6,6 @@ import { Box, Button, Tooltip } from '@mui/material';
 import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
 import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined';
 import { gutters } from '@/core/ui/grid/utils';
-import { LoadingButton } from '@mui/lab';
 import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
@@ -175,14 +174,9 @@ export const AddContentForm = ({
                   placement={'bottom-start'}
                 >
                   <span>
-                    <LoadingButton
-                      variant="contained"
-                      loading={isSubmitting}
-                      disabled={!isValid}
-                      onClick={() => submitForm()}
-                    >
+                    <Button variant="contained" loading={isSubmitting} disabled={!isValid} onClick={() => submitForm()}>
                       {t('buttons.continue')}
-                    </LoadingButton>
+                    </Button>
                   </span>
                 </Tooltip>
               </Actions>
