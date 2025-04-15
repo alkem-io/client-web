@@ -12,7 +12,7 @@ import { DialogActions, DialogContent } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export interface CalloutEditDialogProps {
   open: boolean;

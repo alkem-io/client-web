@@ -13,7 +13,6 @@ import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
 import CardTags from '@/core/ui/card/CardTags';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { gutters } from '@/core/ui/grid/utils';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { TemplateCardProps } from './TemplateCard';
@@ -33,7 +32,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
 
   return (
     <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName} iconComponent={CalloutIcon}>
+      <CardHeader title={template?.profile.displayName}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}

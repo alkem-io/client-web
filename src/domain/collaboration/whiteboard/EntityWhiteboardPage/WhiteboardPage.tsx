@@ -1,4 +1,4 @@
-import useBackToParentPage from '@/_deprecated/routing/useBackToParentPage';
+import useBackToParentPage from '@/_deprecatedToKeep/useBackToParentPage';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 
