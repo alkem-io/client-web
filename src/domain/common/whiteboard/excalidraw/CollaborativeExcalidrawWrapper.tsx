@@ -34,6 +34,7 @@ const SAVE_FILE_TO_DISK = true;
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   await import('@alkemio/excalidraw/index.css');
+  await import('./styles/excalidraw-overrides.css');
   return { default: Excalidraw };
 });
 

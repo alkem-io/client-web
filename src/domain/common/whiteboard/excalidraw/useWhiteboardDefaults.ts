@@ -25,7 +25,6 @@ const useWhiteboardDefaults = (): {
       currentItemOpacity: theme.whiteboards.defaultOpacity,
       currentItemEndArrowhead: theme.whiteboards.defaultEndArrowhead,
       currentChartType: theme.whiteboards.defaultChartType,
-      hideLibraryButton: true, // requires @alkemio/excalidraw-fork@0.17.0-alkemio-4 or higher
     },
   };
 };
