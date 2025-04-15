@@ -19,7 +19,7 @@ const InviteContributorsList = ({ contributors = [], onCardClick = noop }: Invit
             displayName={c.profile?.displayName}
             avatarSrc={c.profile?.avatar?.uri ?? ''}
             avatarAltText={c.profile?.displayName}
-            tags={c.profile?.tagsets?.flatMap(tagset => tagset.tags) ?? []}
+            tags={c.profile?.tagsets?.flatMap(tagset => tagset.tags ?? []) ?? []}
             city={c.profile?.location?.city ?? ''}
             country={c.profile?.location?.country ?? ''}
             isContactable={false}

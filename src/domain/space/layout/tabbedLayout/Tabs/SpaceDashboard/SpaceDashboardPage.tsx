@@ -14,15 +14,8 @@ import { TabbedLayoutDialogsType } from '../../TabbedLayoutPage';
 import useNavigate from '@/core/routing/useNavigate';
 
 const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayoutDialogsType }>) => {
-  const {
-    urlInfo,
-    canReadSpace,
-    classificationTagsets,
-    flowStateForNewCallouts,
-    calloutsSetId,
-    tabDescription,
-    loading,
-  } = useSpaceTabProvider({ tabPosition: 0 });
+  const { urlInfo, classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
+    useSpaceTabProvider({ tabPosition: 0 });
 
   const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
 
@@ -35,7 +28,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
       spaceId: spaceId!,
     },
     errorPolicy: 'all',
-    skip: !spaceId || spaceLevel !== SpaceLevel.L0 || !canReadSpace || loading,
+    skip: !spaceId || spaceLevel !== SpaceLevel.L0 || loading,
   });
 
   const spaceData = spacePageData?.lookup.space;

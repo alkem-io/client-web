@@ -11,6 +11,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
+  SpaceLevel,
   TagsetReservedName,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -119,6 +120,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         optimisticResponse: {
           createSubspace: {
             id: '',
+            level: SpaceLevel.L1,
             about: {
               id: '',
               why: value.about.why,

@@ -13,7 +13,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import React, { useState } from 'react';
 import { useInnovationHubAvailableSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { sortBy, without } from 'lodash';
@@ -23,6 +23,9 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+
+type RenderParams = GridRenderCellParams<Space>;
+type GetterParams = Space | undefined;
 
 export interface Space extends Identifiable {
   id: string;
@@ -65,17 +68,18 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.about.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.about.profile.displayName,
+      renderCell: ({ row }: RenderParams) => <>{row.about.profile.displayName}</>,
+      valueGetter: (_, row: GetterParams) => row?.about.profile.displayName,
       filterable: false,
       resizable: true,
+      flex: 1,
     },
     {
       field: 'visibility',
       headerName: t('pages.admin.space.settings.visibility.title'),
       renderHeader: () => <>{t('pages.admin.space.settings.visibility.title')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.visibility}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.visibility,
+      renderCell: ({ row }: RenderParams) => <>{row.visibility}</>,
+      valueGetter: (_, row: GetterParams) => row?.visibility,
       filterable: false,
       resizable: true,
     },
@@ -83,10 +87,11 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
       renderHeader: () => <>{t('pages.admin.innovationHubs.fields.host')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.about.provider?.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.about.provider?.profile.displayName,
+      renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile.displayName}</>,
+      valueGetter: (_, row: GetterParams) => row?.about.provider?.profile.displayName,
       filterable: false,
       resizable: true,
+      flex: 1,
     },
   ];
 
@@ -148,7 +153,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
             actions={[
               {
                 name: 'add',
-                render: ({ row }: { row: Space }) => {
+                render: ({ row }: RenderParams) => {
                   if (itemIds.includes(row.id)) {
                     return <>{t('common.added')}</>;
                   } else {
@@ -161,7 +166,10 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                 },
               },
             ]}
-            pageSize={10}
+            paginationModel={{
+              page: 0,
+              pageSize: 10,
+            }}
             dependencies={[spaces, loadingItemId]}
           />
         </Gutters>

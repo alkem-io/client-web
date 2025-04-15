@@ -3,7 +3,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import JourneyTile from '@/domain/space/components/cards/JourneyTile';
+import SpaceTile from '@/domain/space/components/cards/SpaceTile';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -92,7 +92,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
         <PageContentBlockGrid disablePadding>
           <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
             {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => (
-              <JourneyTile
+              <SpaceTile
                 key={contributionItem.id}
                 journey={{
                   about: contributionItem.about,

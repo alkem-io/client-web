@@ -2,52 +2,59 @@ import { useMemo, useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
-import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/space/context/useSpace';
-import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
-import PreviewContributorDialog from './PreviewContributorDialog';
+import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
 import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import SearchField from '@/core/ui/search/SearchField';
+import useVirtualContributorSpaceBoK from '@/domain/community/virtualContributor/useVirtualContributorSpaceBoK';
+import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
+import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, spaceLevel, loading: urlResolverLoading } = useUrlResolver();
   const { space } = useSpace();
-  const roleSetId = space?.about.membership?.roleSetID!;
+  const { about, level } = space;
+  const roleSetId = about?.membership!.roleSetID!;
 
-  const { virtualContributors } = useRoleSetManager({
-    roleSetId,
-    relevantRoles: [RoleName.Member],
-    contributorTypes: [RoleSetContributorType.Virtual],
-    fetchContributors: true,
-  });
+  const [getVcProvider] = useVirtualContributorProviderLazyQuery();
 
   const {
-    getAvailableVirtualContributors,
-    getAvailableVirtualContributorsInLibrary,
-    inviteExistingUser,
-    onAddVirtualContributor,
-    getBoKProfile,
+    virtualContributorAdmin: {
+      members: virtualContributors,
+      onAdd: onAddVirtualContributor,
+      inviteExisting: inviteExistingVirtualContributor,
+    },
     permissions,
-    availableVCsLoading,
-  } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
+    loading,
+  } = useCommunityAdmin({ roleSetId });
+
+  const {
+    virtualContributorAdmin: {
+      getAvailable: getAvailableVirtualContributors,
+      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+    },
+  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceL0Id: space.id });
+
+  const { getBoKProfile } = useVirtualContributorSpaceBoK();
 
   const [filter, setFilter] = useState('');
   const [inputValue, setInputValue] = useState('');
@@ -60,7 +67,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
   const [action, setAction] = useState<'add' | 'invite'>();
-  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
+  const [selectedVirtualContributor, setSelectedVirtualContributor] = useState<ContributorProps>();
+  const [selectedVcProvider, setSelectedVcProvider] = useState<ProviderProfile>();
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const getContributorsBoKProfile = async (vcId: string) => {
@@ -75,13 +83,14 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     return await getBoKProfile(bodyOfKnowledgeID);
   };
 
-  const onContributorClick = async (id: string) => {
-    setSelectedVirtualContributorId(id);
-    setActionButtonDisabled(false);
-    setOpenPreviewDialog(true);
+  const getProvider = async (vcId: string) => {
+    const providerData = await getVcProvider({
+      variables: {
+        id: vcId,
+      },
+    });
 
-    const vcBoK = await getContributorsBoKProfile(id);
-    setBoKProfile(vcBoK);
+    setSelectedVcProvider(providerData?.data?.lookup.virtualContributor?.provider?.profile);
   };
 
   const onAccountContributorClick = (id: string) => {
@@ -101,11 +110,25 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     );
   };
 
-  const onAddClick = async () => {
-    setActionButtonDisabled(true);
-    const result = await onAddVirtualContributor(selectedVirtualContributorId);
+  const onContributorClick = async (id: string) => {
+    setSelectedVirtualContributor(getContributorById(id));
+    setActionButtonDisabled(false);
+    setOpenPreviewDialog(true);
 
-    if (result) {
+    const vcBoK = await getContributorsBoKProfile(id);
+    setBoKProfile(vcBoK);
+  };
+
+  const onAddClick = async () => {
+    if (!selectedVirtualContributor?.id) {
+      return;
+    }
+
+    setActionButtonDisabled(true);
+
+    try {
+      await onAddVirtualContributor(selectedVirtualContributor.id);
+
       notify(
         t('components.inviteContributorsDialog.successfullyAdded', {
           contributor: t('community.virtualContributor'),
@@ -113,6 +136,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
         'success'
       );
       setOpenPreviewDialog(false);
+    } catch (error) {
+      console.error('Error adding virtual contributor:', error);
     }
   };
 
@@ -125,14 +150,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     setActionButtonDisabled(false);
     setOpenInviteDialog(false);
     setOpenPreviewDialog(false);
+    setSelectedVirtualContributor(undefined);
   };
 
-  const selectedContributor = selectedVirtualContributorId
-    ? getContributorById(selectedVirtualContributorId)
-    : undefined;
-
-  const isLoading = availableVCsLoading || urlResolverLoading;
-  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !isLoading;
+  const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !loading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -174,7 +195,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     const fetchVirtualContributors = async () => {
       try {
         const [accountVCs, libraryVCs] = await Promise.all([
-          getAvailableVirtualContributors(undefined, false),
+          getAvailableVirtualContributors(undefined),
           getAvailableVirtualContributorsInLibrary(undefined),
         ]);
 
@@ -222,7 +243,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const isEmpty =
     (!availableOnAccount || availableOnAccount.length === 0) &&
     (!availableInLibrary || availableInLibrary.length === 0) &&
-    !isLoading;
+    !loading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -263,7 +284,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
             </Gutters>
           )}
 
-          {isLoading ? (
+          {loading ? (
             <Loading />
           ) : (
             <InviteContributorsList
@@ -279,24 +300,35 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {t('buttons.close')}
         </Button>
       </DialogActions>
-      {openInviteDialog && selectedVirtualContributorId && (
+      {openInviteDialog && selectedVirtualContributor?.id && (
         <InviteVirtualContributorDialog
           title={t('components.invitations.inviteExistingVCDialog.title')}
           spaceDisplayName={''}
           open={openInviteDialog}
           onClose={onCloseInvite}
-          contributorId={selectedVirtualContributorId}
-          onInviteUser={inviteData => inviteExistingUser({ roleSetId, ...inviteData })}
+          contributorId={selectedVirtualContributor.id!}
+          onInviteVirtualContributor={inviteData => inviteExistingVirtualContributor({ ...inviteData })}
         />
       )}
-      {openPreviewDialog && selectedContributor && (
+      {openPreviewDialog && selectedVirtualContributor && (
         <PreviewContributorDialog
           open={openPreviewDialog}
           onClose={() => setOpenPreviewDialog(false)}
-          contributor={selectedContributor}
+          contributor={selectedVirtualContributor}
+          provider={selectedVcProvider}
           actions={renderActions()}
+          getProvider={getProvider}
         >
-          <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedContributor} />
+          {Boolean(selectedVirtualContributor?.profile?.description) && (
+            <PageContentBlock disableGap>
+              <ProfileDetail
+                title={t('components.profile.fields.description.title')}
+                value={selectedVirtualContributor?.profile?.description}
+                aria-label="description"
+              />
+            </PageContentBlock>
+          )}
+          <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedVirtualContributor} />
         </PreviewContributorDialog>
       )}
     </DialogWithGrid>

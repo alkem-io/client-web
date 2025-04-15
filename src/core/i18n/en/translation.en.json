@@ -626,6 +626,10 @@
     "removeGuidelinesConfirmationDialog": {
       "title": "Remove Community Guidelines Content",
       "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add Member",
+      "content": "This member must be added to the parent space first."
     }
   },
   "callout": {
@@ -1743,7 +1747,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "About",
-    "copyright": "© 2024 Alkemio B.V."
+    "copyright": "© 2025 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
@@ -3267,5 +3271,8 @@
         "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
       }
     }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
   }
 }
