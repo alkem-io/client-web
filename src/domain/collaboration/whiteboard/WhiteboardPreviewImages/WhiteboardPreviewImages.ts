@@ -1,4 +1,4 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import getWhiteboardPreviewDimensions from './getWhiteboardPreviewDimensions';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
