@@ -3302,5 +3302,8 @@
         "description": "crwdns21132:0crwdne21132:0"
       }
     }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "crwdns36841:0crwdne36841:0"
   }
 }
