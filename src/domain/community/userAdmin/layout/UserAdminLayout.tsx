@@ -1,10 +1,8 @@
-import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { useUserContext } from '@/domain/community/user';
 import UserPageBanner from '@/domain/community/user/layout/UserPageBanner';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
@@ -31,11 +29,9 @@ interface UserAdminLayoutProps extends PropsWithChildren {
 const UserAdminLayout: FC<UserAdminLayoutProps> = props => {
   const { user, loading } = useUserContext();
 
-  // Add credentials tab is SSI is enabled:
-  const { isFeatureEnabled } = useConfig();
-  if (isFeatureEnabled(PlatformFeatureFlagName.Ssi)) {
-    tabs.push(UserAdminTabs.find(tab => tab.section === SettingsSection.Credentials)!);
-  }
+  // if (isFeatureEnabled(PlatformFeatureFlagName.Ssi)) {
+  //   tabs.push(UserAdminTabs.find(tab => tab.section === SettingsSection.Credentials)!);
+  // }
 
   const { t } = useTranslation();
 
