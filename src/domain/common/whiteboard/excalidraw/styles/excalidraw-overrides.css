@@ -1,0 +1,22 @@
+/**
+ * Fix Mermaid dialog not showing in the right place when the page is scrolled #8038
+ */
+.excalidraw.excalidraw-modal-container {
+  position: fixed;
+}
+
+/**
+ * Hide the Library button
+ */
+
+.excalidraw .sidebar-trigger.default-sidebar-trigger {
+  display: none;
+}
+
+.excalidraw .excalidraw-button.sidebar-tab-trigger[aria-controls$=":-content-library"] {
+  display: none;
+}
+
+.excalidraw .layer-ui__library {
+  display: none;
+}

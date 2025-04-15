@@ -13,6 +13,8 @@ import { Actions } from '@/core/ui/actions/Actions';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption } from '@/core/ui/typography';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface FormValues {
   collaborationTemplateSelectedId: string;
@@ -34,6 +36,13 @@ const SelectDefaultCollaborationTemplateDialog = ({
   onSelectCollaborationTemplate: onSelectInnovationFlow,
 }: SelectDefaultCollaborationTemplateDialogProps) => {
   const { t } = useTranslation();
+  const {
+    space: {
+      about: {
+        profile: { url: spaceUrl },
+      },
+    },
+  } = useSpace();
   const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
     useLoadingState(onSelectInnovationFlow);
 
@@ -78,7 +87,12 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 <Trans
                   i18nKey="pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.description"
                   components={{
-                    library: <RouterLink to={`../../${SettingsSection.Templates}`} underline="always" />,
+                    library: (
+                      <RouterLink
+                        to={`${buildSettingsUrl(spaceUrl)}/${SettingsSection.Templates}`}
+                        underline="always"
+                      />
+                    ),
                     br: <br />,
                   }}
                 />

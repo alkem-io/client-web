@@ -33,7 +33,7 @@ import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.mo
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;

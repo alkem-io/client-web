@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.87.2",
+  "version": "0.88.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "repository": {
     "type": "git",
@@ -78,7 +78,7 @@
     "**/@emotion/styled": "^11.0.0"
   },
   "dependencies": {
-    "@alkemio/excalidraw": "0.17.1-alkemio-8",
+    "@alkemio/excalidraw": "0.18.0-alkemio-1",
     "@apollo/client": "^3.10.8",
     "@elastic/apm-rum": "^5.12.0",
     "@elastic/apm-rum-react": "^1.4.2",
@@ -127,7 +127,6 @@
     "lodash": "^4.17.21",
     "mdast-builder": "^1.1.1",
     "nanoid": "^3.3.6",
-    "qrcode": "^1.5.0",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-calendar": "^4.0.0",
@@ -171,7 +170,6 @@
     "@sentry/vite-plugin": "^2.7.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/js-cookie": "^3.0.2",
-    "@types/qrcode": "^1.4.2",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-calendar": "^3.9.0",
     "@types/react-copy-to-clipboard": "^5.0.0",

@@ -12,7 +12,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
-import ContributionsView from '@/domain/community/contributor/Contributions/ContributionsView';
+import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
 import { CaptionSmall } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -92,13 +92,13 @@ export const OrganizationPageView = ({
           />
         )}
         {filteredMemberships.length > 0 && (
-          <ContributionsView
+          <TilesContributionsView
             title={t('components.contributions.leadSpacesTitle')}
             contributions={filteredMemberships}
           />
         )}
         {remainingMemberships.length > 0 ? (
-          <ContributionsView
+          <TilesContributionsView
             title={t('components.contributions.allMembershipsTitle')}
             contributions={remainingMemberships}
           />

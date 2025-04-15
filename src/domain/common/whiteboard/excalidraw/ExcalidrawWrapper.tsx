@@ -1,13 +1,13 @@
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type {
   BinaryFileData,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
   ExportOpts,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash';
@@ -43,6 +43,7 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   await import('@alkemio/excalidraw/index.css');
+  await import('./styles/excalidraw-overrides.css');
   return { default: Excalidraw };
 });
 

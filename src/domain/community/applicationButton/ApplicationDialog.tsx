@@ -14,8 +14,7 @@ import { Button, DialogContent } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { useApplicationDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useApplicationDialogQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
@@ -52,10 +51,9 @@ const ApplicationDialog = ({
   const communityName = spaceAbout?.profile.displayName;
   const applicationForm = spaceAbout?.membership.applicationForm;
   const questions = applicationForm?.questions ?? [];
-  const roleSetId = spaceAbout?.membership.roleSetID!;
+  const roleSetId = spaceAbout?.membership.roleSetID;
   const communityGuidelines = spaceAbout?.guidelines.profile;
-
-  const { applyForEntryRoleOnRoleSet, isApplying } = useRoleSetApplicationsAndInvitations({ roleSetId });
+  const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation();
 
   const initialValues: Record<string, string> = useMemo(
     () => questions.reduce((acc, val) => ({ ...acc, [val.question]: '' }), {} as Record<string, string>),
@@ -102,7 +100,12 @@ const ApplicationDialog = ({
     }
     const requiredRoleSetId = ensurePresence(roleSetId);
 
-    await applyForEntryRoleOnRoleSet(requiredRoleSetId, applicationQuestions);
+    await applyForEntryRoleOnRoleSet({
+      variables: {
+        roleSetId: requiredRoleSetId,
+        questions: applicationQuestions,
+      },
+    });
     onClose();
     onApply?.();
   };

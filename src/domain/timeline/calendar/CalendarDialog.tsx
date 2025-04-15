@@ -15,7 +15,7 @@ import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import EditButton from '@/core/ui/actions/EditButton';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
 

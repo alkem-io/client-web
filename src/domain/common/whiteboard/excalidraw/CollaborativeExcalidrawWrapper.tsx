@@ -11,13 +11,13 @@ import { useTick } from '@/core/utils/time/tick';
 import { useUserContext } from '@/domain/community/user';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import type {
   AppState,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
@@ -33,6 +33,7 @@ const SAVE_FILE_TO_DISK = true;
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   await import('@alkemio/excalidraw/index.css');
+  await import('./styles/excalidraw-overrides.css');
   return { default: Excalidraw };
 });
 
