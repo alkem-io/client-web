@@ -1,4 +1,4 @@
-import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
+import { Box, BoxProps, Link, Skeleton, styled, useTheme } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
@@ -9,7 +9,6 @@ import { SpaceLevel, SpaceVisibility, VisualType } from '@/core/apollo/generated
 import { useSpace } from '../../../context/useSpace';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
-import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
 import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
