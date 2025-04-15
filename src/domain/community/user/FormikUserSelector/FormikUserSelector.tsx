@@ -28,7 +28,7 @@ type FormikUserSelectorProps = {
   name: string;
   required?: boolean;
   readonly?: boolean;
-  onChange?: (contributorIds: string[]) => void;
+  onChange?: (invitedContributorIDs: string[]) => void;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;

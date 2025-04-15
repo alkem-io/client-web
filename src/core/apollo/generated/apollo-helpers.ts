@@ -1377,17 +1377,10 @@ export type DocumentFieldPolicy = {
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ExternalConfigKeySpecifier = (
-  | 'apiKey'
-  | 'assistantId'
-  | 'externalConfig'
-  | 'model'
-  | ExternalConfigKeySpecifier
-)[];
+export type ExternalConfigKeySpecifier = ('apiKey' | 'assistantId' | 'model' | ExternalConfigKeySpecifier)[];
 export type ExternalConfigFieldPolicy = {
   apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   assistantId?: FieldPolicy<any> | FieldReadFunction<any>;
-  externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   model?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type FileStorageConfigKeySpecifier = ('maxFileSize' | FileStorageConfigKeySpecifier)[];
@@ -2215,8 +2208,7 @@ export type MutationKeySpecifier = (
   | 'eventOnOrganizationVerification'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
-  | 'inviteContributorsEntryRoleOnRoleSet'
-  | 'inviteUserToPlatformAndRoleSet'
+  | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
   | 'messageUser'
@@ -2255,6 +2247,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
+  | 'updateClassificationTagset'
   | 'updateCollaborationFromTemplate'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
@@ -2381,8 +2374,7 @@ export type MutationFieldPolicy = {
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteContributorsEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2421,6 +2413,7 @@ export type MutationFieldPolicy = {
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCollaborationFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3101,6 +3094,17 @@ export type RoleSetFieldPolicy = {
   usersInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoleSetInvitationResultKeySpecifier = (
+  | 'invitation'
+  | 'platformInvitation'
+  | 'type'
+  | RoleSetInvitationResultKeySpecifier
+)[];
+export type RoleSetInvitationResultFieldPolicy = {
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
@@ -4910,6 +4914,10 @@ export type StrictTypedTypePolicies = {
   RoleSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RoleSetKeySpecifier | (() => undefined | RoleSetKeySpecifier);
     fields?: RoleSetFieldPolicy;
+  };
+  RoleSetInvitationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoleSetInvitationResultKeySpecifier | (() => undefined | RoleSetInvitationResultKeySpecifier);
+    fields?: RoleSetInvitationResultFieldPolicy;
   };
   RolesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RolesResultKeySpecifier | (() => undefined | RolesResultKeySpecifier);

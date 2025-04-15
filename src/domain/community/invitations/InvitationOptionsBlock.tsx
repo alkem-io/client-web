@@ -10,17 +10,13 @@ import RadioButton from '@/domain/shared/components/RadioButtons/RadioButton';
 import { Caption } from '@/core/ui/typography';
 import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
-import {
-  InviteContributorsData,
-  InviteExternalUserData,
-} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import InviteExternalUserDialog from './InviteExternalUserDialog';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 type InvitationOptionsBlockProps = {
   spaceDisplayName: string | undefined;
-  inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
-  inviteExternalUser: (params: InviteExternalUserData) => Promise<unknown>;
+  inviteUsers: (params: InviteContributorsData) => Promise<unknown>;
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
@@ -37,8 +33,7 @@ const AVAILABLE_COMMUNITY_ROLES = [RoleName.Member, RoleName.Admin, RoleName.Lea
 
 const InvitationOptionsBlock = ({
   spaceDisplayName = '',
-  inviteExistingUser,
-  inviteExternalUser,
+  inviteUsers,
   currentApplicationsUserIds,
   currentInvitationsUserIds,
   currentMembersIds,
@@ -102,7 +97,7 @@ const InvitationOptionsBlock = ({
         spaceDisplayName={spaceDisplayName}
         open={currentInvitation === UserInvite.Existing}
         onClose={closeInvitationDialog}
-        onInviteUser={inviteExistingUser}
+        onInviteUser={inviteUsers}
         currentApplicationsUserIds={currentApplicationsUserIds}
         currentInvitationsUserIds={currentInvitationsUserIds}
         currentMembersIds={currentMembersIds}
@@ -113,7 +108,7 @@ const InvitationOptionsBlock = ({
         open={currentInvitation === UserInvite.External}
         spaceDisplayName={spaceDisplayName}
         onClose={closeInvitationDialog}
-        onInviteUser={inviteExternalUser}
+        onInviteUser={inviteUsers}
         communityRoles={AVAILABLE_COMMUNITY_ROLES}
       />
     </>

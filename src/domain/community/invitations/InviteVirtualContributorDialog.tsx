@@ -10,16 +10,13 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/core/ui/actions/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
-import {
-  InviteContributorsData,
-  InviteUserData,
-} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useVirtualContributorProfileQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ProfileChip } from '../contributor/ProfileChip/ProfileChip';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 type MessageDialogProps = {
   open: boolean;
@@ -53,8 +50,8 @@ const InviteVirtualContributorDialog = ({
     skip: !contributorId,
   });
 
-  const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteUserData) => {
-    await onInviteVirtualContributor({ ...values, contributorIds: [contributorId] });
+  const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteContributorsData) => {
+    await onInviteVirtualContributor({ ...values, invitedContributorIDs: [contributorId] });
     if (!error) {
       notify(t('community.invitationSent'), 'success');
       onClose();
@@ -65,11 +62,13 @@ const InviteVirtualContributorDialog = ({
     message: yup.string(),
   });
 
-  const initialValues: InviteUserData = {
-    message: t('components.invitations.defaultVCInvitationMessage', {
+  const initialValues: InviteContributorsData = {
+    welcomeMessage: t('components.invitations.defaultVCInvitationMessage', {
       space: spaceDisplayName,
       name: vcProfile?.lookup.virtualContributor?.profile.displayName ?? '',
     }) as string,
+    invitedUserEmails: [],
+    invitedContributorIDs: [],
   };
 
   return (
