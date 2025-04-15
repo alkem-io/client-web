@@ -1490,6 +1490,7 @@ export const VirtualContributorFullFragmentDoc = gql`
       bodyOfKnowledge
       bodyOfKnowledgeType
       bodyOfKnowledgeID
+      engine
     }
   }
   ${VisualUriFragmentDoc}
