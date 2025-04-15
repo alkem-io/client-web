@@ -1,4 +1,4 @@
-import { Box, Skeleton, useTheme } from '@mui/material';
+import { Box, IconButton, Skeleton, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -13,6 +13,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { EditOutlined } from '@mui/icons-material';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
@@ -49,13 +50,26 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl 
   const hasGuidelines = Boolean(communityGuidelines?.profile.description);
   const isReadMoreVisible =
     Number(communityGuidelinesDescription?.length) > 0 || Number(communityGuidelinesReferences?.length) > 0;
-  const showGuidelines =
-    hasGuidelines || communityGuidelines?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
+  const hasEditPrivilege = communityGuidelines?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
+  const showGuidelines = hasGuidelines || hasEditPrivilege;
 
   return showGuidelines ? (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title={communityGuidelines?.profile.displayName} />
+        <PageContentBlockHeader
+          title={communityGuidelines?.profile.displayName}
+          actions={
+            hasEditPrivilege && (
+              <IconButton
+                component={RouterLink}
+                to={`${buildSettingsUrl(journeyUrl || '')}/community`}
+                sx={{ mr: '-8px', color: 'primary.main' }}
+              >
+                <EditOutlined color="primary" />
+              </IconButton>
+            )
+          }
+        />
         {isReadMoreVisible ? (
           <>
             <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -76,9 +90,6 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl 
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            <Caption component={RouterLink} to={`${buildSettingsUrl(journeyUrl || '')}/community`}>
-              {t('community.communityGuidelines.communityGuidelinesRedirect')}
-            </Caption>
           </>
         )}
       </PageContentBlock>
