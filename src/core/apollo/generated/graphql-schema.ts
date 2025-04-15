@@ -18506,6 +18506,7 @@ export type VirtualContributorFullFragment = {
         bodyOfKnowledge?: string | undefined;
         bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
         bodyOfKnowledgeID?: string | undefined;
+        engine: AiPersonaEngine;
       }
     | undefined;
 };
@@ -22669,6 +22670,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
               bodyOfKnowledge?: string | undefined;
               bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
               bodyOfKnowledgeID?: string | undefined;
+              engine: AiPersonaEngine;
             }
           | undefined;
       }>;
@@ -22730,6 +22732,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                     bodyOfKnowledge?: string | undefined;
                     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                     bodyOfKnowledgeID?: string | undefined;
+                    engine: AiPersonaEngine;
                   }
                 | undefined;
             }>;
@@ -22796,6 +22799,7 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                       bodyOfKnowledge?: string | undefined;
                       bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                       bodyOfKnowledgeID?: string | undefined;
+                      engine: AiPersonaEngine;
                     }
                   | undefined;
               }>;

@@ -40,6 +40,7 @@ export interface ApplicationButtonProps {
   extended?: boolean;
   spaceLevel: SpaceLevel | undefined;
   onUpdateInvitation?: () => void | Promise<void>;
+  noAuthApplyButtonText?: string;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
@@ -68,6 +69,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       component: Button = MuiButton,
       extended = false,
       onUpdateInvitation,
+      noAuthApplyButtonText,
     },
     ref
   ) => {
@@ -160,7 +162,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             to={buildLoginUrl(applyUrl)}
             sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
           >
-            {t('components.application-button.apply-not-signed')}
+            {noAuthApplyButtonText ?? t('components.application-button.apply-not-signed')}
           </Button>
         );
       }
