@@ -67,7 +67,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
   const [action, setAction] = useState<'add' | 'invite'>();
-  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
+  const [selectedVirtualContributor, setSelectedVirtualContributor] = useState<ContributorProps>();
   const [selectedVcProvider, setSelectedVcProvider] = useState<ProviderProfile>();
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
@@ -93,15 +93,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     setSelectedVcProvider(providerData?.data?.lookup.virtualContributor?.provider?.profile);
   };
 
-  const onContributorClick = async (id: string) => {
-    setSelectedVirtualContributorId(id);
-    setActionButtonDisabled(false);
-    setOpenPreviewDialog(true);
-
-    const vcBoK = await getContributorsBoKProfile(id);
-    setBoKProfile(vcBoK);
-  };
-
   const onAccountContributorClick = (id: string) => {
     setAction('add');
     onContributorClick(id);
@@ -119,11 +110,25 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     );
   };
 
-  const onAddClick = async () => {
-    setActionButtonDisabled(true);
-    const result = await onAddVirtualContributor(selectedVirtualContributorId);
+  const onContributorClick = async (id: string) => {
+    setSelectedVirtualContributor(getContributorById(id));
+    setActionButtonDisabled(false);
+    setOpenPreviewDialog(true);
 
-    if (result) {
+    const vcBoK = await getContributorsBoKProfile(id);
+    setBoKProfile(vcBoK);
+  };
+
+  const onAddClick = async () => {
+    if (!selectedVirtualContributor?.id) {
+      return;
+    }
+
+    setActionButtonDisabled(true);
+
+    try {
+      await onAddVirtualContributor(selectedVirtualContributor.id);
+
       notify(
         t('components.inviteContributorsDialog.successfullyAdded', {
           contributor: t('community.virtualContributor'),
@@ -131,6 +136,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
         'success'
       );
       setOpenPreviewDialog(false);
+    } catch (error) {
+      console.error('Error adding virtual contributor:', error);
     }
   };
 
@@ -143,11 +150,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     setActionButtonDisabled(false);
     setOpenInviteDialog(false);
     setOpenPreviewDialog(false);
+    setSelectedVirtualContributor(undefined);
   };
-
-  const selectedContributor = selectedVirtualContributorId
-    ? getContributorById(selectedVirtualContributorId)
-    : undefined;
 
   const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !loading;
   const availableActions =
@@ -296,35 +300,35 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {t('buttons.close')}
         </Button>
       </DialogActions>
-      {openInviteDialog && selectedVirtualContributorId && (
+      {openInviteDialog && selectedVirtualContributor?.id && (
         <InviteVirtualContributorDialog
           title={t('components.invitations.inviteExistingVCDialog.title')}
           spaceDisplayName={''}
           open={openInviteDialog}
           onClose={onCloseInvite}
-          contributorId={selectedVirtualContributorId}
+          contributorId={selectedVirtualContributor.id!}
           onInviteVirtualContributor={inviteData => inviteExistingVirtualContributor({ ...inviteData })}
         />
       )}
-      {openPreviewDialog && selectedContributor && (
+      {openPreviewDialog && selectedVirtualContributor && (
         <PreviewContributorDialog
           open={openPreviewDialog}
           onClose={() => setOpenPreviewDialog(false)}
-          contributor={selectedContributor}
+          contributor={selectedVirtualContributor}
           provider={selectedVcProvider}
           actions={renderActions()}
           getProvider={getProvider}
         >
-          {Boolean(selectedContributor?.profile?.description) && (
+          {Boolean(selectedVirtualContributor?.profile?.description) && (
             <PageContentBlock disableGap>
               <ProfileDetail
                 title={t('components.profile.fields.description.title')}
-                value={selectedContributor?.profile?.description}
+                value={selectedVirtualContributor?.profile?.description}
                 aria-label="description"
               />
             </PageContentBlock>
           )}
-          <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedContributor} />
+          <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedVirtualContributor} />
         </PreviewContributorDialog>
       )}
     </DialogWithGrid>
