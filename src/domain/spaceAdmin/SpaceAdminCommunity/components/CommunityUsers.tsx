@@ -24,11 +24,12 @@ type GetterParams = CommunityMemberUserFragmentWithRoles | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 10,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -83,7 +84,6 @@ const CommunityUsers = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
@@ -97,7 +97,6 @@ const CommunityUsers = ({
     {
       field: 'email',
       headerName: t('common.email'),
-      renderHeader: () => <>{t('common.email')}</>,
       flex: 1,
       resizable: true,
       filterable: false,
@@ -105,14 +104,12 @@ const CommunityUsers = ({
     {
       field: 'isLead',
       headerName: t('common.role'),
-      renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
       filterable: false,
     },
     {
       field: 'isAdmin',
       headerName: t('common.authorization'),
-      renderHeader: () => <>{t('common.authorization')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isAdmin ? t('common.admin') : ''}</>,
       filterable: false,
     },
@@ -180,6 +177,7 @@ const CommunityUsers = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
             disableDelete={() => true}
           />

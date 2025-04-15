@@ -49,7 +49,7 @@ const ImageWithCaption = ({
           bottom: captionPosition === 'bottom' ? 0 : undefined,
         }}
       >
-        <Caption color={theme => theme.palette.primary.main}>{caption}</Caption>
+        <Caption sx={{ color: theme => theme.palette.primary.main }}>{caption}</Caption>
       </CaptionContainer>
     </Container>
   );

@@ -28,11 +28,12 @@ type GetterParams = ContributorViewProps | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 10,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -81,7 +82,6 @@ const CommunityVirtualContributors = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
@@ -197,6 +197,7 @@ const CommunityVirtualContributors = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
           />
         )}

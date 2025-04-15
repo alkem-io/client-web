@@ -6,14 +6,13 @@ import PageContent from '@/core/ui/content/PageContent';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { useMemo, useState } from 'react';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { OutlinedInput } from '@mui/material';
+import { Button, OutlinedInput } from '@mui/material';
 
 type FormValueType = {
   prompt: string;
@@ -88,14 +87,14 @@ const PromptConfig = ({ vc }) => {
                 maxRows={35}
               />
               <Actions>
-                <LoadingButton
+                <Button
                   variant="contained"
                   loading={loading || updateLoading}
                   disabled={!isValid}
                   onClick={handleSubmit}
                 >
                   {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
-                </LoadingButton>
+                </Button>
               </Actions>
             </>
           </Formik>

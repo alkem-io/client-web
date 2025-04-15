@@ -230,7 +230,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
   if (loading || adminTemplatesLoading) return <Loading text={'Loading spaces'} />;
   return (
-    <LayoutSwitcher currentTab={SettingsSection.Subsubspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
+    <LayoutSwitcher currentTab={SettingsSection.Subspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <>
         {templatesEnabled && (
           <PageContentBlock>

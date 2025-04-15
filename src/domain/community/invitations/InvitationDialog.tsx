@@ -8,13 +8,12 @@ import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
-import { LoadingButton } from '@mui/lab';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { Box, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
@@ -145,7 +144,7 @@ const InvitationDialog = ({
                 <DialogActions>
                   {actions}
                   <FlexSpacer />
-                  <LoadingButton
+                  <Button
                     startIcon={<CloseOutlinedIcon />}
                     onClick={() => rejectInvitation(invitation.invitation.id)}
                     variant="outlined"
@@ -153,8 +152,8 @@ const InvitationDialog = ({
                     disabled={updating && !rejecting}
                   >
                     {t('community.pendingMembership.invitationDialog.actions.reject')}
-                  </LoadingButton>
-                  <LoadingButton
+                  </Button>
+                  <Button
                     startIcon={<CheckOutlined />}
                     onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.about.profile.url)}
                     variant="contained"
@@ -162,7 +161,7 @@ const InvitationDialog = ({
                     disabled={updating && !accepting}
                   >
                     {getAcceptLabel(invitation)}
-                  </LoadingButton>
+                  </Button>
                 </DialogActions>
               </>
             )

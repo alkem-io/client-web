@@ -1,6 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { Close } from '@mui/icons-material';
 import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
 import { BlockTitle, Caption } from '@/core/ui/typography';
@@ -71,7 +70,7 @@ const ContributionDetailsCard = ({
         actions={
           enableLeave && (
             <CardActions justifyContent="end" flexBasis="100%">
-              <LoadingButton
+              <Button
                 variant="outlined"
                 startIcon={<Close />}
                 onClick={event => {
@@ -81,7 +80,7 @@ const ContributionDetailsCard = ({
                 loading={leavingCommunity}
               >
                 {t('buttons.leave')}
-              </LoadingButton>
+              </Button>
             </CardActions>
           )
         }

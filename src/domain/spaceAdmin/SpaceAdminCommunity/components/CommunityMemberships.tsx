@@ -21,11 +21,12 @@ import { InvitationModel } from '@/domain/access/model/InvitationModel';
 type RenderParams = GridRenderCellParams<MembershipTableItem>;
 type GetterParams = MembershipTableItem | undefined;
 
+const PAGE_SIZE = 5;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 5,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -207,7 +208,6 @@ const CommunityMemberships = ({
     {
       field: 'displayName',
       headerName: t('fields.name'),
-      renderHeader: () => <>{t('fields.name')}</>,
       renderCell: ({ row }: RenderParams) => {
         if (row.type === MembershipType.PlatformInvitation) {
           return NO_DATA_PLACEHOLDER;
@@ -226,7 +226,6 @@ const CommunityMemberships = ({
     {
       field: 'email',
       headerName: t('common.email'),
-      renderHeader: () => <>{t('common.email')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.email}</>,
       valueGetter: (_, row: GetterParams) => row?.email,
       resizable: true,
@@ -238,14 +237,12 @@ const CommunityMemberships = ({
       headerName: t('common.date'),
       minWidth: 200,
       type: 'date',
-      renderHeader: () => <>{t('common.date')}</>,
       renderCell: ({ row }: RenderParams) => (row.createdDate ? formatDateTime(row.createdDate) : ''),
     },
     {
       field: 'state',
       headerName: t('common.status'),
       minWidth: 200,
-      renderHeader: () => <>{t('common.status')}</>,
       renderCell: ({ row }: RenderParams) => formatState(row, t),
       valueGetter: (_, row: GetterParams) => sortState(row),
       filterable: false,
@@ -254,7 +251,6 @@ const CommunityMemberships = ({
     {
       field: 'contributorType',
       headerName: t('common.type'),
-      renderHeader: () => <>{t('common.type')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.contributorType}</>,
       valueGetter: (_, row: GetterParams) => row?.contributorType,
       filterable: false,
@@ -327,6 +323,7 @@ const CommunityMemberships = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             canDelete={() => true}
             disableDelete={(row: GetterParams) => row?.state === 'approved'}
             onDelete={(row: GetterParams) => setDeletingItem(row)}

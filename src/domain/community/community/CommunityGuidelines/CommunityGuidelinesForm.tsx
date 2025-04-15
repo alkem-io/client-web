@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import Gutters from '@/core/ui/grid/Gutters';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -89,19 +88,19 @@ const CommunityGuidelinesForm = ({
 
               <Box display="flex" marginY={4} gap={1} justifyContent="flex-end">
                 {hasDeleteContentsButton && (
-                  <LoadingButton
+                  <Button
                     loading={loading}
                     variant="outlined"
                     disabled={!isValid}
                     onClick={() => setDeleteDialogOpen(true)}
                   >
                     {t('community.communityGuidelines.deleteCommunityGuidelines')}
-                  </LoadingButton>
+                  </Button>
                 )}
 
-                <LoadingButton disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>
+                <Button disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>
                   {t('common.update')}
-                </LoadingButton>
+                </Button>
               </Box>
             </Gutters>
           );
