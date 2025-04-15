@@ -3302,5 +3302,8 @@
         "description": "Een Virtual Contributor kan alleen communiceren binnen een Space. Weet je zeker dat je verder wilt gaan zonder ze toe te voegen aan een Space? U kunt de Virtual Contributor later nog steeds uitnodigen via het tabblad Community Space."
       }
     }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
   }
 }
