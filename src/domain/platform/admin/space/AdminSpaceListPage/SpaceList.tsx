@@ -35,9 +35,6 @@ export const SpaceList: FC = () => {
   const spaceList = useMemo(() => {
     return (
       spacesData?.spaces
-        .filter(space =>
-          (space.authorization?.myPrivileges ?? []).find(privilege => privilege === AuthorizationPrivilege.Update)
-        )
         .map(space => {
           if (space.visibility !== SpaceVisibility.Active) {
             return {
@@ -65,6 +62,9 @@ export const SpaceList: FC = () => {
             )
             .map(({ id }) => id);
 
+          const canUpdate = (space.authorization?.myPrivileges ?? []).find(
+            privilege => privilege === AuthorizationPrivilege.Update
+          );
           return {
             ...SearchableTableItemMapper()(space),
             spaceId: space.id,
@@ -72,6 +72,7 @@ export const SpaceList: FC = () => {
             visibility: space.visibility,
             activeLicensePlanIds,
             licensePlans: spaceLicensePlans,
+            canUpdate,
           };
         }) ?? []
     );

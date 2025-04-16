@@ -36,6 +36,7 @@ interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
   activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[] | undefined;
+  canUpdate: boolean;
 }
 
 const SpaceListItem = ({
@@ -44,6 +45,7 @@ const SpaceListItem = ({
   activeLicensePlanIds,
   licensePlans,
   visibility,
+  canUpdate,
   ...props
 }: SpaceListItemProps) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -128,12 +130,13 @@ const SpaceListItem = ({
                   title={t('components.nameSegment.nameID.title')}
                   placeholder={t('components.nameSegment.nameID.placeholder')}
                   required
+                  disabled={saving || !canUpdate}
                 />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
                   disablePortal={false}
-                  disabled={saving}
+                  disabled={saving || !canUpdate}
                 />
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
