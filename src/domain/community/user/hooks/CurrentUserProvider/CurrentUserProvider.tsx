@@ -1,8 +1,8 @@
 import {
-  refetchUserProviderQuery,
+  refetchCurrentUserFullQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
-  useUserProviderQuery,
+  useCurrentUserFullQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
@@ -10,7 +10,7 @@ import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
 import { toUserMetadata, UserMetadata } from '@/domain/community/user';
 
-export interface UserContextValue {
+export interface CurrentUserContextValue {
   user: UserMetadata | undefined;
   accountId: string | undefined;
   loading: boolean;
@@ -22,7 +22,7 @@ export interface UserContextValue {
   accountEntitlements: LicenseEntitlementType[];
 }
 
-const UserContext = createContext<UserContextValue>({
+const CurrentUserContext = createContext<CurrentUserContextValue>({
   user: undefined,
   accountId: undefined,
   loading: true,
@@ -34,14 +34,14 @@ const UserContext = createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider = ({ children }: PropsWithChildren) => {
+const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
   const {
     data: meData,
     loading: loadingMe,
     error: userProviderError,
-  } = useUserProviderQuery({ skip: !isAuthenticated });
+  } = useCurrentUserFullQuery({ skip: !isAuthenticated });
 
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
@@ -49,7 +49,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated });
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchUserProviderQuery()],
+    refetchQueries: [refetchCurrentUserFullQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
@@ -68,7 +68,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     }
 
     const myRoles = platformLevelAuthorizationData?.platform.roleSet.myRoles;
-    const myPrivileges = platformLevelAuthorizationData?.platform.authorization;
+    const myPrivileges = platformLevelAuthorizationData?.platform.authorization?.myPrivileges;
 
     return toUserMetadata(user, myPrivileges, myRoles);
   }, [user, meData, platformLevelAuthorizationData]);
@@ -81,7 +81,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
   const accountPrivileges = useMemo(() => user?.account?.authorization?.myPrivileges ?? [], [user]);
   const accountEntitlements = useMemo(() => user?.account?.license?.availableEntitlements ?? [], [user]);
 
-  const providedValue = useMemo<UserContextValue>(
+  const providedValue = useMemo<CurrentUserContextValue>(
     () => ({
       user: userMetadata,
       accountId,
@@ -110,8 +110,8 @@ const UserProvider = ({ children }: PropsWithChildren) => {
   return error ? (
     <ErrorPage error={error} />
   ) : (
-    <UserContext.Provider value={providedValue}>{children}</UserContext.Provider>
+    <CurrentUserContext.Provider value={providedValue}>{children}</CurrentUserContext.Provider>
   );
 };
 
-export { UserContext, UserProvider };
+export { CurrentUserContext, CurrentUserProvider as UserProvider };

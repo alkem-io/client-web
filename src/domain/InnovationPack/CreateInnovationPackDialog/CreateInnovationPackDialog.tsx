@@ -7,7 +7,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 
 const CreateInnovationPackDialog = ({
   accountId,
@@ -20,7 +20,7 @@ const CreateInnovationPackDialog = ({
 }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
   const userId = user?.user.id;
 
   const [createInnovationPack, { loading }] = useCreateInnovationPackMutation();

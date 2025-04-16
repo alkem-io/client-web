@@ -1,6 +1,5 @@
 import {
   AuthorizationPrivilege,
-  MyPrivilegesFragment,
   RoleName,
   SpaceLevel,
   TagsetReservedName,
@@ -30,17 +29,15 @@ export interface UserMetadata {
 
 export const toUserMetadata = (
   user: UserDetailsFragment | undefined,
-  platformLevelAuthorization: MyPrivilegesFragment | undefined,
+  platformAuthorizationPrivileges: AuthorizationPrivilege[] | undefined,
   myRoles: RoleName[] | undefined
 ): UserMetadata | undefined => {
   if (!user) {
     return;
   }
 
-  const myPrivileges = platformLevelAuthorization?.myPrivileges;
-
   const hasPlatformPrivilege = (privilege: AuthorizationPrivilege) => {
-    return myPrivileges?.includes(privilege);
+    return platformAuthorizationPrivileges?.includes(privilege);
   };
 
   const hasPlatformRole = (role: RoleName) => {

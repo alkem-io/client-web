@@ -12,7 +12,7 @@ import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
-import { UserProvider } from '@/domain/community/user/providers/UserProvider/UserProvider';
+import { UserProvider } from '@/domain/community/user/hooks/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';

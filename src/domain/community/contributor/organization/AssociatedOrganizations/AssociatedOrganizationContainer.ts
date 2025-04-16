@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
@@ -25,7 +25,7 @@ export const AssociatedOrganizationContainer = ({
   enableLeave,
   ...rendered
 }: OrganizationDetailsContainerProps) => {
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
   const userId = user?.user.id;
 
   const { data, loading, error } = useAssociatedOrganizationQuery({

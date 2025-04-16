@@ -16,7 +16,7 @@ import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import LanguageSelect from '@/core/ui/language/LanguageSelect';
@@ -55,7 +55,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
     const { setOpenDialog } = usePendingMembershipsDialog();
 
-    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
+    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useCurrentUserContext();
 
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 

@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../hooks/useUserContext';
+import { useCurrentUserContext } from '../hooks/useCurrentUserContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { useUserMetadata } from '../../../../_deprecatedToKeep/useUserMetadata';
+import { useUserMetadata } from '../../../../_deprecated/useUserMetadata';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const UserPageBanner = () => {
-  const { user: currentUser } = useUserContext();
+  const { user: currentUser } = useCurrentUserContext();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { user, loading } = useUserMetadata(userId);
 

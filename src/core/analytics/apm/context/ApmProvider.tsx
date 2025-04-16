@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { ApmBase } from '@elastic/apm-rum';
 import { useApmInit } from '@/core/analytics/apm/useApmInit';
-import { UserMetadata, useUserContext } from '@/domain/community/user';
+import { UserMetadata, useCurrentUserContext } from '@/domain/community/user';
 
 export interface ApmContextProps {
   apm?: ApmBase;
@@ -27,7 +27,7 @@ export const ApmProvider = ({ children }: PropsWithChildren) => {
 };
 
 export const ApmUserSetter = () => {
-  const { user, isAuthenticated } = useUserContext();
+  const { user, isAuthenticated } = useCurrentUserContext();
   const { setUser } = useContext(ApmContext);
 
   useEffect(() => user?.user && setUser({ ...user.user, isAuthenticated }), [user?.user, isAuthenticated]);

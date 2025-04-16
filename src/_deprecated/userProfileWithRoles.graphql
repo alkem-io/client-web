@@ -1,11 +1,11 @@
-query userProfile($input: UUID!) {
+query UserProfileWithRoles($userId: UUID!) {
   lookup {
-    user(ID: $input) {
+    user(ID: $userId) {
       isContactable
       ...UserDetails
     }
   }
-  rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
+  rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {
       id
@@ -26,15 +26,11 @@ query userProfile($input: UUID!) {
   }
   platform {
     authorization {
-      ...MyPrivileges
+      myPrivileges
     }
     roleSet {
       id
       myRoles
     }
   }
-}
-
-fragment MyPrivileges on Authorization {
-  myPrivileges
 }

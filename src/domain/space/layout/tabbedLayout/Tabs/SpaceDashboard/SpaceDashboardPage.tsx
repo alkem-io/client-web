@@ -8,7 +8,7 @@ import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboard
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
+import { useCurrentUserContext } from '@/domain/community/user/hooks/useCurrentUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { TabbedLayoutDialogsType } from '../../TabbedLayoutPage';
 import useNavigate from '@/core/routing/useNavigate';
@@ -19,7 +19,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
 
   const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
 
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
 
   const navigate = useNavigate();
 

@@ -6,7 +6,7 @@ import {
   useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import {
   SearchCategory,
   AuthorizationPrivilege,
@@ -37,7 +37,7 @@ export interface ChallengeExplorerContainerEntities {
 interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {}
 
 const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
-  const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
+  const { user: userMetadata, isAuthenticated, loading: loadingUser } = useCurrentUserContext();
 
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [membershipFilter, setMembershipFilter] = useState(SpacesExplorerMembershipFilter.All);

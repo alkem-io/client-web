@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import SingleInvitationFull from '@/domain/community/invitations/SingleInvitationFull';
 import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
-import { InvitationItem } from '@/domain/community/user/providers/UserProvider/InvitationItem';
+import { InvitationItem } from '@/domain/community/user/hooks/CurrentUserProvider/InvitationItem';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useNavigate from '@/core/routing/useNavigate';

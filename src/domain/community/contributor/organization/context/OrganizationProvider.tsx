@@ -1,6 +1,6 @@
 import { useOrganizationInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
+import { useCurrentUserContext } from '@/domain/community/user/hooks/useCurrentUserContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import React, { PropsWithChildren } from 'react';
 
@@ -23,7 +23,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 
 const OrganizationProvider = ({ children }: PropsWithChildren) => {
   const { organizationId, loading: resolvingOrganization } = useUrlResolver();
-  const { user, loading: isUserLoading } = useUserContext();
+  const { user, loading: isUserLoading } = useCurrentUserContext();
   const { data, loading: loadingOrganizationInfo } = useOrganizationInfoQuery({
     variables: {
       organizationId: organizationId!,

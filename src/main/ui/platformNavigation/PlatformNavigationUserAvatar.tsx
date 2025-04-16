@@ -1,5 +1,5 @@
 import React, { ReactElement, Ref } from 'react';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { Box, CircularProgress, Paper, useTheme } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { Person } from '@mui/icons-material';
@@ -19,7 +19,7 @@ interface PlatformNavigationUserAvatarProps {
 
 const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUserAvatarProps) => {
   const { t } = useTranslation();
-  const { user, isAuthenticated, loadingMe, platformRoles } = useUserContext();
+  const { user, isAuthenticated, loadingMe, platformRoles } = useCurrentUserContext();
 
   const theme = useTheme();
 

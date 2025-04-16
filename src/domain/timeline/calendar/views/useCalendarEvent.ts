@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
@@ -81,7 +81,7 @@ type useCalendarEventProvided = {
 };
 
 const useCalendarEvent = ({ eventId }: useCalendarEventProps): useCalendarEventProvided => {
-  const { user: userMetadata, isAuthenticated } = useUserContext();
+  const { user: userMetadata, isAuthenticated } = useCurrentUserContext();
 
   const user = userMetadata?.user;
 

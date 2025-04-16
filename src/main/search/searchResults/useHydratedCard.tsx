@@ -11,7 +11,7 @@ import {
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
+import { useCurrentUserContext } from '@/domain/community/user/hooks/useCurrentUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
@@ -195,7 +195,7 @@ interface UseHydrateCardProvided {
 }
 
 export const useHydrateCard = (): UseHydrateCardProvided => {
-  const { user: userMetadata } = useUserContext();
+  const { user: userMetadata } = useCurrentUserContext();
   const userId = userMetadata?.user?.id;
 
   const { data: rolesData } = useUserRolesSearchCardsQuery({

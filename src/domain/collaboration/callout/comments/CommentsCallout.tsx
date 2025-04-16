@@ -1,7 +1,7 @@
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo } from 'react';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -11,7 +11,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
@@ -41,7 +41,7 @@ const CommentsCallout = ({
   calloutActions = true,
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
-  const { user: userMetadata, isAuthenticated } = useUserContext();
+  const { user: userMetadata, isAuthenticated } = useCurrentUserContext();
   const { space } = useSpace();
   const myMembershipStatus = space?.about.membership?.myMembershipStatus;
   const user = userMetadata?.user;

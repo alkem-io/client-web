@@ -7,7 +7,7 @@ import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCa
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
+import { InvitationItem } from '../user/hooks/CurrentUserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';

@@ -1,5 +1,5 @@
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import UserPageBanner from '@/domain/community/user/layout/UserPageBanner';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
@@ -27,7 +27,7 @@ interface UserAdminLayoutProps extends PropsWithChildren {
 }
 
 const UserAdminLayout: FC<UserAdminLayoutProps> = props => {
-  const { user, loading } = useUserContext();
+  const { user, loading } = useCurrentUserContext();
 
   // if (isFeatureEnabled(PlatformFeatureFlagName.Ssi)) {
   //   tabs.push(UserAdminTabs.find(tab => tab.section === SettingsSection.Credentials)!);

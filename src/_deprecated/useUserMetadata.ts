@@ -1,11 +1,11 @@
-import { useUserProfileQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useUserProfileWithRolesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { toUserMetadata } from '@/domain/community/user';
 /**
  * @deprecated Try to avoid this one, refactor to remove it
  */
 export const useUserMetadata = (userId: string | undefined) => {
-  const { data, loading } = useUserProfileQuery({
-    variables: { input: userId! },
+  const { data, loading } = useUserProfileWithRolesQuery({
+    variables: { userId: userId! },
     skip: !userId,
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -16,7 +16,7 @@ export const useUserMetadata = (userId: string | undefined) => {
   });
 
   return {
-    user: toUserMetadata(data?.lookup.user, data?.platform.authorization, data?.platform.roleSet.myRoles),
+    user: toUserMetadata(data?.lookup.user, data?.platform.authorization?.myPrivileges, data?.platform.roleSet.myRoles),
     loading,
   };
 };

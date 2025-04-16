@@ -6,7 +6,7 @@ import {
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { PendingApplication } from '../user';
-import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
+import { InvitationItem } from '../user/hooks/CurrentUserProvider/InvitationItem';
 import {
   AuthorizationPrivilege,
   CommunityGuidelinesSummaryFragment,

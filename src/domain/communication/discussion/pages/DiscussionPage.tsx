@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,
@@ -31,7 +31,7 @@ import useNavigate from '@/core/routing/useNavigate';
 export const DiscussionPage = ({ discussionId, loading }: { discussionId: string | undefined; loading: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {

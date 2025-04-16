@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { useAuthorDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
@@ -16,7 +16,7 @@ export const useAuthorsDetails = (authorIds: string[]) => {
 
   const authors = useMemo(
     () =>
-      authorData?.users.map<Author>(author => {
+      authorData?.users.map<AuthorModel>(author => {
         return {
           id: author.id,
           displayName: author.profile.displayName,

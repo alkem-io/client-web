@@ -9,7 +9,7 @@ import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { InvitationItem } from '@/domain/community/user/providers/UserProvider/InvitationItem';
+import { InvitationItem } from '@/domain/community/user/hooks/CurrentUserProvider/InvitationItem';
 import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
 import InvitationDialog from '@/domain/community/invitations/InvitationDialog';
 import useNavigate from '@/core/routing/useNavigate';

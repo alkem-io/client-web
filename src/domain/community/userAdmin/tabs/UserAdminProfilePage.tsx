@@ -3,7 +3,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { UserForm } from '../../user/userForm/UserForm';
 import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,
@@ -11,7 +11,7 @@ import {
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { UserModel } from '../../user/models/User';
+import { UserModel } from '../../user/models/UserModel';
 import { getUpdateUserInput } from '../../user/utils/getUpdateUserInput';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -23,7 +23,7 @@ export const UserAdminProfilePage = () => {
   const navigate = useNavigate();
   const { userId } = useUrlResolver();
 
-  const { user: currentUser } = useUserContext();
+  const { user: currentUser } = useCurrentUserContext();
 
   const { data, loading } = useUserQuery({
     variables: {

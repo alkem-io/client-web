@@ -1,7 +1,7 @@
 import { Grid, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import PreferenceSection from '@/main/ui/settings/PreferenceSection';
 import { gutters } from '@/core/ui/grid/utils';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
@@ -14,7 +14,7 @@ export interface UserNotificationsPageViewProps {
 
 const UserNotificationsPageView = ({ preferences, loading, updatePreference }: UserNotificationsPageViewProps) => {
   const { t } = useTranslation();
-  const { user: userMetadata } = useUserContext();
+  const { user: userMetadata } = useCurrentUserContext();
   const isPlatformAdmin = userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
   const generalGroup = preferences.filter(x => x.definition.group === 'Notification');

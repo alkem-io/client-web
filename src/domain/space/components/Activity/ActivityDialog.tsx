@@ -7,7 +7,7 @@ import { ActivityEventType, AuthorizationPrivilege } from '@/core/apollo/generat
 import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
+import { useCurrentUserContext } from '@/domain/community/user/hooks/useCurrentUserContext';
 
 export interface ActivityDialogProps {
   open?: boolean;
@@ -18,7 +18,7 @@ export interface ActivityDialogProps {
 const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
 
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
   const { data: _space } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,

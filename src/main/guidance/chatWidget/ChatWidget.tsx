@@ -31,7 +31,7 @@ import {
 import 'react-chat-widget-react-18/lib/styles.css';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
@@ -182,7 +182,7 @@ const ChatWidget = () => {
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
   const userId = user?.user.id;
 
   const handleNewUserMessage = async (newMessage: string) => {

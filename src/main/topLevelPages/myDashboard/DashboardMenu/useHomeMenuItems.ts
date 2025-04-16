@@ -5,14 +5,14 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { getAccountLink } from '@/main/routing/urlBuilders';
 import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 
 export const useHomeMenuItems = () => {
-  const { user, loading } = useUserContext();
+  const { user, loading } = useCurrentUserContext();
   const { link: createSpaceLink, loading: loadingLink } = useCreateSpaceLink();
 
   const dashboardMenuItems: MenuOptionProps[] = useMemo(

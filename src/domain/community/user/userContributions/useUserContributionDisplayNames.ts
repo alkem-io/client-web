@@ -1,10 +1,10 @@
-import { useUserContext } from '../hooks/useUserContext';
+import { useCurrentUserContext } from '../hooks/useCurrentUserContext';
 import { useUserContributionDisplayNamesQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const getDisplayName = ({ displayName }: { displayName: string }) => displayName;
 
 const useUserContributionDisplayNames = () => {
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
 
   const { data } = useUserContributionDisplayNamesQuery({
     variables: {

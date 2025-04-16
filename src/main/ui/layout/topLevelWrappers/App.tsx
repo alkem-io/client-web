@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCookies } from 'react-cookie';
@@ -11,7 +11,7 @@ import { Box } from '@mui/material';
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
-  const { user } = useUserContext();
+  const { user } = useCurrentUserContext();
 
   useUserScope(user);
 

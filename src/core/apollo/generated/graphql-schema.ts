@@ -923,6 +923,7 @@ export enum AuthorizationPrivilege {
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
+  ReadLicense = 'READ_LICENSE',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -17479,11 +17480,11 @@ export type UserNotificationsPreferencesQuery = {
   };
 };
 
-export type UserProfileQueryVariables = Exact<{
-  input: Scalars['UUID'];
+export type UserProfileWithRolesQueryVariables = Exact<{
+  userId: Scalars['UUID'];
 }>;
 
-export type UserProfileQuery = {
+export type UserProfileWithRolesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -17571,14 +17572,9 @@ export type UserProfileQuery = {
   };
 };
 
-export type MyPrivilegesFragment = {
-  __typename?: 'Authorization';
-  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-};
+export type CurrentUserFullQueryVariables = Exact<{ [key: string]: never }>;
 
-export type UserProviderQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserProviderQuery = {
+export type CurrentUserFullQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
@@ -19495,51 +19491,6 @@ export type PageInfoFragment = {
   startCursor?: string | undefined;
   endCursor?: string | undefined;
   hasNextPage: boolean;
-};
-
-export type CreateSubspaceMutationVariables = Exact<{
-  input: CreateSubspaceInput;
-  includeVisuals?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type CreateSubspaceMutation = {
-  __typename?: 'Mutation';
-  createSubspace: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      isContentPublic: boolean;
-      why?: string | undefined;
-      profile?: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              tags: Array<string>;
-              name: string;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      membership: {
-        __typename?: 'SpaceAboutMembership';
-        myMembershipStatus?: CommunityMembershipStatus | undefined;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      };
-    };
-  };
 };
 
 export type SpaceAboutBaseQueryVariables = Exact<{
@@ -21497,6 +21448,51 @@ export type SpacePermissionsAndEntitlementsQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type CreateSubspaceMutationVariables = Exact<{
+  input: CreateSubspaceInput;
+  includeVisuals?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CreateSubspaceMutation = {
+  __typename?: 'Mutation';
+  createSubspace: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      why?: string | undefined;
+      profile?: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              tags: Array<string>;
+              name: string;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      };
+    };
   };
 };
 
