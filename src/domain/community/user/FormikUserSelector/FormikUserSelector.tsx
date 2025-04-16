@@ -12,7 +12,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
-import { useCurrentUserContext } from '../hooks/useCurrentUserContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { useTranslation } from 'react-i18next';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '@/core/ui/typography';

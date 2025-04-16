@@ -8,7 +8,7 @@ import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboard
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useCurrentUserContext } from '@/domain/community/user/hooks/useCurrentUserContext';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { TabbedLayoutDialogsType } from '../../TabbedLayoutPage';
 import useNavigate from '@/core/routing/useNavigate';

@@ -7,7 +7,7 @@ import { ActivityEventType, AuthorizationPrivilege } from '@/core/apollo/generat
 import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/user/hooks/useCurrentUserContext';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export interface ActivityDialogProps {
   open?: boolean;

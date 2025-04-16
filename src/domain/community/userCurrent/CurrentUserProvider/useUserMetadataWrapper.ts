@@ -1,5 +1,5 @@
 import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { UserModel } from '../../models/UserModel';
+import { UserModel } from '../../user/models/UserModel';
 
 export interface UserMetadata {
   user: UserModel;

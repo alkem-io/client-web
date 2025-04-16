@@ -7,7 +7,7 @@ import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor
 import { useUserMetadata } from '../../../../_deprecated/useUserMetadata';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useUserOrganizationIds from '../../user/userContributions/useUserOrganizationIds';
-import { useCurrentUserContext } from '../../user/hooks/useCurrentUserContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 
 const UserAdminOrganizationsPage = () => {
   const { t } = useTranslation();
