@@ -1,7 +1,11 @@
 import { Box, BoxProps, Skeleton, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import { ComponentType, FC, forwardRef } from 'react';
-import { Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import {
+  Draggable,
+  Droppable,
+  OnDragEndResponder,
+} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
