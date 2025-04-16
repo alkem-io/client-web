@@ -62,9 +62,7 @@ export const SpaceList: FC = () => {
             )
             .map(({ id }) => id);
 
-          const canUpdate = (space.authorization?.myPrivileges ?? []).find(
-            privilege => privilege === AuthorizationPrivilege.Update
-          );
+          const canUpdate = (space.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
           return {
             ...SearchableTableItemMapper()(space),
             spaceId: space.id,
