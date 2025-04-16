@@ -1,5 +1,4 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { LoadingButton } from '@mui/lab';
 import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
@@ -8,9 +7,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
-/**
- * @deprecated Needs refactor, do not base other components on this Props.
- */
+
 export interface ConfirmationDialogProps {
   entities: {
     titleId?: TranslationKey;
@@ -64,14 +61,9 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
           {cancelButtonText || t('buttons.cancel')}
         </Button>
         {Boolean(actions.onConfirm) && (
-          <LoadingButton
-            variant="text"
-            loading={state?.isLoading}
-            disabled={state?.isLoading}
-            onClick={actions.onConfirm}
-          >
+          <Button variant="text" loading={state?.isLoading} disabled={state?.isLoading} onClick={actions.onConfirm}>
             {confirmButtonText}
-          </LoadingButton>
+          </Button>
         )}
       </Actions>
     </Dialog>

@@ -4,7 +4,6 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
@@ -129,14 +128,14 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingS
               {t('buttons.back')}
             </Button>
             {spaces.length > 0 && (
-              <LoadingButton
+              <Button
                 variant="contained"
                 disabled={!isValid || loading || submitLoading}
                 loading={submitLoading}
                 onClick={() => onCreate(values)}
               >
                 {t('buttons.create')}
-              </LoadingButton>
+              </Button>
             )}
           </DialogActions>
         </>

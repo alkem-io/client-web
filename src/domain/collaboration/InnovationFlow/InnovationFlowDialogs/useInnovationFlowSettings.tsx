@@ -173,7 +173,10 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         calloutsSetID: calloutsSetId!,
         calloutIds: sortedCalloutIds,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
+        'CalloutsOnCalloutsSetUsingClassification',
+      ],
     });
   };
 

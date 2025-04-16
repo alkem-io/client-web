@@ -1,4 +1,4 @@
-import { DialogContent, ListItemIcon, MenuItem, Theme, useMediaQuery } from '@mui/material';
+import { Button, DialogContent, ListItemIcon, MenuItem, Theme, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -8,10 +8,9 @@ import useInnovationFlowSettings from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ApplyCollaborationTemplateDialog from '@/domain/templates/components/Dialogs/ApplyCollaborationTemplateDialog';
@@ -120,9 +119,9 @@ const InnovationFlowSettingsDialog = ({
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates
         actionButton={
-          <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+          <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
             {t('buttons.use')}
-          </LoadingButton>
+          </Button>
         }
       />
     </>

@@ -1,4 +1,8 @@
-import { AiPersonaBodyOfKnowledgeType, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AiPersonaBodyOfKnowledgeType,
+  AiPersonaEngine,
+  RoleSetContributorType,
+} from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
 
@@ -28,5 +32,6 @@ export interface ContributorProps extends Identifiable {
     bodyOfKnowledge?: string;
     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
     bodyOfKnowledgeID?: string;
+    engine?: AiPersonaEngine;
   };
 }

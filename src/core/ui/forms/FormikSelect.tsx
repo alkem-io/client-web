@@ -25,7 +25,6 @@ type FormikSelectProps = {
   required?: boolean;
   disabled?: boolean;
   values: FormikSelectValue[];
-  placeholder?: string;
   endAdornment?: React.ReactNode;
   helpText?: string;
 } & SelectProps;
@@ -36,7 +35,6 @@ export const FormikSelect = ({
   required = false,
   disabled = false,
   values,
-  placeholder,
   endAdornment,
   helpText: _helperText,
 }: FormikSelectProps) => {
@@ -63,7 +61,6 @@ export const FormikSelect = ({
         onBlur={field.onBlur}
         onChange={field.onChange}
         variant="outlined"
-        placeholder={placeholder}
         endAdornment={endAdornment}
         inputProps={{
           sx: {

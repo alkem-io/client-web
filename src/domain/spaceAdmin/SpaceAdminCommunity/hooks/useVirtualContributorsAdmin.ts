@@ -1,4 +1,4 @@
-import { SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import {
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useAvailableVirtualContributorsInSpaceAccountLazyQuery,
@@ -27,6 +27,9 @@ export interface useVirtualContributorsAdminProvided {
           displayName: string;
           url: string;
         };
+        aiPersona?: {
+          engine: AiPersonaEngine;
+        };
       }[]
     >;
     getAvailableInLibrary: (filter: string | undefined) => Promise<
@@ -35,6 +38,9 @@ export interface useVirtualContributorsAdminProvided {
         profile: {
           displayName: string;
           url: string;
+        };
+        aiPersona?: {
+          engine: AiPersonaEngine;
         };
       }[]
     >;

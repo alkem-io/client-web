@@ -104,11 +104,11 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
       <Gutters row={!['xs', 'sm'].includes(breakpoint)} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>
         <FullCalendar
           events={sortedEvents}
-          sx={{ flexGrow: 2, minWidth: gutters(15) }}
+          sx={{ flex: 2, minWidth: gutters(15) }}
           onClickHighlightedDate={onClickHighlightedDate}
           selectedDate={highlightedDay}
         />
-        <Gutters minHeight={0} flexGrow={5}>
+        <Gutters minHeight={0} flex={5}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
             <PageContentBlockGrid paddingBottom={gutters(4)}>
               {sortedFutureEvents.length === 0 && <Caption width="100%">{t('calendar.no-upcoming-events')}</Caption>}

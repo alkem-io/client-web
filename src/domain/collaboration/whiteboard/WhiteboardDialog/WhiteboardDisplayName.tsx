@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
@@ -71,14 +70,14 @@ const WhiteboardDisplayName = ({
         <Box display="flex" alignItems="center" height={gutters()}>
           <TextField value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} size="small" autoFocus />
           <Box sx={{ marginX: 1 }}>
-            <LoadingButton
+            <Button
               aria-label={t('buttons.save')}
               loading={loading}
               onClick={() => handleSave(newDisplayName)}
               sx={{ minWidth: 0, marginRight: 0, paddingX: 1 }}
             >
               <CheckIcon fontSize="small" />
-            </LoadingButton>
+            </Button>
             <Button
               aria-label={t('buttons.cancel')}
               onClick={() => {
