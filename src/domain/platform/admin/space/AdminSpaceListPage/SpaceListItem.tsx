@@ -145,7 +145,12 @@ const SpaceListItem = ({
                 </Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <Button variant="contained" loading={saving} onClick={() => handleSubmit()} disabled={!isValid}>
+                <Button
+                  variant="contained"
+                  loading={saving}
+                  onClick={() => handleSubmit()}
+                  disabled={!isValid || !canUpdate}
+                >
                   {t('buttons.save')}
                 </Button>
               </Actions>
