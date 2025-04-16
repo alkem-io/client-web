@@ -66,11 +66,9 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     if (!meData?.me) {
       return undefined;
     }
-
-    const myRoles = platformLevelAuthorizationData?.platform.roleSet.myRoles;
     const myPrivileges = platformLevelAuthorizationData?.platform.authorization?.myPrivileges;
 
-    return toUserMetadata(user, myPrivileges, myRoles);
+    return toUserMetadata(user, myPrivileges);
   }, [user, meData, platformLevelAuthorizationData]);
 
   const platformRoles = useMemo(

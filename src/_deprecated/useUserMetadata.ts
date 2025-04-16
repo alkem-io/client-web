@@ -1,10 +1,10 @@
-import { useUserProfileWithRolesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useUserModelFullQuery } from '@/core/apollo/generated/apollo-hooks';
 import { UserModel } from '@/domain/community/user/models/UserModel';
 /**
  * @deprecated Try to avoid this one, refactor to remove it
  */
 export const useUserMetadata = (userId: string | undefined) => {
-  const { data, loading } = useUserProfileWithRolesQuery({
+  const { data, loading } = useUserModelFullQuery({
     variables: { userId: userId! },
     skip: !userId,
     fetchPolicy: 'cache-and-network',

@@ -1,18 +1,16 @@
-import { AuthorizationPrivilege, RoleName, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { UserModel } from '../models/UserModel';
+import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { UserModel } from '../../models/UserModel';
 
 export interface UserMetadata {
   user: UserModel;
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
-  hasPlatformRole: (role: RoleName) => boolean | undefined;
   keywords: string[];
   skills: string[];
 }
 
 export const toUserMetadata = (
   user: UserModel | undefined,
-  platformAuthorizationPrivileges: AuthorizationPrivilege[] | undefined,
-  myRoles: RoleName[] | undefined
+  platformAuthorizationPrivileges: AuthorizationPrivilege[] | undefined
 ): UserMetadata | undefined => {
   if (!user) {
     return;
@@ -22,14 +20,9 @@ export const toUserMetadata = (
     return platformAuthorizationPrivileges?.includes(privilege);
   };
 
-  const hasPlatformRole = (role: RoleName) => {
-    return myRoles?.includes(role);
-  };
-
   return {
     user,
     hasPlatformPrivilege,
-    hasPlatformRole,
     keywords:
       user.profile.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())?.tags ?? [],
     skills:

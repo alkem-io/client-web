@@ -7544,6 +7544,73 @@ export type Whiteboard = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type UserModelFullQueryVariables = Exact<{
+  userId: Scalars['UUID'];
+}>;
+
+export type UserModelFullQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          isContactable: boolean;
+          id: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          phone?: string | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline?: string | undefined;
+            description?: string | undefined;
+            url: string;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type UploadFileOnReferenceMutationVariables = Exact<{
   file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileOnReferenceInput;
@@ -17477,98 +17544,6 @@ export type UserNotificationsPreferencesQuery = {
           }>;
         }
       | undefined;
-  };
-};
-
-export type UserProfileWithRolesQueryVariables = Exact<{
-  userId: Scalars['UUID'];
-}>;
-
-export type UserProfileWithRolesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          isContactable: boolean;
-          id: string;
-          firstName: string;
-          lastName: string;
-          email: string;
-          phone?: string | undefined;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            tagline?: string | undefined;
-            description?: string | undefined;
-            url: string;
-            location?:
-              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-              | undefined;
-            avatar?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            references?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    spaces: Array<{
-      __typename?: 'RolesResultSpace';
-      id: string;
-      displayName: string;
-      roles: Array<string>;
-      visibility: SpaceVisibility;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string; roles: Array<string> }>;
-    }>;
-    organizations: Array<{
-      __typename?: 'RolesResultOrganization';
-      id: string;
-      displayName: string;
-      roles: Array<string>;
-    }>;
-  };
-  platform: {
-    __typename?: 'Platform';
-    authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
   };
 };
 

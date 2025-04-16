@@ -3130,6 +3130,64 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
   ${SpaceAboutCardBannerFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
+export const UserModelFullDocument = gql`
+  query UserModelFull($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
+        isContactable
+        ...UserDetails
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserModelFullQuery__
+ *
+ * To run a query within a React component, call `useUserModelFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserModelFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserModelFullQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserModelFullQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>(
+    UserModelFullDocument,
+    options
+  );
+}
+
+export function useUserModelFullLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>(
+    UserModelFullDocument,
+    options
+  );
+}
+
+export type UserModelFullQueryHookResult = ReturnType<typeof useUserModelFullQuery>;
+export type UserModelFullLazyQueryHookResult = ReturnType<typeof useUserModelFullLazyQuery>;
+export type UserModelFullQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserModelFullQuery,
+  SchemaTypes.UserModelFullQueryVariables
+>;
+export function refetchUserModelFullQuery(variables: SchemaTypes.UserModelFullQueryVariables) {
+  return { query: UserModelFullDocument, variables: variables };
+}
+
 export const UploadFileOnReferenceDocument = gql`
   mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
     uploadFileOnReference(uploadData: $uploadData, file: $file) {
@@ -11923,98 +11981,6 @@ export function refetchUserNotificationsPreferencesQuery(
   variables: SchemaTypes.UserNotificationsPreferencesQueryVariables
 ) {
   return { query: UserNotificationsPreferencesDocument, variables: variables };
-}
-
-export const UserProfileWithRolesDocument = gql`
-  query UserProfileWithRoles($userId: UUID!) {
-    lookup {
-      user(ID: $userId) {
-        isContactable
-        ...UserDetails
-      }
-    }
-    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
-      id
-      spaces {
-        id
-        displayName
-        roles
-        visibility
-        subspaces {
-          id
-          displayName
-          roles
-        }
-      }
-      organizations {
-        id
-        displayName
-        roles
-      }
-    }
-    platform {
-      authorization {
-        myPrivileges
-      }
-      roleSet {
-        id
-        myRoles
-      }
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-
-/**
- * __useUserProfileWithRolesQuery__
- *
- * To run a query within a React component, call `useUserProfileWithRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserProfileWithRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserProfileWithRolesQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserProfileWithRolesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserProfileWithRolesQuery,
-    SchemaTypes.UserProfileWithRolesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserProfileWithRolesQuery, SchemaTypes.UserProfileWithRolesQueryVariables>(
-    UserProfileWithRolesDocument,
-    options
-  );
-}
-
-export function useUserProfileWithRolesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserProfileWithRolesQuery,
-    SchemaTypes.UserProfileWithRolesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserProfileWithRolesQuery, SchemaTypes.UserProfileWithRolesQueryVariables>(
-    UserProfileWithRolesDocument,
-    options
-  );
-}
-
-export type UserProfileWithRolesQueryHookResult = ReturnType<typeof useUserProfileWithRolesQuery>;
-export type UserProfileWithRolesLazyQueryHookResult = ReturnType<typeof useUserProfileWithRolesLazyQuery>;
-export type UserProfileWithRolesQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserProfileWithRolesQuery,
-  SchemaTypes.UserProfileWithRolesQueryVariables
->;
-export function refetchUserProfileWithRolesQuery(variables: SchemaTypes.UserProfileWithRolesQueryVariables) {
-  return { query: UserProfileWithRolesDocument, variables: variables };
 }
 
 export const CurrentUserFullDocument = gql`
