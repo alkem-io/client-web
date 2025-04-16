@@ -146,8 +146,13 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         nextUrl = nextUrl.slice(0, -1);
       }
 
-      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
-      nextUrl = nextUrl.replace(/\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/, '');
+      if (/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
+        // TODO: We need to rework the Urls of the templates anyway. See #8061
+        // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
+      } else {
+        // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+        nextUrl = nextUrl.replace(/\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/, '');
+      }
 
       if (nextUrl !== currentUrl) {
         setCurrentUrl(nextUrl); // Update the query URL state
