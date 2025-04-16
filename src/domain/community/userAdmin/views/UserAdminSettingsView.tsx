@@ -20,10 +20,10 @@ const defaultUserSettings = {
 
 export const UserAdminSettingsView = () => {
   const { userId } = useUrlResolver();
-  const { user: userMetadata, loading: isLoadingUser } = useUserMetadata(userId);
+  const { user: userModel, loading: isLoadingUser } = useUserMetadata(userId);
 
   const { t } = useTranslation();
-  const userID = userMetadata?.user.id ?? '';
+  const userID = userModel?.id ?? '';
 
   const { data, loading } = useUserSettingsQuery({
     variables: { userID },

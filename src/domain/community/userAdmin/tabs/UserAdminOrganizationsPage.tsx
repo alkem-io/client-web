@@ -7,12 +7,14 @@ import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor
 import { useUserMetadata } from '../../../../_deprecated/useUserMetadata';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useUserOrganizationIds from '../../user/userContributions/useUserOrganizationIds';
+import { useCurrentUserContext } from '../../user/hooks/useCurrentUserContext';
 
 const UserAdminOrganizationsPage = () => {
   const { t } = useTranslation();
   const { userId } = useUrlResolver();
-  const { user: userMetadata, loading } = useUserMetadata(userId);
-  const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
+  const { user: currentUser } = useCurrentUserContext();
+  const { user: userModel, loading } = useUserMetadata(userId);
+  const organizationIds = useUserOrganizationIds(userModel?.id);
 
   return (
     <UserAdminLayout currentTab={SettingsSection.Organizations}>
@@ -21,7 +23,7 @@ const UserAdminOrganizationsPage = () => {
           <AssociatedOrganizationsLazilyFetched
             enableLeave
             canCreateOrganization={
-              userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.CreateOrganization) ?? false
+              currentUser?.hasPlatformPrivilege(AuthorizationPrivilege.CreateOrganization) ?? false
             }
             organizationIds={organizationIds ?? []}
             title={t('pages.user-profile.associated-organizations.title')}

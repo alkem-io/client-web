@@ -26,11 +26,11 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={urlResolverLoading || loading || !user}
-            avatar={user?.user.profile.avatar}
+            avatar={user?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={user?.user.profile.url}
+            uri={user?.profile.url}
           >
-            {user?.user.profile.displayName}
+            {user?.profile.displayName}
           </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }

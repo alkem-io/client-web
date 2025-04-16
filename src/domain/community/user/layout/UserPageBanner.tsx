@@ -11,9 +11,9 @@ const UserPageBanner = () => {
   const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { user, loading } = useUserMetadata(userId);
 
-  const isCurrentUser = useMemo(() => user?.user.id === currentUser?.user.id, [user, currentUser]);
+  const isCurrentUser = useMemo(() => user?.id === currentUser?.user.id, [user, currentUser]);
 
-  const profile = user?.user.profile;
+  const profile = user?.profile;
 
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
@@ -35,7 +35,7 @@ const UserPageBanner = () => {
     [sendMessageToUser, userId]
   );
 
-  const userURL = user?.user.profile.url || '';
+  const userURL = user?.profile.url || '';
 
   return (
     <ProfilePageBanner

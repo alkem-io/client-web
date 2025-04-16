@@ -1,5 +1,5 @@
 import { useUserProfileWithRolesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { toUserMetadata } from '@/domain/community/user';
+import { UserModel } from '@/domain/community/user/models/UserModel';
 /**
  * @deprecated Try to avoid this one, refactor to remove it
  */
@@ -15,8 +15,10 @@ export const useUserMetadata = (userId: string | undefined) => {
     },
   });
 
+  const userModel: UserModel | undefined = data?.lookup?.user;
+
   return {
-    user: toUserMetadata(data?.lookup.user, data?.platform.authorization?.myPrivileges, data?.platform.roleSet.myRoles),
+    user: userModel,
     loading,
   };
 };

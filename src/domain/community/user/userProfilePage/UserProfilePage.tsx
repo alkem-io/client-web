@@ -12,7 +12,7 @@ import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 export const UserProfilePage = () => {
   const { userId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { user: userMetadata, loading } = useUserMetadata(userId);
+  const { user: userModel, loading } = useUserMetadata(userId);
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: { userId: userId! },
@@ -21,13 +21,13 @@ export const UserProfilePage = () => {
 
   const accountResources = useAccountResources(userData?.lookup.user?.account?.id);
 
-  const contributions = useUserContributions(userMetadata?.user.id);
+  const contributions = useUserContributions(userModel?.id);
 
-  const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
+  const organizationIds = useUserOrganizationIds(userModel?.id);
 
   if (urlResolverLoading || loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
 
-  if (!userMetadata) {
+  if (!userModel) {
     return (
       <UserPageLayout>
         <Error404 />
@@ -41,7 +41,7 @@ export const UserProfilePage = () => {
         contributions={contributions}
         accountResources={accountResources}
         organizationIds={organizationIds}
-        entities={{ userMetadata }}
+        userModel={userModel}
       />
     </UserPageLayout>
   );
