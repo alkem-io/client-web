@@ -72,7 +72,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
 
   const { spaces, challenges, opportunities, organizations } = useUserContributionDisplayNames();
 
-  const tags = (userMetadata?.user?.profile.tagsets || []).flatMap(x => x.tags);
+  const tags = (userMetadata?.user?.profile.tagsets || []).flatMap(x => x.tags || []);
 
   const noMembership =
     !(spaces && spaces.length > 0) &&

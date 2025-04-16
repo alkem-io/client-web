@@ -78,8 +78,9 @@ export const UserAdminProfilePage = () => {
       },
     });
 
+    const currentUserUrl = currentUser?.user.profile.url || '';
     if (currentUser) {
-      navigate(currentUser.user.profile.url, { replace: true });
+      navigate(currentUserUrl, { replace: true });
     }
   };
 

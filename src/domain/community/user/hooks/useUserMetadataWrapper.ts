@@ -1,12 +1,8 @@
-import {
-  AuthorizationPrivilege,
-  RoleName,
-  TagsetReservedName,
-  UserDetailsFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { UserModel } from '../models/UserModel';
 
 export interface UserMetadata {
-  user: UserDetailsFragment;
+  user: UserModel;
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
   hasPlatformRole: (role: RoleName) => boolean | undefined;
   keywords: string[];
@@ -14,7 +10,7 @@ export interface UserMetadata {
 }
 
 export const toUserMetadata = (
-  user: UserDetailsFragment | undefined,
+  user: UserModel | undefined,
   platformAuthorizationPrivileges: AuthorizationPrivilege[] | undefined,
   myRoles: RoleName[] | undefined
 ): UserMetadata | undefined => {
