@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import SingleInvitationFull from '@/domain/community/invitations/SingleInvitationFull';
 import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
-import { InvitationItem } from '@/domain/community/user/hooks/CurrentUserProvider/InvitationItem';
+import { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useNavigate from '@/core/routing/useNavigate';
@@ -16,7 +16,7 @@ export const InvitationsBlock = () => {
         invitation =>
           ({
             type: 0,
-            ...(invitation as InvitationItem),
+            ...(invitation as PendingInvitationItem),
           } as const)
       ) ?? [],
     [data?.me.communityInvitations]

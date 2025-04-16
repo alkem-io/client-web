@@ -1,23 +1,9 @@
 import {
   AuthorizationPrivilege,
   RoleName,
-  SpaceLevel,
   TagsetReservedName,
   UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
-
-export interface PendingApplication extends Identifiable {
-  spacePendingMembershipInfo: Identifiable & {
-    level: SpaceLevel;
-    about: SpaceAboutMinimalUrlModel;
-  };
-  application: {
-    createdDate: Date | string;
-    state?: string;
-  };
-}
 
 export interface UserMetadata {
   user: UserDetailsFragment;

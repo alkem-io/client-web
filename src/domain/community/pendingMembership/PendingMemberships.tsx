@@ -5,8 +5,8 @@ import {
   useSpacePrivilegesQuery,
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { PendingApplication } from '../user';
-import { InvitationItem } from '../user/hooks/CurrentUserProvider/InvitationItem';
+import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
+import { PendingApplicationItem } from '../user/models/PendingApplicationItem';
 import {
   AuthorizationPrivilege,
   CommunityGuidelinesSummaryFragment,
@@ -22,7 +22,7 @@ export interface SpaceDetails {
   level: SpaceLevel;
 }
 
-export interface InvitationWithMeta extends Omit<InvitationItem, 'space'> {
+export interface InvitationWithMeta extends Omit<PendingInvitationItem, 'space'> {
   userDisplayName: string | undefined;
   space: SpaceDetails;
 }
@@ -32,8 +32,8 @@ interface ApplicationWithMeta extends Identifiable {
 }
 
 interface UsePendingMembershipsProvided {
-  applications: PendingApplication[] | undefined;
-  invitations: InvitationItem[] | undefined;
+  applications: PendingApplicationItem[] | undefined;
+  invitations: PendingInvitationItem[] | undefined;
 }
 
 type PendingMembershipsProps = {
@@ -58,7 +58,7 @@ interface InvitationHydratorProvided {
 }
 
 type InvitationHydratorProps = {
-  invitation: InvitationItem;
+  invitation: PendingInvitationItem;
   children: (provided: InvitationHydratorProvided) => ReactNode;
   withCommunityGuidelines?: boolean;
 } & (
@@ -133,7 +133,7 @@ interface ApplicationHydratorProvided {
 }
 
 interface ApplicationHydratorProps {
-  application: PendingApplication;
+  application: PendingApplicationItem;
   visualType: VisualType;
   children: (provided: ApplicationHydratorProvided) => ReactNode;
 }
