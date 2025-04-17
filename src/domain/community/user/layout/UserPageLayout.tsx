@@ -3,7 +3,7 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserMetadata } from '../../../../_deprecated/useUserMetadata';
+import { useUserProvider } from '../../../../_deprecated/useUserProvider';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
@@ -13,7 +13,7 @@ interface UserPageLayoutProps {}
 
 const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
   const { userId, loading: urlResolverLoading } = useUrlResolver();
-  const { user, loading } = useUserMetadata(userId);
+  const { user, loading } = useUserProvider(userId);
 
   const { t } = useTranslation();
 

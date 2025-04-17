@@ -3,7 +3,7 @@ import { UserModel } from '@/domain/community/user/models/UserModel';
 /**
  * @deprecated Try to avoid this one, refactor to remove it
  */
-export const useUserMetadata = (userId: string | undefined) => {
+export const useUserProvider = (userId: string | undefined) => {
   const { data, loading } = useUserModelFullQuery({
     variables: { userId: userId! },
     skip: !userId,

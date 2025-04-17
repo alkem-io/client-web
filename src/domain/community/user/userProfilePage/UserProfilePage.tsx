@@ -1,7 +1,7 @@
 import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { useUserMetadata } from '../../../../_deprecated/useUserMetadata';
+import { useUserProvider } from '../../../../_deprecated/useUserProvider';
 import UserPageLayout from '../layout/UserPageLayout';
 import UserProfilePageView from './UserProfilePageView';
 import useUserContributions from '../userContributions/useUserContributions';
@@ -12,7 +12,7 @@ import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 export const UserProfilePage = () => {
   const { userId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { user: userModel, loading } = useUserMetadata(userId);
+  const { user: userModel, loading } = useUserProvider(userId);
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: { userId: userId! },

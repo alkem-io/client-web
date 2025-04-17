@@ -4,7 +4,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
-import { useUserMetadata } from '../../../../_deprecated/useUserMetadata';
+import { useUserProvider } from '../../../../_deprecated/useUserProvider';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useUserOrganizationIds from '../../user/userContributions/useUserOrganizationIds';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
@@ -13,7 +13,7 @@ const UserAdminOrganizationsPage = () => {
   const { t } = useTranslation();
   const { userId } = useUrlResolver();
   const { platformPrivilegeWrapper: currentUser } = useCurrentUserContext();
-  const { user: userModel, loading } = useUserMetadata(userId);
+  const { user: userModel, loading } = useUserProvider(userId);
   const organizationIds = useUserOrganizationIds(userModel?.id);
 
   return (

@@ -11,7 +11,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useTranslation } from 'react-i18next';
-import { useUserMetadata } from '../index';
+import { useUserProvider } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
 
 const Header = styled('div')(({ theme }) => ({
@@ -66,7 +66,7 @@ const getStringOfNames = (arr: string[]) => arr.join(', ');
 const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   const { t } = useTranslation();
 
-  const { user: userModel, loading } = useUserMetadata(id);
+  const { user: userModel, loading } = useUserProvider(id);
   const refs = userModel?.profile.references || [];
 
   const { spaces, challenges, opportunities, organizations } = useUserContributionDisplayNames();

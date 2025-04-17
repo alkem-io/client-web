@@ -7,7 +7,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography/components';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserMetadata } from '@/_deprecated/useUserMetadata';
+import { useUserProvider } from '@/_deprecated/useUserProvider';
 
 const defaultUserSettings = {
   privacy: {
@@ -20,7 +20,7 @@ const defaultUserSettings = {
 
 export const UserAdminSettingsView = () => {
   const { userId } = useUrlResolver();
-  const { user: userModel, loading: isLoadingUser } = useUserMetadata(userId);
+  const { user: userModel, loading: isLoadingUser } = useUserProvider(userId);
 
   const { t } = useTranslation();
   const userID = userModel?.id ?? '';
