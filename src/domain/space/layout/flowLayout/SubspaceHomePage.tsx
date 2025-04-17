@@ -52,8 +52,10 @@ const Outline = (props: DashboardNavigationProps) => {
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
   const { spaceId, spaceLevel, journeyPath, parentSpaceId, levelZeroSpaceId, calendarEventId, loading } =
     useUrlResolver();
+
   const { permissions } = useSubSpace();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
@@ -128,17 +130,16 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
         onClose={onCreateJourneyClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />
-      <SubspaceDialogs
-        parentSpaceId={parentSpaceId}
-        dialogOpen={dialog}
-        calloutsSetId={calloutsSetId}
-        spaceId={spaceId}
-        journeyUrl={about?.profile?.url}
-        dashboardNavigation={dashboardNavigation}
-        communityId={about?.membership.communityID}
-        collaborationId={collaboration?.id}
-        calendarEventId={calendarEventId}
-      />
+      {/* <SubspaceDialogs */}
+      {/*   parentSpaceId={parentSpaceId} */}
+      {/*   calloutsSetId={calloutsSetId} */}
+      {/*   spaceId={spaceId} */}
+      {/*   journeyUrl={about?.profile?.url} */}
+      {/*   dashboardNavigation={dashboardNavigation} */}
+      {/*   communityId={about?.membership.communityID} */}
+      {/*   collaborationId={collaboration?.id} */}
+      {/*   calendarEventId={calendarEventId} */}
+      {/* /> */}
     </>
   );
 

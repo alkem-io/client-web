@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { Route, Routes } from 'react-router';
-import { Navigate } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceContextProvider from '../context/SubspaceContext';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../about/SubspaceAboutPage';
@@ -16,14 +15,9 @@ import SubspaceSettingsRoute from './SubspaceSettingsRoute';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SubspacePageLayout } from '../layout/SubspacePageLayout';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-const LegacyRoutesRedirects = () => (
-  <>
-    <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
-  </>
-);
-
-const SubspaceRoute = () => {
+const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   const { subspace, permissions, loading } = useSubSpace();
 
   const { canRead, spaceId } = useMemo(() => {
@@ -45,27 +39,15 @@ const SubspaceRoute = () => {
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <Routes>
-        <Route element={<SubspacePageLayout />}>
-          <Route index element={<SubspaceHomePage />} />
-          <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
-          <Route path={SubspaceDialog.Outline} element={<SubspaceHomePage dialog={SubspaceDialog.Outline} />} />
-          <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
-          <Route
-            path={SubspaceDialog.Contributors}
-            element={<SubspaceHomePage dialog={SubspaceDialog.Contributors} />}
-          />
-          <Route path={SubspaceDialog.Activity} element={<SubspaceHomePage dialog={SubspaceDialog.Activity} />} />
-          <Route path={SubspaceDialog.Timeline} element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />} />
-          <Route path={SubspaceDialog.Share} element={<SubspaceHomePage dialog={SubspaceDialog.Share} />} />
-          <Route path={SubspaceDialog.ManageFlow} element={<SubspaceHomePage dialog={SubspaceDialog.ManageFlow} />} />
-          <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
-          <Route path={SubspaceDialog.Updates} element={<SubspaceHomePage dialog={SubspaceDialog.Updates} />} />
-          <Route
-            path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
-            element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
-          />
-          {/* Redirecting legacy dashboard links to Subspace Home */}
+        <Route element={level === SpaceLevel.L2 ? <Outlet /> : <SubspacePageLayout level={level} />}>
+          {/* legacy routes */}
+          <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
           <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
+          {/* current routes */}
+          {/* <Route index element={<SubspaceHomePage />} /> */}
+          <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
+          <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
+          {/* <Route path={SubspaceDialog.Updates} element={<SubspaceHomePage dialog={SubspaceDialog.Updates} />} /> */}
           <Route
             path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
             element={<SubspaceCalloutPage />}
@@ -74,16 +56,12 @@ const SubspaceRoute = () => {
             path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
           />
-          <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
+          <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SubspaceHomePage />} />
+          {/* l2 spaces are recursive */}
           <Route
-            path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
-            element={
-              <SubspaceContextProvider>
-                <SubspaceRoute />
-              </SubspaceContextProvider>
-            }
+            path={`opportunities/:${nameOfUrl.subsubspaceNameId}/:dialog?/:${nameOfUrl.calendarEventNameId}?`}
+            element={<SubspaceRoute level={SpaceLevel.L2} />}
           />
-          {LegacyRoutesRedirects()}
           <Route
             path="*"
             element={

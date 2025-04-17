@@ -139,7 +139,7 @@ const SpaceRoutes = () => {
   const getSpaceSection = () => {
     switch (sectionIndex) {
       case '1':
-        return <SpaceDashboardPage dialog={undefined} />;
+        return <SpaceDashboardPage />;
       case '2':
         return <SpaceCommunityPage />;
       case '3':
@@ -152,11 +152,10 @@ const SpaceRoutes = () => {
     <SpaceContextProvider>
       <Routes>
         {/* keep the logic around sections in one place - here*/}
-        <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(sectionIndex)} />}>
+        <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(sectionIndex) - 1} />}>
           <Route path={routes.About} element={<SpaceAboutPage />} />
           <Route element={<SpaceProtectedRoutes />}>
             <Route index element={getSpaceSection()} />
-
             <Route path={`${routes.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route
               path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
@@ -167,6 +166,11 @@ const SpaceRoutes = () => {
                   </Suspense>
                 </SubspaceContextProvider>
               }
+            />
+
+            <Route
+              path={`calendar/:${nameOfUrl.calendarEventNameId}?`}
+              element={<SpaceDashboardPage dialog="calendar" />}
             />
           </Route>
         </Route>

@@ -140,7 +140,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
           </BottomNavigation>
         </Paper>
         {shareDialog}
-        <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} spaceId={spaceId} />
+        <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} />
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
@@ -228,7 +228,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         )}
       </HeaderNavigationTabs>
       {shareDialog}
-      <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} spaceId={spaceId} />
+      <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} />
     </>
   );
 };

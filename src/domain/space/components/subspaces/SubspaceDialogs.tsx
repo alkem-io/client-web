@@ -16,9 +16,10 @@ import { Theme, useMediaQuery } from '@mui/material';
 import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import { useParams } from 'react-router-dom';
 
 export interface SubspaceDialogsProps {
-  dialogOpen: SubspaceDialog | undefined;
+  // dialogOpen: SubspaceDialog | undefined;
   spaceId: string | undefined;
   journeyUrl: string | undefined;
   parentSpaceId: string | undefined;
@@ -32,7 +33,7 @@ export interface SubspaceDialogsProps {
 }
 
 const SubspaceDialogs = ({
-  dialogOpen,
+  // dialogOpen,
   journeyUrl,
   spaceId,
   calloutsSetId,
@@ -42,6 +43,7 @@ const SubspaceDialogs = ({
   collaborationId,
   calendarEventId,
 }: SubspaceDialogsProps) => {
+  const { dialog: dialogOpen } = useParams();
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
@@ -58,33 +60,24 @@ const SubspaceDialogs = ({
 
   return (
     <>
-      <CalloutsListDialog
-        open={dialogOpen === SubspaceDialog.Index && Boolean(calloutsSetId)}
-        onClose={handleClose}
-        calloutsSetId={calloutsSetId!}
-      />
-      <SubspacesListDialog spaceId={spaceId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
-      <ContributorsToggleDialog
-        journeyId={spaceId}
-        open={dialogOpen === SubspaceDialog.Contributors}
-        onClose={handleClose}
-      />
-      <ActivityDialog spaceId={spaceId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
-      <CalendarDialog
-        journeyId={spaceId}
-        parentSpaceId={parentSpaceId}
-        open={dialogOpen === SubspaceDialog.Timeline}
-        onClose={handleClose}
-        parentPath={journeyUrl}
-        calendarEventId={calendarEventId}
-        temporaryLocation
-      />
+      {/* done */}
+      <CalloutsListDialog open={dialogOpen === SubspaceDialog.Index && Boolean(calloutsSetId)} onClose={handleClose} />
+      {/* done */}
+      <SubspacesListDialog open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
+      {/* done */}
+      <ContributorsToggleDialog open={dialogOpen === SubspaceDialog.Contributors} onClose={handleClose} />
+      {/* done */}
+      <ActivityDialog open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
+      {/* done */}
+      <CalendarDialog open={dialogOpen === SubspaceDialog.Timeline} onClose={handleClose} temporaryLocation />
+      {/* done */}
       <ShareDialog
         open={dialogOpen === SubspaceDialog.Share}
         onClose={handleClose}
         url={journeyUrl}
         entityTypeName="subspace"
       />
+
       <CommunityUpdatesDialog
         open={dialogOpen === SubspaceDialog.Updates}
         onClose={handleClose}
@@ -92,6 +85,7 @@ const SubspaceDialogs = ({
         shareUrl={buildUpdatesUrl(journeyUrl ?? '')}
         loading={false}
       />
+      {/* done */}
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
         open={dialogOpen === SubspaceDialog.ManageFlow}

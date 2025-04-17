@@ -36,7 +36,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutOpened();
   };
 
-  const columns = useColumns();
+  const columns = 0; //useColumns();
 
   const { t } = useTranslation();
 

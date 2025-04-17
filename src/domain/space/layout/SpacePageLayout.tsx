@@ -14,18 +14,20 @@ import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import SpaceTabs from './tabbedLayout/Tabs/SpaceTabs';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
 
-  const { loading, journeyPath, spaceLevel } = useUrlResolver();
+  const { spaceId, loading, journeyPath, spaceLevel } = useUrlResolver();
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+
   const isLevelZero = spaceLevel === SpaceLevel.L0;
 
   return (
-    <>
+    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />} />
 
       {isLevelZero && <SpacePageBanner loading={loading} />}
@@ -50,6 +52,6 @@ export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
         </Box>
       )}
       <SearchDialog />
-    </>
+    </StorageConfigContextProvider>
   );
 };

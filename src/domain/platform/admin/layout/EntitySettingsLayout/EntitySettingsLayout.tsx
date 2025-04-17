@@ -35,25 +35,19 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
 
   return (
     <>
-      <EntityPageLayout currentSection={{ section: EntityPageSection.Settings }} {...props}>
-        <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
-          <EntitySettingsTabs
-            tabs={subheaderTabs}
-            currentTab={currentTab}
-            aria-label={`${entityTypeName} Settings tabs`}
-            routePrefix={tabRoutePrefix}
-            getTabLabel={getTabLabel}
-          />
-          {backButton}
-          <SettingsPageContent
-            currentSection={currentTab}
-            entityTypeName={entityTypeName}
-            tabDescriptionNs="pages.admin"
-          >
-            {children}
-          </SettingsPageContent>
-        </PageContent>
-      </EntityPageLayout>
+      <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
+        <EntitySettingsTabs
+          tabs={subheaderTabs}
+          currentTab={currentTab}
+          aria-label={`${entityTypeName} Settings tabs`}
+          routePrefix={tabRoutePrefix}
+          getTabLabel={getTabLabel}
+        />
+        {backButton}
+        <SettingsPageContent currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
+          {children}
+        </SettingsPageContent>
+      </PageContent>
       {/* EmptyLayout is needed to remove the previous propagated layout from the holder */}
       {/* Remove this when EntitySettingsLayout becomes a propagated one */}
       <EmptyLayout />

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
@@ -15,6 +15,9 @@ import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlo
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { DialogAction } from '../../components/subspaces/DialogAction';
+import { theme } from '@/core/ui/themes/default/Theme';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -85,31 +88,31 @@ const SubspaceHomeView = ({
     skip: !selectedInnovationFlowState,
   });
 
-  // If it's mobile the ManageFlow action will be consumed somewhere else,
-  // if there is no definition for it, button should not be shown
-  const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
-
   return (
     <>
       {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && collaborationId && (
-        <InnovationFlowStates
-          states={innovationFlowStates}
-          currentState={currentInnovationFlowState}
-          selectedState={selectedInnovationFlowState}
-          onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
-          visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
-          createButton={calloutsSetProvided.canCreateCallout && createButton}
-          settingsButton={
-            manageFlowActionDef && (
-              <InnovationFlowSettingsButton
-                collaborationId={collaborationId}
-                templatesSetId={templatesSetId}
-                tooltip={manageFlowActionDef.label}
-                icon={manageFlowActionDef.icon}
-              />
-            )
-          }
-        />
+        <Box
+          sx={{
+            position: 'sticky',
+            top: 0,
+            marginTop: gutters(-1),
+            paddingY: gutters(1),
+            background: theme.palette.background.default,
+            width: '100%',
+            zIndex: 1,
+            boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
+          }}
+        >
+          <InnovationFlowStates
+            states={innovationFlowStates}
+            currentState={currentInnovationFlowState}
+            selectedState={selectedInnovationFlowState}
+            onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
+            visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
+            createButton={calloutsSetProvided.canCreateCallout && createButton}
+            settingsButton={!isMobile && <DialogAction dialog={SubspaceDialog.ManageFlow} buttonVariant="outlined" />}
+          />
+        </Box>
       )}
       <CalloutsGroupView
         calloutsSetId={calloutsSetId}

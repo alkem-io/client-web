@@ -36,6 +36,8 @@ const SpaceSubspacesPage = () => {
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
+  console.log({ isCreateDialogOpen });
+
   const { createSubspace } = useSubspaceCreation();
 
   const handleCreate = useCallback(

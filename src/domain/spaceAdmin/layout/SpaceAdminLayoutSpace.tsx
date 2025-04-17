@@ -33,7 +33,6 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
 
   const spaceBannerElement = (
     <SpacePageBanner
-      title={profile?.displayName}
       tagline={profile?.tagline}
       bannerUrl={profile?.banner?.uri}
       bannerAltText={profile?.banner?.alternativeText}

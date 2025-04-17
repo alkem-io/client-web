@@ -25,7 +25,7 @@ import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessa
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
     membership: {
-      myMembershipStatus?: CommunityMembershipStatus;
+      myMembershipStatus?: CommunityMembershipStatus | string;
       roleSetID?: string;
     };
     profile: { description?: string };

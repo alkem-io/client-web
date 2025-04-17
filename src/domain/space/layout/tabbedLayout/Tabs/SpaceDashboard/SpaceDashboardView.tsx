@@ -133,17 +133,9 @@ const SpaceDashboardView = ({
       <PageContent>
         <InfoColumn>
           <PageContentBlock accent>
-            <SpaceWelcomeBlock
-              description={tabDescription ?? ''}
-              leadUsers={leadUsers}
-              onContactLeadUser={receiver => sendMessage('user', receiver)}
-              leadOrganizations={welcomeBlockContributors}
-              onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              onClickReadMore={() => setAboutDialogOpen(true)}
-              level={level}
-              member={myMembershipStatus === CommunityMembershipStatus.Member}
-            />
+            <SpaceWelcomeBlock spaceAbout={space?.about!} />
           </PageContentBlock>
+
           <FullWidthButton
             startIcon={<InfoOutlined />}
             onClick={() => setAboutDialogOpen(true)}
@@ -152,6 +144,7 @@ const SpaceDashboardView = ({
           >
             {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>
+
           <DashboardNavigation
             currentItemId={space?.id}
             dashboardNavigation={dashboardNavigation}
