@@ -18,7 +18,7 @@ export interface ActivityDialogProps {
 const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
 
-  const { user } = useCurrentUserContext();
+  const { userWrapper } = useCurrentUserContext();
   const { data: _space } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
@@ -33,7 +33,7 @@ const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps)
 
   const permissions = {
     readAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
+    readUsers: userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
   const activityTypes = Object.values(ActivityEventType).filter(

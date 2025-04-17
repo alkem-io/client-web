@@ -10,8 +10,8 @@ const MyDashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./My
 const MyDashboardWithoutMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithoutMemberships'));
 
 export const MyDashboard = () => {
-  const { user, isAuthenticated, loading: isLoadingAuthentication } = useCurrentUserContext();
-  const hasNotAuthorized = !isAuthenticated || !user;
+  const { userModel, isAuthenticated, loading: isLoadingAuthentication } = useCurrentUserContext();
+  const hasNotAuthorized = !isAuthenticated || !userModel;
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery({
     skip: hasNotAuthorized,

@@ -67,7 +67,7 @@ export const ForumPage = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user: { hasPlatformPrivilege } = {}, loading: loadingUser } = useCurrentUserContext();
+  const { userWrapper: { hasPlatformPrivilege } = {}, loading: loadingUser } = useCurrentUserContext();
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
 

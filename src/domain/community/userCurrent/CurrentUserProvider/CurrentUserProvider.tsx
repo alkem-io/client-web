@@ -11,7 +11,7 @@ import { toUserMetadata } from '@/domain/community/user';
 import { CurrentUserModel } from '../model/CurrentUserModel';
 
 const CurrentUserContext = createContext<CurrentUserModel>({
-  user: undefined,
+  userWrapper: undefined,
   userModel: undefined,
   accountId: undefined,
   loading: true,
@@ -70,7 +70,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
 
   const providedValue = useMemo<CurrentUserModel>(
     () => ({
-      user: userMetadata,
+      userWrapper: userMetadata,
       userModel: user,
       accountId,
       loading,

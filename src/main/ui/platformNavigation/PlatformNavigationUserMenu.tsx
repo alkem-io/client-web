@@ -55,9 +55,9 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
     const { setOpenDialog } = usePendingMembershipsDialog();
 
-    const { userModel, user: { hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useCurrentUserContext();
+    const { userModel, userWrapper, isAuthenticated, platformRoles } = useCurrentUserContext();
 
-    const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
+    const isAdmin = userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
     const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 

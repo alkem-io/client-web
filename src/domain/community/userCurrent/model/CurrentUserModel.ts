@@ -3,7 +3,7 @@ import { UserMetadata } from '../CurrentUserProvider/useUserMetadataWrapper';
 import { UserModel } from '../../user/models/UserModel';
 
 export interface CurrentUserModel {
-  user: UserMetadata | undefined;
+  userWrapper: UserMetadata | undefined;
   userModel: UserModel | undefined;
   accountId: string | undefined;
   loading: boolean;

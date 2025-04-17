@@ -12,7 +12,7 @@ import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 const UserAdminOrganizationsPage = () => {
   const { t } = useTranslation();
   const { userId } = useUrlResolver();
-  const { user: currentUser } = useCurrentUserContext();
+  const { userWrapper: currentUser } = useCurrentUserContext();
   const { user: userModel, loading } = useUserMetadata(userId);
   const organizationIds = useUserOrganizationIds(userModel?.id);
 

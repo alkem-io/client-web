@@ -23,7 +23,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 
 const OrganizationProvider = ({ children }: PropsWithChildren) => {
   const { organizationId, loading: resolvingOrganization } = useUrlResolver();
-  const { user, loading: isUserLoading } = useCurrentUserContext();
+  const { userWrapper, loading: isUserLoading } = useCurrentUserContext();
   const { data, loading: loadingOrganizationInfo } = useOrganizationInfoQuery({
     variables: {
       organizationId: organizationId!,
@@ -40,7 +40,7 @@ const OrganizationProvider = ({ children }: PropsWithChildren) => {
         organization,
         organizationId: organization?.id ?? '',
         roleSetId: organization?.roleSet.id ?? '',
-        canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
+        canReadUsers: userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
         displayName,
         loading: resolvingOrganization || isUserLoading || loadingOrganizationInfo,
       }}

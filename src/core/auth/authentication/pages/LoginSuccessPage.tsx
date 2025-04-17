@@ -10,10 +10,10 @@ export const LoginSuccessPage = () => {
   // and this way we ensure the profile is created before the user is redirected to the returnUrl.
   // Probably this won't be needed once we refactor UserProvider
   // We could maybe do a lighter query here to check if the user has profile or not, and trigger the creation if needed.
-  const { user, loading } = useCurrentUserContext();
+  const { userModel, loading } = useCurrentUserContext();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && userModel) {
       if (returnUrl) {
         window.location.replace(returnUrl);
         return () => {
@@ -21,7 +21,7 @@ export const LoginSuccessPage = () => {
         };
       }
     }
-  }, [returnUrl, user, loading]);
+  }, [returnUrl, userModel, loading]);
 
   return null;
 };

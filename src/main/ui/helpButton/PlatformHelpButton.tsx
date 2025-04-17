@@ -19,10 +19,10 @@ const PlatformHelpButton = () => {
   const { fullscreen } = useFullscreen();
   const { isFeatureEnabled } = useConfig();
   const isGuidanceEnabled = isFeatureEnabled(PlatformFeatureFlagName.GuidenceEngine);
-  const { user: currentUser } = useCurrentUserContext();
+  const { userWrapper } = useCurrentUserContext();
   const shouldDisplayChatWidget =
     !fullscreen && // Never show the widget when there's something in fullscreen
-    currentUser?.hasPlatformPrivilege(AuthorizationPrivilege.AccessInteractiveGuidance) &&
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.AccessInteractiveGuidance) &&
     isGuidanceEnabled;
 
   return (

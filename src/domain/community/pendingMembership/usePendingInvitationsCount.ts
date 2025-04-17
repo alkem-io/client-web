@@ -2,9 +2,9 @@ import { usePendingInvitationsCountQuery } from '@/core/apollo/generated/apollo-
 import { useCurrentUserContext } from '@/domain/community/user';
 
 export const usePendingInvitationsCount = () => {
-  const { user, isAuthenticated } = useCurrentUserContext();
+  const { userModel, isAuthenticated } = useCurrentUserContext();
   const { data: invitesData } = usePendingInvitationsCountQuery({
-    skip: !isAuthenticated || !user,
+    skip: !isAuthenticated || !userModel,
   });
 
   return {

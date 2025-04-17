@@ -19,7 +19,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
 
   const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
 
-  const { user } = useCurrentUserContext();
+  const { userWrapper } = useCurrentUserContext();
 
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   const permissions = {
     canEdit: spacePrivileges.includes(AuthorizationPrivilege.Update),
     spaceReadAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+    readUsers: userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
