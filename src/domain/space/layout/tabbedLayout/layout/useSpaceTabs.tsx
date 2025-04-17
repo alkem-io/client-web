@@ -4,8 +4,8 @@ import { useSpace } from '../../../context/useSpace';
 import { TFunction, useTranslation } from 'react-i18next';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { SpaceL1Icon } from '../../../icons/SpaceL1Icon';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 
 type TabDefinition = {
   label: string;
@@ -78,7 +78,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
 
     result.push({
       label: tabName(t, innovationFlowTabs?.[1]?.displayName, 'pages.space.sections.tabs.community'),
-      icon: <CalloutIcon />,
+      icon: <GroupOutlinedIcon />,
       description: innovationFlowTabs?.[1]?.description ?? '',
     });
 

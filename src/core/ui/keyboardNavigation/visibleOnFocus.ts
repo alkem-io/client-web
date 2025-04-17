@@ -1,10 +1,9 @@
-import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/material';
 
 const visibleOnFocus =
   ({ skip = false }: { skip?: boolean } = {}) =>
-  (sx: SystemStyleObject<Theme> = {}): SxProps<Theme> =>
+  (sx: SxProps<Theme> = {}): SxProps<Theme> =>
     skip
       ? sx
       : {
@@ -16,7 +15,6 @@ const visibleOnFocus =
             width: 0,
             height: 0,
             boxSizing: 'border-box',
-            ...sx,
           },
         };
 

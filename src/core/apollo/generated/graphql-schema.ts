@@ -793,9 +793,11 @@ export enum AuthorizationCredential {
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
+  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
@@ -923,6 +925,7 @@ export enum AuthorizationPrivilege {
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
+  ReadLicense = 'READ_LICENSE',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -2143,9 +2146,11 @@ export enum CredentialType {
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
+  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
@@ -2342,12 +2347,10 @@ export type ExploreSpacesInput = {
 
 export type ExternalConfig = {
   __typename?: 'ExternalConfig';
-  /** The signature of the API key */
+  /** The API key for the external LLM provider. */
   apiKey?: Maybe<Scalars['String']>;
-  /** The assistent ID backing the service in OpenAI`s assistant API */
+  /** The assistant ID backing the service in OpenAI`s assistant API */
   assistantId?: Maybe<Scalars['String']>;
-  /** The ExternalConfig for this Virtual. */
-  externalConfig?: Maybe<ExternalConfig>;
   /** The OpenAI model to use for the service */
   model: OpenAiModel;
 };
@@ -2355,7 +2358,7 @@ export type ExternalConfig = {
 export type ExternalConfigInput = {
   /** The API key for the external LLM provider. */
   apiKey?: InputMaybe<Scalars['String']>;
-  /** The assistent ID backing the service in OpenAI`s assistant API */
+  /** The assistant ID backing the service in OpenAI`s assistant API */
   assistantId?: InputMaybe<Scalars['String']>;
   /** The OpenAI model to use for the service */
   model?: OpenAiModel;
@@ -3843,6 +3846,8 @@ export type Mutation = {
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
   updateCalloutsSortOrder: Array<Callout>;
+  /** Updates a Tagset on a Classification. */
+  updateClassificationTagset: Tagset;
   /** Updates the Collaboration, including InnovationFlow states, from the specified Collaboration Template. */
   updateCollaborationFromTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
@@ -3881,8 +3886,8 @@ export type Mutation = {
   updatePost: Post;
   /** Updates one of the Preferences on a Space */
   updatePreferenceOnUser: Preference;
-  /** Updates the specified Tagset. */
-  updateProfile: Tagset;
+  /** Updates the specified Profile. */
+  updateProfile: Profile;
   /** Updates the specified Reference. */
   updateReference: Reference;
   /** Updates the Space. */
@@ -4369,6 +4374,10 @@ export type MutationUpdateCalloutsSortOrderArgs = {
   sortOrderData: UpdateCalloutsSortOrderInput;
 };
 
+export type MutationUpdateClassificationTagsetArgs = {
+  updateData: UpdateClassificationSelectTagsetValueInput;
+};
+
 export type MutationUpdateCollaborationFromTemplateArgs = {
   updateData: UpdateCollaborationFromTemplateInput;
 };
@@ -4446,7 +4455,7 @@ export type MutationUpdatePreferenceOnUserArgs = {
 };
 
 export type MutationUpdateProfileArgs = {
-  updateData: UpdateClassificationSelectTagsetValueInput;
+  profileData: UpdateProfileDirectInput;
 };
 
 export type MutationUpdateReferenceArgs = {
@@ -5506,8 +5515,10 @@ export enum RoleName {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
+  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
@@ -6910,6 +6921,18 @@ export type UpdatePostInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateProfileDirectInput = {
+  description?: InputMaybe<Scalars['Markdown']>;
+  /** The display name for the entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<UpdateLocationInput>;
+  profileID: Scalars['UUID'];
+  references?: InputMaybe<Array<UpdateReferenceInput>>;
+  /** A memorable short description for this entity. */
+  tagline?: InputMaybe<Scalars['String']>;
+  tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateProfileInput = {
@@ -9106,119 +9129,6 @@ export type AccountItemProfileFragment = {
   description?: string | undefined;
   url: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
-export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
-
-export type ProfileVerifiedCredentialSubscription = {
-  __typename?: 'Subscription';
-  profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
-};
-
-export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetSupportedCredentialMetadataQuery = {
-  __typename?: 'Query';
-  getSupportedVerifiedCredentialMetadata: Array<{
-    __typename?: 'CredentialMetadataOutput';
-    name: string;
-    description: string;
-    schema: string;
-    types: Array<string>;
-    uniqueType: string;
-    context: string;
-  }>;
-};
-
-export type BeginCredentialRequestInteractionMutationVariables = Exact<{
-  types: Array<Scalars['String']> | Scalars['String'];
-}>;
-
-export type BeginCredentialRequestInteractionMutation = {
-  __typename?: 'Mutation';
-  beginVerifiedCredentialRequestInteraction: {
-    __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-    qrCodeImg: string;
-    jwt: string;
-  };
-};
-
-export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<{ [key: string]: never }>;
-
-export type BeginAlkemioUserCredentialOfferInteractionMutation = {
-  __typename?: 'Mutation';
-  beginAlkemioUserVerifiedCredentialOfferInteraction: {
-    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    jwt: string;
-    qrCodeImg: string;
-  };
-};
-
-export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Exact<{
-  communityID: Scalars['String'];
-}>;
-
-export type BeginCommunityMemberCredentialOfferInteractionMutation = {
-  __typename?: 'Mutation';
-  beginCommunityMemberVerifiedCredentialOfferInteraction: {
-    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    jwt: string;
-    qrCodeImg: string;
-  };
-};
-
-export type UserAgentSsiFragment = {
-  __typename?: 'User';
-  id: string;
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    did?: string | undefined;
-    verifiedCredentials?:
-      | Array<{
-          __typename?: 'VerifiedCredential';
-          context: string;
-          issued: string;
-          expires: string;
-          issuer: string;
-          name: string;
-          type: string;
-          claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-        }>
-      | undefined;
-  };
-};
-
-export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserSsiQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          agent: {
-            __typename?: 'Agent';
-            id: string;
-            did?: string | undefined;
-            verifiedCredentials?:
-              | Array<{
-                  __typename?: 'VerifiedCredential';
-                  context: string;
-                  issued: string;
-                  expires: string;
-                  issuer: string;
-                  name: string;
-                  type: string;
-                  claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-                }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
 };
 
 export type CalloutPageCalloutQueryVariables = Exact<{
@@ -17195,6 +17105,7 @@ export type SpaceContributionDetailsQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            isContentPublic: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -17389,53 +17300,7 @@ export type CreateUserNewRegistrationMutationVariables = Exact<{ [key: string]: 
 
 export type CreateUserNewRegistrationMutation = {
   __typename?: 'Mutation';
-  createUserNewRegistration: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-        | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
+  createUserNewRegistration: { __typename?: 'User'; id: string };
 };
 
 export type DeleteUserMutationVariables = Exact<{
@@ -18484,6 +18349,7 @@ export type VirtualContributorFullFragment = {
         bodyOfKnowledge?: string | undefined;
         bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
         bodyOfKnowledgeID?: string | undefined;
+        engine: AiPersonaEngine;
       }
     | undefined;
 };
@@ -22647,6 +22513,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
               bodyOfKnowledge?: string | undefined;
               bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
               bodyOfKnowledgeID?: string | undefined;
+              engine: AiPersonaEngine;
             }
           | undefined;
       }>;
@@ -22708,6 +22575,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                     bodyOfKnowledge?: string | undefined;
                     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                     bodyOfKnowledgeID?: string | undefined;
+                    engine: AiPersonaEngine;
                   }
                 | undefined;
             }>;
@@ -22774,6 +22642,7 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                       bodyOfKnowledge?: string | undefined;
                       bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                       bodyOfKnowledgeID?: string | undefined;
+                      engine: AiPersonaEngine;
                     }
                   | undefined;
               }>;

@@ -2,8 +2,8 @@ import { SvgIconComponent } from '@mui/icons-material';
 import { SvgIcon, SvgIconProps } from '@mui/material';
 
 /**
- @deprecated remove one of the two L1 icons
-*/
+ * This is the newest version of the SpaceL1Icon/L1 icon.
+ */
 const SpaceL1Icon2: SvgIconComponent = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props}>

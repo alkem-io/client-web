@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -13,8 +13,8 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';

@@ -29,11 +29,12 @@ type GetterParams = OrganizationDetailsFragmentWithRoles | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 10,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -86,7 +87,6 @@ const CommunityOrganizations = ({
     {
       field: 'avatar',
       headerName: t('common.avatar'),
-      renderHeader: () => <>{t('common.avatar')}</>,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
@@ -98,7 +98,6 @@ const CommunityOrganizations = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
@@ -112,7 +111,6 @@ const CommunityOrganizations = ({
     {
       field: 'isLead',
       headerName: t('common.role'),
-      renderHeader: () => <>{t('common.role')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.isLead ? t('common.lead') : t('common.member')}</>,
       filterable: false,
     },
@@ -178,6 +176,7 @@ const CommunityOrganizations = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
             disableDelete={() => true}
           />

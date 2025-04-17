@@ -1,6 +1,6 @@
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import { CardLayoutContainer } from '@/_deprecatedToKeep/CardsLayout';
+import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
