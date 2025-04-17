@@ -117,7 +117,7 @@ const InnovationFlowDragNDropEditor = ({
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
           {parentDroppableProvided => (
-            <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
+            <Box ref={parentDroppableProvided.innerRef}>
               <Box display="flex" flexDirection="row" gap={gutters()} alignItems="stretch">
                 {innovationFlowStates?.map((state, index) => (
                   <Draggable
@@ -142,6 +142,7 @@ const InnovationFlowDragNDropEditor = ({
                                 <>{getStateName(state.displayName)}</>
                               </Caption>
                             }
+                            sx={{ userSelect: 'none' }}
                             actions={
                               <InnovationFlowStateMenu
                                 state={state.displayName}
@@ -156,7 +157,7 @@ const InnovationFlowDragNDropEditor = ({
                           />
                           {state.description?.trim() &&
                             (croppedDescriptions ? (
-                              <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3}>
+                              <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3} minHeightGutters={1}>
                                 {state.description}
                               </CroppedMarkdown>
                             ) : (

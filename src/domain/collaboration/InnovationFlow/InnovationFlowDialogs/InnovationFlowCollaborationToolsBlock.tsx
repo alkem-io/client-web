@@ -1,4 +1,4 @@
-import { Box, BoxProps, Skeleton, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, Skeleton, styled, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import { ComponentType, FC, forwardRef } from 'react';
 import {
@@ -15,8 +15,20 @@ import InnovationFlowDragNDropEditor, {
   InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { GUTTER_PX } from '@/core/ui/grid/constants';
 
 const SKELETON_COUNT = 3;
+
+const StyledDragAndDropList = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  height: '100%',
+  userSelect: 'none',
+  '& div[data-rbd-drop-indicator]': {
+    background: theme.palette.primary.main,
+    marginTop: `${-(GUTTER_PX / 2 + 1)}px`,
+    marginBottom: `${-(GUTTER_PX / 2 + 1)}px`,
+  },
+}));
 
 interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlowDragNDropEditorProps, 'children'> {
   callouts: {
@@ -95,33 +107,36 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
       {...statesActions}
     >
       {state => (
-        <Droppable droppableId={state.displayName}>
-          {provided => (
-            <Gutters
-              ref={provided.innerRef}
-              disablePadding
-              flexGrow={1}
-              minHeight={gutters(1)}
-              {...provided.droppableProps}
-            >
-              {groupedCallouts[state.displayName]?.map((callout, index) => (
-                <Draggable key={callout.id} draggableId={callout.id} index={index}>
-                  {provider => (
-                    <ListItem
-                      ref={provider.innerRef}
-                      {...provider.draggableProps}
-                      {...provider.dragHandleProps}
-                      displayName={callout.profile.displayName}
-                      icon={calloutIcons[callout.type]}
-                      activity={callout.activity}
-                    />
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </Gutters>
-          )}
-        </Droppable>
+        <StyledDragAndDropList>
+          <Droppable droppableId={state.displayName}>
+            {provided => (
+              <Gutters
+                ref={provided.innerRef}
+                disablePadding
+                flexGrow={1}
+                minHeight={gutters(1)}
+                height="100%"
+                {...provided.droppableProps}
+              >
+                {groupedCallouts[state.displayName]?.map((callout, index) => (
+                  <Draggable key={callout.id} draggableId={callout.id} index={index}>
+                    {provider => (
+                      <ListItem
+                        ref={provider.innerRef}
+                        {...provider.draggableProps}
+                        {...provider.dragHandleProps}
+                        displayName={callout.profile.displayName}
+                        icon={calloutIcons[callout.type]}
+                        activity={callout.activity}
+                      />
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Gutters>
+            )}
+          </Droppable>
+        </StyledDragAndDropList>
       )}
     </InnovationFlowDragNDropEditor>
   );
