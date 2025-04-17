@@ -1,7 +1,7 @@
 import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { useUserProvider } from '../../../../_deprecated/useUserProvider';
+import { useUserProvider } from '../hooks/useUserProvider';
 import UserPageLayout from '../layout/UserPageLayout';
 import UserProfilePageView from './UserProfilePageView';
 import useUserContributions from '../userContributions/useUserContributions';

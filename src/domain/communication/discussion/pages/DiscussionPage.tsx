@@ -13,7 +13,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
-import { useAuthorsDetails } from '@/domain/communication/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
 import { Message } from '@/domain/communication/room/models/Message';
 import { Skeleton } from '@mui/material';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';

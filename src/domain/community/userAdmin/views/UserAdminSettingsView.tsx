@@ -7,7 +7,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography/components';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserProvider } from '@/_deprecated/useUserProvider';
+import { useUserProvider } from '@/domain/community/user/hooks/useUserProvider';
 
 const defaultUserSettings = {
   privacy: {

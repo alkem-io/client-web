@@ -3130,64 +3130,6 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
   ${SpaceAboutCardBannerFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
-export const UserModelFullDocument = gql`
-  query UserModelFull($userId: UUID!) {
-    lookup {
-      user(ID: $userId) {
-        isContactable
-        ...UserDetails
-      }
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-
-/**
- * __useUserModelFullQuery__
- *
- * To run a query within a React component, call `useUserModelFullQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserModelFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserModelFullQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserModelFullQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>(
-    UserModelFullDocument,
-    options
-  );
-}
-
-export function useUserModelFullLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>(
-    UserModelFullDocument,
-    options
-  );
-}
-
-export type UserModelFullQueryHookResult = ReturnType<typeof useUserModelFullQuery>;
-export type UserModelFullLazyQueryHookResult = ReturnType<typeof useUserModelFullLazyQuery>;
-export type UserModelFullQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserModelFullQuery,
-  SchemaTypes.UserModelFullQueryVariables
->;
-export function refetchUserModelFullQuery(variables: SchemaTypes.UserModelFullQueryVariables) {
-  return { query: UserModelFullDocument, variables: variables };
-}
-
 export const UploadFileOnReferenceDocument = gql`
   mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
     uploadFileOnReference(uploadData: $uploadData, file: $file) {
@@ -8512,81 +8454,6 @@ export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadVisualMutation,
   SchemaTypes.UploadVisualMutationVariables
 >;
-export const AuthorDetailsDocument = gql`
-  query authorDetails($ids: [UUID!]!) {
-    users(IDs: $ids) {
-      id
-      firstName
-      lastName
-      isContactable
-      profile {
-        id
-        url
-        displayName
-        location {
-          id
-          country
-          city
-        }
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-
-/**
- * __useAuthorDetailsQuery__
- *
- * To run a query within a React component, call `useAuthorDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAuthorDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAuthorDetailsQuery({
- *   variables: {
- *      ids: // value for 'ids'
- *   },
- * });
- */
-export function useAuthorDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>(
-    AuthorDetailsDocument,
-    options
-  );
-}
-
-export function useAuthorDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>(
-    AuthorDetailsDocument,
-    options
-  );
-}
-
-export type AuthorDetailsQueryHookResult = ReturnType<typeof useAuthorDetailsQuery>;
-export type AuthorDetailsLazyQueryHookResult = ReturnType<typeof useAuthorDetailsLazyQuery>;
-export type AuthorDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.AuthorDetailsQuery,
-  SchemaTypes.AuthorDetailsQueryVariables
->;
-export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQueryVariables) {
-  return { query: AuthorDetailsDocument, variables: variables };
-}
-
 export const LatestReleaseDiscussionDocument = gql`
   query latestReleaseDiscussion {
     platform {
@@ -11983,22 +11850,12 @@ export function refetchUserNotificationsPreferencesQuery(
   return { query: UserNotificationsPreferencesDocument, variables: variables };
 }
 
-export const CurrentUserFullDocument = gql`
-  query CurrentUserFull {
-    me {
-      user {
+export const UserModelFullDocument = gql`
+  query UserModelFull($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
+        isContactable
         ...UserDetails
-        account {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          license {
-            id
-            availableEntitlements
-          }
-        }
       }
     }
   }
@@ -12006,48 +11863,105 @@ export const CurrentUserFullDocument = gql`
 `;
 
 /**
- * __useCurrentUserFullQuery__
+ * __useUserModelFullQuery__
  *
- * To run a query within a React component, call `useCurrentUserFullQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentUserFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserModelFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserModelFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCurrentUserFullQuery({
+ * const { data, loading, error } = useUserModelFullQuery({
  *   variables: {
+ *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useCurrentUserFullQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>
+export function useUserModelFullQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>(
-    CurrentUserFullDocument,
+  return Apollo.useQuery<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>(
+    UserModelFullDocument,
     options
   );
 }
 
-export function useCurrentUserFullLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>
+export function useUserModelFullLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>(
-    CurrentUserFullDocument,
+  return Apollo.useLazyQuery<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>(
+    UserModelFullDocument,
     options
   );
 }
 
-export type CurrentUserFullQueryHookResult = ReturnType<typeof useCurrentUserFullQuery>;
-export type CurrentUserFullLazyQueryHookResult = ReturnType<typeof useCurrentUserFullLazyQuery>;
-export type CurrentUserFullQueryResult = Apollo.QueryResult<
-  SchemaTypes.CurrentUserFullQuery,
-  SchemaTypes.CurrentUserFullQueryVariables
+export type UserModelFullQueryHookResult = ReturnType<typeof useUserModelFullQuery>;
+export type UserModelFullLazyQueryHookResult = ReturnType<typeof useUserModelFullLazyQuery>;
+export type UserModelFullQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserModelFullQuery,
+  SchemaTypes.UserModelFullQueryVariables
 >;
-export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
-  return { query: CurrentUserFullDocument, variables: variables };
+export function refetchUserModelFullQuery(variables: SchemaTypes.UserModelFullQueryVariables) {
+  return { query: UserModelFullDocument, variables: variables };
+}
+
+export const UsersModelFullDocument = gql`
+  query UsersModelFull($ids: [UUID!]!) {
+    users(IDs: $ids) {
+      isContactable
+      ...UserDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUsersModelFullQuery__
+ *
+ * To run a query within a React component, call `useUsersModelFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersModelFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersModelFullQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useUsersModelFullQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UsersModelFullQuery, SchemaTypes.UsersModelFullQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UsersModelFullQuery, SchemaTypes.UsersModelFullQueryVariables>(
+    UsersModelFullDocument,
+    options
+  );
+}
+
+export function useUsersModelFullLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UsersModelFullQuery, SchemaTypes.UsersModelFullQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UsersModelFullQuery, SchemaTypes.UsersModelFullQueryVariables>(
+    UsersModelFullDocument,
+    options
+  );
+}
+
+export type UsersModelFullQueryHookResult = ReturnType<typeof useUsersModelFullQuery>;
+export type UsersModelFullLazyQueryHookResult = ReturnType<typeof useUsersModelFullLazyQuery>;
+export type UsersModelFullQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersModelFullQuery,
+  SchemaTypes.UsersModelFullQueryVariables
+>;
+export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFullQueryVariables) {
+  return { query: UsersModelFullDocument, variables: variables };
 }
 
 export const UserContributionDisplayNamesDocument = gql`
@@ -12420,6 +12334,73 @@ export type UserSettingsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQueryVariables) {
   return { query: UserSettingsDocument, variables: variables };
+}
+
+export const CurrentUserFullDocument = gql`
+  query CurrentUserFull {
+    me {
+      user {
+        ...UserDetails
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          license {
+            id
+            availableEntitlements
+          }
+        }
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useCurrentUserFullQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserFullQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserFullQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>(
+    CurrentUserFullDocument,
+    options
+  );
+}
+
+export function useCurrentUserFullLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>(
+    CurrentUserFullDocument,
+    options
+  );
+}
+
+export type CurrentUserFullQueryHookResult = ReturnType<typeof useCurrentUserFullQuery>;
+export type CurrentUserFullLazyQueryHookResult = ReturnType<typeof useCurrentUserFullLazyQuery>;
+export type CurrentUserFullQueryResult = Apollo.QueryResult<
+  SchemaTypes.CurrentUserFullQuery,
+  SchemaTypes.CurrentUserFullQueryVariables
+>;
+export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
+  return { query: CurrentUserFullDocument, variables: variables };
 }
 
 export const AiPersonaServiceDocument = gql`

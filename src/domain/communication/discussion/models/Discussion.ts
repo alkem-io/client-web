@@ -5,7 +5,7 @@ import {
   ForumDiscussionCategory,
 } from '@/core/apollo/generated/graphql-schema';
 import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
-import { useAuthorsDetails } from '@/domain/communication/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
 import { Room } from '@/domain/communication/room/models/Room';
 
 export interface Discussion {

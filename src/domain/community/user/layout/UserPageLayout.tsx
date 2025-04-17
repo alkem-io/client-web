@@ -3,7 +3,7 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserProvider } from '../../../../_deprecated/useUserProvider';
+import { useUserProvider } from '../hooks/useUserProvider';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';

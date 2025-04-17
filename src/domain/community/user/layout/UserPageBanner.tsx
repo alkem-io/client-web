@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { useUserProvider } from '../../../../_deprecated/useUserProvider';
+import { useUserProvider } from '../hooks/useUserProvider';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
