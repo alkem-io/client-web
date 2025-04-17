@@ -474,6 +474,8 @@
       "OWNER": "Eigenaar",
       "GLOBAL_ADMIN": "Globale Beheerder",
       "GLOBAL_SUPPORT": "Ondersteuning Beheerder",
+      "GLOBAL_SUPPORT_MANAGER": "Support Manager",
+      "GLOBAL_PLATFORM_MANAGER": "Platform Manager",
       "GLOBAL_LICENSE_MANAGER": "Licentie Manager",
       "GLOBAL_COMMUNITY_READER": "Community Manager",
       "GLOBAL_SPACES_READER": "Spaces Lezer",
