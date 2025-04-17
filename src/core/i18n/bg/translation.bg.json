@@ -474,6 +474,8 @@
       "OWNER": "Owner",
       "GLOBAL_ADMIN": "Global Admin",
       "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_SUPPORT_MANAGER": "Support Manager",
+      "GLOBAL_PLATFORM_MANAGER": "Platform Manager",
       "GLOBAL_LICENSE_MANAGER": "License Manager",
       "GLOBAL_COMMUNITY_READER": "Community Manager",
       "GLOBAL_SPACES_READER": "Spaces Reader",
