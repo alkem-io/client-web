@@ -923,6 +923,7 @@ export enum AuthorizationPrivilege {
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
+  ReadLicense = 'READ_LICENSE',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -17292,53 +17293,7 @@ export type CreateUserNewRegistrationMutationVariables = Exact<{ [key: string]: 
 
 export type CreateUserNewRegistrationMutation = {
   __typename?: 'Mutation';
-  createUserNewRegistration: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-        | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
+  createUserNewRegistration: { __typename?: 'User'; id: string };
 };
 
 export type DeleteUserMutationVariables = Exact<{
