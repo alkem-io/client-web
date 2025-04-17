@@ -11363,6 +11363,7 @@ export const SpaceContributionDetailsDocument = gql`
             roleSetID
             communityID
           }
+          isContentPublic
         }
       }
     }
