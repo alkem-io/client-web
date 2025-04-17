@@ -25,10 +25,16 @@ const LegacyRoutesRedirects = () => (
 const SubspaceRoute = () => {
   const { subspace, permissions, loading } = useSubSpace();
 
-  const { canRead, spaceId } = useMemo(() => {
+  const { canRead, spaceId, spacePath } = useMemo(() => {
+    let spacePath: string = '';
+    try {
+      spacePath = new URL(subspace.about.profile.url).pathname;
+    } catch {}
+
     return {
       canRead: permissions.canRead,
       spaceId: subspace.id,
+      spacePath,
     };
   }, [subspace, permissions]);
 
@@ -60,7 +66,7 @@ const SubspaceRoute = () => {
           element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
         />
         {/* Redirecting legacy dashboard links to Subspace Home */}
-        <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
+        <Route path={EntityPageSection.Dashboard} element={<Navigate replace to={spacePath} />} />
         <Route
           path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
           element={<SubspaceCalloutPage />}

@@ -1,5 +1,5 @@
 mutation createUserNewRegistration {
   createUserNewRegistration {
-    ...UserDetails
+    id
   }
 }
