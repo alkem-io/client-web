@@ -2,7 +2,7 @@ import { ForwardedRef, forwardRef } from 'react';
 import { Paper, PaperProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
-import { DroppableProvidedProps } from 'react-beautiful-dnd';
+import { DroppableProvidedProps } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
 import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
 import { PaperTypeMap } from '@mui/material/Paper/Paper';
 

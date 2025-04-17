@@ -7,15 +7,21 @@ interface CroppedMarkdownProps extends MarkdownProps {
   children: string;
   backgroundColor?: OverflowGradientProps['backgroundColor'];
   maxHeightGutters?: number;
+  minHeightGutters?: number;
 }
 
 const CroppedMarkdown = ({
   children,
   maxHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS,
+  minHeightGutters = 0,
   backgroundColor = 'default',
   ...props
 }: CroppedMarkdownProps) => (
-  <OverflowGradient maxHeight={gutters(maxHeightGutters)} backgroundColor={backgroundColor}>
+  <OverflowGradient
+    maxHeight={gutters(maxHeightGutters)}
+    minHeight={gutters(minHeightGutters)}
+    backgroundColor={backgroundColor}
+  >
     <WrapperMarkdown card {...props}>
       {children}
     </WrapperMarkdown>

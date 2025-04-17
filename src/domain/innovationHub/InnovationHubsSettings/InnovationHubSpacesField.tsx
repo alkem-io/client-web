@@ -4,7 +4,12 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
 import AddIcon from '@mui/icons-material/Add';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  OnDragEndResponder,
+} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
