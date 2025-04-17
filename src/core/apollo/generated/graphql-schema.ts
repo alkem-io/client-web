@@ -17098,6 +17098,7 @@ export type SpaceContributionDetailsQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            isContentPublic: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;

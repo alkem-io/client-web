@@ -29,7 +29,7 @@ const SPACE_TITLE_CLASS_NAME = 'JourneyTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const SpaceTile = ({ journey, columns = 3 }: SpaceTileProps) => {
-  const isPrivate = !journey?.about.isContentPublic;
+  const isPrivate = journey?.about.isContentPublic === false;
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
