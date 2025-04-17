@@ -28,8 +28,8 @@ export interface UseContributionProvided {
 
 const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionParams): UseContributionProvided => {
   const { spaceID, spaceLevel, contributorType, contributorId } = entities;
-  const { user: userMetadata } = useCurrentUserContext();
-  const userId = userMetadata?.user?.id;
+  const { userModel: currentUser } = useCurrentUserContext();
+  const userId = currentUser?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
     variables: {
       spaceId: spaceID,

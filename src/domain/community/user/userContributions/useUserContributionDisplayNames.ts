@@ -4,13 +4,13 @@ import { useUserContributionDisplayNamesQuery } from '@/core/apollo/generated/ap
 const getDisplayName = ({ displayName }: { displayName: string }) => displayName;
 
 const useUserContributionDisplayNames = () => {
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const { data } = useUserContributionDisplayNamesQuery({
     variables: {
-      userId: user?.user.id!,
+      userId: userModel?.id!,
     },
-    skip: !user?.user.id,
+    skip: !userModel?.id,
   });
 
   const challengeMemberships = data?.rolesUser.spaces.flatMap(e => e.subspaces);

@@ -11,9 +11,9 @@ import { Box } from '@mui/material';
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
 
-  useUserScope(user);
+  useUserScope(userModel);
 
   const {
     serverMetadata: { services },

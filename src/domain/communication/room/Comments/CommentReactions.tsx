@@ -27,8 +27,8 @@ const CommentReactions = ({
   onAddReaction,
   onRemoveReaction,
 }: CommentReactionsProps) => {
-  const { user } = useCurrentUserContext();
-  const userId = user?.user.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
   const { t } = useTranslation();
 
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {

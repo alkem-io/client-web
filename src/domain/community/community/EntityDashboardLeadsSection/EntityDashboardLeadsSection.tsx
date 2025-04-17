@@ -35,7 +35,7 @@ const EntityDashboardLeadsSection = ({
 }: PropsWithChildren<EntityDashboardLeadsProps>) => {
   const { t } = useTranslation();
 
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -57,7 +57,7 @@ const EntityDashboardLeadsSection = ({
           });
         },
       })),
-    [leadOrganizations, user?.user]
+    [leadOrganizations, userModel]
   );
 
   const leadUsersMapped = useMemo(() => {

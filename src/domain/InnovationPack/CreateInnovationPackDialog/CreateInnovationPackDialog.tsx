@@ -20,8 +20,8 @@ const CreateInnovationPackDialog = ({
 }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { user } = useCurrentUserContext();
-  const userId = user?.user.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
 
   const [createInnovationPack, { loading }] = useCreateInnovationPackMutation();
 

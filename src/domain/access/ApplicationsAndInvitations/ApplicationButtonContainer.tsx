@@ -33,14 +33,14 @@ export const ApplicationButtonContainer = ({
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
-  const { user, loadingMe: membershipLoading } = useCurrentUserContext();
+  const { userModel, loadingMe: membershipLoading } = useCurrentUserContext();
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated || !user,
+    skip: !isAuthenticated || !userModel,
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
     pendingMembershipsData?.me ?? {};
 
-  const userId = user?.user?.id;
+  const userId = userModel?.id;
 
   const [getCurrentUserProfile, { loading: gettingUserProfile }] = useCurrentUserFullLazyQuery();
 

@@ -15,14 +15,14 @@ const HomePageLayout = ({ children }: PropsWithChildren) => {
   const [title, setTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticated'));
   const [subTitle, setSubTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticatedSubtitle'));
 
-  const { user: { user } = {}, isAuthenticated } = useCurrentUserContext();
+  const { userModel, isAuthenticated } = useCurrentUserContext();
 
   useEffect(() => {
     if (isAuthenticated) {
-      setTitle(t('pages.home.sections.welcome.welcome-back', { username: user?.firstName }));
+      setTitle(t('pages.home.sections.welcome.welcome-back', { username: userModel?.firstName }));
       setSubTitle(t('pages.home.subtitle'));
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, userModel]);
 
   return (
     <>

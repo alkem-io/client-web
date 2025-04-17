@@ -27,7 +27,7 @@ interface UserAdminLayoutProps extends PropsWithChildren {
 }
 
 const UserAdminLayout: FC<UserAdminLayoutProps> = props => {
-  const { user, loading } = useCurrentUserContext();
+  const { userModel, loading } = useCurrentUserContext();
 
   // if (isFeatureEnabled(PlatformFeatureFlagName.Ssi)) {
   //   tabs.push(UserAdminTabs.find(tab => tab.section === SettingsSection.Credentials)!);
@@ -44,11 +44,11 @@ const UserAdminLayout: FC<UserAdminLayoutProps> = props => {
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={loading}
-            avatar={user?.user.profile.avatar}
+            avatar={userModel?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={user?.user.profile.url}
+            uri={userModel?.profile.url}
           >
-            {user?.user.profile.displayName}
+            {userModel?.profile.displayName}
           </BreadcrumbsItem>
           <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>

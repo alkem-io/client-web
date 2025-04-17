@@ -12,7 +12,7 @@ import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 
 export const useHomeMenuItems = () => {
-  const { user, loading } = useCurrentUserContext();
+  const { userModel, loading } = useCurrentUserContext();
   const { link: createSpaceLink, loading: loadingLink } = useCreateSpaceLink();
 
   const dashboardMenuItems: MenuOptionProps[] = useMemo(
@@ -52,7 +52,7 @@ export const useHomeMenuItems = () => {
       {
         label: 'pages.home.mainNavigation.myAccount',
         type: 'link',
-        to: getAccountLink(user?.user.profile?.url),
+        to: getAccountLink(userModel?.profile?.url),
         icon: LocalOfferOutlinedIcon,
         isVisible: (_, __) => true,
       },
@@ -74,7 +74,7 @@ export const useHomeMenuItems = () => {
         isVisible: (_, compactMode) => !compactMode,
       },
     ],
-    [user, createSpaceLink, loadingLink]
+    [userModel, createSpaceLink, loadingLink]
   );
 
   return { items: dashboardMenuItems, loading };

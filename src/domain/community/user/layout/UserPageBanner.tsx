@@ -7,11 +7,11 @@ import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const UserPageBanner = () => {
-  const { user: currentUser } = useCurrentUserContext();
+  const { userModel: currentUser } = useCurrentUserContext();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { user, loading } = useUserMetadata(userId);
 
-  const isCurrentUser = useMemo(() => user?.id === currentUser?.user.id, [user, currentUser]);
+  const isCurrentUser = useMemo(() => user?.id === currentUser?.id, [user, currentUser]);
 
   const profile = user?.profile;
 

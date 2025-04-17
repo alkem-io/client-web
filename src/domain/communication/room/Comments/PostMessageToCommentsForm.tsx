@@ -42,9 +42,9 @@ const PostMessageToCommentsForm = ({
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
 
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
 
-  const userAvatarUri = user?.user?.profile.avatar?.uri;
+  const userAvatarUri = userModel?.profile.avatar?.uri;
 
   const initialValues: formValues = {
     post: '',
@@ -72,7 +72,7 @@ const PostMessageToCommentsForm = ({
       <UserAvatar
         src={userAvatarUri}
         variant="rounded"
-        aria-label={t('common.avatar-of', { user: user?.user?.profile.displayName })}
+        aria-label={t('common.avatar-of', { user: userModel?.profile.displayName })}
       />
       <Box flexGrow={1} minWidth={0}>
         <Formik

@@ -31,7 +31,7 @@ import useNavigate from '@/core/routing/useNavigate';
 export const DiscussionPage = ({ discussionId, loading }: { discussionId: string | undefined; loading: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
@@ -162,7 +162,7 @@ export const DiscussionPage = ({ discussionId, loading }: { discussionId: string
             <Skeleton />
           ) : (
             <DiscussionView
-              currentUserId={user?.user.id}
+              currentUserId={userModel?.id}
               discussion={discussion}
               postMessage={postMessage}
               postReply={postReply}

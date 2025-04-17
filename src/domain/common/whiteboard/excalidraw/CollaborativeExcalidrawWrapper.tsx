@@ -106,8 +106,8 @@ const CollaborativeExcalidrawWrapper = ({
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
-  const { user } = useCurrentUserContext();
-  const username = user?.user.profile.displayName ?? 'User';
+  const { userModel } = useCurrentUserContext();
+  const username = userModel?.profile.displayName ?? 'User';
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 

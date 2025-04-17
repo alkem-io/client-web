@@ -195,8 +195,8 @@ interface UseHydrateCardProvided {
 }
 
 export const useHydrateCard = (): UseHydrateCardProvided => {
-  const { user: userMetadata } = useCurrentUserContext();
-  const userId = userMetadata?.user?.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
 
   const { data: rolesData } = useUserRolesSearchCardsQuery({
     variables: {

@@ -182,8 +182,8 @@ const ChatWidget = () => {
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
-  const { user } = useCurrentUserContext();
-  const userId = user?.user.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
 
   const handleNewUserMessage = async (newMessage: string) => {
     await sendMessage(newMessage);

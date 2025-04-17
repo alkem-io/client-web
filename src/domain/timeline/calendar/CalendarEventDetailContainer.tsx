@@ -43,8 +43,7 @@ export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<{ eve
 // TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx
 // Maybe put common logic together
 const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDetailContainerProps) => {
-  const { user: userMetadata, isAuthenticated } = useCurrentUserContext();
-  const user = userMetadata?.user;
+  const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const {
     data,
@@ -85,8 +84,8 @@ const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDet
   const commentsPrivileges = event?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
-    authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
-    [user, isAuthenticated, canDeleteComments]
+    authorId => canDeleteComments || (isAuthenticated && authorId === userModel?.id),
+    [userModel, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);

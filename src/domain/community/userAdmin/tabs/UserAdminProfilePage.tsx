@@ -23,7 +23,7 @@ export const UserAdminProfilePage = () => {
   const navigate = useNavigate();
   const { userId } = useUrlResolver();
 
-  const { user: currentUser } = useCurrentUserContext();
+  const { userModel: currentUser } = useCurrentUserContext();
 
   const { data, loading } = useUserQuery({
     variables: {
@@ -48,7 +48,7 @@ export const UserAdminProfilePage = () => {
   });
 
   const editMode = useMemo(() => {
-    if (data?.lookup.user?.id === currentUser?.user.id) return EditMode.edit;
+    if (data?.lookup.user?.id === currentUser?.id) return EditMode.edit;
     return EditMode.readOnly;
   }, [data, currentUser]);
 
@@ -78,7 +78,7 @@ export const UserAdminProfilePage = () => {
       },
     });
 
-    const currentUserUrl = currentUser?.user.profile.url || '';
+    const currentUserUrl = currentUser?.profile.url || '';
     if (currentUser) {
       navigate(currentUserUrl, { replace: true });
     }

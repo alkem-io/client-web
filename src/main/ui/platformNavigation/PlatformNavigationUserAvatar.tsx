@@ -19,11 +19,11 @@ interface PlatformNavigationUserAvatarProps {
 
 const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUserAvatarProps) => {
   const { t } = useTranslation();
-  const { user, isAuthenticated, loadingMe, platformRoles } = useCurrentUserContext();
+  const { userModel, isAuthenticated, loadingMe, platformRoles } = useCurrentUserContext();
 
   const theme = useTheme();
 
-  const showBetaBadge = user && isAuthenticated && platformRoles.includes(RoleName.PlatformBetaTester);
+  const showBetaBadge = userModel && isAuthenticated && platformRoles.includes(RoleName.PlatformBetaTester);
 
   return (
     <MenuTriggerButton
@@ -35,7 +35,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
           <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative" overflow="visible">
             <Paper
               component={Avatar}
-              src={user?.user.profile.avatar?.uri}
+              src={userModel?.profile.avatar?.uri}
               sx={{
                 padding: 0,
                 cursor: 'pointer',

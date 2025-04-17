@@ -2,7 +2,6 @@ import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/genera
 import { UserModel } from '../../user/models/UserModel';
 
 export interface UserMetadata {
-  user: UserModel;
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
   keywords: string[];
   skills: string[];
@@ -21,7 +20,6 @@ export const toUserMetadata = (
   };
 
   return {
-    user,
     hasPlatformPrivilege,
     keywords:
       user.profile.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())?.tags ?? [],

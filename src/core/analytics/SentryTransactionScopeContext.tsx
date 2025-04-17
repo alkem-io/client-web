@@ -1,15 +1,15 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
-import { UserMetadata } from '@/domain/community/userCurrent/CurrentUserProvider/useUserMetadataWrapper';
 import { setUserScope, setTransactionScope, TransactionScope } from '@/core/logging/sentry/scope';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { isEqual, last } from 'lodash';
+import { UserModel } from '@/domain/community/user/models/UserModel';
 
-export const useUserScope = (metadata: UserMetadata | undefined) => {
+export const useUserScope = (currentUser: UserModel | undefined) => {
   const { sentry } = useConfig();
 
   useEffect(() => {
-    setUserScope((metadata || {}).user, sentry?.submitPII);
-  }, [metadata, sentry?.submitPII]);
+    setUserScope(currentUser, sentry?.submitPII);
+  }, [currentUser, sentry?.submitPII]);
 };
 
 interface TransactionScopeStack {

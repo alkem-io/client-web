@@ -41,10 +41,9 @@ const CommentsCallout = ({
   calloutActions = true,
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
-  const { user: userMetadata, isAuthenticated } = useCurrentUserContext();
+  const { userModel, isAuthenticated } = useCurrentUserContext();
   const { space } = useSpace();
   const myMembershipStatus = space?.about.membership?.myMembershipStatus;
-  const user = userMetadata?.user;
 
   const commentsId = callout.comments?.id;
   const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
@@ -53,8 +52,8 @@ const CommentsCallout = ({
   const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteMessage = useCallback(
-    authorId => canDeleteMessages || (isAuthenticated && authorId === user?.id),
-    [user, isAuthenticated, canDeleteMessages]
+    authorId => canDeleteMessages || (isAuthenticated && authorId === userModel?.id),
+    [userModel, isAuthenticated, canDeleteMessages]
   );
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);

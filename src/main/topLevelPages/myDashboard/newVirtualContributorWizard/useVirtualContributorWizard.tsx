@@ -66,7 +66,7 @@ export type SelectableSpace = {
 
 const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const { t } = useTranslation();
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
   const notify = useNotification();
   const navigate = useNavigate();
 
@@ -143,7 +143,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       allAccountSpaces: accountSpaces,
       availableSpaces: accountSpaces.filter(hasReadAboutPrivilege),
     };
-  }, [data, user, targetAccount]);
+  }, [data, userModel, targetAccount]);
 
   const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
   // For all the available spaces get their subspaces (and their subspaces)
@@ -184,7 +184,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           accountID: myAccountId!,
           about: {
             profileData: {
-              displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+              displayName: `${accountName || userModel?.profile.displayName} - ${t('common.space')}`,
             },
           },
           collaborationData: {

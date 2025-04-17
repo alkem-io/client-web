@@ -58,7 +58,7 @@ export const FormikUserSelector = ({
   });
 
   const { t } = useTranslation();
-  const { user: currentUser } = useCurrentUserContext();
+  const { userModel: currentUser } = useCurrentUserContext();
 
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
@@ -74,10 +74,10 @@ export const FormikUserSelector = ({
       sortUsers(
         users
           .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
-          .filter(user => user.id !== currentUser?.user.id)
+          .filter(user => user.id !== currentUser?.id)
       )
     );
-  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
+  }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
   const breakpoint = useCurrentBreakpoint();
 

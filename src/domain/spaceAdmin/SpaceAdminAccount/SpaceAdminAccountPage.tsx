@@ -40,7 +40,7 @@ export interface SpaceAdminAccountPageProps extends SettingsPageProps {
 
 const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { user } = useCurrentUserContext();
+  const { userModel } = useCurrentUserContext();
   const notify = useNotification();
   const navigate = useNavigate();
   const planTranslations = getPlanTranslations(t);
@@ -68,7 +68,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
   useEffect(() => {
     // TODO: After server #4471 we should be able to see account.type to check if the space provider is a User or an Organization, and this __typename can be removed from the query
     if (provider?.__typename === 'User') {
-      setIsHost(provider?.id === user?.user.id);
+      setIsHost(provider?.id === userModel?.id);
     } else if (provider?.__typename === 'Organization') {
       if (!organizationData) {
         fetchOrganizationAuthorization({

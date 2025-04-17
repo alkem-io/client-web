@@ -80,9 +80,7 @@ type usePostProvided = {
 };
 
 const usePost = ({ postId }: usePostProps): usePostProvided => {
-  const { user: userMetadata, isAuthenticated } = useCurrentUserContext();
-
-  const user = userMetadata?.user;
+  const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const { data, loading } = usePostQuery({
     variables: {
@@ -118,8 +116,8 @@ const usePost = ({ postId }: usePostProps): usePostProvided => {
 
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
-    authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
-    [user, isAuthenticated, canDeleteComments]
+    authorId => canDeleteComments || (isAuthenticated && authorId === userModel?.id),
+    [userModel, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);

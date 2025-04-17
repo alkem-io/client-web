@@ -4,26 +4,15 @@ import {
   usePlatformLevelAuthorizationQuery,
   useCurrentUserFullQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
-import { toUserMetadata, UserMetadata } from '@/domain/community/user';
+import { toUserMetadata } from '@/domain/community/user';
+import { CurrentUserModel } from '../model/CurrentUserModel';
 
-export interface CurrentUserContextValue {
-  user: UserMetadata | undefined;
-  accountId: string | undefined;
-  loading: boolean;
-  loadingMe: boolean;
-  verified: boolean;
-  isAuthenticated: boolean;
-  platformRoles: RoleName[];
-  accountPrivileges: AuthorizationPrivilege[];
-  accountEntitlements: LicenseEntitlementType[];
-}
-
-const CurrentUserContext = createContext<CurrentUserContextValue>({
+const CurrentUserContext = createContext<CurrentUserModel>({
   user: undefined,
+  userModel: undefined,
   accountId: undefined,
   loading: true,
   loadingMe: true, // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
@@ -79,9 +68,10 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const accountPrivileges = useMemo(() => user?.account?.authorization?.myPrivileges ?? [], [user]);
   const accountEntitlements = useMemo(() => user?.account?.license?.availableEntitlements ?? [], [user]);
 
-  const providedValue = useMemo<CurrentUserContextValue>(
+  const providedValue = useMemo<CurrentUserModel>(
     () => ({
       user: userMetadata,
+      userModel: user,
       accountId,
       loading,
       loadingMe: loadingAuthentication || loadingMe,
