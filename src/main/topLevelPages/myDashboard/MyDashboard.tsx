@@ -3,15 +3,15 @@ import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/a
 import Loading from '@/core/ui/loading/Loading';
 import { DashboardProvider } from './DashboardContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 
 const MyDashboardUnauthenticated = lazyWithGlobalErrorHandler(() => import('./MyDashboardUnauthenticated'));
 const MyDashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithMemberships'));
 const MyDashboardWithoutMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithoutMemberships'));
 
 export const MyDashboard = () => {
-  const { user, isAuthenticated, loading: isLoadingAuthentication } = useUserContext();
-  const hasNotAuthorized = !isAuthenticated || !user;
+  const { userModel, isAuthenticated, loading: isLoadingAuthentication } = useCurrentUserContext();
+  const hasNotAuthorized = !isAuthenticated || !userModel;
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery({
     skip: hasNotAuthorized,

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,
@@ -13,7 +13,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
-import { useAuthorsDetails } from '@/domain/communication/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
 import { Message } from '@/domain/communication/room/models/Message';
 import { Skeleton } from '@mui/material';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
@@ -31,7 +31,7 @@ import useNavigate from '@/core/routing/useNavigate';
 export const DiscussionPage = ({ discussionId, loading }: { discussionId: string | undefined; loading: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
@@ -162,7 +162,7 @@ export const DiscussionPage = ({ discussionId, loading }: { discussionId: string
             <Skeleton />
           ) : (
             <DiscussionView
-              currentUserId={user?.user.id}
+              currentUserId={userModel?.id}
               discussion={discussion}
               postMessage={postMessage}
               postReply={postReply}

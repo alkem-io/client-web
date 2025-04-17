@@ -10,7 +10,7 @@ import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
+import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
@@ -23,7 +23,7 @@ import useNavigate from '@/core/routing/useNavigate';
 type InvitationDialogProps = {
   open: boolean;
   onClose: () => void;
-  invitation: InvitationItem | undefined;
+  invitation: PendingInvitationItem | undefined;
   updating: boolean;
   acceptInvitation: (invitationId: string, spaceUrl: string) => void;
   accepting: boolean;

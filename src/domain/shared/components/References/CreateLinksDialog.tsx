@@ -4,7 +4,7 @@ import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/mate
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';

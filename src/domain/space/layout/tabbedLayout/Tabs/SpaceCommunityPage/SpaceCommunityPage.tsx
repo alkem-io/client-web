@@ -24,7 +24,7 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
@@ -36,7 +36,7 @@ const SpaceCommunityPage = () => {
   const { space, entitlements } = useSpace();
   const { about } = space;
   const { t } = useTranslation();
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useCurrentUserContext();
   const {
     urlInfo,
     classificationTagsets,

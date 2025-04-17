@@ -1,7 +1,7 @@
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import FormRow from '@/_deprecatedToKeep/FormRow';
+import FormRow from '@/_deprecated/FormRow';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';

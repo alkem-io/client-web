@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import FormRow from '@/_deprecatedToKeep/FormRow';
+import FormRow from '@/_deprecated/FormRow';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 

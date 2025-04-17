@@ -11,7 +11,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useSendMessageToUserMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { warn as logWarn } from '@/core/logging/sentry/log';
@@ -37,7 +37,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const notify = useNotification();
 
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
@@ -69,7 +69,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
         await sendMessageToUser({
           variables: {
             messageData: {
-              message: `AI Service: "${values.aiService.trim()}" | User: ${user?.user.email} | Contact me: ${
+              message: `AI Service: "${values.aiService.trim()}" | User: ${userModel?.email} | Contact me: ${
                 values.sendResponse
               }.`,
               receiverIds: [userData?.usersPaginated.users[0].id],
@@ -86,7 +86,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
       // email not configured but there's no need of UI error message
       logWarn(
         `User tried to send an externa AI request "${values.aiService.trim()}" | User: ${
-          user?.user.email
+          userModel?.email
         } | Contact me: ${values.sendResponse}" but there's no support email configured.`,
         { code: 'NoSupportEmailConfigured' }
       );

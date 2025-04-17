@@ -1,7 +1,7 @@
 import { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AssociatedOrganizationsView from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { SvgIconProps } from '@mui/material';
@@ -35,7 +35,7 @@ const EntityDashboardLeadsSection = ({
 }: PropsWithChildren<EntityDashboardLeadsProps>) => {
   const { t } = useTranslation();
 
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -57,7 +57,7 @@ const EntityDashboardLeadsSection = ({
           });
         },
       })),
-    [leadOrganizations, user?.user]
+    [leadOrganizations, userModel]
   );
 
   const leadUsersMapped = useMemo(() => {

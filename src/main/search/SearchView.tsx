@@ -26,7 +26,7 @@ import {
   SearchResultOrganizationFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -120,7 +120,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const queryParams = useMemoizedQueryParams();
 
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const spaceNameId = queryParams[SEARCH_SPACE_URL_PARAM]?.[0] ?? undefined;
 

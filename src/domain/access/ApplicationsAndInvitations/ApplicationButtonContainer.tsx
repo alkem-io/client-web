@@ -1,16 +1,16 @@
 import {
   useApplicationButtonQuery,
+  useCurrentUserFullLazyQuery,
   useJoinRoleSetMutation,
   useSpacePageLazyQuery,
   useSubspacePageLazyQuery,
   useUserPendingMembershipsQuery,
-  useUserProfileLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
@@ -33,16 +33,16 @@ export const ApplicationButtonContainer = ({
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
-  const { user, loadingMe: membershipLoading } = useUserContext();
+  const { userModel, loadingMe: membershipLoading } = useCurrentUserContext();
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated || !user,
+    skip: !isAuthenticated || !userModel,
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
     pendingMembershipsData?.me ?? {};
 
-  const userId = user?.user?.id;
+  const userId = userModel?.id;
 
-  const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery();
+  const [getCurrentUserProfile, { loading: gettingUserProfile }] = useCurrentUserFullLazyQuery();
 
   const {
     data: _communityPrivileges,
@@ -77,10 +77,8 @@ export const ApplicationButtonContainer = ({
     });
 
     if (userId) {
-      getUserProfile({
-        variables: {
-          input: userId,
-        },
+      getCurrentUserProfile({
+        variables: {},
       });
     }
   };
@@ -143,10 +141,8 @@ export const ApplicationButtonContainer = ({
       variables: { roleSetId },
     });
     if (userId) {
-      getUserProfile({
-        variables: {
-          input: userId,
-        },
+      getCurrentUserProfile({
+        variables: {},
       });
     }
     onJoin?.({ communityId: roleSetId });

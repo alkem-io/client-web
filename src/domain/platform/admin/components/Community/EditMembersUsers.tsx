@@ -1,4 +1,4 @@
-import { Member } from '@/domain/community/user/models/User';
+import { Member } from '@/domain/community/user/models/UserModel';
 import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import TableCell from '@mui/material/TableCell';

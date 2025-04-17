@@ -7,7 +7,7 @@ import { ActivityEventType, AuthorizationPrivilege } from '@/core/apollo/generat
 import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export interface ActivityDialogProps {
   open?: boolean;
@@ -18,7 +18,7 @@ export interface ActivityDialogProps {
 const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
 
-  const { user } = useUserContext();
+  const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
   const { data: _space } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
@@ -33,7 +33,7 @@ const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps)
 
   const permissions = {
     readAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
+    readUsers: userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
   const activityTypes = Object.values(ActivityEventType).filter(

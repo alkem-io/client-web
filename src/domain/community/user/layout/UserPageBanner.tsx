@@ -1,19 +1,19 @@
 import { useCallback, useMemo } from 'react';
 import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../hooks/useUserContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { useUserMetadata } from '../../../../_deprecatedToKeep/useUserMetadata';
+import { useUserProvider } from '../hooks/useUserProvider';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const UserPageBanner = () => {
-  const { user: currentUser } = useUserContext();
+  const { userModel: currentUser } = useCurrentUserContext();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
-  const { user, loading } = useUserMetadata(userId);
+  const { user, loading } = useUserProvider(userId);
 
-  const isCurrentUser = useMemo(() => user?.user.id === currentUser?.user.id, [user, currentUser]);
+  const isCurrentUser = useMemo(() => user?.id === currentUser?.id, [user, currentUser]);
 
-  const profile = user?.user.profile;
+  const profile = user?.profile;
 
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
@@ -35,12 +35,14 @@ const UserPageBanner = () => {
     [sendMessageToUser, userId]
   );
 
+  const userURL = user?.profile.url || '';
+
   return (
     <ProfilePageBanner
       entityId={userId}
       profile={profile}
       onSendMessage={handleSendMessage}
-      settingsUri={user && isCurrentUser ? buildSettingsUrl(user.user.profile.url) : undefined}
+      settingsUri={user && isCurrentUser ? buildSettingsUrl(userURL) : undefined}
       loading={loading || urlResolverLoading}
     />
   );

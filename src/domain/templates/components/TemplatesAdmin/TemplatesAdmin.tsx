@@ -19,7 +19,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '@/core/routing/useBackToPath';
-import useBackToParentPage from '@/_deprecatedToKeep/useBackToParentPage';
+import useBackToParentPage from '@/_deprecated/useBackToParentPage';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';

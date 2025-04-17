@@ -8,7 +8,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
 import { useUserGeo } from '@/core/analytics/geo';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { UserMetadata } from '@/domain/community/user';
+import { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
@@ -37,8 +37,8 @@ export interface ApmCustomContext {
   language?: string;
 }
 
-export const useApmInit = (user: (UserMetadata['user'] & { isAuthenticated: boolean }) | undefined) => {
-  const userObject = useUserObject(user);
+export const useApmInit = (user: CurrentUserModel | undefined) => {
+  const userObject = useUserObject(user?.userModel);
   const customContext = useCustomContext(user);
   const { apm: apmConfig, locations } = useConfig();
 
@@ -105,7 +105,7 @@ const useUserObject = (user: Identifiable | undefined) => {
     return { id: cookieId };
   }, [user?.id, cookieId]);
 };
-const useCustomContext = (user: (UserMetadata['user'] & { isAuthenticated: boolean }) | undefined) => {
+const useCustomContext = (user: CurrentUserModel | undefined) => {
   const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
 
   return useMemo<ApmCustomContext>(() => {
@@ -124,7 +124,7 @@ const useCustomContext = (user: (UserMetadata['user'] & { isAuthenticated: boole
 
     if (user) {
       context.authenticated = user.isAuthenticated;
-      context.domain = user.email.split('@')?.[1];
+      context.domain = user.userModel?.email.split('@')?.[1];
     }
 
     context.screen = getScreenInfo();

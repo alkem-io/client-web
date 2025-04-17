@@ -8,7 +8,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
 import Reconnectable from '@/core/utils/reconnectable';
 import { useTick } from '@/core/utils/time/tick';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
@@ -106,8 +106,8 @@ const CollaborativeExcalidrawWrapper = ({
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
-  const { user } = useUserContext();
-  const username = user?.user.profile.displayName ?? 'User';
+  const { userModel } = useCurrentUserContext();
+  const username = userModel?.profile.displayName ?? 'User';
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 

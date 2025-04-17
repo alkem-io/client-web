@@ -2,7 +2,7 @@ import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { styled, AvatarProps, Tooltip, Link, Box, useTheme } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import UserCard from '@/domain/community/user/userCard/UserCard';
-import { Author } from './models/author';
+import { AuthorModel } from '../../../community/user/models/AuthorModel';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme 
 }));
 
 export interface AuthorAvatarProps {
-  author: Author | undefined;
+  author: AuthorModel | undefined;
 }
 
 export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {

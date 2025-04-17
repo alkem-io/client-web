@@ -6,7 +6,7 @@ import {
   useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import {
   SearchCategory,
   AuthorizationPrivilege,
@@ -37,7 +37,7 @@ export interface ChallengeExplorerContainerEntities {
 interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {}
 
 const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
-  const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
+  const { userModel, isAuthenticated, loading: loadingUser } = useCurrentUserContext();
 
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [membershipFilter, setMembershipFilter] = useState(SpacesExplorerMembershipFilter.All);
@@ -46,7 +46,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
 
   // PRIVATE: Challenges if the user is logged in
   const { data: spaceMembershipsData, loading: loadingUserData } = useChallengeExplorerPageQuery({
-    skip: !userMetadata?.user?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
+    skip: !userModel?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
   });
 
   const mySpaceIds = spaceMembershipsData?.me.spaceMembershipsFlat.map(space => space.id);

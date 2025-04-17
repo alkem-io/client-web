@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
+import { Tagset } from './Profile';
 
 export interface ProfilePageBannerProps {
   entityId: string | undefined;
@@ -27,9 +28,7 @@ export interface ProfilePageBannerProps {
         tagset?: {
           tags: string[];
         };
-        tagsets?: {
-          tags: string[];
-        }[];
+        tagsets?: Tagset[];
         url?: string;
       }
     | undefined;
@@ -57,7 +56,7 @@ const ProfilePageBanner = ({
   const openMessageDialog = () => setIsMessageDialogOpen(true);
 
   const tags = useMemo(
-    () => profile?.tagset?.tags ?? profile?.tagsets?.flatMap(({ tags }) => tags),
+    () => profile?.tagset?.tags ?? profile?.tagsets?.flatMap(({ tags }) => tags || []),
     [profile?.tagsets]
   );
 

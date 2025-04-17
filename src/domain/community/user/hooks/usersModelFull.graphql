@@ -1,0 +1,6 @@
+query UsersModelFull($ids: [UUID!]!) {
+  users(IDs: $ids) {
+    isContactable
+    ...UserDetails
+  }
+}

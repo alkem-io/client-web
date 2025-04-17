@@ -1,29 +1,18 @@
 import {
-  refetchUserProviderQuery,
+  refetchCurrentUserFullQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
-  useUserProviderQuery,
+  useCurrentUserFullQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
-import { toUserMetadata, UserMetadata } from '@/domain/community/user';
+import { toPlatformPrivilegeWrapper } from '@/domain/community/user';
+import { CurrentUserModel } from '../model/CurrentUserModel';
 
-export interface UserContextValue {
-  user: UserMetadata | undefined;
-  accountId: string | undefined;
-  loading: boolean;
-  loadingMe: boolean;
-  verified: boolean;
-  isAuthenticated: boolean;
-  platformRoles: RoleName[];
-  accountPrivileges: AuthorizationPrivilege[];
-  accountEntitlements: LicenseEntitlementType[];
-}
-
-const UserContext = createContext<UserContextValue>({
-  user: undefined,
+const CurrentUserContext = createContext<CurrentUserModel>({
+  platformPrivilegeWrapper: undefined,
+  userModel: undefined,
   accountId: undefined,
   loading: true,
   loadingMe: true, // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
@@ -34,14 +23,14 @@ const UserContext = createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider = ({ children }: PropsWithChildren) => {
+const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
   const {
     data: meData,
     loading: loadingMe,
     error: userProviderError,
-  } = useUserProviderQuery({ skip: !isAuthenticated });
+  } = useCurrentUserFullQuery({ skip: !isAuthenticated });
 
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
@@ -49,7 +38,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated });
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchUserProviderQuery()],
+    refetchQueries: [refetchCurrentUserFullQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
@@ -62,15 +51,13 @@ const UserProvider = ({ children }: PropsWithChildren) => {
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 
-  const userMetadata = useMemo(() => {
+  const platformPrivilegeWrapper = useMemo(() => {
     if (!meData?.me) {
       return undefined;
     }
+    const myPrivileges = platformLevelAuthorizationData?.platform.authorization?.myPrivileges;
 
-    const myRoles = platformLevelAuthorizationData?.platform.roleSet.myRoles;
-    const myPrivileges = platformLevelAuthorizationData?.platform.authorization;
-
-    return toUserMetadata(user, myPrivileges, myRoles);
+    return toPlatformPrivilegeWrapper(myPrivileges);
   }, [user, meData, platformLevelAuthorizationData]);
 
   const platformRoles = useMemo(
@@ -81,9 +68,10 @@ const UserProvider = ({ children }: PropsWithChildren) => {
   const accountPrivileges = useMemo(() => user?.account?.authorization?.myPrivileges ?? [], [user]);
   const accountEntitlements = useMemo(() => user?.account?.license?.availableEntitlements ?? [], [user]);
 
-  const providedValue = useMemo<UserContextValue>(
+  const providedValue = useMemo<CurrentUserModel>(
     () => ({
-      user: userMetadata,
+      platformPrivilegeWrapper,
+      userModel: user,
       accountId,
       loading,
       loadingMe: loadingAuthentication || loadingMe,
@@ -95,7 +83,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     }),
     [
       loadingMe,
-      userMetadata,
+      platformPrivilegeWrapper,
       loading,
       loadingAuthentication,
       verified,
@@ -110,8 +98,8 @@ const UserProvider = ({ children }: PropsWithChildren) => {
   return error ? (
     <ErrorPage error={error} />
   ) : (
-    <UserContext.Provider value={providedValue}>{children}</UserContext.Provider>
+    <CurrentUserContext.Provider value={providedValue}>{children}</CurrentUserContext.Provider>
   );
 };
 
-export { UserContext, UserProvider };
+export { CurrentUserContext, CurrentUserProvider as UserProvider };

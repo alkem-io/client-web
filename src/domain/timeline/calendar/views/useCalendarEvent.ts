@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
@@ -81,9 +81,7 @@ type useCalendarEventProvided = {
 };
 
 const useCalendarEvent = ({ eventId }: useCalendarEventProps): useCalendarEventProvided => {
-  const { user: userMetadata, isAuthenticated } = useUserContext();
-
-  const user = userMetadata?.user;
+  const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const { data, loading } = useCalendarEventDetailsQuery({
     variables: {
@@ -118,8 +116,8 @@ const useCalendarEvent = ({ eventId }: useCalendarEventProps): useCalendarEventP
 
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
-    authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
-    [user, isAuthenticated, canDeleteComments]
+    authorId => canDeleteComments || (isAuthenticated && authorId === userModel?.id),
+    [userModel, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);

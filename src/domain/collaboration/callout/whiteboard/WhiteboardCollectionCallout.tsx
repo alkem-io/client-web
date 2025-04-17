@@ -10,7 +10,7 @@ import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { normalizeLink } from '@/core/utils/links';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';

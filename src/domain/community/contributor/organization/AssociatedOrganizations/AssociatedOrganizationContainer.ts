@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
@@ -25,8 +25,8 @@ export const AssociatedOrganizationContainer = ({
   enableLeave,
   ...rendered
 }: OrganizationDetailsContainerProps) => {
-  const { user } = useUserContext();
-  const userId = user?.user.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
 
   const { data, loading, error } = useAssociatedOrganizationQuery({
     variables: {
@@ -44,7 +44,7 @@ export const AssociatedOrganizationContainer = ({
 
     await disassociateSelfFromOrganization({
       variables: {
-        contributorId: user.user.id,
+        contributorId: userId,
         roleSetId,
         role: RoleName.Associate,
       },

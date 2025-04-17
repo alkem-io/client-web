@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 
 const MyResources = () => {
-  const { accountId } = useUserContext();
+  const { accountId } = useCurrentUserContext();
 
   const { data: accountData, loading: loadingAccount } = useMyResourcesQuery({
     variables: {
