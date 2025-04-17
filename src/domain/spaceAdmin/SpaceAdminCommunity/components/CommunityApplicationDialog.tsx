@@ -43,12 +43,8 @@ export interface ApplicationDialogProps {
   onSetNewState?: (appId: string, newState: string) => void;
   loading?: boolean;
 }
-/**
- * // TODO:
- * @deprecated There is another ApplicationDialog component: which one to keep?
- *
- */
-export const ApplicationDialog2 = ({ app, onClose, onSetNewState, loading }: ApplicationDialogProps) => {
+
+export const CommunityApplicationDialog = ({ app, onClose, onSetNewState, loading }: ApplicationDialogProps) => {
   const { t } = useTranslation();
 
   const appId = app?.id || '';

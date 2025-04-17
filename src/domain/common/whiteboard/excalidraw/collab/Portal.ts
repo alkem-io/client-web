@@ -1,8 +1,12 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource, SyncableExcalidrawElement } from './data';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/excalidraw/types';
-import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
+import type {
+  ExcalidrawElement,
+  OrderedExcalidrawElement,
+} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import { UserIdleState } from './utils';
+import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+
+import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
 import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw';
@@ -173,7 +177,7 @@ class Portal {
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
     if (!this.excalidrawAPI) {
-      throw new Error('Excalidraw API not initialized');
+      return;
     }
     const { isInvisiblySmallElement } = this.excalidrawAPI;
 

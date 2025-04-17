@@ -1,8 +1,8 @@
 import { DialogContent } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { InAppNotificationsList } from './InAppNotificationsList';
 

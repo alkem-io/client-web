@@ -6,12 +6,11 @@ import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
-import { LoadingButton } from '@mui/lab';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { Box, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
@@ -129,7 +128,7 @@ const SingleInvitationFull = ({
                 <Actions>
                   {actions}
                   <FlexSpacer />
-                  <LoadingButton
+                  <Button
                     startIcon={<CloseOutlinedIcon />}
                     onClick={() => rejectInvitation(invitation.invitation.id)}
                     variant="outlined"
@@ -137,8 +136,8 @@ const SingleInvitationFull = ({
                     disabled={updating && !rejecting}
                   >
                     {t('community.pendingMembership.invitationDialog.actions.reject')}
-                  </LoadingButton>
-                  <LoadingButton
+                  </Button>
+                  <Button
                     startIcon={<CheckOutlined />}
                     onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.about.profile.url)}
                     variant="contained"
@@ -146,7 +145,7 @@ const SingleInvitationFull = ({
                     disabled={updating && !accepting}
                   >
                     {getAcceptLabel(invitation)}
-                  </LoadingButton>
+                  </Button>
                 </Actions>
               </>
             )

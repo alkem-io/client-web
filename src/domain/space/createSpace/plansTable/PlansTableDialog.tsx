@@ -126,7 +126,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                     >
                       <PlanName>{planTranslation.displayName}</PlanName>
                       <PlanPrice plan={plan} />
-                      <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
+                      <Text textAlign="center" height={gutters(4)} sx={{ color: theme => theme.palette.primary.main }}>
                         {planTranslation.priceDescription}
                       </Text>
                       <SelectPlanButton plan={plan} onClick={() => handlePlanClick(plan)} />
@@ -134,7 +134,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                     <Box
                       borderBottom={isSmall ? lines : undefined}
                       paddingX={gutters()}
-                      color={theme => theme.palette.primary.main}
+                      sx={{ color: theme => theme.palette.primary.main }}
                     >
                       <PlanFeatures
                         planTranslation={planTranslation}

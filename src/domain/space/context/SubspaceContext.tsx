@@ -54,6 +54,7 @@ const defaultValue: SubspaceContextProps = {
       guidelines: {
         id: '',
       },
+      metrics: [],
     },
   },
   parentSpaceId: undefined,
@@ -126,6 +127,7 @@ const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
       guidelines: {
         id: subspaceData?.about.guidelines.id ?? '',
       },
+      metrics: subspaceData?.about.metrics ?? [],
     };
 
     return {

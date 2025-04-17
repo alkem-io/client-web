@@ -8,7 +8,6 @@ import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/Innovati
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import BackButton from '@/core/ui/actions/BackButton';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
 import { useSpace } from '../../space/context/useSpace';
 import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
@@ -42,7 +41,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
   );
 
   const spaceBackButtonElement = (
-    <RouterLink to={`${profile?.url}/${EntityPageSection.Dashboard}`} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
+    <RouterLink to={profile?.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
       <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
         {t('navigation.admin.settingsMenu.quit')}
       </BackButton>

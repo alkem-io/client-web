@@ -52,7 +52,7 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
   return (
     <>
       {isMobile ? (
-        <IconButton>
+        <IconButton onClick={handleMessageOpen}>
           <ClickAwayListener onClickAway={handleMessageClose}>
             {isSaved ? (
               <Tooltip
@@ -72,19 +72,19 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
                 slotProps={{ popper: { disablePortal: true } }}
                 onClose={handleMessageClose}
               >
-                <CloudOff sx={theme => ({ color: theme.palette.error.main })} onClick={handleMessageOpen} />
+                <CloudOff sx={theme => ({ color: theme.palette.error.main })} />
               </Tooltip>
             )}
           </ClickAwayListener>
         </IconButton>
       ) : (
-        <IconButton>
+        <IconButton onClick={handleMessageOpen}>
           {isSaved ? (
-            <Tooltip placement="bottom" title={savedText} onClick={handleMessageOpen}>
+            <Tooltip placement="bottom" title={savedText}>
               <CloudDone />
             </Tooltip>
           ) : (
-            <Tooltip placement="bottom" title={unsavedText} onClick={handleMessageOpen}>
+            <Tooltip placement="bottom" title={unsavedText}>
               <CloudOff sx={theme => ({ color: theme.palette.error.main })} />
             </Tooltip>
           )}

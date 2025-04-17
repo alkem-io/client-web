@@ -5,9 +5,8 @@ import { Autorenew } from '@mui/icons-material';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
-import { Box, BoxProps } from '@mui/material';
 import { FC, ReactElement, ReactNode, cloneElement, useMemo } from 'react';
-import Gutters from '../core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   extends Omit<PageContentBlockGridProps, 'children'> {
@@ -101,19 +100,4 @@ interface CardLayoutContainerProps extends PageContentBlockGridProps {}
 
 export const CardLayoutContainer: FC<CardLayoutContainerProps> = props => {
   return <PageContentBlockGrid cards {...props} />;
-};
-
-interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow' | 'children'> {
-  flexBasis?: '25%' | '33%' | '50%';
-}
-
-/**
- * @deprecated - just render cards directly inside CardsLayout.
- */
-export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%', flexGrow, maxWidth }) => {
-  return (
-    <Box flexBasis={flexBasis} maxWidth={maxWidth} flexGrow={flexGrow}>
-      {children}
-    </Box>
-  );
 };

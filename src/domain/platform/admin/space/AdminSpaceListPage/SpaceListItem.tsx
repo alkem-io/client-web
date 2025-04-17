@@ -18,7 +18,6 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import { BlockTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
-import { LoadingButton } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import LicensePlansTable, { LicensePlan } from './LicensePlansTable';
@@ -37,6 +36,7 @@ interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
   activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[] | undefined;
+  canUpdate: boolean;
 }
 
 const SpaceListItem = ({
@@ -45,6 +45,7 @@ const SpaceListItem = ({
   activeLicensePlanIds,
   licensePlans,
   visibility,
+  canUpdate,
   ...props
 }: SpaceListItemProps) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -129,12 +130,13 @@ const SpaceListItem = ({
                   title={t('components.nameSegment.nameID.title')}
                   placeholder={t('components.nameSegment.nameID.placeholder')}
                   required
+                  disabled={saving || !canUpdate}
                 />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
                   disablePortal={false}
-                  disabled={saving}
+                  disabled={saving || !canUpdate}
                 />
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
@@ -143,9 +145,14 @@ const SpaceListItem = ({
                 </Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={saving} onClick={() => handleSubmit()} disabled={!isValid}>
+                <Button
+                  variant="contained"
+                  loading={saving}
+                  onClick={() => handleSubmit()}
+                  disabled={!isValid || !canUpdate}
+                >
                   {t('buttons.save')}
-                </LoadingButton>
+                </Button>
               </Actions>
             </>
           )}

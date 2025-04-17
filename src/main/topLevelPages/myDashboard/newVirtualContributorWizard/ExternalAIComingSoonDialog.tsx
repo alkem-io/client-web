@@ -10,7 +10,6 @@ import { Actions } from '@/core/ui/actions/Actions';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { useSendMessageToUserMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user';
 import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
@@ -143,9 +142,9 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
               <Button variant="text" onClick={onClose}>
                 {t('buttons.back')}
               </Button>
-              <LoadingButton variant="contained" disabled={!isValid || loading} loading={loading} type="submit">
+              <Button variant="contained" disabled={!isValid || loading} loading={loading} type="submit">
                 {t('buttons.send')}
-              </LoadingButton>
+              </Button>
             </Actions>
           </Gutters>
         </Form>

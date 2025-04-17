@@ -5,7 +5,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +53,7 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
             />
             <Actions justifyContent="flex-end" paddingTop={gutters()}>
               <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
-              <LoadingButton
+              <Button
                 variant="contained"
                 disabled={!checked}
                 loading={loading}
@@ -62,7 +61,7 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
                 sx={{ textWrap: 'nowrap' }}
               >
                 {t('components.deleteEntity.confirmDialog.confirm')}
-              </LoadingButton>
+              </Button>
             </Actions>
           </Box>
         </Gutters>

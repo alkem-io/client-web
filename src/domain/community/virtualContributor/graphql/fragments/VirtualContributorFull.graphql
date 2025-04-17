@@ -27,5 +27,6 @@ fragment VirtualContributorFull on VirtualContributor {
     bodyOfKnowledge
     bodyOfKnowledgeType
     bodyOfKnowledgeID
+    engine
   }
 }

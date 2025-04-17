@@ -2,7 +2,6 @@ import { Box, Button, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/core/ui/typography';
-import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useUrlResolverLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -88,9 +87,9 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
                 )}
               </Box>
               <Box>
-                <LoadingButton variant="contained" loading={loading} onClick={handleUse}>
+                <Button variant="contained" loading={loading} onClick={handleUse}>
                   {t('templateLibrary.collaborationTemplates.findByUrl.use')}
-                </LoadingButton>
+                </Button>
               </Box>
             </Gutters>
           </PageContentBlock>
