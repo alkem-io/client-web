@@ -14,7 +14,7 @@ export interface UserNotificationsPageViewProps {
 
 const UserNotificationsPageView = ({ preferences, loading, updatePreference }: UserNotificationsPageViewProps) => {
   const { t } = useTranslation();
-  const { userWrapper } = useCurrentUserContext();
+  const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
   const isPlatformAdmin = userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
   const generalGroup = preferences.filter(x => x.definition.group === 'Notification');

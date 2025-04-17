@@ -7,11 +7,11 @@ import {
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
-import { toUserWrapper } from '@/domain/community/user';
+import { toPlatformPrivilegeWrapper } from '@/domain/community/user';
 import { CurrentUserModel } from '../model/CurrentUserModel';
 
 const CurrentUserContext = createContext<CurrentUserModel>({
-  userWrapper: undefined,
+  platformPrivilegeWrapper: undefined,
   userModel: undefined,
   accountId: undefined,
   loading: true,
@@ -51,13 +51,13 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 
-  const userMetadata = useMemo(() => {
+  const platformPrivilegeWrapper = useMemo(() => {
     if (!meData?.me) {
       return undefined;
     }
     const myPrivileges = platformLevelAuthorizationData?.platform.authorization?.myPrivileges;
 
-    return toUserWrapper(myPrivileges);
+    return toPlatformPrivilegeWrapper(myPrivileges);
   }, [user, meData, platformLevelAuthorizationData]);
 
   const platformRoles = useMemo(
@@ -70,7 +70,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
 
   const providedValue = useMemo<CurrentUserModel>(
     () => ({
-      userWrapper: userMetadata,
+      platformPrivilegeWrapper,
       userModel: user,
       accountId,
       loading,
@@ -83,7 +83,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     }),
     [
       loadingMe,
-      userMetadata,
+      platformPrivilegeWrapper,
       loading,
       loadingAuthentication,
       verified,

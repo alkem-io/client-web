@@ -55,7 +55,12 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
     const { setOpenDialog } = usePendingMembershipsDialog();
 
-    const { userModel, userWrapper, isAuthenticated, platformRoles } = useCurrentUserContext();
+    const {
+      userModel,
+      platformPrivilegeWrapper: userWrapper,
+      isAuthenticated,
+      platformRoles,
+    } = useCurrentUserContext();
 
     const isAdmin = userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 

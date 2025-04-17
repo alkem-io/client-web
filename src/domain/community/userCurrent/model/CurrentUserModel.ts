@@ -1,9 +1,9 @@
 import { AuthorizationPrivilege, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
-import { UserWrapper } from '../CurrentUserProvider/useUserWrapper';
+import { PlatformPrivilegeWrapper } from '../CurrentUserProvider/usePlatformPrivilegeWrapper';
 import { UserModel } from '../../user/models/UserModel';
 
 export interface CurrentUserModel {
-  userWrapper: UserWrapper | undefined;
+  platformPrivilegeWrapper: PlatformPrivilegeWrapper | undefined;
   userModel: UserModel | undefined;
   accountId: string | undefined;
   loading: boolean;

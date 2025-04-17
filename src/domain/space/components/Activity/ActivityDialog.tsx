@@ -18,7 +18,7 @@ export interface ActivityDialogProps {
 const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
 
-  const { userWrapper } = useCurrentUserContext();
+  const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
   const { data: _space } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,

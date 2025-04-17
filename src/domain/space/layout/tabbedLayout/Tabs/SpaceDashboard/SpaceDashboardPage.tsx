@@ -19,7 +19,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
 
   const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
 
-  const { userWrapper } = useCurrentUserContext();
+  const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
 
   const navigate = useNavigate();
 

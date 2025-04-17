@@ -23,7 +23,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 
 const OrganizationProvider = ({ children }: PropsWithChildren) => {
   const { organizationId, loading: resolvingOrganization } = useUrlResolver();
-  const { userWrapper, loading: isUserLoading } = useCurrentUserContext();
+  const { platformPrivilegeWrapper: userWrapper, loading: isUserLoading } = useCurrentUserContext();
   const { data, loading: loadingOrganizationInfo } = useOrganizationInfoQuery({
     variables: {
       organizationId: organizationId!,
