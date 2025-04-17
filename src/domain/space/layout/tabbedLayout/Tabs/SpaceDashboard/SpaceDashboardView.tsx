@@ -131,41 +131,11 @@ const SpaceDashboardView = ({
     <>
       {directMessageDialog}
       <PageContent>
-        {!loading && (
-          <ApplicationButtonContainer journeyId={space?.id}>
-            {(applicationButtonProps, loading) => {
-              if (loading || applicationButtonProps.isMember) {
-                return null;
-              }
-
-              return (
-                <PageContentColumn columns={12}>
-                  <ApplicationButton
-                    {...applicationButtonProps}
-                    loading={loading}
-                    component={FullWidthButton}
-                    extended={hasExtendedApplicationButton}
-                    journeyId={space?.id}
-                    spaceLevel={level}
-                  />
-                </PageContentColumn>
-              );
-            }}
-          </ApplicationButtonContainer>
-        )}
         <InfoColumn>
           <PageContentBlock accent>
-            <SpaceWelcomeBlock
-              description={tabDescription ?? ''}
-              leadUsers={leadUsers}
-              onContactLeadUser={receiver => sendMessage('user', receiver)}
-              leadOrganizations={welcomeBlockContributors}
-              onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              onClickReadMore={() => setAboutDialogOpen(true)}
-              level={level}
-              member={myMembershipStatus === CommunityMembershipStatus.Member}
-            />
+            <SpaceWelcomeBlock spaceAbout={space?.about!} />
           </PageContentBlock>
+
           <FullWidthButton
             startIcon={<InfoOutlined />}
             onClick={() => setAboutDialogOpen(true)}
@@ -174,6 +144,7 @@ const SpaceDashboardView = ({
           >
             {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>
+
           <DashboardNavigation
             currentItemId={space?.id}
             dashboardNavigation={dashboardNavigation}

@@ -8,6 +8,7 @@ import { forwardRef, ReactElement, Ref } from 'react';
 import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Settings } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
   extends BreadcrumbsProps<ItemProps>,
@@ -16,10 +17,8 @@ interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
 }
 
 const SpaceBreadcrumbs = forwardRef<Collapsible, SpaceBreadcrumbsProps<Expandable>>(
-  <ItemProps extends Expandable>(
-    { journeyPath, settings, loading, ...props }: SpaceBreadcrumbsProps<ItemProps>,
-    ref
-  ) => {
+  <ItemProps extends Expandable>({ settings, ...props }: SpaceBreadcrumbsProps<ItemProps>, ref) => {
+    const { loading, journeyPath } = useUrlResolver();
     const { breadcrumbs } = useSpaceBreadcrumbs({
       journeyPath,
       loading,

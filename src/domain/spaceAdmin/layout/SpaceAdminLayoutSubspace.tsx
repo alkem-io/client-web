@@ -33,7 +33,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
 
-  const spaceBannerElement = <SubspacePageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />;
+  const spaceBannerElement = <SubspacePageBanner />;
 
   const spaceBackButtonElement = (
     <RouterLink to={about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>

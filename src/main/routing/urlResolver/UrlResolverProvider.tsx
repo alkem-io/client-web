@@ -3,6 +3,7 @@ import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { PartialRecord } from '@/core/utils/PartialRecords';
+import { TabbedLayoutParams } from '@/domain/space/layout/tabbedLayout/TabbedLayoutPage';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 
@@ -138,6 +139,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
+    const maskedUrlParts = [
+      /\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/,
+      `/${TabbedLayoutParams.Section}(?:/[a-zA-Z0-9-]+)?/?$`,
+    ];
     const handleUrlChange = () => {
       let nextUrl = window.location.origin + window.location.pathname;
 
@@ -151,9 +156,14 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
       } else {
         // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
-        nextUrl = nextUrl.replace(/\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/, '');
+        for (const mask of maskedUrlParts) {
+          nextUrl = nextUrl.replace(mask, '');
+          console.log({ mask, nextUrl });
+        }
+        // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
       }
 
+      console.log(nextUrl);
       if (nextUrl !== currentUrl) {
         setCurrentUrl(nextUrl); // Update the query URL state
       }

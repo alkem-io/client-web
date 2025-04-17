@@ -15,11 +15,17 @@ const LayoutSwitcher: React.FC<SpaceAdminLayoutSwitcherProps> = ({
   tabRoutePrefix,
   currentTab,
 }) => {
-  const Layout = useL0Layout ? SpaceSettingsLayout : SubspaceSettingsLayout;
+  if (useL0Layout) {
+    return (
+      <SpaceSettingsLayout currentTab={currentTab} tabRoutePrefix={tabRoutePrefix}>
+        {children}
+      </SpaceSettingsLayout>
+    );
+  }
   return (
-    <Layout currentTab={currentTab} tabRoutePrefix={tabRoutePrefix}>
+    <SubspaceSettingsLayout currentTab={currentTab} tabRoutePrefix={tabRoutePrefix}>
       {children}
-    </Layout>
+    </SubspaceSettingsLayout>
   );
 };
 

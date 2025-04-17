@@ -26,7 +26,7 @@ import { EntityTabsProps } from '../../EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
-import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSpaceSectionNamedUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
 
 type TabDefinition = {
@@ -140,7 +140,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
           </BottomNavigation>
         </Paper>
         {shareDialog}
-        <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} spaceId={spaceId} />
+        <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} />
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
@@ -228,7 +228,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         )}
       </HeaderNavigationTabs>
       {shareDialog}
-      <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} spaceId={spaceId} />
+      <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} />
     </>
   );
 };

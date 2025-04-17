@@ -63,7 +63,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   const updatesUrl = buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1, 'updates');
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 0 }}>
+    <>
       <SpaceDashboardView
         space={space}
         tabDescription={tabDescription}
@@ -92,7 +92,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
         parentPath={spaceData?.about.profile.url ?? ''}
         calendarEventId={calendarEventId}
       />
-    </SpacePageLayout>
+    </>
   );
 };
 
