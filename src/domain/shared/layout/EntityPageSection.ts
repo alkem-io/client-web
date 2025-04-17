@@ -1,6 +1,7 @@
 export enum EntityPageSection {
+  Root = '',
   Home = 'home',
-  Dashboard = '',
+  Dashboard = 'dashboard',
   Custom = 'custom',
   Settings = 'settings',
   About = 'about',

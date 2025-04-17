@@ -9,14 +9,27 @@
  * Hide the Library button
  */
 
+ /* Button on big and small screens */
 .excalidraw .sidebar-trigger.default-sidebar-trigger {
   display: none;
 }
 
+/* Small button in sidebar when search is open */
 .excalidraw .excalidraw-button.sidebar-tab-trigger[aria-controls$=":-content-library"] {
   display: none;
 }
 
+/* Library tab in sidebar */
 .excalidraw .layer-ui__library {
+  display: none;
+}
+
+/* Add to library context menu item */
+.excalidraw li[data-testid="addToLibrary"] {
+  display: none;
+}
+
+/* Separator after Add to library context menu item */
+.excalidraw li[data-testid="addToLibrary"]+hr.context-menu-item-separator {
   display: none;
 }
