@@ -7,7 +7,7 @@ import {
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
-import { toUserMetadata } from '@/domain/community/user';
+import { toUserWrapper } from '@/domain/community/user';
 import { CurrentUserModel } from '../model/CurrentUserModel';
 
 const CurrentUserContext = createContext<CurrentUserModel>({
@@ -57,7 +57,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     }
     const myPrivileges = platformLevelAuthorizationData?.platform.authorization?.myPrivileges;
 
-    return toUserMetadata(user, myPrivileges);
+    return toUserWrapper(myPrivileges);
   }, [user, meData, platformLevelAuthorizationData]);
 
   const platformRoles = useMemo(
