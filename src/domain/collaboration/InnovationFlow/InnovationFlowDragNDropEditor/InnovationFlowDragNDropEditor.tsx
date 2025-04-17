@@ -11,7 +11,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
 import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
+import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
 import { useState } from 'react';
 import {
   DragDropContext,
@@ -26,6 +26,16 @@ import InnovationFlowStateForm from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
 const STATES_DROPPABLE_ID = '__states';
+
+const StyledDragAndDropBlock = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: gutters(1)(theme),
+  alignItems: 'stretch',
+  '& div[data-rbd-drop-indicator]': {
+    background: theme.palette.primary.main,
+  },
+}));
 
 export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
@@ -118,7 +128,7 @@ const InnovationFlowDragNDropEditor = ({
         <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
           {parentDroppableProvided => (
             <Box ref={parentDroppableProvided.innerRef}>
-              <Box display="flex" flexDirection="row" gap={gutters()} alignItems="stretch">
+              <StyledDragAndDropBlock>
                 {innovationFlowStates?.map((state, index) => (
                   <Draggable
                     key={state.displayName}
@@ -178,7 +188,7 @@ const InnovationFlowDragNDropEditor = ({
                     }
                   />
                 )}
-              </Box>
+              </StyledDragAndDropBlock>
             </Box>
           )}
         </Droppable>
