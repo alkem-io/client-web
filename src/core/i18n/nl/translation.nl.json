@@ -630,7 +630,7 @@
       "content": "Weet je zeker dat je de Community Richtlijnen wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt."
     },
     "unableToAddMemberInfo": {
-      "title": "Unable To Add Member",
+      "title": "Kan dit lid niet toevoegen",
       "content": "This member must be added to the parent space first."
     }
   },
@@ -3306,6 +3306,6 @@
     }
   },
   "aboutDialog": {
-    "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
+    "applyNotSignedInHelperText": "Je wordt eerst doorgestuurd naar de inlogpagina van Alkemio"
   }
 }
