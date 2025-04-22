@@ -1,3 +1,3 @@
-export * from '../../../_deprecatedToKeep/useUserMetadata';
-export * from './hooks/useUserContext';
-export * from './hooks/useUserMetadataWrapper';
+export * from './hooks/useUserProvider';
+export * from '../userCurrent/useCurrentUserContext';
+export * from '../userCurrent/CurrentUserProvider/usePlatformPrivilegeWrapper';

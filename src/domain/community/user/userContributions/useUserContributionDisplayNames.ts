@@ -1,16 +1,16 @@
-import { useUserContext } from '../hooks/useUserContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { useUserContributionDisplayNamesQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const getDisplayName = ({ displayName }: { displayName: string }) => displayName;
 
 const useUserContributionDisplayNames = () => {
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
 
   const { data } = useUserContributionDisplayNamesQuery({
     variables: {
-      userId: user?.user.id!,
+      userId: userModel?.id!,
     },
-    skip: !user?.user.id,
+    skip: !userModel?.id,
   });
 
   const challengeMemberships = data?.rolesUser.spaces.flatMap(e => e.subspaces);
