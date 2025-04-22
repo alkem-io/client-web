@@ -109,6 +109,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
   } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets: [],
+    includeClassification: false,
   });
 
   return {

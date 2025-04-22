@@ -38,23 +38,15 @@ fragment Callout on Callout {
   visibility
 }
 
-query CalloutDetails($calloutId: UUID!, $withClassification: Boolean = true) {
+query CalloutDetails($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       ...CalloutDetails
-      ...ClassificationDetails @include(if: $withClassification)
     }
   }
 }
 
-fragment ClassificationDetails on Callout {
-  classification {
-    id
-    flowState: tagset(tagsetName: FLOW_STATE) {
-      ...TagsetDetails
-    }
-  }
-}
+
 
 fragment CalloutDetails on Callout {
   id

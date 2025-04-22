@@ -7177,16 +7177,14 @@ export function refetchCalloutsOnCalloutsSetUsingClassificationQuery(
 }
 
 export const CalloutDetailsDocument = gql`
-  query CalloutDetails($calloutId: UUID!, $withClassification: Boolean = true) {
+  query CalloutDetails($calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         ...CalloutDetails
-        ...ClassificationDetails @include(if: $withClassification)
       }
     }
   }
   ${CalloutDetailsFragmentDoc}
-  ${ClassificationDetailsFragmentDoc}
 `;
 
 /**
@@ -7202,7 +7200,6 @@ export const CalloutDetailsDocument = gql`
  * const { data, loading, error } = useCalloutDetailsQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      withClassification: // value for 'withClassification'
  *   },
  * });
  */

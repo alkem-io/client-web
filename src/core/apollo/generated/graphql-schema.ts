@@ -3596,6 +3596,8 @@ export type MoveCalloutContributionInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Adds an Iframe Allowed URL to the Platform Settings */
+  addIframeAllowedURL: Array<Scalars['String']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -3780,6 +3782,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Removes an Iframe Allowed URL from the Platform Settings */
+  removeIframeAllowedURL: Array<Scalars['String']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Removes a User from a Role on the Platform. */
@@ -3924,6 +3928,10 @@ export type Mutation = {
   uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4252,6 +4260,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -12420,7 +12432,6 @@ export type CalloutFragment = {
 
 export type CalloutDetailsQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
-  withClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutDetailsQuery = {
@@ -12716,22 +12727,6 @@ export type CalloutDetailsQuery = {
             | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          classification?:
-            | {
-                __typename?: 'Classification';
-                id: string;
-                flowState?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              }
             | undefined;
         }
       | undefined;

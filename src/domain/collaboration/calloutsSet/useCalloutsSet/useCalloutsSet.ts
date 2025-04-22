@@ -130,7 +130,6 @@ const useCalloutsSet = ({
     getCalloutDetails({
       variables: {
         calloutId,
-        withClassification: withClassificationDetails,
       },
     });
   };
