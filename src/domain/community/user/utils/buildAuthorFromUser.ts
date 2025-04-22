@@ -1,4 +1,4 @@
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 
@@ -23,12 +23,12 @@ interface AuthorData extends Identifiable {
   };
 }
 
-export const buildAuthorFromUser = (user: AuthorData): Author => {
+export const buildAuthorFromUser = (user: AuthorData): AuthorModel => {
   const avatarUrl = user.profile.avatar ? user.profile.avatar?.uri : user.profile.visual?.uri;
   const tags = user?.profile?.tagsets?.flatMap(tagset => tagset.tags);
   const firstName = user.firstName ?? user.profile.displayName.split(' ')[0];
   const lastName = user.lastName ?? user.profile.displayName.split(' ')[1];
-  const result: Author = {
+  const result: AuthorModel = {
     id: user.id,
     firstName,
     lastName,

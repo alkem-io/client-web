@@ -1,6 +1,6 @@
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import {
   VcInteractionsDetailsFragmentDoc,
   MessageDetailsFragmentDoc,
@@ -14,7 +14,7 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const areSubscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const enabled = !!roomID && areSubscriptionsEnabled && isAuthenticated && !skip;
 

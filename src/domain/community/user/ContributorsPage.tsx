@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
-import { useUserContext } from './';
+import { useCurrentUserContext } from './';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -57,7 +57,7 @@ const ContributorsPage = () => {
 
   const [searchTermsDebounced, setSearchTermsDebounced] = useState('');
 
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const pageSize = ITEMS_PER_PAGE;
 

@@ -7,7 +7,7 @@ import Breadcrumbs from '@/core/ui/navigation/Breadcrumbs';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
 import { useTranslation } from 'react-i18next';
 import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import SearchDialog from '@/main/search/SearchDialog';
 
 const HomePageLayout = ({ children }: PropsWithChildren) => {
@@ -15,14 +15,14 @@ const HomePageLayout = ({ children }: PropsWithChildren) => {
   const [title, setTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticated'));
   const [subTitle, setSubTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticatedSubtitle'));
 
-  const { user: { user } = {}, isAuthenticated } = useUserContext();
+  const { userModel, isAuthenticated } = useCurrentUserContext();
 
   useEffect(() => {
     if (isAuthenticated) {
-      setTitle(t('pages.home.sections.welcome.welcome-back', { username: user?.firstName }));
+      setTitle(t('pages.home.sections.welcome.welcome-back', { username: userModel?.firstName }));
       setSubTitle(t('pages.home.subtitle'));
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, userModel]);
 
   return (
     <>

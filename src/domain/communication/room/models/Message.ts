@@ -1,9 +1,9 @@
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 
 export interface Message {
   id: string;
   threadID?: string;
-  author?: Author;
+  author?: AuthorModel;
   createdAt: Date;
   message: string;
   reactions: {

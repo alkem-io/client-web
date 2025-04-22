@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
@@ -28,8 +28,8 @@ export interface UseContributionProvided {
 
 const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionParams): UseContributionProvided => {
   const { spaceID, spaceLevel, contributorType, contributorId } = entities;
-  const { user: userMetadata } = useUserContext();
-  const userId = userMetadata?.user?.id;
+  const { userModel: currentUser } = useCurrentUserContext();
+  const userId = currentUser?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
     variables: {
       spaceId: spaceID,
