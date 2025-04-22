@@ -29,6 +29,14 @@ const GlobalAuthorizationRoute: FC = () => {
         element={<AdminAuthorizationPage selectedRole={RoleName.GlobalSpacesReader} />}
       />
       <Route
+        path={`roles/${RoleName.GlobalPlatformManager}`}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalPlatformManager} />}
+      />
+      <Route
+        path={`roles/${RoleName.GlobalSupportManager}`}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalSupportManager} />}
+      />
+      <Route
         path={`roles/${RoleName.PlatformBetaTester}`}
         element={<AdminAuthorizationPage selectedRole={RoleName.PlatformBetaTester} />}
       />

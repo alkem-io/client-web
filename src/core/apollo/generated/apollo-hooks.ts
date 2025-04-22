@@ -11283,6 +11283,7 @@ export const SpaceContributionDetailsDocument = gql`
             roleSetID
             communityID
           }
+          isContentPublic
         }
       }
     }
@@ -11512,10 +11513,9 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<
 export const CreateUserNewRegistrationDocument = gql`
   mutation createUserNewRegistration {
     createUserNewRegistration {
-      ...UserDetails
+      id
     }
   }
-  ${UserDetailsFragmentDoc}
 `;
 export type CreateUserNewRegistrationMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateUserNewRegistrationMutation,
