@@ -27,6 +27,7 @@ import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 enum MenuState {
   EXPANDED = 'expanded',
   COLLAPSED = 'collapsed',
@@ -46,16 +47,19 @@ const ACTION_CONFIG = {
   [SubspaceDialog.Share]: { Icon: ShareOutlined, Dialog: ShareDialog },
   [SubspaceDialog.ManageFlow]: { Icon: InnovationFlowIcon, Dialog: InnovationFlowSettingsDialog },
   [SubspaceDialog.Settings]: { Icon: SettingsOutlined, Dialog: InnovationFlowSettingsDialog },
+  [SubspaceDialog.Updates]: { Icon: SettingsOutlined, Dialog: CommunityUpdatesDialog },
 };
 export const DialogAction = ({
   dialog,
   dialogProps = {},
-  fullWidth = false,
+  // fullWidth = false,
+  actionDisplay = 'buttonWithTooltip',
   buttonVariant = 'contained',
 }: {
   dialog: SubspaceDialog;
   dialogProps?: Record<string, unknown>;
-  fullWidth?: boolean;
+  // fullWidth?: boolean;
+  actionDisplay?: 'none' | 'fullWidth' | 'buttonWithTooltip';
   buttonVariant?: 'text' | 'contained' | 'outlined';
 }) => {
   const { t } = useTranslation();
@@ -88,29 +92,31 @@ export const DialogAction = ({
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
   return (
     <>
-      <Link to={`${url}/${dialog}`}>
-        {fullWidth ? (
-          <FullWidthButton
-            startIcon={<InfoOutlined />}
-            // onClick={() => setAboutDialogOpen(true)}
-            variant="outlined"
-            sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
-          >
-            {/* {t('common.aboutThis', { entity: translatedSpaceLevel })} */}
-            {tooltip}
-          </FullWidthButton>
-        ) : (
-          <ButtonWithTooltip
-            variant={isCollapsed ? 'text' : buttonVariant}
-            tooltip={tooltip}
-            tooltipPlacement={isCollapsed ? 'right' : 'bottom'}
-            sx={{ maxWidth: '100%' }}
-            iconButton
-          >
-            <Icon />
-          </ButtonWithTooltip>
-        )}
-      </Link>
+      {actionDisplay !== 'none' && (
+        <Link to={`${url}/${dialog}`}>
+          {actionDisplay === 'fullWidth' ? (
+            <FullWidthButton
+              startIcon={<InfoOutlined />}
+              // onClick={() => setAboutDialogOpen(true)}
+              variant="outlined"
+              sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
+            >
+              {/* {t('common.aboutThis', { entity: translatedSpaceLevel })} */}
+              {tooltip}
+            </FullWidthButton>
+          ) : (
+            <ButtonWithTooltip
+              variant={isCollapsed ? 'text' : buttonVariant}
+              tooltip={tooltip}
+              tooltipPlacement={isCollapsed ? 'right' : 'bottom'}
+              sx={{ maxWidth: '100%' }}
+              iconButton
+            >
+              <Icon />
+            </ButtonWithTooltip>
+          )}
+        </Link>
+      )}
       {dialog === currentDialog && Dialog && <Dialog open onClose={handleClose} {...dialogProps} />}
     </>
   );

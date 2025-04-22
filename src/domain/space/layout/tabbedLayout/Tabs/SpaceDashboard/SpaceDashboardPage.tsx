@@ -1,7 +1,7 @@
 import { PropsWithChildren, useCallback } from 'react';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSpaceSectionUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
 import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
@@ -60,7 +60,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
     about: spaceData?.about,
   };
 
-  const updatesUrl = buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1, 'updates');
+  const updatesUrl = buildUpdatesUrl(spaceData?.about.profile.url ?? ''); //buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1, 'updates');
 
   return (
     <>
@@ -84,14 +84,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
         shareUrl={updatesUrl}
         loading={loadingSpacePageQuery}
       />
-      <CalendarDialog
-        open={dialog === 'calendar'}
-        onClose={backToDashboard}
-        journeyId={spaceId}
-        parentSpaceId={undefined}
-        parentPath={spaceData?.about.profile.url ?? ''}
-        calendarEventId={calendarEventId}
-      />
+      <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} />
     </>
   );
 };

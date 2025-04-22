@@ -86,14 +86,11 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
   }
 
   return (
-    <VCPageLayout>
-      <VCProfilePageView
-        bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
-        virtualContributor={data?.lookup.virtualContributor}
-        openKnowledgeBaseDialog={openKnowledgeBaseDialog}
-      />
-      {children?.(data?.lookup.virtualContributor)}
-    </VCPageLayout>
+    <VCProfilePageView
+      bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
+      virtualContributor={data?.lookup.virtualContributor}
+      openKnowledgeBaseDialog={openKnowledgeBaseDialog}
+    />
   );
 };
 

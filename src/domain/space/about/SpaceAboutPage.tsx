@@ -5,7 +5,7 @@ import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
+// import { EntityPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { SpaceTabsPlaceholder } from '../layout/tabbedLayout/Tabs/SpaceTabs';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
@@ -29,18 +29,8 @@ const SpaceAboutPage = () => {
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
   return (
-    <EntityPageLayout
-      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
-      pageBanner={
-        <SpacePageBanner
-          title={profile?.displayName}
-          tagline={profile?.tagline}
-          loading={loading}
-          bannerUrl={profile.banner?.uri}
-        />
-      }
-      tabsComponent={SpaceTabsPlaceholder}
-    >
+    <>
+      {' '}
       <Box sx={{ height: 'calc(100vh - 400px)' }}>&nbsp;</Box>
       <StorageConfigContextProvider locationType="journey" spaceId={space.id}>
         {spaceDetails && (
@@ -59,8 +49,24 @@ const SpaceAboutPage = () => {
           dialogContent={SubspaceContributorsDialogContent}
         />
       </StorageConfigContextProvider>
-    </EntityPageLayout>
+    </>
   );
+
+  // return (
+  //   <EntityPageLayout
+  //     breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
+  //     pageBanner={
+  //       <SpacePageBanner
+  //         title={profile?.displayName}
+  //         tagline={profile?.tagline}
+  //         loading={loading}
+  //         bannerUrl={profile.banner?.uri}
+  //       />
+  //     }
+  //     tabsComponent={SpaceTabsPlaceholder}
+  //   >
+  //   </EntityPageLayout>
+  // );
 };
 
 export default SpaceAboutPage;

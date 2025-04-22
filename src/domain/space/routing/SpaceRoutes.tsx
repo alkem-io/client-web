@@ -156,9 +156,11 @@ const SpaceRoutes = () => {
           <Route path={routes.About} element={<SpaceAboutPage />} />
           <Route element={<SpaceProtectedRoutes />}>
             <Route index element={getSpaceSection()} />
+            <Route path="/:dialog?" element={<SpaceDashboardPage />} />
+
             <Route path={`${routes.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route
-              path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
+              path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
               element={
                 <SubspaceContextProvider>
                   <Suspense fallback={null}>

@@ -94,7 +94,6 @@ export const SubspaceInfoColumn = () => {
   };
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
-
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -167,7 +166,6 @@ export const SubspaceInfoColumn = () => {
       />
       {/*   onCurrentItemNotFound={dashboardNavigation.refetch} */}
       <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
-
       <CreateJourney
         isVisible={createSpaceState.isDialogVisible}
         onClose={onCreateJourneyClose}

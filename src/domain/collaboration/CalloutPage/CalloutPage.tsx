@@ -12,7 +12,6 @@ import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hoo
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useBackToPath from '@/core/routing/useBackToPath';
-import usePageLayoutByEntity from '@/domain/shared/utils/usePageLayoutByEntity';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -109,7 +108,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
+  // const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
 
   const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
   const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
@@ -118,18 +117,16 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
   if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
-    return (
-      <PageLayout
-        journeyId={spaceId}
-        levelZeroSpaceId={levelZeroSpaceId}
-        spaceLevel={spaceLevel}
-        journeyPath={journeyPath}
-        parentSpaceId={parentSpaceId}
-        currentSection={{ sectionIndex: calloutSection }}
-      >
-        <Loading />
-      </PageLayout>
-    );
+    return <Loading />;
+    // {/* <PageLayout */}
+    // {/*   journeyId={spaceId} */}
+    // {/*   levelZeroSpaceId={levelZeroSpaceId} */}
+    // {/*   spaceLevel={spaceLevel} */}
+    // {/*   journeyPath={journeyPath} */}
+    // {/*   parentSpaceId={parentSpaceId} */}
+    // {/*   currentSection={{ sectionIndex: calloutSection }} */}
+    // {/* > */}
+    // // </PageLayout>
   }
 
   if (isApolloNotFoundError(error)) {

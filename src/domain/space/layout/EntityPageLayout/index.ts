@@ -2,7 +2,7 @@ import { default as EntityPageLayoutImpl } from './EntityPageLayout';
 import createLayoutHolderWithOutlet from '@/core/ui/layout/layoutHolder/LayoutHolderWithOutlet';
 import { EntityPageLayoutProps, EntityTabsProps } from './EntityPageLayoutTypes';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import SubspacePageLayoutImpl from '@/domain/space/layout/flowLayout/SubspacePageLayout';
+// import SubspacePageLayoutImpl from '@/domain/space/layout/flowLayout/SubspacePageLayout';
 
 const {
   LayoutHolder: EntityPageLayoutHolder,
@@ -11,11 +11,11 @@ const {
   LayoutHolderWithOutlet: PageLayoutHolderWithOutlet,
 } = createLayoutHolderWithOutlet();
 
-export const EntityPageLayout = createLayout(EntityPageLayoutImpl);
-export const SubspacePageLayout = createLayout(SubspacePageLayoutImpl);
+// export const EntityPageLayout = createLayout(EntityPageLayoutImpl);
+// export const SubspacePageLayout = createLayout(SubspacePageLayoutImpl);
 
-export const NotFoundPageLayout = createLayout(TopLevelLayout);
-export const EmptyLayout = createLayout(() => null);
+export const NotFoundPageLayout = TopLevelLayout;
+export const EmptyLayout = () => null;
 
 export { EntityPageLayoutHolder, RenderPoint, PageLayoutHolderWithOutlet };
 export type { EntityPageLayoutProps };

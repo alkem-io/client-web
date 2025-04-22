@@ -6,6 +6,7 @@ import PlatformHelpButton from '../helpButton/PlatformHelpButton';
 import PoweredBy from '../poweredBy/PoweredBy';
 import { Box, Paper } from '@mui/material';
 import SearchDialog from '@/main/search/SearchDialog';
+import { Outlet } from 'react-router-dom';
 
 interface TopLevelDesktopLayoutProps {
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
@@ -26,6 +27,7 @@ const TopLevelLayout = ({
       <PlatformNavigationBar breadcrumbs={breadcrumbs} />
       {header}
       {children}
+      <Outlet />
       <Footer />
       {floatingActions ?? <FloatingActionButtons floatingActions={<PlatformHelpButton />} />}
       {addWatermark && (
