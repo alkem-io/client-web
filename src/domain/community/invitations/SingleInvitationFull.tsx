@@ -16,7 +16,7 @@ import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 type SingleInvitationFullProps = {
   invitation: PendingInvitationItem | undefined;
@@ -87,7 +87,7 @@ const SingleInvitationFull = ({
                   alignItems={isMobile ? 'center' : 'start'}
                 >
                   <SpaceCardBase
-                    iconComponent={spaceIconByLevel[invitation.space.level]}
+                    iconComponent={spaceLevelIcon[invitation.space.level]}
                     header={invitation.space.about.profile.displayName}
                     tags={invitation.space.about.profile.tagset?.tags ?? []}
                     banner={invitation.space.about.profile.cardBanner}
