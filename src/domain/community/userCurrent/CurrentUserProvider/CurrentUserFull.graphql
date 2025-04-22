@@ -1,0 +1,52 @@
+query CurrentUserFull {
+  me {
+    user {
+      ...UserDetails
+      account {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        license {
+          id
+          availableEntitlements
+        }
+      }
+    }
+  }
+}
+
+fragment InvitationData on CommunityInvitationResult {
+  id
+  spacePendingMembershipInfo {
+    id
+    level
+    about {
+     ...SpaceAboutMinimalUrl
+    }
+  }
+  invitation {
+    id
+    welcomeMessage
+    createdBy {
+      id
+    }
+    state
+    createdDate
+    contributor {
+      id
+    }
+    contributorType
+  }
+}
+
+fragment EntitlementDetails on LicenseEntitlement {
+  id
+  type
+  limit
+  usage
+  isAvailable
+  dataType
+  enabled
+}

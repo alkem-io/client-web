@@ -22,7 +22,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 const PendingMembershipsDialog = () => {
   const { t } = useTranslation();
@@ -128,7 +128,7 @@ const PendingMembershipsDialog = () => {
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <SpaceCardBase
-                          iconComponent={spaceIconByLevel[hydratedApplication.space.level]}
+                          iconComponent={spaceLevelIcon[hydratedApplication.space.level]}
                           header={hydratedApplication.space.about.profile.displayName}
                           tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.about.profile.cardBanner}

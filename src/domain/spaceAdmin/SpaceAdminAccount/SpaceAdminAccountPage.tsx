@@ -16,7 +16,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { PlanFeatures, PlanFooter, PlanName } from '@/domain/license/plans/ui/PlanCardsComponents';
 import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
@@ -27,7 +27,7 @@ import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmD
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import SpaceSettingsLayout from '@/domain/spaceAdmin/layout/SpaceAdminLayoutSpace';
 import CachedIcon from '@mui/icons-material/Cached';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, CircularProgress, Link } from '@mui/material';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -40,7 +40,7 @@ export interface SpaceAdminAccountPageProps extends SettingsPageProps {
 
 const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
   const notify = useNotification();
   const navigate = useNavigate();
   const planTranslations = getPlanTranslations(t);
@@ -68,7 +68,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
   useEffect(() => {
     // TODO: After server #4471 we should be able to see account.type to check if the space provider is a User or an Organization, and this __typename can be removed from the query
     if (provider?.__typename === 'User') {
-      setIsHost(provider?.id === user?.user.id);
+      setIsHost(provider?.id === userModel?.id);
     } else if (provider?.__typename === 'Organization') {
       if (!organizationData) {
         fetchOrganizationAuthorization({
@@ -243,10 +243,10 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                         }` as const
                       )}
                       disabled={!canDelete}
-                      icon={DeleteIcon}
+                      icon={DeleteOutlineIcon}
                       onClick={() => setDeleteDialogOpen(true)}
                     >
-                      <Caption color={theme => theme.palette.error.dark} textAlign="right">
+                      <Caption sx={{ color: theme => theme.palette.error.dark }} textAlign="right">
                         {t('components.deleteEntity.title')}
                       </Caption>
                     </LicenseActionBlock>

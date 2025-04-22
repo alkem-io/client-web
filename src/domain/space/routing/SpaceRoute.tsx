@@ -28,6 +28,14 @@ interface RestrictedRouteProps extends PropsWithChildren {
 const LegacyRoutesRedirects = (spaceNameId: string) => (
   <>
     <Route
+      path={EntityPageSection.Home}
+      element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
+    />
+    <Route
+      path={EntityPageSection.Root}
+      element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
+    />
+    <Route
       path={EntityPageSection.Dashboard}
       element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
     />
@@ -50,6 +58,10 @@ const LegacyRoutesRedirects = (spaceNameId: string) => (
     <Route
       path={EntityPageSection.Contribute}
       element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
+    />
+    <Route
+      path={EntityPageSection.Updates}
+      element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1&dialog=updates`} replace />}
     />
     <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
   </>

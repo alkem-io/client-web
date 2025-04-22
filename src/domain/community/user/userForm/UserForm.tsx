@@ -7,7 +7,7 @@ import { EditMode } from '@/core/ui/forms/editMode';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { Visual } from '@/core/apollo/generated/graphql-schema';
 import { Reference } from '@/domain/common/profile/Profile';
-import { defaultUser, UserFormGenerated, UserModel } from '../models/User';
+import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
@@ -22,7 +22,6 @@ import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-len
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
-import { LoadingButton } from '@mui/lab';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
 
@@ -295,9 +294,9 @@ export const UserForm = ({
                           {t('buttons.delete')}
                         </Button>
                       )}
-                      <LoadingButton variant="contained" onClick={() => handleSubmit()} loading={isSubmitting}>
+                      <Button variant="contained" onClick={() => handleSubmit()} loading={isSubmitting}>
                         {t('buttons.save')}
-                      </LoadingButton>
+                      </Button>
                     </>
                   )}
                 </Gutters>

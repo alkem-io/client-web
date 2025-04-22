@@ -11,7 +11,7 @@ import {
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
@@ -20,7 +20,6 @@ import ContributingUserCard from '@/domain/community/user/ContributingUserCard/C
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
-import { CalloutIcon } from '@/_deprecated/icons/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
@@ -168,7 +167,7 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
       url={data.post.profile.url}
       parentSegment={
         <CardContent>
-          <CardParentSpaceSegment iconComponent={CalloutIcon} parentSpaceUri={data.callout.framing.profile.url}>
+          <CardParentSpaceSegment parentSpaceUri={data.callout.framing.profile.url}>
             {data.callout.framing.profile.displayName}
           </CardParentSpaceSegment>
           <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>
@@ -196,8 +195,8 @@ interface UseHydrateCardProvided {
 }
 
 export const useHydrateCard = (): UseHydrateCardProvided => {
-  const { user: userMetadata } = useUserContext();
-  const userId = userMetadata?.user?.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
 
   const { data: rolesData } = useUserRolesSearchCardsQuery({
     variables: {

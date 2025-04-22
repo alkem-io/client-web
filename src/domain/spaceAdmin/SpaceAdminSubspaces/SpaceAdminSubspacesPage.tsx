@@ -23,7 +23,7 @@ import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
-import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -44,7 +44,7 @@ import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innovati
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
-import SpaceL1Icon2 from '../../../_deprecated/icons/SpaceL1Icon2';
+import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
@@ -230,7 +230,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
   if (loading || adminTemplatesLoading) return <Loading text={'Loading spaces'} />;
   return (
-    <LayoutSwitcher currentTab={SettingsSection.Subsubspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
+    <LayoutSwitcher currentTab={SettingsSection.Subspaces} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <>
         {templatesEnabled && (
           <PageContentBlock>

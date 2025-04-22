@@ -11,7 +11,7 @@ import References from '@/domain/shared/components/References/References';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { ShareComponent } from '@/domain/shared/components/ShareDialog/ShareDialog';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';

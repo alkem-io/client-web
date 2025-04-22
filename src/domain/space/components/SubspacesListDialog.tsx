@@ -1,11 +1,11 @@
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import { CardLayoutContainer } from '@/_deprecatedToKeep/CardsLayout';
+import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Loading from '@/core/ui/loading/Loading';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
-import { journeyCardValueGetter } from '@/_deprecatedToKeep/journeyCardValueGetter';
+import { journeyCardValueGetter } from '@/_deprecated/journeyCardValueGetter';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';

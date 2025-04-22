@@ -9,11 +9,11 @@ import {
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { UserModel } from '@/domain/community/user/models/User';
+import { UserModel } from '@/domain/community/user/models/UserModel';
 import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface UserPageProps {
   readOnly?: boolean;

@@ -11,7 +11,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useTranslation } from 'react-i18next';
-import { useUserMetadata } from '../index';
+import { useUserProvider } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
 
 const Header = styled('div')(({ theme }) => ({
@@ -66,13 +66,12 @@ const getStringOfNames = (arr: string[]) => arr.join(', ');
 const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   const { t } = useTranslation();
 
-  const { user: userMetadata, loading } = useUserMetadata(id);
-  const user = userMetadata?.user;
-  const refs = user?.profile.references || [];
+  const { user: userModel, loading } = useUserProvider(id);
+  const refs = userModel?.profile.references || [];
 
   const { spaces, challenges, opportunities, organizations } = useUserContributionDisplayNames();
 
-  const tags = (userMetadata?.user?.profile.tagsets || []).flatMap(x => x.tags);
+  const tags = (userModel?.profile.tagsets || []).flatMap(x => x.tags || []);
 
   const noMembership =
     !(spaces && spaces.length > 0) &&
@@ -86,18 +85,18 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
         <Header>
           <Profile>
             <Avatar
-              src={user?.profile.avatar?.uri}
+              src={userModel?.profile.avatar?.uri}
               sx={{ borderRadius: 1 }}
               size="large"
-              aria-label={t('common.avatar-of', { user: user?.profile.displayName })}
+              aria-label={t('common.avatar-of', { user: userModel?.profile.displayName })}
             />
             <UserName>
-              <Typography variant="h3">{user?.profile.displayName}</Typography>
+              <Typography variant="h3">{userModel?.profile.displayName}</Typography>
             </UserName>
           </Profile>
-          {user?.profile.description && (
+          {userModel?.profile.description && (
             <Box display="flex" flexGrow={1}>
-              <p>{user?.profile.description}</p>
+              <p>{userModel?.profile.description}</p>
             </Box>
           )}
         </Header>
@@ -182,7 +181,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Link href={user?.profile?.url ?? ''} underline="none">
+        <Link href={userModel?.profile?.url ?? ''} underline="none">
           <Button variant="outlined" aria-label="user-profile-button">
             {t('buttons.view-profile')}
           </Button>

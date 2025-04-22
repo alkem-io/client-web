@@ -15,7 +15,7 @@ import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
 import CommunityAddMembersDialog from '../dialogs/CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
@@ -28,11 +28,12 @@ type GetterParams = ContributorViewProps | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
     paginationModel: {
       page: 0,
-      pageSize: 10,
+      pageSize: PAGE_SIZE,
     },
   },
   sorting: {
@@ -81,7 +82,6 @@ const CommunityVirtualContributors = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
@@ -197,6 +197,7 @@ const CommunityVirtualContributors = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
           />
         )}

@@ -1,13 +1,13 @@
 import { Message } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import Avatar from '@/core/ui/avatar/Avatar';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -44,7 +44,7 @@ import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
 export interface CommunityUpdatesViewProps {
   entities: {
     messages: Message[];
-    authors: Author[];
+    authors: AuthorModel[];
   };
   state: {
     loadingMessages: boolean;

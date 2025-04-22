@@ -4,13 +4,16 @@ import type {
   ExcalidrawImperativeAPI,
   Gesture,
   SocketId,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type {
+  ExcalidrawElement,
+  OrderedExcalidrawElement,
+} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import type {
   hashElementsVersion as ExcalidrawHashElementsVersion,
   reconcileElements as ExcalidrawReconcileElements,
   restoreElements as ExcalidrawRestoreElements,
-  StoreAction as ExcalidrawStoreAction,
+  CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   newElementWith as ExcalidrawNewElementWith,
 } from '@alkemio/excalidraw';
 import {
@@ -23,7 +26,7 @@ import {
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
-import { isImageElement, UserIdleState } from './utils';
+import { UserIdleState, isImageElement } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
@@ -31,8 +34,8 @@ import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log'
 import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
-} from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
-import type { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
+} from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
+import type { Mutable } from '@alkemio/excalidraw/dist/types/excalidraw/utility-types';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 type CollabState = {
@@ -63,7 +66,7 @@ type ExcalidrawUtils = {
   hashElementsVersion: typeof ExcalidrawHashElementsVersion;
   reconcileElements: typeof ExcalidrawReconcileElements;
   restoreElements: typeof ExcalidrawRestoreElements;
-  StoreAction: typeof ExcalidrawStoreAction;
+  CaptureUpdateAction: typeof ExcalidrawCaptureUpdateAction;
   newElementWith: typeof ExcalidrawNewElementWith;
 };
 
@@ -135,7 +138,7 @@ class Collab {
   };
 
   stopCollaboration = async () => {
-    const { StoreAction, newElementWith } = await this.excalidrawUtils;
+    const { CaptureUpdateAction, newElementWith } = await this.excalidrawUtils;
 
     this.queueBroadcastAllElements.cancel();
     this.destroySocketClient();
@@ -149,7 +152,7 @@ class Collab {
 
     this.excalidrawAPI.updateScene({
       elements,
-      storeAction: StoreAction.NONE,
+      captureUpdate: CaptureUpdateAction.NEVER,
     });
   };
 
@@ -186,10 +189,7 @@ class Collab {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
               if (!this.portal.sceneInitialized) {
                 await this.handleRemoteSceneUpdate(
-                  await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
-                  {
-                    init: true,
-                  }
+                  await this.reconcileElementsAndLoadFiles(payload.elements, payload.files)
                 );
                 const convertedFilesWithUrl = await this.filesManager.loadAndTryConvertEmbeddedFiles(payload.files);
                 // broadcast only the converted files
@@ -308,15 +308,14 @@ class Collab {
     });
   };
 
-  private handleRemoteSceneUpdate = async (
-    elements: ReconciledExcalidrawElement[],
-    { init = false }: { init?: boolean } = {}
-  ) => {
-    const { StoreAction } = await this.excalidrawUtils;
+  private handleRemoteSceneUpdate = async (elements: ReconciledExcalidrawElement[]) => {
+    const { CaptureUpdateAction } = await this.excalidrawUtils;
 
     this.excalidrawAPI.updateScene({
       elements,
-      storeAction: init ? StoreAction.CAPTURE : StoreAction.NONE,
+      // user is not able to undo any of the incoming change
+      // user is only able to undo their own changes, since they are not incoming
+      captureUpdate: CaptureUpdateAction.NEVER,
     });
 
     this.filesManager.pushFilesToExcalidraw();

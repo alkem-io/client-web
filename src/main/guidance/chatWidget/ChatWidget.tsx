@@ -31,14 +31,14 @@ import {
 import 'react-chat-widget-react-18/lib/styles.css';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 // Remove the default props from the Widget component as it's throwing a warning
 // we should revise using this library or fork and fix it properly - fixing it in source is
@@ -182,8 +182,8 @@ const ChatWidget = () => {
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
-  const { user } = useUserContext();
-  const userId = user?.user.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
 
   const handleNewUserMessage = async (newMessage: string) => {
     await sendMessage(newMessage);

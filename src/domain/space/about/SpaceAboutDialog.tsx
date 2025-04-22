@@ -3,7 +3,7 @@ import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/Naviga
 import { gutters } from '@/core/ui/grid/utils';
 import { Box, Link, Tooltip } from '@mui/material';
 import { MouseEventHandler, useRef } from 'react';
-import { Caption } from '@/core/ui/typography';
+import { Caption, CaptionSmall } from '@/core/ui/typography';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -74,7 +74,7 @@ const SpaceAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-  const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
+  const applicationButtonRef = useRef<HTMLButtonElement>(null);
 
   const aboutProfile = about?.profile;
   const communityGuidelinesId = about?.guidelines.id;
@@ -191,7 +191,7 @@ const SpaceAboutDialog = ({
                   onEditClick={openEditDialog}
                 />
               </PageContentBlock>
-              <Box display="flex" justifyContent="center" width="100%">
+              <Gutters disablePadding display="flex" flexDirection="column" alignItems="center" width="100%">
                 <ApplicationButtonContainer journeyId={space.id} parentSpaceId={parentSpaceId}>
                   {(applicationButtonProps, loading) => {
                     if (loading || applicationButtonProps.isMember) {
@@ -199,17 +199,23 @@ const SpaceAboutDialog = ({
                     }
 
                     return (
-                      <ApplicationButton
-                        ref={applicationButtonRef}
-                        {...applicationButtonProps}
-                        loading={loading}
-                        journeyId={space.id}
-                        spaceLevel={space.level}
-                      />
+                      <>
+                        <ApplicationButton
+                          ref={applicationButtonRef}
+                          {...applicationButtonProps}
+                          loading={loading}
+                          journeyId={space.id}
+                          spaceLevel={space.level}
+                          noAuthApplyButtonText={t('buttons.apply')}
+                        />
+                        {!applicationButtonProps.isAuthenticated && (
+                          <CaptionSmall>{t('aboutDialog.applyNotSignedInHelperText')}</CaptionSmall>
+                        )}
+                      </>
                     );
                   }}
                 </ApplicationButtonContainer>
-              </Box>
+              </Gutters>
             </PageContentColumn>
 
             <PageContentColumn columns={4}>

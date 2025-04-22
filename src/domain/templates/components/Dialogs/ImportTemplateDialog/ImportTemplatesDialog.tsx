@@ -1,4 +1,4 @@
-import { Button, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
+import { Button, ButtonProps, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,6 @@ import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { LoadingButtonProps } from '@mui/lab';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import PreviewTemplateDialog from '../PreviewTemplateDialog/PreviewTemplateDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
@@ -40,7 +39,7 @@ interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
   open: boolean;
   onClose?: () => void;
   onSelectTemplate: (template: AnyTemplate) => Promise<unknown>;
-  actionButton: ReactElement<LoadingButtonProps>;
+  actionButton: ReactElement<ButtonProps>;
 }
 
 const ImportTemplatesDialog = ({

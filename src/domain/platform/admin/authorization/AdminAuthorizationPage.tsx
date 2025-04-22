@@ -1,10 +1,9 @@
 import React from 'react';
 import AdminLayout from '../layout/toplevel/AdminLayout';
-import { Box, Tab } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '../layout/toplevel/constants';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
@@ -54,9 +53,10 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
     <AdminLayout currentTab={AdminSection.Authorization}>
       {loading && <Loading />}
       {!loading && roleSetId && (
-        <TabContext value={selectedRole ?? '_none'}>
+        <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
+            <Tabs sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }} value={selectedRole ?? '_none'}>
+              <Tab value="_none" hidden />
               {MANAGED_ROLES.map(tab => (
                 <Tab
                   key={tab}
@@ -66,28 +66,23 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
                   label={t(`common.roles.${tab}`)}
                 />
               ))}
-            </TabList>
+            </Tabs>
           </Box>
-          <TabPanel value="_none" />
-          {MANAGED_ROLES.map(role => (
-            <TabPanel key={role} value={role}>
-              {role === selectedRole && (
-                <EditMemberUsers
-                  members={usersByRole[role] ?? []}
-                  availableMembers={availableMembers}
-                  onAdd={userId => assignPlatformRoleToUser(userId, role)}
-                  onRemove={userId => removePlatformRoleFromUser(userId, role)}
-                  updating={updating}
-                  loadingMembers={loading}
-                  loadingAvailableMembers={loading}
-                  onSearchTermChange={setSearchTerm}
-                  hasMore={hasMore}
-                  fetchMore={fetchMore}
-                />
-              )}
-            </TabPanel>
-          ))}
-        </TabContext>
+          {selectedRole && (
+            <EditMemberUsers
+              members={usersByRole[selectedRole] ?? []}
+              availableMembers={availableMembers}
+              onAdd={userId => assignPlatformRoleToUser(userId, selectedRole)}
+              onRemove={userId => removePlatformRoleFromUser(userId, selectedRole)}
+              updating={updating}
+              loadingMembers={loading}
+              loadingAvailableMembers={loading}
+              onSearchTermChange={setSearchTerm}
+              hasMore={hasMore}
+              fetchMore={fetchMore}
+            />
+          )}
+        </>
       )}
     </AdminLayout>
   );

@@ -23,6 +23,8 @@ export const RELEVANT_ROLES = {
     RoleName.GlobalLicenseManager,
     RoleName.GlobalCommunityReader,
     RoleName.GlobalSpacesReader,
+    RoleName.GlobalPlatformManager,
+    RoleName.GlobalSupportManager,
     RoleName.PlatformBetaTester,
     RoleName.PlatformVcCampaign,
   ],
