@@ -23,7 +23,7 @@ export interface UserProfileViewPageProps extends UserProfileViewProps {
 export const UserProfilePageView = ({
   contributions = [],
   organizationIds,
-  entities,
+  userModel,
   accountResources,
 }: UserProfileViewPageProps) => {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ export const UserProfilePageView = ({
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        <UserProfileView entities={entities} />
+        <UserProfileView userModel={userModel} />
         <AssociatedOrganizationsLazilyFetched
           organizationIds={organizationIds ?? []}
           title={t('pages.user-profile.associated-organizations.title')}

@@ -9,10 +9,10 @@ import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
-import { useUserContext } from '../hooks/useUserContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { useTranslation } from 'react-i18next';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '@/core/ui/typography';
@@ -58,7 +58,7 @@ export const FormikUserSelector = ({
   });
 
   const { t } = useTranslation();
-  const { user: currentUser } = useUserContext();
+  const { userModel: currentUser } = useCurrentUserContext();
 
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
@@ -74,10 +74,10 @@ export const FormikUserSelector = ({
       sortUsers(
         users
           .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
-          .filter(user => user.id !== currentUser?.user.id)
+          .filter(user => user.id !== currentUser?.id)
       )
     );
-  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
+  }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
   const breakpoint = useCurrentBreakpoint();
 

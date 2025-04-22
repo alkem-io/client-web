@@ -23,7 +23,7 @@ import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
-import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
