@@ -74,7 +74,7 @@ const SpaceAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-  const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
+  const applicationButtonRef = useRef<HTMLButtonElement>(null);
 
   const aboutProfile = about?.profile;
   const communityGuidelinesId = about?.guidelines.id;
