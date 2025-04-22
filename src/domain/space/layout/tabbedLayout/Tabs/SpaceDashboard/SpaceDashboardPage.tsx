@@ -42,7 +42,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   const permissions = {
     canEdit: spacePrivileges.includes(AuthorizationPrivilege.Update),
     spaceReadAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
+    readUsers: userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
