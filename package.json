@@ -191,6 +191,9 @@
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^2.0.3"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.40.0"
+  },
   "engines": {
     "node": ">=20.9.0",
     "npm": ">=10"
