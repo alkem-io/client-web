@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import {
   CreateSubspaceMutationOptions,
-  refetchUserProviderQuery,
+  refetchCurrentUserFullQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
   useUploadVisualMutation,
@@ -50,7 +50,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   const [uploadVisual] = useUploadVisualMutation();
 
   const {
-    refetchQueries = [refetchUserProviderQuery()], // default to refetching user provider
+    refetchQueries = [refetchCurrentUserFullQuery()], // default to refetching user provider
     ...restMutationOptions
   } = mutationOptions;
 

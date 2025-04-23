@@ -5,7 +5,7 @@ import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/Subs
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../CreateSubspaceForm';
-import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import SpaceL1Icon2 from '../../../icons/SpaceL1Icon2';
 
 export interface CreateJourneyProps {

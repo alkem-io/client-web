@@ -8,7 +8,7 @@ import { Community, Message, PlatformFeatureFlagName } from '@/core/apollo/gener
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import React, { useCallback } from 'react';
 
 export interface CommunityUpdatesContainerProps {
@@ -34,7 +34,7 @@ export interface CommunityUpdatesState {
 
 export interface CommunityUpdatesEntities {
   messages: Message[];
-  authors: Author[];
+  authors: AuthorModel[];
 }
 
 const EMPTY = [];
@@ -94,7 +94,7 @@ export const CommunityUpdatesContainer = ({ communityId, children }: CommunityUp
   };
   const messages = (data?.lookup.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
-  const authors: Author[] = [];
+  const authors: AuthorModel[] = [];
   for (const message of messages) {
     if (message.sender) {
       authors.push(buildAuthorFromUser(message.sender));
