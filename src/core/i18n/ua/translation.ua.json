@@ -856,7 +856,8 @@
       "alphaNumeric": "{{field}} може містити лише латинські символи нижнього регістру, цифри та дефіси",
       "nonBlank": "Значення не повинно складатися лише з пробілів",
       "atLeastOne": "At least one {{item}} must be selected.",
-      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one."
+      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
+      "invalidUrl": "Invalid URL"
     }
   },
   "templateDialog": {
