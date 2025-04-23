@@ -41,6 +41,7 @@ generates:
     config:
       withHooks: true
       withRefetchFn: true
+      withSuspense: false # Re-enable this to use suspense with React 18
   src/core/apollo/generated/apollo-helpers.ts:
     plugins:
       - typescript-apollo-client-helpers
