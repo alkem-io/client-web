@@ -856,7 +856,8 @@
       "alphaNumeric": "{{field}} kan alleen bestaan uit kleine letters, nummers of koppeltekens",
       "nonBlank": "{{field}} kan niet slechts uit spaties bestaan",
       "atLeastOne": "Selecteer ten minste één item.",
-      "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere."
+      "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
+      "invalidUrl": "Invalid URL"
     }
   },
   "templateDialog": {
