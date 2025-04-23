@@ -856,7 +856,8 @@
       "alphaNumeric": "crwdns18596:0{{field}}crwdne18596:0",
       "nonBlank": "crwdns18598:0{{field}}crwdne18598:0",
       "atLeastOne": "crwdns18600:0{{item}}crwdne18600:0",
-      "reservedTopLevelRoute": "crwdns18602:0crwdne18602:0"
+      "reservedTopLevelRoute": "crwdns18602:0crwdne18602:0",
+      "invalidUrl": "crwdns36854:0crwdne36854:0"
     }
   },
   "templateDialog": {
