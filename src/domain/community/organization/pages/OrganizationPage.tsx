@@ -1,4 +1,3 @@
-import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import Loading from '@/core/ui/loading/Loading';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -23,13 +22,11 @@ export const OrganizationPage = () => {
   if (!organizationData || loading) return <Loading />;
 
   return (
-    <OrganizationPageLayout>
-      <OrganizationPageView
-        organizationProvided={organizationProvided}
-        loading={loading}
-        accountResources={accountResources}
-      />
-    </OrganizationPageLayout>
+    <OrganizationPageView
+      organizationProvided={organizationProvided}
+      loading={loading}
+      accountResources={accountResources}
+    />
   );
 };
 

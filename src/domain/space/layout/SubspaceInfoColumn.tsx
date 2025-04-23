@@ -1,45 +1,36 @@
-import PageContent from '@/core/ui/content/PageContent';
-import { Outlet } from 'react-router-dom';
 import InfoColumn from '../components/InfoColumn';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import WelcomeBlock from '../components/WelcomeBlock';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import { CalendarMonth, KeyboardTab } from '@mui/icons-material';
-import DialogActionButtons from '../components/subspaces/DialogActionButtons';
+import { KeyboardTab } from '@mui/icons-material';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
-import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
+import { Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import { theme } from '@/core/ui/themes/default/Theme';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import DashboardNavigation from '../components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
-import { useColumns } from '@/core/ui/grid/GridContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '../components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '../hooks/useSubSpace';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { DialogDef } from '../components/subspaces/DialogDefinition';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogAction } from '../components/subspaces/DialogAction';
 import CreateJourney from '../components/subspaces/SubspaceCreationDialog/CreateJourney';
-const MENU_STATE_KEY = 'menuState';
-enum MenuState {
+
+export const MENU_STATE_KEY = 'menuState';
+export enum MenuState {
   EXPANDED = 'expanded',
   COLLAPSED = 'collapsed',
 }
 
 export const SubspaceInfoColumn = () => {
   const { t } = useTranslation();
-  const { spaceId, spaceLevel, parentSpaceId } = useUrlResolver();
+  const { spaceId, spaceLevel } = useUrlResolver();
   const {
     permissions,
     subspace: {
@@ -95,9 +86,6 @@ export const SubspaceInfoColumn = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-
-  const columns = 0; //useColumns();
 
   return (
     <InfoColumn collapsed={isCollapsed}>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { Outlet, Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -39,15 +39,17 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <Routes>
-        <Route element={level === SpaceLevel.L2 ? <Outlet /> : <SubspacePageLayout level={level} />}>
+        {/* subspace settings page doesn't need any subpsace layout - it uses the level 0 space page banner */}
+        <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
+
+        {/* level 2 space routes are recusive in relation to level 1; so do not add a second layout and just display the page */}
+        <Route element={level === SpaceLevel.L2 ? <Outlet /> : <SubspacePageLayout />}>
           {/* legacy routes */}
           <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
           <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
+
           {/* current routes */}
-          {/* <Route index element={<SubspaceHomePage />} /> */}
           <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
-          <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
-          {/* <Route path={SubspaceDialog.Updates} element={<SubspaceHomePage dialog={SubspaceDialog.Updates} />} /> */}
           <Route
             path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
             element={<SubspaceCalloutPage />}
@@ -57,7 +59,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
             element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
           />
           <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SubspaceHomePage />} />
-          {/* l2 spaces are recursive */}
+          {/* level 2 spaces are recursive */}
           <Route
             path={`opportunities/:${nameOfUrl.subsubspaceNameId}/:dialog?/:${nameOfUrl.calendarEventNameId}?`}
             element={<SubspaceRoute level={SpaceLevel.L2} />}

@@ -22,11 +22,10 @@ import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined } from '@mui
 import useNavigate from '@/core/routing/useNavigate';
 import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
-import { EntityTabsProps } from '../../EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
-import { buildSettingsUrl, buildSpaceSectionNamedUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
 
 type TabDefinition = {
@@ -39,8 +38,12 @@ export interface ActionDefinition extends TabDefinition {
   onClick: () => void;
 }
 
-interface SpacePageTabsProps extends EntityTabsProps {
+interface SpacePageTabsProps {
   actions?: ActionDefinition[];
+  currentTab: { sectionIndex: number } | { section: EntityPageSection } | undefined;
+  mobile?: boolean;
+  onMenuOpen?: (open: boolean) => void;
+  loading?: boolean;
 }
 
 enum NavigationActions {

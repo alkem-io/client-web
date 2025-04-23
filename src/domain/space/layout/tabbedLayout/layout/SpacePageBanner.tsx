@@ -11,10 +11,10 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
-import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
 import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
 import { SpaceContext } from '@/domain/space/context/SpaceContext';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export const TITLE_HEIGHT = 6;
 
@@ -128,10 +128,11 @@ const WatermarkContainer = (props: BoxProps) => (
   <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
 );
 
-export interface JourneyPageBannerProps extends BasePageBannerProps {
+export interface JourneyPageBannerProps {
   loading?: boolean;
   level?: SpaceLevel;
   isAdmin?: boolean;
+  watermark?: ReactNode;
 }
 
 const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, watermark }: JourneyPageBannerProps) => {
@@ -140,11 +141,17 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
   const [imageLoading, setImageLoading] = useState(true);
 
   const {
-    space: {
-      id: spaceId,
-      about: { profile },
-    },
+    space: { id: spaceId },
   } = useContext(SpaceContext);
+
+  const { data, loading } = useSpaceAboutDetailsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId || dataLoading,
+  });
+
+  const profile = data?.lookup.space?.about.profile;
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
@@ -163,8 +170,8 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
       </TopNotices>
       <Box>
         <ImageBlurredSides
-          src={profile.banner?.uri || defaultVisualUrls[VisualType.Banner]}
-          alt={t('visuals-alt-text.banner.page.text', { altText: profile.banner?.alternativeText })}
+          src={profile?.banner?.uri || defaultVisualUrls[VisualType.Banner]}
+          alt={t('visuals-alt-text.banner.page.text', { altText: profile?.banner?.alternativeText })}
           onLoad={() => setImageLoading(false)}
           onError={imageLoadError}
           blurRadius={2}
@@ -177,7 +184,7 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
       <Title>
         <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
           {profile?.displayName}
-          {!profile.displayName && dataLoading && <Skeleton variant="text" animation="wave" />}
+          {!profile?.displayName && (dataLoading || loading) && <Skeleton variant="text" animation="wave" />}
         </PageTitle>
         <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
           {profile?.tagline}

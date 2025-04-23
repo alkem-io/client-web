@@ -151,19 +151,16 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         nextUrl = nextUrl.slice(0, -1);
       }
 
-      if (/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
-        // TODO: We need to rework the Urls of the templates anyway. See #8061
-        // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
-      } else {
-        // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      // TODO: We need to rework the Urls of the templates anyway. See #8061
+      // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
+      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      if (!/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
         for (const mask of maskedUrlParts) {
           nextUrl = nextUrl.replace(mask, '');
-          console.log({ mask, nextUrl });
         }
         // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
       }
 
-      console.log(nextUrl);
       if (nextUrl !== currentUrl) {
         setCurrentUrl(nextUrl); // Update the query URL state
       }

@@ -1,4 +1,3 @@
-import RouterLink from '@/core/ui/link/RouterLink';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { SubspaceDialog } from './SubspaceDialog';
 import {
@@ -15,8 +14,6 @@ import {
 import { TFuncKey, useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { ComponentType } from 'react';
-import { SvgIconProps } from '@mui/material';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import SubspacesListDialog from '../SubspacesListDialog';
 import ContributorsToggleDialog from '../ContributorsToggleDialog';
@@ -28,11 +25,8 @@ import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/Innova
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-enum MenuState {
-  EXPANDED = 'expanded',
-  COLLAPSED = 'collapsed',
-}
-const MENU_STATE_KEY = 'menuState';
+import { MENU_STATE_KEY, MenuState } from '../../layout/SubspaceInfoColumn';
+
 const ACTION_CONFIG = {
   [SubspaceDialog.About]: { Icon: InfoOutlined, Dialog: null },
   [SubspaceDialog.Outline]: { Icon: AccountTreeOutlined, Dialog: CalloutsListDialog },
@@ -52,13 +46,11 @@ const ACTION_CONFIG = {
 export const DialogAction = ({
   dialog,
   dialogProps = {},
-  // fullWidth = false,
   actionDisplay = 'buttonWithTooltip',
   buttonVariant = 'contained',
 }: {
   dialog: SubspaceDialog;
   dialogProps?: Record<string, unknown>;
-  // fullWidth?: boolean;
   actionDisplay?: 'none' | 'fullWidth' | 'buttonWithTooltip';
   buttonVariant?: 'text' | 'contained' | 'outlined';
 }) => {
@@ -76,6 +68,7 @@ export const DialogAction = ({
   } = useSubSpace();
   const handleClose = useBackToStaticPath(url ?? '');
   if (ACTION_CONFIG[dialog] === undefined) {
+    //eslint-disable-next-line no-console
     console.warn(`DialogAction: No action config found for dialog ${dialog}`);
     return null;
   }

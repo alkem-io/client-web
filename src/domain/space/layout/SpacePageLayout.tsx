@@ -1,5 +1,5 @@
 import PlatformNavigationBar from '@/main/ui/platformNavigation/PlatformNavigationBar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import SpaceBreadcrumbs from '../components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SpacePageBanner from './tabbedLayout/layout/SpacePageBanner';
@@ -15,10 +15,13 @@ import SpaceTabs from './tabbedLayout/Tabs/SpaceTabs';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isSettingsPage = pathname.includes('settings');
 
   const { spaceId, loading, journeyPath, spaceLevel } = useUrlResolver();
 
@@ -28,13 +31,17 @@ export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
-      <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />} />
+      <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} settings={isSettingsPage} />} />
 
       {isLevelZero && <SpacePageBanner loading={loading} />}
       {!isLevelZero && <SubspacePageBanner />}
 
       {!isMobile && isLevelZero && (
-        <SpaceTabs currentTab={{ sectionIndex }} mobile={isMobile} onMenuOpen={setTabsMenuOpen} />
+        <SpaceTabs
+          currentTab={isSettingsPage ? { section: EntityPageSection.Settings } : { sectionIndex }}
+          mobile={isMobile}
+          onMenuOpen={setTabsMenuOpen}
+        />
       )}
 
       <Outlet />

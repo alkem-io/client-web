@@ -2,7 +2,6 @@ import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { useUserProvider } from '../hooks/useUserProvider';
-import UserPageLayout from '../layout/UserPageLayout';
 import UserProfilePageView from './UserProfilePageView';
 import useUserContributions from '../userContributions/useUserContributions';
 import useUserOrganizationIds from '../userContributions/useUserOrganizationIds';
@@ -28,22 +27,16 @@ export const UserProfilePage = () => {
   if (urlResolverLoading || loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
 
   if (!userModel) {
-    return (
-      <UserPageLayout>
-        <Error404 />
-      </UserPageLayout>
-    );
+    return <Error404 />;
   }
 
   return (
-    <UserPageLayout>
-      <UserProfilePageView
-        contributions={contributions}
-        accountResources={accountResources}
-        organizationIds={organizationIds}
-        userModel={userModel}
-      />
-    </UserPageLayout>
+    <UserProfilePageView
+      contributions={contributions}
+      accountResources={accountResources}
+      organizationIds={organizationIds}
+      userModel={userModel}
+    />
   );
 };
 
