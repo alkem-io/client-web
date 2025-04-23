@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { DashboardProvider } from './DashboardContext';
