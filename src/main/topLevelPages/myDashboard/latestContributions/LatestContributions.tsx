@@ -109,6 +109,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
         excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
       },
     },
+    options: {},
   });
 
   const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });

@@ -6,9 +6,10 @@ import { ApolloError } from '@apollo/client';
 export interface PaginationVariables {
   first: number;
   after?: string;
+  skip?: boolean;
 }
 
-export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first'>;
+export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first' | 'skip'>;
 
 interface CommonPaginationOptions<Data, Variables extends PaginationVariables> {
   variables: NonPaginationVariables<Variables>;
@@ -19,9 +20,49 @@ interface CommonPaginationOptions<Data, Variables extends PaginationVariables> {
 
 export interface PaginationOptionsNonLazy<Data, Variables extends PaginationVariables>
   extends CommonPaginationOptions<Data, Variables> {
-  useQuery: (options: QueryHookOptions<Data, Variables>) => QueryResult<Data, Variables>;
-  options?: QueryHookOptions<Data, NonPaginationVariables<Variables>>;
+  useQuery: (
+    options: QueryHookOptions<Data, Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean })
+  ) => QueryResult<Data, Variables>;
+  options: QueryHookOptions<
+    Data,
+    NonPaginationVariables<Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean })
+  >;
 }
+
+// export function useSpaceExplorerAllSpacesQuery(
+//   baseOptions: Apollo.QueryHookOptions<
+//     SchemaTypes.SpaceExplorerAllSpacesQuery,
+//     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
+//   > &
+//     ({ variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables; skip?: boolean } | { skip: boolean })
+// )
+
+// export function useSpaceExplorerAllSpacesQuery(
+//   baseOptions: Apollo.QueryHookOptions<
+//     SchemaTypes.SpaceExplorerAllSpacesQuery,
+//     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
+//   > &
+//     ({ variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables; skip?: boolean } | { skip: boolean })
+// ) {
+//   const options = { ...defaultOptions, ...baseOptions };
+//   return Apollo.useQuery<SchemaTypes.SpaceExplorerAllSpacesQuery, SchemaTypes.SpaceExplorerAllSpacesQueryVariables>(
+//     SpaceExplorerAllSpacesDocument,
+//     options
+//   );
+// }
+
+// export function useSpaceExplorerAllSpacesQuery(
+//   baseOptions: Apollo.QueryHookOptions<
+//     SchemaTypes.SpaceExplorerAllSpacesQuery,
+//     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
+//   >
+// ) {
+//   const options = { ...defaultOptions, ...baseOptions };
+//   return Apollo.useQuery<SchemaTypes.SpaceExplorerAllSpacesQuery, SchemaTypes.SpaceExplorerAllSpacesQueryVariables>(
+//     SpaceExplorerAllSpacesDocument,
+//     options
+//   );
+// }
 
 export interface PaginationOptionsLazy<Data, Variables extends PaginationVariables>
   extends CommonPaginationOptions<Data, Variables> {
@@ -29,7 +70,7 @@ export interface PaginationOptionsLazy<Data, Variables extends PaginationVariabl
   options?: LazyQueryHookOptions<Data, NonPaginationVariables<Variables>>;
 }
 
-export interface Provided<Data> {
+interface Provided<Data> {
   data: Data | undefined;
   loading: boolean;
   error: ApolloError | undefined;
@@ -53,7 +94,7 @@ const useQuery = <Data, Variables extends PaginationVariables>(
         first: firstPageSize,
         ...variables,
       },
-    } as QueryHookOptions<Data, Variables>);
+    } as QueryHookOptions<Data, Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean }));
 
     return {
       data,
