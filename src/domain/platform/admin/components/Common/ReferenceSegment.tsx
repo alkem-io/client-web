@@ -14,11 +14,11 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { useScreenLayoutXsSmDetected } from '@/core/ui/grid/GridContext';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -76,8 +76,7 @@ export const ReferenceSegment = ({
   const { setFieldValue, touched } = useFormikContext();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const breakpoint = useCurrentBreakpoint();
-  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const isMobile = useScreenLayoutXsSmDetected();
   const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
   const [adding, setAdding] = useState(false);
 

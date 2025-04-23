@@ -4,7 +4,6 @@ import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -16,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { useScreenLayoutXsSmDetected } from '@/core/ui/grid/GridContext';
 
 export interface EditLinkFormValues {
   id: string;
@@ -47,8 +47,7 @@ interface EditLinkDialogProps {
 
 const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
   const { t } = useTranslation();
-  const breakpoint = useCurrentBreakpoint();
-  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const isMobile = useScreenLayoutXsSmDetected();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 

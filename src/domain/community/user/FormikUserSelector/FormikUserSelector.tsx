@@ -9,7 +9,6 @@ import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
@@ -17,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 const MAX_USERS_SHOWN = 20;
 const GRID_COLUMNS_DESKTOP = 6;
@@ -79,8 +79,6 @@ export const FormikUserSelector = ({
     );
   }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
-  const breakpoint = useCurrentBreakpoint();
-
   const handleSelect = (user: Pick<User, 'id'> | null) => {
     helpers.setTouched(true);
 
@@ -112,6 +110,8 @@ export const FormikUserSelector = ({
 
     onChange?.(value);
   };
+
+  const isMobile = useScreenLayoutXsDetected();
 
   return (
     <>
@@ -172,7 +172,7 @@ export const FormikUserSelector = ({
         </>
       )}
       <GridContainer disablePadding marginBottom={gutters(1)}>
-        <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
+        <GridProvider columns={isMobile ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
           {field.value?.map(id => (
             <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
           ))}

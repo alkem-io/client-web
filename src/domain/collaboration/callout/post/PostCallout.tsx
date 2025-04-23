@@ -9,7 +9,6 @@ import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
@@ -17,6 +16,7 @@ import {
 import { TypedCalloutDetails } from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import { sortBy } from 'lodash';
+import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
@@ -65,9 +65,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       navigate(post.profile.url, { state });
     };
 
-    const breakpoint = useCurrentBreakpoint();
-
-    const isMobile = breakpoint === 'xs';
+    const isMobile = useScreenLayoutXsDetected();
 
     return (
       <CalloutSettingsContainer

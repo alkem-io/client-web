@@ -4,7 +4,6 @@ import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/mate
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
@@ -22,6 +21,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { newLinkName } from '@/domain/common/link/newLinkName';
+import { useScreenLayoutXsSmDetected } from '@/core/ui/grid/GridContext';
 
 export interface CreateLinkFormValues {
   id: string;
@@ -60,8 +60,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const breakpoint = useCurrentBreakpoint();
-  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const isMobile = useScreenLayoutXsSmDetected();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
   const [newLinkId, setNewLinkId] = useState<string>();

@@ -10,11 +10,11 @@ import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { normalizeLink } from '@/core/utils/links';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -62,9 +62,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     );
     const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
 
-    const breakpoint = useCurrentBreakpoint();
-
-    const isMobile = breakpoint === 'xs';
+    const isMobile = useScreenLayoutXsDetected();
 
     return (
       <CalloutSettingsContainer

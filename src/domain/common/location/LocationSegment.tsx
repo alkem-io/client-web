@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CountrySelect from './CountrySelect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormRow from '@/_deprecated/FormRow';
+import Gutters from '@/core/ui/grid/Gutters';
 
 type LocationSegmentProps = {
   cols?: number;
@@ -15,36 +15,27 @@ type LocationSegmentProps = {
 
 export const LocationSegment = (props: PropsWithChildren<LocationSegmentProps>) => {
   const { t } = useTranslation();
-  const cols = !props?.cols || props?.cols <= 0 ? 1 : props!.cols,
-    disabled = props.disabled || false,
-    required = props.required || false,
-    readonly = props.readonly || false,
-    cityFieldName = props.cityFieldName || 'city',
-    countryFieldName = props.countryFieldName || 'country';
+  const { disabled, required, readonly, cityFieldName, countryFieldName } = props;
 
   return (
-    <>
-      <FormRow cols={cols}>
-        <CountrySelect
-          name={countryFieldName}
-          title={t('components.profileSegment.location.country.name')}
-          key="name"
-          readOnly={readonly}
-          disabled={disabled}
-          required={required}
-        />
-      </FormRow>
-      <FormRow cols={cols}>
-        <FormikInputField
-          name={cityFieldName}
-          title={t('components.profileSegment.location.city.name')}
-          placeholder={t('components.profileSegment.location.city.placeholder')}
-          readOnly={readonly}
-          disabled={disabled}
-          required={required}
-        />
-        {props.children}
-      </FormRow>
-    </>
+    <Gutters>
+      <CountrySelect
+        name={countryFieldName ?? 'country'}
+        title={t('components.profileSegment.location.country.name')}
+        key="name"
+        readOnly={readonly}
+        disabled={disabled}
+        required={required}
+      />
+      <FormikInputField
+        name={cityFieldName ?? 'city'}
+        title={t('components.profileSegment.location.city.name')}
+        placeholder={t('components.profileSegment.location.city.placeholder')}
+        readOnly={readonly}
+        disabled={disabled}
+        required={required}
+      />
+      {props.children}
+    </Gutters>
   );
 };
