@@ -21,9 +21,10 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
   const { pathname } = useLocation();
-  const isSettingsPage = pathname.includes('settings');
 
-  const { spaceId, loading, journeyPath, spaceLevel } = useUrlResolver();
+  const isSettingsPage = pathname.split('/').includes('settings');
+
+  const { spaceId, journeyPath, spaceLevel } = useUrlResolver();
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
@@ -33,7 +34,7 @@ export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
     <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} settings={isSettingsPage} />} />
 
-      {isLevelZero && <SpacePageBanner loading={loading} />}
+      {isLevelZero && <SpacePageBanner loading={false} />}
       {!isLevelZero && <SubspacePageBanner />}
 
       {!isMobile && isLevelZero && (

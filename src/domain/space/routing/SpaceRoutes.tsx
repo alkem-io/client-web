@@ -87,7 +87,6 @@ const SpaceRoutes = () => {
           <Route element={<SpaceProtectedRoutes />}>
             <Route index element={getSpaceSection()} />
             <Route path="/:dialog?" element={<SpaceDashboardPage />} />
-
             <Route path={`${EntityPageSection.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route
               path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}

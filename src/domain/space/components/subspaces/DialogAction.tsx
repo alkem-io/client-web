@@ -90,11 +90,9 @@ export const DialogAction = ({
           {actionDisplay === 'fullWidth' ? (
             <FullWidthButton
               startIcon={<InfoOutlined />}
-              // onClick={() => setAboutDialogOpen(true)}
               variant="outlined"
               sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
             >
-              {/* {t('common.aboutThis', { entity: translatedSpaceLevel })} */}
               {tooltip}
             </FullWidthButton>
           ) : (

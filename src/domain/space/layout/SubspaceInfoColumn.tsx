@@ -31,14 +31,7 @@ export enum MenuState {
 export const SubspaceInfoColumn = () => {
   const { t } = useTranslation();
   const { spaceId, spaceLevel } = useUrlResolver();
-  const {
-    permissions,
-    subspace: {
-      about: {
-        profile: { url },
-      },
-    },
-  } = useSubSpace();
+  const { permissions } = useSubSpace();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
@@ -53,6 +46,7 @@ export const SubspaceInfoColumn = () => {
 
   const subspace = subspacePageData?.lookup.space;
   const about = subspace?.about;
+  const url = subspace?.about?.profile?.url;
   const membership = about?.membership;
   const communityId = membership?.communityID;
   const collaboration = subspace?.collaboration;

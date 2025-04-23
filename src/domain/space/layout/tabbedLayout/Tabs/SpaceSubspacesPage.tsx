@@ -6,7 +6,6 @@ import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/Subs
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
-import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
@@ -30,13 +29,11 @@ const SpaceSubspacesPage = () => {
     calloutsSetId,
   } = useSpaceTabProvider({ tabPosition: 2 });
 
-  const { spaceId, journeyPath } = urlInfo;
+  const { spaceId } = urlInfo;
 
   const { permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
-
-  console.log({ isCreateDialogOpen });
 
   const { createSubspace } = useSubspaceCreation();
 

@@ -3,7 +3,6 @@ import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdate
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { buildSpaceSectionUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpacePageLayout from '@/domain/space/layout/tabbedLayout/layout/SpacePageLayout';
 import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -17,7 +16,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
     useSpaceTabProvider({ tabPosition: 0 });
 
-  const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
+  const { spaceId, spaceLevel } = urlInfo;
 
   const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
 
@@ -60,7 +59,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
     about: spaceData?.about,
   };
 
-  const updatesUrl = buildUpdatesUrl(spaceData?.about.profile.url ?? ''); //buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1, 'updates');
+  const updatesUrl = buildUpdatesUrl(spaceData?.about.profile.url ?? '');
 
   return (
     <>
@@ -69,8 +68,6 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
         tabDescription={tabDescription}
         dashboardNavigation={dashboardNavigation}
         dashboardNavigationLoading={dashboardNavigationLoading}
-        loading={loadingSpacePageQuery}
-        entityReadAccess={permissions.spaceReadAccess}
         readUsersAccess={permissions.readUsers}
         canEdit={permissions.canEdit}
         calloutsSetProvided={calloutsSetProvided}

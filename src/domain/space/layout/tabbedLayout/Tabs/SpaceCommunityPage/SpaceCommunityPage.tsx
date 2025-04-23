@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
@@ -18,7 +18,6 @@ import {
   RoleSetContributorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import SpacePageLayout from '../../layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -38,7 +37,6 @@ const SpaceCommunityPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
   const {
-    urlInfo,
     classificationTagsets,
     tabDescription,
     flowStateForNewCallouts: flowStateForTab,
@@ -46,8 +44,6 @@ const SpaceCommunityPage = () => {
   } = useSpaceTabProvider({
     tabPosition: 1,
   });
-
-  const { journeyPath } = urlInfo;
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
   const openContactLeadsDialog = () => {
@@ -59,7 +55,7 @@ const SpaceCommunityPage = () => {
 
   const membership = about.membership;
   const communityId = membership?.communityID;
-  const communityGuidelinesId = about.guidelines!.id;
+  const communityGuidelinesId = about.guidelines?.id;
 
   const {
     usersByRole,

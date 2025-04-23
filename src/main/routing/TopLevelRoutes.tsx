@@ -39,7 +39,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(() => import('@/domain/space/createSpace/CreateSpaceDialog'));
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
+const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -220,14 +220,9 @@ export const TopLevelRoutes = () => {
                     path={`:${nameOfUrl.spaceNameId}/*`}
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                        {/* <SpaceContextProvider> */}
-                        {/*   <EntityPageLayoutHolder> */}
                         <Suspense fallback={<Loading />}>
-                          <SpaceRoute />
+                          <SpaceRoutes />
                         </Suspense>
-                        {/* <RenderPoint /> */}
-                        {/* </EntityPageLayoutHolder> */}
-                        {/* </SpaceContextProvider> */}
                       </WithApmTransaction>
                     }
                   />

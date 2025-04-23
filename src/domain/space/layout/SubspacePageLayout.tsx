@@ -119,7 +119,7 @@ export const SubspacePageLayout = () => {
                     loading={loading}
                     component={FullWidthButton}
                     extended={hasExtendedApplicationButton}
-                    journeyId={'journeyId'}
+                    journeyId={spaceId}
                     spaceLevel={SpaceLevel.L1}
                   />
                 </PageContentColumn>
@@ -145,7 +145,7 @@ export const SubspacePageLayout = () => {
                 selectedState={selectedInnovationFlowState}
                 onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
                 visualizer={InnovationFlowChips}
-                createButton={calloutsSetProvided.canCreateCallout && createButton}
+                createButton={calloutsSetProvided?.canCreateCallout && createButton}
                 settingsButton={<DialogAction dialog={SubspaceDialog.ManageFlow} buttonVariant="outlined" />}
               />
             </Box>
@@ -175,7 +175,7 @@ export const SubspacePageLayout = () => {
                 selectedState={selectedInnovationFlowState}
                 onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
                 visualizer={InnovationFlowVisualizerMobile}
-                createButton={calloutsSetProvided.canCreateCallout && createButton}
+                createButton={calloutsSetProvided?.canCreateCallout && createButton}
               />
             )}
 

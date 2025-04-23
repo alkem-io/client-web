@@ -36,12 +36,13 @@ const InnovationFlowStateContextProvider = ({ children }) => {
 const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   const { subspace, permissions, loading } = useSubSpace();
 
-  const { canRead, spaceId } = useMemo(() => {
-    return {
+  const { canRead, spaceId } = useMemo(
+    () => ({
       canRead: permissions.canRead,
       spaceId: subspace.id,
-    };
-  }, [subspace, permissions]);
+    }),
+    [subspace, permissions]
+  );
 
   if (spaceId && !loading && !canRead) {
     return (
