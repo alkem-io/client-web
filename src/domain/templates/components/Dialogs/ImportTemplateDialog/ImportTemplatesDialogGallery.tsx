@@ -26,10 +26,22 @@ const ImportTemplatesDialogGallery = ({
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>('');
 
-  const filterTemplatesCallback = (template: AnyTemplateWithInnovationPack) => {
-    const lowerCaseFilter = filter.toLowerCase();
+  const matchesFilter = (value: string | undefined, filter: string): boolean => {
+    if (!value) {
+      return false;
+    }
 
-    return template?.template?.profile?.displayName.toLowerCase().includes(lowerCaseFilter);
+    return value.toLowerCase().includes(filter.toLowerCase());
+  };
+
+  const filterTemplatesCallback = (template: AnyTemplateWithInnovationPack) => {
+    const fieldsToFilter = [
+      template?.template?.profile?.displayName,
+      template?.template?.profile?.description,
+      ...(template?.template?.profile?.defaultTagset?.tags || []),
+    ];
+
+    return fieldsToFilter.some(field => matchesFilter(field, filter));
   };
 
   const filteredTemplates = useMemo(
