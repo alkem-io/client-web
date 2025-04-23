@@ -1,76 +1,20 @@
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { useContext } from 'react';
+import { Theme, useMediaQuery } from '@mui/material';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
-import React, { useEffect, useState } from 'react';
-import { SubspaceInnovationFlow, useConsumeAction } from './SubspacePageLayout';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
-import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
-import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
-import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
-import { DialogAction } from '../../components/subspaces/DialogAction';
-import { theme } from '@/core/ui/themes/default/Theme';
-import { gutters } from '@/core/ui/grid/utils';
+import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
 
 interface SubspaceHomeViewProps {
-  spaceLevel: SpaceLevel | undefined;
-  collaborationId: string | undefined;
   calloutsSetId: string | undefined;
-  templatesSetId: string | undefined;
-  innovationFlowStates: InnovationFlowState[] | undefined;
-  currentInnovationFlowState: string | undefined;
   loading: boolean;
 }
 
-const SubspaceHomeView = ({
-  collaborationId,
-  calloutsSetId,
-  templatesSetId,
-  innovationFlowStates,
-  currentInnovationFlowState,
-  loading,
-}: SubspaceHomeViewProps) => {
-  const { t } = useTranslation();
+const SubspaceHomeView = ({ calloutsSetId, loading }: SubspaceHomeViewProps) => {
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
-  const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ calloutsSetId });
 
-  const createButton = (
-    <Button
-      variant="outlined"
-      startIcon={<AddCircleOutlineIcon />}
-      sx={{
-        backgroundColor: 'background.paper',
-        borderColor: 'divider',
-        textWrap: 'nowrap',
-      }}
-      onClick={handleCreateCalloutOpened}
-    >
-      {t('common.collaborationTool')}
-    </Button>
-  );
-
-  // on innovation flow tab change
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useState(currentInnovationFlowState);
-
-  const doesSelectedInnovationFlowStateExist = innovationFlowStates?.some(
-    state => state.displayName === selectedInnovationFlowState
-  );
-
-  // on e.g. innovation flow template change #6319
-  useEffect(() => {
-    if (!doesSelectedInnovationFlowStateExist) {
-      setSelectedInnovationFlowState(currentInnovationFlowState);
-    }
-  }, [doesSelectedInnovationFlowStateExist]);
-
+  const { selectedInnovationFlowState } = useContext(InnovationFlowStateContext);
   let classificationTagsets: ClassificationTagsetModel[] = [];
   if (selectedInnovationFlowState) {
     classificationTagsets = [
@@ -89,49 +33,16 @@ const SubspaceHomeView = ({
   });
 
   return (
-    <>
-      {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && collaborationId && (
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            marginTop: gutters(-1),
-            paddingY: gutters(1),
-            background: theme.palette.background.default,
-            width: '100%',
-            zIndex: 1,
-            boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
-          }}
-        >
-          <InnovationFlowStates
-            states={innovationFlowStates}
-            currentState={currentInnovationFlowState}
-            selectedState={selectedInnovationFlowState}
-            onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
-            visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
-            createButton={calloutsSetProvided.canCreateCallout && createButton}
-            settingsButton={!isMobile && <DialogAction dialog={SubspaceDialog.ManageFlow} buttonVariant="outlined" />}
-          />
-        </Box>
-      )}
-      <CalloutsGroupView
-        calloutsSetId={calloutsSetId}
-        callouts={calloutsSetProvided.callouts}
-        canCreateCallout={calloutsSetProvided.canCreateCallout && isMobile}
-        loading={loading}
-        onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
-        onCalloutUpdate={calloutsSetProvided.refetchCallout}
-        createButtonPlace="top"
-        createInFlowState={selectedInnovationFlowState}
-      />
-      <CalloutCreationDialog
-        open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
-        onCreateCallout={handleCreateCallout}
-        loading={loading}
-        flowState={selectedInnovationFlowState}
-      />
-    </>
+    <CalloutsGroupView
+      calloutsSetId={calloutsSetId}
+      callouts={calloutsSetProvided.callouts}
+      canCreateCallout={calloutsSetProvided.canCreateCallout && isMobile}
+      loading={loading}
+      onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
+      onCalloutUpdate={calloutsSetProvided.refetchCallout}
+      createButtonPlace="top"
+      createInFlowState={selectedInnovationFlowState}
+    />
   );
 };
 

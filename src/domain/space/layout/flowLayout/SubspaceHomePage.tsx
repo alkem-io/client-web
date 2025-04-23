@@ -4,8 +4,8 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CreateJourney from '../../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+
 const SubspaceHomePage = () => {
   const { spaceId, spaceLevel, loading } = useUrlResolver();
 
@@ -40,21 +40,10 @@ const SubspaceHomePage = () => {
   const subspace = subspacePageData?.lookup.space;
   const collaboration = subspace?.collaboration;
   const calloutsSetId = collaboration?.calloutsSet.id;
-  const collaborationId = collaboration?.id;
-
-  const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
 
   return (
     <>
-      <SubspaceHomeView
-        spaceLevel={subspace?.level}
-        collaborationId={collaboration?.id}
-        templatesSetId={subspace?.templatesManager?.templatesSet?.id}
-        calloutsSetId={calloutsSetId}
-        innovationFlowStates={innovationFlowProvided.innovationFlowStates}
-        currentInnovationFlowState={innovationFlowProvided.currentInnovationFlowState}
-        loading={loading}
-      />
+      <SubspaceHomeView calloutsSetId={calloutsSetId} loading={loading} />
       <CreateJourney
         isVisible={createSpaceState.isDialogVisible}
         onClose={onCreateJourneyClose}
