@@ -1,7 +1,7 @@
-import React, { ReactElement, ReactNode, useMemo } from 'react';
+import { ReactElement, ReactNode, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import { AuthorizationPrivilege, CalloutVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -46,15 +46,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
-  const {
-    spaceId,
-    levelZeroSpaceId,
-    parentSpaceId,
-    calloutId,
-    spaceLevel,
-    journeyPath,
-    loading: urlResolverLoading,
-  } = useUrlResolver();
+  const { calloutId, loading: urlResolverLoading } = useUrlResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
@@ -114,19 +106,9 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
     val => val === calloutFlowState
   );
-  const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
   if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
     return <Loading />;
-    // {/* <PageLayout */}
-    // {/*   journeyId={spaceId} */}
-    // {/*   levelZeroSpaceId={levelZeroSpaceId} */}
-    // {/*   spaceLevel={spaceLevel} */}
-    // {/*   journeyPath={journeyPath} */}
-    // {/*   parentSpaceId={parentSpaceId} */}
-    // {/*   currentSection={{ sectionIndex: calloutSection }} */}
-    // {/* > */}
-    // // </PageLayout>
   }
 
   if (isApolloNotFoundError(error)) {

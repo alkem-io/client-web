@@ -8,7 +8,6 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
 import ShareButton from '../ShareDialog/ShareButton';
 import { DialogAction } from '@/domain/space/components/subspaces/DialogAction';
-import SubspaceDialogs from '@/domain/space/components/subspaces/SubspaceDialogs';
 import { SubspaceDialog } from '@/domain/space/components/subspaces/SubspaceDialog';
 
 export interface DashboardUpdatesSectionProps {
