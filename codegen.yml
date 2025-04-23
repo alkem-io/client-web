@@ -14,6 +14,7 @@ generates:
     config:
       maybeValue: T | undefined
       preResolveTypes: true
+      withSuspense: false # Re-enable this to use suspense with React 18
       scalars:
         Upload: File
         TextID: string
