@@ -20,6 +20,10 @@ export interface UserModel {
     };
     tagsets?: Tagset[];
     references?: Reference[];
+    url?: string;
+    avatar?: {
+      uri: string;
+    };
   };
   memberof?: {
     communities: Community[];

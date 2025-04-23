@@ -7,7 +7,7 @@ import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCa
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
+import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
@@ -16,10 +16,10 @@ import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 type SingleInvitationFullProps = {
-  invitation: InvitationItem | undefined;
+  invitation: PendingInvitationItem | undefined;
   updating: boolean;
   acceptInvitation: (invitationId: string, spaceUrl: string) => void;
   accepting: boolean;
@@ -87,7 +87,7 @@ const SingleInvitationFull = ({
                   alignItems={isMobile ? 'center' : 'start'}
                 >
                   <SpaceCardBase
-                    iconComponent={spaceIconByLevel[invitation.space.level]}
+                    iconComponent={spaceLevelIcon[invitation.space.level]}
                     header={invitation.space.about.profile.displayName}
                     tags={invitation.space.about.profile.tagset?.tags ?? []}
                     banner={invitation.space.about.profile.cardBanner}
