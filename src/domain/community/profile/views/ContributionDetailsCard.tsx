@@ -9,7 +9,7 @@ import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCa
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 interface ContributionDetailsCardProps extends Omit<SpaceCard2Props, 'iconComponent' | 'header'> {
   tagline: string;
@@ -61,7 +61,7 @@ const ContributionDetailsCard = ({
     <>
       <SpaceCardBase
         {...props}
-        iconComponent={spaceIconByLevel[level || SpaceLevel.L0]}
+        iconComponent={spaceLevelIcon[level || SpaceLevel.L0]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}

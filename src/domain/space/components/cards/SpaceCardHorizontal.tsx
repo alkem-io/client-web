@@ -22,7 +22,7 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import SpaceAvatar from '../SpaceAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { getSpaceSubscriptionLevel } from '@/domain/space/license/utils';
 
@@ -77,7 +77,7 @@ const SpaceCardHorizontal = ({
   disableHoverState = false,
   disableTagline = false,
 }: SpaceCardHorizontalProps) => {
-  const Icon = space.level ? spaceIconByLevel[space.level] : undefined;
+  const Icon = space.level ? spaceLevelIcon[space.level] : undefined;
 
   const { t } = useTranslation();
 
