@@ -68,11 +68,11 @@ const LinkCollectionCallout = ({
 }: LinkCollectionCalloutProps) => {
   const { t } = useTranslation();
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
   });
   const [updateLink] = useUpdateLinkMutation();
   const [deleteLink] = useDeleteLinkMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
   });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
