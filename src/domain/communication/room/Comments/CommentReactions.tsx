@@ -2,7 +2,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { compact, groupBy, sortBy } from 'lodash';
 import { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { Box, IconButton } from '@mui/material';
 import { AddReactionOutlined } from '@mui/icons-material';
 import { CardText } from '@/core/ui/typography/components';
@@ -27,8 +27,8 @@ const CommentReactions = ({
   onAddReaction,
   onRemoveReaction,
 }: CommentReactionsProps) => {
-  const { user } = useUserContext();
-  const userId = user?.user.id;
+  const { userModel } = useCurrentUserContext();
+  const userId = userModel?.id;
   const { t } = useTranslation();
 
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {

@@ -22,17 +22,17 @@
     "references": [
       {
         "icon": "GradeOutlined",
-        "uri": "https://welcome.alkem.io/help/getting-started/",
+        "uri": "https://alkem.io/docs/getting-started/first-steps",
         "title": "New user? Visit our Getting Started pages!"
       },
       {
         "icon": "NotListedLocationOutlined",
-        "uri": "https://welcome.alkem.io/help/",
-        "title": "Find your answers in the Help Center or FAQ"
+        "uri": "https://alkem.io/docs",
+        "title": "Still have questions? Read more here"
       },
       {
         "icon": "EmailOutlined",
-        "uri": "https://welcome.alkem.io/contact/",
+        "uri": "https://alkem.io/docs/support",
         "title": "Contact the Alkemio team"
       }
     ]

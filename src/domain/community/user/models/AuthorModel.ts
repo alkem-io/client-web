@@ -1,6 +1,6 @@
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 
-export interface Author {
+export interface AuthorModel {
   id: string;
   displayName: string;
   firstName: string;

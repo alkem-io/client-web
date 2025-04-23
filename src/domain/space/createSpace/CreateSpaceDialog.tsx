@@ -18,7 +18,7 @@ import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { gutters } from '@/core/ui/grid/utils';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { Navigate } from 'react-router-dom';
 import NameIdField from '@/core/utils/nameId/NameIdField';
@@ -75,7 +75,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   const config = useConfig();
   const { isAuthenticated } = useAuthenticationContext();
 
-  const { accountId: currentUserAccountId } = useUserContext();
+  const { accountId: currentUserAccountId } = useCurrentUserContext();
 
   // either the account is passed in or we pick it up from the user context
   const accountId = account?.id ?? currentUserAccountId;
