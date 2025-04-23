@@ -12,10 +12,12 @@ import { useLocation } from 'react-router-dom';
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.trim();
 
-const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
+const SearchBar = forwardRef<typeof Box, BoxProps & { withRedirect?: boolean }>((props, ref) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const query = useQueryParams();
+
   const getInitialValue = () => {
     const terms = query.get(SEARCH_TERMS_URL_PARAM);
     return terms ? terms.split(',').join(', ') : '';
@@ -41,11 +43,12 @@ const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
     [setValue]
   );
 
-  const { pathname } = useLocation();
-
   const handleNavigateToSearchPage = useCallback(() => {
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
+    if (props.withRedirect) {
+      window.location.href = `/?${params}`;
+    }
     navigate(`${pathname}?${params}`);
   }, [isTermValid, value, navigate]);
 
