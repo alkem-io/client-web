@@ -48,9 +48,10 @@ const SearchBar = forwardRef<typeof Box, BoxProps & { withRedirect?: boolean }>(
     const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
     if (props.withRedirect) {
       window.location.href = `/?${params}`;
+    } else {
+      navigate(`${pathname}?${params}`);
     }
-    navigate(`${pathname}?${params}`);
-  }, [isTermValid, value, navigate]);
+  }, [isTermValid, value, navigate, props.withRedirect]);
 
   return (
     <Box ref={ref} flexGrow={1} justifyContent="center" {...props}>
