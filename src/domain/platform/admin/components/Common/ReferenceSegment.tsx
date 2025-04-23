@@ -14,7 +14,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -39,7 +39,23 @@ export const referenceSegmentValidationObject = yup.object().shape({
     .min(3, MessageWithPayload('forms.validations.minLength'))
     .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
     .required('forms.validations.required'),
-  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')).url(),
+  uri: yup
+    .string()
+    .max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+    .test(
+      // The yup .url() validation doesn't allow localhost urls
+      'is-valid-url',
+      MessageWithPayload('forms.validations.invalidUrl'),
+      value => {
+        if (!value) return true; // Allow empty values if not required
+        try {
+          const url = new window.URL(value);
+          return !!url;
+        } catch {
+          return false;
+        }
+      }
+    ),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH), // It's not markdown in the client but it's a TEXT column in the DB
 });
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);

@@ -1,9 +1,9 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { DashboardProvider } from './DashboardContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useLocation, Navigate } from 'react-router-dom';
 import { DIALOG_PARAM_VALUES, useMyDashboardDialogs } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
@@ -13,9 +13,9 @@ const MyDashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./My
 const MyDashboardWithoutMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithoutMemberships'));
 
 export const MyDashboard = () => {
+  const { userModel, isAuthenticated, loading: isLoadingAuthentication } = useCurrentUserContext();
+  const hasNotAuthorized = !isAuthenticated || !userModel;
   const { pathname, search } = useLocation();
-  const { user, isAuthenticated, loading: isLoadingAuthentication } = useUserContext();
-  const hasNotAuthorized = !isAuthenticated || !user;
   const [navigateToMemberships, setNavigateToMemberships] = useState(false);
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery({

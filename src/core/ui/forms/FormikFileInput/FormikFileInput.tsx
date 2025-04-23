@@ -34,6 +34,7 @@ const FormikFileInput = ({
   );
 
   const checkProtocol = () => {
+    helpers.setTouched(true);
     if (!defaultProtocol) {
       return;
     }
@@ -43,6 +44,11 @@ const FormikFileInput = ({
         helpers.setValue(`${defaultProtocol}://${currentValue}`);
       }
     }
+  };
+
+  const onUpload = (fileId: string) => {
+    helpers.setTouched(true);
+    helpers.setValue(fileId);
   };
 
   return (
@@ -55,8 +61,11 @@ const FormikFileInput = ({
         storageConfig.canUpload &&
         updatedStorageConfig && (
           <FileUploadButton
-            onUpload={helpers.setValue}
-            onChange={(fileName: string) => onChange?.(fileName)}
+            onUpload={onUpload}
+            onChange={(fileName: string) => {
+              helpers.setTouched(true);
+              onChange?.(fileName);
+            }}
             entityID={entityID}
             entityType={entityType}
             storageConfig={updatedStorageConfig}
