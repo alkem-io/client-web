@@ -106,7 +106,7 @@ export const Error404 = () => {
                 })}
               />
               <Tagline>{t('pages.four-ou-four.message')}</Tagline>
-              <StyledSearchBox />
+              <StyledSearchBox withRedirect />
               <UsefulLinks>
                 <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
                   {t('common.home')}
