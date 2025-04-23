@@ -856,7 +856,8 @@
       "alphaNumeric": "{{field}} може да съдържа единствено малки латински букви, числа и тирета",
       "nonBlank": "{{field}} не трябва да съдържа само празни символи",
       "atLeastOne": "At least one {{item}} must be selected.",
-      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one."
+      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
+      "invalidUrl": "Invalid URL"
     }
   },
   "templateDialog": {
