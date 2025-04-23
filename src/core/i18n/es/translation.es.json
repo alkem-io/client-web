@@ -856,7 +856,8 @@
       "alphaNumeric": "{{field}} puede contener solo caracteres en minúscula, números y guiones",
       "nonBlank": "{{field}} no debe consistir solo en espacios en blanco",
       "atLeastOne": "Debes seleccionar al menos un {{item}}.",
-      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one."
+      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
+      "invalidUrl": "Invalid URL"
     }
   },
   "templateDialog": {
