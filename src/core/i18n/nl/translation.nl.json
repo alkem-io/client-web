@@ -1724,7 +1724,8 @@
           "description": "De {{memberType}} {{memberName}} is lid geworden van {{spaceName}}, waarvan je een beheerder bent."
         }
       },
-      "emptyInbox": "Geen openstaande uitnodigingen"
+      "emptyInbox": "Geen openstaande uitnodigingen",
+      "markAllAsRead": "Mark all as read"
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Je Space is klaar!",
