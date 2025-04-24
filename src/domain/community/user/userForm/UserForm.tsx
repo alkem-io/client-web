@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { Formik } from 'formik';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -59,7 +60,7 @@ export const UserForm = ({
   const { t } = useTranslation();
   const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
   const isReadOnlyMode = editMode === EditMode.readOnly;
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const {
     firstName,
@@ -190,7 +191,7 @@ export const UserForm = ({
         return (
           <GridContainer>
             <GridProvider columns={12}>
-              <GridItem columns={isMobile ? 6 : 2}>
+              <GridItem columns={isSmallScreen ? 6 : 2}>
                 <Box display="flex" justifyContent="center">
                   <VisualUpload
                     visual={avatar}
@@ -202,7 +203,7 @@ export const UserForm = ({
                 </Box>
               </GridItem>
 
-              <GridItem columns={isMobile ? 6 : 8}>
+              <GridItem columns={isSmallScreen ? 6 : 8}>
                 <Gutters>
                   <FormikInputField
                     name={'firstName'}

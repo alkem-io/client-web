@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Paper, Button, Avatar, useTheme, useMediaQuery, Theme } from '@mui/material';
+import { Paper, Button, Avatar, useTheme } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -18,6 +18,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useEffect, useMemo } from 'react';
 import { Actions } from '@/core/ui/actions/Actions';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
@@ -81,8 +82,8 @@ const DashboardSpaces = () => {
   const { t } = useTranslation();
 
   const columns = useColumns();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const cardColumns = useMemo(() => (isMobile ? columns / 2 : columns / 4), [isMobile, columns]);
+  const { isSmallScreen } = useScreenSize();
+  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
   const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
 
   useEffect(() => {

@@ -13,11 +13,12 @@ import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPack
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import GridItem from '@/core/ui/grid/GridItem';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { Button, Theme, useMediaQuery } from '@mui/material';
+import { Button } from '@mui/material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const VISIBLE_SPACE_LIMIT = 6;
 
@@ -76,11 +77,11 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
 
   const [visibleSpacesCount, setVisibleSpacesCount] = useState(VISIBLE_SPACE_LIMIT);
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const columns = useColumns();
 
-  const resourceColumns = isMobile ? columns : columns / 3;
+  const resourceColumns = isSmallScreen ? columns : columns / 3;
 
   const showSpaceMoreButton =
     accountResources.spaces.length > VISIBLE_SPACE_LIMIT && visibleSpacesCount === VISIBLE_SPACE_LIMIT;

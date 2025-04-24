@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Button, Theme, useMediaQuery } from '@mui/material';
+import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CampaignBlock from './Campaigns/CampaignBlock';
@@ -17,6 +17,7 @@ import { useCreateSpaceLink } from './useCreateSpaceLink/useCreateSpaceLink';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
 import MyResources from '@/main/topLevelPages/myDashboard/myResources/MyResources';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
 
@@ -27,19 +28,18 @@ const MyDashboardWithoutMemberships = () => {
     fetchPolicy: 'network-only',
   });
 
-  // using the isMobile convention but this is actually a tablet breakpoint
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
 
   return (
     <PageContentColumn columns={12}>
-      {!isMobile && (
+      {!isMediumSmallScreen && (
         <InfoColumn>
           <DashboardMenu compact />
           <MyResources />
         </InfoColumn>
       )}
       <ContentColumn>
-        {isMobile && <DashboardMenu compact expandable />}
+        {isMediumSmallScreen && <DashboardMenu compact expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         <InvitationsBlock />
