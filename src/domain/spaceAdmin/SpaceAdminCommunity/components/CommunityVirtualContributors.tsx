@@ -19,9 +19,9 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
-import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 type RenderParams = GridRenderCellParams<ContributorViewProps>;
 type GetterParams = ContributorViewProps | undefined;
@@ -61,7 +61,7 @@ type CommunityVirtualContributorsProps = {
   fetchAvailableVirtualContributorsInLibrary: (filter?: string) => Promise<Entity[] | undefined>;
   onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
-  inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
+  inviteContributors: (params: InviteContributorsData) => Promise<unknown>;
   spaceDisplayName?: string;
 };
 
@@ -73,7 +73,7 @@ const CommunityVirtualContributors = ({
   fetchAvailableVirtualContributors,
   onAddMember,
   loading,
-  inviteExistingUser,
+  inviteContributors,
   spaceDisplayName = '',
 }: CommunityVirtualContributorsProps) => {
   const { t } = useTranslation();
@@ -236,7 +236,7 @@ const CommunityVirtualContributors = ({
           open={isInvitingExternal}
           onClose={closeInvitationDialog}
           contributorId={selectedVirtualContributorId}
-          onInviteVirtualContributor={inviteExistingUser}
+          onInviteVirtualContributor={inviteContributors}
         />
       )}
     </>

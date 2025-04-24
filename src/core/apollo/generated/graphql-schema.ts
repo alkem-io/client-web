@@ -2772,21 +2772,13 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
-  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  /** An additional role to assign in addition to the entry Role. */
   extraRole?: InputMaybe<RoleName>;
   /** The identifiers for the contributors being invited. */
-  invitedContributors: Array<Scalars['UUID']>;
+  invitedContributorIDs: Array<Scalars['UUID']>;
+  invitedUserEmails: Array<Scalars['String']>;
   roleSetID: Scalars['UUID'];
-  welcomeMessage?: InputMaybe<Scalars['String']>;
-};
-
-export type InviteNewContributorForRoleOnRoleSetInput = {
-  email: Scalars['String'];
-  firstName?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
-  /** An additional role to assign to the Contributors, in addition to the entry Role. */
-  roleSetExtraRole?: InputMaybe<RoleName>;
-  roleSetID: Scalars['UUID'];
+  /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
@@ -3768,10 +3760,8 @@ export type Mutation = {
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Invite an existing Contributor to join the specified RoleSet in the Entry Role. */
-  inviteContributorsEntryRoleOnRoleSet: Array<Invitation>;
-  /** Invite a User to join the platform and the specified RoleSet as a member. */
-  inviteUserToPlatformAndRoleSet: PlatformInvitation;
+  /** Invite new Contributors or users by email to join the specified RoleSet in the Entry Role. */
+  inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
@@ -4238,12 +4228,8 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
-export type MutationInviteContributorsEntryRoleOnRoleSetArgs = {
+export type MutationInviteForEntryRoleOnRoleSetArgs = {
   invitationData: InviteForEntryRoleOnRoleSetInput;
-};
-
-export type MutationInviteUserToPlatformAndRoleSetArgs = {
-  invitationData: InviteNewContributorForRoleOnRoleSetInput;
 };
 
 export type MutationJoinRoleSetArgs = {
@@ -5659,6 +5645,21 @@ export enum RoleSetContributorType {
   Organization = 'ORGANIZATION',
   User = 'USER',
   Virtual = 'VIRTUAL',
+}
+
+export type RoleSetInvitationResult = {
+  __typename?: 'RoleSetInvitationResult';
+  invitation?: Maybe<Invitation>;
+  platformInvitation?: Maybe<PlatformInvitation>;
+  type: RoleSetInvitationResultType;
+};
+
+export enum RoleSetInvitationResultType {
+  AlreadyInvitedToPlatformAndRoleSet = 'ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET',
+  AlreadyInvitedToRoleSet = 'ALREADY_INVITED_TO_ROLE_SET',
+  InvitationToParentNotAuthorized = 'INVITATION_TO_PARENT_NOT_AUTHORIZED',
+  InvitedToPlatformAndRoleSet = 'INVITED_TO_PLATFORM_AND_ROLE_SET',
+  InvitedToRoleSet = 'INVITED_TO_ROLE_SET',
 }
 
 export enum RoleSetRoleImplicit {
@@ -8064,28 +8065,22 @@ export type InvitationStateEventMutation = {
   eventOnInvitation: { __typename?: 'Invitation'; id: string; nextEvents: Array<string>; state: string };
 };
 
-export type InviteContributorsEntryRoleOnRoleSetMutationVariables = Exact<{
-  contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
+export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  message?: InputMaybe<Scalars['String']>;
+  invitedContributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
+  invitedUserEmails: Array<Scalars['String']> | Scalars['String'];
+  welcomeMessage?: InputMaybe<Scalars['String']>;
   extraRole?: InputMaybe<RoleName>;
 }>;
 
-export type InviteContributorsEntryRoleOnRoleSetMutation = {
+export type InviteForEntryRoleOnRoleSetMutation = {
   __typename?: 'Mutation';
-  inviteContributorsEntryRoleOnRoleSet: Array<{ __typename?: 'Invitation'; id: string }>;
-};
-
-export type InviteUserToPlatformAndRoleSetMutationVariables = Exact<{
-  email: Scalars['String'];
-  roleSetId: Scalars['UUID'];
-  message?: InputMaybe<Scalars['String']>;
-  extraRole?: InputMaybe<RoleName>;
-}>;
-
-export type InviteUserToPlatformAndRoleSetMutation = {
-  __typename?: 'Mutation';
-  inviteUserToPlatformAndRoleSet: { __typename?: 'PlatformInvitation'; id: string };
+  inviteForEntryRoleOnRoleSet: Array<{
+    __typename?: 'RoleSetInvitationResult';
+    type: RoleSetInvitationResultType;
+    invitation?: { __typename?: 'Invitation'; id: string } | undefined;
+    platformInvitation?: { __typename?: 'PlatformInvitation'; id: string } | undefined;
+  }>;
 };
 
 export type DeleteInvitationMutationVariables = Exact<{

@@ -38,11 +38,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [getVcProvider] = useVirtualContributorProviderLazyQuery();
 
   const {
-    virtualContributorAdmin: {
-      members: virtualContributors,
-      onAdd: onAddVirtualContributor,
-      inviteExisting: inviteExistingVirtualContributor,
-    },
+    virtualContributorAdmin: { members: virtualContributors, onAdd: onAddVirtualContributor, inviteContributors },
     permissions,
     loading,
   } = useCommunityAdmin({ roleSetId });
@@ -307,7 +303,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           open={openInviteDialog}
           onClose={onCloseInvite}
           contributorId={selectedVirtualContributor.id!}
-          onInviteVirtualContributor={inviteData => inviteExistingVirtualContributor({ ...inviteData })}
+          onInviteVirtualContributor={inviteData => inviteContributors({ ...inviteData })}
         />
       )}
       {openPreviewDialog && selectedVirtualContributor && (
