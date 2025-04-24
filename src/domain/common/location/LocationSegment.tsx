@@ -1,41 +1,45 @@
-import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CountrySelect from './CountrySelect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type LocationSegmentProps = {
-  cols?: number;
+  cityFieldName?: string;
+  countryFieldName?: string;
   readonly?: boolean;
   disabled?: boolean;
   required?: boolean;
-  cityFieldName?: string;
-  countryFieldName?: string;
 };
 
-export const LocationSegment = (props: PropsWithChildren<LocationSegmentProps>) => {
+export const LocationSegment = ({
+  disabled,
+  required,
+  readonly,
+  cityFieldName = 'city',
+  countryFieldName = 'country',
+}: LocationSegmentProps) => {
   const { t } = useTranslation();
-  const { disabled, required, readonly, cityFieldName, countryFieldName } = props;
+  const { isSmallScreen } = useScreenSize();
 
   return (
-    <Gutters>
-      <CountrySelect
-        name={countryFieldName ?? 'country'}
-        title={t('components.profileSegment.location.country.name')}
-        key="name"
-        readOnly={readonly}
-        disabled={disabled}
-        required={required}
-      />
+    <Gutters disablePadding row={!isSmallScreen}>
       <FormikInputField
-        name={cityFieldName ?? 'city'}
+        name={cityFieldName}
         title={t('components.profileSegment.location.city.name')}
         placeholder={t('components.profileSegment.location.city.placeholder')}
         readOnly={readonly}
         disabled={disabled}
         required={required}
+        fullWidth
       />
-      {props.children}
+      <CountrySelect
+        name={countryFieldName}
+        title={t('components.profileSegment.location.country.name')}
+        readOnly={readonly}
+        disabled={disabled}
+        required={required}
+      />
     </Gutters>
   );
 };

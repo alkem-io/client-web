@@ -22,7 +22,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
   const { t } = useTranslation();
 
   return (
-    <Gutters>
+    <Gutters disablePadding>
       <FormikInputField
         name="tagline"
         title={t('components.profileSegment.tagline.name')}

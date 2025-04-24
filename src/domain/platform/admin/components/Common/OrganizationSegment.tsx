@@ -22,7 +22,7 @@ export const OrganizationSegment: FC<OrganizationSegmentProps> = ({ disabled = f
   const { t } = useTranslation();
 
   return (
-    <Gutters>
+    <Gutters disablePadding>
       <FormikInputField
         name="contactEmail"
         title={t('components.organizationSegment.contactEmail.name')}

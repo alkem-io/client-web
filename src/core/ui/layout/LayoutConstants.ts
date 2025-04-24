@@ -1,1 +1,0 @@
-export const BREAKPOINT_MOBILE_COLUMNS = 6;

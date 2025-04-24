@@ -106,7 +106,7 @@ const ProfileForm = ({
               rows={3}
               maxLength={SMALL_TEXT_LENGTH}
             />
-            <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
+            <LocationSegment cityFieldName="location.city" countryFieldName="location.country" />
             <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
           </>

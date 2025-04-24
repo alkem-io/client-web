@@ -237,20 +237,20 @@ export const UserForm = ({
                     disabled={isSubmitting}
                   />
 
-                  <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
-                    {onVerify && (
-                      <>
-                        <Box marginLeft={1} />
-                        <IconButton
-                          sx={{ flexShrink: 0 }}
-                          onClick={() => onVerify('ProofOfNameCredential')}
-                          aria-label={t('common.verified-status.verified')}
-                        >
-                          <HealthAndSafetyIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </LocationSegment>
+                  <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} />
+                  {/* TODO:  //!! */}
+                  {onVerify && (
+                    <>
+                      <Box marginLeft={1} />
+                      <IconButton
+                        sx={{ flexShrink: 0 }}
+                        onClick={() => onVerify('ProofOfNameCredential')}
+                        aria-label={t('common.verified-status.verified')}
+                      >
+                        <HealthAndSafetyIcon />
+                      </IconButton>
+                    </>
+                  )}
                   <FormikInputField
                     name={'tagline'}
                     title={t('components.profile.fields.tagline.title')}
