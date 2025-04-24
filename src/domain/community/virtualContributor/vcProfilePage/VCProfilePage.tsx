@@ -30,7 +30,7 @@ type VCProfilePageProps = {
   children?: (vc: VirtualContributorProvided | undefined) => ReactNode;
 };
 
-export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
+export const VCProfilePage = ({ openKnowledgeBaseDialog }: VCProfilePageProps) => {
   const { t } = useTranslation();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
