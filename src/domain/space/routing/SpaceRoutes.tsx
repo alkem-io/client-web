@@ -53,7 +53,7 @@ const SpaceProtectedRoutes = () => {
   const { loading: resolvingUrl } = useUrlResolver();
   const { space, permissions, loading: loadingSpace } = useContext(SpaceContext);
   if (resolvingUrl || loadingSpace) {
-    return null;
+    return <Outlet />;
   }
 
   if (!permissions.canRead) {

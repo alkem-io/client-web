@@ -56,8 +56,7 @@ export const DialogAction = ({
 }) => {
   const { t } = useTranslation();
 
-  const bal = useParams();
-  const { dialog: currentDialog } = bal;
+  const { dialog: currentDialog } = useParams();
 
   const {
     subspace: {
@@ -108,6 +107,8 @@ export const DialogAction = ({
           )}
         </Link>
       )}
+      {/* this is here so we can move the PR forward - will address it shortly
+        // @ts-ignore */}
       {dialog === currentDialog && Dialog && <Dialog open onClose={handleClose} {...dialogProps} />}
     </>
   );

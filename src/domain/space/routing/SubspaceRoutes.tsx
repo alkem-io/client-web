@@ -79,7 +79,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
             <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SubspaceHomePage />} />
             {/* level 2 spaces are recursive */}
             <Route
-              path={`opportunities/:${nameOfUrl.subsubspaceNameId}/:dialog?/:${nameOfUrl.calendarEventNameId}?`}
+              path={`opportunities/:${nameOfUrl.subsubspaceNameId}/:dialog?/:${nameOfUrl.calendarEventNameId}?/*`}
               element={<SubspaceRoute level={SpaceLevel.L2} />}
             />
             <Route
