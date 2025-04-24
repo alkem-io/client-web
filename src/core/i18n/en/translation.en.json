@@ -459,6 +459,14 @@
         "POST_COLLECTION": "Post Collection",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_COLLECTION": "Whiteboard Collection"
+      },
+      "invitationStatus": {
+        "invited": "Invited",
+        "accepted": "Invitation Accepted",
+        "rejected": "Invitation Rejected"
+      },
+      "invitationExternalStatus": {
+        "invited": "Invited to join Alkemio & this Space"
       }
     },
     "blocks": {
@@ -522,7 +530,6 @@
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Invitation sent successfully",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -537,10 +544,8 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor",
       "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
@@ -571,13 +576,54 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
-    "invitationStatus": {
-      "invited": "Invited",
-      "accepted": "Invitation Accepted",
-      "rejected": "Invitation Rejected"
-    },
-    "invitationExternalStatus": {
-      "invited": "Invited to join Alkemio & this Space"
+
+    "invitations": {
+      "invitationDialog": {
+        "inviteButton": {
+          "USER": "Invite people to this Space",
+          "ORGANIZATION": "Invite people to this Space",
+          "VIRTUAL": "Invite Virtual Contributor"
+        }
+      },
+      "invitationSent": "Invitation sent successfully",
+      "inviteExternalVC": "Invite External VC",
+      "inviteBtn": "Invite Virtual Contributor",
+      "inviteOthers": "Invite others",
+      "inviteExistingUser": "Invite Alkemio users",
+      "inviteExternalUser": "Send email invitation",
+      "inviteOrganizations": "Invite Organizations",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+      "inviteExistingUserDialog": {
+        "title": "Invite other Alkemio users to join this Space",
+        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
+        "selector": {
+          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
+          "alreadyInvited": "This user is already invited",
+          "alreadyMember": "This user is already a member"
+        }
+      },
+      "inviteExistingVCDialog": {
+        "title": "Invite Virtual Contributor to join this Space"
+      },
+      "inviteExternalUserDialog": {
+        "title": "Send an email invitation"
+      },
+      "inviteToRole": "Invite to be a: ",
+      "inviteContributorsDialog": {
+        "title": "Virtual Contributors Store",
+        "vcs": {
+          "onAccount": {
+            "title": "Virtual Contributors linked to this Space's account"
+          },
+          "inLibrary": {
+            "title": "Other Virtual Contributors"
+          },
+          "emptyMessage": "No available Virtual Contributors"
+        },
+        "successfullyAdded": "{{contributor}} added successfully",
+        "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
+      }
     },
     "confirmDeleteApplication": {
       "title": "Deleting application from {{user}}",
@@ -1046,44 +1092,6 @@
           }
         }
       }
-    },
-    "invitations": {
-      "inviteOthers": "Invite others",
-      "inviteExistingUser": "Invite Alkemio users",
-      "inviteExternalUser": "Send email invitation",
-      "inviteOrganizations": "Invite Organizations",
-      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "inviteExistingUserDialog": {
-        "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
-        "selector": {
-          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
-          "alreadyInvited": "This user is already invited",
-          "alreadyMember": "This user is already a member"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "Invite Virtual Contributor to join this Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "Send an email invitation"
-      },
-      "inviteToRole": "Invite to be a: "
-    },
-    "inviteContributorsDialog": {
-      "title": "Virtual Contributors Store",
-      "vcs": {
-        "onAccount": {
-          "title": "Virtual Contributors linked to this Space's account"
-        },
-        "inLibrary": {
-          "title": "Other Virtual Contributors"
-        },
-        "emptyMessage": "No available Virtual Contributors"
-      },
-      "successfullyAdded": "{{contributor}} added successfully",
-      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
     },
     "confirmation-dialog": {
       "delete-comment": {

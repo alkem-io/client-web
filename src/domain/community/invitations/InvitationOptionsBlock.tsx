@@ -9,8 +9,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import RadioButton from '@/domain/shared/components/RadioButtons/RadioButton';
 import { Caption } from '@/core/ui/typography';
 import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
-import InviteExistingUserDialog from './InviteExistingUserDialog';
-import InviteExternalUserDialog from './InviteExternalUserDialog';
+import InviteExistingUserDialog from '../inviteContributors/_oldDialogs/InviteExistingUserDialog';
+import InviteExternalUserDialog from '../inviteContributors/_oldDialogs/InviteExternalUserDialog';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
@@ -65,7 +65,7 @@ const InvitationOptionsBlock = ({
     <>
       {showInviteBlock && (
         <PageContentBlock>
-          <PageContentBlockHeader title={t('components.invitations.inviteOthers')} />
+          <PageContentBlockHeader title={t('community.invitations.inviteOthers')} />
           <Gutters row disablePadding flexWrap="wrap">
             <RadioButton
               value=""
@@ -73,7 +73,7 @@ const InvitationOptionsBlock = ({
               size="small"
               onClick={() => setCurrentInvitation(UserInvite.Existing)}
             >
-              {t('components.invitations.inviteExistingUser')}
+              {t('community.invitations.inviteExistingUser')}
             </RadioButton>
             <RadioButton
               value=""
@@ -81,19 +81,19 @@ const InvitationOptionsBlock = ({
               size="small"
               onClick={() => setCurrentInvitation(UserInvite.External)}
             >
-              {t('components.invitations.inviteExternalUser')}
+              {t('community.invitations.inviteExternalUser')}
             </RadioButton>
           </Gutters>
         </PageContentBlock>
       )}
       <PageContentBlock>
         <Caption textTransform="uppercase" color="muted.main" textAlign="center">
-          {t('components.invitations.inviteOrganizations')}
+          {t('community.invitations.inviteOrganizations')}
         </Caption>
       </PageContentBlock>
       <InviteExistingUserDialog
-        title={t('components.invitations.inviteExistingUserDialog.title')}
-        subtitle={t('components.invitations.inviteExistingUserDialog.subtitle')}
+        title={t('community.invitations.inviteExistingUserDialog.title')}
+        subtitle={t('community.invitations.inviteExistingUserDialog.subtitle')}
         spaceDisplayName={spaceDisplayName}
         open={currentInvitation === UserInvite.Existing}
         onClose={closeInvitationDialog}
@@ -104,7 +104,7 @@ const InvitationOptionsBlock = ({
         communityRoles={AVAILABLE_COMMUNITY_ROLES}
       />
       <InviteExternalUserDialog
-        title={t('components.invitations.inviteExternalUserDialog.title')}
+        title={t('community.invitations.inviteExternalUserDialog.title')}
         open={currentInvitation === UserInvite.External}
         spaceDisplayName={spaceDisplayName}
         onClose={closeInvitationDialog}

@@ -18,7 +18,7 @@ import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
-import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
+import InviteVirtualContributorDialog from '@/domain/community/inviteContributors/_oldDialogs/InviteVirtualContributorDialog';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
@@ -156,7 +156,7 @@ const CommunityVirtualContributors = ({
       disabled={!canAddVirtualContributors}
       onClick={() => openAvailableContributorsDialog(external)}
     >
-      {external ? t('community.virtualContributors.inviteExternalVC') : t('common.add')}
+      {external ? t('community.invitations.inviteExternalVC') : t('common.add')}
     </ButtonWithTooltip>
   );
 
@@ -231,7 +231,7 @@ const CommunityVirtualContributors = ({
       )}
       {isInvitingExternal && (
         <InviteVirtualContributorDialog
-          title={t('components.invitations.inviteExistingVCDialog.title')}
+          title={t('community.invitations.inviteExistingVCDialog.title')}
           spaceDisplayName={spaceDisplayName}
           open={isInvitingExternal}
           onClose={closeInvitationDialog}

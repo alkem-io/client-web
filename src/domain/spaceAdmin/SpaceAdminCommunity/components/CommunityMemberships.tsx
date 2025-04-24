@@ -65,14 +65,14 @@ const formatState = (item: MembershipTableItem, t: TFunction<'translation', unde
   } else if (item.type === MembershipType.Invitation) {
     switch (item.state) {
       case 'invited':
-        return t('community.invitationStatus.invited');
+        return t('common.enums.invitationStatus.invited');
       case 'accepted':
-        return t('community.invitationStatus.accepted');
+        return t('common.enums.invitationStatus.accepted');
       case 'rejected':
-        return t('community.invitationStatus.rejected');
+        return t('common.enums.invitationStatus.rejected');
     }
   } else {
-    return t('community.invitationExternalStatus.invited');
+    return t('common.enums.invitationExternalStatus.invited');
   }
 };
 

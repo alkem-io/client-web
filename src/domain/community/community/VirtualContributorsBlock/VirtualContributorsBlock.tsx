@@ -51,7 +51,7 @@ const VirtualContributorsBlock = ({
         {showInviteOption && (
           <DashboardAddButton
             sx={{ padding: 0, textAlign: 'left' }}
-            translationKey="community.virtualContributors.inviteBtn"
+            translationKey="community.invitations.inviteBtn"
             onClick={onInvite}
           />
         )}

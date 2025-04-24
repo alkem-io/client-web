@@ -10,7 +10,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
-import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
+import InviteVirtualContributorDialog from './_oldDialogs/InviteVirtualContributorDialog';
 import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
 import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
@@ -126,7 +126,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
       await onAddVirtualContributor(selectedVirtualContributor.id);
 
       notify(
-        t('components.inviteContributorsDialog.successfullyAdded', {
+        t('community.invitations.inviteContributorsDialog.successfullyAdded', {
           contributor: t('community.virtualContributor'),
         }),
         'success'
@@ -201,7 +201,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
         setOnAccount(accountVCs);
         setInLibrary(filteredLibraryVCs);
       } catch (error) {
-        notify(t('components.inviteContributorsDialog.vcFetchErrorMessage'), 'error');
+        notify(t('community.invitations.inviteContributorsDialog.vcFetchErrorMessage'), 'error');
       }
     };
 
@@ -243,7 +243,11 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
-      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+      <DialogHeader
+        icon={<VCIcon />}
+        title={t('community.invitations.inviteContributorsDialog.title')}
+        onClose={onClose}
+      />
 
       <DialogContent>
         <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
@@ -262,7 +266,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {showOnAccount && (
             <PageContentBlockHeader
               variant="caption"
-              title={t('components.inviteContributorsDialog.vcs.onAccount.title')}
+              title={t('community.invitations.inviteContributorsDialog.vcs.onAccount.title')}
             />
           )}
           {showOnAccount && (
@@ -275,7 +279,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
             <Gutters disableGap disablePadding paddingTop={gutters()}>
               <PageContentBlockHeader
                 variant="caption"
-                title={t('components.inviteContributorsDialog.vcs.inLibrary.title')}
+                title={t('community.invitations.inviteContributorsDialog.vcs.inLibrary.title')}
               />
             </Gutters>
           )}
@@ -288,7 +292,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               onCardClick={onLibraryContributorClick}
             />
           )}
-          {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
+          {isEmpty && <Caption>{t('community.invitations.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
         </Gutters>
       </DialogContent>
       <DialogActions>
@@ -298,7 +302,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
       </DialogActions>
       {openInviteDialog && selectedVirtualContributor?.id && (
         <InviteVirtualContributorDialog
-          title={t('components.invitations.inviteExistingVCDialog.title')}
+          title={t('community.invitations.inviteExistingVCDialog.title')}
           spaceDisplayName={''}
           open={openInviteDialog}
           onClose={onCloseInvite}

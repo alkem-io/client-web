@@ -79,7 +79,11 @@ const PreviewContributorDialog = ({
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+      <DialogHeader
+        icon={<VCIcon />}
+        title={t('community.invitations.inviteContributorsDialog.title')}
+        onClose={onClose}
+      />
 
       <DialogContent>
         <PageContentBlockGrid disablePadding>
