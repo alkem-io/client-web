@@ -6,27 +6,13 @@ import {
   useDeletePlatformInvitationMutation,
   useEventOnApplicationMutation,
   useInvitationStateEventMutation,
-  useInviteContributorsEntryRoleOnRoleSetMutation,
-  useInviteUserToPlatformAndRoleSetMutation,
+  useInviteForEntryRoleOnRoleSetMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
 import { ApplicationModel } from '../model/ApplicationModel';
 import { InvitationModel } from '../model/InvitationModel';
 import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
-
-export interface InviteUserData {
-  message: string;
-  extraRole?: RoleName;
-}
-
-export interface InviteContributorsData extends InviteUserData {
-  contributorIds: string[];
-}
-
-export interface InviteExternalUserData extends InviteUserData {
-  email: string;
-}
 
 type useRoleSetApplicationsAndInvitationsParams = {
   roleSetId: string;
@@ -42,16 +28,11 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     questions: { name: string; value: string; sortOrder: number }[]
   ) => Promise<unknown>;
   applicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
-  inviteContributorOnRoleSet: (inviteData: {
+  inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
-    contributorIds: string[];
-    message: string;
-    extraRole?: RoleName;
-  }) => Promise<unknown>;
-  inviteContributorOnPlatformRoleSet: (inviteData: {
-    roleSetId: string;
-    email: string;
-    message: string;
+    invitedContributorIds: string[];
+    invitedUserEmails: string[];
+    welcomeMessage: string;
     extraRole?: RoleName;
   }) => Promise<unknown>;
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
@@ -166,50 +147,28 @@ const useRoleSetApplicationsAndInvitations = ({
       onCompleted: () => refetch(),
     });
 
-  const [inviteContributorsEntryRoleOnRoleSet] = useInviteContributorsEntryRoleOnRoleSetMutation();
-  const handleInviteContributorOnRoleSet = async ({
+  const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
+  const handleInviteContributorsOnRoleSet = async ({
     roleSetId,
-    contributorIds,
-    message,
+    invitedContributorIds,
+    invitedUserEmails,
+    welcomeMessage,
     extraRole,
   }: {
     roleSetId: string;
-    contributorIds: string[];
-    message: string;
+    invitedContributorIds: string[];
+    invitedUserEmails: string[];
+    welcomeMessage: string;
     extraRole?: RoleName;
   }) => {
     const role = extraRole === RoleName.Member ? undefined : extraRole;
 
-    await inviteContributorsEntryRoleOnRoleSet({
+    await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
-        contributorIds,
-        message,
-        extraRole: role,
-      },
-      onCompleted: () => refetch(),
-    });
-  };
-
-  const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
-  const handleInviteContributorOnPlatformRoleSet = async ({
-    roleSetId,
-    email,
-    message,
-    extraRole,
-  }: {
-    roleSetId: string;
-    email: string;
-    message: string;
-    extraRole?: RoleName;
-  }) => {
-    const role = extraRole === RoleName.Member ? undefined : extraRole;
-
-    await inviteUserForRoleSetAndPlatform({
-      variables: {
-        roleSetId,
-        email,
-        message,
+        invitedContributorIds,
+        invitedUserEmails,
+        welcomeMessage,
         extraRole: role,
       },
       onCompleted: () => refetch(),
@@ -225,8 +184,7 @@ const useRoleSetApplicationsAndInvitations = ({
     loading,
     applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,
     applicationStateChange: handleApplicationStateChange,
-    inviteContributorOnRoleSet: handleInviteContributorOnRoleSet,
-    inviteContributorOnPlatformRoleSet: handleInviteContributorOnPlatformRoleSet,
+    inviteContributorsOnRoleSet: handleInviteContributorsOnRoleSet,
     invitationStateChange: handleInvitationStateChange,
     deleteInvitation: handleDeleteInvitation,
     deletePlatformInvitation: handleDeletePlatformInvitation,
