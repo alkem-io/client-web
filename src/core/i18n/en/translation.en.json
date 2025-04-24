@@ -1724,7 +1724,8 @@
           "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
-      "emptyInbox": "No pending notifications"
+      "emptyInbox": "No pending notifications",
+      "markAllAsRead": "Mark all as read"
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your Space is Ready!",
