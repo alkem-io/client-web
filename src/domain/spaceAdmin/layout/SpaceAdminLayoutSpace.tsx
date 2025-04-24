@@ -4,7 +4,6 @@ import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayou
 import RouterLink from '@/core/ui/link/RouterLink';
 import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
-import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import BackButton from '@/core/ui/actions/BackButton';
@@ -26,18 +25,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
   // TODO: get rid of this JourneyPath and bring it into the Space Context
   const journeyPath: JourneyPath = [space.id];
 
-  const ribbon = useInnovationHubJourneyBannerRibbon({
-    spaceId: space.id,
-  });
-
-  const spaceBannerElement = (
-    <SpacePageBanner
-      tagline={profile?.tagline}
-      bannerUrl={profile?.banner?.uri}
-      bannerAltText={profile?.banner?.alternativeText}
-      ribbon={ribbon}
-    />
-  );
+  const spaceBannerElement = <SpacePageBanner />;
 
   const spaceBackButtonElement = (
     <RouterLink to={profile?.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>

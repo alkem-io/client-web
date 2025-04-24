@@ -1,4 +1,4 @@
-import { MouseEventHandler, PropsWithChildren } from 'react';
+import { MouseEventHandler, ReactNode } from 'react';
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
 import GridContainer from '../grid/GridContainer';
 import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
@@ -12,7 +12,7 @@ interface DialogContainerProps extends PaperProps {
   fullScreen?: boolean;
 }
 
-export const DialogFooter = ({ children }) => <>{children}</>;
+export const DialogFooter = ({ children }: { children?: ReactNode }) => <>{children}</>;
 
 const DialogContainer = ({
   columns,

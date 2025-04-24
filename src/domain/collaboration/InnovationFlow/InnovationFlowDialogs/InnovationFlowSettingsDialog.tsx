@@ -15,7 +15,7 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ApplyCollaborationTemplateDialog from '@/domain/templates/components/Dialogs/ApplyCollaborationTemplateDialog';
 
-type InnovationFlowSettingsDialogProps = {
+export type InnovationFlowSettingsDialogProps = {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;

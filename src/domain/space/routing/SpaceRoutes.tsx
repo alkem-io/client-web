@@ -15,6 +15,7 @@ import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/S
 import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import SpaceKnowledgeBasePage from '../layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SubspaceRoutes from './SubspaceRoutes';
+
 const LegacyRoutesRedirects = () => {
   const {
     space: { nameID: spaceNameId },
@@ -84,6 +85,7 @@ const SpaceRoutes = () => {
         {/* keep the logic around sections in one place - here*/}
         <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(sectionIndex) - 1} />}>
           <Route path={EntityPageSection.About} element={<SpaceAboutPage />} />
+
           <Route element={<SpaceProtectedRoutes />}>
             <Route index element={getSpaceSection()} />
             <Route path="/:dialog?" element={<SpaceDashboardPage />} />
@@ -103,8 +105,8 @@ const SpaceRoutes = () => {
               element={<SpaceDashboardPage dialog="calendar" />}
             />
           </Route>
+          <Route path="*" element={<LegacyRoutesRedirects />} />
         </Route>
-        <Route path="*" element={<LegacyRoutesRedirects />} />
       </Routes>
     </SpaceContextProvider>
   );

@@ -133,9 +133,16 @@ export interface JourneyPageBannerProps {
   level?: SpaceLevel;
   isAdmin?: boolean;
   watermark?: ReactNode;
+  title?: string;
 }
 
-const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, watermark }: JourneyPageBannerProps) => {
+const SpacePageBanner = ({
+  level,
+  isAdmin,
+  loading: dataLoading = false,
+  watermark,
+  title,
+}: JourneyPageBannerProps) => {
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
   const [imageLoading, setImageLoading] = useState(true);
@@ -153,6 +160,7 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
 
   const profile = data?.lookup.space?.about.profile;
 
+  const bannerTitle = title ?? profile?.displayName;
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
   });
@@ -183,8 +191,8 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
       </Box>
       <Title>
         <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
-          {profile?.displayName}
-          {!profile?.displayName && (dataLoading || loading) && <Skeleton variant="text" animation="wave" />}
+          {bannerTitle}
+          {!bannerTitle && (dataLoading || loading) && <Skeleton variant="text" animation="wave" />}
         </PageTitle>
         <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
           {profile?.tagline}

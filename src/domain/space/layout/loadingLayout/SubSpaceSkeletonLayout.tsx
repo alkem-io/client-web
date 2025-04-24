@@ -1,28 +1,16 @@
-import SubspacePageLayout from '@/domain/space/layout/flowLayout/SubspacePageLayout';
 import { Skeleton } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
+import PageContent from '@/core/ui/content/PageContent';
+import InfoColumn from '@/core/ui/content/InfoColumn';
 
 const SpaceSkeletonLayout = () => {
   return (
-    <SubspacePageLayout
-      journeyId={undefined}
-      journeyPath={undefined}
-      spaceLevel={undefined}
-      levelZeroSpaceId={undefined}
-      parentSpaceId={undefined}
-      loading
-      welcome={
-        <>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-        </>
-      }
-      actions={<Skeleton width="100%" />}
-      infoColumnChildren={<Skeleton width="100%" />}
-    >
+    <PageContent>
+      <InfoColumn>
+        <Skeleton />
+      </InfoColumn>
       <Loading />
-    </SubspacePageLayout>
+    </PageContent>
   );
 };
 

@@ -106,6 +106,7 @@ export const SubspacePageLayout = () => {
     <>
       <PageContent>
         <SubspaceInfoColumn />
+
         <PageContentColumnBase columns={isCollapsed ? 12 : 9} flexBasis={0} flexGrow={1} flexShrink={1} minWidth={0}>
           <ApplicationButtonContainer journeyId={spaceId} parentSpaceId={parentSpaceId}>
             {(applicationButtonProps, loading) => {
@@ -146,7 +147,13 @@ export const SubspacePageLayout = () => {
                 onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
-                settingsButton={<DialogAction dialog={SubspaceDialog.ManageFlow} buttonVariant="outlined" />}
+                settingsButton={
+                  <DialogAction
+                    dialog={SubspaceDialog.ManageFlow}
+                    buttonVariant="outlined"
+                    dialogProps={{ collaborationId: collaborationId }}
+                  />
+                }
               />
             </Box>
           )}
