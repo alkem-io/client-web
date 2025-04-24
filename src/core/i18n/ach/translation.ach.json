@@ -1724,7 +1724,8 @@
           "description": "crwdns19510:0{{memberType}}crwdnd19510:0{{memberName}}crwdnd19510:0{{spaceName}}crwdne19510:0"
         }
       },
-      "emptyInbox": "crwdns19512:0crwdne19512:0"
+      "emptyInbox": "crwdns19512:0crwdne19512:0",
+      "markAllAsRead": "crwdns36856:0crwdne36856:0"
     },
     "spaceWelcomeDialog": {
       "title": "crwdns28752:0crwdne28752:0",
