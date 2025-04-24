@@ -10,11 +10,10 @@ generates:
   src/core/apollo/generated/graphql-schema.ts:
     plugins:
       - typescript
-      - 'typescript-operations'
+      - typescript-operations
     config:
       maybeValue: T | undefined
       preResolveTypes: true
-      withSuspense: false # Re-enable this to use suspense with React 18
       scalars:
         Upload: File
         TextID: string
@@ -37,11 +36,10 @@ generates:
       typesPath: ./graphql-schema
       importTypesNamespace: SchemaTypes
     plugins:
-      - 'typescript-react-apollo'
+      - typescript-react-apollo
     config:
       withHooks: true
       withRefetchFn: true
-      withSuspense: false # Re-enable this to use suspense with React 18
   src/core/apollo/generated/apollo-helpers.ts:
     plugins:
       - typescript-apollo-client-helpers
