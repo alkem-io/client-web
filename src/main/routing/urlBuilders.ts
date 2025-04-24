@@ -1,4 +1,4 @@
-import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
 import { TabbedLayoutParams } from '@/domain/space/layout/tabbedLayout/TabbedLayoutPage';
@@ -23,6 +23,10 @@ export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.loca
 
 export const buildLoginUrl = (returnUrl?: string) => {
   return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
+};
+
+export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
+  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params}`;
 };
 
 export const buildNewOrganizationUrl = () => {

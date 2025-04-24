@@ -2,7 +2,7 @@ import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'rea
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, getAccountLink } from '@/main/routing/urlBuilders';
 import PendingMembershipsDialog from '@/domain/community/pendingMembership/PendingMembershipsDialog';
 import {
   AssignmentIndOutlined,
@@ -34,6 +34,7 @@ import {
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import FocusTrap from '@mui/material/Unstable_TrapFocus';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -108,7 +109,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             </Gutters>
           )}
           <FocusTrap open>
-            <MenuList autoFocus disablePadding sx={{ paddingY: 1 }}>
+            <MenuList autoFocus disablePadding sx={{ paddingY: 1, outline: 'none' }}>
               {!isAuthenticated && (
                 <NavigatableMenuItem
                   iconComponent={MeetingRoomOutlined}
@@ -130,6 +131,15 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                   onClick={onClose}
                 >
                   {t('pages.user-profile.title')}
+                </NavigatableMenuItem>
+              )}
+              {userModel && (
+                <NavigatableMenuItem
+                  iconComponent={LocalOfferOutlinedIcon}
+                  route={getAccountLink(userModel.profile.url)}
+                  onClick={onClose}
+                >
+                  {t('pages.home.mainNavigation.myAccount')}
                 </NavigatableMenuItem>
               )}
               {userModel && (
