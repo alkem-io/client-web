@@ -44,7 +44,6 @@ export const useAdminGlobalOrganizationsList = () => {
     },
     pageSize: PAGE_SIZE,
     getPageInfo: data => data?.organizationsPaginated.pageInfo,
-    options: {},
   });
 
   const { t } = useTranslation();

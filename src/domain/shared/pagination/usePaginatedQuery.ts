@@ -6,7 +6,6 @@ import { ApolloError } from '@apollo/client';
 export interface PaginationVariables {
   first: number;
   after?: string;
-  skip?: boolean;
 }
 
 export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first' | 'skip'>;
@@ -23,7 +22,7 @@ export interface PaginationOptionsNonLazy<Data, Variables extends PaginationVari
   useQuery: (
     options: QueryHookOptions<Data, Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean })
   ) => QueryResult<Data, Variables>;
-  options: QueryHookOptions<
+  options?: QueryHookOptions<
     Data,
     NonPaginationVariables<Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean })
   >;
@@ -35,7 +34,7 @@ export interface PaginationOptionsLazy<Data, Variables extends PaginationVariabl
   options?: LazyQueryHookOptions<Data, NonPaginationVariables<Variables>>;
 }
 
-interface Provided<Data> {
+interface PaginatedQueryProvided<Data> {
   data: Data | undefined;
   loading: boolean;
   error: ApolloError | undefined;
@@ -92,7 +91,7 @@ const loadNonLazyQuery = () => Promise.reject(new TypeError('Cannot load non-laz
 
 const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
   options: PaginationOptionsNonLazy<Data, Variables> | PaginationOptionsLazy<Data, Variables>
-): Provided<Data> => {
+): PaginatedQueryProvided<Data> => {
   const { getPageInfo, pageSize, firstPageSize = pageSize } = options;
 
   const {
