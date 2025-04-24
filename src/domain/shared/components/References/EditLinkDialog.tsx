@@ -47,7 +47,7 @@ interface EditLinkDialogProps {
 
 const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
   const { t } = useTranslation();
-  const { isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 

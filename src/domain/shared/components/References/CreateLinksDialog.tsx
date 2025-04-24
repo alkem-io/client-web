@@ -60,7 +60,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const { isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
   const [newLinkId, setNewLinkId] = useState<string>();

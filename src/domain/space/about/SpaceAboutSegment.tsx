@@ -21,7 +21,7 @@ export interface ContextSegmentProps {
 
 export const SpaceAboutSegment = ({ loading, spaceLevel }: ContextSegmentProps & { spaceLevel: SpaceLevel }) => {
   const { t } = useTranslation();
-  const { isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
   return (
     <Gutters disablePadding>
       <Gutters disableGap disablePadding>

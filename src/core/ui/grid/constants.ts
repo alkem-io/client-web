@@ -37,7 +37,7 @@ export const cardsGridColumns = (parentColumns: number) => {
 
 export const useScreenSize = () => {
   const isLargeScreen = useMediaQuery<Theme>(theme => theme.breakpoints.up('md')); // Inclusive: 'md', 'lg', 'xl
-  const isMediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md')); // Exclusive: 'sm' and 'xs'
+  const isMediumSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md')); // Exclusive: 'sm' and 'xs'
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.only('xs'));
-  return { isLargeScreen, isMediumScreen, isSmallScreen };
+  return { isLargeScreen, isMediumSmallScreen, isSmallScreen };
 };

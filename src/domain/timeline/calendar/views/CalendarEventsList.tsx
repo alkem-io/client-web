@@ -46,7 +46,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
-  const { isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
   const { pathname } = useLocation();
 
   const [scrollToElement, scrollTo] = useState<string>();
