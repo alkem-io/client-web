@@ -2125,6 +2125,7 @@ export type MigrateEmbeddingsFieldPolicy = {
   success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'addIframeAllowedURL'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2208,8 +2209,7 @@ export type MutationKeySpecifier = (
   | 'eventOnOrganizationVerification'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
-  | 'inviteContributorsEntryRoleOnRoleSet'
-  | 'inviteUserToPlatformAndRoleSet'
+  | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
   | 'messageUser'
@@ -2217,6 +2217,7 @@ export type MutationKeySpecifier = (
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
+  | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
@@ -2292,6 +2293,7 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2375,8 +2377,7 @@ export type MutationFieldPolicy = {
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteContributorsEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2384,6 +2385,7 @@ export type MutationFieldPolicy = {
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3096,6 +3098,17 @@ export type RoleSetFieldPolicy = {
   usersInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoleSetInvitationResultKeySpecifier = (
+  | 'invitation'
+  | 'platformInvitation'
+  | 'type'
+  | RoleSetInvitationResultKeySpecifier
+)[];
+export type RoleSetInvitationResultFieldPolicy = {
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
@@ -4905,6 +4918,10 @@ export type StrictTypedTypePolicies = {
   RoleSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RoleSetKeySpecifier | (() => undefined | RoleSetKeySpecifier);
     fields?: RoleSetFieldPolicy;
+  };
+  RoleSetInvitationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoleSetInvitationResultKeySpecifier | (() => undefined | RoleSetInvitationResultKeySpecifier);
+    fields?: RoleSetInvitationResultFieldPolicy;
   };
   RolesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RolesResultKeySpecifier | (() => undefined | RolesResultKeySpecifier);

@@ -1,3 +1,4 @@
+import { ChangeEvent, useCallback } from 'react';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
@@ -13,12 +14,12 @@ import {
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDashboardContext } from '../DashboardContext';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
 import { useHomeMenuItems } from './useHomeMenuItems';
+import { DIALOG_PARAM_VALUES, useMyDashboardDialogs } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 
 /**
  * DashboardMenu Component
@@ -37,7 +38,18 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
 
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
-  const changeView = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const openMembershipsDialog = useCallback(
+    () => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList }),
+    [setOpenDialog]
+  );
+
+  useMyDashboardDialogs({
+    paramValue: DIALOG_PARAM_VALUES.INVITATIONS,
+    onDialogOpen: openMembershipsDialog,
+    cleanParams: true,
+  });
+
+  const changeView = (event: ChangeEvent<HTMLInputElement>) => {
     setActivityEnabled(event.target.checked);
   };
 
@@ -58,11 +70,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
     switch (item.type) {
       case 'invites':
         return (
-          <ListItemButton
-            key={index}
-            sx={{ paddingY: gutters(0.75) }}
-            onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
-          >
+          <ListItemButton key={index} sx={{ paddingY: gutters(0.75) }} onClick={openMembershipsDialog}>
             {getItemContent(item)}
             {pendingInvitationsCount > 0 && (
               <>
