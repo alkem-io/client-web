@@ -1,4 +1,4 @@
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { Formik } from 'formik';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,6 @@ import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegme
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
-import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -46,7 +45,6 @@ type UserProps = {
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
-  onVerify?: (type: string) => Promise<void>;
 };
 
 export const UserForm = ({
@@ -55,7 +53,6 @@ export const UserForm = ({
   editMode = EditMode.readOnly,
   onSave,
   onDelete,
-  onVerify,
 }: UserProps) => {
   const { t } = useTranslation();
   const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
@@ -239,19 +236,6 @@ export const UserForm = ({
                   />
 
                   <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} />
-                  {/* TODO:  //!! */}
-                  {onVerify && (
-                    <>
-                      <Box marginLeft={1} />
-                      <IconButton
-                        sx={{ flexShrink: 0 }}
-                        onClick={() => onVerify('ProofOfNameCredential')}
-                        aria-label={t('common.verified-status.verified')}
-                      >
-                        <HealthAndSafetyIcon />
-                      </IconButton>
-                    </>
-                  )}
                   <FormikInputField
                     name={'tagline'}
                     title={t('components.profile.fields.tagline.title')}
