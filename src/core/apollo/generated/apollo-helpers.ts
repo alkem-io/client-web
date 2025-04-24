@@ -2212,6 +2212,8 @@ export type MutationKeySpecifier = (
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
+  | 'markNotificationsAsRead'
+  | 'markNotificationsAsUnread'
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshAllBodiesOfKnowledge'
@@ -2380,6 +2382,8 @@ export type MutationFieldPolicy = {
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
+  markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;

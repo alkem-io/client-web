@@ -3766,6 +3766,10 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
+  /** Mark multiple notifications as read. */
+  markNotificationsAsRead: Scalars['Boolean'];
+  /** Mark multiple notifications as unread. */
+  markNotificationsAsUnread: Scalars['Boolean'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
@@ -4234,6 +4238,14 @@ export type MutationJoinRoleSetArgs = {
 
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
+};
+
+export type MutationMarkNotificationsAsReadArgs = {
+  notificationIds: Array<Scalars['String']>;
+};
+
+export type MutationMarkNotificationsAsUnreadArgs = {
+  notificationIds: Array<Scalars['String']>;
 };
 
 export type MutationMessageUserArgs = {
@@ -27351,6 +27363,12 @@ export type UpdateNotificationStateMutation = {
   __typename?: 'Mutation';
   updateNotificationState: InAppNotificationState;
 };
+
+export type MarkNotificationsAsReadMutationVariables = Exact<{
+  notificationIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
 
 type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
   __typename?: 'InAppNotificationCalloutPublished';
