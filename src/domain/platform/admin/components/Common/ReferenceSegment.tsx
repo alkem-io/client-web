@@ -14,11 +14,11 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { useScreenLayoutXsSmDetected } from '@/core/ui/grid/GridContext';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -76,7 +76,7 @@ export const ReferenceSegment = ({
   const { setFieldValue, touched } = useFormikContext();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const isMobile = useScreenLayoutXsSmDetected();
+  const { isMediumScreen } = useScreenSize();
   const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
   const [adding, setAdding] = useState(false);
 
@@ -128,13 +128,13 @@ export const ReferenceSegment = ({
           ) : (
             references?.map((attachment, index) => (
               <Gutters key={attachment.id ?? index} disablePadding>
-                <Gutters row={!isMobile} disablePadding alignItems="start">
+                <Gutters row={!isMediumScreen} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
                     title={t('common.title')}
                     readOnly={readOnly}
                     disabled={disabled || isRemoving(index)}
-                    fullWidth={isMobile}
+                    fullWidth={isMediumScreen}
                   />
                   <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput

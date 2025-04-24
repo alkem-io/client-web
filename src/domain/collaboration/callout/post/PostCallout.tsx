@@ -9,6 +9,7 @@ import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
@@ -16,7 +17,6 @@ import {
 import { TypedCalloutDetails } from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import { sortBy } from 'lodash';
-import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
@@ -49,6 +49,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const openCreateDialog = () => setPostDialogOpen(true);
     const closeCreateDialog = () => setPostDialogOpen(false);
     const navigate = useNavigate();
+    const { isSmallScreen } = useScreenSize();
 
     const postNames = useMemo(() => posts?.map(x => x.profile.displayName) ?? [], [posts]);
     const sortedPosts = useMemo(() => sortBy(posts, 'sortOrder'), [posts]);
@@ -64,8 +65,6 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       };
       navigate(post.profile.url, { state });
     };
-
-    const isMobile = useScreenLayoutXsDetected();
 
     return (
       <CalloutSettingsContainer
@@ -89,12 +88,12 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
             >
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : sortedPosts ?? []}
-                createButton={!isMobile && createButton}
+                createButton={!isSmallScreen && createButton}
                 maxHeight={gutters(22)}
               >
                 {post => <PostCard post={post} onClick={navigateToPost} />}
               </ScrollableCardsLayout>
-              {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+              {isSmallScreen && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
                 <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
               )}
             </CalloutLayout>

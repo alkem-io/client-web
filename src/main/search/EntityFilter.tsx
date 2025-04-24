@@ -1,6 +1,7 @@
 import { gutters } from '@/core/ui/grid/utils';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { BlockTitle } from '@/core/ui/typography';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import {
   Box,
@@ -16,7 +17,6 @@ import {
 import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilterConfig, FilterDefinition } from './Filter';
-import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 interface EntityFilterProps {
   title?: string;
@@ -41,7 +41,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
     setFilterMenuOpen(false);
   };
 
-  const isMobile = useScreenLayoutXsDetected();
+  const { isSmallScreen } = useScreenSize();
 
   return (
     <>
@@ -54,7 +54,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
         <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
       </IconButton>
       {/* Popup menu for big screens */}
-      {!isMobile && (
+      {!isSmallScreen && (
         <Menu anchorEl={buttonRef.current} open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
           {Object.keys(config).map(key => (
             <MenuItem
@@ -70,7 +70,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
         </Menu>
       )}
       {/* Bottom Drawer for small screens */}
-      {isMobile && (
+      {isSmallScreen && (
         <Drawer anchor="bottom" open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
           <FormControl sx={{ padding: gutters(1) }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={gutters(1)}>

@@ -4,6 +4,7 @@ import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -15,7 +16,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { useScreenLayoutXsSmDetected } from '@/core/ui/grid/GridContext';
 
 export interface EditLinkFormValues {
   id: string;
@@ -47,7 +47,7 @@ interface EditLinkDialogProps {
 
 const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
   const { t } = useTranslation();
-  const isMobile = useScreenLayoutXsSmDetected();
+  const { isMediumScreen } = useScreenSize();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 
@@ -75,9 +75,9 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
             return (
               <>
                 <Gutters>
-                  <Gutters row={!isMobile} disablePadding alignItems="start">
-                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMobile} />
-                    <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+                  <Gutters row={!isMediumScreen} disablePadding alignItems="start">
+                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMediumScreen} />
+                    <Box flexGrow={1} width={isMediumScreen ? '100%' : undefined}>
                       <FormikFileInput
                         name={'uri'}
                         title={t('common.url')}

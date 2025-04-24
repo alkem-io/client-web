@@ -10,11 +10,11 @@ import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { normalizeLink } from '@/core/utils/links';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
-import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -39,6 +39,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     ref
   ) => {
     const navigate = useNavigate();
+    const { isSmallScreen } = useScreenSize();
 
     const handleCreate = async () => {
       const result = await createNewWhiteboard();
@@ -62,8 +63,6 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     );
     const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
 
-    const isMobile = useScreenLayoutXsDetected();
-
     return (
       <CalloutSettingsContainer
         callout={callout}
@@ -86,7 +85,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
             {showCards && (
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : sortedWhiteboards}
-                createButton={!isMobile && createButton}
+                createButton={!isSmallScreen && createButton}
                 maxHeight={gutters(22)}
               >
                 {whiteboard =>
@@ -98,7 +97,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
                 }
               </ScrollableCardsLayout>
             )}
-            {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+            {isSmallScreen && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
               <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
             )}
           </CalloutLayout>

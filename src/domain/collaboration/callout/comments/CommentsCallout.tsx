@@ -11,13 +11,13 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useScreenLayoutXsDetected } from '@/core/ui/grid/GridContext';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'vcInteractions';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragment, NeededFields>;
@@ -84,8 +84,8 @@ const CommentsCallout = ({
     isSubscribedToMessages: isSubscribedToComments,
   });
 
-  const isMobile = useScreenLayoutXsDetected();
-  const lastMessageOnly = isMobile && !expanded;
+  const { isSmallScreen } = useScreenSize();
+  const lastMessageOnly = isSmallScreen && !expanded;
 
   return (
     <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
