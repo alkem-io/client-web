@@ -133,8 +133,10 @@ export const useInAppNotifications = () => {
         ID: id,
         state: status,
       },
-      update: cache => {
-        updateNotificationsCache(cache, [id], status);
+      update: (cache, data) => {
+        if (data?.data?.updateNotificationState === status) {
+          updateNotificationsCache(cache, [id], status);
+        }
       },
     });
   };
@@ -150,8 +152,10 @@ export const useInAppNotifications = () => {
       variables: {
         notificationIds: ids,
       },
-      update: cache => {
-        updateNotificationsCache(cache, ids, InAppNotificationState.Read);
+      update: (cache, data) => {
+        if (data?.data?.markNotificationsAsRead) {
+          updateNotificationsCache(cache, ids, InAppNotificationState.Read);
+        }
       },
     });
   };
