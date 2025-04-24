@@ -36,8 +36,9 @@ export const cardsGridColumns = (parentColumns: number) => {
 };
 
 export const useScreenSize = () => {
-  const isLargeScreen = useMediaQuery<Theme>(theme => theme.breakpoints.up('md')); // Inclusive: 'md', 'lg', 'xl
+  const isLargeScreen = useMediaQuery<Theme>(theme => theme.breakpoints.up('lg')); // Inclusive: 'lg', 'xl'
+  const isMediumLargeScreen = useMediaQuery<Theme>(theme => theme.breakpoints.up('md')); // Inclusive: 'md', 'lg', 'xl
   const isMediumSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md')); // Exclusive: 'sm' and 'xs'
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.only('xs'));
-  return { isLargeScreen, isMediumSmallScreen, isSmallScreen };
+  return { isLargeScreen, isMediumLargeScreen, isMediumSmallScreen, isSmallScreen };
 };
