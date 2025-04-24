@@ -4091,129 +4091,78 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutation,
   SchemaTypes.InvitationStateEventMutationVariables
 >;
-export const InviteContributorsEntryRoleOnRoleSetDocument = gql`
-  mutation InviteContributorsEntryRoleOnRoleSet(
-    $contributorIds: [UUID!]!
+export const InviteForEntryRoleOnRoleSetDocument = gql`
+  mutation InviteForEntryRoleOnRoleSet(
     $roleSetId: UUID!
-    $message: String
+    $invitedContributorIds: [UUID!]!
+    $invitedUserEmails: [String!]!
+    $welcomeMessage: String
     $extraRole: RoleName
   ) {
-    inviteContributorsEntryRoleOnRoleSet(
+    inviteForEntryRoleOnRoleSet(
       invitationData: {
-        invitedContributors: $contributorIds
+        invitedContributorIDs: $invitedContributorIds
+        invitedUserEmails: $invitedUserEmails
         roleSetID: $roleSetId
-        welcomeMessage: $message
+        welcomeMessage: $welcomeMessage
         extraRole: $extraRole
       }
     ) {
-      id
-    }
-  }
-`;
-export type InviteContributorsEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
->;
-
-/**
- * __useInviteContributorsEntryRoleOnRoleSetMutation__
- *
- * To run a mutation, you first call `useInviteContributorsEntryRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteContributorsEntryRoleOnRoleSetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [inviteContributorsEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteContributorsEntryRoleOnRoleSetMutation({
- *   variables: {
- *      contributorIds: // value for 'contributorIds'
- *      roleSetId: // value for 'roleSetId'
- *      message: // value for 'message'
- *      extraRole: // value for 'extraRole'
- *   },
- * });
- */
-export function useInviteContributorsEntryRoleOnRoleSetMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
-  >(InviteContributorsEntryRoleOnRoleSetDocument, options);
-}
-
-export type InviteContributorsEntryRoleOnRoleSetMutationHookResult = ReturnType<
-  typeof useInviteContributorsEntryRoleOnRoleSetMutation
->;
-export type InviteContributorsEntryRoleOnRoleSetMutationResult =
-  Apollo.MutationResult<SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation>;
-export type InviteContributorsEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
->;
-export const InviteUserToPlatformAndRoleSetDocument = gql`
-  mutation InviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
-    inviteUserToPlatformAndRoleSet(
-      invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message, roleSetExtraRole: $extraRole }
-    ) {
-      ... on PlatformInvitation {
+      type
+      invitation {
+        id
+      }
+      platformInvitation {
         id
       }
     }
   }
 `;
-export type InviteUserToPlatformAndRoleSetMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteForEntryRoleOnRoleSetMutation,
+  SchemaTypes.InviteForEntryRoleOnRoleSetMutationVariables
 >;
 
 /**
- * __useInviteUserToPlatformAndRoleSetMutation__
+ * __useInviteForEntryRoleOnRoleSetMutation__
  *
- * To run a mutation, you first call `useInviteUserToPlatformAndRoleSetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteUserToPlatformAndRoleSetMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteForEntryRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteForEntryRoleOnRoleSetMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteUserToPlatformAndRoleSetMutation, { data, loading, error }] = useInviteUserToPlatformAndRoleSetMutation({
+ * const [inviteForEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteForEntryRoleOnRoleSetMutation({
  *   variables: {
- *      email: // value for 'email'
  *      roleSetId: // value for 'roleSetId'
- *      message: // value for 'message'
+ *      invitedContributorIds: // value for 'invitedContributorIds'
+ *      invitedUserEmails: // value for 'invitedUserEmails'
+ *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRole: // value for 'extraRole'
  *   },
  * });
  */
-export function useInviteUserToPlatformAndRoleSetMutation(
+export function useInviteForEntryRoleOnRoleSetMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+    SchemaTypes.InviteForEntryRoleOnRoleSetMutation,
+    SchemaTypes.InviteForEntryRoleOnRoleSetMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
-  >(InviteUserToPlatformAndRoleSetDocument, options);
+    SchemaTypes.InviteForEntryRoleOnRoleSetMutation,
+    SchemaTypes.InviteForEntryRoleOnRoleSetMutationVariables
+  >(InviteForEntryRoleOnRoleSetDocument, options);
 }
 
-export type InviteUserToPlatformAndRoleSetMutationHookResult = ReturnType<
-  typeof useInviteUserToPlatformAndRoleSetMutation
->;
-export type InviteUserToPlatformAndRoleSetMutationResult =
-  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndRoleSetMutation>;
-export type InviteUserToPlatformAndRoleSetMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+export type InviteForEntryRoleOnRoleSetMutationHookResult = ReturnType<typeof useInviteForEntryRoleOnRoleSetMutation>;
+export type InviteForEntryRoleOnRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteForEntryRoleOnRoleSetMutation>;
+export type InviteForEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteForEntryRoleOnRoleSetMutation,
+  SchemaTypes.InviteForEntryRoleOnRoleSetMutationVariables
 >;
 export const DeleteInvitationDocument = gql`
   mutation DeleteInvitation($invitationId: UUID!) {
