@@ -8,7 +8,13 @@ interface InAppNotificationsContextProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-const InAppNotifications = createContext<InAppNotificationsContextProps | undefined>(undefined);
+const defaultState: InAppNotificationsContextProps = {
+  isEnabled: false,
+  isOpen: false,
+  setIsOpen: () => {},
+};
+
+const InAppNotifications = createContext<InAppNotificationsContextProps>(defaultState);
 
 export const InAppNotificationsProvider = ({ children }: { children: ReactNode }) => {
   const { userModel, platformRoles } = useCurrentUserContext();
