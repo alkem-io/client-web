@@ -3,7 +3,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import CalloutsList from './CalloutsList';
 import useCalloutsSet from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface CalloutsListDialogProps {

@@ -5,14 +5,11 @@ import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIc
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import Gutters from '@/core/ui/grid/Gutters';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import { MessageReceiverChipData } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import SeeMore from '@/core/ui/content/SeeMore';
 import {
   CommunityMembershipStatus,
   RoleName,
   RoleSetContributorType,
-  SpaceAbout,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
