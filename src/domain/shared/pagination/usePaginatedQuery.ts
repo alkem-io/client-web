@@ -29,41 +29,6 @@ export interface PaginationOptionsNonLazy<Data, Variables extends PaginationVari
   >;
 }
 
-// export function useSpaceExplorerAllSpacesQuery(
-//   baseOptions: Apollo.QueryHookOptions<
-//     SchemaTypes.SpaceExplorerAllSpacesQuery,
-//     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
-//   > &
-//     ({ variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables; skip?: boolean } | { skip: boolean })
-// )
-
-// export function useSpaceExplorerAllSpacesQuery(
-//   baseOptions: Apollo.QueryHookOptions<
-//     SchemaTypes.SpaceExplorerAllSpacesQuery,
-//     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
-//   > &
-//     ({ variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables; skip?: boolean } | { skip: boolean })
-// ) {
-//   const options = { ...defaultOptions, ...baseOptions };
-//   return Apollo.useQuery<SchemaTypes.SpaceExplorerAllSpacesQuery, SchemaTypes.SpaceExplorerAllSpacesQueryVariables>(
-//     SpaceExplorerAllSpacesDocument,
-//     options
-//   );
-// }
-
-// export function useSpaceExplorerAllSpacesQuery(
-//   baseOptions: Apollo.QueryHookOptions<
-//     SchemaTypes.SpaceExplorerAllSpacesQuery,
-//     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
-//   >
-// ) {
-//   const options = { ...defaultOptions, ...baseOptions };
-//   return Apollo.useQuery<SchemaTypes.SpaceExplorerAllSpacesQuery, SchemaTypes.SpaceExplorerAllSpacesQueryVariables>(
-//     SpaceExplorerAllSpacesDocument,
-//     options
-//   );
-// }
-
 export interface PaginationOptionsLazy<Data, Variables extends PaginationVariables>
   extends CommonPaginationOptions<Data, Variables> {
   useLazyQuery: (options: LazyQueryHookOptions<Data, Variables>) => QueryTuple<Data, Variables>;
