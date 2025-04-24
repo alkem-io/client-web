@@ -71,7 +71,7 @@ const InviteExternalUserDialog = ({
   const initialValues: InviteContributorsDataTemp = {
     email: '',
     invitedUserEmails: [],
-    invitedContributorIDs: [],
+    invitedContributorIds: [],
     extraRole: RoleName.Member,
     welcomeMessage: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };

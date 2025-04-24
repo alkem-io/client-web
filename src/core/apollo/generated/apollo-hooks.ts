@@ -4004,14 +4004,14 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
 export const InviteForEntryRoleOnRoleSetDocument = gql`
   mutation InviteForEntryRoleOnRoleSet(
     $roleSetId: UUID!
-    $invitedContributorIDs: [UUID!]!
+    $invitedContributorIds: [UUID!]!
     $invitedUserEmails: [String!]!
     $welcomeMessage: String
     $extraRole: RoleName
   ) {
     inviteForEntryRoleOnRoleSet(
       invitationData: {
-        invitedContributorIDs: $invitedContributorIDs
+        invitedContributorIDs: $invitedContributorIds
         invitedUserEmails: $invitedUserEmails
         roleSetID: $roleSetId
         welcomeMessage: $welcomeMessage
@@ -4047,7 +4047,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  * const [inviteForEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteForEntryRoleOnRoleSetMutation({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      invitedContributorIDs: // value for 'invitedContributorIDs'
+ *      invitedContributorIds: // value for 'invitedContributorIds'
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRole: // value for 'extraRole'

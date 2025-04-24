@@ -28,7 +28,7 @@ type FormikUserSelectorProps = {
   name: string;
   required?: boolean;
   readonly?: boolean;
-  onChange?: (invitedContributorIDs: string[]) => void;
+  onChange?: (invitedContributorIds: string[]) => void;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
@@ -134,7 +134,7 @@ export const FormikUserSelector = ({
               },
               ...sx,
             }}
-            onChange={(evt, value) => handleSelect(value)}
+            onChange={(_, value) => handleSelect(value)}
             renderOption={(props, user) => (
               <li {...props}>
                 <ProfileChipView

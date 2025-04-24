@@ -73,11 +73,11 @@ const InviteExistingUserDialog = ({
 
   const validationSchema = yup.object().shape({
     welcomeMessage: yup.string(),
-    invitedContributorIDs: yup.array().required(),
+    invitedContributorIds: yup.array().required(),
   });
 
   const initialValues: InviteContributorsData = {
-    invitedContributorIDs: [],
+    invitedContributorIds: [],
     invitedUserEmails: [],
     extraRole: RoleName.Member,
     welcomeMessage: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
@@ -158,7 +158,7 @@ const InviteExistingUserDialog = ({
               <Gutters disablePadding flexDirection={{ xs: 'column', sm: 'row' }} alignItems={'flex-start'}>
                 <Gutters disablePadding gap={gutters(0.5)} sx={{ width: '100%' }}>
                   <FormikUserSelector
-                    name="invitedContributorIDs"
+                    name="invitedContributorIds"
                     sortUsers={sortUsers}
                     hydrateUsers={hydrateUsers}
                     sx={{ width: '100%', marginBottom: 0, flexGrow: 1 }}

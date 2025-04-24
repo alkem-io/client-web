@@ -3592,6 +3592,8 @@ export type MoveCalloutContributionInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Adds an Iframe Allowed URL to the Platform Settings */
+  addIframeAllowedURL: Array<Scalars['String']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -3774,6 +3776,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Removes an Iframe Allowed URL from the Platform Settings */
+  removeIframeAllowedURL: Array<Scalars['String']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Removes a User from a Role on the Platform. */
@@ -3918,6 +3922,10 @@ export type Mutation = {
   uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4242,6 +4250,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -8043,7 +8055,7 @@ export type InvitationStateEventMutation = {
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  invitedContributorIDs: Array<Scalars['UUID']> | Scalars['UUID'];
+  invitedContributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   invitedUserEmails: Array<Scalars['String']> | Scalars['String'];
   welcomeMessage?: InputMaybe<Scalars['String']>;
   extraRole?: InputMaybe<RoleName>;

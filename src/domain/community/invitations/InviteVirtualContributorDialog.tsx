@@ -51,7 +51,7 @@ const InviteVirtualContributorDialog = ({
   });
 
   const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteContributorsData) => {
-    await onInviteVirtualContributor({ ...values, invitedContributorIDs: [contributorId] });
+    await onInviteVirtualContributor({ ...values, invitedContributorIds: [contributorId] });
     if (!error) {
       notify(t('community.invitationSent'), 'success');
       onClose();
@@ -68,7 +68,7 @@ const InviteVirtualContributorDialog = ({
       name: vcProfile?.lookup.virtualContributor?.profile.displayName ?? '',
     }) as string,
     invitedUserEmails: [],
-    invitedContributorIDs: [],
+    invitedContributorIds: [],
   };
 
   return (
