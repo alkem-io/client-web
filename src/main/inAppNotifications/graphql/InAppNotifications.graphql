@@ -23,3 +23,7 @@ mutation UpdateNotificationState ($ID: UUID!, $state: InAppNotificationState!) {
      state: $state,
   })
 }
+
+mutation MarkNotificationsAsRead ($notificationIds: [String!]!) {
+  markNotificationsAsRead(notificationIds: $notificationIds)
+}

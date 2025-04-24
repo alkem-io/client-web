@@ -11,6 +11,7 @@ import {
   refetchInAppNotificationsQuery,
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
+  useMarkNotificationsAsReadMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 
@@ -91,6 +92,7 @@ export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
 
   const [updateState] = useUpdateNotificationStateMutation();
+  const [markAsRead] = useMarkNotificationsAsReadMutation();
 
   const { data, loading } = useInAppNotificationsQuery({
     skip: !isEnabled,
@@ -111,5 +113,20 @@ export const useInAppNotifications = () => {
     });
   };
 
-  return { items, isLoading: loading, updateNotificationState };
+  const markNotificationsAsRead = async () => {
+    const ids = items.filter(item => item.state === InAppNotificationState.Unread).map(item => item.id);
+
+    if (ids.length === 0) {
+      return;
+    }
+
+    await markAsRead({
+      variables: {
+        notificationIds: ids,
+      },
+      refetchQueries: [refetchInAppNotificationsQuery()],
+    });
+  };
+
+  return { items, isLoading: loading, updateNotificationState, markNotificationsAsRead };
 };

@@ -2125,6 +2125,7 @@ export type MigrateEmbeddingsFieldPolicy = {
   success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'addIframeAllowedURL'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2212,11 +2213,14 @@ export type MutationKeySpecifier = (
   | 'inviteUserToPlatformAndRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
+  | 'markNotificationsAsRead'
+  | 'markNotificationsAsUnread'
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
+  | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
@@ -2292,6 +2296,7 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2379,11 +2384,14 @@ export type MutationFieldPolicy = {
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
+  markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;

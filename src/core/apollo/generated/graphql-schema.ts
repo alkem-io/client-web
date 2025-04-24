@@ -3600,6 +3600,8 @@ export type MoveCalloutContributionInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Adds an Iframe Allowed URL to the Platform Settings */
+  addIframeAllowedURL: Array<Scalars['String']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -3774,6 +3776,10 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
+  /** Mark multiple notifications as read. */
+  markNotificationsAsRead: Scalars['Boolean'];
+  /** Mark multiple notifications as unread. */
+  markNotificationsAsUnread: Scalars['Boolean'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
@@ -3784,6 +3790,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Removes an Iframe Allowed URL from the Platform Settings */
+  removeIframeAllowedURL: Array<Scalars['String']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Removes a User from a Role on the Platform. */
@@ -3928,6 +3936,10 @@ export type Mutation = {
   uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4242,6 +4254,14 @@ export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
 };
 
+export type MutationMarkNotificationsAsReadArgs = {
+  notificationIds: Array<Scalars['String']>;
+};
+
+export type MutationMarkNotificationsAsUnreadArgs = {
+  notificationIds: Array<Scalars['String']>;
+};
+
 export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
 };
@@ -4256,6 +4276,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -27344,6 +27368,12 @@ export type UpdateNotificationStateMutation = {
   __typename?: 'Mutation';
   updateNotificationState: InAppNotificationState;
 };
+
+export type MarkNotificationsAsReadMutationVariables = Exact<{
+  notificationIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
 
 type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
   __typename?: 'InAppNotificationCalloutPublished';
