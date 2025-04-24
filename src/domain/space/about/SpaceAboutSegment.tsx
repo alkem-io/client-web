@@ -21,7 +21,7 @@ export interface ContextSegmentProps {
 
 export const SpaceAboutSegment = ({ loading, spaceLevel }: ContextSegmentProps & { spaceLevel: SpaceLevel }) => {
   const { t } = useTranslation();
-  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen } = useScreenSize();
   return (
     <Gutters disablePadding>
       <Gutters disableGap disablePadding>
@@ -35,7 +35,7 @@ export const SpaceAboutSegment = ({ loading, spaceLevel }: ContextSegmentProps &
           loading={loading}
         />
       </Gutters>
-      <Gutters disablePadding row={!isMediumScreen}>
+      <Gutters disablePadding row={!isMediumSmallScreen}>
         <FormikMarkdownField
           name="why"
           title={t(`context.${spaceLevel}.why.title` as const)}

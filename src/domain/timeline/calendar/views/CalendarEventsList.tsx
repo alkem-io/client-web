@@ -46,7 +46,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
-  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen } = useScreenSize();
   const { pathname } = useLocation();
 
   const [scrollToElement, scrollTo] = useState<string>();
@@ -101,7 +101,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
-      <Gutters row={!isMediumScreen} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>
+      <Gutters row={!isMediumSmallScreen} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>
         <FullCalendar
           events={sortedEvents}
           sx={{ flex: 2, minWidth: gutters(15) }}

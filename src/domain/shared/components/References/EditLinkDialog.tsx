@@ -47,7 +47,7 @@ interface EditLinkDialogProps {
 
 const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
   const { t } = useTranslation();
-  const { isMediumSmallScreen: isMediumScreen } = useScreenSize();
+  const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 
@@ -75,9 +75,9 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
             return (
               <>
                 <Gutters>
-                  <Gutters row={!isMediumScreen} disablePadding alignItems="start">
-                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMediumScreen} />
-                    <Box flexGrow={1} width={isMediumScreen ? '100%' : undefined}>
+                  <Gutters row={!isMediumSmallScreen} disablePadding alignItems="start">
+                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMediumSmallScreen} />
+                    <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
                       <FormikFileInput
                         name={'uri'}
                         title={t('common.url')}
