@@ -8,7 +8,7 @@ export interface PaginationVariables {
   after?: string;
 }
 
-export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first' | 'skip'>;
+export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first' | 'after'>;
 
 interface CommonPaginationOptions<Data, Variables extends PaginationVariables> {
   variables: NonPaginationVariables<Variables>;
