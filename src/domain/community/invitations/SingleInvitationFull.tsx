@@ -10,13 +10,14 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type SingleInvitationFullProps = {
   invitation: PendingInvitationItem | undefined;
@@ -48,7 +49,7 @@ const SingleInvitationFull = ({
 }: SingleInvitationFullProps) => {
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
@@ -83,8 +84,8 @@ const SingleInvitationFull = ({
                 </Gutters>
                 <Gutters
                   paddingTop={0}
-                  flexDirection={isMobile ? 'column' : 'row'}
-                  alignItems={isMobile ? 'center' : 'start'}
+                  flexDirection={isSmallScreen ? 'column' : 'row'}
+                  alignItems={isSmallScreen ? 'center' : 'start'}
                 >
                   <SpaceCardBase
                     iconComponent={spaceLevelIcon[invitation.space.level]}

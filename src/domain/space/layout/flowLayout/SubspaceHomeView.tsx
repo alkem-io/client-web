@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Theme, useMediaQuery } from '@mui/material';
+import { Button } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
@@ -15,6 +15,7 @@ import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlo
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface SubspaceHomeViewProps {
   spaceLevel: SpaceLevel | undefined;
@@ -35,7 +36,7 @@ const SubspaceHomeView = ({
   loading,
 }: SubspaceHomeViewProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ calloutsSetId });
 
@@ -87,7 +88,7 @@ const SubspaceHomeView = ({
 
   // If it's mobile the ManageFlow action will be consumed somewhere else,
   // if there is no definition for it, button should not be shown
-  const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
+  const manageFlowActionDef = useConsumeAction(!isSmallScreen ? SubspaceDialog.ManageFlow : undefined);
 
   return (
     <>
@@ -98,7 +99,7 @@ const SubspaceHomeView = ({
             currentState={currentInnovationFlowState}
             selectedState={selectedInnovationFlowState}
             onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
-            visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
+            visualizer={isSmallScreen ? InnovationFlowVisualizerMobile : InnovationFlowChips}
             createButton={calloutsSetProvided.canCreateCallout && createButton}
             settingsButton={
               manageFlowActionDef && (
@@ -116,7 +117,7 @@ const SubspaceHomeView = ({
       <CalloutsGroupView
         calloutsSetId={calloutsSetId}
         callouts={calloutsSetProvided.callouts}
-        canCreateCallout={calloutsSetProvided.canCreateCallout && isMobile}
+        canCreateCallout={calloutsSetProvided.canCreateCallout && isSmallScreen}
         loading={loading}
         onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
         onCalloutUpdate={calloutsSetProvided.refetchCallout}

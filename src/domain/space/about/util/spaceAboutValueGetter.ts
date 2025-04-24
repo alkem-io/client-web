@@ -1,6 +1,6 @@
 import { ValueType } from '@/core/utils/filtering/filterFn';
 
-interface JourneyCard {
+interface SpaceAboutFilterable {
   id: string;
   about: {
     profile: {
@@ -13,15 +13,9 @@ interface JourneyCard {
   };
 }
 
-/**
- @deprecated try to remove these one of these days
-*/
-export const journeyCardValueGetter = ({ id, about }: JourneyCard): ValueType => ({
+export const spaceAboutValueGetter = ({ id, about }: SpaceAboutFilterable): ValueType => ({
   id,
   values: [about.profile.displayName, about.profile.tagline ?? '', (about.profile.tagset?.tags || []).join(' ')],
 });
 
-/**
- @deprecated
-*/
-export const journeyCardTagsGetter = ({ about }: JourneyCard): string[] => about.profile.tagset?.tags || [];
+export const spaceAboutTagsGetter = ({ about }: SpaceAboutFilterable): string[] => about.profile.tagset?.tags || [];

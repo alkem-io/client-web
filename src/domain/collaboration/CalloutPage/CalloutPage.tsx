@@ -6,7 +6,7 @@ import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useLocation } from 'react-router-dom';
-import { DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { DialogContent } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
@@ -20,6 +20,7 @@ import { NavigationState } from '@/core/routing/ScrollToTop';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -107,7 +108,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const backOrElse = useBackToPath();
 
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
 

@@ -1,7 +1,6 @@
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import FormRow from '@/_deprecated/FormRow';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
@@ -77,10 +76,10 @@ const CalloutVisibilityChangeDialog = ({
                   <WrapperMarkdown>{callout?.framing.profile.description ?? ''}</WrapperMarkdown>
                 </Box>
                 {callout?.draft && (
-                  <FormRow>
+                  <Box>
                     <BlockTitle>{t('common.notifications')}</BlockTitle>
                     <FormikSwitch name="sendNotifications" title={t('components.callout-publish.notify-members')} />
-                  </FormRow>
+                  </Box>
                 )}
               </Gutters>
             </DialogContent>

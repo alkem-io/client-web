@@ -5,7 +5,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
-import { Theme, useMediaQuery } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { cloneElement, useState } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 
@@ -18,17 +18,17 @@ const EntityPageLayout = ({
   tabs: tabsElement,
   children,
 }: EntityPageLayoutProps) => {
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const { isLargeScreen } = useScreenSize();
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
 
   const tabs = Tabs ? (
-    <Tabs currentTab={currentSection} mobile={isMobile} onMenuOpen={setTabsMenuOpen} />
+    <Tabs currentTab={currentSection} mobile={!isLargeScreen} onMenuOpen={setTabsMenuOpen} />
   ) : (
     tabsElement &&
-    cloneElement(tabsElement, { currentTab: currentSection, mobile: isMobile, onMenuOpen: setTabsMenuOpen })
+    cloneElement(tabsElement, { currentTab: currentSection, mobile: !isLargeScreen, onMenuOpen: setTabsMenuOpen })
   );
 
-  const pageBannerWatermark = isMobile ? null : <PageBannerWatermark />;
+  const pageBannerWatermark = !isLargeScreen ? null : <PageBannerWatermark />;
 
   const pageBanner = PageBanner ? (
     <PageBanner watermark={pageBannerWatermark} />
@@ -49,16 +49,16 @@ const EntityPageLayout = ({
         header={PageBanner ? <PageBanner watermark={pageBannerWatermark} /> : pageBanner}
         floatingActions={
           <FloatingActionButtons
-            {...(isMobile ? { bottom: gutters(3) } : {})}
+            {...(!isLargeScreen ? { bottom: gutters(3) } : {})}
             visible={!isTabsMenuOpen}
             floatingActions={<PlatformHelpButton />}
           />
         }
-        addWatermark={isMobile}
+        addWatermark={!isLargeScreen}
       >
-        {!isMobile && tabs}
+        {isLargeScreen && tabs}
         {children}
-        {isMobile && tabs}
+        {!isLargeScreen && tabs}
       </TopLevelLayout>
     </NotFoundErrorBoundary>
   );

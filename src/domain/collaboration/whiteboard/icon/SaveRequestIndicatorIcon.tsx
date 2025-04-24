@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CloudOff, CloudDone } from '@mui/icons-material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import { Theme, Tooltip, IconButton, useMediaQuery, Dialog, DialogContent, DialogContentText } from '@mui/material';
+import { Tooltip, IconButton, Dialog, DialogContent, DialogContentText } from '@mui/material';
 
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 
@@ -21,7 +22,7 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
 
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
 
   const handleMessageOpen = () => setIsOpen(true);
   const handleMessageClose = () => setIsOpen(false);
@@ -51,7 +52,7 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
 
   return (
     <>
-      {isMobile ? (
+      {isMediumSmallScreen ? (
         <IconButton onClick={handleMessageOpen}>
           <ClickAwayListener onClickAway={handleMessageClose}>
             {isSaved ? (

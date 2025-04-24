@@ -10,7 +10,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
-import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
+import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import createLayoutHolder from '@/core/ui/layout/layoutHolder/LayoutHolder';
 import { UrlBaseProvider } from '@/core/ui/link/UrlBase';
@@ -27,7 +27,7 @@ import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { KeyboardTab, Menu } from '@mui/icons-material';
-import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
+import { Box, Drawer, IconButton, Paper } from '@mui/material';
 import produce from 'immer';
 import { Children, PropsWithChildren, ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -108,7 +108,7 @@ const SubspacePageLayout = ({
 
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(false);
 
@@ -148,7 +148,7 @@ const SubspacePageLayout = ({
     return !isDialogDef(action) || !consumedActions[action.props.dialogType];
   });
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const hasExtendedApplicationButton = !isSmallScreen;
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
@@ -169,13 +169,13 @@ const SubspacePageLayout = ({
                   <FloatingActionButtons
                     visible
                     floatingActions={<PlatformHelpButton />}
-                    bottom={isMobile ? gutters(2) : 0}
+                    bottom={isSmallScreen ? gutters(2) : 0}
                   />
                 }
               >
                 <PageContent>
                   <InfoColumn collapsed={isCollapsed}>
-                    {!isCollapsed && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
+                    {!isCollapsed && <WelcomeBlock about={!isSmallScreen}>{welcome}</WelcomeBlock>}
                     {!isCollapsed && (
                       <FullWidthButton
                         startIcon={<KeyboardTab />}
@@ -234,7 +234,7 @@ const SubspacePageLayout = ({
                       }}
                     </ApplicationButtonContainer>
 
-                    {!isMobile && (
+                    {!isSmallScreen && (
                       <Box
                         sx={{
                           position: 'sticky',
@@ -253,7 +253,7 @@ const SubspacePageLayout = ({
                     {children}
                   </PageContentColumnBase>
                 </PageContent>
-                {isMobile && (
+                {isSmallScreen && (
                   <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
                     <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
                       <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
@@ -266,7 +266,7 @@ const SubspacePageLayout = ({
                   </Paper>
                 )}
               </TopLevelLayout>
-              {isMobile && (
+              {isSmallScreen && (
                 <SwapColors>
                   <GridProvider columns={GRID_COLUMNS_MOBILE}>
                     <Drawer
@@ -282,7 +282,7 @@ const SubspacePageLayout = ({
                   </GridProvider>
                 </SwapColors>
               )}
-              {isMobile && <Box height={gutters(3)} />}
+              {isSmallScreen && <Box height={gutters(3)} />}
             </InnovationFlowHolder>
           </DialogActionsContext.Provider>
         </UrlBaseProvider>

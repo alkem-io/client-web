@@ -4,7 +4,7 @@ import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/mate
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
@@ -60,8 +60,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const breakpoint = useCurrentBreakpoint();
-  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
   const [newLinkId, setNewLinkId] = useState<string>();
@@ -160,13 +159,13 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
                     {() =>
                       currentLinks?.map((link, index) => (
                         <Gutters key={link.id} data-reference={link.id}>
-                          <Gutters row={!isMobile} disablePadding alignItems="start">
+                          <Gutters row={!isMediumSmallScreen} disablePadding alignItems="start">
                             <FormikInputField
                               name={`${fieldName}.${index}.name`}
                               title={t('common.title')}
-                              fullWidth={isMobile}
+                              fullWidth={isMediumSmallScreen}
                             />
-                            <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+                            <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
                               <Box display="flex">
                                 <FormikFileInput
                                   name={`${fieldName}.${index}.uri`}

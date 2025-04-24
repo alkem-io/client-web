@@ -21,8 +21,7 @@ import {
   removeVCCreationCache,
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
 import { InfoOutlined } from '@mui/icons-material';
-import { Theme } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
@@ -77,7 +76,8 @@ const SpaceDashboardView = ({
 
   const translatedSpaceLevel = t(`common.space-level.${level}`);
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const { isSmallScreen } = useScreenSize();
+  const hasExtendedApplicationButton = !isSmallScreen;
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),

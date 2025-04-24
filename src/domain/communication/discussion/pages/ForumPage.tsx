@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme, useMediaQuery } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useNavigate from '@/core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
@@ -112,7 +112,7 @@ export const ForumPage = ({
     [validCategories, t]
   );
 
-  const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const { isLargeScreen } = useScreenSize();
   const loading = loadingDiscussions || loadingUser;
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
@@ -149,7 +149,7 @@ export const ForumPage = ({
                 );
               }}
               value={categorySelected}
-              showLabels={!mediumScreen}
+              showLabels={isLargeScreen}
             />
           }
         >

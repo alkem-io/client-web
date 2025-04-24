@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Paper, Theme, useMediaQuery } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import { useRecentSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Caption } from '@/core/ui/typography';
@@ -8,6 +8,7 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import GridItem from '@/core/ui/grid/GridItem';
 import SpaceTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { useMemo } from 'react';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface RecentJourneysListProps {
   onSeeMore?: () => void;
@@ -20,8 +21,8 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
 
   const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const cardColumns = useMemo(() => (isMobile ? columns / 2 : columns / 4), [isMobile, columns]);
+  const { isSmallScreen } = useScreenSize();
+  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
 
   return (
     <PageContentBlockSeamless row disablePadding>

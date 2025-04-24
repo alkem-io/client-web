@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/_deprecated/journeyCardValueGetter';
+import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
@@ -102,8 +102,8 @@ const SpaceSubspacesPage = () => {
         childEntities={subspaces}
         level={level}
         childEntitiesIcon={<SpaceL1Icon />}
-        childEntityValueGetter={journeyCardValueGetter}
-        childEntityTagsGetter={journeyCardTagsGetter}
+        childEntityValueGetter={spaceAboutValueGetter}
+        childEntityTagsGetter={spaceAboutTagsGetter}
         state={{ loading: loading, error: error }}
         renderChildEntityCard={item => (
           <SubspaceCard
