@@ -22,17 +22,17 @@
     "references": [
       {
         "icon": "GradeOutlined",
-        "uri": "https://alkem.io/docs/getting-started/first-steps",
+        "uri": "https://alkem.io/docs/getting-started/first-steps.nl-NL",
         "title": "Nieuwe gebruiker? Neem een kijkje bij onze 'Getting Started' pagina!"
       },
       {
         "icon": "NotListedLocationOutlined",
-        "uri": "https://alkem.io/docs",
-        "title": "Still have questions? Read more here"
+        "uri": "https://alkem.io/docs/index.nl-NL",
+        "title": "Nog steeds vragen? Leer hier meer"
       },
       {
         "icon": "EmailOutlined",
-        "uri": "https://alkem.io/docs/support",
+        "uri": "https://alkem.io/docs/support.nl-NL",
         "title": "Neem contact op met het Alkemio team"
       }
     ]
@@ -631,7 +631,7 @@
     },
     "unableToAddMemberInfo": {
       "title": "Kan dit lid niet toevoegen",
-      "content": "This member must be added to the parent space first."
+      "content": "Dit lid moet eerst aan de bovenliggende Space worden toegevoegd."
     }
   },
   "callout": {
@@ -857,7 +857,7 @@
       "nonBlank": "{{field}} kan niet slechts uit spaties bestaan",
       "atLeastOne": "Selecteer ten minste één item.",
       "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
-      "invalidUrl": "Invalid URL"
+      "invalidUrl": "Ongeldige URL"
     }
   },
   "templateDialog": {
@@ -1915,8 +1915,8 @@
             "hostedSpaces": "Gehoste Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
-            "spaceUsageNotice": "From the available $t(common.spaces) in your account, you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
+            "genericUsageNotice": "Je hebt {{usage}} van je {{limit}} beschikbare {{type}} in je account aangemaakt.",
+            "spaceUsageNotice": "Vanuit de beschikbare $t(common.spaces) in je account, heb je aangemaakt:\n{{freeUsage}} van de {{freeLimit}} Gratis $t(common.spaces)\n{{plusUsage}} van de {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} van de {{premiumLimit}} Premium $t(common.spaces)",
             "limitNotice": "Neem contact op met het Alkemio team om de limieten op uw account te verhogen",
             "notAvailable": "Niet beschikbaar",
             "notAvailableNotice": "Neem contact op met het Alkemio team om deze functie in te schakelen op je account",
