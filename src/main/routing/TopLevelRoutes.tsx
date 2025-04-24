@@ -20,6 +20,7 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
+const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
 );
@@ -88,6 +89,14 @@ export const TopLevelRoutes = () => {
           element={
             <Suspense fallback={<Loading />}>
               <DocumentationPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path={`${TopLevelRoutePath.Documentation}/*`}
+          element={
+            <Suspense fallback={<Loading />}>
+              <RedirectDocumentation />
             </Suspense>
           }
         />
