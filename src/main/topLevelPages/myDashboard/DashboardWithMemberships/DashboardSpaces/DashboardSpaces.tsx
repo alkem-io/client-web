@@ -151,7 +151,7 @@ const DashboardSpaces = () => {
                     <SpaceTile
                       key={id}
                       columns={cardColumns}
-                      journey={{
+                      space={{
                         about: about,
                         level: level,
                       }}

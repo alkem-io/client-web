@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { spaceAdminTabsL1 } from './SpaceAdminTabsL1';
 import { spaceAdminTabsL2 } from './SpaceAdminTabsL2';
 import { useSpace } from '../../space/context/useSpace';
-import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 
 interface SubspaceSettingsLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;
@@ -28,12 +28,12 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const { t } = useTranslation();
 
   // TODO: this should ideally come from the SpaceContext
-  const journeyPath: JourneyPath =
+  const journeyPath: SpaceHierarchyPath =
     spaceLevel === SpaceLevel.L1 ? [levelZeroSpaceId, spaceId] : [levelZeroSpaceId, parentSpaceId!, spaceId];
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
 
-  const spaceBannerElement = <SubspacePageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />;
+  const spaceBannerElement = <SubspacePageBanner spaceId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />;
 
   const spaceBackButtonElement = (
     <RouterLink to={about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
@@ -43,7 +43,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     </RouterLink>
   );
 
-  const spaceBreadcrumbsElement = <SpaceBreadcrumbs journeyPath={journeyPath} settings />;
+  const spaceBreadcrumbsElement = <SpaceBreadcrumbs spaceHierarchyPath={journeyPath} settings />;
 
   return (
     <EntitySettingsLayout

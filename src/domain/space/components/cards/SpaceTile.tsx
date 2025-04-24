@@ -14,7 +14,7 @@ import { PrivacyIcon } from '../../icons/PrivacyIcon';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 type SpaceTileProps = {
-  journey:
+  space:
     | {
         about: SpaceAboutLightModel;
         level?: SpaceLevel;
@@ -28,18 +28,18 @@ export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
 const SPACE_TITLE_CLASS_NAME = 'JourneyTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const SpaceTile = ({ journey, columns = 3 }: SpaceTileProps) => {
-  const isPrivate = journey?.about.isContentPublic === false;
+const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
+  const isPrivate = space?.about.isContentPublic === false;
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
         component={RouterLink}
-        to={journey?.about.profile.url ?? ''}
+        to={space?.about.profile.url ?? ''}
         sx={{
           position: 'relative',
         }}
       >
-        {!journey ? (
+        {!space ? (
           <Skeleton
             variant="rectangular"
             sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
@@ -49,7 +49,7 @@ const SpaceTile = ({ journey, columns = 3 }: SpaceTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={journey.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
+              src={space.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
               variant="square"
             >
@@ -76,7 +76,7 @@ const SpaceTile = ({ journey, columns = 3 }: SpaceTileProps) => {
               }}
             >
               <BlockTitle component="div" sx={webkitLineClamp(2)}>
-                {journey.about.profile.displayName}
+                {space.about.profile.displayName}
               </BlockTitle>
             </Box>
           </>

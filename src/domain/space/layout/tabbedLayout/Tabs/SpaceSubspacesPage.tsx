@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
-import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
@@ -30,7 +30,7 @@ const SpaceSubspacesPage = () => {
     calloutsSetId,
   } = useSpaceTabProvider({ tabPosition: 2 });
 
-  const { spaceId, journeyPath } = urlInfo;
+  const { spaceId, spaceHierarchyPath: journeyPath } = urlInfo;
 
   const { permissions, visibility } = useSpace();
 
@@ -39,7 +39,7 @@ const SpaceSubspacesPage = () => {
   const { createSubspace } = useSubspaceCreation();
 
   const handleCreate = useCallback(
-    async (value: JourneyFormValues) => {
+    async (value: SpaceFormValues) => {
       if (!spaceId) {
         return;
       }
@@ -97,7 +97,7 @@ const SpaceSubspacesPage = () => {
   }, [space?.level]);
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
+    <SpacePageLayout spaceHierarchyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
       <ChildJourneyView
         childEntities={subspaces}
         level={level}
@@ -112,7 +112,7 @@ const SpaceSubspacesPage = () => {
             tags={item.about.profile.tagset?.tags!}
             tagline={item.about.profile.tagline!}
             vision={item.about.why!}
-            journeyUri={item.about.profile.url}
+            spaceUri={item.about.profile.url}
             locked={!item.about.isContentPublic}
             spaceVisibility={visibility}
             level={childLevel}

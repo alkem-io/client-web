@@ -25,7 +25,7 @@ export const INIT_CREATING_EVENT_PARAM = 'new';
 
 export interface CalendarDialogProps {
   open: boolean;
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   parentSpaceId: string | undefined;
   onClose: () => void;
   parentPath: string;
@@ -35,7 +35,7 @@ export interface CalendarDialogProps {
 
 const CalendarDialog: FC<CalendarDialogProps> = ({
   open,
-  journeyId,
+  spaceId,
   parentSpaceId,
   onClose,
   parentPath,
@@ -99,7 +99,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
+      <CalendarEventsContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },

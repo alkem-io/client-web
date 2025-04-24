@@ -18967,9 +18967,9 @@ export type InnovationHubSettingsFragment = {
     | undefined;
 };
 
-export type JourneyBreadcrumbsInnovationHubQueryVariables = Exact<{ [key: string]: never }>;
+export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
 
-export type JourneyBreadcrumbsInnovationHubQuery = {
+export type InnovationHubBannerWideQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -18981,7 +18981,7 @@ export type JourneyBreadcrumbsInnovationHubQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            bannerWide?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         }
       | undefined;
@@ -20392,7 +20392,7 @@ export type SpaceCardFragment = {
   };
 };
 
-export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
+export type SpaceBreadcrumbsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   subspaceL1Id?: InputMaybe<Scalars['UUID']>;
   subspaceL2Id?: InputMaybe<Scalars['UUID']>;
@@ -20400,7 +20400,7 @@ export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
   includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type JourneyBreadcrumbsSpaceQuery = {
+export type SpaceBreadcrumbsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -20461,7 +20461,7 @@ export type JourneyBreadcrumbsSpaceQuery = {
   };
 };
 
-export type JourneyBreadcrumbsSpaceFragment = {
+export type BreadcrumbsSpaceL0Fragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
@@ -20478,7 +20478,7 @@ export type JourneyBreadcrumbsSpaceFragment = {
   };
 };
 
-export type JourneyBreadcrumbsSubpaceFragment = {
+export type BreadcrumbsSubspaceFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;

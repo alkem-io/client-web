@@ -3,15 +3,15 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { Button, DialogActions, DialogContent, SvgIconProps } from '@mui/material';
 import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationForm, JourneyFormValues } from './SubspaceCreationForm';
+import { SpaceCreationForm, SpaceFormValues } from './SubspaceCreationForm';
 
 interface SubspaceCreationDialogProps {
   open: boolean;
   icon?: ReactElement<SvgIconProps>;
   journeyName: string;
   onClose: () => void;
-  onCreate: (value: JourneyFormValues) => Promise<void>;
-  formComponent: React.ComponentType<JourneyCreationForm>;
+  onCreate: (value: SpaceFormValues) => Promise<void>;
+  formComponent: React.ComponentType<SpaceCreationForm>;
 }
 
 export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
@@ -25,7 +25,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   const { t } = useTranslation();
   const [formInvalid, setFormInvalid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [value, setValue] = useState<JourneyFormValues>({
+  const [value, setValue] = useState<SpaceFormValues>({
     displayName: '',
     tagline: '',
     tags: [],
@@ -37,7 +37,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
     },
   });
 
-  const handleChange = (value: JourneyFormValues) => setValue(value);
+  const handleChange = (value: SpaceFormValues) => setValue(value);
   const handleValidChange = (valid: boolean) => setFormInvalid(!valid);
   const handleCreate = async () => {
     setSubmitting(true);

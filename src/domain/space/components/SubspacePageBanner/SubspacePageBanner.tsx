@@ -6,17 +6,17 @@ import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SubspacePageBannerProps extends Omit<PageBannerProps, 'banner'> {
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   levelZeroSpaceId: string | undefined;
 }
 
-const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspacePageBannerProps) => {
+const SubspacePageBanner = ({ spaceId, levelZeroSpaceId, ...props }: SubspacePageBannerProps) => {
   const { data } = useSubspacePageBannerQuery({
     variables: {
       level0Space: levelZeroSpaceId!,
-      spaceId: journeyId!,
+      spaceId: spaceId!,
     },
-    skip: !journeyId || !levelZeroSpaceId,
+    skip: !spaceId || !levelZeroSpaceId,
   });
 
   const bannerVisual = useMemo(() => {

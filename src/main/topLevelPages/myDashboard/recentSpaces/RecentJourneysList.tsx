@@ -30,7 +30,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
         <SpaceTile
           key={result.space.id}
           columns={cardColumns}
-          journey={{
+          space={{
             about: result.space.about,
             level: result.space.level,
           }}

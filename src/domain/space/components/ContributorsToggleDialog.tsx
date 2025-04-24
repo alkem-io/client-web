@@ -17,22 +17,22 @@ import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager'
 export interface ContributorsToggleDialogProps {
   open?: boolean;
   onClose?: () => void;
-  journeyId: string;
+  spaceId: string;
 }
 
 /**
- * Represents a dialog component that displays contributors in a journey (space, subspace, subsubspace).
- * @param journeyId is a spaceId from the context.
+ * Represents a dialog component that displays contributors in a Space (space, subspace, subsubspace).
+ * @param spaceId is a spaceId from the context.
  */
-const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: ContributorsToggleDialogProps) => {
+const ContributorsToggleDialog = ({ open = false, spaceId, onClose }: ContributorsToggleDialogProps) => {
   const { isAuthenticated } = useCurrentUserContext();
   const { t } = useTranslation();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
-      spaceId: journeyId,
+      spaceId: spaceId,
     },
-    skip: !open || !journeyId,
+    skip: !open || !spaceId,
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 

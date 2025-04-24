@@ -4,7 +4,7 @@ import { noop } from 'lodash';
 
 const SpaceSkeletonLayout = () => {
   return (
-    <SpacePageLayout journeyPath={undefined} currentSection={undefined} loading>
+    <SpacePageLayout spaceHierarchyPath={undefined} currentSection={undefined} loading>
       <SpaceDashboardView
         space={undefined}
         flowStateForNewCallouts={undefined}

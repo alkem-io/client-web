@@ -1,17 +1,17 @@
-import { useJourneyBreadcrumbsInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useInnovationHubBannerWideQuery } from '@/core/apollo/generated/apollo-hooks';
 
-interface TopLevelJourneyBreadcrumbsItem {
+interface TopLevelBreadcrumbsItem {
   profile?: {
     displayName: string;
-    avatar?: {
+    bannerWide?: {
       uri?: string;
     };
   };
   loading: boolean;
 }
 
-const useJourneyBreadcrumbsTopLevelItem = (): TopLevelJourneyBreadcrumbsItem => {
-  const { data, loading } = useJourneyBreadcrumbsInnovationHubQuery();
+const useBreadcrumbsTopLevelItem = (): TopLevelBreadcrumbsItem => {
+  const { data, loading } = useInnovationHubBannerWideQuery();
 
   const innovationHub = data?.platform.innovationHub;
 
@@ -25,4 +25,4 @@ const useJourneyBreadcrumbsTopLevelItem = (): TopLevelJourneyBreadcrumbsItem => 
   };
 };
 
-export default useJourneyBreadcrumbsTopLevelItem;
+export default useBreadcrumbsTopLevelItem;

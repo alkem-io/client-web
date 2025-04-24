@@ -16,7 +16,8 @@ import ApplicationDialog from './ApplicationDialog';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface ApplicationButtonProps {
-  journeyId: string | undefined;
+  spaceId: string | undefined;
+  spaceLevel: SpaceLevel | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
   isParentMember: boolean;
@@ -37,7 +38,6 @@ export interface ApplicationButtonProps {
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
-  spaceLevel: SpaceLevel | undefined;
   onUpdateInvitation?: () => void | Promise<void>;
   noAuthApplyButtonText?: string;
 }
@@ -46,7 +46,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement, ApplicationButton
   (
     {
       isAuthenticated,
-      journeyId,
+      spaceId,
       applicationState,
       userInvitation,
       parentApplicationState,
@@ -292,7 +292,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement, ApplicationButton
           <ApplicationDialog
             open={isApplicationDialogOpen}
             onClose={handleClose}
-            spaceId={journeyId}
+            spaceId={spaceId}
             canJoinCommunity={canJoinCommunity}
             onJoin={onJoin}
             onApply={handleOpenApplicationSubmittedDialog}

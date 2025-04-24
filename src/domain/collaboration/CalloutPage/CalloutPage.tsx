@@ -54,7 +54,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     parentSpaceId,
     calloutId,
     spaceLevel,
-    journeyPath,
+    spaceHierarchyPath,
     loading: urlResolverLoading,
   } = useUrlResolver();
 
@@ -121,10 +121,10 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
     return (
       <PageLayout
-        journeyId={spaceId}
+        spaceId={spaceId}
         levelZeroSpaceId={levelZeroSpaceId}
         spaceLevel={spaceLevel}
-        journeyPath={journeyPath}
+        spaceHierarchyPath={spaceHierarchyPath}
         parentSpaceId={parentSpaceId}
         currentSection={{ sectionIndex: calloutSection }}
       >

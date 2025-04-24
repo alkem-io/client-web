@@ -5,8 +5,8 @@ import Loading from '@/core/ui/loading/Loading';
 const SpaceSkeletonLayout = () => {
   return (
     <SubspacePageLayout
-      journeyId={undefined}
-      journeyPath={undefined}
+      spaceId={undefined}
+      spaceHierarchyPath={undefined}
       spaceLevel={undefined}
       levelZeroSpaceId={undefined}
       parentSpaceId={undefined}

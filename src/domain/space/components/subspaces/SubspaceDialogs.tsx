@@ -19,7 +19,7 @@ import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
   spaceId: string | undefined;
-  journeyUrl: string | undefined;
+  spaceUrl: string | undefined;
   parentSpaceId: string | undefined;
   calloutsSetId: string | undefined;
   dashboardNavigation: {
@@ -32,7 +32,7 @@ export interface SubspaceDialogsProps {
 
 const SubspaceDialogs = ({
   dialogOpen,
-  journeyUrl,
+  spaceUrl,
   spaceId,
   calloutsSetId,
   parentSpaceId,
@@ -41,7 +41,7 @@ const SubspaceDialogs = ({
   collaborationId,
   calendarEventId,
 }: SubspaceDialogsProps) => {
-  const handleClose = useBackToStaticPath(journeyUrl ?? '');
+  const handleClose = useBackToStaticPath(spaceUrl ?? '');
 
   const { isSmallScreen } = useScreenSize();
 
@@ -51,7 +51,7 @@ const SubspaceDialogs = ({
     }
   }, [isSmallScreen]);
 
-  if (!dialogOpen || !spaceId || !journeyUrl) {
+  if (!dialogOpen || !spaceId || !spaceUrl) {
     return null;
   }
 
@@ -64,31 +64,31 @@ const SubspaceDialogs = ({
       />
       <SubspacesListDialog spaceId={spaceId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
       <ContributorsToggleDialog
-        journeyId={spaceId}
+        spaceId={spaceId}
         open={dialogOpen === SubspaceDialog.Contributors}
         onClose={handleClose}
       />
       <ActivityDialog spaceId={spaceId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog
-        journeyId={spaceId}
+        spaceId={spaceId}
         parentSpaceId={parentSpaceId}
         open={dialogOpen === SubspaceDialog.Timeline}
         onClose={handleClose}
-        parentPath={journeyUrl}
+        parentPath={spaceUrl}
         calendarEventId={calendarEventId}
         temporaryLocation
       />
       <ShareDialog
         open={dialogOpen === SubspaceDialog.Share}
         onClose={handleClose}
-        url={journeyUrl}
+        url={spaceUrl}
         entityTypeName="subspace"
       />
       <CommunityUpdatesDialog
         open={dialogOpen === SubspaceDialog.Updates}
         onClose={handleClose}
         communityId={communityId}
-        shareUrl={buildUpdatesUrl(journeyUrl ?? '')}
+        shareUrl={buildUpdatesUrl(spaceUrl ?? '')}
         loading={false}
       />
       <InnovationFlowSettingsDialog

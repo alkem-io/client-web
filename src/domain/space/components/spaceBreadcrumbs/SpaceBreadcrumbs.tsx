@@ -17,11 +17,11 @@ interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
 
 const SpaceBreadcrumbs = forwardRef<Collapsible, SpaceBreadcrumbsProps<Expandable>>(
   <ItemProps extends Expandable>(
-    { journeyPath, settings, loading, ...props }: SpaceBreadcrumbsProps<ItemProps>,
+    { spaceHierarchyPath, settings, loading, ...props }: SpaceBreadcrumbsProps<ItemProps>,
     ref
   ) => {
     const { breadcrumbs } = useSpaceBreadcrumbs({
-      journeyPath,
+      spaceHierarchyPath,
       loading,
     });
 

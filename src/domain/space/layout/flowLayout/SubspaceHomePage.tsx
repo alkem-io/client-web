@@ -33,7 +33,7 @@ import DashboardNavigation, {
 } from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from './SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import CreateJourney from '../../components/subspaces/SubspaceCreationDialog/CreateJourney';
+import CreateSubspace from '../../components/subspaces/SubspaceCreationDialog/CreateSubspace';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -52,8 +52,15 @@ const Outline = (props: DashboardNavigationProps) => {
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, spaceLevel, journeyPath, parentSpaceId, levelZeroSpaceId, calendarEventId, loading } =
-    useUrlResolver();
+  const {
+    spaceId,
+    spaceLevel,
+    spaceHierarchyPath: journeyPath,
+    parentSpaceId,
+    levelZeroSpaceId,
+    calendarEventId,
+    loading,
+  } = useUrlResolver();
   const { permissions } = useSubSpace();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
@@ -119,8 +126,8 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   return (
     <>
       <SubspacePageLayout
-        journeyId={spaceId}
-        journeyPath={journeyPath}
+        spaceId={spaceId}
+        spaceHierarchyPath={journeyPath}
         spaceLevel={spaceLevel}
         spaceUrl={about?.profile?.url}
         levelZeroSpaceId={levelZeroSpaceId}
@@ -220,7 +227,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
         />
       </SubspacePageLayout>
       {directMessageDialog}
-      <CreateJourney
+      <CreateSubspace
         isVisible={createSpaceState.isDialogVisible}
         onClose={onCreateJourneyClose}
         parentSpaceId={createSpaceState.parentSpaceId}
@@ -230,7 +237,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
         dialogOpen={dialog}
         calloutsSetId={calloutsSetId}
         spaceId={spaceId}
-        journeyUrl={about?.profile?.url}
+        spaceUrl={about?.profile?.url}
         dashboardNavigation={dashboardNavigation}
         communityId={about?.membership.communityID}
         collaborationId={collaboration?.id}

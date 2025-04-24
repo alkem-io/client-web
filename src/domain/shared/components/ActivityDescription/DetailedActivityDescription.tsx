@@ -11,8 +11,8 @@ export interface ActivityDescriptionProps {
   values?: Record<string, string | undefined>;
   components?: Record<string, ReactElement>;
   createdDate: Date | string;
-  journeyDisplayName?: string; // Callout name or Journey name
-  journeyUrl?: string;
+  spaceDisplayName?: string; // Callout name or Journey name
+  spaceUrl?: string;
   spaceLevel?: SpaceLevel;
   author?: {
     displayName?: string;
@@ -27,8 +27,8 @@ const PARENT_NAME_MAX_LENGTH = 20;
 const DetailedActivityDescription = ({
   i18nKey,
   createdDate,
-  journeyDisplayName,
-  journeyUrl,
+  spaceDisplayName,
+  spaceUrl,
   spaceLevel,
   author,
   values = {},
@@ -55,7 +55,7 @@ const DetailedActivityDescription = ({
       mergedValues['user'] = t('common.user');
     }
 
-    mergedValues['journey'] = journeyDisplayName;
+    mergedValues['journey'] = spaceDisplayName;
 
     mergedValues['invitedEntity'] =
       type === RoleSetContributorType.Virtual
@@ -63,9 +63,9 @@ const DetailedActivityDescription = ({
         : t('community.pendingMembership.you');
 
     const truncatedParentName =
-      journeyDisplayName && journeyDisplayName.length > PARENT_NAME_MAX_LENGTH
-        ? journeyDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
-        : journeyDisplayName;
+      spaceDisplayName && spaceDisplayName.length > PARENT_NAME_MAX_LENGTH
+        ? spaceDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
+        : spaceDisplayName;
     if (truncatedParentName) {
       mergedValues['journeyDisplayName'] = truncatedParentName;
     }
@@ -76,13 +76,13 @@ const DetailedActivityDescription = ({
       mergedComponents['journeyicon'] = <SpaceIcon fontSize="inherit" />;
     }
 
-    mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} /> : <span />;
+    mergedComponents['parentlink'] = spaceUrl ? <RouterLink to={spaceUrl} /> : <span />;
 
     return {
       values: mergedValues,
       components: mergedComponents,
     };
-  }, [createdDate, t, author, author?.displayName, author?.url, journeyDisplayName, spaceLevel, journeyUrl, i18nKey]);
+  }, [createdDate, t, author, author?.displayName, author?.url, spaceDisplayName, spaceLevel, spaceUrl, i18nKey]);
 
   return (
     <>

@@ -1737,8 +1737,8 @@ export const SpaceCardFragmentDoc = gql`
   }
   ${SpaceAboutCardBannerFragmentDoc}
 `;
-export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
-  fragment JourneyBreadcrumbsSpace on Space {
+export const BreadcrumbsSpaceL0FragmentDoc = gql`
+  fragment BreadcrumbsSpaceL0 on Space {
     id
     level
     about {
@@ -1755,8 +1755,8 @@ export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
-  fragment JourneyBreadcrumbsSubpace on Space {
+export const BreadcrumbsSubspaceFragmentDoc = gql`
+  fragment BreadcrumbsSubspace on Space {
     id
     level
     about {
@@ -13825,15 +13825,15 @@ export function refetchInnovationHubSettingsQuery(variables: SchemaTypes.Innovat
   return { query: InnovationHubSettingsDocument, variables: variables };
 }
 
-export const JourneyBreadcrumbsInnovationHubDocument = gql`
-  query JourneyBreadcrumbsInnovationHub {
+export const InnovationHubBannerWideDocument = gql`
+  query InnovationHubBannerWide {
     platform {
       innovationHub {
         id
         profile {
           id
           displayName
-          avatar: visual(type: BANNER_WIDE) {
+          bannerWide: visual(type: BANNER_WIDE) {
             id
             ...VisualUri
           }
@@ -13845,58 +13845,54 @@ export const JourneyBreadcrumbsInnovationHubDocument = gql`
 `;
 
 /**
- * __useJourneyBreadcrumbsInnovationHubQuery__
+ * __useInnovationHubBannerWideQuery__
  *
- * To run a query within a React component, call `useJourneyBreadcrumbsInnovationHubQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyBreadcrumbsInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useInnovationHubBannerWideQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubBannerWideQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useJourneyBreadcrumbsInnovationHubQuery({
+ * const { data, loading, error } = useInnovationHubBannerWideQuery({
  *   variables: {
  *   },
  * });
  */
-export function useJourneyBreadcrumbsInnovationHubQuery(
+export function useInnovationHubBannerWideQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-  >(JourneyBreadcrumbsInnovationHubDocument, options);
+  return Apollo.useQuery<SchemaTypes.InnovationHubBannerWideQuery, SchemaTypes.InnovationHubBannerWideQueryVariables>(
+    InnovationHubBannerWideDocument,
+    options
+  );
 }
 
-export function useJourneyBreadcrumbsInnovationHubLazyQuery(
+export function useInnovationHubBannerWideLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-  >(JourneyBreadcrumbsInnovationHubDocument, options);
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >(InnovationHubBannerWideDocument, options);
 }
 
-export type JourneyBreadcrumbsInnovationHubQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsInnovationHubQuery>;
-export type JourneyBreadcrumbsInnovationHubLazyQueryHookResult = ReturnType<
-  typeof useJourneyBreadcrumbsInnovationHubLazyQuery
+export type InnovationHubBannerWideQueryHookResult = ReturnType<typeof useInnovationHubBannerWideQuery>;
+export type InnovationHubBannerWideLazyQueryHookResult = ReturnType<typeof useInnovationHubBannerWideLazyQuery>;
+export type InnovationHubBannerWideQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubBannerWideQuery,
+  SchemaTypes.InnovationHubBannerWideQueryVariables
 >;
-export type JourneyBreadcrumbsInnovationHubQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-  SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
->;
-export function refetchJourneyBreadcrumbsInnovationHubQuery(
-  variables?: SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-) {
-  return { query: JourneyBreadcrumbsInnovationHubDocument, variables: variables };
+export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.InnovationHubBannerWideQueryVariables) {
+  return { query: InnovationHubBannerWideDocument, variables: variables };
 }
 
 export const InnovationHubDocument = gql`
@@ -15159,8 +15155,8 @@ export function refetchSubspacePageBannerQuery(variables: SchemaTypes.SubspacePa
   return { query: SubspacePageBannerDocument, variables: variables };
 }
 
-export const JourneyBreadcrumbsSpaceDocument = gql`
-  query JourneyBreadcrumbsSpace(
+export const SpaceBreadcrumbsDocument = gql`
+  query SpaceBreadcrumbs(
     $spaceId: UUID!
     $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000"
     $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000"
@@ -15169,31 +15165,31 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
   ) {
     lookup {
       space(ID: $spaceId) {
-        ...JourneyBreadcrumbsSpace
+        ...BreadcrumbsSpaceL0
       }
       subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
-        ...JourneyBreadcrumbsSubpace
+        ...BreadcrumbsSubspace
       }
       subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
-        ...JourneyBreadcrumbsSubpace
+        ...BreadcrumbsSubspace
       }
     }
   }
-  ${JourneyBreadcrumbsSpaceFragmentDoc}
-  ${JourneyBreadcrumbsSubpaceFragmentDoc}
+  ${BreadcrumbsSpaceL0FragmentDoc}
+  ${BreadcrumbsSubspaceFragmentDoc}
 `;
 
 /**
- * __useJourneyBreadcrumbsSpaceQuery__
+ * __useSpaceBreadcrumbsQuery__
  *
- * To run a query within a React component, call `useJourneyBreadcrumbsSpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyBreadcrumbsSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceBreadcrumbsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceBreadcrumbsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useJourneyBreadcrumbsSpaceQuery({
+ * const { data, loading, error } = useSpaceBreadcrumbsQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      subspaceL1Id: // value for 'subspaceL1Id'
@@ -15203,40 +15199,37 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
  *   },
  * });
  */
-export function useJourneyBreadcrumbsSpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
-  >
+export function useSpaceBreadcrumbsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceBreadcrumbsQuery, SchemaTypes.SpaceBreadcrumbsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyBreadcrumbsSpaceQuery, SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables>(
-    JourneyBreadcrumbsSpaceDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceBreadcrumbsQuery, SchemaTypes.SpaceBreadcrumbsQueryVariables>(
+    SpaceBreadcrumbsDocument,
     options
   );
 }
 
-export function useJourneyBreadcrumbsSpaceLazyQuery(
+export function useSpaceBreadcrumbsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+    SchemaTypes.SpaceBreadcrumbsQuery,
+    SchemaTypes.SpaceBreadcrumbsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
-  >(JourneyBreadcrumbsSpaceDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.SpaceBreadcrumbsQuery, SchemaTypes.SpaceBreadcrumbsQueryVariables>(
+    SpaceBreadcrumbsDocument,
+    options
+  );
 }
 
-export type JourneyBreadcrumbsSpaceQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsSpaceQuery>;
-export type JourneyBreadcrumbsSpaceLazyQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsSpaceLazyQuery>;
-export type JourneyBreadcrumbsSpaceQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-  SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+export type SpaceBreadcrumbsQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsQuery>;
+export type SpaceBreadcrumbsLazyQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsLazyQuery>;
+export type SpaceBreadcrumbsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceBreadcrumbsQuery,
+  SchemaTypes.SpaceBreadcrumbsQueryVariables
 >;
-export function refetchJourneyBreadcrumbsSpaceQuery(variables: SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables) {
-  return { query: JourneyBreadcrumbsSpaceDocument, variables: variables };
+export function refetchSpaceBreadcrumbsQuery(variables: SchemaTypes.SpaceBreadcrumbsQueryVariables) {
+  return { query: SpaceBreadcrumbsDocument, variables: variables };
 }
 
 export const SpaceDashboardNavigationSubspacesDocument = gql`

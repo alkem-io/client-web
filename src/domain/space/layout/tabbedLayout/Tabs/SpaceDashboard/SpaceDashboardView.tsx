@@ -132,7 +132,7 @@ const SpaceDashboardView = ({
       {directMessageDialog}
       <PageContent>
         {!loading && (
-          <ApplicationButtonContainer journeyId={space?.id}>
+          <ApplicationButtonContainer spaceId={space?.id}>
             {(applicationButtonProps, loading) => {
               if (loading || applicationButtonProps.isMember) {
                 return null;
@@ -145,7 +145,7 @@ const SpaceDashboardView = ({
                     loading={loading}
                     component={FullWidthButton}
                     extended={hasExtendedApplicationButton}
-                    journeyId={space?.id}
+                    spaceId={space?.id}
                     spaceLevel={level}
                   />
                 </PageContentColumn>
@@ -179,7 +179,7 @@ const SpaceDashboardView = ({
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {readUsersAccess && <DashboardCalendarSection journeyId={space?.id} level={level} />}
+          {readUsersAccess && <DashboardCalendarSection spaceId={space?.id} level={level} />}
           {readUsersAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 

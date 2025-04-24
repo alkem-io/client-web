@@ -10,7 +10,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
-import { JourneyCardBanner } from './components/Banner';
+import { SpaceCardBanner } from './components/SpaceCardBanner';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
@@ -19,9 +19,9 @@ import { SpaceL0Icon } from '../../icons/SpaceL0Icon';
 export interface SpaceCard2Props extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
-  banner?: JourneyCardBanner;
+  banner?: SpaceCardBanner;
   tags?: string[];
-  journeyUri?: string;
+  spaceUri?: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
   bannerOverlay?: ReactNode;
@@ -37,7 +37,7 @@ const SpaceCardBase = ({
   header,
   banner,
   tags,
-  journeyUri,
+  spaceUri,
   expansion,
   expansionActions,
   bannerOverlay,
@@ -56,10 +56,10 @@ const SpaceCardBase = ({
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   const wrapperProps =
-    journeyUri && !containerProps.onClick
+    spaceUri && !containerProps.onClick
       ? ({
           component: RouterLink,
-          to: journeyUri,
+          to: spaceUri,
         } as const)
       : {};
 

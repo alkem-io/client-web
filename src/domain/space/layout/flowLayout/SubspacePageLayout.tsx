@@ -22,7 +22,7 @@ import ApplicationButton from '@/domain/community/applicationButton/ApplicationB
 import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
@@ -39,11 +39,11 @@ import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
 import WelcomeBlock from '../../components/WelcomeBlock';
 
 export interface SubspacePageLayoutProps {
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   parentSpaceId: string | undefined;
   levelZeroSpaceId: string | undefined;
   spaceLevel: SpaceLevel | undefined;
-  journeyPath: JourneyPath | undefined;
+  spaceHierarchyPath: SpaceHierarchyPath | undefined;
   spaceUrl?: string | undefined; // TODO make required
   loading?: boolean;
   unauthorizedDialogDisabled?: boolean;
@@ -92,10 +92,10 @@ enum MenuState {
 }
 
 const SubspacePageLayout = ({
-  journeyId,
+  spaceId: journeyId,
   parentSpaceId,
   levelZeroSpaceId,
-  journeyPath,
+  spaceHierarchyPath: journeyPath,
   spaceLevel,
   spaceUrl: journeyUrl,
   loading = false,
@@ -163,8 +163,8 @@ const SubspacePageLayout = ({
           <DialogActionsContext.Provider value={actionsProvider}>
             <InnovationFlowHolder>
               <TopLevelLayout
-                breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} loading={loading} />}
-                header={<SubspacePageBanner journeyId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
+                breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={journeyPath} loading={loading} />}
+                header={<SubspacePageBanner spaceId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
                 floatingActions={
                   <FloatingActionButtons
                     visible
@@ -214,7 +214,7 @@ const SubspacePageLayout = ({
                     flexShrink={1}
                     minWidth={0}
                   >
-                    <ApplicationButtonContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
+                    <ApplicationButtonContainer spaceId={journeyId} parentSpaceId={parentSpaceId}>
                       {(applicationButtonProps, loading) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
@@ -226,7 +226,7 @@ const SubspacePageLayout = ({
                               loading={loading}
                               component={FullWidthButton}
                               extended={hasExtendedApplicationButton}
-                              journeyId={journeyId}
+                              spaceId={journeyId}
                               spaceLevel={spaceLevel}
                             />
                           </PageContentColumn>

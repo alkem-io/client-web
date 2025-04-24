@@ -2,20 +2,20 @@ import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hook
 import { Trans, useTranslation } from 'react-i18next';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 
-type UseInnovationHubJourneyBannerRibbonOptions = {
+type UseInnovationHubBannerRibbonOptions = {
   spaceId: string | undefined;
 };
 
-const useInnovationHubJourneyBannerRibbon = ({ spaceId }: UseInnovationHubJourneyBannerRibbonOptions) => {
+const useInnovationHubBannerRibbon = ({ spaceId }: UseInnovationHubBannerRibbonOptions) => {
   const { data: innovationHubData } = useBannerInnovationHubQuery();
 
   const { innovationHub } = innovationHubData?.platform ?? {};
 
-  const isForeignJourney = innovationHub ? !innovationHub.spaceListFilter?.some(({ id }) => id === spaceId) : false;
+  const isForeignSpace = innovationHub ? !innovationHub.spaceListFilter?.some(({ id }) => id === spaceId) : false;
 
   const { t } = useTranslation();
 
-  if (!isForeignJourney) {
+  if (!isForeignSpace) {
     return undefined;
   }
 
@@ -37,4 +37,4 @@ const useInnovationHubJourneyBannerRibbon = ({ spaceId }: UseInnovationHubJourne
   );
 };
 
-export default useInnovationHubJourneyBannerRibbon;
+export default useInnovationHubBannerRibbon;

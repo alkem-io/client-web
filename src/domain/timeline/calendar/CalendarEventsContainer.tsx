@@ -30,7 +30,7 @@ export interface CalendarEventFormData
 }
 
 export interface CalendarEventsContainerProps {
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   parentSpaceId: string | undefined;
   children: (
     entities: CalendarEventsEntities,
@@ -66,10 +66,10 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer = ({ journeyId, parentSpaceId, children }: CalendarEventsContainerProps) => {
+export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: CalendarEventsContainerProps) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentSpaceId) },
-    skip: !journeyId,
+    variables: { spaceId: spaceId!, includeSubspace: !Boolean(parentSpaceId) },
+    skip: !spaceId,
   });
 
   const collaboration = spaceData?.lookup.space?.collaboration;
@@ -94,7 +94,7 @@ export const CalendarEventsContainer = ({ journeyId, parentSpaceId, children }: 
 
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
-  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: journeyId! })];
+  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: spaceId! })];
 
   if (parentSpaceId) {
     refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId! }));
@@ -208,7 +208,7 @@ export const CalendarEventsContainer = ({ journeyId, parentSpaceId, children }: 
   );
 
   return (
-    <StorageConfigContextProvider spaceId={journeyId} locationType="journey">
+    <StorageConfigContextProvider spaceId={spaceId} locationType="journey">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },

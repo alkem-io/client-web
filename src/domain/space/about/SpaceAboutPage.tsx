@@ -14,7 +14,7 @@ import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks'
 import { Box } from '@mui/material';
 
 const SpaceAboutPage = () => {
-  const { journeyPath } = useUrlResolver();
+  const { spaceHierarchyPath } = useUrlResolver();
   const { space, permissions, loading: loadingSpace } = useSpace();
   const profile = space.about.profile;
   const { data, loading: loadingDetails } = useSpaceAboutDetailsQuery({
@@ -30,7 +30,7 @@ const SpaceAboutPage = () => {
 
   return (
     <EntityPageLayout
-      breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />}
+      breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} />}
       pageBanner={
         <SpacePageBanner
           title={profile?.displayName}

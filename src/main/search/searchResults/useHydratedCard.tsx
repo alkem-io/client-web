@@ -21,7 +21,7 @@ import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
-import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
+import SearchSpaceCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
@@ -111,13 +111,13 @@ const hydrateSpaceCard = (
   };
 
   return (
-    <SearchBaseJourneyCard
+    <SearchSpaceCard
       spaceLevel={space.level}
       banner={getVisualByType(VisualName.CARD, spaceProfile.visuals)}
       member={isMember}
       displayName={name}
       tagline={tagline}
-      journeyUri={spaceProfile.url}
+      spaceUri={spaceProfile.url}
       tags={tags}
       matchedTerms
       vision={vision}

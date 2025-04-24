@@ -36,9 +36,8 @@ const SpaceCardsDemo = () => {
                 vision={loremIpsum}
                 displayName="Challenge Card"
                 tags={['challenge', 'card']}
-                journeyUri=""
-                spaceDisplayName="Parent Space"
                 spaceUri=""
+                spaceDisplayName="Parent Space"
                 level={SpaceLevel.L1}
                 avatarUris={['', '']}
                 locked
@@ -49,9 +48,8 @@ const SpaceCardsDemo = () => {
                 vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name"
                 tags={['challenge', 'card']}
-                journeyUri=""
-                spaceDisplayName=""
                 spaceUri=""
+                spaceDisplayName=""
                 level={SpaceLevel.L0}
                 isPrivate
                 avatarUris={['']}
@@ -74,9 +72,8 @@ const SpaceCardsDemo = () => {
                   'on 2 lines',
                 ]}
                 member
-                journeyUri=""
-                spaceDisplayName="Parent Space"
                 spaceUri=""
+                spaceDisplayName="Parent Space"
                 level={SpaceLevel.L2}
                 avatarUris={['', '', '']}
               />
@@ -106,29 +103,29 @@ const SpaceCardsDemo = () => {
               <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
+                why={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
                 membersCount={20}
-                journeyUri=""
+                spaceUri=""
               />
               <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
+                why={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
                 membersCount={20}
-                journeyUri=""
+                spaceUri=""
               />
               <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
+                why={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 membersCount={20}
-                journeyUri=""
+                spaceUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>
@@ -141,9 +138,8 @@ const SpaceCardsDemo = () => {
                 vision={loremIpsum}
                 displayName="Challenge Card"
                 tags={['challenge', 'card']}
-                journeyUri=""
-                spaceDisplayName="Parent Space"
                 spaceUri=""
+                spaceDisplayName="Parent Space"
               />
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
@@ -151,9 +147,8 @@ const SpaceCardsDemo = () => {
                 vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name"
                 tags={['challenge', 'card']}
-                journeyUri=""
-                spaceDisplayName="Parent Space"
                 spaceUri=""
+                spaceDisplayName="Parent Space"
               />
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
@@ -172,9 +167,8 @@ const SpaceCardsDemo = () => {
                   'dont even fit',
                   'on 2 lines',
                 ]}
-                journeyUri=""
-                spaceDisplayName="Parent Space"
                 spaceUri=""
+                spaceDisplayName="Parent Space"
               />
             </PageContentBlockGrid>
           </PageContentBlock>

@@ -17,7 +17,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
     useSpaceTabProvider({ tabPosition: 0 });
 
-  const { spaceId, journeyPath, calendarEventId, spaceLevel } = urlInfo;
+  const { spaceId, spaceHierarchyPath: journeyPath, calendarEventId, spaceLevel } = urlInfo;
 
   const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
 
@@ -63,7 +63,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
   const updatesUrl = buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1, 'updates');
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 0 }}>
+    <SpacePageLayout spaceHierarchyPath={journeyPath} currentSection={{ sectionIndex: 0 }}>
       <SpaceDashboardView
         space={space}
         tabDescription={tabDescription}
@@ -87,7 +87,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
       <CalendarDialog
         open={dialog === 'calendar'}
         onClose={backToDashboard}
-        journeyId={spaceId}
+        spaceId={spaceId}
         parentSpaceId={undefined}
         parentPath={spaceData?.about.profile.url ?? ''}
         calendarEventId={calendarEventId}
