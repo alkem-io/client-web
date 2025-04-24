@@ -1,7 +1,7 @@
 import { gutters } from '@/core/ui/grid/utils';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { BlockTitle } from '@/core/ui/typography';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import {
   Box,
@@ -27,7 +27,6 @@ interface EntityFilterProps {
 
 export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, config, onChange }) => {
   const { t } = useTranslation();
-  const breakpoint = useCurrentBreakpoint();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState<boolean>(false);
 
@@ -42,6 +41,8 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
     setFilterMenuOpen(false);
   };
 
+  const { isSmallScreen } = useScreenSize();
+
   return (
     <>
       <IconButton
@@ -53,7 +54,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
         <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
       </IconButton>
       {/* Popup menu for big screens */}
-      {breakpoint !== 'xs' && (
+      {!isSmallScreen && (
         <Menu anchorEl={buttonRef.current} open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
           {Object.keys(config).map(key => (
             <MenuItem
@@ -69,7 +70,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
         </Menu>
       )}
       {/* Bottom Drawer for small screens */}
-      {breakpoint === 'xs' && (
+      {isSmallScreen && (
         <Drawer anchor="bottom" open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
           <FormControl sx={{ padding: gutters(1) }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={gutters(1)}>

@@ -27366,6 +27366,12 @@ export type UpdateNotificationStateMutation = {
   updateNotificationState: InAppNotificationState;
 };
 
+export type MarkNotificationsAsReadMutationVariables = Exact<{
+  notificationIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
+
 type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
   __typename?: 'InAppNotificationCalloutPublished';
   id: string;

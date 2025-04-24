@@ -13,12 +13,13 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { Box, Button, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import useNavigate from '@/core/routing/useNavigate';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type InvitationDialogProps = {
   open: boolean;
@@ -46,7 +47,7 @@ const InvitationDialog = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
@@ -97,8 +98,8 @@ const InvitationDialog = ({
                 <DialogContent sx={{ padding: 0 }}>
                   <Gutters
                     paddingTop={0}
-                    flexDirection={isMobile ? 'column' : 'row'}
-                    alignItems={isMobile ? 'center' : 'start'}
+                    flexDirection={isSmallScreen ? 'column' : 'row'}
+                    alignItems={isSmallScreen ? 'center' : 'start'}
                   >
                     <SpaceCardBase
                       iconComponent={spaceLevelIcon[invitation.space.level]}

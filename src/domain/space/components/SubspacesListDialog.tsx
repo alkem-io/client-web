@@ -5,7 +5,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Loading from '@/core/ui/loading/Loading';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
-import { journeyCardValueGetter } from '@/_deprecated/journeyCardValueGetter';
+import { spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +43,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
         <DialogContent>
           {loading && <Loading />}
           {!loading && subspaces.length > 0 && (
-            <SpaceFilter data={subspaces} valueGetter={journeyCardValueGetter}>
+            <SpaceFilter data={subspaces} valueGetter={spaceAboutValueGetter}>
               {filteredEntities => (
                 <CardLayoutContainer>
                   {filteredEntities.map((subspace, index) => {
