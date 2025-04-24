@@ -79,6 +79,8 @@ export const FormikUserSelector = ({
     );
   }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
+  const { isSmallScreen } = useScreenSize();
+
   const handleSelect = (user: Pick<User, 'id'> | null) => {
     helpers.setTouched(true);
 
@@ -110,8 +112,6 @@ export const FormikUserSelector = ({
 
     onChange?.(value);
   };
-
-  const { isSmallScreen } = useScreenSize();
 
   return (
     <>

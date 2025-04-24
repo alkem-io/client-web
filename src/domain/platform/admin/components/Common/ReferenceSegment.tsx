@@ -76,7 +76,7 @@ export const ReferenceSegment = ({
   const { setFieldValue, touched } = useFormikContext();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const { isMediumScreen } = useScreenSize();
+  const { isSmallScreen } = useScreenSize();
   const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
   const [adding, setAdding] = useState(false);
 
@@ -128,13 +128,13 @@ export const ReferenceSegment = ({
           ) : (
             references?.map((attachment, index) => (
               <Gutters key={attachment.id ?? index} disablePadding>
-                <Gutters row={!isMediumScreen} disablePadding alignItems="start">
+                <Gutters row={!isSmallScreen} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
                     title={t('common.title')}
                     readOnly={readOnly}
                     disabled={disabled || isRemoving(index)}
-                    fullWidth={isMediumScreen}
+                    fullWidth={isSmallScreen}
                   />
                   <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput
