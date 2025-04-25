@@ -4,7 +4,7 @@ import SpaceBreadcrumbs from '../components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import SpacePageBanner from './tabbedLayout/layout/SpacePageBanner';
 import PlatformFooter from '@/main/ui/platformFooter/PlatformFooter';
-import { useMediaQuery, Paper, Theme, Box } from '@mui/material';
+import { Paper, Box } from '@mui/material';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import SearchDialog from '@/main/search/SearchDialog';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
@@ -16,6 +16,7 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
@@ -26,7 +27,7 @@ export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
 
   const { spaceId, journeyPath, spaceLevel } = useUrlResolver();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const { isSmallScreen } = useScreenSize();
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
 
@@ -37,10 +38,10 @@ export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
       {isLevelZero && <SpacePageBanner loading={false} />}
       {!isLevelZero && <SubspacePageBanner />}
 
-      {!isMobile && isLevelZero && (
+      {!isSmallScreen && isLevelZero && (
         <SpaceTabs
           currentTab={isSettingsPage ? { section: EntityPageSection.Settings } : { sectionIndex }}
-          mobile={isMobile}
+          mobile={isSmallScreen}
           onMenuOpen={setTabsMenuOpen}
         />
       )}
@@ -49,12 +50,12 @@ export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
 
       <PlatformFooter />
       <FloatingActionButtons
-        {...(isMobile ? { bottom: gutters(3) } : {})}
+        {...(isSmallScreen ? { bottom: gutters(3) } : {})}
         visible={!isTabsMenuOpen}
         floatingActions={<PlatformHelpButton />}
       />
 
-      {isMobile && (
+      {isSmallScreen && (
         <Box component={Paper} square position="fixed" bottom={0} left={0} right={0}>
           <PoweredBy compact />
         </Box>

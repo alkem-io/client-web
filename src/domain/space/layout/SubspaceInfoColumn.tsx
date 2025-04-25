@@ -5,7 +5,6 @@ import WelcomeBlock from '../components/WelcomeBlock';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import { KeyboardTab } from '@mui/icons-material';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import { Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
@@ -21,6 +20,7 @@ import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogAction } from '../components/subspaces/DialogAction';
 import CreateJourney from '../components/subspaces/SubspaceCreationDialog/CreateJourney';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export const MENU_STATE_KEY = 'menuState';
 export enum MenuState {
@@ -30,6 +30,7 @@ export enum MenuState {
 
 export const SubspaceInfoColumn = () => {
   const { t } = useTranslation();
+  const { isSmallScreen } = useScreenSize();
   const { spaceId, spaceLevel } = useUrlResolver();
   const { permissions } = useSubSpace();
 
@@ -79,12 +80,11 @@ export const SubspaceInfoColumn = () => {
   };
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   return (
     <InfoColumn collapsed={isCollapsed}>
       {!isCollapsed && (
-        <WelcomeBlock about={!isMobile}>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>
+        <WelcomeBlock about={!isSmallScreen}>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>
       )}
       {!isCollapsed && (
         <FullWidthButton
@@ -119,7 +119,7 @@ export const SubspaceInfoColumn = () => {
         <DialogAction dialog={SubspaceDialog.Activity} />
         <DialogAction dialog={SubspaceDialog.Timeline} dialogProps={{ temporaryLocation: true }} />
         <DialogAction dialog={SubspaceDialog.Share} dialogProps={{ entityTypeName: 'subspace', url }} />
-        {innovationFlowProvided.canEditInnovationFlow && isMobile && (
+        {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
           <DialogAction dialog={SubspaceDialog.ManageFlow} />
         )}
         {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (

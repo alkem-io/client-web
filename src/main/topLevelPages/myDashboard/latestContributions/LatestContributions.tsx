@@ -1,3 +1,4 @@
+import { forwardRef, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -12,8 +13,7 @@ import {
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
-import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import React, { forwardRef, useMemo, useState } from 'react';
+import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
@@ -24,6 +24,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useDashboardContext } from '../DashboardContext';
 import { Caption } from '@/core/ui/typography';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -56,7 +57,7 @@ export interface SpaceOption {
 
 const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+  const { isSmallScreen } = useScreenSize();
 
   const [filter, setFilter] = useState<{
     space: string;
@@ -157,7 +158,11 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
 
   return (
     <>
-      <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+      <Gutters
+        disablePadding
+        disableGap
+        sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isSmallScreen ? gutters(30) : 0 }}
+      >
         {renderFilters()}
 
         {!data && loading ? (

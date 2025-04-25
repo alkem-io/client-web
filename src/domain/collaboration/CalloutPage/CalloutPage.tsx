@@ -101,8 +101,6 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const { isSmallScreen } = useScreenSize();
 
-  // const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
-
   const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
   const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
     val => val === calloutFlowState

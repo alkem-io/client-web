@@ -2,7 +2,7 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUserMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog, MessageReceiverChipData } from './DirectMessageDialog';
 
 interface UseDirectMessageDialogOptions {

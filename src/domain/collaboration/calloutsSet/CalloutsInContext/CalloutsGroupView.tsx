@@ -3,6 +3,7 @@ import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCa
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
@@ -35,7 +36,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutOpened();
   };
 
-  const columns = 0; //useColumns();
+  const columns = useColumns();
 
   const { t } = useTranslation();
 

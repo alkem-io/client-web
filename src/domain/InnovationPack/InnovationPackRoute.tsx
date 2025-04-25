@@ -4,7 +4,7 @@ import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPac
 import AdminInnovationPackPage from './admin/AdminInnovationPackPage';
 import { nameOfUrl } from '@/main/routing/urlParams';
 
-// the Innovationpack layout is too heavily coupled with the innovation pack so it's kept iniside the pages rather than here
+// TODO the Innovationpack layout is too heavily coupled with the innovation pack so it's kept iniside the pages rather than here
 // will revise ASAP
 const InnovationPackRoute = () => (
   <Routes>

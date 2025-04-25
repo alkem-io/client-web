@@ -7,7 +7,7 @@ import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
-import { Box, Button, IconButton, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -31,6 +31,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { useTranslation } from 'react-i18next';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
@@ -54,7 +55,8 @@ export const SubspacePageLayout = () => {
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const { isSmallScreen } = useScreenSize();
+  const hasExtendedApplicationButton = isSmallScreen;
 
   const createButton = (
     <Button
@@ -100,7 +102,6 @@ export const SubspacePageLayout = () => {
     skip: !selectedInnovationFlowState,
   });
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const showInnovationFlowStates = innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState;
   return (
     <>
@@ -127,7 +128,7 @@ export const SubspacePageLayout = () => {
               );
             }}
           </ApplicationButtonContainer>
-          {!isMobile && showInnovationFlowStates && (
+          {!isSmallScreen && showInnovationFlowStates && (
             <Box
               sx={{
                 position: 'sticky',
@@ -168,14 +169,14 @@ export const SubspacePageLayout = () => {
           />
         </PageContentColumnBase>
       </PageContent>
-      {isMobile && (
+      {isSmallScreen && (
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
           <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
             <IconButton onClick={() => {}}>
               <Menu />
             </IconButton>
 
-            {isMobile && showInnovationFlowStates && (
+            {isSmallScreen && showInnovationFlowStates && (
               <InnovationFlowStates
                 states={innovationFlowStates}
                 currentState={currentInnovationFlowState}
