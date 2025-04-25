@@ -81,9 +81,9 @@ const Root: FC = () => {
                     <BrowserRouter>
                       <AuthenticationProvider>
                         <UserGeoProvider>
-                          <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                            <UserProvider>
-                              <ApmProvider>
+                          <ApmProvider>
+                            <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                              <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
                                     <InAppNotificationSubscriber />
@@ -102,9 +102,9 @@ const Root: FC = () => {
                                     </NotFoundErrorBoundary>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
-                              </ApmProvider>
-                            </UserProvider>
-                          </AlkemioApolloProvider>
+                              </UserProvider>
+                            </AlkemioApolloProvider>
+                          </ApmProvider>
                         </UserGeoProvider>
                       </AuthenticationProvider>
                     </BrowserRouter>
