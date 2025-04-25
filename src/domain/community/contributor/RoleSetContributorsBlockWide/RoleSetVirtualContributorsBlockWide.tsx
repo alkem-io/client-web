@@ -1,4 +1,4 @@
-import { Box, Theme, useMediaQuery } from '@mui/material';
+import { Box } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import GridItem from '@/core/ui/grid/GridItem';
@@ -12,6 +12,7 @@ import { VirtualContributorProps } from '@/domain/community/community/VirtualCon
 import Loading from '@/core/ui/loading/Loading';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type RoleSetContributorTypesBlockWideProps = {
   virtualContributors: VirtualContributorProps[];
@@ -25,7 +26,7 @@ const RoleSetVirtualContributorsBlockWide = ({
   isLoading,
 }: RoleSetContributorTypesBlockWideProps) => {
   const [searchTerm, onSearchTermChange] = useState<string[]>([]);
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
   const columns = useColumns();
 
   const matchesNameFilter = (filter: string[]) => (element: VirtualContributorProps) => {
@@ -55,7 +56,7 @@ const RoleSetVirtualContributorsBlockWide = ({
           />
         }
       />
-      <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
+      <GridProvider columns={isMediumSmallScreen ? columns / 2 : columns}>
         <Gutters row flexWrap="wrap" disablePadding sx={{ overflowY: 'auto' }}>
           {isLoading ? (
             <Loading text={''} />

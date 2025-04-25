@@ -1,6 +1,6 @@
 import ScrollerWithGradient, { Orientation } from '@/core/ui/overflow/ScrollerWithGradient';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '../../grid/constants';
 import { BoxProps } from '@mui/material';
 
 interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps {
@@ -14,9 +14,8 @@ const ScrollableCardsLayoutContainer = ({
   containerProps,
   ...props
 }: ScrollableCardsLayoutContainerProps) => {
-  const breakpoint = useCurrentBreakpoint();
-
-  const orientation = orientationOverride ?? (breakpoint === 'xs' ? 'horizontal' : 'vertical');
+  const { isSmallScreen } = useScreenSize();
+  const orientation = orientationOverride ?? (isSmallScreen ? 'horizontal' : 'vertical');
 
   return (
     <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight} {...containerProps}>

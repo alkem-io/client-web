@@ -5,7 +5,7 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { PageTitle } from '@/core/ui/typography';
 import LocationCaption from '@/core/ui/location/LocationCaption';
 import { Actions } from '@/core/ui/actions/Actions';
-import { IconButton, Theme, useMediaQuery } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
@@ -16,6 +16,7 @@ import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermar
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
 import { Tagset } from './Profile';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface ProfilePageBannerProps {
   entityId: string | undefined;
@@ -46,7 +47,7 @@ const ProfilePageBanner = ({
   loading = false,
   isVirtualContributor = false,
 }: ProfilePageBannerProps) => {
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const { isLargeScreen } = useScreenSize();
 
   const { t } = useTranslation();
 
@@ -76,7 +77,7 @@ const ProfilePageBanner = ({
     ];
   }, [entityId, profile]);
 
-  const pageBannerWatermark = isMobile ? null : <PageBannerWatermark />;
+  const pageBannerWatermark = !isLargeScreen ? null : <PageBannerWatermark />;
 
   return (
     <>

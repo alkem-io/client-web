@@ -1,10 +1,10 @@
 import { useContext } from 'react';
-import { Theme, useMediaQuery } from '@mui/material';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface SubspaceHomeViewProps {
   calloutsSetId: string | undefined;
@@ -12,7 +12,7 @@ interface SubspaceHomeViewProps {
 }
 
 const SubspaceHomeView = ({ calloutsSetId, loading }: SubspaceHomeViewProps) => {
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const { selectedInnovationFlowState } = useContext(InnovationFlowStateContext);
   let classificationTagsets: ClassificationTagsetModel[] = [];
@@ -36,7 +36,7 @@ const SubspaceHomeView = ({ calloutsSetId, loading }: SubspaceHomeViewProps) => 
     <CalloutsGroupView
       calloutsSetId={calloutsSetId}
       callouts={calloutsSetProvided.callouts}
-      canCreateCallout={calloutsSetProvided.canCreateCallout && isMobile}
+      canCreateCallout={calloutsSetProvided.canCreateCallout && isSmallScreen}
       loading={loading}
       onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
       onCalloutUpdate={calloutsSetProvided.refetchCallout}

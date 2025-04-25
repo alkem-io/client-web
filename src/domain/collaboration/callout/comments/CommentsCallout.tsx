@@ -11,7 +11,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
@@ -84,9 +84,8 @@ const CommentsCallout = ({
     isSubscribedToMessages: isSubscribedToComments,
   });
 
-  const breakpoint = useCurrentBreakpoint();
-
-  const lastMessageOnly = breakpoint === 'xs' && !expanded;
+  const { isSmallScreen } = useScreenSize();
+  const lastMessageOnly = isSmallScreen && !expanded;
 
   return (
     <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>

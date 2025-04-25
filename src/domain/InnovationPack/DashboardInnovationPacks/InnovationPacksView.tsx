@@ -7,12 +7,13 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 import GridItem from '@/core/ui/grid/GridItem';
 import { Skeleton } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTheme } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface InnovationPacksViewProps extends PageContentBlockProps {
   filter: string[];
@@ -40,7 +41,7 @@ const InnovationPacksView = ({
 }: InnovationPacksViewProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   return (
     <PageContentBlock {...props}>
@@ -54,7 +55,7 @@ const InnovationPacksView = ({
 
       <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
         {loading
-          ? Array.from({ length: isMobile ? 2 : 5 }).map((_, idx) => (
+          ? Array.from({ length: isSmallScreen ? 2 : 5 }).map((_, idx) => (
               <Skeleton
                 key={idx}
                 width={gutters(12)(theme)}
@@ -66,7 +67,7 @@ const InnovationPacksView = ({
             ))
           : innovationPacks?.map(({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} />)}
 
-        {isMobile && hasMore && !loading && (
+        {isSmallScreen && hasMore && !loading && (
           <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
             <Box
               sx={{
@@ -84,7 +85,7 @@ const InnovationPacksView = ({
         )}
       </ScrollableCardsLayoutContainer>
 
-      {!isMobile && hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}
+      {!isSmallScreen && hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );
 };

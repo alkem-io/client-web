@@ -9,7 +9,7 @@ import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
@@ -79,7 +79,7 @@ export const FormikUserSelector = ({
     );
   }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
-  const breakpoint = useCurrentBreakpoint();
+  const { isSmallScreen } = useScreenSize();
 
   const handleSelect = (user: Pick<User, 'id'> | null) => {
     helpers.setTouched(true);
@@ -172,7 +172,7 @@ export const FormikUserSelector = ({
         </>
       )}
       <GridContainer disablePadding marginBottom={gutters(1)}>
-        <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
+        <GridProvider columns={isSmallScreen ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
           {field.value?.map(id => (
             <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
           ))}

@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/_deprecated/journeyCardValueGetter';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
@@ -17,6 +16,7 @@ import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
 import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -100,8 +100,8 @@ const SpaceSubspacesPage = () => {
       childEntities={subspaces}
       level={level}
       childEntitiesIcon={<SpaceL1Icon />}
-      childEntityValueGetter={journeyCardValueGetter}
-      childEntityTagsGetter={journeyCardTagsGetter}
+      childEntityValueGetter={spaceAboutValueGetter}
+      childEntityTagsGetter={spaceAboutTagsGetter}
       state={{ loading: loading, error: error }}
       renderChildEntityCard={item => (
         <SubspaceCard

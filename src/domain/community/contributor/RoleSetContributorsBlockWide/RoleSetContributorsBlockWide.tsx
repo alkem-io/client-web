@@ -3,7 +3,7 @@ import { ContributorCardSquareProps } from '../ContributorCardSquare/Contributor
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ButtonBase, useMediaQuery } from '@mui/material';
+import { ButtonBase } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -12,7 +12,7 @@ import RoleSetContributorsBlockWideContent from './RoleSetContributorsBlockWideC
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import { Theme } from '@mui/material/styles';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
@@ -59,7 +59,7 @@ const RoleSetContributorTypesBlockWide = ({
     value: configItem.value,
   }));
 
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   if (isLoading) {
     return <Loading text={t('common.loading')} />;

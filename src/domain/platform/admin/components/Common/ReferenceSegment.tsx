@@ -14,7 +14,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -76,8 +76,7 @@ export const ReferenceSegment = ({
   const { setFieldValue, touched } = useFormikContext();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const breakpoint = useCurrentBreakpoint();
-  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const { isSmallScreen } = useScreenSize();
   const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
   const [adding, setAdding] = useState(false);
 
@@ -129,13 +128,13 @@ export const ReferenceSegment = ({
           ) : (
             references?.map((attachment, index) => (
               <Gutters key={attachment.id ?? index} disablePadding>
-                <Gutters row={!isMobile} disablePadding alignItems="start">
+                <Gutters row={!isSmallScreen} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
                     title={t('common.title')}
                     readOnly={readOnly}
                     disabled={disabled || isRemoving(index)}
-                    fullWidth={isMobile}
+                    fullWidth={isSmallScreen}
                   />
                   <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput

@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { useCurrentUserContext } from '@/domain/community/user';
 import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecated/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
@@ -63,9 +63,7 @@ const PostMessageToCommentsForm = ({
     }
   };
 
-  const breakpoint = useCurrentBreakpoint();
-
-  const isCompact = breakpoint === 'xs';
+  const { isSmallScreen } = useScreenSize();
 
   return (
     <Box display="flex" alignItems="start" gap={gutters(0.5)} {...containerProps}>
@@ -99,7 +97,7 @@ const PostMessageToCommentsForm = ({
                 sx={{
                   height: gutters(2),
                 }}
-                compactMode={isCompact}
+                compactMode={isSmallScreen}
               />
             </Form>
           )}

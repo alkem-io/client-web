@@ -9,6 +9,7 @@ export const MAX_CONTENT_WIDTH_WITH_GUTTER_PX = 1400;
 export const MAX_CONTENT_WIDTH_GUTTERS = 70;
 
 export const GRID_COLUMNS_MOBILE = 4;
+export const GRID_COLUMNS_TABLET = 8;
 export const GRID_COLUMNS_DESKTOP = 12;
 
 export const useGlobalGridColumns = () => {
@@ -21,7 +22,7 @@ export const useGlobalGridColumns = () => {
   if (isSmall) {
     return GRID_COLUMNS_MOBILE;
   }
-  return 8;
+  return GRID_COLUMNS_TABLET;
 };
 
 export const cardsGridColumns = (parentColumns: number) => {
@@ -32,4 +33,12 @@ export const cardsGridColumns = (parentColumns: number) => {
     return 9;
   }
   return 3;
+};
+
+export const useScreenSize = () => {
+  const isLargeScreen = useMediaQuery<Theme>(theme => theme.breakpoints.up('lg')); // Inclusive: 'lg', 'xl'
+  const isMediumLargeScreen = useMediaQuery<Theme>(theme => theme.breakpoints.up('md')); // Inclusive: 'md', 'lg', 'xl
+  const isMediumSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md')); // Exclusive: 'sm' and 'xs'
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.only('xs'));
+  return { isLargeScreen, isMediumLargeScreen, isMediumSmallScreen, isSmallScreen };
 };
