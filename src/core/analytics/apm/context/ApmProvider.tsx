@@ -32,7 +32,9 @@ export const ApmUserSetter = () => {
   const { userModel, isAuthenticated } = currentUserModel;
   const { setUser } = useContext(ApmContext);
 
-  useEffect(() => userModel && setUser(currentUserModel), [userModel, isAuthenticated]);
+  useEffect(() => {
+    userModel && setUser(currentUserModel);
+  }, [userModel, isAuthenticated]);
 
   return null;
 };
