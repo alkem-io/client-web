@@ -2,7 +2,7 @@ import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import { Box, Button, ButtonProps, DialogContent, Theme, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Button, ButtonProps, DialogContent, Tooltip } from '@mui/material';
 import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
@@ -22,6 +22,7 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikVisualUpload, { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
@@ -89,7 +90,7 @@ const CreateNewVirtualContributor = ({
   onChangeAvatar,
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const cols = useColumns();
   const isMobile = cols < 5;

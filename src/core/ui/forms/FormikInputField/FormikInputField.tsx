@@ -47,6 +47,7 @@ export const FormikInputField = ({
   const tErr = useValidationMessageTranslation();
   const [field, meta, helpers] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
+
   const helperText = useMemo(() => {
     if (!isError) {
       return _helperText;

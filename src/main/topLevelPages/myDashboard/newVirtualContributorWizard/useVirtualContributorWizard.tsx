@@ -31,7 +31,7 @@ import {
 import ExistingSpace, { SelectableKnowledgeSpace } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { addVCCreationCache } from './TryVC/utils';
@@ -66,7 +66,7 @@ export type SelectableSpace = {
 
 const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
   const notify = useNotification();
   const navigate = useNavigate();
 
@@ -143,7 +143,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       allAccountSpaces: accountSpaces,
       availableSpaces: accountSpaces.filter(hasReadAboutPrivilege),
     };
-  }, [data, user, targetAccount]);
+  }, [data, userModel, targetAccount]);
 
   const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
   // For all the available spaces get their subspaces (and their subspaces)
@@ -184,7 +184,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           accountID: myAccountId!,
           about: {
             profileData: {
-              displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
+              displayName: `${accountName || userModel?.profile.displayName} - ${t('common.space')}`,
             },
           },
           collaborationData: {

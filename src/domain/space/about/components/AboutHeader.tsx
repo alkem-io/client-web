@@ -1,11 +1,12 @@
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, IconButton, Theme, useMediaQuery } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { ReactNode } from 'react';
 import { PageTitle, Tagline } from '@/core/ui/typography';
 import { Close } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface AboutHeaderProps {
   title?: string;
@@ -17,7 +18,7 @@ export interface AboutHeaderProps {
 
 const AboutHeader = ({ title, tagline, loading = false, startIcon, onClose }: AboutHeaderProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
   const navigate = useNavigate();
 
   const onCloseClick = () => {
@@ -35,7 +36,7 @@ const AboutHeader = ({ title, tagline, loading = false, startIcon, onClose }: Ab
         gap={gutters()}
         rowGap={gutters(0.5)}
         alignItems="start"
-        flexWrap={isMobile ? 'wrap' : 'nowrap'}
+        flexWrap={isMediumSmallScreen ? 'wrap' : 'nowrap'}
       >
         {!loading && (
           <>

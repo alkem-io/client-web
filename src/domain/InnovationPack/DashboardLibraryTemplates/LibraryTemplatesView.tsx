@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode } from 'react';
-import { Box, Theme, Button, Skeleton, useMediaQuery } from '@mui/material';
+import { Box, Button, Skeleton } from '@mui/material';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
@@ -15,6 +15,7 @@ import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTheme } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];
@@ -48,7 +49,7 @@ const LibraryTemplatesView = ({
   ...props
 }: Omit<PageContentBlockProps, 'onClick'> & LibraryTemplatesViewProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
   const theme = useTheme();
 
   return (
@@ -66,7 +67,7 @@ const LibraryTemplatesView = ({
           gap: 1,
         }}
       >
-        {isMobile ? (
+        {isSmallScreen ? (
           <TemplateTypeFilterMobile
             value={filter.templateTypes}
             onChange={templateTypes =>
@@ -86,14 +87,14 @@ const LibraryTemplatesView = ({
           value={filter.searchTerms}
           minLength={2}
           size="xsmall"
-          containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined, marginLeft: 'auto' } }}
+          containerProps={{ sx: { flexGrow: isSmallScreen ? 1 : undefined, marginLeft: 'auto' } }}
           inlineTerms
         />
       </Box>
 
       <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
         {loading
-          ? Array.from({ length: isMobile ? 2 : 5 }).map((_, idx) => (
+          ? Array.from({ length: isSmallScreen ? 2 : 5 }).map((_, idx) => (
               <Skeleton
                 key={idx}
                 width={gutters(12)(theme)}
@@ -112,7 +113,7 @@ const LibraryTemplatesView = ({
               />
             ))}
 
-        {isMobile && !loading && hasMore && (
+        {isSmallScreen && !loading && hasMore && (
           <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
             <Box
               sx={{
@@ -130,7 +131,7 @@ const LibraryTemplatesView = ({
         )}
       </ScrollableCardsLayoutContainer>
 
-      {!isMobile && hasMore && <SeeMore subject={t('common.templates')} onClick={onDialogOpen} />}
+      {!isSmallScreen && hasMore && <SeeMore subject={t('common.templates')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );
 };

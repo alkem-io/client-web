@@ -4,26 +4,27 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
+import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import { useTranslation } from 'react-i18next';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { Box, Button, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import useNavigate from '@/core/routing/useNavigate';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type InvitationDialogProps = {
   open: boolean;
   onClose: () => void;
-  invitation: InvitationItem | undefined;
+  invitation: PendingInvitationItem | undefined;
   updating: boolean;
   acceptInvitation: (invitationId: string, spaceUrl: string) => void;
   accepting: boolean;
@@ -46,7 +47,7 @@ const InvitationDialog = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
@@ -97,11 +98,11 @@ const InvitationDialog = ({
                 <DialogContent sx={{ padding: 0 }}>
                   <Gutters
                     paddingTop={0}
-                    flexDirection={isMobile ? 'column' : 'row'}
-                    alignItems={isMobile ? 'center' : 'start'}
+                    flexDirection={isSmallScreen ? 'column' : 'row'}
+                    alignItems={isSmallScreen ? 'center' : 'start'}
                   >
                     <SpaceCardBase
-                      iconComponent={spaceIconByLevel[invitation.space.level]}
+                      iconComponent={spaceLevelIcon[invitation.space.level]}
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
                       banner={invitation.space.about.profile.cardBanner}

@@ -1,5 +1,5 @@
 import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
-import { Box, Button, Collapse, IconButton, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Button, Collapse, IconButton, Tooltip } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 
 import produce from 'immer';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { GUTTER_PX } from '@/core/ui/grid/constants';
+import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
 import { findCurrentPath } from './utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { debounce, difference } from 'lodash';
@@ -72,9 +72,9 @@ const DashboardNavigation = ({
 
   const showAll = !hasHeightLimit || allItemsFit;
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
 
-  const tooltipPlacement = isMobile ? 'left' : 'right';
+  const tooltipPlacement = isMediumSmallScreen ? 'left' : 'right';
 
   // TODO: receive journeyPath as argument, revise the currentLevel && isTopLevel logic!
   // TODO: simplify the logic here and in the DashboardNavigationItemView

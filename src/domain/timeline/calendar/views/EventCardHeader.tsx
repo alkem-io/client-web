@@ -1,4 +1,4 @@
-import { Box, Skeleton, Theme, useMediaQuery } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardHeaderDetail from '@/core/ui/card/CardHeaderDetail';
@@ -10,6 +10,7 @@ import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
 import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface EventCardHeaderProps {
   event:
@@ -34,7 +35,7 @@ export interface EventCardHeaderProps {
 
 const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderProps>) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const startDate = event?.startDate;
   const endDate = getEndDateByDuration(startDate, event?.durationMinutes ?? 0);
@@ -51,13 +52,13 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
           tooltipDisabled
         />
       }
-      height={isMobile ? 'auto' : gutters(3)}
+      height={isSmallScreen ? 'auto' : gutters(3)}
       paddingX={1}
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
     >
       <BlockSectionTitle noWrap>{event?.profile.displayName}</BlockSectionTitle>
-      <Box display="flex" gap={isMobile ? 0 : gutters()} flexDirection={isMobile ? 'column' : 'row'}>
+      <Box display="flex" gap={isSmallScreen ? 0 : gutters()} flexDirection={isSmallScreen ? 'column' : 'row'}>
         {event && (
           <>
             <CardHeaderDetail iconComponent={<CalendarIcon />}>{formatLongDate(startDate)}</CardHeaderDetail>

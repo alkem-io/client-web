@@ -1,7 +1,7 @@
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo } from 'react';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -11,7 +11,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
@@ -41,10 +41,9 @@ const CommentsCallout = ({
   calloutActions = true,
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
-  const { user: userMetadata, isAuthenticated } = useUserContext();
+  const { userModel, isAuthenticated } = useCurrentUserContext();
   const { space } = useSpace();
   const myMembershipStatus = space?.about.membership?.myMembershipStatus;
-  const user = userMetadata?.user;
 
   const commentsId = callout.comments?.id;
   const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
@@ -53,8 +52,8 @@ const CommentsCallout = ({
   const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteMessage = useCallback(
-    authorId => canDeleteMessages || (isAuthenticated && authorId === user?.id),
-    [user, isAuthenticated, canDeleteMessages]
+    authorId => canDeleteMessages || (isAuthenticated && authorId === userModel?.id),
+    [userModel, isAuthenticated, canDeleteMessages]
   );
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
@@ -85,9 +84,8 @@ const CommentsCallout = ({
     isSubscribedToMessages: isSubscribedToComments,
   });
 
-  const breakpoint = useCurrentBreakpoint();
-
-  const lastMessageOnly = breakpoint === 'xs' && !expanded;
+  const { isSmallScreen } = useScreenSize();
+  const lastMessageOnly = isSmallScreen && !expanded;
 
   return (
     <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>

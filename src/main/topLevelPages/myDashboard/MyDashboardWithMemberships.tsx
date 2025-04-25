@@ -8,7 +8,7 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import { useDashboardContext } from './DashboardContext';
 import MyResources from './myResources/MyResources';
-import { Theme, useMediaQuery } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
 
@@ -24,19 +24,18 @@ const MyDashboardWithMemberships = () => {
     fetchPolicy: 'network-only',
   });
 
-  // using the isMobile convention but this is actually a tablet breakpoint
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
 
   return (
     <PageContentColumn columns={12}>
-      {!isMobile && (
+      {!isMediumSmallScreen && (
         <InfoColumn>
           <DashboardMenu />
           <MyResources />
         </InfoColumn>
       )}
       <ContentColumn>
-        {isMobile && <DashboardMenu expandable />}
+        {isMediumSmallScreen && <DashboardMenu expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         {!activityEnabled && (

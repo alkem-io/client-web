@@ -22,17 +22,17 @@
     "references": [
       {
         "icon": "GradeOutlined",
-        "uri": "https://welcome.alkem.io/help/getting-started/",
+        "uri": "https://alkem.io/docs/getting-started/first-steps",
         "title": "New user? Visit our Getting Started pages!"
       },
       {
         "icon": "NotListedLocationOutlined",
-        "uri": "https://welcome.alkem.io/help/",
-        "title": "Find your answers in the Help Center or FAQ"
+        "uri": "https://alkem.io/docs",
+        "title": "Still have questions? Read more here"
       },
       {
         "icon": "EmailOutlined",
-        "uri": "https://welcome.alkem.io/contact/",
+        "uri": "https://alkem.io/docs/support",
         "title": "Contact the Alkemio team"
       }
     ]
@@ -474,6 +474,8 @@
       "OWNER": "Owner",
       "GLOBAL_ADMIN": "Global Admin",
       "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_SUPPORT_MANAGER": "Support Manager",
+      "GLOBAL_PLATFORM_MANAGER": "Platform Manager",
       "GLOBAL_LICENSE_MANAGER": "License Manager",
       "GLOBAL_COMMUNITY_READER": "Community Manager",
       "GLOBAL_SPACES_READER": "Spaces Reader",
@@ -854,7 +856,8 @@
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
       "nonBlank": "{{field}} must not consist of just spaces",
       "atLeastOne": "At least one {{item}} must be selected.",
-      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one."
+      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
+      "invalidUrl": "Invalid URL"
     }
   },
   "templateDialog": {
@@ -1721,7 +1724,8 @@
           "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
-      "emptyInbox": "No pending notifications"
+      "emptyInbox": "No pending notifications",
+      "markAllAsRead": "Mark all as read"
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your Space is Ready!",

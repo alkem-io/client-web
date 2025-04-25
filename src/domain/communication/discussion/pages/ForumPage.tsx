@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme, useMediaQuery } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useNavigate from '@/core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
@@ -19,7 +19,7 @@ import {
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import UseSubscriptionToSubEntity from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -67,7 +67,7 @@ export const ForumPage = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user: { hasPlatformPrivilege } = {}, loading: loadingUser } = useUserContext();
+  const { platformPrivilegeWrapper: { hasPlatformPrivilege } = {}, loading: loadingUser } = useCurrentUserContext();
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
 
@@ -112,7 +112,7 @@ export const ForumPage = ({
     [validCategories, t]
   );
 
-  const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const { isLargeScreen } = useScreenSize();
   const loading = loadingDiscussions || loadingUser;
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
@@ -149,7 +149,7 @@ export const ForumPage = ({
                 );
               }}
               value={categorySelected}
-              showLabels={!mediumScreen}
+              showLabels={isLargeScreen}
             />
           }
         >
