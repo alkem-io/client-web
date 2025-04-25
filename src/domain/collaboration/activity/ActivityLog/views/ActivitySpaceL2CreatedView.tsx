@@ -4,24 +4,26 @@ import { ActivitySubject } from '../types/ActivitySubject';
 import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
 import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 
-interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
-  subspace: {
+interface ActivitySpaceL2CreatedViewProps extends ActivityViewProps {
+  subsubspace: {
     about: ActivitySubject;
   };
-  type: ActivityEventType.ChallengeCreated;
+  type: ActivityEventType.OpportunityCreated;
 }
 
-export const ActivityChallengeCreatedView = ({
+export const ActivitySpaceL2CreatedView = ({
+  createdDate,
   spaceDisplayName,
-  subspace,
+  subsubspace,
   type,
   ...rest
-}: ActivityChallengeCreatedViewProps) => (
+}: ActivitySpaceL2CreatedViewProps) => (
   <ActivityBaseView
     type={type}
-    title={<ActivityDescriptionByType activityType={type} subject={subspace.about.profile.displayName} />}
-    url={subspace.about.profile.url}
+    title={<ActivityDescriptionByType activityType={type} subject={subsubspace.about.profile.displayName} />}
+    url={subsubspace.about.profile.url}
     contextDisplayName={spaceDisplayName}
+    createdDate={createdDate}
     {...rest}
   />
 );

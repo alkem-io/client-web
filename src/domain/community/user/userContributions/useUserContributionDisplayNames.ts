@@ -13,18 +13,19 @@ const useUserContributionDisplayNames = () => {
     skip: !userModel?.id,
   });
 
-  const challengeMemberships = data?.rolesUser.spaces.flatMap(e => e.subspaces);
-  const opportunityMemberships = data?.rolesUser.spaces.flatMap(e => e.subspaces);
+  const spaceMembershipsL1 = data?.rolesUser.spaces.flatMap(e => e.subspaces);
+  // TODO: this looks like a bug?
+  const spaceMembershipsL2 = data?.rolesUser.spaces.flatMap(e => e.subspaces);
 
-  const spaceDisplayNames = data?.rolesUser.spaces.map(getDisplayName);
-  const challengeDisplayNames = challengeMemberships?.map(getDisplayName);
-  const opportunityDisplayNames = opportunityMemberships?.map(getDisplayName);
+  const spaceDisplayNamesL0 = data?.rolesUser.spaces.map(getDisplayName);
+  const spaceDisplayNamesL1 = spaceMembershipsL1?.map(getDisplayName);
+  const spaceDisplayNamesL2 = spaceMembershipsL2?.map(getDisplayName);
   const organizationDisplayNames = data?.rolesUser.organizations.map(getDisplayName);
 
   return {
-    spaces: spaceDisplayNames,
-    challenges: challengeDisplayNames,
-    opportunities: opportunityDisplayNames,
+    spaceDisplayNamesL0,
+    spaceDisplayNamesL1,
+    spaceDisplayNamesL2,
     organizations: organizationDisplayNames,
   };
 };

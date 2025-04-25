@@ -54,7 +54,7 @@ const searchResults: SearchResult[] = [
     space: {
       about: {
         profile: {
-          displayName: 'Parent Challenge',
+          displayName: 'Parent Space',
           url: '/space1',
         },
       },

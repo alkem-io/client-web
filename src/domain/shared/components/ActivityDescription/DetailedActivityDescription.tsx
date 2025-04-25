@@ -11,7 +11,7 @@ export interface ActivityDescriptionProps {
   values?: Record<string, string | undefined>;
   components?: Record<string, ReactElement>;
   createdDate: Date | string;
-  spaceDisplayName?: string; // Callout name or Journey name
+  spaceDisplayName?: string; // Callout name or Space name
   spaceUrl?: string;
   spaceLevel?: SpaceLevel;
   author?: {

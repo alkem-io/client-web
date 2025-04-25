@@ -495,8 +495,8 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   }
   ${ActivityCalloutContextFragmentDoc}
 `;
-export const ActivityLogChallengeCreatedFragmentDoc = gql`
-  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+export const ActivityLogSpaceL1CreatedFragmentDoc = gql`
+  fragment ActivityLogSpaceL1Created on ActivityLogEntryChallengeCreated {
     subspace {
       id
       about {
@@ -509,8 +509,8 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
   }
   ${ActivitySubjectProfileFragmentDoc}
 `;
-export const ActivityLogOpportunityCreatedFragmentDoc = gql`
-  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+export const ActivityLogSpaceL2CreatedFragmentDoc = gql`
+  fragment ActivityLogSpaceL2Created on ActivityLogEntryOpportunityCreated {
     subsubspace {
       id
       about {
@@ -569,10 +569,10 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogCalloutDiscussionComment
     }
     ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogChallengeCreated
+      ...ActivityLogSpaceL1Created
     }
     ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogOpportunityCreated
+      ...ActivityLogSpaceL2Created
     }
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent
@@ -589,8 +589,8 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -3034,18 +3034,6 @@ export const SpaceMembershipFragmentDoc = gql`
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
-`;
-export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
-  fragment MyMembershipsChildJourneyProfile on Profile {
-    id
-    displayName
-    tagline
-    url
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
 `;
 export const ShortAccountItemFragmentDoc = gql`
   fragment ShortAccountItem on Profile {
@@ -6090,10 +6078,10 @@ export const ActivityLogOnCollaborationDocument = gql`
         ...ActivityLogCalloutDiscussionComment
       }
       ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
+        ...ActivityLogSpaceL1Created
       }
       ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
+        ...ActivityLogSpaceL2Created
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -6112,8 +6100,8 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -21571,10 +21559,10 @@ export const LatestContributionsDocument = gql`
           ...ActivityLogCalloutDiscussionComment
         }
         ... on ActivityLogEntryChallengeCreated {
-          ...ActivityLogChallengeCreated
+          ...ActivityLogSpaceL1Created
         }
         ... on ActivityLogEntryOpportunityCreated {
-          ...ActivityLogOpportunityCreated
+          ...ActivityLogSpaceL2Created
         }
         ... on ActivityLogEntryUpdateSent {
           ...ActivityLogUpdateSent
@@ -21598,8 +21586,8 @@ export const LatestContributionsDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -21701,10 +21689,10 @@ export const LatestContributionsGroupedDocument = gql`
         ...ActivityLogCalloutDiscussionComment
       }
       ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
+        ...ActivityLogSpaceL1Created
       }
       ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
+        ...ActivityLogSpaceL2Created
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -21723,8 +21711,8 @@ export const LatestContributionsGroupedDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -22373,8 +22361,8 @@ export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQue
   return { query: RecentSpacesDocument, variables: variables };
 }
 
-export const ChallengeExplorerPageDocument = gql`
-  query ChallengeExplorerPage {
+export const MySpacesExplorerPageDocument = gql`
+  query MySpacesExplorerPage {
     me {
       spaceMembershipsFlat {
         id
@@ -22387,54 +22375,54 @@ export const ChallengeExplorerPageDocument = gql`
 `;
 
 /**
- * __useChallengeExplorerPageQuery__
+ * __useMySpacesExplorerPageQuery__
  *
- * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMySpacesExplorerPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMySpacesExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeExplorerPageQuery({
+ * const { data, loading, error } = useMySpacesExplorerPageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useChallengeExplorerPageQuery(
+export function useMySpacesExplorerPageQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
+    SchemaTypes.MySpacesExplorerPageQuery,
+    SchemaTypes.MySpacesExplorerPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
+  return Apollo.useQuery<SchemaTypes.MySpacesExplorerPageQuery, SchemaTypes.MySpacesExplorerPageQueryVariables>(
+    MySpacesExplorerPageDocument,
     options
   );
 }
 
-export function useChallengeExplorerPageLazyQuery(
+export function useMySpacesExplorerPageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
+    SchemaTypes.MySpacesExplorerPageQuery,
+    SchemaTypes.MySpacesExplorerPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
+  return Apollo.useLazyQuery<SchemaTypes.MySpacesExplorerPageQuery, SchemaTypes.MySpacesExplorerPageQueryVariables>(
+    MySpacesExplorerPageDocument,
     options
   );
 }
 
-export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
-export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
-export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerPageQuery,
-  SchemaTypes.ChallengeExplorerPageQueryVariables
+export type MySpacesExplorerPageQueryHookResult = ReturnType<typeof useMySpacesExplorerPageQuery>;
+export type MySpacesExplorerPageLazyQueryHookResult = ReturnType<typeof useMySpacesExplorerPageLazyQuery>;
+export type MySpacesExplorerPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.MySpacesExplorerPageQuery,
+  SchemaTypes.MySpacesExplorerPageQueryVariables
 >;
-export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.ChallengeExplorerPageQueryVariables) {
-  return { query: ChallengeExplorerPageDocument, variables: variables };
+export function refetchMySpacesExplorerPageQuery(variables?: SchemaTypes.MySpacesExplorerPageQueryVariables) {
+  return { query: MySpacesExplorerPageDocument, variables: variables };
 }
 
 export const SpaceExplorerSearchDocument = gql`

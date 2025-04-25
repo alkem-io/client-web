@@ -69,15 +69,16 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   const { user: userModel, loading } = useUserProvider(id);
   const refs = userModel?.profile.references || [];
 
-  const { spaces, challenges, opportunities, organizations } = useUserContributionDisplayNames();
+  const { spaceDisplayNamesL0, spaceDisplayNamesL1, spaceDisplayNamesL2, organizations } =
+    useUserContributionDisplayNames();
 
   const tags = (userModel?.profile.tagsets || []).flatMap(x => x.tags || []);
 
   const noMembership =
-    !(spaces && spaces.length > 0) &&
-    !(challenges && challenges.length > 0) &&
+    !(spaceDisplayNamesL0 && spaceDisplayNamesL0.length > 0) &&
+    !(spaceDisplayNamesL1 && spaceDisplayNamesL1.length > 0) &&
     !(organizations && organizations.length > 0) &&
-    !(opportunities && opportunities.length > 0);
+    !(spaceDisplayNamesL2 && spaceDisplayNamesL2.length > 0);
 
   return (
     <Dialog open maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
@@ -128,16 +129,16 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {spaces && spaces.length > 0 && (
+                  {spaceDisplayNamesL0 && spaceDisplayNamesL0.length > 0 && (
                     <TableRow>
                       <TableCell align="center">Groups</TableCell>
-                      <TableCell align="center">{getStringOfNames(spaces)}</TableCell>
+                      <TableCell align="center">{getStringOfNames(spaceDisplayNamesL0)}</TableCell>
                     </TableRow>
                   )}
-                  {challenges && challenges.length > 0 && (
+                  {spaceDisplayNamesL1 && spaceDisplayNamesL1.length > 0 && (
                     <TableRow>
-                      <TableCell align="center">Challenges</TableCell>
-                      <TableCell align="center">{getStringOfNames(challenges)}</TableCell>
+                      <TableCell align="center">Subspaces</TableCell>
+                      <TableCell align="center">{getStringOfNames(spaceDisplayNamesL1)}</TableCell>
                     </TableRow>
                   )}
                   {organizations && organizations.length > 0 && (
@@ -146,10 +147,10 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
                       <TableCell align="center">{getStringOfNames(organizations)}</TableCell>
                     </TableRow>
                   )}
-                  {opportunities && opportunities.length > 0 && (
+                  {spaceDisplayNamesL2 && spaceDisplayNamesL2.length > 0 && (
                     <TableRow>
-                      <TableCell align="center">Opportunities</TableCell>
-                      <TableCell align="center">{getStringOfNames(opportunities)}</TableCell>
+                      <TableCell align="center">Subspaces L2</TableCell>
+                      <TableCell align="center">{getStringOfNames(spaceDisplayNamesL2)}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>

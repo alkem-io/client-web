@@ -10001,7 +10001,7 @@ export type ActivityLogCalloutWhiteboardContentModifiedFragment = {
   };
 };
 
-export type ActivityLogChallengeCreatedFragment = {
+export type ActivityLogSpaceL1CreatedFragment = {
   __typename?: 'ActivityLogEntryChallengeCreated';
   subspace: {
     __typename?: 'Space';
@@ -10014,7 +10014,7 @@ export type ActivityLogChallengeCreatedFragment = {
   };
 };
 
-export type ActivityLogOpportunityCreatedFragment = {
+export type ActivityLogSpaceL2CreatedFragment = {
   __typename?: 'ActivityLogEntryOpportunityCreated';
   subsubspace: {
     __typename?: 'Space';
@@ -30816,15 +30816,6 @@ export type SpaceMembershipFragment = {
   };
 };
 
-export type MyMembershipsChildJourneyProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  tagline?: string | undefined;
-  url: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
 export type MyResourcesQueryVariables = Exact<{
   accountId: Scalars['UUID'];
 }>;
@@ -31222,9 +31213,9 @@ export type RecentSpacesQuery = {
   };
 };
 
-export type ChallengeExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
+export type MySpacesExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChallengeExplorerPageQuery = {
+export type MySpacesExplorerPageQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';

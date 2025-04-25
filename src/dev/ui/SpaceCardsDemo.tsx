@@ -35,8 +35,8 @@ const SpaceCardsDemo = () => {
                 banner={{ uri: defaultVisualUrls.CARD }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Challenge Card"
-                tags={['challenge', 'card']}
+                displayName="Space L1 Card"
+                tags={['subspace', 'card']}
                 spaceUri=""
                 spaceDisplayName="Parent Space"
                 level={SpaceLevel.L1}
@@ -48,7 +48,7 @@ const SpaceCardsDemo = () => {
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
-                tags={['challenge', 'card']}
+                tags={['subspace', 'card']}
                 spaceUri=""
                 spaceDisplayName=""
                 level={SpaceLevel.L0}
@@ -60,18 +60,7 @@ const SpaceCardsDemo = () => {
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
-                tags={[
-                  'challenge',
-                  'card',
-                  'that',
-                  'has',
-                  'too',
-                  'many',
-                  'tags',
-                  'they',
-                  'dont even fit',
-                  'on 2 lines',
-                ]}
+                tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 member
                 spaceUri=""
                 spaceDisplayName="Parent Space"
@@ -131,14 +120,14 @@ const SpaceCardsDemo = () => {
             </PageContentBlockGrid>
           </PageContentBlock>
           <PageContentBlock>
-            <PageContentBlockHeader title="Challenge Cards" />
+            <PageContentBlockHeader title="Subspace Cards" />
             <PageContentBlockGrid disablePadding cards>
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Challenge Card"
-                tags={['challenge', 'card']}
+                displayName="Subspace Card"
+                tags={['subspace', 'card']}
                 spaceUri=""
                 spaceDisplayName="Parent Space"
               />
@@ -146,8 +135,8 @@ const SpaceCardsDemo = () => {
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Really Long Challenge Card Display Name"
-                tags={['challenge', 'card']}
+                displayName="Really Long Subspace Card Display Name"
+                tags={['subspace', 'card']}
                 spaceUri=""
                 spaceDisplayName="Parent Space"
               />
@@ -155,19 +144,8 @@ const SpaceCardsDemo = () => {
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Really Long Challenge Card Display Name That Doesn't Even Fit On 2 Lines"
-                tags={[
-                  'challenge',
-                  'card',
-                  'that',
-                  'has',
-                  'too',
-                  'many',
-                  'tags',
-                  'they',
-                  'dont even fit',
-                  'on 2 lines',
-                ]}
+                displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
+                tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 spaceUri=""
                 spaceDisplayName="Parent Space"
               />

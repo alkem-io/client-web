@@ -40,10 +40,10 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
       ...ActivityLogCalloutDiscussionComment
     }
     ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogChallengeCreated
+      ...ActivityLogSpaceL1Created
     }
     ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogOpportunityCreated
+      ...ActivityLogSpaceL2Created
     }
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent

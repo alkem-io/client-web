@@ -99,8 +99,8 @@ export const ApplicationButtonContainer = ({
 
   const userInvitation = pendingInvitations?.find(x => x.spacePendingMembershipInfo.id === spaceId);
 
-  // find an application which does not have a challengeID, meaning it's on space level,
-  // but you are at least at challenge level to have a parent application
+  // find an application which does not have a spaceID, meaning it's on space level,
+  // but you are at least at Space level to have a parent application
   const parentApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === parentSpaceId);
 
   const isMember = space?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
