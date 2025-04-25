@@ -54,7 +54,7 @@ export const SpaceAdminL2Route = () => {
 
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
-      <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
+      <StorageConfigContextProvider locationType="space" spaceId={subspace?.id}>
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />

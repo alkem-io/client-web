@@ -10543,7 +10543,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10587,7 +10587,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10635,7 +10635,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10684,7 +10684,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10728,7 +10728,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10781,7 +10781,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10830,7 +10830,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10883,7 +10883,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10936,7 +10936,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10984,7 +10984,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11059,7 +11059,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11108,7 +11108,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         message: string;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -18505,6 +18505,27 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationHubBannerWideQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            bannerWide?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type DashboardSpacesQueryVariables = Exact<{
   visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
 }>;
@@ -18965,27 +18986,6 @@ export type InnovationHubSettingsFragment = {
         };
       }>
     | undefined;
-};
-
-export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
-
-export type InnovationHubBannerWideQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            bannerWide?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        }
-      | undefined;
-  };
 };
 
 export type InnovationHubQueryVariables = Exact<{
@@ -23313,11 +23313,11 @@ export type SpacePrivilegesQuery = {
   };
 };
 
-export type JourneyStorageConfigQueryVariables = Exact<{
+export type SpaceStorageConfigQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type JourneyStorageConfigQuery = {
+export type SpaceStorageConfigQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -29566,7 +29566,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29611,7 +29611,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29660,7 +29660,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29714,7 +29714,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29759,7 +29759,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29813,7 +29813,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29863,7 +29863,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29917,7 +29917,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29971,7 +29971,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30020,7 +30020,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30096,7 +30096,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30146,7 +30146,7 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           message: string;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30198,7 +30198,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30230,7 +30230,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30266,7 +30266,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30303,7 +30303,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30335,7 +30335,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30376,7 +30376,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30413,7 +30413,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30454,7 +30454,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30495,7 +30495,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30531,7 +30531,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30594,7 +30594,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30631,7 +30631,7 @@ export type LatestContributionsGroupedQuery = {
         type: ActivityEventType;
         child: boolean;
         message: string;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';

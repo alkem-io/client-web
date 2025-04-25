@@ -178,7 +178,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       const data = urlResolverData.urlResolver;
       const spaceId = data?.space?.id;
       const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
-      const journeyPath = spacesIds.length > 0 ? (spacesIds as SpaceHierarchyPath) : undefined;
+      const spaceHierarchyPath = spacesIds.length > 0 ? (spacesIds as SpaceHierarchyPath) : undefined;
 
       return {
         type,
@@ -187,7 +187,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         spaceLevel: data.space?.level,
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
         parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
-        spaceHierarchyPath: journeyPath,
+        spaceHierarchyPath: spaceHierarchyPath,
 
         // Collaboration:
         collaborationId: data.space?.collaboration.id,

@@ -46,8 +46,8 @@ const TopNotices = styled(Box)(() => ({
 }));
 
 interface PageNoticeProps extends BoxProps {
-  level: JourneyPageBannerProps['level'];
-  isAdmin: JourneyPageBannerProps['isAdmin'];
+  level: SpacePageBannerProps['level'];
+  isAdmin: SpacePageBannerProps['isAdmin'];
 }
 
 const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
@@ -81,20 +81,20 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
     default: {
       if (visibility === SpaceVisibility.Archived) {
         message = tLinks(
-          'pages.generic.archived-notice.archived-journey',
+          'pages.generic.archived-notice.archived-subspace',
           {
             contact: { href: locations?.feedback, target: '_blank' },
           },
-          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
+          { space: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       if (visibility === SpaceVisibility.Demo) {
         message = tLinks(
-          'pages.generic.demo-notice.demo-journey',
+          'pages.generic.demo-notice.demo-subspace',
           {
             alkemio: { href: '/', target: '_blank' },
           },
-          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
+          { space: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       break;
@@ -126,7 +126,7 @@ const WatermarkContainer = (props: BoxProps) => (
   <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
 );
 
-export interface JourneyPageBannerProps extends BasePageBannerProps {
+export interface SpacePageBannerProps extends BasePageBannerProps {
   title?: string;
   tagline?: string;
   bannerUrl?: string;
@@ -147,7 +147,7 @@ const SpacePageBanner = ({
   isAdmin,
   loading: dataLoading = false,
   watermark,
-}: JourneyPageBannerProps) => {
+}: SpacePageBannerProps) => {
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 

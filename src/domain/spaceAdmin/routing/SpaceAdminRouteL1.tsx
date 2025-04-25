@@ -67,7 +67,7 @@ export const SpaceAdminL1Route: FC = () => {
 
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
-      <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
+      <StorageConfigContextProvider locationType="space" spaceId={subspace?.id}>
         <Routes>
           <Route path={'/'}>
             <Route index element={<Navigate to="about" replace />} />

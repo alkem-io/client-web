@@ -4,7 +4,7 @@ import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayou
 import RouterLink from '@/core/ui/link/RouterLink';
 import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
-import useInnovationHubBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import useInnovationHubBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import BackButton from '@/core/ui/actions/BackButton';
@@ -23,8 +23,8 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
   const { about } = space;
   const profile = about.profile;
 
-  // TODO: get rid of this JourneyPath and bring it into the Space Context
-  const journeyPath: SpaceHierarchyPath = [space.id];
+  // TODO: get rid of this SpaceHierarchyPath and bring it into the Space Context
+  const spaceHierarchyPath: SpaceHierarchyPath = [space.id];
 
   const ribbon = useInnovationHubBannerRibbon({
     spaceId: space.id,
@@ -48,7 +48,7 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
     </RouterLink>
   );
 
-  const spaceBreadcrumbsElement = <SpaceBreadcrumbs spaceHierarchyPath={journeyPath} settings />;
+  const spaceBreadcrumbsElement = <SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} settings />;
 
   const tabs = spaceAdminTabsL0;
 

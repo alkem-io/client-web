@@ -53,7 +53,7 @@ export const CreateSubspace = ({ isVisible = false, onClose, parentSpaceId = '' 
     <SubspaceCreationDialog
       icon={<SpaceL1Icon2 fill="primary" />}
       open={isVisible}
-      journeyName={t('common.subspace')}
+      spaceDisplayName={t('common.subspace')}
       onClose={onClose}
       onCreate={handleCreate}
       formComponent={CreateSubspaceForm}

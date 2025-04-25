@@ -208,7 +208,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
   );
 
   return (
-    <StorageConfigContextProvider spaceId={spaceId} locationType="journey">
+    <StorageConfigContextProvider spaceId={spaceId} locationType="space">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },

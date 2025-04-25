@@ -12,7 +12,7 @@ interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityChallengeCreatedView = ({
-  journeyDisplayName,
+  spaceDisplayName,
   subspace,
   type,
   ...rest
@@ -21,7 +21,7 @@ export const ActivityChallengeCreatedView = ({
     type={type}
     title={<ActivityDescriptionByType activityType={type} subject={subspace.about.profile.displayName} />}
     url={subspace.about.profile.url}
-    contextDisplayName={journeyDisplayName}
+    contextDisplayName={spaceDisplayName}
     {...rest}
   />
 );

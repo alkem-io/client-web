@@ -48,7 +48,7 @@ const SubspaceRoute = () => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       <Routes>
         <Route index element={<SubspaceHomePage />} />
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />

@@ -6,7 +6,7 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     description
     type
     child
-    journeyDisplayName: parentDisplayName
+    spaceDisplayName: parentDisplayName
     space {
       id
       ... on Space {

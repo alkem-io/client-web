@@ -52,15 +52,8 @@ const Outline = (props: DashboardNavigationProps) => {
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    spaceId,
-    spaceLevel,
-    spaceHierarchyPath: journeyPath,
-    parentSpaceId,
-    levelZeroSpaceId,
-    calendarEventId,
-    loading,
-  } = useUrlResolver();
+  const { spaceId, spaceLevel, spaceHierarchyPath, parentSpaceId, levelZeroSpaceId, calendarEventId, loading } =
+    useUrlResolver();
   const { permissions } = useSubSpace();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
@@ -92,7 +85,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     });
   };
 
-  const onCreateJourneyClose = () => {
+  const onCreateSubspaceClose = () => {
     setCreateSpaceState({
       isDialogVisible: false,
     });
@@ -127,7 +120,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     <>
       <SubspacePageLayout
         spaceId={spaceId}
-        spaceHierarchyPath={journeyPath}
+        spaceHierarchyPath={spaceHierarchyPath}
         spaceLevel={spaceLevel}
         spaceUrl={about?.profile?.url}
         levelZeroSpaceId={levelZeroSpaceId}
@@ -229,7 +222,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
       {directMessageDialog}
       <CreateSubspace
         isVisible={createSpaceState.isDialogVisible}
-        onClose={onCreateJourneyClose}
+        onClose={onCreateSubspaceClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />
       <SubspaceDialogs

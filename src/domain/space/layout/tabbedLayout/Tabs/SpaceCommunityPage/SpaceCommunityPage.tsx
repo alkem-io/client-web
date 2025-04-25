@@ -47,7 +47,7 @@ const SpaceCommunityPage = () => {
     tabPosition: 1,
   });
 
-  const { spaceHierarchyPath: journeyPath } = urlInfo;
+  const { spaceHierarchyPath } = urlInfo;
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
   const openContactLeadsDialog = () => {
@@ -123,7 +123,7 @@ const SpaceCommunityPage = () => {
   });
 
   return (
-    <SpacePageLayout spaceHierarchyPath={journeyPath} currentSection={{ sectionIndex: 1 }}>
+    <SpacePageLayout spaceHierarchyPath={spaceHierarchyPath} currentSection={{ sectionIndex: 1 }}>
       <PageContent>
         <InfoColumn>
           {tabDescription && (

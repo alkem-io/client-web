@@ -71,8 +71,8 @@ interface WithBanner {
   about: { profile: { avatar?: Visual; cardBanner?: Visual } };
 }
 
-const collectParentAvatars = <Journey extends WithBanner & WithParent<WithBanner>>(
-  { about, parent }: Journey,
+const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<WithBanner>>(
+  { about, parent }: SpaceWithVisuals,
   initial: string[] = []
 ) => {
   if (!about?.profile) {

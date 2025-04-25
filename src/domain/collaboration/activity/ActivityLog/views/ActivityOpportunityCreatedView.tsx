@@ -13,7 +13,7 @@ interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
 
 export const ActivityOpportunityCreatedView = ({
   createdDate,
-  journeyDisplayName,
+  spaceDisplayName,
   subsubspace,
   type,
   ...rest
@@ -22,7 +22,7 @@ export const ActivityOpportunityCreatedView = ({
     type={type}
     title={<ActivityDescriptionByType activityType={type} subject={subsubspace.about.profile.displayName} />}
     url={subsubspace.about.profile.url}
-    contextDisplayName={journeyDisplayName}
+    contextDisplayName={spaceDisplayName}
     createdDate={createdDate}
     {...rest}
   />

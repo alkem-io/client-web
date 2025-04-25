@@ -19,17 +19,13 @@ const useInnovationHubBannerRibbon = ({ spaceId }: UseInnovationHubBannerRibbonO
     return undefined;
   }
 
-  // TODO: remove
-  const spaceType = t('common.space');
-
   return (
     <PageContentRibbon>
       <Trans
         t={t}
-        i18nKey="innovationHub.foreignJourney"
+        i18nKey="innovationHub.foreignSpace"
         values={{
-          journey: spaceType,
-          space: innovationHub?.profile?.displayName,
+          spaceDisplayName: innovationHub?.profile?.displayName,
         }}
         components={{ strong: <strong /> }}
       />

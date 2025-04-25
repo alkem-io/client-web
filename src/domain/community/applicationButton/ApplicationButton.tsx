@@ -143,7 +143,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement, ApplicationButton
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: spaceLevel !== SpaceLevel.L0 ? t('common.subspace') : t('common.community'),
+            space: spaceLevel !== SpaceLevel.L0 ? t('common.subspace') : t('common.community'),
           })
         : verb;
 

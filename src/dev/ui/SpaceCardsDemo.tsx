@@ -9,6 +9,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import UserCard from '@/domain/community/user/userCard/UserCard';
+import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -17,12 +18,12 @@ const SpaceCardsDemo = () => {
   return (
     <>
       <PageTitle textAlign="center" paddingY={GUTTER_MUI}>
-        Journey Cards Demo
+        Space Cards Demo
       </PageTitle>
       <PageContent>
         <PageContentColumn columns={3}>
           <PageContentBlock accent>
-            <BlockTitle>Journey Cards</BlockTitle>
+            <BlockTitle>Space Cards</BlockTitle>
             <Text>{loremIpsum}</Text>
           </PageContentBlock>
         </PageContentColumn>
@@ -31,7 +32,7 @@ const SpaceCardsDemo = () => {
             <PageContentBlockHeader title="Explore Spaces Cards" />
             <PageContentBlockGrid disablePadding cards>
               <SubspaceCard
-                banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
+                banner={{ uri: defaultVisualUrls.CARD }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Challenge Card"
@@ -43,10 +44,10 @@ const SpaceCardsDemo = () => {
                 locked
               />
               <SubspaceCard
-                banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
+                banner={{ uri: defaultVisualUrls.CARD }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Really Long Challenge Card Display Name"
+                displayName="Really Long Subspace Card Display Name"
                 tags={['challenge', 'card']}
                 spaceUri=""
                 spaceDisplayName=""
@@ -55,10 +56,10 @@ const SpaceCardsDemo = () => {
                 avatarUris={['']}
               />
               <SubspaceCard
-                banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
+                banner={{ uri: defaultVisualUrls.CARD }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
-                displayName="Really Long Challenge Card Display Name That Doesn't Even Fit On 2 Lines"
+                displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={[
                   'challenge',
                   'card',

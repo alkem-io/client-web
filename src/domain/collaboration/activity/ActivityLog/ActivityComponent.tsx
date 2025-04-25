@@ -34,7 +34,7 @@ import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventC
 
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
-    journeyDisplayName: string;
+    spaceDisplayName: string;
     triggeredBy: {
       profile: {
         avatar: {

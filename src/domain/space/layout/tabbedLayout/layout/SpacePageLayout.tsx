@@ -3,7 +3,7 @@ import SpaceTabs, { SpaceTabsPlaceholder } from '../Tabs/SpaceTabs';
 import { PropsWithChildren } from 'react';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
-import useInnovationHubBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import useInnovationHubBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -18,7 +18,7 @@ export interface SpacePageLayoutProps {
 
 const SpacePageLayout = ({
   currentSection,
-  spaceHierarchyPath: journeyPath,
+  spaceHierarchyPath,
   loading = false,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
@@ -40,7 +40,7 @@ const SpacePageLayout = ({
   return (
     <EntityPageLayout
       currentSection={currentSection}
-      breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={journeyPath} />}
+      breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} />}
       pageBanner={
         <SpacePageBanner
           title={profile?.displayName}
@@ -53,7 +53,7 @@ const SpacePageLayout = ({
       }
       tabsComponent={loading ? SpaceTabsPlaceholder : SpaceTabs}
     >
-      <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+      <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
         {children}
       </StorageConfigContextProvider>
     </EntityPageLayout>

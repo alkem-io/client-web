@@ -8,7 +8,7 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     description
     type
     child
-    journeyDisplayName: parentDisplayName
+    spaceDisplayName: parentDisplayName
     space {
       id
       ... on Space {
@@ -16,21 +16,6 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
           ...SpaceAboutCardBanner
         }
       }
-      # ... on RelayPaginatedSpace {
-      #   profile {
-      #     ...RecentContributionsSpaceProfile
-      #   }
-      # }
-      # ... on subspace {
-      #   profile {
-      #     ...RecentContributionsChildJourneyProfile
-      #   }
-      # }
-      # ... on subsubspace {
-      #   profile {
-      #     ...RecentContributionsChildJourneyProfile
-      #   }
-      # }
     }
     triggeredBy {
       id

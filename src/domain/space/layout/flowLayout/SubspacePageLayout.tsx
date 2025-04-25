@@ -92,12 +92,12 @@ enum MenuState {
 }
 
 const SubspacePageLayout = ({
-  spaceId: journeyId,
+  spaceId,
   parentSpaceId,
   levelZeroSpaceId,
-  spaceHierarchyPath: journeyPath,
+  spaceHierarchyPath,
   spaceLevel,
-  spaceUrl: journeyUrl,
+  spaceUrl,
   loading = false,
   welcome,
   actions,
@@ -151,7 +151,7 @@ const SubspacePageLayout = ({
   const hasExtendedApplicationButton = !isSmallScreen;
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
+    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       <NotFoundErrorBoundary
         errorComponent={
           <TopLevelLayout>
@@ -159,12 +159,12 @@ const SubspacePageLayout = ({
           </TopLevelLayout>
         }
       >
-        <UrlBaseProvider url={journeyUrl}>
+        <UrlBaseProvider url={spaceUrl}>
           <DialogActionsContext.Provider value={actionsProvider}>
             <InnovationFlowHolder>
               <TopLevelLayout
-                breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={journeyPath} loading={loading} />}
-                header={<SubspacePageBanner spaceId={journeyId} levelZeroSpaceId={levelZeroSpaceId} />}
+                breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} loading={loading} />}
+                header={<SubspacePageBanner spaceId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />}
                 floatingActions={
                   <FloatingActionButtons
                     visible
@@ -214,7 +214,7 @@ const SubspacePageLayout = ({
                     flexShrink={1}
                     minWidth={0}
                   >
-                    <ApplicationButtonContainer spaceId={journeyId} parentSpaceId={parentSpaceId}>
+                    <ApplicationButtonContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
                       {(applicationButtonProps, loading) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
@@ -226,7 +226,7 @@ const SubspacePageLayout = ({
                               loading={loading}
                               component={FullWidthButton}
                               extended={hasExtendedApplicationButton}
-                              spaceId={journeyId}
+                              spaceId={spaceId}
                               spaceLevel={spaceLevel}
                             />
                           </PageContentColumn>

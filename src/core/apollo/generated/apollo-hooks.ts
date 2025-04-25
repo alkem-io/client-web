@@ -6045,7 +6045,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       description
       type
       child
-      journeyDisplayName: parentDisplayName
+      spaceDisplayName: parentDisplayName
       space {
         id
         ... on Space {
@@ -13426,6 +13426,76 @@ export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerIn
   return { query: BannerInnovationHubDocument, variables: variables };
 }
 
+export const InnovationHubBannerWideDocument = gql`
+  query InnovationHubBannerWide {
+    platform {
+      innovationHub {
+        id
+        profile {
+          id
+          displayName
+          bannerWide: visual(type: BANNER_WIDE) {
+            id
+            ...VisualUri
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubBannerWideQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubBannerWideQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubBannerWideQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubBannerWideQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationHubBannerWideQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationHubBannerWideQuery, SchemaTypes.InnovationHubBannerWideQueryVariables>(
+    InnovationHubBannerWideDocument,
+    options
+  );
+}
+
+export function useInnovationHubBannerWideLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >(InnovationHubBannerWideDocument, options);
+}
+
+export type InnovationHubBannerWideQueryHookResult = ReturnType<typeof useInnovationHubBannerWideQuery>;
+export type InnovationHubBannerWideLazyQueryHookResult = ReturnType<typeof useInnovationHubBannerWideLazyQuery>;
+export type InnovationHubBannerWideQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubBannerWideQuery,
+  SchemaTypes.InnovationHubBannerWideQueryVariables
+>;
+export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.InnovationHubBannerWideQueryVariables) {
+  return { query: InnovationHubBannerWideDocument, variables: variables };
+}
+
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
@@ -13823,76 +13893,6 @@ export type InnovationHubSettingsQueryResult = Apollo.QueryResult<
 >;
 export function refetchInnovationHubSettingsQuery(variables: SchemaTypes.InnovationHubSettingsQueryVariables) {
   return { query: InnovationHubSettingsDocument, variables: variables };
-}
-
-export const InnovationHubBannerWideDocument = gql`
-  query InnovationHubBannerWide {
-    platform {
-      innovationHub {
-        id
-        profile {
-          id
-          displayName
-          bannerWide: visual(type: BANNER_WIDE) {
-            id
-            ...VisualUri
-          }
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useInnovationHubBannerWideQuery__
- *
- * To run a query within a React component, call `useInnovationHubBannerWideQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationHubBannerWideQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationHubBannerWideQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInnovationHubBannerWideQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.InnovationHubBannerWideQuery,
-    SchemaTypes.InnovationHubBannerWideQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.InnovationHubBannerWideQuery, SchemaTypes.InnovationHubBannerWideQueryVariables>(
-    InnovationHubBannerWideDocument,
-    options
-  );
-}
-
-export function useInnovationHubBannerWideLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InnovationHubBannerWideQuery,
-    SchemaTypes.InnovationHubBannerWideQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.InnovationHubBannerWideQuery,
-    SchemaTypes.InnovationHubBannerWideQueryVariables
-  >(InnovationHubBannerWideDocument, options);
-}
-
-export type InnovationHubBannerWideQueryHookResult = ReturnType<typeof useInnovationHubBannerWideQuery>;
-export type InnovationHubBannerWideLazyQueryHookResult = ReturnType<typeof useInnovationHubBannerWideLazyQuery>;
-export type InnovationHubBannerWideQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationHubBannerWideQuery,
-  SchemaTypes.InnovationHubBannerWideQueryVariables
->;
-export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.InnovationHubBannerWideQueryVariables) {
-  return { query: InnovationHubBannerWideDocument, variables: variables };
 }
 
 export const InnovationHubDocument = gql`
@@ -17371,8 +17371,8 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
   return { query: SpacePrivilegesDocument, variables: variables };
 }
 
-export const JourneyStorageConfigDocument = gql`
-  query JourneyStorageConfig($spaceId: UUID!) {
+export const SpaceStorageConfigDocument = gql`
+  query SpaceStorageConfig($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -17389,55 +17389,55 @@ export const JourneyStorageConfigDocument = gql`
 `;
 
 /**
- * __useJourneyStorageConfigQuery__
+ * __useSpaceStorageConfigQuery__
  *
- * To run a query within a React component, call `useJourneyStorageConfigQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useJourneyStorageConfigQuery({
+ * const { data, loading, error } = useSpaceStorageConfigQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useJourneyStorageConfigQuery(
+export function useSpaceStorageConfigQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyStorageConfigQuery,
-    SchemaTypes.JourneyStorageConfigQueryVariables
+    SchemaTypes.SpaceStorageConfigQuery,
+    SchemaTypes.SpaceStorageConfigQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyStorageConfigQuery, SchemaTypes.JourneyStorageConfigQueryVariables>(
-    JourneyStorageConfigDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceStorageConfigQuery, SchemaTypes.SpaceStorageConfigQueryVariables>(
+    SpaceStorageConfigDocument,
     options
   );
 }
 
-export function useJourneyStorageConfigLazyQuery(
+export function useSpaceStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyStorageConfigQuery,
-    SchemaTypes.JourneyStorageConfigQueryVariables
+    SchemaTypes.SpaceStorageConfigQuery,
+    SchemaTypes.SpaceStorageConfigQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyStorageConfigQuery, SchemaTypes.JourneyStorageConfigQueryVariables>(
-    JourneyStorageConfigDocument,
+  return Apollo.useLazyQuery<SchemaTypes.SpaceStorageConfigQuery, SchemaTypes.SpaceStorageConfigQueryVariables>(
+    SpaceStorageConfigDocument,
     options
   );
 }
 
-export type JourneyStorageConfigQueryHookResult = ReturnType<typeof useJourneyStorageConfigQuery>;
-export type JourneyStorageConfigLazyQueryHookResult = ReturnType<typeof useJourneyStorageConfigLazyQuery>;
-export type JourneyStorageConfigQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyStorageConfigQuery,
-  SchemaTypes.JourneyStorageConfigQueryVariables
+export type SpaceStorageConfigQueryHookResult = ReturnType<typeof useSpaceStorageConfigQuery>;
+export type SpaceStorageConfigLazyQueryHookResult = ReturnType<typeof useSpaceStorageConfigLazyQuery>;
+export type SpaceStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceStorageConfigQuery,
+  SchemaTypes.SpaceStorageConfigQueryVariables
 >;
-export function refetchJourneyStorageConfigQuery(variables: SchemaTypes.JourneyStorageConfigQueryVariables) {
-  return { query: JourneyStorageConfigDocument, variables: variables };
+export function refetchSpaceStorageConfigQuery(variables: SchemaTypes.SpaceStorageConfigQueryVariables) {
+  return { query: SpaceStorageConfigDocument, variables: variables };
 }
 
 export const CalloutStorageConfigDocument = gql`
@@ -21520,7 +21520,7 @@ export const LatestContributionsDocument = gql`
         description
         type
         child
-        journeyDisplayName: parentDisplayName
+        spaceDisplayName: parentDisplayName
         space {
           id
           ... on Space {
@@ -21667,7 +21667,7 @@ export const LatestContributionsGroupedDocument = gql`
       description
       type
       child
-      journeyDisplayName: parentDisplayName
+      spaceDisplayName: parentDisplayName
       space {
         id
         ... on Space {

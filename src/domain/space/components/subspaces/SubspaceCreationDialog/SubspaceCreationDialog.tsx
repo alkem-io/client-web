@@ -8,7 +8,7 @@ import { SpaceCreationForm, SpaceFormValues } from './SubspaceCreationForm';
 interface SubspaceCreationDialogProps {
   open: boolean;
   icon?: ReactElement<SvgIconProps>;
-  journeyName: string;
+  spaceDisplayName: string;
   onClose: () => void;
   onCreate: (value: SpaceFormValues) => Promise<void>;
   formComponent: React.ComponentType<SpaceCreationForm>;
@@ -17,7 +17,7 @@ interface SubspaceCreationDialogProps {
 export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   open,
   icon,
-  journeyName,
+  spaceDisplayName,
   onClose,
   onCreate,
   formComponent: FormComponent,
@@ -48,7 +48,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   return (
     <DialogWithGrid open={open} maxWidth="xs" fullWidth>
       <DialogHeader onClose={onClose} icon={icon}>
-        {t('journey-creation.dialog-title', { entity: journeyName })}
+        {t('space-creation.dialog-title', { entity: spaceDisplayName })}
       </DialogHeader>
       <DialogContent>
         <FormComponent isSubmitting={submitting} onChanged={handleChange} onValidChanged={handleValidChange} />

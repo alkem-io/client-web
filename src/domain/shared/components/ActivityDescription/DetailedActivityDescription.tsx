@@ -55,7 +55,7 @@ const DetailedActivityDescription = ({
       mergedValues['user'] = t('common.user');
     }
 
-    mergedValues['journey'] = spaceDisplayName;
+    mergedValues['space'] = spaceDisplayName;
 
     mergedValues['invitedEntity'] =
       type === RoleSetContributorType.Virtual
@@ -67,13 +67,13 @@ const DetailedActivityDescription = ({
         ? spaceDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
         : spaceDisplayName;
     if (truncatedParentName) {
-      mergedValues['journeyDisplayName'] = truncatedParentName;
+      mergedValues['spaceDisplayName'] = truncatedParentName;
     }
 
     const SpaceIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
     if (SpaceIcon) {
       mergedComponents['parenticon'] = <SpaceIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
-      mergedComponents['journeyicon'] = <SpaceIcon fontSize="inherit" />;
+      mergedComponents['spaceicon'] = <SpaceIcon fontSize="inherit" />;
     }
 
     mergedComponents['parentlink'] = spaceUrl ? <RouterLink to={spaceUrl} /> : <span />;

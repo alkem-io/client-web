@@ -11,7 +11,7 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import SpaceTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
+import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
@@ -75,7 +75,7 @@ const DashboardSpaces = () => {
     exploreAllButton: {
       textTransform: 'none',
       border: `1px solid ${theme.palette.divider}`,
-      aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO,
+      aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO,
     },
   };
 
@@ -168,7 +168,7 @@ const DashboardSpaces = () => {
                       onClick={handleDialogOpen(idx, profile?.displayName)}
                     >
                       <Caption>
-                        {t('pages.home.sections.recentJourneys.seeMoreSubspaces', {
+                        {t('pages.home.sections.recentSpaces.seeMoreSubspaces', {
                           spaceName: profile?.displayName,
                         })}
                       </Caption>

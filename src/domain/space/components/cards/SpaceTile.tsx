@@ -23,9 +23,9 @@ type SpaceTileProps = {
   columns?: number;
 };
 
-export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
+export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
 
-const SPACE_TITLE_CLASS_NAME = 'JourneyTitle';
+const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
@@ -42,7 +42,7 @@ const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
         {!space ? (
           <Skeleton
             variant="rectangular"
-            sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
+            sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
           />
         ) : (
           <>
@@ -50,7 +50,7 @@ const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
 
             <Avatar
               src={space.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
-              sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
+              sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
               variant="square"
             >
               <InsertPhotoOutlinedIcon fontSize="large" />

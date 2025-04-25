@@ -160,7 +160,7 @@ const SpaceAboutDialog = ({
               title={
                 <Caption>
                   <Trans
-                    i18nKey={'components.journeyUnauthorizedDialog.message'}
+                    i18nKey={'components.spaceUnauthorizedDialog.message'}
                     components={{
                       apply: (
                         <RouterLink to="" sx={{ color: 'white' }} underline="always" onClick={handleLearnWhyClick} />

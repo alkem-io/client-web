@@ -16,7 +16,7 @@ import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
-import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
+import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 
 const SpaceSubspacesPage = () => {
@@ -30,7 +30,7 @@ const SpaceSubspacesPage = () => {
     calloutsSetId,
   } = useSpaceTabProvider({ tabPosition: 2 });
 
-  const { spaceId, spaceHierarchyPath: journeyPath } = urlInfo;
+  const { spaceId, spaceHierarchyPath } = urlInfo;
 
   const { permissions, visibility } = useSpace();
 
@@ -97,8 +97,8 @@ const SpaceSubspacesPage = () => {
   }, [space?.level]);
 
   return (
-    <SpacePageLayout spaceHierarchyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
-      <ChildJourneyView
+    <SpacePageLayout spaceHierarchyPath={spaceHierarchyPath} currentSection={{ sectionIndex: 2 }}>
+      <SubspaceView
         childEntities={subspaces}
         level={level}
         childEntitiesIcon={<SpaceL1Icon />}
@@ -126,7 +126,7 @@ const SpaceSubspacesPage = () => {
           <SubspaceCreationDialog
             open={isCreateDialogOpen}
             icon={<SpaceL1Icon2 fill="primary" />}
-            journeyName={t('common.subspace')}
+            spaceDisplayName={t('common.subspace')}
             onClose={() => setCreateDialogOpen(false)}
             onCreate={handleCreate}
             formComponent={CreateSubspaceForm}

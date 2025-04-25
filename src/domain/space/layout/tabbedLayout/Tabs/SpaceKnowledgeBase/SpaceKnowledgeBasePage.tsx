@@ -21,7 +21,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, tabDescription } = useSpaceTabProvider({
     tabPosition: sectionIndex,
   });
-  const { spaceHierarchyPath: journeyPath, calloutsSetId } = urlInfo;
+  const { spaceHierarchyPath, calloutsSetId } = urlInfo;
 
   const { t } = useTranslation();
 
@@ -43,7 +43,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
   });
 
   return (
-    <SpacePageLayout spaceHierarchyPath={journeyPath} currentSection={{ sectionIndex: sectionIndex }}>
+    <SpacePageLayout spaceHierarchyPath={spaceHierarchyPath} currentSection={{ sectionIndex: sectionIndex }}>
       <>
         <PageContent>
           <InfoColumn>

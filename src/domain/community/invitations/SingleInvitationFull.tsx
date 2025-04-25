@@ -54,12 +54,12 @@ const SingleInvitationFull = ({
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
-        journey: invitation?.space.about.profile.displayName,
+        space: invitation?.space.about.profile.displayName,
       });
     }
 
     return t('community.pendingMembership.invitationDialog.title', {
-      journey: invitation?.space.about.profile.displayName,
+      space: invitation?.space.about.profile.displayName,
     });
   };
 

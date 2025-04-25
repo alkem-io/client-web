@@ -28,7 +28,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const { t } = useTranslation();
 
   // TODO: this should ideally come from the SpaceContext
-  const journeyPath: SpaceHierarchyPath =
+  const spaceHierarchyPath: SpaceHierarchyPath =
     spaceLevel === SpaceLevel.L1 ? [levelZeroSpaceId, spaceId] : [levelZeroSpaceId, parentSpaceId!, spaceId];
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
@@ -43,7 +43,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     </RouterLink>
   );
 
-  const spaceBreadcrumbsElement = <SpaceBreadcrumbs spaceHierarchyPath={journeyPath} settings />;
+  const spaceBreadcrumbsElement = <SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} settings />;
 
   return (
     <EntitySettingsLayout
