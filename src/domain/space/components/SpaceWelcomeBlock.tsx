@@ -18,6 +18,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import SwapColors from '@/core/ui/palette/SwapColors';
 
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
@@ -56,7 +57,7 @@ const SpaceWelcomeBlock = ({ spaceAbout }: SpaceWelcomeBlockProps) => {
 
   return (
     <>
-      {directMessageDialog}
+      <SwapColors swap>{directMessageDialog}</SwapColors>
       <OverflowGradient
         maxHeight={gutters(11)}
         overflowMarker={

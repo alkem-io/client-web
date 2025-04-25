@@ -20,12 +20,11 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = ({ sectionIndex }: { sectionIndex: number }) => {
+  const { spaceId, journeyPath, spaceLevel } = useUrlResolver();
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
   const { pathname } = useLocation();
 
   const isSettingsPage = pathname.split('/').includes('settings');
-
-  const { spaceId, journeyPath, spaceLevel } = useUrlResolver();
 
   const { isSmallScreen } = useScreenSize();
 

@@ -15,6 +15,8 @@ import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/S
 import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import SpaceKnowledgeBasePage from '../layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SubspaceRoutes from './SubspaceRoutes';
+import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
+import { parseInt } from 'lodash';
 
 const LegacyRoutesRedirects = () => {
   const {
@@ -51,31 +53,43 @@ const LegacyRoutesRedirects = () => {
 
 const SpaceProtectedRoutes = () => {
   const { loading: resolvingUrl } = useUrlResolver();
-  const { space, permissions, loading: loadingSpace } = useContext(SpaceContext);
+  const { permissions, loading: loadingSpace } = useContext(SpaceContext);
   if (resolvingUrl || loadingSpace) {
-    return <Outlet />;
+    return null;
   }
 
   if (!permissions.canRead) {
-    return <Navigate to={`${space.about.profile.url}/${EntityPageSection.About}`} replace />;
+    return <Navigate to={`../${EntityPageSection.About}`} replace />;
   }
 
   return <Outlet />;
 };
 
 const SpaceRoutes = () => {
+  const { spaceId } = useUrlResolver();
   const [searchParams] = useSearchParams();
-  const sectionIndex = searchParams.get(TabbedLayoutParams.Section) ?? '1';
+  const { defaultTabIndex } = useSpaceTabs({ spaceId: spaceId });
+  let sectionIndex = searchParams.get(TabbedLayoutParams.Section);
+  if (!sectionIndex) {
+    if (defaultTabIndex && defaultTabIndex >= 0) {
+      sectionIndex = defaultTabIndex.toString();
+    } else {
+      sectionIndex = '1';
+    }
+  } else {
+    sectionIndex = `${parseInt(sectionIndex) - 1}`;
+  }
+
   // not ideal but at least all routing is in one place ^^
   const getSpaceSection = () => {
     switch (sectionIndex) {
-      case '1':
+      case '0':
         return <SpaceDashboardPage />;
-      case '2':
+      case '1':
         return <SpaceCommunityPage />;
-      case '3':
+      case '2':
         return <SpaceSubspacesPage />;
-      case '4':
+      case '3':
         return <SpaceKnowledgeBasePage sectionIndex={3} />;
     }
   };
@@ -83,11 +97,12 @@ const SpaceRoutes = () => {
     <SpaceContextProvider>
       <Routes>
         {/* keep the logic around sections in one place - here*/}
-        <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(sectionIndex) - 1} />}>
+        <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(`${sectionIndex}`)} />}>
           <Route path={EntityPageSection.About} element={<SpaceAboutPage />} />
 
           <Route element={<SpaceProtectedRoutes />}>
             <Route index element={getSpaceSection()} />
+
             <Route path="/:dialog?" element={<SpaceDashboardPage />} />
             <Route path={`${EntityPageSection.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route

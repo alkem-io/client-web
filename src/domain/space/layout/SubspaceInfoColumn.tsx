@@ -83,9 +83,7 @@ export const SubspaceInfoColumn = () => {
 
   return (
     <InfoColumn collapsed={isCollapsed}>
-      {!isCollapsed && (
-        <WelcomeBlock about={!isSmallScreen}>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>
-      )}
+      {!isCollapsed && <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>}
       {!isCollapsed && (
         <FullWidthButton
           startIcon={<KeyboardTab />}
@@ -120,10 +118,10 @@ export const SubspaceInfoColumn = () => {
         <DialogAction dialog={SubspaceDialog.Timeline} dialogProps={{ temporaryLocation: true }} />
         <DialogAction dialog={SubspaceDialog.Share} dialogProps={{ entityTypeName: 'subspace', url }} />
         {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
-          <DialogAction dialog={SubspaceDialog.ManageFlow} />
+          <DialogAction dialog={SubspaceDialog.ManageFlow} dialogProps={{ collaborationId: collaborationId }} />
         )}
         {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
-          <DialogAction dialog={SubspaceDialog.Settings} />
+          <DialogAction dialog={SubspaceDialog.Settings} dialogProps={{ collaborationId: collaborationId }} />
         )}
         {isCollapsed && (
           <ButtonWithTooltip
