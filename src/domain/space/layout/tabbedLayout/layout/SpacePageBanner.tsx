@@ -170,7 +170,9 @@ const SpacePageBanner = ({
     setImageLoading(false);
   };
 
-  if (spaceLevel !== SpaceLevel.L0) {
+  // when current space is not L0 hide the L0 space banner
+  // space page banner is used by global administration as well - it's layout is raising the flag and then the banner needs to be displayed always
+  if (!isAdmin && spaceLevel !== SpaceLevel.L0) {
     return null;
   }
 
