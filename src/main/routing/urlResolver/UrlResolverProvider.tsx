@@ -5,6 +5,7 @@ import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { PartialRecord } from '@/core/utils/PartialRecords';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { TabbedLayoutParams } from '../urlBuilders';
 
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -138,6 +139,13 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
+    // strip parts of the URL that go below the resolved wentity
+    const maskedUrlParts = [
+      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      /\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/,
+      // Remove tabs from the URL as well
+      `/${TabbedLayoutParams.Section}(?:/[a-zA-Z0-9-]+)?/?$`,
+    ];
     const handleUrlChange = () => {
       let nextUrl = window.location.origin + window.location.pathname;
 
@@ -146,12 +154,13 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         nextUrl = nextUrl.slice(0, -1);
       }
 
-      if (/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
-        // TODO: We need to rework the Urls of the templates anyway. See #8061
-        // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
-      } else {
-        // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
-        nextUrl = nextUrl.replace(/\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/, '');
+      // TODO: We need to rework the Urls of the templates anyway. See #8061
+      // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
+      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      if (!/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
+        for (const mask of maskedUrlParts) {
+          nextUrl = nextUrl.replace(mask, '');
+        }
       }
 
       if (nextUrl !== currentUrl) {

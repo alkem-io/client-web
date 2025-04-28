@@ -8,15 +8,16 @@ import useActivityOnCollaboration from '@/domain/collaboration/activity/useActiv
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface ActivityDialogProps {
   open?: boolean;
   onClose?: () => void;
-  spaceId: string | undefined;
 }
 
-const ActivityDialog = ({ open = false, spaceId, onClose }: ActivityDialogProps) => {
+const ActivityDialog = ({ open = false, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
+  const { spaceId } = useUrlResolver();
 
   const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
   const { data: _space } = useSpacePageQuery({

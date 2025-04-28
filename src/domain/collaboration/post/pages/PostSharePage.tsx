@@ -1,7 +1,7 @@
-import { PostLayout } from '../views/PostLayoutWithOutlet';
 import { PostDialogSection } from '../views/PostDialogSection';
 import PostDashboardView from '../views/PostDashboardView';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import { PostLayout } from '../views/PostLayout';
 
 export interface PostSharePageProps {
   onClose: () => void;

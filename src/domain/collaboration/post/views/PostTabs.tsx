@@ -26,14 +26,14 @@ const PostTabs = ({ currentTab }: { currentTab: PostDialogSection }) => {
       <NavigationTab
         icon={<DashboardOutlined />}
         value={PostDialogSection.Dashboard}
-        to={PostDialogSection.Dashboard}
+        to={`../${PostDialogSection.Dashboard}`}
         state={{ keepScroll: true }}
         aria-label={t('common.dashboard')}
       />
       <NavigationTab
         icon={<ShareOutlined />}
         value={PostDialogSection.Share}
-        to={PostDialogSection.Share}
+        to={`../${PostDialogSection.Share}`}
         state={{ keepScroll: true }}
         aria-label={t('buttons.share')}
       />
@@ -41,7 +41,7 @@ const PostTabs = ({ currentTab }: { currentTab: PostDialogSection }) => {
         <NavigationTab
           icon={<SettingsOutlined />}
           value={PostDialogSection.Settings}
-          to={PostDialogSection.Settings}
+          to={`../${PostDialogSection.Settings}`}
           state={{ keepScroll: true }}
           aria-label={t('common.settings')}
         />
