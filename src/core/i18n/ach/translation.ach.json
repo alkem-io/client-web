@@ -2797,7 +2797,7 @@
         },
         "prompt": {
           "title": "crwdns36803:0crwdne36803:0",
-          "infoText": "crwdns36805:0{ }crwdne36805:0",
+          "infoText": "crwdns36858:0{{availableVariables}}crwdnd36858:0{ }crwdne36858:0",
           "saveBtn": "crwdns36807:0crwdne36807:0"
         },
         "externalConfig": {
