@@ -81,7 +81,7 @@ export const SubspacePageLayout = () => {
   // on e.g. innovation flow template change #6319
   useEffect(() => {
     if (!doesSelectedInnovationFlowStateExist) {
-      setSelectedInnovationFlowState!(currentInnovationFlowState!);
+      setSelectedInnovationFlowState!(currentInnovationFlowState || '');
     }
   }, [doesSelectedInnovationFlowStateExist]);
 
