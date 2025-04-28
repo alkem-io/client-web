@@ -495,23 +495,9 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   }
   ${ActivityCalloutContextFragmentDoc}
 `;
-export const ActivityLogSpaceL1CreatedFragmentDoc = gql`
-  fragment ActivityLogSpaceL1Created on ActivityLogEntryChallengeCreated {
+export const ActivityLogSubspaceCreatedFragmentDoc = gql`
+  fragment ActivityLogSubspaceCreated on ActivityLogEntrySubspaceCreated {
     subspace {
-      id
-      about {
-        id
-        profile {
-          ...ActivitySubjectProfile
-        }
-      }
-    }
-  }
-  ${ActivitySubjectProfileFragmentDoc}
-`;
-export const ActivityLogSpaceL2CreatedFragmentDoc = gql`
-  fragment ActivityLogSpaceL2Created on ActivityLogEntryOpportunityCreated {
-    subsubspace {
       id
       about {
         id
@@ -568,11 +554,8 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
-    ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogSpaceL1Created
-    }
-    ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogSpaceL2Created
+    ... on ActivityLogEntrySubspaceCreated {
+      ...ActivityLogSubspaceCreated
     }
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent
@@ -589,8 +572,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogSpaceL1CreatedFragmentDoc}
-  ${ActivityLogSpaceL2CreatedFragmentDoc}
+  ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -6077,11 +6059,8 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
-      ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogSpaceL1Created
-      }
-      ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogSpaceL2Created
+      ... on ActivityLogEntrySubspaceCreated {
+        ...ActivityLogSubspaceCreated
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -6100,8 +6079,7 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogSpaceL1CreatedFragmentDoc}
-  ${ActivityLogSpaceL2CreatedFragmentDoc}
+  ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -21558,11 +21536,8 @@ export const LatestContributionsDocument = gql`
         ... on ActivityLogEntryCalloutDiscussionComment {
           ...ActivityLogCalloutDiscussionComment
         }
-        ... on ActivityLogEntryChallengeCreated {
-          ...ActivityLogSpaceL1Created
-        }
-        ... on ActivityLogEntryOpportunityCreated {
-          ...ActivityLogSpaceL2Created
+        ... on ActivityLogEntrySubspaceCreated {
+          ...ActivityLogSubspaceCreated
         }
         ... on ActivityLogEntryUpdateSent {
           ...ActivityLogUpdateSent
@@ -21586,8 +21561,7 @@ export const LatestContributionsDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogSpaceL1CreatedFragmentDoc}
-  ${ActivityLogSpaceL2CreatedFragmentDoc}
+  ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -21688,11 +21662,8 @@ export const LatestContributionsGroupedDocument = gql`
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
-      ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogSpaceL1Created
-      }
-      ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogSpaceL2Created
+      ... on ActivityLogEntrySubspaceCreated {
+        ...ActivityLogSubspaceCreated
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -21711,8 +21682,7 @@ export const LatestContributionsGroupedDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogSpaceL1CreatedFragmentDoc}
-  ${ActivityLogSpaceL2CreatedFragmentDoc}
+  ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;

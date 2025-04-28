@@ -310,33 +310,6 @@ export type ActivityLogEntryCalloutWhiteboardCreatedFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ActivityLogEntryChallengeCreatedKeySpecifier = (
-  | 'child'
-  | 'collaborationID'
-  | 'createdDate'
-  | 'description'
-  | 'id'
-  | 'parentDisplayName'
-  | 'parentNameID'
-  | 'space'
-  | 'subspace'
-  | 'triggeredBy'
-  | 'type'
-  | ActivityLogEntryChallengeCreatedKeySpecifier
-)[];
-export type ActivityLogEntryChallengeCreatedFieldPolicy = {
-  child?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
-  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'child'
   | 'collaborationID'
@@ -368,7 +341,7 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ActivityLogEntryOpportunityCreatedKeySpecifier = (
+export type ActivityLogEntrySubspaceCreatedKeySpecifier = (
   | 'child'
   | 'collaborationID'
   | 'createdDate'
@@ -377,12 +350,12 @@ export type ActivityLogEntryOpportunityCreatedKeySpecifier = (
   | 'parentDisplayName'
   | 'parentNameID'
   | 'space'
-  | 'subsubspace'
+  | 'subspace'
   | 'triggeredBy'
   | 'type'
-  | ActivityLogEntryOpportunityCreatedKeySpecifier
+  | ActivityLogEntrySubspaceCreatedKeySpecifier
 )[];
-export type ActivityLogEntryOpportunityCreatedFieldPolicy = {
+export type ActivityLogEntrySubspaceCreatedFieldPolicy = {
   child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -391,7 +364,7 @@ export type ActivityLogEntryOpportunityCreatedFieldPolicy = {
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspace?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4241,13 +4214,6 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ActivityLogEntryCalloutWhiteboardCreatedKeySpecifier);
     fields?: ActivityLogEntryCalloutWhiteboardCreatedFieldPolicy;
   };
-  ActivityLogEntryChallengeCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | ActivityLogEntryChallengeCreatedKeySpecifier
-      | (() => undefined | ActivityLogEntryChallengeCreatedKeySpecifier);
-    fields?: ActivityLogEntryChallengeCreatedFieldPolicy;
-  };
   ActivityLogEntryMemberJoined?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -4255,12 +4221,12 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ActivityLogEntryMemberJoinedKeySpecifier);
     fields?: ActivityLogEntryMemberJoinedFieldPolicy;
   };
-  ActivityLogEntryOpportunityCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  ActivityLogEntrySubspaceCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | ActivityLogEntryOpportunityCreatedKeySpecifier
-      | (() => undefined | ActivityLogEntryOpportunityCreatedKeySpecifier);
-    fields?: ActivityLogEntryOpportunityCreatedFieldPolicy;
+      | ActivityLogEntrySubspaceCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntrySubspaceCreatedKeySpecifier);
+    fields?: ActivityLogEntrySubspaceCreatedFieldPolicy;
   };
   ActivityLogEntryUpdateSent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

@@ -57,11 +57,8 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
-      ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogSpaceL1Created
-      }
-      ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogSpaceL2Created
+      ... on ActivityLogEntrySubspaceCreated {
+        ...ActivityLogSubspaceCreated
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -76,4 +73,3 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
     }
   }
 }
-
