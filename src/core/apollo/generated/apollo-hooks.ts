@@ -11964,7 +11964,6 @@ export const UserContributionsDocument = gql`
         roles
         subspaces {
           id
-          type
           level
           roles
         }

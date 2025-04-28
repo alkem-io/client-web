@@ -3100,7 +3100,6 @@ export type RolesResultCommunityKeySpecifier = (
   | 'level'
   | 'nameID'
   | 'roles'
-  | 'type'
   | RolesResultCommunityKeySpecifier
 )[];
 export type RolesResultCommunityFieldPolicy = {
@@ -3109,7 +3108,6 @@ export type RolesResultCommunityFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultOrganizationKeySpecifier = (
   | 'displayName'
@@ -3136,7 +3134,6 @@ export type RolesResultSpaceKeySpecifier = (
   | 'roles'
   | 'spaceID'
   | 'subspaces'
-  | 'type'
   | 'visibility'
   | RolesResultSpaceKeySpecifier
 )[];
@@ -3148,7 +3145,6 @@ export type RolesResultSpaceFieldPolicy = {
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomKeySpecifier = (
