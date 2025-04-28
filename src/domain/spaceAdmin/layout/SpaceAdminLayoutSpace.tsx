@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import RouterLink from '@/core/ui/link/RouterLink';
 import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import SpaceTabs from '@/domain/space/layout/tabbedLayout/Tabs/SpaceTabs';
-import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import BackButton from '@/core/ui/actions/BackButton';
 import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
@@ -25,8 +23,6 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
   // TODO: get rid of this JourneyPath and bring it into the Space Context
   const journeyPath: JourneyPath = [space.id];
 
-  const spaceBannerElement = <SpacePageBanner />;
-
   const spaceBackButtonElement = (
     <RouterLink to={profile?.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
       <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
@@ -37,14 +33,10 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
 
   const spaceBreadcrumbsElement = <SpaceBreadcrumbs journeyPath={journeyPath} settings />;
 
-  const tabs = spaceAdminTabsL0;
-
   return (
     <EntitySettingsLayout
       entityTypeName="space"
-      subheaderTabs={tabs}
-      pageBanner={spaceBannerElement}
-      tabsComponent={SpaceTabs}
+      subheaderTabs={spaceAdminTabsL0}
       breadcrumbs={spaceBreadcrumbsElement}
       backButton={spaceBackButtonElement}
       {...props}

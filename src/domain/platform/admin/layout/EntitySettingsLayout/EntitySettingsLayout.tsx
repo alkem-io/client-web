@@ -1,5 +1,4 @@
-import { ComponentType, PropsWithChildren, ReactElement, FC, ReactNode, useCallback } from 'react';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { PropsWithChildren, FC, ReactNode, useCallback } from 'react';
 import { SettingsSection } from './SettingsSection';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
@@ -9,17 +8,6 @@ import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/Platfor
 
 type EntityTypeName = 'space' | 'subspace' | 'subsubspace' | 'organization' | 'user';
 
-export interface EntityTabsProps {
-  currentTab: { sectionIndex: number } | { section: EntityPageSection } | undefined;
-  mobile?: boolean;
-  onMenuOpen?: (open: boolean) => void;
-  loading?: boolean;
-}
-
-export interface BasePageBannerProps {
-  watermark?: ReactNode;
-}
-
 interface EntitySettingsLayoutProps extends PropsWithChildren {
   entityTypeName: EntityTypeName;
   subheaderTabs: TabDefinition<SettingsSection>[];
@@ -27,9 +15,6 @@ interface EntitySettingsLayoutProps extends PropsWithChildren {
   tabRoutePrefix?: string;
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
   backButton?: ReactNode;
-  pageBannerComponent?: ComponentType<BasePageBannerProps>;
-  pageBanner?: ReactElement<BasePageBannerProps>;
-  tabsComponent?: ComponentType<EntityTabsProps>;
 }
 
 const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({

@@ -1,7 +1,6 @@
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
-import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
@@ -33,8 +32,6 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
 
-  const spaceBannerElement = <SubspacePageBanner />;
-
   const spaceBackButtonElement = (
     <RouterLink to={about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
       <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
@@ -49,7 +46,6 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     <EntitySettingsLayout
       entityTypeName="subspace"
       subheaderTabs={tabs}
-      pageBanner={spaceBannerElement}
       breadcrumbs={spaceBreadcrumbsElement}
       backButton={spaceBackButtonElement}
       {...subspaceContext}
