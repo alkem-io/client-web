@@ -23,6 +23,7 @@ const SpaceAboutPage = () => {
 
   return (
     <>
+      {/* sticky footer  */}
       <Box sx={{ height: 'calc(100vh - 400px)' }}>&nbsp;</Box>
       <StorageConfigContextProvider locationType="journey" spaceId={space.id}>
         {spaceDetails && (

@@ -30,7 +30,7 @@ type VCProfilePageProps = {
   children?: (vc: VirtualContributorProvided | undefined) => ReactNode;
 };
 
-export const VCProfilePage = ({ openKnowledgeBaseDialog }: VCProfilePageProps) => {
+export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
@@ -86,11 +86,14 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog }: VCProfilePageProps) =
   }
 
   return (
-    <VCProfilePageView
-      bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
-      virtualContributor={data?.lookup.virtualContributor}
-      openKnowledgeBaseDialog={openKnowledgeBaseDialog}
-    />
+    <>
+      <VCProfilePageView
+        bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
+        virtualContributor={data?.lookup.virtualContributor}
+        openKnowledgeBaseDialog={openKnowledgeBaseDialog}
+      />
+      {children?.(data?.lookup.virtualContributor)}
+    </>
   );
 };
 

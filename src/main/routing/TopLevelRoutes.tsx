@@ -12,12 +12,12 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
+import TopLevelLayout from '../ui/layout/TopLevelLayout';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
@@ -239,9 +239,9 @@ export const TopLevelRoutes = () => {
                     path="*"
                     element={
                       <WithApmTransaction path="*">
-                        <NotFoundPageLayout>
+                        <TopLevelLayout>
                           <Error404 />
-                        </NotFoundPageLayout>
+                        </TopLevelLayout>
                       </WithApmTransaction>
                     }
                   />

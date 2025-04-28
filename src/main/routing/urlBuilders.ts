@@ -1,7 +1,6 @@
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
-import { TabbedLayoutParams } from '@/domain/space/layout/tabbedLayout/TabbedLayoutPage';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 
@@ -9,6 +8,11 @@ export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 // tests fail to import because they are in different modules
 const URL_PARAM_SECTION = 'tab';
 const URL_PARAM_DIALOG = 'dialog';
+
+export enum TabbedLayoutParams {
+  Section = URL_PARAM_SECTION,
+  Dialog = URL_PARAM_DIALOG,
+}
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
@@ -35,10 +39,6 @@ export const buildNewOrganizationUrl = () => {
 
 export const buildUpdatesUrl = (journeyLocation: string) => {
   return `${journeyLocation}/updates`;
-};
-
-export const buildSpaceSectionNamedUrl = (spaceUrl: string, sectionNumber: number = 0) => {
-  return `${spaceUrl}/${TabbedLayoutParams.Section}/${sectionNumber}`;
 };
 
 export const buildSpaceSectionUrl = (

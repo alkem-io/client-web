@@ -6,7 +6,6 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import SpaceDashboardPage from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage';
 import SpaceAboutPage from '@/domain/space/about/SpaceAboutPage';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { TabbedLayoutParams } from '../layout/tabbedLayout/TabbedLayoutPage';
 import SpaceAdminL0Route from '../../spaceAdmin/routing/SpaceAdminRouteL0';
 import SubspaceContextProvider from '../context/SubspaceContext';
 import { SpaceContext, SpaceContextProvider } from '../context/SpaceContext';
@@ -25,6 +24,8 @@ import SpaceTabs from '../layout/tabbedLayout/Tabs/SpaceTabs';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import { gutters } from '@/core/ui/grid/utils';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import Loading from '@/core/ui/loading/Loading';
+import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 
 const LegacyRoutesRedirects = () => {
   const {
@@ -64,7 +65,7 @@ const SpaceProtectedRoutes = () => {
   const { permissions, loading: loadingSpace } = useContext(SpaceContext);
 
   if (resolvingUrl || loadingSpace) {
-    return null;
+    return <Loading />;
   }
 
   if (!permissions.canRead) {

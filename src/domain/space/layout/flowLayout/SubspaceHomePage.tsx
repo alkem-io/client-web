@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import SubspaceHomeView from './SubspaceHomeView';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useContext, useState } from 'react';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CreateJourney from '../../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -8,8 +7,15 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
 import SubspacesListDialog from '../../components/SubspacesListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
+  const { isSmallScreen } = useScreenSize();
+  const { selectedInnovationFlowState } = useContext(InnovationFlowStateContext);
   const { spaceId, spaceLevel, loading } = useUrlResolver();
 
   const {
@@ -52,9 +58,36 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const collaboration = subspace?.collaboration;
   const calloutsSetId = collaboration?.calloutsSet.id;
 
+  let classificationTagsets: ClassificationTagsetModel[] = [];
+  if (selectedInnovationFlowState) {
+    classificationTagsets = [
+      {
+        name: TagsetReservedName.FlowState,
+        tags: [selectedInnovationFlowState],
+      },
+    ];
+  }
+
+  const calloutsSetProvided = useCalloutsSet({
+    calloutsSetId,
+    classificationTagsets: classificationTagsets,
+    includeClassification: true,
+    skip: !selectedInnovationFlowState,
+  });
+
   return (
     <>
-      <SubspaceHomeView calloutsSetId={calloutsSetId} loading={loading} />
+      <CalloutsGroupView
+        calloutsSetId={calloutsSetId}
+        callouts={calloutsSetProvided.callouts}
+        canCreateCallout={calloutsSetProvided.canCreateCallout && isSmallScreen}
+        loading={loading}
+        onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
+        onCalloutUpdate={calloutsSetProvided.refetchCallout}
+        createButtonPlace="top"
+        createInFlowState={selectedInnovationFlowState}
+      />
+
       <CreateJourney
         isVisible={createSpaceState.isDialogVisible}
         onClose={onCreateJourneyClose}

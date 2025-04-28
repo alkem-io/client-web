@@ -9,7 +9,6 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import { DialogContent } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useBackToPath from '@/core/routing/useBackToPath';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -20,6 +19,7 @@ import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -107,6 +107,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   );
 
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
+
   let [searchParams, setSearchParams] = useSearchParams();
   const currentSection = parseInt(searchParams.get('tab') || '-1') + 1;
 
@@ -126,9 +127,9 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   if (isApolloNotFoundError(error)) {
     return (
-      <NotFoundPageLayout>
+      <TopLevelLayout>
         <Error404 />
-      </NotFoundPageLayout>
+      </TopLevelLayout>
     );
   }
 

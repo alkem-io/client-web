@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router';
 import { Outlet, Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../about/SubspaceAboutPage';
 import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
@@ -17,6 +16,8 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SubspacePageLayout } from '../layout/SubspacePageLayout';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { createContext } from 'react';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import Loading from '@/core/ui/loading/Loading';
 export interface InnovationFlowStateContextProps {
   selectedInnovationFlowState?: string;
   setSelectedInnovationFlowState?: Dispatch<SetStateAction<string>>;
@@ -45,7 +46,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   );
 
   if (loading) {
-    return null;
+    return <Loading />;
   }
   if (spaceId && !loading && !canRead) {
     return (
@@ -106,9 +107,9 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
             <Route
               path="*"
               element={
-                <NotFoundPageLayout>
+                <TopLevelLayout>
                   <Error404 />
-                </NotFoundPageLayout>
+                </TopLevelLayout>
               }
             />
           </Route>

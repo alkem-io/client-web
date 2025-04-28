@@ -1,5 +1,5 @@
+import { ReactNode, useState } from 'react';
 import { Box, BoxProps, Link, Skeleton, styled, useTheme } from '@mui/material';
-import { ReactNode, useState, useContext } from 'react';
 import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
@@ -12,7 +12,6 @@ import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElement
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
 import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
-import { SpaceContext } from '@/domain/space/context/SpaceContext';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -151,7 +150,7 @@ const SpacePageBanner = ({
 
   const {
     space: { id: spaceId },
-  } = useContext(SpaceContext);
+  } = useSpace();
 
   const { data, loading } = useSpaceAboutDetailsQuery({
     variables: {

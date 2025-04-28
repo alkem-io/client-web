@@ -27,7 +27,9 @@ const TopLevelLayout = ({
       <PlatformNavigationBar breadcrumbs={breadcrumbs} />
       {header}
       {children}
+
       <Outlet />
+
       <Footer />
       {floatingActions ?? <FloatingActionButtons floatingActions={<PlatformHelpButton />} />}
       {addWatermark && (

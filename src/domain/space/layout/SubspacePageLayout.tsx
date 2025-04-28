@@ -50,6 +50,8 @@ export const SubspacePageLayout = () => {
   const calloutsSetId = collaboration?.calloutsSet.id;
   const collaborationId = collaboration?.id;
 
+  const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
+
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ calloutsSetId });
 
@@ -148,11 +150,14 @@ export const SubspacePageLayout = () => {
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
                 settingsButton={
-                  <DialogActionButton
-                    dialog={SubspaceDialog.ManageFlow}
-                    buttonVariant="outlined"
-                    dialogProps={{ collaborationId: collaborationId }}
-                  />
+                  innovationFlowProvided.canEditInnovationFlow &&
+                  !isSmallScreen && (
+                    <DialogActionButton
+                      dialog={SubspaceDialog.ManageFlow}
+                      buttonVariant="outlined"
+                      dialogProps={{ collaborationId: collaborationId }}
+                    />
+                  )
                 }
               />
             </Box>

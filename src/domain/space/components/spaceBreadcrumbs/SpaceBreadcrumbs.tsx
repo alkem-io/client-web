@@ -19,18 +19,19 @@ interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
 
 const SpaceBreadcrumbs = forwardRef<Collapsible, SpaceBreadcrumbsProps<Expandable>>(
   <ItemProps extends Expandable>({ settings, ...props }: SpaceBreadcrumbsProps<ItemProps>, ref) => {
+    const { t } = useTranslation();
     const { pathname } = useLocation();
-
-    if (settings === undefined) {
-      settings = pathname.split('/').includes('settings');
-    }
     const { loading, journeyPath } = useUrlResolver();
     const { breadcrumbs } = useSpaceBreadcrumbs({
       journeyPath,
       loading,
     });
 
-    const { t } = useTranslation();
+    // if settings param is not explicitly provided by the parent component, still check if settings is naywhere in the url
+    // if so raise the flag
+    if (settings === undefined) {
+      settings = pathname.split('/').includes('settings');
+    }
 
     return (
       <Breadcrumbs ref={ref} {...props}>

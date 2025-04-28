@@ -108,8 +108,6 @@ export const SubspaceInfoColumn = () => {
           overflow: isCollapsed ? undefined : 'visible',
         }}
       >
-        {/* <DialogAction dialog={SubspaceDialog.About} /> */}
-        {/* <DialogAction dialog={SubspaceDialog.Outline} /> */}
         <DialogActionButton dialog={SubspaceDialog.Index} />
         <DialogActionButton dialog={SubspaceDialog.Subspaces} />
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
