@@ -2797,7 +2797,7 @@
         },
         "prompt": {
           "title": "Prompt",
-          "infoText": "Beschikbare variabelen: [duur, publiek, workshop_type, rol] . Voeg geen alternatieve tekst toe tussen { } in de prompt, omdat dit de functionaliteit van deze Virtual Contributor zal verstoren.",
+          "infoText": "Beschikbare variabelen: [{{availableVariables}}] . Voeg geen alternatieve tekst tussen { } in de prompt, omdat dit de functionaliteit van deze Virtual Contributor zal verstoren.",
           "saveBtn": "Bewaar prompt"
         },
         "externalConfig": {
