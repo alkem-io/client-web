@@ -33,6 +33,7 @@ const SubspaceAboutPage = () => {
   const handleClose = () => navigate(permissions.canRead ? about.profile.url : parentSpaceUrl);
   return (
     <>
+      {/* sticky footer  */}
       <Box sx={{ height: 'calc(100vh - 400px)' }}>&nbsp;</Box>
       <SpaceAboutDialog
         open

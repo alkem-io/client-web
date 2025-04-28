@@ -1747,7 +1747,7 @@
     "feedback": "Відгук",
     "support": "Підтримка",
     "about": "Про",
-    "copyright": "© 2025 Alkemio B.V."
+    "copyright": "© 2024 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
@@ -2784,7 +2784,7 @@
         },
         "prompt": {
           "title": "Prompt",
-          "infoText": "Available variables: [duration, audience, workshop_type, role, purpose] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
           "saveBtn": "Save prompt"
         },
         "externalConfig": {
@@ -3271,8 +3271,5 @@
         "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
       }
     }
-  },
-  "aboutDialog": {
-    "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
   }
 }
