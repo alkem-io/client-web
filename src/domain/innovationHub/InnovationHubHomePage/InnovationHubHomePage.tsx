@@ -55,6 +55,7 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
               <SpaceCard
+                key={space.id}
                 banner={space.about.profile.cardBanner}
                 displayName={space.about.profile.displayName!}
                 why={space.about.why!}

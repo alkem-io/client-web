@@ -13,24 +13,24 @@ import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apoll
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
   onClose?: () => void;
-  spaceId: string;
 }
 
 /**
- * Represents a dialog component that displays contributors in a Space (space, subspace, subsubspace).
- * @param spaceId is a spaceId from the context.
+ * Represents a dialog component that displays contributors in a space, subspace, subsubspace
  */
-const ContributorsToggleDialog = ({ open = false, spaceId, onClose }: ContributorsToggleDialogProps) => {
+const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleDialogProps) => {
   const { isAuthenticated } = useCurrentUserContext();
   const { t } = useTranslation();
+  const { spaceId } = useUrlResolver();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
-      spaceId: spaceId,
+      spaceId: spaceId!,
     },
     skip: !open || !spaceId,
   });

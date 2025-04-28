@@ -92,9 +92,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}
         />
-
         {createSubentityDialog}
-
         <PageContentBlock>
           {childEntities.length > 3 && (
             <SearchField

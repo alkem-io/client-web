@@ -8,6 +8,8 @@ import { forwardRef, ReactElement, Ref } from 'react';
 import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Settings } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useLocation } from 'react-router-dom';
 
 interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
   extends BreadcrumbsProps<ItemProps>,
@@ -16,16 +18,20 @@ interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
 }
 
 const SpaceBreadcrumbs = forwardRef<Collapsible, SpaceBreadcrumbsProps<Expandable>>(
-  <ItemProps extends Expandable>(
-    { spaceHierarchyPath, settings, loading, ...props }: SpaceBreadcrumbsProps<ItemProps>,
-    ref
-  ) => {
+  <ItemProps extends Expandable>({ settings, ...props }: SpaceBreadcrumbsProps<ItemProps>, ref) => {
+    const { t } = useTranslation();
+    const { pathname } = useLocation();
+    const { loading, spaceHierarchyPath } = useUrlResolver();
     const { breadcrumbs } = useSpaceBreadcrumbs({
       spaceHierarchyPath,
       loading,
     });
 
-    const { t } = useTranslation();
+    // if settings param is not explicitly provided by the parent component, still check if settings is naywhere in the url
+    // if so raise the flag
+    if (settings === undefined) {
+      settings = pathname.split('/').includes('settings');
+    }
 
     return (
       <Breadcrumbs ref={ref} {...props}>
