@@ -63,8 +63,6 @@ const SpaceProtectedRoutes = () => {
   const { loading: resolvingUrl } = useUrlResolver();
   const { permissions, loading: loadingSpace } = useContext(SpaceContext);
 
-  console.log({ permissions, loadingSpace });
-
   if (resolvingUrl || loadingSpace) {
     return null;
   }

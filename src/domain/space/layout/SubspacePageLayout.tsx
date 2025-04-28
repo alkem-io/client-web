@@ -29,6 +29,8 @@ import { useTranslation } from 'react-i18next';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { SubspaceDrawerMemnu } from './SubspaceDrawerMenu';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
@@ -177,6 +179,11 @@ export const SubspacePageLayout = () => {
         about={about}
       />
       <DialogActions />
+      <FloatingActionButtons
+        {...(isSmallScreen ? { bottom: gutters(3) } : {})}
+        // visible={!isTabsMenuOpen}
+        floatingActions={<PlatformHelpButton />}
+      />
     </>
   );
 };

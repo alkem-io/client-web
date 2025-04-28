@@ -44,6 +44,9 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
     [subspace, permissions]
   );
 
+  if (loading) {
+    return null;
+  }
   if (spaceId && !loading && !canRead) {
     return (
       <Routes>
