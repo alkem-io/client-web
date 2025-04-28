@@ -1,22 +1,21 @@
 import SpacePageBannerCard from '../cards/components/SpacePageBannerCard';
-import PageBanner, { PageBannerProps } from '@/core/ui/layout/pageBanner/PageBanner';
+import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
-interface SubspacePageBannerProps extends Omit<PageBannerProps, 'banner'> {
-  journeyId: string | undefined;
-  levelZeroSpaceId: string | undefined;
-}
+const SubspacePageBanner = () => {
+  const { spaceId, spaceLevel, levelZeroSpaceId } = useUrlResolver();
 
-const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspacePageBannerProps) => {
   const { data } = useSubspacePageBannerQuery({
     variables: {
       level0Space: levelZeroSpaceId!,
-      spaceId: journeyId!,
+      spaceId: spaceId!,
     },
-    skip: !journeyId || !levelZeroSpaceId,
+    skip: !spaceId || !levelZeroSpaceId,
+    returnPartialData: true,
   });
 
   const bannerVisual = useMemo(() => {
@@ -30,6 +29,9 @@ const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspaceP
     };
   }, [data]);
 
+  if (spaceLevel === SpaceLevel.L0) {
+    return null;
+  }
   return (
     <PageBanner
       banner={bannerVisual}
@@ -38,7 +40,6 @@ const SubspacePageBanner = ({ journeyId, levelZeroSpaceId, ...props }: SubspaceP
       tagline={data?.lookup.space?.about.profile.tagline ?? ''}
       avatar={data?.lookup.space?.about.profile.avatar}
       tags={data?.lookup.space?.about.profile.tagset?.tags}
-      {...props}
     />
   );
 };
