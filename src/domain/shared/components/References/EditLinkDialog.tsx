@@ -4,7 +4,7 @@ import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -47,8 +47,7 @@ interface EditLinkDialogProps {
 
 const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
   const { t } = useTranslation();
-  const breakpoint = useCurrentBreakpoint();
-  const isMobile = ['xs', 'sm'].includes(breakpoint);
+  const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 
@@ -76,9 +75,9 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
             return (
               <>
                 <Gutters>
-                  <Gutters row={!isMobile} disablePadding alignItems="start">
-                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMobile} />
-                    <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+                  <Gutters row={!isMediumSmallScreen} disablePadding alignItems="start">
+                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMediumSmallScreen} />
+                    <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
                       <FormikFileInput
                         name={'uri'}
                         title={t('common.url')}

@@ -11,8 +11,7 @@ import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/
 import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
-import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
-import { Theme, useMediaQuery } from '@mui/material';
+import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
 import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
@@ -44,13 +43,13 @@ const SubspaceDialogs = ({
 }: SubspaceDialogsProps) => {
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   useEffect(() => {
-    if (!isMobile && dialogOpen === SubspaceDialog.Outline) {
+    if (!isSmallScreen && dialogOpen === SubspaceDialog.Outline) {
       handleClose();
     }
-  }, [isMobile]);
+  }, [isSmallScreen]);
 
   if (!dialogOpen || !spaceId || !journeyUrl) {
     return null;

@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { Formik } from 'formik';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,14 +7,13 @@ import { EditMode } from '@/core/ui/forms/editMode';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { Visual } from '@/core/apollo/generated/graphql-schema';
 import { Reference } from '@/domain/common/profile/Profile';
-import { defaultUser, UserFormGenerated, UserModel } from '../models/User';
+import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
-import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -24,6 +23,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -45,7 +45,6 @@ type UserProps = {
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
-  onVerify?: (type: string) => Promise<void>;
 };
 
 export const UserForm = ({
@@ -54,12 +53,11 @@ export const UserForm = ({
   editMode = EditMode.readOnly,
   onSave,
   onDelete,
-  onVerify,
 }: UserProps) => {
   const { t } = useTranslation();
   const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
   const isReadOnlyMode = editMode === EditMode.readOnly;
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const {
     firstName,
@@ -190,7 +188,7 @@ export const UserForm = ({
         return (
           <GridContainer>
             <GridProvider columns={12}>
-              <GridItem columns={isMobile ? 6 : 2}>
+              <GridItem columns={isSmallScreen ? 6 : 2}>
                 <Box display="flex" justifyContent="center">
                   <VisualUpload
                     visual={avatar}
@@ -202,7 +200,7 @@ export const UserForm = ({
                 </Box>
               </GridItem>
 
-              <GridItem columns={isMobile ? 6 : 8}>
+              <GridItem columns={isSmallScreen ? 6 : 8}>
                 <Gutters>
                   <FormikInputField
                     name={'firstName'}
@@ -237,20 +235,7 @@ export const UserForm = ({
                     disabled={isSubmitting}
                   />
 
-                  <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
-                    {onVerify && (
-                      <>
-                        <Box marginLeft={1} />
-                        <IconButton
-                          sx={{ flexShrink: 0 }}
-                          onClick={() => onVerify('ProofOfNameCredential')}
-                          aria-label={t('common.verified-status.verified')}
-                        >
-                          <HealthAndSafetyIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </LocationSegment>
+                  <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} />
                   <FormikInputField
                     name={'tagline'}
                     title={t('components.profile.fields.tagline.title')}

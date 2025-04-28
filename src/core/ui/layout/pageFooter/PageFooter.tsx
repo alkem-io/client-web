@@ -1,7 +1,8 @@
-import { Box, BoxProps, Theme, useMediaQuery } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import { Children, PropsWithChildren, ReactNode } from 'react';
 import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
+import { useScreenSize } from '../../grid/constants';
 
 type PageFooterProps = {
   logo: ReactNode;
@@ -11,7 +12,7 @@ type PageFooterProps = {
 const wrapChild = (child: ReactNode, index: number) => <Box key={`_footer_item_${index}`}>{child}</Box>;
 
 const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWithChildren<PageFooterProps>) => {
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
 
   const childrenCount = Children.count(children);
   if (childrenCount % 2 !== 0) {
@@ -24,15 +25,15 @@ const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWit
   return (
     <Box
       display="flex"
-      flexDirection={isMobile ? 'column' : 'row-reverse'}
-      gap={gutters(isMobile ? 0 : 1)}
+      flexDirection={isMediumSmallScreen ? 'column' : 'row-reverse'}
+      gap={gutters(isMediumSmallScreen ? 0 : 1)}
       alignItems="center"
       justifyContent="center"
       paddingY={gutters(0.5)}
       paddingX={gutters()}
       {...props}
     >
-      {!isMobile && (
+      {!isMediumSmallScreen && (
         <Box display="flex" flexGrow={1} flexShrink={1}>
           <Caption visibility="hidden">{copyright}</Caption>
         </Box>
@@ -41,7 +42,7 @@ const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWit
         display="flex"
         alignItems="center"
         gap={theme => theme.spacing(1.5)}
-        order={isMobile ? 0 : 2}
+        order={isMediumSmallScreen ? 0 : 2}
         height={gutters(2)}
       >
         {logo}
@@ -49,7 +50,7 @@ const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWit
       <Box display="flex" gap={gutters()} alignItems="center" height={gutters(1.5)} order={3}>
         {firstChildren}
       </Box>
-      <Box display="flex" gap={gutters()} alignItems="center" height={gutters(1.5)} order={isMobile ? 4 : 1}>
+      <Box display="flex" gap={gutters()} alignItems="center" height={gutters(1.5)} order={isMediumSmallScreen ? 4 : 1}>
         {lastChildren}
       </Box>
       <Box

@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/_deprecatedToKeep/journeyCardValueGetter';
+import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
-import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
@@ -102,8 +102,8 @@ const SpaceSubspacesPage = () => {
         childEntities={subspaces}
         level={level}
         childEntitiesIcon={<SpaceL1Icon />}
-        childEntityValueGetter={journeyCardValueGetter}
-        childEntityTagsGetter={journeyCardTagsGetter}
+        childEntityValueGetter={spaceAboutValueGetter}
+        childEntityTagsGetter={spaceAboutTagsGetter}
         state={{ loading: loading, error: error }}
         renderChildEntityCard={item => (
           <SubspaceCard

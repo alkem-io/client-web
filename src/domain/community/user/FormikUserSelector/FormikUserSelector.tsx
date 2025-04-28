@@ -9,10 +9,10 @@ import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
-import { useUserContext } from '../hooks/useUserContext';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { useTranslation } from 'react-i18next';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '@/core/ui/typography';
@@ -28,7 +28,7 @@ type FormikUserSelectorProps = {
   name: string;
   required?: boolean;
   readonly?: boolean;
-  onChange?: (contributorIds: string[]) => void;
+  onChange?: (invitedContributorIds: string[]) => void;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
@@ -58,7 +58,7 @@ export const FormikUserSelector = ({
   });
 
   const { t } = useTranslation();
-  const { user: currentUser } = useUserContext();
+  const { userModel: currentUser } = useCurrentUserContext();
 
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
@@ -74,12 +74,12 @@ export const FormikUserSelector = ({
       sortUsers(
         users
           .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
-          .filter(user => user.id !== currentUser?.user.id)
+          .filter(user => user.id !== currentUser?.id)
       )
     );
-  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
+  }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
 
-  const breakpoint = useCurrentBreakpoint();
+  const { isSmallScreen } = useScreenSize();
 
   const handleSelect = (user: Pick<User, 'id'> | null) => {
     helpers.setTouched(true);
@@ -134,7 +134,7 @@ export const FormikUserSelector = ({
               },
               ...sx,
             }}
-            onChange={(evt, value) => handleSelect(value)}
+            onChange={(_, value) => handleSelect(value)}
             renderOption={(props, user) => (
               <li {...props}>
                 <ProfileChipView
@@ -172,7 +172,7 @@ export const FormikUserSelector = ({
         </>
       )}
       <GridContainer disablePadding marginBottom={gutters(1)}>
-        <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
+        <GridProvider columns={isSmallScreen ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
           {field.value?.map(id => (
             <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
           ))}

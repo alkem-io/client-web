@@ -12,11 +12,12 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Chip, TextField, Theme, useMediaQuery } from '@mui/material';
+import { Chip, TextField } from '@mui/material';
 import { delay, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
 import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
+import { useScreenSize } from '../grid/constants';
 
 export interface MultipleSelectProps {
   value: string[];
@@ -81,14 +82,14 @@ const MultipleSelect = ({
 
   const normalizedValue = value.slice(0, MAX_TERMS_SEARCH);
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
   const [isShrunk, setShrink] = useState<boolean>();
 
   useLayoutEffect(() => {
-    if (isShrunk === undefined && isMobile && autoShrink) {
+    if (isShrunk === undefined && isSmallScreen && autoShrink) {
       setShrink(true);
     }
-  }, [autoShrink, isMobile, isShrunk]);
+  }, [autoShrink, isSmallScreen, isShrunk]);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
@@ -200,7 +201,7 @@ const MultipleSelect = ({
                           selectedTerms={normalizedValue}
                           disabled={disabled}
                           handleRemove={handleRemove}
-                          maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
+                          maxTermsVisible={isSmallScreen ? 1 : MAX_TERMS_SEARCH}
                           inlineTerms={inlineTerms}
                         />
                       )}
@@ -219,7 +220,7 @@ const MultipleSelect = ({
                   },
                 }}
                 onBlur={() => {
-                  if (isMobile && autoShrink) {
+                  if (isSmallScreen && autoShrink) {
                     // Delay this to allow the click on the SelectedTerms event remove searchTerms
                     delay(() => {
                       setShrink(true);
@@ -239,7 +240,7 @@ const MultipleSelect = ({
                 <SelectedTerms
                   selectedTerms={normalizedValue}
                   handleRemove={handleRemove}
-                  maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
+                  maxTermsVisible={isSmallScreen ? 1 : MAX_TERMS_SEARCH}
                 />
               )}
             </Box>
