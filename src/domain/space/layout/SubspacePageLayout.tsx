@@ -28,7 +28,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { SubspaceDrawerMenue } from './SubspaceDrawerMenu';
+import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 
@@ -170,7 +170,7 @@ export const SubspacePageLayout = () => {
         </PageContentColumnBase>
       </PageContent>
 
-      <SubspaceDrawerMenue
+      <SubspaceDrawerMenu
         innovationFlowStates={innovationFlowStates}
         selectedInnovationFlowState={selectedInnovationFlowState}
         currentInnovationFlowState={currentInnovationFlowState}
