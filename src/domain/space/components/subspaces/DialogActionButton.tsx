@@ -17,6 +17,8 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import { MENU_STATE_KEY, MenuState } from '../../layout/SubspaceInfoColumn';
+import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
+import { Caption } from '@/core/ui/typography';
 
 const ACTION_CONFIG = {
   [SubspaceDialog.About]: InfoOutlined,
@@ -35,11 +37,13 @@ export const DialogActionButton = ({
   dialog,
   actionDisplay = 'buttonWithTooltip',
   buttonVariant = 'contained',
+  onClick,
 }: {
   dialog: SubspaceDialog;
   dialogProps?: Record<string, unknown>;
-  actionDisplay?: 'none' | 'fullWidth' | 'buttonWithTooltip';
+  actionDisplay?: 'fullWidth' | 'buttonWithTooltip' | 'menuItem';
   buttonVariant?: 'text' | 'contained' | 'outlined';
+  onClick?: () => void;
 }) => {
   const { t } = useTranslation();
 
@@ -63,7 +67,18 @@ export const DialogActionButton = ({
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
   return (
     <>
-      {actionDisplay !== 'none' && (
+      {actionDisplay === 'menuItem' ? (
+        <NavigatableMenuItem
+          key={dialog}
+          iconComponent={Icon}
+          route={`${url}/${dialog}`}
+          replace
+          onClick={onClick}
+          typographyComponent={props => <Caption {...props} />}
+        >
+          {tooltip}
+        </NavigatableMenuItem>
+      ) : (
         <Link to={`${url}/${dialog}`} replace>
           {actionDisplay === 'fullWidth' ? (
             <FullWidthButton

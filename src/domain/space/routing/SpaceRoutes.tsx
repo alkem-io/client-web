@@ -62,6 +62,9 @@ const LegacyRoutesRedirects = () => {
 const SpaceProtectedRoutes = () => {
   const { loading: resolvingUrl } = useUrlResolver();
   const { permissions, loading: loadingSpace } = useContext(SpaceContext);
+
+  console.log({ permissions, loadingSpace });
+
   if (resolvingUrl || loadingSpace) {
     return null;
   }
@@ -73,7 +76,7 @@ const SpaceProtectedRoutes = () => {
   return <Outlet />;
 };
 
-const SpaceTabbedLayout = () => {
+const SpaceTabbedPages = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
   const { isSmallScreen } = useScreenSize();
@@ -81,7 +84,8 @@ const SpaceTabbedLayout = () => {
   const isLevelZero = spaceLevel === SpaceLevel.L0;
 
   const [searchParams] = useSearchParams();
-  const { defaultTabIndex } = useSpaceTabs({ spaceId: spaceId });
+
+  const { defaultTabIndex } = useSpaceTabs({ spaceId: spaceId, skip: spaceLevel !== SpaceLevel.L0 });
 
   let sectionIndex = searchParams.get(TabbedLayoutParams.Section);
   if (!sectionIndex) {
@@ -125,20 +129,6 @@ const SpaceTabbedLayout = () => {
 };
 
 const SpaceRoutes = () => {
-  const { spaceId } = useUrlResolver();
-  const [searchParams] = useSearchParams();
-  const { defaultTabIndex } = useSpaceTabs({ spaceId: spaceId });
-  let sectionIndex = searchParams.get(TabbedLayoutParams.Section);
-  if (!sectionIndex) {
-    if (defaultTabIndex && defaultTabIndex >= 0) {
-      sectionIndex = defaultTabIndex.toString();
-    } else {
-      sectionIndex = '1';
-    }
-  } else {
-    sectionIndex = `${parseInt(sectionIndex) - 1}`;
-  }
-
   return (
     <SpaceContextProvider>
       <Routes>
@@ -147,7 +137,7 @@ const SpaceRoutes = () => {
           <Route path={EntityPageSection.About} element={<SpaceAboutPage />} />
 
           <Route element={<SpaceProtectedRoutes />}>
-            <Route index element={<SpaceTabbedLayout />} />
+            <Route index element={<SpaceTabbedPages />} />
 
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}

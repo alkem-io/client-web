@@ -47,7 +47,6 @@ export const SubspaceInfoColumn = () => {
 
   const subspace = subspacePageData?.lookup.space;
   const about = subspace?.about;
-  const url = subspace?.about?.profile?.url;
   const membership = about?.membership;
   const communityId = membership?.communityID;
   const collaboration = subspace?.collaboration;
@@ -115,10 +114,10 @@ export const SubspaceInfoColumn = () => {
         <DialogActionButton dialog={SubspaceDialog.Subspaces} />
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
         <DialogActionButton dialog={SubspaceDialog.Activity} />
-        <DialogActionButton dialog={SubspaceDialog.Timeline} dialogProps={{ temporaryLocation: true }} />
-        <DialogActionButton dialog={SubspaceDialog.Share} dialogProps={{ entityTypeName: 'subspace', url }} />
+        <DialogActionButton dialog={SubspaceDialog.Timeline} />
+        <DialogActionButton dialog={SubspaceDialog.Share} />
         {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
-          <DialogActionButton dialog={SubspaceDialog.ManageFlow} dialogProps={{ collaborationId: collaborationId }} />
+          <DialogActionButton dialog={SubspaceDialog.ManageFlow} />
         )}
         {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
           <DialogActionButton dialog={SubspaceDialog.Settings} />

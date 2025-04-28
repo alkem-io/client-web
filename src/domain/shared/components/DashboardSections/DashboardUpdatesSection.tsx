@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import SingleUpdateView from '@/domain/communication/updates/views/SingleUpdateView';
@@ -7,8 +7,6 @@ import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFr
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
 import ShareButton from '../ShareDialog/ShareButton';
-import { DialogActionButton } from '@/domain/space/components/subspaces/DialogActionButton';
-import { SubspaceDialog } from '@/domain/space/components/subspaces/SubspaceDialog';
 
 export interface DashboardUpdatesSectionProps {
   communityId: string | undefined;
@@ -45,7 +43,6 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
             )}
             {/* The Updates dialog is in the first tab, SpaceDashboardPage */}
             <SeeMore subject={t('common.updates')} to={shareUrl} />
-            <DialogActionButton dialog={SubspaceDialog.Updates} dialogProps={{ communityId }} actionDisplay="none" />
           </PageContentBlock>
         ) : (
           <></>

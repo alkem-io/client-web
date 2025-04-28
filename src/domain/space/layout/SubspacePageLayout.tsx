@@ -8,8 +8,7 @@ import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
-import { Box, Button, IconButton } from '@mui/material';
-import { Menu } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { MENU_STATE_KEY, MenuState, SubspaceInfoColumn } from './SubspaceInfoColumn';
@@ -21,18 +20,15 @@ import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innov
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { DialogActions } from '../components/subspaces/DialogActions';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import { gutters } from '@/core/ui/grid/utils';
-import { Paper } from '@mui/material';
-import Gutters from '@/core/ui/grid/Gutters';
-import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { useTranslation } from 'react-i18next';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { SubspaceDrawerMemnu } from './SubspaceDrawerMenu';
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
@@ -47,6 +43,7 @@ export const SubspacePageLayout = () => {
   });
 
   const subspace = subspacePageData?.lookup.space;
+  const about = subspace?.about;
   const collaboration = subspace?.collaboration;
   const calloutsSetId = collaboration?.calloutsSet.id;
   const collaborationId = collaboration?.id;
@@ -160,6 +157,7 @@ export const SubspacePageLayout = () => {
           )}
 
           <Outlet />
+
           <CalloutCreationDialog
             open={isCalloutCreationDialogOpen}
             onClose={handleCreateCalloutClosed}
@@ -169,29 +167,15 @@ export const SubspacePageLayout = () => {
           />
         </PageContentColumnBase>
       </PageContent>
-      {isSmallScreen && (
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
-          <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
-            <IconButton onClick={() => {}}>
-              <Menu />
-            </IconButton>
 
-            {isSmallScreen && showInnovationFlowStates && (
-              <InnovationFlowStates
-                states={innovationFlowStates}
-                currentState={currentInnovationFlowState}
-                selectedState={selectedInnovationFlowState}
-                onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
-                visualizer={InnovationFlowVisualizerMobile}
-                createButton={calloutsSetProvided?.canCreateCallout && createButton}
-              />
-            )}
-
-            <Box width={gutters(2)} />
-          </Gutters>
-          <PoweredBy compact />
-        </Paper>
-      )}
+      <SubspaceDrawerMemnu
+        innovationFlowStates={innovationFlowStates}
+        selectedInnovationFlowState={selectedInnovationFlowState}
+        currentInnovationFlowState={currentInnovationFlowState}
+        createButton={createButton}
+        onSelectState={setSelectedInnovationFlowState!}
+        about={about}
+      />
       <DialogActions />
     </>
   );

@@ -48,7 +48,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
     return (
       <Routes>
         <Route path={EntityPageSection.About} element={<SubspaceAboutPage />} />
-        <Route path="*" element={<Navigate to={EntityPageSection.About} replace />} />
+        <Route path="*" element={<Navigate to={`../${EntityPageSection.About}`} replace />} />
       </Routes>
     );
   }
