@@ -64,7 +64,6 @@ export type ActivityLogEntryKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -77,7 +76,6 @@ export type ActivityLogEntryFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -91,7 +89,6 @@ export type ActivityLogEntryCalendarEventCreatedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -106,7 +103,6 @@ export type ActivityLogEntryCalendarEventCreatedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -119,7 +115,6 @@ export type ActivityLogEntryCalloutDiscussionCommentKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -133,7 +128,6 @@ export type ActivityLogEntryCalloutDiscussionCommentFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -147,7 +141,6 @@ export type ActivityLogEntryCalloutLinkCreatedKeySpecifier = (
   | 'id'
   | 'link'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -162,7 +155,6 @@ export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -175,7 +167,6 @@ export type ActivityLogEntryCalloutPostCommentKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'post'
   | 'space'
   | 'triggeredBy'
@@ -190,7 +181,6 @@ export type ActivityLogEntryCalloutPostCommentFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -204,7 +194,6 @@ export type ActivityLogEntryCalloutPostCreatedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'post'
   | 'space'
   | 'triggeredBy'
@@ -219,7 +208,6 @@ export type ActivityLogEntryCalloutPostCreatedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -233,7 +221,6 @@ export type ActivityLogEntryCalloutPublishedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -247,7 +234,6 @@ export type ActivityLogEntryCalloutPublishedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -260,7 +246,6 @@ export type ActivityLogEntryCalloutWhiteboardContentModifiedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -275,7 +260,6 @@ export type ActivityLogEntryCalloutWhiteboardContentModifiedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -289,7 +273,6 @@ export type ActivityLogEntryCalloutWhiteboardCreatedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -304,7 +287,6 @@ export type ActivityLogEntryCalloutWhiteboardCreatedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -320,7 +302,6 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -336,7 +317,6 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -348,7 +328,6 @@ export type ActivityLogEntrySubspaceCreatedKeySpecifier = (
   | 'description'
   | 'id'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'subspace'
   | 'triggeredBy'
@@ -362,7 +341,6 @@ export type ActivityLogEntrySubspaceCreatedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -377,7 +355,6 @@ export type ActivityLogEntryUpdateSentKeySpecifier = (
   | 'journeyUrl'
   | 'message'
   | 'parentDisplayName'
-  | 'parentNameID'
   | 'space'
   | 'triggeredBy'
   | 'type'
@@ -393,7 +370,6 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
   journeyUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2948,7 +2924,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
-  | 'type'
   | 'updatedDate'
   | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
@@ -2973,7 +2948,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3321,7 +3295,6 @@ export type SpaceKeySpecifier = (
   | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
-  | 'type'
   | 'updatedDate'
   | 'visibility'
   | SpaceKeySpecifier
@@ -3346,7 +3319,6 @@ export type SpaceFieldPolicy = {
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };

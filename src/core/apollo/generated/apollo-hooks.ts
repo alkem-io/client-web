@@ -6018,10 +6018,8 @@ export const ActivityLogOnCollaborationDocument = gql`
       spaceDisplayName: parentDisplayName
       space {
         id
-        ... on Space {
-          about {
-            ...SpaceAboutCardBanner
-          }
+        about {
+          ...SpaceAboutCardBanner
         }
       }
       triggeredBy {
