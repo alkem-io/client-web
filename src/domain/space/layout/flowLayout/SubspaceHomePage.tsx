@@ -5,11 +5,22 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CreateJourney from '../../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
+import SubspacesListDialog from '../../components/SubspacesListDialog';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 
-const SubspaceHomePage = () => {
+const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { spaceId, spaceLevel, loading } = useUrlResolver();
 
-  const { permissions } = useSubSpace();
+  const {
+    permissions,
+    subspace: {
+      about: {
+        profile: { url },
+      },
+    },
+  } = useSubSpace();
+  const handleClose = useBackToStaticPath(url ?? '');
 
   const [createSpaceState, setCreateSpaceState] = useState<
     | {
@@ -49,6 +60,7 @@ const SubspaceHomePage = () => {
         onClose={onCreateJourneyClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />
+      <SubspacesListDialog open={dialog === SubspaceDialog.Subspaces} onClose={handleClose} />
     </>
   );
 };

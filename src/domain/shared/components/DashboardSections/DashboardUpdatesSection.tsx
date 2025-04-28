@@ -7,7 +7,7 @@ import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFr
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
 import ShareButton from '../ShareDialog/ShareButton';
-import { DialogAction } from '@/domain/space/components/subspaces/DialogAction';
+import { DialogActionButton } from '@/domain/space/components/subspaces/DialogActionButton';
 import { SubspaceDialog } from '@/domain/space/components/subspaces/SubspaceDialog';
 
 export interface DashboardUpdatesSectionProps {
@@ -45,7 +45,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
             )}
             {/* The Updates dialog is in the first tab, SpaceDashboardPage */}
             <SeeMore subject={t('common.updates')} to={shareUrl} />
-            <DialogAction dialog={SubspaceDialog.Updates} dialogProps={{ communityId }} actionDisplay="none" />
+            <DialogActionButton dialog={SubspaceDialog.Updates} dialogProps={{ communityId }} actionDisplay="none" />
           </PageContentBlock>
         ) : (
           <></>

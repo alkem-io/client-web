@@ -18,7 +18,7 @@ import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { DialogAction } from '../components/subspaces/DialogAction';
+import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import CreateJourney from '../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
@@ -111,17 +111,17 @@ export const SubspaceInfoColumn = () => {
       >
         {/* <DialogAction dialog={SubspaceDialog.About} /> */}
         {/* <DialogAction dialog={SubspaceDialog.Outline} /> */}
-        <DialogAction dialog={SubspaceDialog.Index} />
-        <DialogAction dialog={SubspaceDialog.Subspaces} />
-        <DialogAction dialog={SubspaceDialog.Contributors} />
-        <DialogAction dialog={SubspaceDialog.Activity} />
-        <DialogAction dialog={SubspaceDialog.Timeline} dialogProps={{ temporaryLocation: true }} />
-        <DialogAction dialog={SubspaceDialog.Share} dialogProps={{ entityTypeName: 'subspace', url }} />
+        <DialogActionButton dialog={SubspaceDialog.Index} />
+        <DialogActionButton dialog={SubspaceDialog.Subspaces} />
+        <DialogActionButton dialog={SubspaceDialog.Contributors} />
+        <DialogActionButton dialog={SubspaceDialog.Activity} />
+        <DialogActionButton dialog={SubspaceDialog.Timeline} dialogProps={{ temporaryLocation: true }} />
+        <DialogActionButton dialog={SubspaceDialog.Share} dialogProps={{ entityTypeName: 'subspace', url }} />
         {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
-          <DialogAction dialog={SubspaceDialog.ManageFlow} dialogProps={{ collaborationId: collaborationId }} />
+          <DialogActionButton dialog={SubspaceDialog.ManageFlow} dialogProps={{ collaborationId: collaborationId }} />
         )}
         {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
-          <DialogAction dialog={SubspaceDialog.Settings} dialogProps={{ collaborationId: collaborationId }} />
+          <DialogActionButton dialog={SubspaceDialog.Settings} />
         )}
         {isCollapsed && (
           <ButtonWithTooltip

@@ -58,7 +58,12 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
       <InnovationFlowStateContextProvider>
         <Routes>
           {/* subspace settings page doesn't need any subpsace layout - it uses the level 0 space page banner */}
-          <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
+          <Route path={`/${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
+          {/* match level 2 settings page early as well */}
+          <Route
+            path={`opportunities/:${nameOfUrl.subsubspaceNameId}/${SubspaceDialog.Settings}/*`}
+            element={<SubspaceSettingsRoute />}
+          />
 
           {/* level 2 space routes are recusive in relation to level 1; so do not add a second layout and just display the page */}
           <Route element={level === SpaceLevel.L2 ? <Outlet /> : <SubspacePageLayout />}>
@@ -76,12 +81,25 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
               element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
             />
-            <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SubspaceHomePage />} />
-            {/* level 2 spaces are recursive */}
-            <Route
-              path={`opportunities/:${nameOfUrl.subsubspaceNameId}/:dialog?/:${nameOfUrl.calendarEventNameId}?/*`}
-              element={<SubspaceRoute level={SpaceLevel.L2} />}
-            />
+            <Route index element={<SubspaceHomePage />} />
+            <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />
+
+            {/* define l2 subspace routes explicitly  although they are rocursive */}
+            <Route path={`/opportunities/:${nameOfUrl.subsubspaceNameId}/*`}>
+              <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
+              <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
+              <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
+              <Route
+                path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
+                element={<SubspaceCalloutPage />}
+              />
+              <Route
+                path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+                element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
+              />
+              <Route index element={<SubspaceHomePage />} />
+              <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />
+            </Route>
             <Route
               path="*"
               element={

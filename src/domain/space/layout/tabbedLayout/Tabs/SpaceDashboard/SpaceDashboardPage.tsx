@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback } from 'react';
+import { useCallback } from 'react';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { buildSpaceSectionUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
@@ -9,13 +9,15 @@ import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import { TabbedLayoutDialogsType } from '../../TabbedLayoutPage';
 import useNavigate from '@/core/routing/useNavigate';
+import { useParams } from 'react-router-dom';
 
-const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayoutDialogsType }>) => {
+const SpaceDashboardPage = () => {
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
     useSpaceTabProvider({ tabPosition: 0 });
 
+  const params = useParams();
+  const { dialog } = params;
   const { spaceId, spaceLevel } = urlInfo;
 
   const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
@@ -32,7 +34,7 @@ const SpaceDashboardPage = ({ dialog }: PropsWithChildren<{ dialog?: TabbedLayou
 
   const spaceData = spacePageData?.lookup.space;
   const backToDashboard = useCallback(
-    () => navigate(buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1)),
+    () => navigate(buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1), { replace: true }),
     [spaceData?.about.profile.url]
   );
 

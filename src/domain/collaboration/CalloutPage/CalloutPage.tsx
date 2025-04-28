@@ -1,11 +1,11 @@
-import { ReactElement, ReactNode, useMemo } from 'react';
+import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { DialogContent } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
@@ -106,6 +106,20 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     val => val === calloutFlowState
   );
 
+  const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
+  let [searchParams, setSearchParams] = useSearchParams();
+  const currentSection = parseInt(searchParams.get('tab') || '-1') + 1;
+
+  useEffect(() => {
+    if (calloutSection < 0) {
+      return;
+    }
+
+    if (currentSection !== calloutSection) {
+      setSearchParams({ tab: `${calloutSection + 1}` });
+    }
+  }, [calloutSection, currentSection]);
+
   if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
     return <Loading />;
   }
@@ -119,6 +133,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   }
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutPosition) : parentRoute;
+
   const handleClose = () => {
     backOrElse(parentPagePath);
   };

@@ -2,18 +2,20 @@ import SpacePageBannerCard from '../cards/components/SpacePageBannerCard';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 const SubspacePageBanner = () => {
-  const { spaceId, levelZeroSpaceId } = useUrlResolver();
+  const { spaceId, spaceLevel, levelZeroSpaceId } = useUrlResolver();
+
   const { data } = useSubspacePageBannerQuery({
     variables: {
       level0Space: levelZeroSpaceId!,
       spaceId: spaceId!,
     },
     skip: !spaceId || !levelZeroSpaceId,
+    returnPartialData: true,
   });
 
   const bannerVisual = useMemo(() => {
@@ -27,6 +29,9 @@ const SubspacePageBanner = () => {
     };
   }, [data]);
 
+  if (spaceLevel === SpaceLevel.L0) {
+    return null;
+  }
   return (
     <PageBanner
       banner={bannerVisual}

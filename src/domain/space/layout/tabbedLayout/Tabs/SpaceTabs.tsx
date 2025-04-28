@@ -27,6 +27,7 @@ import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
 import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
+import { useLocation } from 'react-router-dom';
 
 type TabDefinition = {
   label: ReactNode;
@@ -40,7 +41,7 @@ export interface ActionDefinition extends TabDefinition {
 
 interface SpacePageTabsProps {
   actions?: ActionDefinition[];
-  currentTab: { sectionIndex: number } | { section: EntityPageSection } | undefined;
+  currentTab?: { sectionIndex: number } | { section: EntityPageSection } | undefined;
   mobile?: boolean;
   onMenuOpen?: (open: boolean) => void;
   loading?: boolean;
@@ -56,6 +57,8 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
+
+  const { pathname } = useLocation();
 
   const { space, permissions } = useSpace();
   const { id: spaceId, about } = space;
@@ -76,12 +79,17 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
   }, [isDrawerOpen]);
 
   let selectedTab: EntityPageSection | number = -1;
+
   if (currentTab) {
     if ('sectionIndex' in currentTab) {
       selectedTab = currentTab.sectionIndex;
     }
     if ('section' in currentTab) {
       selectedTab = currentTab.section;
+    }
+  } else {
+    if (pathname.split('/').includes('settings')) {
+      selectedTab = EntityPageSection.Settings;
     }
   }
 

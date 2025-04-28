@@ -15,6 +15,7 @@ import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
 import { SpaceContext } from '@/domain/space/context/SpaceContext';
 import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export const TITLE_HEIGHT = 6;
 
@@ -143,6 +144,7 @@ const SpacePageBanner = ({
   watermark,
   title,
 }: JourneyPageBannerProps) => {
+  const { spaceLevel } = useUrlResolver();
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
   const [imageLoading, setImageLoading] = useState(true);
@@ -168,6 +170,10 @@ const SpacePageBanner = ({
   const imageLoadError = () => {
     setImageLoading(false);
   };
+
+  if (spaceLevel !== SpaceLevel.L0) {
+    return null;
+  }
 
   return (
     <Root ref={containerReference}>

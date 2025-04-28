@@ -22,7 +22,7 @@ const PostRoute = ({ parentPagePath }: PostRouteProps) => {
       {/* in order to achieve that we need a context with a callback to be used in this specific page that would register the extra step */}
       {/* so the layout will know about it... */}
       <Route path="/">
-        <Route index element={<Navigate replace to={PostDialogSection.Dashboard} state={{ keepScroll: true }} />} />
+        <Route index element={<Navigate to={PostDialogSection.Dashboard} state={{ keepScroll: true }} />} />
         <Route path={PostDialogSection.Dashboard} element={<PostDashboardPage postId={postId} onClose={onClose} />} />
         <Route
           path={PostDialogSection.Share}

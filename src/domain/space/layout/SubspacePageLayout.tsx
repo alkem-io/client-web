@@ -1,3 +1,4 @@
+import { useContext, useEffect } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Outlet } from 'react-router-dom';
@@ -13,7 +14,6 @@ import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { MENU_STATE_KEY, MenuState, SubspaceInfoColumn } from './SubspaceInfoColumn';
 import { InnovationFlowStateContext } from '../routing/SubspaceRoutes';
-import { useContext, useEffect } from 'react';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '../hooks/useSubSpace';
@@ -23,7 +23,8 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import { DialogAction } from '../components/subspaces/DialogAction';
+import { DialogActionButton } from '../components/subspaces/DialogActionButton';
+import { DialogActions } from '../components/subspaces/DialogActions';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import { Paper } from '@mui/material';
@@ -107,7 +108,6 @@ export const SubspacePageLayout = () => {
     <>
       <PageContent>
         <SubspaceInfoColumn />
-
         <PageContentColumnBase columns={isCollapsed ? 12 : 9} flexBasis={0} flexGrow={1} flexShrink={1} minWidth={0}>
           <ApplicationButtonContainer journeyId={spaceId} parentSpaceId={parentSpaceId}>
             {(applicationButtonProps, loading) => {
@@ -149,7 +149,7 @@ export const SubspacePageLayout = () => {
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
                 settingsButton={
-                  <DialogAction
+                  <DialogActionButton
                     dialog={SubspaceDialog.ManageFlow}
                     buttonVariant="outlined"
                     dialogProps={{ collaborationId: collaborationId }}
@@ -192,6 +192,7 @@ export const SubspacePageLayout = () => {
           <PoweredBy compact />
         </Paper>
       )}
+      <DialogActions />
     </>
   );
 };

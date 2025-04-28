@@ -1,4 +1,4 @@
-import { Suspense, useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Route, Routes, Navigate, useSearchParams, Outlet } from 'react-router-dom';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import Redirect from '@/core/routing/Redirect';
@@ -17,6 +17,14 @@ import SpaceKnowledgeBasePage from '../layout/tabbedLayout/Tabs/SpaceKnowledgeBa
 import SubspaceRoutes from './SubspaceRoutes';
 import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
 import { parseInt } from 'lodash';
+import SpaceCalloutPage from '../pages/SpaceCalloutPage';
+import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import SpaceTabs from '../layout/tabbedLayout/Tabs/SpaceTabs';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import { gutters } from '@/core/ui/grid/utils';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 
 const LegacyRoutesRedirects = () => {
   const {
@@ -65,6 +73,57 @@ const SpaceProtectedRoutes = () => {
   return <Outlet />;
 };
 
+const SpaceTabbedLayout = () => {
+  const { spaceId, spaceLevel } = useUrlResolver();
+  const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
+  const { isSmallScreen } = useScreenSize();
+
+  const isLevelZero = spaceLevel === SpaceLevel.L0;
+
+  const [searchParams] = useSearchParams();
+  const { defaultTabIndex } = useSpaceTabs({ spaceId: spaceId });
+
+  let sectionIndex = searchParams.get(TabbedLayoutParams.Section);
+  if (!sectionIndex) {
+    if (defaultTabIndex && defaultTabIndex >= 0) {
+      sectionIndex = defaultTabIndex.toString();
+    } else {
+      sectionIndex = '1';
+    }
+  } else {
+    sectionIndex = `${parseInt(sectionIndex) - 1}`;
+  }
+
+  return (
+    <>
+      {!isSmallScreen && isLevelZero && (
+        <SpaceTabs
+          mobile={isSmallScreen}
+          onMenuOpen={setTabsMenuOpen}
+          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
+        />
+      )}
+      {sectionIndex === '0' && <SpaceDashboardPage />}
+      {sectionIndex === '1' && <SpaceCommunityPage />}
+      {sectionIndex === '2' && <SpaceSubspacesPage />}
+      {sectionIndex === '3' && <SpaceKnowledgeBasePage sectionIndex={3} />}
+      {isSmallScreen && isLevelZero && (
+        <SpaceTabs
+          mobile={isSmallScreen}
+          onMenuOpen={setTabsMenuOpen}
+          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
+        />
+      )}
+
+      <FloatingActionButtons
+        {...(isSmallScreen ? { bottom: gutters(3) } : {})}
+        visible={!isTabsMenuOpen}
+        floatingActions={<PlatformHelpButton />}
+      />
+    </>
+  );
+};
+
 const SpaceRoutes = () => {
   const { spaceId } = useUrlResolver();
   const [searchParams] = useSearchParams();
@@ -80,44 +139,34 @@ const SpaceRoutes = () => {
     sectionIndex = `${parseInt(sectionIndex) - 1}`;
   }
 
-  // not ideal but at least all routing is in one place ^^
-  const getSpaceSection = () => {
-    switch (sectionIndex) {
-      case '0':
-        return <SpaceDashboardPage />;
-      case '1':
-        return <SpaceCommunityPage />;
-      case '2':
-        return <SpaceSubspacesPage />;
-      case '3':
-        return <SpaceKnowledgeBasePage sectionIndex={3} />;
-    }
-  };
   return (
     <SpaceContextProvider>
       <Routes>
         {/* keep the logic around sections in one place - here*/}
-        <Route path="/" element={<SpacePageLayout sectionIndex={parseInt(`${sectionIndex}`)} />}>
+        <Route path="/" element={<SpacePageLayout />}>
           <Route path={EntityPageSection.About} element={<SpaceAboutPage />} />
 
           <Route element={<SpaceProtectedRoutes />}>
-            <Route index element={getSpaceSection()} />
+            <Route index element={<SpaceTabbedLayout />} />
 
-            <Route path="/:dialog?" element={<SpaceDashboardPage />} />
+            <Route
+              path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
+              element={<SpaceCalloutPage />}
+            />
+
+            <Route
+              path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+              element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
+            />
             <Route path={`${EntityPageSection.Settings}/*`} element={<SpaceAdminL0Route />} />
+            <Route path={`/:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SpaceDashboardPage />} />
             <Route
               path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
               element={
                 <SubspaceContextProvider>
-                  <Suspense fallback={null}>
-                    <SubspaceRoutes />
-                  </Suspense>
+                  <SubspaceRoutes />
                 </SubspaceContextProvider>
               }
-            />
-            <Route
-              path={`calendar/:${nameOfUrl.calendarEventNameId}?`}
-              element={<SpaceDashboardPage dialog="calendar" />}
             />
           </Route>
           <Route path="*" element={<LegacyRoutesRedirects />} />
