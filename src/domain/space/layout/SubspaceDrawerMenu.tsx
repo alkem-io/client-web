@@ -15,16 +15,26 @@ import { Drawer } from '@mui/material';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { MenuList } from '@mui/material';
-import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
+import SpaceWelcomeBlock, { SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
+import { InnovationFlowState } from '@/core/apollo/generated/graphql-schema';
 
-export const SubspaceDrawerMemnu = ({
+interface SubspaceDrawerMenuProps {
+  innovationFlowStates?: InnovationFlowState[];
+  selectedInnovationFlowState?: string;
+  currentInnovationFlowState?: string;
+  createButton?: React.ReactNode;
+  onSelectState: (stateName: string) => void;
+  about?: SpaceWelcomeBlockProps['spaceAbout'];
+}
+
+export const SubspaceDrawerMenu = ({
   innovationFlowStates,
   selectedInnovationFlowState,
   currentInnovationFlowState,
   createButton,
   onSelectState,
   about,
-}) => {
+}: SubspaceDrawerMenuProps) => {
   const { isSmallScreen } = useScreenSize();
 
   const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(false);
