@@ -9,11 +9,10 @@ import {
   ActivityLogCalloutPublishedFragment,
   ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
-  ActivityLogSpaceL1CreatedFragment,
-  ActivityLogSpaceL2CreatedFragment,
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
   ActivityLogUpdateSentFragment,
+  ActivityLogSubspaceCreatedFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   ActivityCalloutLinkCreatedView,
@@ -21,11 +20,10 @@ import {
   ActivityCalloutPostCreatedView,
   ActivityCalloutPublishedView,
   ActivityCalloutWhiteboardActivityView,
-  ActivitySpaceL1CreatedView,
+  ActivitySubspaceCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
   ActivityMemberJoinedView,
-  ActivitySpaceL2CreatedView,
   ActivityViewProps,
 } from './views';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
@@ -53,8 +51,7 @@ type TypedActivityLogResults = {
   [ActivityEventType.CalloutPostComment]: ActivityLogCalloutPostCommentFragment;
   [ActivityEventType.DiscussionComment]: ActivityLogCalloutDiscussionCommentFragment;
   [ActivityEventType.MemberJoined]: ActivityLogMemberJoinedFragment;
-  [ActivityEventType.ChallengeCreated]: ActivityLogSpaceL1CreatedFragment;
-  [ActivityEventType.OpportunityCreated]: ActivityLogSpaceL2CreatedFragment;
+  [ActivityEventType.SubspaceCreated]: ActivityLogSubspaceCreatedFragment;
   [ActivityEventType.UpdateSent]: ActivityLogUpdateSentFragment;
   [ActivityEventType.CalendarEventCreated]: ActivityLogCalendarEventCreatedFragment;
 };
@@ -117,10 +114,8 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.MemberJoined:
       const userAuthor = buildAuthorFromUser(activity.contributor);
       return <ActivityMemberJoinedView member={userAuthor} {...activity} {...rest} />;
-    case ActivityEventType.ChallengeCreated:
-      return <ActivitySpaceL1CreatedView {...activity} {...rest} />;
-    case ActivityEventType.OpportunityCreated:
-      return <ActivitySpaceL2CreatedView {...activity} {...rest} />;
+    case ActivityEventType.SubspaceCreated:
+      return <ActivitySubspaceCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalendarEventCreated:
       return <ActivityCalendarEventCreatedView {...activity} {...rest} />;
     case ActivityEventType.UpdateSent:
