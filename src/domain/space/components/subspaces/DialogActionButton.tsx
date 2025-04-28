@@ -82,7 +82,7 @@ export const DialogActionButton = ({
         <Link to={`${url}/${dialog}`} replace>
           {actionDisplay === 'fullWidth' ? (
             <FullWidthButton
-              startIcon={<InfoOutlined />}
+              startIcon={<Icon />}
               variant="outlined"
               sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
             >
