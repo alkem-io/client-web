@@ -9,8 +9,8 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {
-  JourneyCreationForm,
-  JourneyFormValues,
+  SpaceCreationForm,
+  SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
@@ -25,11 +25,11 @@ import { gutters } from '@/core/ui/grid/utils';
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
-  JourneyFormValues,
+  SpaceFormValues,
   'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
 >;
 
-interface CreateSubspaceFormProps extends JourneyCreationForm {}
+interface CreateSubspaceFormProps extends SpaceCreationForm {}
 
 export const CreateSubspaceForm = ({
   isSubmitting,

@@ -10,7 +10,7 @@ type PrivacyIconProps = {
   ariaLabel?: string;
 };
 
-export const PrivacyIcon = memo(({ top = 8, size = 8, right = 8, ariaLabel = 'Private journey' }: PrivacyIconProps) => {
+export const PrivacyIcon = memo(({ top = 8, size = 8, right = 8, ariaLabel = 'Private space' }: PrivacyIconProps) => {
   return (
     <Paper
       elevation={3}

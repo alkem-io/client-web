@@ -1,4 +1,4 @@
-query JourneyStorageConfig($spaceId: UUID!) {
+query SpaceStorageConfig($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

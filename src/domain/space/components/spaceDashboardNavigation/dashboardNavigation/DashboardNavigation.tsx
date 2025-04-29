@@ -76,7 +76,7 @@ const DashboardNavigation = ({
 
   const tooltipPlacement = isMediumSmallScreen ? 'left' : 'right';
 
-  // TODO: receive journeyPath as argument, revise the currentLevel && isTopLevel logic!
+  // TODO: receive spaceHierarchyPath as argument, revise the currentLevel && isTopLevel logic!
   // TODO: simplify the logic here and in the DashboardNavigationItemView
   const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;

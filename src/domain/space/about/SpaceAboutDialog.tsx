@@ -160,7 +160,7 @@ const SpaceAboutDialog = ({
               title={
                 <Caption>
                   <Trans
-                    i18nKey={'components.journeyUnauthorizedDialog.message'}
+                    i18nKey={'components.spaceUnauthorizedDialog.message'}
                     components={{
                       apply: (
                         <RouterLink to="" sx={{ color: 'white' }} underline="always" onClick={handleLearnWhyClick} />
@@ -192,7 +192,7 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Gutters disablePadding display="flex" flexDirection="column" alignItems="center" width="100%">
-                <ApplicationButtonContainer journeyId={space.id} parentSpaceId={parentSpaceId}>
+                <ApplicationButtonContainer spaceId={space.id} parentSpaceId={parentSpaceId}>
                   {(applicationButtonProps, loading) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
@@ -204,7 +204,7 @@ const SpaceAboutDialog = ({
                           ref={applicationButtonRef}
                           {...applicationButtonProps}
                           loading={loading}
-                          journeyId={space.id}
+                          spaceId={space.id}
                           spaceLevel={space.level}
                           noAuthApplyButtonText={t('buttons.apply')}
                         />

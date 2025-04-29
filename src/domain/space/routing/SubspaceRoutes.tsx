@@ -58,7 +58,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       <InnovationFlowStateContextProvider>
         <Routes>
           {/* subspace settings page doesn't need any subpsace layout - it uses the level 0 space page banner */}

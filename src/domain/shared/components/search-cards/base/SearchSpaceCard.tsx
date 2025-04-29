@@ -12,8 +12,7 @@ import SpaceCardSpacing from '@/domain/space/components/cards/components/SpaceCa
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 
-export interface SearchBaseJourneyCardProps
-  extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'parentSegment'> {
+export interface SearchSpaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'parentSegment'> {
   tagline: string;
   locked?: boolean;
   spaceLevel: SpaceLevel;
@@ -21,10 +20,10 @@ export interface SearchBaseJourneyCardProps
   vision: string;
   parentSegment?: ReactNode;
   spaceVisibility?: SpaceVisibility;
-  journeyUri: string;
+  spaceUri: string;
 }
 
-const SearchBaseJourneyCard = ({
+const SearchSpaceCard = ({
   spaceLevel,
   tagline,
   displayName,
@@ -32,7 +31,7 @@ const SearchBaseJourneyCard = ({
   parentSegment,
   spaceVisibility,
   ...props
-}: SearchBaseJourneyCardProps) => {
+}: SearchSpaceCardProps) => {
   const { t } = useTranslation();
   const ribbon =
     spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
@@ -51,7 +50,7 @@ const SearchBaseJourneyCard = ({
       expansion={<SpaceCardDescription>{vision}</SpaceCardDescription>}
       expansionActions={
         <CardActions>
-          <SpaceCardGoToButton spaceUri={props.journeyUri} subspace={spaceLevel !== SpaceLevel.L0} />
+          <SpaceCardGoToButton spaceUri={props.spaceUri} subspace={spaceLevel !== SpaceLevel.L0} />
         </CardActions>
       }
       {...props}
@@ -62,4 +61,4 @@ const SearchBaseJourneyCard = ({
   );
 };
 
-export default SearchBaseJourneyCard;
+export default SearchSpaceCard;

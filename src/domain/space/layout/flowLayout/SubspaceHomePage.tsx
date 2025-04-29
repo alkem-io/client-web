@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import CreateJourney from '../../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
@@ -12,6 +11,7 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import CreateSubspace from '../../components/subspaces/SubspaceCreationDialog/CreateSubspace';
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { isSmallScreen } = useScreenSize();
@@ -41,7 +41,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
     isDialogVisible: false,
   });
 
-  const onCreateJourneyClose = () => {
+  const onCreateSubspaceClose = () => {
     setCreateSpaceState({
       isDialogVisible: false,
     });
@@ -88,9 +88,9 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
         createInFlowState={selectedInnovationFlowState}
       />
 
-      <CreateJourney
+      <CreateSubspace
         isVisible={createSpaceState.isDialogVisible}
-        onClose={onCreateJourneyClose}
+        onClose={onCreateSubspaceClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />
       <SubspacesListDialog open={dialog === SubspaceDialog.Subspaces} onClose={handleClose} />

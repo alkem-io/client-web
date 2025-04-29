@@ -130,7 +130,7 @@ const SpaceDashboardView = ({
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {readUsersAccess && <DashboardCalendarSection journeyId={space?.id} level={level} />}
+          {readUsersAccess && <DashboardCalendarSection spaceId={space?.id} level={level} />}
           {readUsersAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 

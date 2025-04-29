@@ -7,7 +7,7 @@ import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { TabbedLayoutParams } from '../urlBuilders';
 
-export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
+export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
 export type UrlResolverContextValue = {
   type: UrlType | undefined;
@@ -21,7 +21,7 @@ export type UrlResolverContextValue = {
   /**
    * [level0, level1, level2]
    */
-  journeyPath: JourneyPath | undefined;
+  spaceHierarchyPath: SpaceHierarchyPath | undefined;
   /**
    * The parent space id of the current space
    */
@@ -63,7 +63,7 @@ const emptyResult: UrlResolverContextValue = {
   spaceId: undefined,
   spaceLevel: undefined,
   levelZeroSpaceId: undefined,
-  journeyPath: [],
+  spaceHierarchyPath: [],
   parentSpaceId: undefined,
   collaborationId: undefined,
   calloutsSetId: undefined,
@@ -187,7 +187,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       const data = urlResolverData.urlResolver;
       const spaceId = data?.space?.id;
       const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
-      const journeyPath = spacesIds.length > 0 ? (spacesIds as JourneyPath) : undefined;
+      const spaceHierarchyPath = spacesIds.length > 0 ? (spacesIds as SpaceHierarchyPath) : undefined;
 
       return {
         type,
@@ -196,7 +196,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         spaceLevel: data.space?.level,
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
         parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
-        journeyPath: journeyPath,
+        spaceHierarchyPath: spaceHierarchyPath,
 
         // Collaboration:
         collaborationId: data.space?.collaboration.id,

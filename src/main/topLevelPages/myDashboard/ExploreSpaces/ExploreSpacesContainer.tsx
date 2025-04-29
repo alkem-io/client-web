@@ -96,8 +96,8 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
     if (shouldSearch && rawSearchResults?.search?.spaceResults) {
       return rawSearchResults.search.spaceResults?.results
         .filter(
-          (journey): journey is TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment> =>
-            journey.type === SearchResultType.Space
+          (space): space is TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment> =>
+            space.type === SearchResultType.Space
         )
         .map(entry => ({
           ...entry.space,

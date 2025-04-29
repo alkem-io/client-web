@@ -19,8 +19,8 @@ import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innov
 import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
-import CreateJourney from '../components/subspaces/SubspaceCreationDialog/CreateJourney';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import CreateSubspace from '@/domain/space/components/subspaces/SubspaceCreationDialog/CreateSubspace';
 
 export const MENU_STATE_KEY = 'menuState';
 export enum MenuState {
@@ -72,7 +72,7 @@ export const SubspaceInfoColumn = () => {
     });
   };
 
-  const onCreateJourneyClose = () => {
+  const onCreateSubspaceClose = () => {
     setCreateSpaceState({
       isDialogVisible: false,
     });
@@ -143,9 +143,9 @@ export const SubspaceInfoColumn = () => {
       />
       {/*   onCurrentItemNotFound={dashboardNavigation.refetch} */}
       <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
-      <CreateJourney
+      <CreateSubspace
         isVisible={createSpaceState.isDialogVisible}
-        onClose={onCreateJourneyClose}
+        onClose={onCreateSubspaceClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />
     </InfoColumn>

@@ -495,8 +495,8 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   }
   ${ActivityCalloutContextFragmentDoc}
 `;
-export const ActivityLogChallengeCreatedFragmentDoc = gql`
-  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+export const ActivityLogSpaceL1CreatedFragmentDoc = gql`
+  fragment ActivityLogSpaceL1Created on ActivityLogEntryChallengeCreated {
     subspace {
       id
       about {
@@ -509,8 +509,8 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
   }
   ${ActivitySubjectProfileFragmentDoc}
 `;
-export const ActivityLogOpportunityCreatedFragmentDoc = gql`
-  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+export const ActivityLogSpaceL2CreatedFragmentDoc = gql`
+  fragment ActivityLogSpaceL2Created on ActivityLogEntryOpportunityCreated {
     subsubspace {
       id
       about {
@@ -569,10 +569,10 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogCalloutDiscussionComment
     }
     ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogChallengeCreated
+      ...ActivityLogSpaceL1Created
     }
     ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogOpportunityCreated
+      ...ActivityLogSpaceL2Created
     }
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent
@@ -589,8 +589,8 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -1737,8 +1737,8 @@ export const SpaceCardFragmentDoc = gql`
   }
   ${SpaceAboutCardBannerFragmentDoc}
 `;
-export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
-  fragment JourneyBreadcrumbsSpace on Space {
+export const BreadcrumbsSpaceL0FragmentDoc = gql`
+  fragment BreadcrumbsSpaceL0 on Space {
     id
     level
     about {
@@ -1755,8 +1755,8 @@ export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const JourneyBreadcrumbsSubpaceFragmentDoc = gql`
-  fragment JourneyBreadcrumbsSubpace on Space {
+export const BreadcrumbsSubspaceFragmentDoc = gql`
+  fragment BreadcrumbsSubspace on Space {
     id
     level
     about {
@@ -3034,18 +3034,6 @@ export const SpaceMembershipFragmentDoc = gql`
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
-`;
-export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
-  fragment MyMembershipsChildJourneyProfile on Profile {
-    id
-    displayName
-    tagline
-    url
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
 `;
 export const ShortAccountItemFragmentDoc = gql`
   fragment ShortAccountItem on Profile {
@@ -6045,7 +6033,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       description
       type
       child
-      journeyDisplayName: parentDisplayName
+      spaceDisplayName: parentDisplayName
       space {
         id
         ... on Space {
@@ -6090,10 +6078,10 @@ export const ActivityLogOnCollaborationDocument = gql`
         ...ActivityLogCalloutDiscussionComment
       }
       ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
+        ...ActivityLogSpaceL1Created
       }
       ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
+        ...ActivityLogSpaceL2Created
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -6112,8 +6100,8 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -11913,82 +11901,6 @@ export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFull
   return { query: UsersModelFullDocument, variables: variables };
 }
 
-export const UserContributionDisplayNamesDocument = gql`
-  query UserContributionDisplayNames($userId: UUID!) {
-    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
-      id
-      spaces {
-        id
-        displayName
-        subspaces {
-          id
-          displayName
-        }
-      }
-      organizations {
-        id
-        displayName
-      }
-    }
-  }
-`;
-
-/**
- * __useUserContributionDisplayNamesQuery__
- *
- * To run a query within a React component, call `useUserContributionDisplayNamesQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserContributionDisplayNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserContributionDisplayNamesQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserContributionDisplayNamesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserContributionDisplayNamesQuery,
-    SchemaTypes.UserContributionDisplayNamesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.UserContributionDisplayNamesQuery,
-    SchemaTypes.UserContributionDisplayNamesQueryVariables
-  >(UserContributionDisplayNamesDocument, options);
-}
-
-export function useUserContributionDisplayNamesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserContributionDisplayNamesQuery,
-    SchemaTypes.UserContributionDisplayNamesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.UserContributionDisplayNamesQuery,
-    SchemaTypes.UserContributionDisplayNamesQueryVariables
-  >(UserContributionDisplayNamesDocument, options);
-}
-
-export type UserContributionDisplayNamesQueryHookResult = ReturnType<typeof useUserContributionDisplayNamesQuery>;
-export type UserContributionDisplayNamesLazyQueryHookResult = ReturnType<
-  typeof useUserContributionDisplayNamesLazyQuery
->;
-export type UserContributionDisplayNamesQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserContributionDisplayNamesQuery,
-  SchemaTypes.UserContributionDisplayNamesQueryVariables
->;
-export function refetchUserContributionDisplayNamesQuery(
-  variables: SchemaTypes.UserContributionDisplayNamesQueryVariables
-) {
-  return { query: UserContributionDisplayNamesDocument, variables: variables };
-}
-
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
@@ -13426,6 +13338,76 @@ export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerIn
   return { query: BannerInnovationHubDocument, variables: variables };
 }
 
+export const InnovationHubBannerWideDocument = gql`
+  query InnovationHubBannerWide {
+    platform {
+      innovationHub {
+        id
+        profile {
+          id
+          displayName
+          bannerWide: visual(type: BANNER_WIDE) {
+            id
+            ...VisualUri
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useInnovationHubBannerWideQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubBannerWideQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubBannerWideQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubBannerWideQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationHubBannerWideQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationHubBannerWideQuery, SchemaTypes.InnovationHubBannerWideQueryVariables>(
+    InnovationHubBannerWideDocument,
+    options
+  );
+}
+
+export function useInnovationHubBannerWideLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubBannerWideQuery,
+    SchemaTypes.InnovationHubBannerWideQueryVariables
+  >(InnovationHubBannerWideDocument, options);
+}
+
+export type InnovationHubBannerWideQueryHookResult = ReturnType<typeof useInnovationHubBannerWideQuery>;
+export type InnovationHubBannerWideLazyQueryHookResult = ReturnType<typeof useInnovationHubBannerWideLazyQuery>;
+export type InnovationHubBannerWideQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubBannerWideQuery,
+  SchemaTypes.InnovationHubBannerWideQueryVariables
+>;
+export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.InnovationHubBannerWideQueryVariables) {
+  return { query: InnovationHubBannerWideDocument, variables: variables };
+}
+
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
@@ -13823,80 +13805,6 @@ export type InnovationHubSettingsQueryResult = Apollo.QueryResult<
 >;
 export function refetchInnovationHubSettingsQuery(variables: SchemaTypes.InnovationHubSettingsQueryVariables) {
   return { query: InnovationHubSettingsDocument, variables: variables };
-}
-
-export const JourneyBreadcrumbsInnovationHubDocument = gql`
-  query JourneyBreadcrumbsInnovationHub {
-    platform {
-      innovationHub {
-        id
-        profile {
-          id
-          displayName
-          avatar: visual(type: BANNER_WIDE) {
-            id
-            ...VisualUri
-          }
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useJourneyBreadcrumbsInnovationHubQuery__
- *
- * To run a query within a React component, call `useJourneyBreadcrumbsInnovationHubQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyBreadcrumbsInnovationHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyBreadcrumbsInnovationHubQuery({
- *   variables: {
- *   },
- * });
- */
-export function useJourneyBreadcrumbsInnovationHubQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-  >(JourneyBreadcrumbsInnovationHubDocument, options);
-}
-
-export function useJourneyBreadcrumbsInnovationHubLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-    SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-  >(JourneyBreadcrumbsInnovationHubDocument, options);
-}
-
-export type JourneyBreadcrumbsInnovationHubQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsInnovationHubQuery>;
-export type JourneyBreadcrumbsInnovationHubLazyQueryHookResult = ReturnType<
-  typeof useJourneyBreadcrumbsInnovationHubLazyQuery
->;
-export type JourneyBreadcrumbsInnovationHubQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyBreadcrumbsInnovationHubQuery,
-  SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
->;
-export function refetchJourneyBreadcrumbsInnovationHubQuery(
-  variables?: SchemaTypes.JourneyBreadcrumbsInnovationHubQueryVariables
-) {
-  return { query: JourneyBreadcrumbsInnovationHubDocument, variables: variables };
 }
 
 export const InnovationHubDocument = gql`
@@ -15159,8 +15067,8 @@ export function refetchSubspacePageBannerQuery(variables: SchemaTypes.SubspacePa
   return { query: SubspacePageBannerDocument, variables: variables };
 }
 
-export const JourneyBreadcrumbsSpaceDocument = gql`
-  query JourneyBreadcrumbsSpace(
+export const SpaceBreadcrumbsDocument = gql`
+  query SpaceBreadcrumbs(
     $spaceId: UUID!
     $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000"
     $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000"
@@ -15169,31 +15077,31 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
   ) {
     lookup {
       space(ID: $spaceId) {
-        ...JourneyBreadcrumbsSpace
+        ...BreadcrumbsSpaceL0
       }
       subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
-        ...JourneyBreadcrumbsSubpace
+        ...BreadcrumbsSubspace
       }
       subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
-        ...JourneyBreadcrumbsSubpace
+        ...BreadcrumbsSubspace
       }
     }
   }
-  ${JourneyBreadcrumbsSpaceFragmentDoc}
-  ${JourneyBreadcrumbsSubpaceFragmentDoc}
+  ${BreadcrumbsSpaceL0FragmentDoc}
+  ${BreadcrumbsSubspaceFragmentDoc}
 `;
 
 /**
- * __useJourneyBreadcrumbsSpaceQuery__
+ * __useSpaceBreadcrumbsQuery__
  *
- * To run a query within a React component, call `useJourneyBreadcrumbsSpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyBreadcrumbsSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceBreadcrumbsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceBreadcrumbsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useJourneyBreadcrumbsSpaceQuery({
+ * const { data, loading, error } = useSpaceBreadcrumbsQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      subspaceL1Id: // value for 'subspaceL1Id'
@@ -15203,40 +15111,37 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
  *   },
  * });
  */
-export function useJourneyBreadcrumbsSpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
-  >
+export function useSpaceBreadcrumbsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceBreadcrumbsQuery, SchemaTypes.SpaceBreadcrumbsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyBreadcrumbsSpaceQuery, SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables>(
-    JourneyBreadcrumbsSpaceDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceBreadcrumbsQuery, SchemaTypes.SpaceBreadcrumbsQueryVariables>(
+    SpaceBreadcrumbsDocument,
     options
   );
 }
 
-export function useJourneyBreadcrumbsSpaceLazyQuery(
+export function useSpaceBreadcrumbsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+    SchemaTypes.SpaceBreadcrumbsQuery,
+    SchemaTypes.SpaceBreadcrumbsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-    SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
-  >(JourneyBreadcrumbsSpaceDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.SpaceBreadcrumbsQuery, SchemaTypes.SpaceBreadcrumbsQueryVariables>(
+    SpaceBreadcrumbsDocument,
+    options
+  );
 }
 
-export type JourneyBreadcrumbsSpaceQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsSpaceQuery>;
-export type JourneyBreadcrumbsSpaceLazyQueryHookResult = ReturnType<typeof useJourneyBreadcrumbsSpaceLazyQuery>;
-export type JourneyBreadcrumbsSpaceQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyBreadcrumbsSpaceQuery,
-  SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables
+export type SpaceBreadcrumbsQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsQuery>;
+export type SpaceBreadcrumbsLazyQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsLazyQuery>;
+export type SpaceBreadcrumbsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceBreadcrumbsQuery,
+  SchemaTypes.SpaceBreadcrumbsQueryVariables
 >;
-export function refetchJourneyBreadcrumbsSpaceQuery(variables: SchemaTypes.JourneyBreadcrumbsSpaceQueryVariables) {
-  return { query: JourneyBreadcrumbsSpaceDocument, variables: variables };
+export function refetchSpaceBreadcrumbsQuery(variables: SchemaTypes.SpaceBreadcrumbsQueryVariables) {
+  return { query: SpaceBreadcrumbsDocument, variables: variables };
 }
 
 export const SpaceDashboardNavigationSubspacesDocument = gql`
@@ -17378,8 +17283,8 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
   return { query: SpacePrivilegesDocument, variables: variables };
 }
 
-export const JourneyStorageConfigDocument = gql`
-  query JourneyStorageConfig($spaceId: UUID!) {
+export const SpaceStorageConfigDocument = gql`
+  query SpaceStorageConfig($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -17396,55 +17301,55 @@ export const JourneyStorageConfigDocument = gql`
 `;
 
 /**
- * __useJourneyStorageConfigQuery__
+ * __useSpaceStorageConfigQuery__
  *
- * To run a query within a React component, call `useJourneyStorageConfigQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useJourneyStorageConfigQuery({
+ * const { data, loading, error } = useSpaceStorageConfigQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useJourneyStorageConfigQuery(
+export function useSpaceStorageConfigQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyStorageConfigQuery,
-    SchemaTypes.JourneyStorageConfigQueryVariables
+    SchemaTypes.SpaceStorageConfigQuery,
+    SchemaTypes.SpaceStorageConfigQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyStorageConfigQuery, SchemaTypes.JourneyStorageConfigQueryVariables>(
-    JourneyStorageConfigDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceStorageConfigQuery, SchemaTypes.SpaceStorageConfigQueryVariables>(
+    SpaceStorageConfigDocument,
     options
   );
 }
 
-export function useJourneyStorageConfigLazyQuery(
+export function useSpaceStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyStorageConfigQuery,
-    SchemaTypes.JourneyStorageConfigQueryVariables
+    SchemaTypes.SpaceStorageConfigQuery,
+    SchemaTypes.SpaceStorageConfigQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyStorageConfigQuery, SchemaTypes.JourneyStorageConfigQueryVariables>(
-    JourneyStorageConfigDocument,
+  return Apollo.useLazyQuery<SchemaTypes.SpaceStorageConfigQuery, SchemaTypes.SpaceStorageConfigQueryVariables>(
+    SpaceStorageConfigDocument,
     options
   );
 }
 
-export type JourneyStorageConfigQueryHookResult = ReturnType<typeof useJourneyStorageConfigQuery>;
-export type JourneyStorageConfigLazyQueryHookResult = ReturnType<typeof useJourneyStorageConfigLazyQuery>;
-export type JourneyStorageConfigQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyStorageConfigQuery,
-  SchemaTypes.JourneyStorageConfigQueryVariables
+export type SpaceStorageConfigQueryHookResult = ReturnType<typeof useSpaceStorageConfigQuery>;
+export type SpaceStorageConfigLazyQueryHookResult = ReturnType<typeof useSpaceStorageConfigLazyQuery>;
+export type SpaceStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceStorageConfigQuery,
+  SchemaTypes.SpaceStorageConfigQueryVariables
 >;
-export function refetchJourneyStorageConfigQuery(variables: SchemaTypes.JourneyStorageConfigQueryVariables) {
-  return { query: JourneyStorageConfigDocument, variables: variables };
+export function refetchSpaceStorageConfigQuery(variables: SchemaTypes.SpaceStorageConfigQueryVariables) {
+  return { query: SpaceStorageConfigDocument, variables: variables };
 }
 
 export const CalloutStorageConfigDocument = gql`
@@ -21527,7 +21432,7 @@ export const LatestContributionsDocument = gql`
         description
         type
         child
-        journeyDisplayName: parentDisplayName
+        spaceDisplayName: parentDisplayName
         space {
           id
           ... on Space {
@@ -21578,10 +21483,10 @@ export const LatestContributionsDocument = gql`
           ...ActivityLogCalloutDiscussionComment
         }
         ... on ActivityLogEntryChallengeCreated {
-          ...ActivityLogChallengeCreated
+          ...ActivityLogSpaceL1Created
         }
         ... on ActivityLogEntryOpportunityCreated {
-          ...ActivityLogOpportunityCreated
+          ...ActivityLogSpaceL2Created
         }
         ... on ActivityLogEntryUpdateSent {
           ...ActivityLogUpdateSent
@@ -21605,8 +21510,8 @@ export const LatestContributionsDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -21674,7 +21579,7 @@ export const LatestContributionsGroupedDocument = gql`
       description
       type
       child
-      journeyDisplayName: parentDisplayName
+      spaceDisplayName: parentDisplayName
       space {
         id
         ... on Space {
@@ -21708,10 +21613,10 @@ export const LatestContributionsGroupedDocument = gql`
         ...ActivityLogCalloutDiscussionComment
       }
       ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
+        ...ActivityLogSpaceL1Created
       }
       ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
+        ...ActivityLogSpaceL2Created
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -21730,8 +21635,8 @@ export const LatestContributionsGroupedDocument = gql`
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogSpaceL1CreatedFragmentDoc}
+  ${ActivityLogSpaceL2CreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
@@ -22380,8 +22285,8 @@ export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQue
   return { query: RecentSpacesDocument, variables: variables };
 }
 
-export const ChallengeExplorerPageDocument = gql`
-  query ChallengeExplorerPage {
+export const MySpacesExplorerPageDocument = gql`
+  query MySpacesExplorerPage {
     me {
       spaceMembershipsFlat {
         id
@@ -22394,54 +22299,54 @@ export const ChallengeExplorerPageDocument = gql`
 `;
 
 /**
- * __useChallengeExplorerPageQuery__
+ * __useMySpacesExplorerPageQuery__
  *
- * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMySpacesExplorerPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMySpacesExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeExplorerPageQuery({
+ * const { data, loading, error } = useMySpacesExplorerPageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useChallengeExplorerPageQuery(
+export function useMySpacesExplorerPageQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
+    SchemaTypes.MySpacesExplorerPageQuery,
+    SchemaTypes.MySpacesExplorerPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
+  return Apollo.useQuery<SchemaTypes.MySpacesExplorerPageQuery, SchemaTypes.MySpacesExplorerPageQueryVariables>(
+    MySpacesExplorerPageDocument,
     options
   );
 }
 
-export function useChallengeExplorerPageLazyQuery(
+export function useMySpacesExplorerPageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
+    SchemaTypes.MySpacesExplorerPageQuery,
+    SchemaTypes.MySpacesExplorerPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
+  return Apollo.useLazyQuery<SchemaTypes.MySpacesExplorerPageQuery, SchemaTypes.MySpacesExplorerPageQueryVariables>(
+    MySpacesExplorerPageDocument,
     options
   );
 }
 
-export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
-export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
-export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerPageQuery,
-  SchemaTypes.ChallengeExplorerPageQueryVariables
+export type MySpacesExplorerPageQueryHookResult = ReturnType<typeof useMySpacesExplorerPageQuery>;
+export type MySpacesExplorerPageLazyQueryHookResult = ReturnType<typeof useMySpacesExplorerPageLazyQuery>;
+export type MySpacesExplorerPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.MySpacesExplorerPageQuery,
+  SchemaTypes.MySpacesExplorerPageQueryVariables
 >;
-export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.ChallengeExplorerPageQueryVariables) {
-  return { query: ChallengeExplorerPageDocument, variables: variables };
+export function refetchMySpacesExplorerPageQuery(variables?: SchemaTypes.MySpacesExplorerPageQueryVariables) {
+  return { query: MySpacesExplorerPageDocument, variables: variables };
 }
 
 export const SpaceExplorerSearchDocument = gql`

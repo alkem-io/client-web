@@ -44,11 +44,11 @@ const BreadcrumbsSeparator = () => (
   </Box>
 );
 
-type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
+type SpaceBreadcrumbsExpandedState = Record<string | number, boolean>;
 
 const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>>(
   <ItemProps extends Expandable>({ onExpand, children }: BreadcrumbsInternalProps<ItemProps>, ref) => {
-    const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
+    const [expandedState, setExpandedState] = useState<SpaceBreadcrumbsExpandedState>({});
     const [isExpanded, setIsExpanded] = useState(false);
 
     const [firstChild, ...restChildren] = (flattenChildren(children) as ReactElement<ItemProps>[]).map(child => {

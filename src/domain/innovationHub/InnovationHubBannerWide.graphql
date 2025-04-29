@@ -1,11 +1,11 @@
-query JourneyBreadcrumbsInnovationHub {
+query InnovationHubBannerWide {
   platform {
     innovationHub {
       id
       profile {
         id
         displayName
-        avatar: visual(type: BANNER_WIDE) {
+        bannerWide: visual(type: BANNER_WIDE) {
           id
           ...VisualUri
         }
