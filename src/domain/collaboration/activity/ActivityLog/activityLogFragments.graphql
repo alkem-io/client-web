@@ -85,20 +85,8 @@ fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutW
   }
 }
 
-fragment ActivityLogSpaceL1Created on ActivityLogEntryChallengeCreated {
+fragment ActivityLogSubspaceCreated on ActivityLogEntrySubspaceCreated {
   subspace {
-    id
-    about {
-      id
-      profile {
-        ...ActivitySubjectProfile
-      }
-    }
-  }
-}
-
-fragment ActivityLogSpaceL2Created on ActivityLogEntryOpportunityCreated {
-  subsubspace {
     id
     about {
       id

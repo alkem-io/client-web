@@ -112,10 +112,9 @@ export enum ActivityEventType {
   CalloutPublished = 'CALLOUT_PUBLISHED',
   CalloutWhiteboardContentModified = 'CALLOUT_WHITEBOARD_CONTENT_MODIFIED',
   CalloutWhiteboardCreated = 'CALLOUT_WHITEBOARD_CREATED',
-  ChallengeCreated = 'CHALLENGE_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
-  OpportunityCreated = 'OPPORTUNITY_CREATED',
+  SubspaceCreated = 'SUBSPACE_CREATED',
   UpdateSent = 'UPDATE_SENT',
 }
 
@@ -172,8 +171,6 @@ export type ActivityLogEntry = {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -199,8 +196,6 @@ export type ActivityLogEntryCalendarEventCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -224,8 +219,6 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -251,8 +244,6 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   link: Link;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -276,8 +267,6 @@ export type ActivityLogEntryCalloutPostComment = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Post that was commented on. */
   post: Post;
   /** The Space where the activity happened */
@@ -303,8 +292,6 @@ export type ActivityLogEntryCalloutPostCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Post that was created. */
   post: Post;
   /** The Space where the activity happened */
@@ -330,8 +317,6 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -355,8 +340,6 @@ export type ActivityLogEntryCalloutWhiteboardContentModified = ActivityLogEntry 
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -382,8 +365,6 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -392,31 +373,6 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   type: ActivityEventType;
   /** The Whiteboard that was created. */
   whiteboard: Whiteboard;
-};
-
-export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryChallengeCreated';
-  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean'];
-  /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID'];
-  /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime'];
-  /** The text details for this Activity. */
-  description: Scalars['String'];
-  id: Scalars['UUID'];
-  /** The display name of the parent */
-  parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
-  /** The Space where the activity happened */
-  space?: Maybe<Space>;
-  /** The Subspace that was created. */
-  subspace: Space;
-  /** The user that triggered this Activity. */
-  triggeredBy: User;
-  /** The event type for this Activity. */
-  type: ActivityEventType;
 };
 
 export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
@@ -438,8 +394,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -448,8 +402,8 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   type: ActivityEventType;
 };
 
-export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
+export type ActivityLogEntrySubspaceCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
   child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
@@ -461,12 +415,10 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
-  /** The Subsubspace that was created. */
-  subsubspace: Space;
+  /** The Subspace that was created. */
+  subspace: Space;
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -490,8 +442,6 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   message: Scalars['String'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -5391,8 +5341,6 @@ export type RelayPaginatedSpace = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -5698,14 +5646,12 @@ export type RolesResultCommunity = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
-  /** The level of the Space e.g. space/challenge/opportunity. */
+  /** The level of the Space e.g. L0/L1/L2. */
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
   roles: Array<Scalars['String']>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
 };
 
 export type RolesResultOrganization = {
@@ -5730,7 +5676,7 @@ export type RolesResultSpace = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
-  /** The level of the Space e.g. space/challenge/opportunity. */
+  /** The level of the Space e.g. L0/L1/L2. */
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
@@ -5740,8 +5686,6 @@ export type RolesResultSpace = {
   spaceID: Scalars['String'];
   /** Details of the Subspace the user is a member of */
   subspaces: Array<RolesResultCommunity>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -6044,8 +5988,6 @@ export type Space = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -10001,22 +9943,9 @@ export type ActivityLogCalloutWhiteboardContentModifiedFragment = {
   };
 };
 
-export type ActivityLogSpaceL1CreatedFragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
+export type ActivityLogSubspaceCreatedFragment = {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   subspace: {
-    __typename?: 'Space';
-    id: string;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    };
-  };
-};
-
-export type ActivityLogSpaceL2CreatedFragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
-  subsubspace: {
     __typename?: 'Space';
     id: string;
     about: {
@@ -10209,21 +10138,6 @@ export type ActivityCreatedSubscription = {
           };
         }
       | {
-          __typename?: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          createdDate: Date;
-          type: ActivityEventType;
-          subspace: {
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            };
-          };
-        }
-      | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           createdDate: Date;
@@ -10266,11 +10180,11 @@ export type ActivityCreatedSubscription = {
               };
         }
       | {
-          __typename?: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntrySubspaceCreated';
           id: string;
           createdDate: Date;
           type: ActivityEventType;
-          subsubspace: {
+          subspace: {
             __typename?: 'Space';
             id: string;
             about: {
@@ -10429,22 +10343,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragmen
   };
 };
 
-type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
-  id: string;
-  createdDate: Date;
-  type: ActivityEventType;
-  subspace: {
-    __typename?: 'Space';
-    id: string;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    };
-  };
-};
-
 type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   id: string;
@@ -10488,12 +10386,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       };
 };
 
-type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
+type ActivityLogOnCollaboration_ActivityLogEntrySubspaceCreated_Fragment = {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   id: string;
   createdDate: Date;
   type: ActivityEventType;
-  subsubspace: {
+  subspace: {
     __typename?: 'Space';
     id: string;
     about: {
@@ -10521,9 +10419,8 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardContentModified_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntrySubspaceCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
 
 export type ActivityLogOnCollaborationQueryVariables = Exact<{
@@ -10929,54 +10826,6 @@ export type ActivityLogOnCollaborationQuery = {
         };
       }
     | {
-        __typename?: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        child: boolean;
-        spaceDisplayName: string;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                };
-              };
-            }
-          | undefined;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        };
-        subspace: {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-        };
-      }
-    | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
         collaborationID: string;
@@ -11052,7 +10901,7 @@ export type ActivityLogOnCollaborationQuery = {
             };
       }
     | {
-        __typename?: 'ActivityLogEntryOpportunityCreated';
+        __typename?: 'ActivityLogEntrySubspaceCreated';
         id: string;
         collaborationID: string;
         createdDate: Date;
@@ -11089,7 +10938,7 @@ export type ActivityLogOnCollaborationQuery = {
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
         };
-        subsubspace: {
+        subspace: {
           __typename?: 'Space';
           id: string;
           about: {
@@ -17561,13 +17410,7 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       roles: Array<string>;
-      subspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        type: SpaceType;
-        level: SpaceLevel;
-        roles: Array<string>;
-      }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; level: SpaceLevel; roles: Array<string> }>;
     }>;
   };
 };
@@ -29945,55 +29788,6 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename?: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          child: boolean;
-          spaceDisplayName: string;
-          space?:
-            | {
-                __typename?: 'Space';
-                id: string;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                  };
-                };
-              }
-            | undefined;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          };
-          subspace: {
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            };
-          };
-        }
-      | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           collaborationID: string;
@@ -30070,7 +29864,7 @@ export type LatestContributionsQuery = {
               };
         }
       | {
-          __typename?: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntrySubspaceCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
@@ -30108,7 +29902,7 @@ export type LatestContributionsQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           };
-          subsubspace: {
+          subspace: {
             __typename?: 'Space';
             id: string;
             about: {
@@ -30469,42 +30263,6 @@ export type LatestContributionsGroupedQuery = {
         };
       }
     | {
-        __typename?: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        child: boolean;
-        spaceDisplayName: string;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                };
-              };
-            }
-          | undefined;
-        subspace: {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-        };
-      }
-    | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
         collaborationID: string;
@@ -30568,7 +30326,7 @@ export type LatestContributionsGroupedQuery = {
             };
       }
     | {
-        __typename?: 'ActivityLogEntryOpportunityCreated';
+        __typename?: 'ActivityLogEntrySubspaceCreated';
         id: string;
         collaborationID: string;
         createdDate: Date;
@@ -30593,7 +30351,7 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        subsubspace: {
+        subspace: {
           __typename?: 'Space';
           id: string;
           about: {
