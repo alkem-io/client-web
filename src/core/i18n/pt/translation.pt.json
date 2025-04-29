@@ -598,9 +598,9 @@
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Abrir inscrições",
       "invitationDialog": {
-        "title": "My Pending Membership: {{journey}}",
+        "title": "My Pending Membership: {{space}}",
         "vc": {
-          "title": "Pending Virtual Contributor membership: {{journey}}"
+          "title": "Pending Virtual Contributor membership: {{space}}"
         },
         "actions": {
           "hide": "Ocultar este convite",
@@ -609,7 +609,7 @@
           "accept": "Entrar"
         }
       },
-      "invitationTitle": "{{time}} {{user}} convidou você para <journeyicon /> {{journey}}",
+      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "you",
       "vc": "your Virtual Contributor"
     },
@@ -677,8 +677,8 @@
       }
     }
   },
-  "journey-creation": {
-    "dialog-title": "Crie um novo {{entity}}"
+  "space-creation": {
+    "dialog-title": "Create a new {{entity}}"
   },
   "messaging": {
     "message": "Mensagem",
@@ -976,14 +976,14 @@
       "label": "Desenvolvido por",
       "aria-label": "Desenvolvido por Alkemio"
     },
-    "journeyUnauthorizedDialog": {
+    "spaceUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
-    "journeyPageBannerCard": {
-      "parentJourney": "Parte de:"
+    "spacePageBannerCard": {
+      "parentSpace": "Part of:"
     },
-    "journeyMetrics": {
-      "title": "Estatísticas {{journey}}"
+    "spaceMetrics": {
+      "title": "{{space}} statistics"
     },
     "dashboardNavigation": {
       "help": "Este espaço possui os seguintes Desafios. Quando estes Desafios tiverem Oportunidades, estes também serão visíveis.",
@@ -1201,7 +1201,7 @@
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
-        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
+        "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
       }
     },
     "innovationFlow": {
@@ -1370,7 +1370,7 @@
       "goToSubspace": "Go to $t(common.subspace)",
       "parent-pending": "Aplicação pendente",
       "applyTo": "Aplique para",
-      "extendedMessage": "{{join}} nossa {{journey}} e comece a fazer mudanças!",
+      "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Candidate-se ao <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Para se juntar ao <strong title='Challenge name'>'{{challengeName}}'</strong> você deve entrar no Espaço <strong title='Space name'>'{{spaceName}}'</strong> primeiro. Por favor, adicione o Desafio que você deseja ingressar no formulário de pedido do Espaço."
@@ -1755,7 +1755,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Espaços",
-    "foreignJourney": "Este {{journey}} não está na seleção de {{space}}. De qualquer forma, você é muito bem-vindo para contribuir. <strong>Se divirta ao explorar!</strong>",
+    "foreignSpace": "This {{spaceDisplayName}} is not in the selection of current starting page. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
     "outsideOfSpace": {
       "forum": "Este é o Fórum geral do Alkemio fora do Espaço <strong>{{space}}</strong>. Você está super convidado a explorar e contribuir!",
       "subspaces": "Here you can find all Subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
@@ -1802,13 +1802,13 @@
           "title": "Recomendado pelo Host"
         }
       },
-      "archived-notice": {
-        "archived-space": "Este Espaço está atualmente arquivado. Interessado em trazê-lo de volta à vida? <contact>Clique aqui</contact> para entrar em contato com o Alkemio.",
-        "archived-journey": "Esta{{journey}} está em um espaço atualmente arquivado. Interessado em trazê-lo de volta à vida? <contact>Clique aqui</contact> para entrar em contato com o Alkemio."
+      "archivedNotice": {
+        "archivedSpace": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
-      "demo-notice": {
-        "demo-space": "Isto é um Espaço de Demo. <alkemio>Clique aqui</alkemio> para colaborar em Espaços ativos.",
-        "demo-journey": "{{journey}} está dentro de um Espaço Demo. <alkemio>Clique aqui</alkemio> para colaborar em Espaços ativos."
+      "demoNotice": {
+        "demoSpace": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
+        "demoSubspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
       }
     },
     "contribute": {
@@ -2181,7 +2181,7 @@
       "AVATAR": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Journey card on page banner",
+        "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
@@ -2235,7 +2235,7 @@
       "user-not-logged": "Faça login ou registre-se para incluir usuários nos resultados da sua pesquisa",
       "filter": {
         "type": {
-          "journey": "Tipo de jornada",
+          "space": "Space type",
           "contribution": "Tipo de contribuição",
           "contributor": "Tipo de colaborador"
         },
@@ -2250,7 +2250,7 @@
           "callout": "Callouts (disponível em breve)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.subspaces)"
+      "spaceFilterTitle": "$t(common.spaces)"
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
@@ -2263,7 +2263,7 @@
         "member": "Member Spaces",
         "public": "Public Spaces"
       },
-      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your journey on Alkemio!",
+      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your space on Alkemio!",
       "search": {
         "placeholder": "Search…",
         "noResults": "No results matched your search terms.",
@@ -2307,14 +2307,14 @@
         "myLatestContributions": {
           "title": "My Latest Activity",
           "card": {
-            "journey": "in: <journeyicon /> {{journey}}"
+            "space": "in: <spaceicon /> {{space}}"
           },
           "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
-        "recentJourneys": {
+        "recentSpaces": {
           "seeMore": "Explore all your Spaces",
           "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
@@ -2361,15 +2361,15 @@
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
           "invitation": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Click here to see the invitation"
           },
           "application": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Your application still has to be approved"
           },
           "membership": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "{{tagline}}"
           }
         },
@@ -2603,7 +2603,7 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
@@ -3048,7 +3048,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+    "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
     "banner": {
