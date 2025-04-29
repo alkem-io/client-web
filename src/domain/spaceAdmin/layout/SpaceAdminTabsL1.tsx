@@ -22,7 +22,7 @@ export const spaceAdminTabsL1: TabDefinition<SettingsSection>[] = [
     icon: ForumOutlinedIcon,
   },
   {
-    section: SettingsSection.Subsubspaces,
+    section: SettingsSection.Subspaces,
     route: 'opportunities',
     icon: FlagOutlinedIcon,
   },

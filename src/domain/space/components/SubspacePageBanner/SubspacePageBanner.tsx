@@ -19,27 +19,28 @@ const SubspacePageBanner = () => {
   });
 
   const bannerVisual = useMemo(() => {
-    const spaceBanner = data?.lookup.level0Space?.about.profile.banner;
-    if (data?.lookup.level0Space?.about.profile.banner?.uri) {
+    const spaceBanner = data?.lookup.level0Space?.about?.profile.banner;
+    if (data?.lookup.level0Space?.about?.profile.banner?.uri) {
       return spaceBanner;
     }
     return {
       ...spaceBanner,
       uri: defaultVisualUrls[VisualType.Banner],
     };
-  }, [data]);
+  }, [data?.lookup.level0Space?.about?.profile.banner?.id]);
 
   if (spaceLevel === SpaceLevel.L0) {
     return null;
   }
+
   return (
     <PageBanner
       banner={bannerVisual}
       cardComponent={SpacePageBannerCard}
-      displayName={data?.lookup.space?.about.profile.displayName ?? ''}
-      tagline={data?.lookup.space?.about.profile.tagline ?? ''}
-      avatar={data?.lookup.space?.about.profile.avatar}
-      tags={data?.lookup.space?.about.profile.tagset?.tags}
+      displayName={data?.lookup.space?.about?.profile.displayName ?? ''}
+      tagline={data?.lookup.space?.about?.profile.tagline ?? ''}
+      avatar={data?.lookup.space?.about?.profile.avatar}
+      tags={data?.lookup.space?.about?.profile.tagset?.tags}
     />
   );
 };
