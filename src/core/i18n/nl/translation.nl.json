@@ -598,9 +598,9 @@
       "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn Virtual Contributor",
       "applicationsSectionTitle": "Open aanmeldingen",
       "invitationDialog": {
-        "title": "My Pending Membership: {{space}}",
+        "title": "Mijn Openstaande Lidmaatschap: {{space}}",
         "vc": {
-          "title": "Pending Virtual Contributor membership: {{space}}"
+          "title": "Openstaande Virtual Contributor lidmaatschap: {{space}}"
         },
         "actions": {
           "hide": "Verberg deze uitnodiging",
@@ -609,7 +609,7 @@
           "accept": "Word lid"
         }
       },
-      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
+      "invitationTitle": "{{time}} {{user}} heeft {{invitedEntity}} uitgenodigd voor <spaceicon /> {{space}}",
       "you": "jij",
       "vc": "jouw Virtual Contributor"
     },
@@ -678,7 +678,7 @@
     }
   },
   "space-creation": {
-    "dialog-title": "Create a new {{entity}}"
+    "dialog-title": "Maak nieuwe {{entity}} aan"
   },
   "messaging": {
     "message": "Bericht",
@@ -977,13 +977,13 @@
       "aria-label": "Mogelijk gemaakt door Alkemio"
     },
     "spaceUnauthorizedDialog": {
-      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
+      "message": "Dit is een privé Community waarin de meeste context alleen zichtbaar is voor leden. Als je lid wil worden, <apply> klik hier om je aan te melden.</apply>"
     },
     "spacePageBannerCard": {
-      "parentSpace": "Part of:"
+      "parentSpace": "Onderdeel van:"
     },
     "spaceMetrics": {
-      "title": "{{space}} statistics"
+      "title": "{{space}} statistieken"
     },
     "dashboardNavigation": {
       "help": "Deze Space bevat de volgende Subspaces. Ook zijn de eventuele onderliggende Subspaces zichtbaar.",
@@ -1370,7 +1370,7 @@
       "goToSubspace": "Ga naar $t(common.subspace)",
       "parent-pending": "Inschrijving van bovenliggende groep loopt",
       "applyTo": "Word lid",
-      "extendedMessage": "{{join}} our {{space}} and start making change!",
+      "extendedMessage": "{{join}} onze {{space}} en start met impact maken!",
       "dialog-apply-parent": {
         "title": "Pas toe op <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Om lid te worden van <strong title='subspace name'>'{{subspaceName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Subspace waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
@@ -1755,7 +1755,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
-    "foreignSpace": "This {{spaceDisplayName}} is not in the selection of current starting page. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
+    "foreignSpace": "Deze {{spaceDisplayName}} staat niet in de selectie van de huidige startpagina. Je bent hoe dan ook zeer welkom om bij te dragen. <strong>Veel plezier met verkennen!</strong>",
     "outsideOfSpace": {
       "forum": "Dit is het algemene Alkemio Forum, los van de <strong>{{space}}</strong> Space. Neem een kijkje bij de bestaande discussies of start een eigen discussie!",
       "subspaces": "Hier vind je alle Subspaces op Alkemio, ook degenen die geen onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>",
@@ -1803,12 +1803,12 @@
         }
       },
       "archivedNotice": {
-        "archivedSpace": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
-        "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+        "archivedSpace": "Deze Space is momenteel gearchiveerd. Wil je de Space weer actief maken? <contact>Klik hier</contact> om contact op te nemen met Alkemio.",
+        "archivedSubspace": "Deze {{space}} is onderdeel van een momenteel gearchiveerde Space. Wil je hem weer actief maken? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
       },
       "demoNotice": {
-        "demoSpace": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
-        "demoSubspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
+        "demoSpace": "Dit is een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces.",
+        "demoSubspace": "Deze {{space}} is onderdeel van een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces."
       }
     },
     "contribute": {
@@ -2181,7 +2181,7 @@
       "AVATAR": {
         "title": "Profielfoto",
         "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
-        "description2": "Usage: Space card on page banner",
+        "description2": "Gebruik: Space kaart op pagina banner",
         "description": "Omschrijving: {{alternativeText}}"
       },
       "BANNER": {
@@ -2235,7 +2235,7 @@
       "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten",
       "filter": {
         "type": {
-          "space": "Space type",
+          "space": "Space Type",
           "contribution": "Type bijdrage",
           "contributor": "Type bijdrager"
         },
@@ -2263,7 +2263,7 @@
         "member": "Spaces waarvan je lid bent",
         "public": "Openbare Spaces"
       },
-      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your space on Alkemio!",
+      "noSpaceMemberships": "Je bent momenteel geen lid van een Space. Klik hier om onze {{welcomeSpace}} Space te bezoeken, een goed startpunt voor je reis op Alkemio!",
       "search": {
         "placeholder": "Zoek…",
         "noResults": "Er zijn geen resultaten voor je zoekopdracht.",
@@ -2315,8 +2315,8 @@
           "message": "<big>🚀 Klik hier om je account aan te maken en aan de slag te gaan!</big> <small>Ben je al lid? <signin>Meld je hier aan</signin></small>"
         },
         "recentSpaces": {
-          "seeMore": "Explore all your Spaces",
-          "seeMoreSubspaces": "See all Subspaces I'm a member of"
+          "seeMore": "Verken al je Spaces",
+          "seeMoreSubspaces": "Bekijk alle Subspaces waar ik lid van ben"
         },
         "campaignBlock": {
           "createYourVCButton": "Maak je Virtual Contributor!",
@@ -2603,7 +2603,7 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "noMembership": "Je moet lid zijn van {{spaceType}} om dit whiteboard te kunnen bewerken. <spacelink>Klik hier om je aan te melden</spacelink>",
         "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{spaceType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
       },
       "readonlyDialog": {
