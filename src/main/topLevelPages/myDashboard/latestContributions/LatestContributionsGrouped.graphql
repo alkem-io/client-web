@@ -11,7 +11,7 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
       id
       ... on Space {
         about {
-         ...SpaceAboutCardAvatar
+          ...SpaceAboutCardAvatar
         }
       }
     }
@@ -39,11 +39,8 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
-    ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogSpaceL1Created
-    }
-    ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogSpaceL2Created
+    ... on ActivityLogEntrySubspaceCreated {
+      ...ActivityLogSubspaceCreated
     }
     ... on ActivityLogEntryUpdateSent {
       ...ActivityLogUpdateSent
@@ -53,5 +50,3 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     }
   }
 }
-
-
