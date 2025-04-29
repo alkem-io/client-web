@@ -598,9 +598,9 @@
       "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn Virtual Contributor",
       "applicationsSectionTitle": "Open aanmeldingen",
       "invitationDialog": {
-        "title": "Mijn Openstaande Lidmaatschap: {{journey}}",
+        "title": "My Pending Membership: {{space}}",
         "vc": {
-          "title": "In afwachting van Virtuele Bijdrager lidmaatschap: {{journey}}"
+          "title": "Pending Virtual Contributor membership: {{space}}"
         },
         "actions": {
           "hide": "Verberg deze uitnodiging",
@@ -609,7 +609,7 @@
           "accept": "Word lid"
         }
       },
-      "invitationTitle": "{{time}} {{user}} heeft je uitgenodigd voor <journeyicon /> {{journey}}",
+      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "jij",
       "vc": "jouw Virtual Contributor"
     },
@@ -677,8 +677,8 @@
       }
     }
   },
-  "journey-creation": {
-    "dialog-title": "Maak nieuwe {{entity}} aan"
+  "space-creation": {
+    "dialog-title": "Create a new {{entity}}"
   },
   "messaging": {
     "message": "Bericht",
@@ -976,14 +976,14 @@
       "label": "Mogelijk gemaakt door",
       "aria-label": "Mogelijk gemaakt door Alkemio"
     },
-    "journeyUnauthorizedDialog": {
-      "message": "Dit is een particuliere gemeenschap en de meeste inhoud ervan is beperkt tot leden. Als je wilt deelnemen, <apply>klik dan hier om aan te melden.</apply>"
+    "spaceUnauthorizedDialog": {
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
-    "journeyPageBannerCard": {
-      "parentJourney": "Onderdeel van:"
+    "spacePageBannerCard": {
+      "parentSpace": "Part of:"
     },
-    "journeyMetrics": {
-      "title": "{{journey}} statistieken"
+    "spaceMetrics": {
+      "title": "{{space}} statistics"
     },
     "dashboardNavigation": {
       "help": "Deze Space bevat de volgende Subspaces. Ook zijn de eventuele onderliggende Subspaces zichtbaar.",
@@ -1201,7 +1201,7 @@
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
-        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
+        "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
       }
     },
     "innovationFlow": {
@@ -1370,7 +1370,7 @@
       "goToSubspace": "Ga naar $t(common.subspace)",
       "parent-pending": "Inschrijving van bovenliggende groep loopt",
       "applyTo": "Word lid",
-      "extendedMessage": "{{join}} van onze {{journey}} en maak impact!",
+      "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Pas toe op <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Om lid te worden van <strong title='subspace name'>'{{subspaceName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Subspace waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
@@ -1755,7 +1755,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
-    "foreignJourney": "Deze {{journey}} is geen onderdeel van {{space}}. Je bent uiteraard altijd welkom om bij te dragen. <strong>Veel plezier met verkennen!</strong>",
+    "foreignSpace": "This {{spaceDisplayName}} is not in the selection of current starting page. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
     "outsideOfSpace": {
       "forum": "Dit is het algemene Alkemio Forum, los van de <strong>{{space}}</strong> Space. Neem een kijkje bij de bestaande discussies of start een eigen discussie!",
       "subspaces": "Hier vind je alle Subspaces op Alkemio, ook degenen die geen onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>",
@@ -1802,13 +1802,13 @@
           "title": "Aanbevolen door de Host"
         }
       },
-      "archived-notice": {
-        "archived-space": "Deze Space is momenteel gearchiveerd. Wil je de Space weer actief maken? <contact>Klik hier</contact> om contact te zoeken.",
-        "archived-journey": "Deze {{journey}} staat onder een gearchiveerde Space. Wil je hem weer actief maken? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
+      "archivedNotice": {
+        "archivedSpace": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
-      "demo-notice": {
-        "demo-space": "Dit is een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces.",
-        "demo-journey": "Deze {{journey}} ligt in een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces."
+      "demoNotice": {
+        "demoSpace": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
+        "demoSubspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
       }
     },
     "contribute": {
@@ -2181,7 +2181,7 @@
       "AVATAR": {
         "title": "Profielfoto",
         "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
-        "description2": "Gebruik: Subspace kaart op de pagina banner",
+        "description2": "Usage: Space card on page banner",
         "description": "Omschrijving: {{alternativeText}}"
       },
       "BANNER": {
@@ -2235,7 +2235,7 @@
       "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten",
       "filter": {
         "type": {
-          "journey": "Journey type",
+          "space": "Space type",
           "contribution": "Type bijdrage",
           "contributor": "Type bijdrager"
         },
@@ -2250,7 +2250,7 @@
           "callout": "Oproepen (binnenkort beschikbaar)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces) "
+      "spaceFilterTitle": "$t(common.spaces)"
     },
     "exploreSpaces": {
       "fullName": "Verken Spaces",
@@ -2263,7 +2263,7 @@
         "member": "Spaces waarvan je lid bent",
         "public": "Openbare Spaces"
       },
-      "noSpaceMemberships": "Je bent momenteel geen lid van een Space. Klik hier om onze {{welcomeSpace}} Space te bezoeken, een goed startpunt voor je reis op Alkemio!",
+      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your space on Alkemio!",
       "search": {
         "placeholder": "Zoek…",
         "noResults": "Er zijn geen resultaten voor je zoekopdracht.",
@@ -2307,16 +2307,16 @@
         "myLatestContributions": {
           "title": "Mijn meest recente activiteit",
           "card": {
-            "journey": "in: <journeyicon /> {{journey}}"
+            "space": "in: <spaceicon /> {{space}}"
           },
           "noContributions": "Je bijdragen zullen hier verschijnen zodra je deelneemt aan een Space. Je kan daar onder andere bijdragen door berichten te plaatsen of op andermans berichten te reageren."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Klik hier om je account aan te maken en aan de slag te gaan!</big> <small>Ben je al lid? <signin>Meld je hier aan</signin></small>"
         },
-        "recentJourneys": {
-          "seeMore": "Verken al je Spaces",
-          "seeMoreSubspaces": "Verken alle Subspaces waar ik lid van ben"
+        "recentSpaces": {
+          "seeMore": "Explore all your Spaces",
+          "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
         "campaignBlock": {
           "createYourVCButton": "Maak je Virtual Contributor!",
@@ -2361,15 +2361,15 @@
           "seeMore": "Alle openstaande lidmaatschappen",
           "seeAll": "Al mijn lidmaatschappen",
           "invitation": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Klik hier om de uitnodiging te zien"
           },
           "application": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Je aanvraag moet nog goedgekeurd worden"
           },
           "membership": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "{{tagline}}"
           }
         },
@@ -2603,7 +2603,7 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "Je moet lid zijn van {{spaceType}} om dit whiteboard te kunnen bewerken. <journeylink>Klik hier om je aan te melden</journeylink>",
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{spaceType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
       },
       "readonlyDialog": {
@@ -3048,7 +3048,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+    "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
     "banner": {
