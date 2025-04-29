@@ -598,9 +598,9 @@
       "virtualInvitationsSectionTitle": "crwdns18288:0crwdne18288:0",
       "applicationsSectionTitle": "crwdns18290:0crwdne18290:0",
       "invitationDialog": {
-        "title": "crwdns18292:0{{journey}}crwdne18292:0",
+        "title": "crwdns36860:0{{space}}crwdne36860:0",
         "vc": {
-          "title": "crwdns18294:0{{journey}}crwdne18294:0"
+          "title": "crwdns36862:0{{space}}crwdne36862:0"
         },
         "actions": {
           "hide": "crwdns18296:0crwdne18296:0",
@@ -609,7 +609,7 @@
           "accept": "crwdns18302:0crwdne18302:0"
         }
       },
-      "invitationTitle": "crwdns18304:0{{time}}crwdnd18304:0{{user}}crwdnd18304:0{{invitedEntity}}crwdnd18304:0{{journey}}crwdne18304:0",
+      "invitationTitle": "crwdns36864:0{{time}}crwdnd36864:0{{user}}crwdnd36864:0{{invitedEntity}}crwdnd36864:0{{space}}crwdne36864:0",
       "you": "crwdns18306:0crwdne18306:0",
       "vc": "crwdns18308:0crwdne18308:0"
     },
@@ -677,8 +677,8 @@
       }
     }
   },
-  "journey-creation": {
-    "dialog-title": "crwdns18404:0{{entity}}crwdne18404:0"
+  "space-creation": {
+    "dialog-title": "crwdns36866:0{{entity}}crwdne36866:0"
   },
   "messaging": {
     "message": "crwdns18406:0crwdne18406:0",
@@ -976,14 +976,14 @@
       "label": "crwdns18718:0crwdne18718:0",
       "aria-label": "crwdns18720:0crwdne18720:0"
     },
-    "journeyUnauthorizedDialog": {
-      "message": "crwdns36736:0crwdne36736:0"
+    "spaceUnauthorizedDialog": {
+      "message": "crwdns36868:0crwdne36868:0"
     },
-    "journeyPageBannerCard": {
-      "parentJourney": "crwdns18724:0crwdne18724:0"
+    "spacePageBannerCard": {
+      "parentSpace": "crwdns36870:0crwdne36870:0"
     },
-    "journeyMetrics": {
-      "title": "crwdns18726:0{{journey}}crwdne18726:0"
+    "spaceMetrics": {
+      "title": "crwdns36872:0{{space}}crwdne36872:0"
     },
     "dashboardNavigation": {
       "help": "crwdns18728:0crwdne18728:0",
@@ -1201,7 +1201,7 @@
         "CALENDAR_EVENT_CREATED": "crwdns18982:0{{subject}}crwdne18982:0"
       },
       "detailedDescription": {
-        "parentLink": "crwdns18984:0{{journeyDisplayName}}crwdne18984:0"
+        "parentLink": "crwdns36874:0{{spaceDisplayName}}crwdne36874:0"
       }
     },
     "innovationFlow": {
@@ -1370,7 +1370,7 @@
       "goToSubspace": "crwdns19184:0$t(common.subspace)crwdne19184:0",
       "parent-pending": "crwdns19186:0crwdne19186:0",
       "applyTo": "crwdns19188:0crwdne19188:0",
-      "extendedMessage": "crwdns19190:0{{join}}crwdnd19190:0{{journey}}crwdne19190:0",
+      "extendedMessage": "crwdns36876:0{{join}}crwdnd36876:0{{space}}crwdne36876:0",
       "dialog-apply-parent": {
         "title": "crwdns19192:0{{parentCommunityName}}crwdne19192:0",
         "body": "crwdns19194:0{{subspaceName}}crwdnd19194:0{{spaceName}}crwdne19194:0"
@@ -1755,7 +1755,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "crwdns19534:0{{space}}crwdne19534:0",
-    "foreignJourney": "crwdns19536:0{{journey}}crwdnd19536:0{{space}}crwdne19536:0",
+    "foreignSpace": "crwdns36878:0{{spaceDisplayName}}crwdne36878:0",
     "outsideOfSpace": {
       "forum": "crwdns19538:0{{space}}crwdne19538:0",
       "subspaces": "crwdns19540:0{{space}}crwdne19540:0",
@@ -1802,13 +1802,13 @@
           "title": "crwdns19580:0crwdne19580:0"
         }
       },
-      "archived-notice": {
-        "archived-space": "crwdns19582:0crwdne19582:0",
-        "archived-journey": "crwdns19584:0{{journey}}crwdne19584:0"
+      "archivedNotice": {
+        "archivedSpace": "crwdns36880:0crwdne36880:0",
+        "archivedSubspace": "crwdns36882:0{{space}}crwdne36882:0"
       },
-      "demo-notice": {
-        "demo-space": "crwdns19586:0crwdne19586:0",
-        "demo-journey": "crwdns19588:0{{journey}}crwdne19588:0"
+      "demoNotice": {
+        "demoSpace": "crwdns36884:0crwdne36884:0",
+        "demoSubspace": "crwdns36886:0{{space}}crwdne36886:0"
       }
     },
     "contribute": {
@@ -2181,7 +2181,7 @@
       "AVATAR": {
         "title": "crwdns19938:0crwdne19938:0",
         "description1": "crwdns19940:0{{width}}crwdnd19940:0{{height}}crwdne19940:0",
-        "description2": "crwdns19942:0crwdne19942:0",
+        "description2": "crwdns36888:0crwdne36888:0",
         "description": "crwdns19944:0{{alternativeText}}crwdne19944:0"
       },
       "BANNER": {
@@ -2235,7 +2235,7 @@
       "user-not-logged": "crwdns19998:0crwdne19998:0",
       "filter": {
         "type": {
-          "journey": "crwdns20000:0crwdne20000:0",
+          "space": "crwdns36890:0crwdne36890:0",
           "contribution": "crwdns20002:0crwdne20002:0",
           "contributor": "crwdns20004:0crwdne20004:0"
         },
@@ -2250,7 +2250,7 @@
           "callout": "crwdns20020:0crwdne20020:0"
         }
       },
-      "journeyFilterTitle": "crwdns20022:0$t(common.spaces)crwdne20022:0"
+      "spaceFilterTitle": "crwdns36892:0$t(common.spaces)crwdne36892:0"
     },
     "exploreSpaces": {
       "fullName": "crwdns20024:0crwdne20024:0",
@@ -2263,7 +2263,7 @@
         "member": "crwdns20036:0crwdne20036:0",
         "public": "crwdns20038:0crwdne20038:0"
       },
-      "noSpaceMemberships": "crwdns20040:0{{welcomeSpace}}crwdne20040:0",
+      "noSpaceMemberships": "crwdns36894:0{{welcomeSpace}}crwdne36894:0",
       "search": {
         "placeholder": "crwdns20042:0crwdne20042:0",
         "noResults": "crwdns20044:0crwdne20044:0",
@@ -2307,16 +2307,16 @@
         "myLatestContributions": {
           "title": "crwdns20084:0crwdne20084:0",
           "card": {
-            "journey": "crwdns20086:0{{journey}}crwdne20086:0"
+            "space": "crwdns36896:0{{space}}crwdne36896:0"
           },
           "noContributions": "crwdns20088:0crwdne20088:0"
         },
         "createAccountBanner": {
           "message": "crwdns20090:0crwdne20090:0"
         },
-        "recentJourneys": {
-          "seeMore": "crwdns20092:0crwdne20092:0",
-          "seeMoreSubspaces": "crwdns28744:0crwdne28744:0"
+        "recentSpaces": {
+          "seeMore": "crwdns36898:0crwdne36898:0",
+          "seeMoreSubspaces": "crwdns36900:0crwdne36900:0"
         },
         "campaignBlock": {
           "createYourVCButton": "crwdns20096:0crwdne20096:0",
@@ -2361,15 +2361,15 @@
           "seeMore": "crwdns20146:0crwdne20146:0",
           "seeAll": "crwdns20148:0crwdne20148:0",
           "invitation": {
-            "message": "crwdns20150:0{{journey}}crwdne20150:0",
+            "message": "crwdns36902:0{{space}}crwdne36902:0",
             "caption": "crwdns20152:0crwdne20152:0"
           },
           "application": {
-            "message": "crwdns20154:0{{journey}}crwdne20154:0",
+            "message": "crwdns36904:0{{space}}crwdne36904:0",
             "caption": "crwdns20156:0crwdne20156:0"
           },
           "membership": {
-            "message": "crwdns20158:0{{journey}}crwdne20158:0",
+            "message": "crwdns36906:0{{space}}crwdne36906:0",
             "caption": "crwdns20160:0{{tagline}}crwdne20160:0"
           }
         },
@@ -2603,7 +2603,7 @@
       "readonlyReason": {
         "readonly": "crwdns20396:0crwdne20396:0",
         "contentUpdatePolicy": "crwdns20398:0{{ownerName}}crwdne20398:0",
-        "noMembership": "crwdns28950:0{{spaceType}}crwdne28950:0",
+        "noMembership": "crwdns36908:0{{spaceType}}crwdne36908:0",
         "unauthenticated": "crwdns28952:0{{spaceType}}crwdne28952:0"
       },
       "readonlyDialog": {
@@ -3048,7 +3048,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "crwdns20832:0$t(common.subspaces)crwdnd20832:0$t(common.subspaces)crwdne20832:0"
+    "spaceFilterTitle": "crwdns36910:0$t(common.subspaces)crwdnd36910:0$t(common.subspaces)crwdne36910:0"
   },
   "visuals-alt-text": {
     "banner": {
