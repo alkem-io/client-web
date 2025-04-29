@@ -1188,10 +1188,9 @@
     "activityLogView": {
       "description": {
         "CALLOUT_PUBLISHED": "{{subject}}",
-        "CHALLENGE_CREATED": "{{subject}}",
+        "SUBSPACE_CREATED": "{{subject}}",
         "DISCUSSION_COMMENT": "{{subject}}",
         "MEMBER_JOINED": "{{subject}} is lid geworden",
-        "OPPORTUNITY_CREATED": "{{subject}}",
         "CALLOUT_POST_COMMENT": "{{subject}}",
         "CALLOUT_POST_CREATED": "{{subject}}",
         "CALLOUT_LINK_CREATED": "{{subject}}",
