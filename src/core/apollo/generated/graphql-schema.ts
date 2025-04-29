@@ -17548,25 +17548,6 @@ export type UsersModelFullQuery = {
   }>;
 };
 
-export type UserContributionDisplayNamesQueryVariables = Exact<{
-  userId: Scalars['UUID'];
-}>;
-
-export type UserContributionDisplayNamesQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    spaces: Array<{
-      __typename?: 'RolesResultSpace';
-      id: string;
-      displayName: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
-    }>;
-    organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; displayName: string }>;
-  };
-};
-
 export type UserContributionsQueryVariables = Exact<{
   userId: Scalars['UUID'];
 }>;

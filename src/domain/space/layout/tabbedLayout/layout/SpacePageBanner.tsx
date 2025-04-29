@@ -69,12 +69,12 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
   switch (level) {
     case SpaceLevel.L0: {
       if (visibility === SpaceVisibility.Archived) {
-        message = tLinks('pages.generic.archived-notice.archived-space', {
+        message = tLinks('pages.generic.archivedNotice.archivedSpace', {
           contact: { href: locations?.feedback, target: '_blank' },
         });
       }
       if (visibility === SpaceVisibility.Demo) {
-        message = tLinks('pages.generic.demo-notice.demo-space', {
+        message = tLinks('pages.generic.demoNotice.demoSpace', {
           alkemio: { href: ALKEMIO_DOMAIN, target: '_blank' },
         });
       }
@@ -83,7 +83,7 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
     default: {
       if (visibility === SpaceVisibility.Archived) {
         message = tLinks(
-          'pages.generic.archived-notice.archived-subspace',
+          'pages.generic.archivedNotice.archivedSubspace',
           {
             contact: { href: locations?.feedback, target: '_blank' },
           },
@@ -92,7 +92,7 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
       }
       if (visibility === SpaceVisibility.Demo) {
         message = tLinks(
-          'pages.generic.demo-notice.demo-subspace',
+          'pages.generic.demoNotice.demoSubspace',
           {
             alkemio: { href: '/', target: '_blank' },
           },

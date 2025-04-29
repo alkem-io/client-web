@@ -1802,13 +1802,13 @@
           "title": "Recommended by the Host"
         }
       },
-      "archived-notice": {
-        "archived-space": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
-        "archived-subspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+      "archivedNotice": {
+        "archivedSpace": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
-      "demo-notice": {
-        "demo-space": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
-        "demo-subspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
+      "demoNotice": {
+        "demoSpace": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
+        "demoSubspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
       }
     },
     "contribute": {
