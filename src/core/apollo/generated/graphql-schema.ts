@@ -3,35 +3,33 @@ export type InputMaybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  DID: { input: string; output: string };
-  DateTime: { input: Date; output: Date };
-  Emoji: { input: string; output: string };
-  JSON: { input: string; output: string };
-  LifecycleDefinition: { input: string; output: string };
-  Markdown: { input: string; output: string };
-  MessageID: { input: string; output: string };
-  NameID: { input: string; output: string };
-  SearchCursor: { input: string; output: string };
-  UUID: { input: string; output: string };
-  Upload: { input: File; output: File };
-  WhiteboardContent: { input: string; output: string };
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  DID: string;
+  DateTime: Date;
+  Emoji: string;
+  JSON: string;
+  LifecycleDefinition: string;
+  Markdown: string;
+  MessageID: string;
+  NameID: string;
+  SearchCursor: string;
+  UUID: string;
+  Upload: File;
+  WhiteboardContent: string;
 };
 
 export type Apm = {
   __typename?: 'APM';
   /** Endpoint where events are sent. */
-  endpoint: Scalars['String']['output'];
+  endpoint: Scalars['String'];
   /** Flag indicating if real user monitoring is enabled. */
-  rumEnabled: Scalars['Boolean']['output'];
+  rumEnabled: Scalars['Boolean'];
 };
 
 export type Account = {
@@ -41,13 +39,13 @@ export type Account = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The external subscription ID for this Account. */
-  externalSubscriptionID?: Maybe<Scalars['String']['output']>;
+  externalSubscriptionID?: Maybe<Scalars['String']>;
   /** The Account host. */
   host?: Maybe<Contributor>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The InnovationHubs for this Account. */
   innovationHubs: Array<InnovationHub>;
   /** The InnovationPacks for this Account. */
@@ -63,25 +61,25 @@ export type Account = {
   /** A type of entity that this Account is being used with. */
   type?: Maybe<AccountType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The virtual contributors for this Account. */
   virtualContributors: Array<VirtualContributor>;
 };
 
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
 };
 
 export type AccountLicenseResetInput = {
   /** The identifier of the Account whose License and Entitlements should be reset. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
 };
 
 export type AccountSubscription = {
   __typename?: 'AccountSubscription';
   /** The expiry date of this subscription, null if it does never expire. */
-  expires?: Maybe<Scalars['DateTime']['output']>;
+  expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
   name: LicensingCredentialBasedCredentialType;
 };
@@ -93,9 +91,9 @@ export enum AccountType {
 
 export type ActivityCreatedSubscriptionInput = {
   /** The collaboration on which to subscribe for new activity */
-  collaborationID: Scalars['UUID']['input'];
+  collaborationID: Scalars['UUID'];
   /** Include activities happened on child Collaborations. */
-  includeChild?: InputMaybe<Scalars['Boolean']['input']>;
+  includeChild?: InputMaybe<Scalars['Boolean']>;
   /** Which activity types to include in the results. Returns all by default. */
   types?: InputMaybe<Array<ActivityEventType>>;
 };
@@ -114,10 +112,9 @@ export enum ActivityEventType {
   CalloutPublished = 'CALLOUT_PUBLISHED',
   CalloutWhiteboardContentModified = 'CALLOUT_WHITEBOARD_CONTENT_MODIFIED',
   CalloutWhiteboardCreated = 'CALLOUT_WHITEBOARD_CREATED',
-  ChallengeCreated = 'CHALLENGE_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
-  OpportunityCreated = 'OPPORTUNITY_CREATED',
+  SubspaceCreated = 'SUBSPACE_CREATED',
   UpdateSent = 'UPDATE_SENT',
 }
 
@@ -125,20 +122,20 @@ export type ActivityFeed = {
   __typename?: 'ActivityFeed';
   activityFeed: Array<ActivityLogEntry>;
   pageInfo: PageInfo;
-  total: Scalars['Float']['output'];
+  total: Scalars['Float'];
 };
 
 export type ActivityFeedGroupedQueryArgs = {
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Number of activities to return. */
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
   /** Returns only events that the current user triggered; Includes all by default. */
-  myActivity?: InputMaybe<Scalars['Boolean']['input']>;
+  myActivity?: InputMaybe<Scalars['Boolean']>;
   /** Activity from which Spaces to include; Includes all by default. */
   roles?: InputMaybe<Array<ActivityFeedRoles>>;
   /** Activity from which Spaces to include; Includes all by default. */
-  spaceIds?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  spaceIds?: InputMaybe<Array<Scalars['UUID']>>;
   /** What events to include; Includes all by default. */
   types?: InputMaybe<Array<ActivityEventType>>;
 };
@@ -147,11 +144,11 @@ export type ActivityFeedQueryArgs = {
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Returns only events that the current user triggered; Includes all by default. */
-  myActivity?: InputMaybe<Scalars['Boolean']['input']>;
+  myActivity?: InputMaybe<Scalars['Boolean']>;
   /** Activity from which Spaces to include; Includes all by default. */
   roles?: InputMaybe<Array<ActivityFeedRoles>>;
   /** Activity from which Spaces to include; Includes all by default. */
-  spaceIds?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  spaceIds?: InputMaybe<Array<Scalars['UUID']>>;
   /** What events to include; Includes all by default. */
   types?: InputMaybe<Array<ActivityEventType>>;
 };
@@ -164,18 +161,16 @@ export enum ActivityFeedRoles {
 
 export type ActivityLogEntry = {
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -191,18 +186,16 @@ export type ActivityLogEntryCalendarEventCreated = ActivityLogEntry & {
   /** The CalendarEvent that was created. */
   calendarEvent: CalendarEvent;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -216,18 +209,16 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   /** The Callout in which the comment was added. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -241,20 +232,18 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   /** The Callout in which the Link was created. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The Link that was created. */
   link: Link;
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -268,18 +257,16 @@ export type ActivityLogEntryCalloutPostComment = ActivityLogEntry & {
   /** The Callout in which the Post was commented. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Post that was commented on. */
   post: Post;
   /** The Space where the activity happened */
@@ -295,18 +282,16 @@ export type ActivityLogEntryCalloutPostCreated = ActivityLogEntry & {
   /** The Callout in which the Post was created. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Post that was created. */
   post: Post;
   /** The Space where the activity happened */
@@ -322,18 +307,16 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   /** The Callout that was published. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -347,18 +330,16 @@ export type ActivityLogEntryCalloutWhiteboardContentModified = ActivityLogEntry 
   /** The Callout in which the Whiteboard was updated. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -374,18 +355,16 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   /** The Callout in which the Whiteboard was created. */
   callout: Callout;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -396,21 +375,46 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   whiteboard: Whiteboard;
 };
 
-export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryChallengeCreated';
+export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryMemberJoined';
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
+  /** The community that was joined. */
+  community: Community;
+  /** The Contributor that joined the Community. */
+  contributor: Contributor;
+  /** The type of the Contributor that joined the Community. */
+  contributorType: RoleSetContributorType;
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
+  /** The Space where the activity happened */
+  space?: Maybe<Space>;
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntrySubspaceCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The Subspace that was created. */
@@ -421,79 +425,23 @@ export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
   type: ActivityEventType;
 };
 
-export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryMemberJoined';
-  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
-  /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
-  /** The community that was joined. */
-  community: Community;
-  /** The Contributor that joined the Community. */
-  contributor: Contributor;
-  /** The type of the Contributor that joined the Community. */
-  contributorType: RoleSetContributorType;
-  /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
-  /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
-  /** The Space where the activity happened */
-  space?: Maybe<Space>;
-  /** The user that triggered this Activity. */
-  triggeredBy: User;
-  /** The event type for this Activity. */
-  type: ActivityEventType;
-};
-
-export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
-  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
-  /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
-  /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
-  /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
-  /** The Space where the activity happened */
-  space?: Maybe<Space>;
-  /** The Subsubspace that was created. */
-  subsubspace: Space;
-  /** The user that triggered this Activity. */
-  triggeredBy: User;
-  /** The event type for this Activity. */
-  type: ActivityEventType;
-};
-
 export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryUpdateSent';
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean']['output'];
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID']['output'];
+  collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
-  description: Scalars['String']['output'];
-  id: Scalars['UUID']['output'];
+  description: Scalars['String'];
+  id: Scalars['UUID'];
   /** The url to the Journey. */
-  journeyUrl: Scalars['String']['output'];
+  journeyUrl: Scalars['String'];
   /** The Message that been sent to this Community. */
-  message: Scalars['String']['output'];
+  message: Scalars['String'];
   /** The display name of the parent */
-  parentDisplayName: Scalars['String']['output'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID']['output'];
+  parentDisplayName: Scalars['String'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -506,11 +454,11 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
 
 export type ActivityLogInput = {
   /** Display the activityLog results for the specified Collaboration. */
-  collaborationID: Scalars['UUID']['input'];
+  collaborationID: Scalars['UUID'];
   /** Include entries happened on child Collaborations. */
-  includeChild?: InputMaybe<Scalars['Boolean']['input']>;
+  includeChild?: InputMaybe<Scalars['Boolean']>;
   /** The number of ActivityLog entries to return; if omitted return all. */
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
   /** Which activity types to include in the results. Returns all by default. */
   types?: InputMaybe<Array<ActivityEventType>>;
 };
@@ -520,17 +468,17 @@ export type Agent = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Credentials held by this Agent. */
   credentials?: Maybe<Array<Credential>>;
   /** The Decentralized Identifier (DID) for this Agent. */
-  did?: Maybe<Scalars['DID']['output']>;
+  did?: Maybe<Scalars['DID']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** A type of entity that this Agent is being used with. */
   type: AgentType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Verfied Credentials for this Agent. */
   verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
 };
@@ -538,17 +486,17 @@ export type Agent = {
 export type AgentBeginVerifiedCredentialOfferOutput = {
   __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
-  jwt: Scalars['String']['output'];
+  jwt: Scalars['String'];
   /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
-  qrCodeImg: Scalars['String']['output'];
+  qrCodeImg: Scalars['String'];
 };
 
 export type AgentBeginVerifiedCredentialRequestOutput = {
   __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
-  jwt: Scalars['String']['output'];
+  jwt: Scalars['String'];
   /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
-  qrCodeImg: Scalars['String']['output'];
+  qrCodeImg: Scalars['String'];
 };
 
 export enum AgentType {
@@ -562,29 +510,29 @@ export enum AgentType {
 export type AiPersona = {
   __typename?: 'AiPersona';
   /** The ID of the AiPersonaService. */
-  aiPersonaServiceID?: Maybe<Scalars['String']['output']>;
+  aiPersonaServiceID?: Maybe<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A overview of knowledge provided by this AI Persona. */
-  bodyOfKnowledge?: Maybe<Scalars['Markdown']['output']>;
+  bodyOfKnowledge?: Maybe<Scalars['Markdown']>;
   /** The body of knowledge ID used for the AI Persona. */
-  bodyOfKnowledgeID?: Maybe<Scalars['String']['output']>;
+  bodyOfKnowledgeID?: Maybe<Scalars['String']>;
   /** The body of knowledge type used for the AI Persona. */
   bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The type of context sharing that are supported by this AI Persona when used. */
   dataAccessMode: AiPersonaDataAccessMode;
   /** The description for this AI Persona. */
-  description?: Maybe<Scalars['Markdown']['output']>;
+  description?: Maybe<Scalars['Markdown']>;
   /** The engine powering the AiPersona. */
   engine: AiPersonaEngine;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The type of interactions that are supported by this AI Persona when used. */
   interactionModes: Array<AiPersonaInteractionMode>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum AiPersonaBodyOfKnowledgeType {
@@ -619,13 +567,13 @@ export type AiPersonaService = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The body of knowledge ID used for the AI Persona Service */
-  bodyOfKnowledgeID?: Maybe<Scalars['UUID']['output']>;
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
   /** When wat the body of knowledge of the VC last updated. */
-  bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']['output']>;
+  bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']>;
   /** The body of knowledge type used for the AI Persona Service */
   bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The required data access by the Virtual Persona */
   dataAccessMode: AiPersonaDataAccessMode;
   /** The AI Persona Engine being used by this AI Persona. */
@@ -633,11 +581,11 @@ export type AiPersonaService = {
   /** The ExternalConfig for this Virtual. */
   externalConfig?: Maybe<ExternalConfig>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The prompt used by this Virtual Persona */
-  prompt: Array<Scalars['String']['output']>;
+  prompt: Array<Scalars['String']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type AiServer = {
@@ -649,17 +597,17 @@ export type AiServer = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The default AiPersonaService in use on the aiServer. */
   defaultAiPersonaService: AiPersonaService;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type AiServerAiPersonaServiceArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type Application = {
@@ -668,75 +616,75 @@ export type Application = {
   authorization?: Maybe<Authorization>;
   /** The User for this Application. */
   contributor: Contributor;
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Is this lifecycle in a final state (done). */
-  isFinalized: Scalars['Boolean']['output'];
+  isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
-  nextEvents: Array<Scalars['String']['output']>;
+  nextEvents: Array<Scalars['String']>;
   /** The Questions for this application. */
   questions: Array<Question>;
   /** The current state of this Lifecycle. */
-  state: Scalars['String']['output'];
-  updatedDate: Scalars['DateTime']['output'];
+  state: Scalars['String'];
+  updatedDate: Scalars['DateTime'];
 };
 
 export type ApplicationEventInput = {
-  applicationID: Scalars['UUID']['input'];
-  eventName: Scalars['String']['input'];
+  applicationID: Scalars['UUID'];
+  eventName: Scalars['String'];
 };
 
 export type ApplyForEntryRoleOnRoleSetInput = {
   questions: Array<CreateNvpInput>;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type AssignLicensePlanToAccount = {
   /** The ID of the Account to assign the LicensePlan to. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
   /** The ID of the LicensePlan to assign. */
-  licensePlanID: Scalars['UUID']['input'];
+  licensePlanID: Scalars['UUID'];
   /** The ID of the Licensing to use. */
-  licensingID?: InputMaybe<Scalars['UUID']['input']>;
+  licensingID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type AssignLicensePlanToSpace = {
   /** The ID of the LicensePlan to assign. */
-  licensePlanID: Scalars['UUID']['input'];
+  licensePlanID: Scalars['UUID'];
   /** The ID of the Licensing to use. */
-  licensingID?: InputMaybe<Scalars['UUID']['input']>;
+  licensingID?: InputMaybe<Scalars['UUID']>;
   /** The ID of the Space to assign the LicensePlan to. */
-  spaceID: Scalars['UUID']['input'];
+  spaceID: Scalars['UUID'];
 };
 
 export type AssignPlatformRoleInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
 };
 
 export type AssignRoleOnRoleSetToOrganizationInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type AssignRoleOnRoleSetToUserInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type AssignRoleOnRoleSetToVirtualContributorInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type AssignUserGroupMemberInput = {
-  groupID: Scalars['UUID']['input'];
-  userID: Scalars['UUID']['input'];
+  groupID: Scalars['UUID'];
+  userID: Scalars['UUID'];
 };
 
 export type AuthenticationConfig = {
@@ -750,13 +698,13 @@ export type AuthenticationProviderConfig = {
   /** Configuration of the authentication provider */
   config: AuthenticationProviderConfigUnion;
   /** Is the authentication provider enabled? */
-  enabled: Scalars['Boolean']['output'];
+  enabled: Scalars['Boolean'];
   /** CDN location of an icon of the authentication provider login button. */
-  icon: Scalars['String']['output'];
+  icon: Scalars['String'];
   /** Label of the authentication provider. */
-  label: Scalars['String']['output'];
+  label: Scalars['String'];
   /** Name of the authentication provider. */
-  name: Scalars['String']['output'];
+  name: Scalars['String'];
 };
 
 export type AuthenticationProviderConfigUnion = OryConfig;
@@ -771,11 +719,11 @@ export enum AuthenticationType {
 export type Authorization = {
   __typename?: 'Authorization';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this Authorization Policy. */
   credentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The privileges granted to the current user based on this Authorization Policy. */
   myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
   /** The set of privilege rules that are contained by this Authorization Policy. */
@@ -783,7 +731,7 @@ export type Authorization = {
   /** A type of entity that this Authorization Policy is being used with. */
   type?: Maybe<AuthorizationPolicyType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
   verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
 };
@@ -815,23 +763,23 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
-  cascade: Scalars['Boolean']['output'];
+  cascade: Scalars['Boolean'];
   criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  name?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type AuthorizationPolicyRulePrivilege = {
   __typename?: 'AuthorizationPolicyRulePrivilege';
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  name?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']>;
   sourcePrivilege: AuthorizationPrivilege;
 };
 
 export type AuthorizationPolicyRuleVerifiedCredential = {
   __typename?: 'AuthorizationPolicyRuleVerifiedCredential';
-  claimRule: Scalars['String']['output'];
-  credentialName: Scalars['String']['output'];
+  claimRule: Scalars['String'];
+  credentialName: Scalars['String'];
   grantedPrivileges: Array<AuthorizationPrivilege>;
 };
 
@@ -949,19 +897,19 @@ export type Calendar = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** A single CalendarEvent */
   event?: Maybe<CalendarEvent>;
   /** The list of CalendarEvents for this Calendar. */
   events: Array<CalendarEvent>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type CalendarEventArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type CalendarEvent = {
@@ -973,31 +921,31 @@ export type CalendarEvent = {
   /** The user that created this CalendarEvent */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The length of the event in days. */
-  durationDays?: Maybe<Scalars['Float']['output']>;
+  durationDays?: Maybe<Scalars['Float']>;
   /** The length of the event in minutes. */
-  durationMinutes: Scalars['Float']['output'];
+  durationMinutes: Scalars['Float'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Flag to indicate if this event is for multiple days. */
-  multipleDays: Scalars['Boolean']['output'];
+  multipleDays: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Profile for this Post. */
   profile: Profile;
   /** The start time for this CalendarEvent. */
-  startDate?: Maybe<Scalars['DateTime']['output']>;
+  startDate?: Maybe<Scalars['DateTime']>;
   /** Which Subspace is this event part of. Only applicable if the Space has this option enabled. */
   subspace?: Maybe<Space>;
   /** The event type, e.g. webinar, meetup etc. */
   type: CalendarEventType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Is the event visible on the parent calendar. */
-  visibleOnParentCalendar: Scalars['Boolean']['output'];
+  visibleOnParentCalendar: Scalars['Boolean'];
   /** Flag to indicate if this event is for a whole day. */
-  wholeDay: Scalars['Boolean']['output'];
+  wholeDay: Scalars['Boolean'];
 };
 
 export enum CalendarEventType {
@@ -1010,7 +958,7 @@ export enum CalendarEventType {
 export type Callout = {
   __typename?: 'Callout';
   /** The activity for this Callout. */
-  activity: Scalars['Float']['output'];
+  activity: Scalars['Float'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The comments for this Callout. */
@@ -1026,35 +974,35 @@ export type Callout = {
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Callout Framing associated with this Callout. */
   framing: CalloutFraming;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Whether this callout is a Template or not. */
-  isTemplate: Scalars['Boolean']['output'];
+  isTemplate: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Posts associated with this Callout. */
   posts?: Maybe<Array<Post>>;
   /** The user that published this Callout */
   publishedBy?: Maybe<User>;
   /** The timestamp for the publishing of this Callout. */
-  publishedDate?: Maybe<Scalars['Float']['output']>;
+  publishedDate?: Maybe<Scalars['Float']>;
   /** The sorting order for this Callout. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Float'];
   /** The Callout type, e.g. Post, Whiteboard, Discussion */
   type: CalloutType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
 };
 
 export type CalloutContributionsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type CalloutContribution = {
@@ -1064,17 +1012,17 @@ export type CalloutContribution = {
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Link that was contributed. */
   link?: Maybe<Link>;
   /** The Post that was contributed. */
   post?: Maybe<Post>;
   /** The sorting order for this Contribution. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Float'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Whiteboard that was contributed. */
   whiteboard?: Maybe<Whiteboard>;
 };
@@ -1082,15 +1030,15 @@ export type CalloutContribution = {
 export type CalloutContributionDefaults = {
   __typename?: 'CalloutContributionDefaults';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The default description to use for new contributions. */
-  postDescription?: Maybe<Scalars['Markdown']['output']>;
+  postDescription?: Maybe<Scalars['Markdown']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The default whiteboard content for whiteboard responses. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export type CalloutContributionPolicy = {
@@ -1098,13 +1046,13 @@ export type CalloutContributionPolicy = {
   /** The allowed contribution types for this callout. */
   allowedContributionTypes: Array<CalloutContributionType>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** State of the Callout. */
   state: CalloutState;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum CalloutContributionType {
@@ -1118,13 +1066,13 @@ export type CalloutFraming = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Profile for framing the associated Callout. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Whiteboard for framing the associated Callout. */
   whiteboard?: Maybe<Whiteboard>;
 };
@@ -1132,13 +1080,13 @@ export type CalloutFraming = {
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
   /** The identifier of the Callout on which the post was created. */
-  calloutID: Scalars['String']['output'];
+  calloutID: Scalars['String'];
   /** The identifier of the Contribution. */
-  contributionID: Scalars['String']['output'];
+  contributionID: Scalars['String'];
   /** The Post that has been created. */
   post: Post;
   /** The sorting order for this Contribution. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Float'];
 };
 
 export enum CalloutState {
@@ -1167,23 +1115,23 @@ export type CalloutsSet = {
   /** The list of Callouts for this CalloutsSet object. */
   callouts: Array<Callout>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The tagset templates on this CalloutsSet. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The set of CalloutGroups in use in this CalloutsSet. */
   type: CalloutsSetType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type CalloutsSetCalloutsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   classificationTagsets?: InputMaybe<Array<TagsetArgs>>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
-  sortByActivity?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+  sortByActivity?: InputMaybe<Scalars['Boolean']>;
   types?: InputMaybe<Array<CalloutType>>;
 };
 
@@ -1194,16 +1142,16 @@ export enum CalloutsSetType {
 
 export type ChatGuidanceAnswerRelevanceInput = {
   /** The answer id. */
-  id: Scalars['String']['input'];
+  id: Scalars['String'];
   /** Is the answer relevant or not. */
-  relevant: Scalars['Boolean']['input'];
+  relevant: Scalars['Boolean'];
 };
 
 export type ChatGuidanceInput = {
   /** The language of the answer. */
-  language?: InputMaybe<Scalars['String']['input']>;
+  language?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
-  question: Scalars['String']['input'];
+  question: Scalars['String'];
 };
 
 export type Classification = {
@@ -1211,15 +1159,15 @@ export type Classification = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The default or named tagset. */
   tagset?: Maybe<Tagset>;
   /** The classification tagsets. */
   tagsets?: Maybe<Array<Tagset>>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type ClassificationTagsetArgs = {
@@ -1233,19 +1181,19 @@ export type Collaboration = {
   /** The calloutsSet with Callouts in use by this Space */
   calloutsSet: CalloutsSet;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The InnovationFlow for the Collaboration. */
   innovationFlow: InnovationFlow;
   /** Whether this Collaboration is a Template or not. */
-  isTemplate: Scalars['Boolean']['output'];
+  isTemplate: Scalars['Boolean'];
   /** The License operating on this Collaboration. */
   license: License;
   /** The timeline with events in use by this Space */
   timeline: Timeline;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type Communication = {
@@ -1253,29 +1201,29 @@ export type Communication = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The updates on this Communication. */
   updates: Room;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
-  communityID: Scalars['UUID']['input'];
+  communityID: Scalars['UUID'];
 };
 
 export type CommunicationAdminMembershipInput = {
-  communityID: Scalars['UUID']['input'];
+  communityID: Scalars['UUID'];
 };
 
 export type CommunicationAdminMembershipResult = {
   __typename?: 'CommunicationAdminMembershipResult';
   /** Display name of the result */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** A unique identifier for this comunication room membership result. */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** Rooms in this Communication */
   rooms: Array<CommunicationAdminRoomMembershipResult>;
 };
@@ -1287,72 +1235,72 @@ export type CommunicationAdminOrphanedUsageResult = {
 };
 
 export type CommunicationAdminRemoveOrphanedRoomInput = {
-  roomID: Scalars['String']['input'];
+  roomID: Scalars['String'];
 };
 
 export type CommunicationAdminRoomMembershipResult = {
   __typename?: 'CommunicationAdminRoomMembershipResult';
   /** Display name of the entity */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** Members of the room that are not members of the Community. */
-  extraMembers: Array<Scalars['String']['output']>;
+  extraMembers: Array<Scalars['String']>;
   /** A unique identifier for this membership result. */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** The access mode for the room. */
-  joinRule: Scalars['String']['output'];
+  joinRule: Scalars['String'];
   /** Name of the room */
-  members: Array<Scalars['String']['output']>;
+  members: Array<Scalars['String']>;
   /** Members of the community that are missing from the room */
-  missingMembers: Array<Scalars['String']['output']>;
+  missingMembers: Array<Scalars['String']>;
   /** The matrix room ID */
-  roomID: Scalars['String']['output'];
+  roomID: Scalars['String'];
 };
 
 export type CommunicationAdminRoomResult = {
   __typename?: 'CommunicationAdminRoomResult';
   /** Display name of the result */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The identifier for the orphaned room. */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** The members of the orphaned room */
-  members: Array<Scalars['String']['output']>;
+  members: Array<Scalars['String']>;
 };
 
 export type CommunicationAdminUpdateRoomStateInput = {
-  isPublic: Scalars['Boolean']['input'];
-  isWorldVisible: Scalars['Boolean']['input'];
-  roomID: Scalars['String']['input'];
+  isPublic: Scalars['Boolean'];
+  isWorldVisible: Scalars['Boolean'];
+  roomID: Scalars['String'];
 };
 
 export type CommunicationRoom = {
   __typename?: 'CommunicationRoom';
   /** The display name of the room */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The identifier of the room */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** The messages that have been sent to the Room. */
   messages: Array<Message>;
 };
 
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
-  communityId: Scalars['UUID']['input'];
+  communityId: Scalars['UUID'];
   /** The message being sent */
-  message: Scalars['String']['input'];
+  message: Scalars['String'];
 };
 
 export type CommunicationSendMessageToOrganizationInput = {
   /** The message being sent */
-  message: Scalars['String']['input'];
+  message: Scalars['String'];
   /** The Organization the message is being sent to */
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 };
 
 export type CommunicationSendMessageToUserInput = {
   /** The message being sent */
-  message: Scalars['String']['input'];
+  message: Scalars['String'];
   /** All Users the message is being sent to */
-  receiverIds: Array<Scalars['UUID']['input']>;
+  receiverIds: Array<Scalars['UUID']>;
 };
 
 export type Community = Groupable & {
@@ -1362,41 +1310,41 @@ export type Community = Groupable & {
   /** The Communications for this Community. */
   communication: Communication;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The user group with the specified id anywhere in the space */
   group: UserGroup;
   /** Groups of users related to a Community. */
   groups: Array<UserGroup>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The RoleSet for this Community. */
   roleSet: RoleSet;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type CommunityGroupArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type CommunityApplicationForRoleResult = {
   __typename?: 'CommunityApplicationForRoleResult';
   /** ID for the community */
-  communityID: Scalars['UUID']['output'];
+  communityID: Scalars['UUID'];
   /** Date of creation */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** Display name of the community */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** ID for the application */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID']['output'];
+  spaceID: Scalars['UUID'];
   /** Nesting level of the Space */
-  spaceLevel: Scalars['Float']['output'];
+  spaceLevel: Scalars['Float'];
   /** The current state of the application. */
-  state: Scalars['String']['output'];
+  state: Scalars['String'];
   /** Date of last update */
-  updatedDate: Scalars['DateTime']['output'];
+  updatedDate: Scalars['DateTime'];
 };
 
 export type CommunityApplicationResult = {
@@ -1404,7 +1352,7 @@ export type CommunityApplicationResult = {
   /** The application itself */
   application: Application;
   /** ID for the pending membership */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The key information for the Space that the application/invitation is for */
   spacePendingMembershipInfo: SpacePendingMembershipInfo;
 };
@@ -1414,47 +1362,47 @@ export type CommunityGuidelines = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The details of the guidelilnes */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type CommunityInvitationForRoleResult = {
   __typename?: 'CommunityInvitationForRoleResult';
   /** ID for the community */
-  communityID: Scalars['UUID']['output'];
+  communityID: Scalars['UUID'];
   /** ID for Contrbutor that is being invited to a community */
-  contributorID: Scalars['UUID']['output'];
+  contributorID: Scalars['UUID'];
   /** The Type of the Contrbutor that is being invited to a community */
   contributorType: RoleSetContributorType;
   /** ID for the user that created the invitation. */
-  createdBy: Scalars['UUID']['output'];
+  createdBy: Scalars['UUID'];
   /** Date of creation */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** Display name of the community */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** ID for the Invitation */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID']['output'];
+  spaceID: Scalars['UUID'];
   /** Nesting level of the Space */
-  spaceLevel: Scalars['Float']['output'];
+  spaceLevel: Scalars['Float'];
   /** The current state of the invitation. */
-  state: Scalars['String']['output'];
+  state: Scalars['String'];
   /** Date of last update */
-  updatedDate: Scalars['DateTime']['output'];
+  updatedDate: Scalars['DateTime'];
   /** The welcome message of the invitation */
-  welcomeMessage?: Maybe<Scalars['UUID']['output']>;
+  welcomeMessage?: Maybe<Scalars['UUID']>;
 };
 
 export type CommunityInvitationResult = {
   __typename?: 'CommunityInvitationResult';
   /** ID for the pending membership */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The invitation itself */
   invitation: Invitation;
   /** The key information for the Space that the application/invitation is for */
@@ -1472,7 +1420,7 @@ export type CommunityMembershipResult = {
   /** The child community memberships */
   childMemberships: Array<CommunityMembershipResult>;
   /** ID for the membership */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The space for the membership is for */
   space: Space;
 };
@@ -1520,9 +1468,9 @@ export type Contributor = {
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The ID of the Contributor */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** A name identifier of the Contributor, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The profile for the Contributor. */
   profile: Profile;
 };
@@ -1535,16 +1483,16 @@ export type ContributorFilterInput = {
 export type ContributorRolePolicy = {
   __typename?: 'ContributorRolePolicy';
   /** Maximum number of Contributors in this role */
-  maximum: Scalars['Float']['output'];
+  maximum: Scalars['Float'];
   /** Minimum number of Contributors in this role */
-  minimum: Scalars['Float']['output'];
+  minimum: Scalars['Float'];
 };
 
 export type ContributorRoles = {
   __typename?: 'ContributorRoles';
   /** The applications for the specified user; only accessible for platform admins */
   applications: Array<CommunityApplicationForRoleResult>;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The invitations for the specified user; only accessible for platform admins */
   invitations: Array<CommunityInvitationForRoleResult>;
   /** Details of the roles the contributor has in Organizations */
@@ -1554,83 +1502,83 @@ export type ContributorRoles = {
 };
 
 export type ContributorRolesApplicationsArgs = {
-  states?: InputMaybe<Array<Scalars['String']['input']>>;
+  states?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type ContributorRolesInvitationsArgs = {
-  states?: InputMaybe<Array<Scalars['String']['input']>>;
+  states?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type ConversionVcSpaceToVcKnowledgeBaseInput = {
   /** The Virtual Contributor to be converted. */
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type ConvertSpaceL1ToSpaceL0Input = {
   /** The Space L1 to be promoted to be a new Space L0.  */
-  spaceL1ID: Scalars['UUID']['input'];
+  spaceL1ID: Scalars['UUID'];
 };
 
 export type ConvertSpaceL1ToSpaceL2Input = {
   /** The Space L1 to be the parent of the Space L1 when it is moved to be L2.  */
-  parentSpaceL1ID: Scalars['UUID']['input'];
+  parentSpaceL1ID: Scalars['UUID'];
   /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space.  */
-  spaceL1ID: Scalars['UUID']['input'];
+  spaceL1ID: Scalars['UUID'];
 };
 
 export type ConvertSpaceL2ToSpaceL1Input = {
   /** The Space L2 to be promoted.  */
-  spaceL2ID: Scalars['UUID']['input'];
+  spaceL2ID: Scalars['UUID'];
 };
 
 export type CreateAiPersonaInput = {
   aiPersonaService?: InputMaybe<CreateAiPersonaServiceInput>;
-  aiPersonaServiceID?: InputMaybe<Scalars['UUID']['input']>;
-  bodyOfKnowledge?: InputMaybe<Scalars['Markdown']['input']>;
-  description?: InputMaybe<Scalars['Markdown']['input']>;
+  aiPersonaServiceID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledge?: InputMaybe<Scalars['Markdown']>;
+  description?: InputMaybe<Scalars['Markdown']>;
 };
 
 export type CreateAiPersonaServiceInput = {
-  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']['input']>;
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
-  prompt?: InputMaybe<Array<Scalars['String']['input']>>;
+  prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateCalendarEventOnCalendarInput = {
-  calendarID: Scalars['UUID']['input'];
+  calendarID: Scalars['UUID'];
   /** The length of the event in days. */
-  durationDays?: InputMaybe<Scalars['Float']['input']>;
+  durationDays?: InputMaybe<Scalars['Float']>;
   /** The length of the event in minutes. */
-  durationMinutes: Scalars['Float']['input'];
+  durationMinutes: Scalars['Float'];
   /** Flag to indicate if this event is for multiple days. */
-  multipleDays: Scalars['Boolean']['input'];
+  multipleDays: Scalars['Boolean'];
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   /** The start date for the event. */
-  startDate: Scalars['DateTime']['input'];
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  startDate: Scalars['DateTime'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
   type: CalendarEventType;
   /** Is the event visible on the parent calendar. */
-  visibleOnParentCalendar: Scalars['Boolean']['input'];
+  visibleOnParentCalendar: Scalars['Boolean'];
   /** Flag to indicate if this event is for a whole day. */
-  wholeDay: Scalars['Boolean']['input'];
+  wholeDay: Scalars['Boolean'];
 };
 
 export type CreateCalloutContributionDefaultsData = {
   __typename?: 'CreateCalloutContributionDefaultsData';
   /** The default description to use for new Post contributions. */
-  postDescription?: Maybe<Scalars['Markdown']['output']>;
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
+  postDescription?: Maybe<Scalars['Markdown']>;
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export type CreateCalloutContributionDefaultsInput = {
   /** The default description to use for new Post contributions. */
-  postDescription?: InputMaybe<Scalars['Markdown']['input']>;
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  postDescription?: InputMaybe<Scalars['Markdown']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
 export type CreateCalloutContributionPolicyData = {
@@ -1650,14 +1598,14 @@ export type CreateCalloutData = {
   contributionDefaults?: Maybe<CreateCalloutContributionDefaultsData>;
   contributionPolicy?: Maybe<CreateCalloutContributionPolicyData>;
   /** Controls if the comments are enabled for this Callout. Defaults to false. */
-  enableComments?: Maybe<Scalars['Boolean']['output']>;
+  enableComments?: Maybe<Scalars['Boolean']>;
   framing: CreateCalloutFramingData;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: Maybe<Scalars['NameID']['output']>;
+  nameID?: Maybe<Scalars['NameID']>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
-  sendNotification?: Maybe<Scalars['Boolean']['output']>;
+  sendNotification?: Maybe<Scalars['Boolean']>;
   /** The sort order to assign to this Callout. */
-  sortOrder?: Maybe<Scalars['Float']['output']>;
+  sortOrder?: Maybe<Scalars['Float']>;
   /** Callout type. */
   type: CalloutType;
   /** Visibility of the Callout. Defaults to DRAFT. */
@@ -1667,13 +1615,13 @@ export type CreateCalloutData = {
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   profile: CreateProfileData;
-  tags?: Maybe<Array<Scalars['String']['output']>>;
+  tags?: Maybe<Array<Scalars['String']>>;
   whiteboard?: Maybe<CreateWhiteboardData>;
 };
 
 export type CreateCalloutFramingInput = {
   profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
@@ -1682,14 +1630,14 @@ export type CreateCalloutInput = {
   contributionDefaults?: InputMaybe<CreateCalloutContributionDefaultsInput>;
   contributionPolicy?: InputMaybe<CreateCalloutContributionPolicyInput>;
   /** Controls if the comments are enabled for this Callout. Defaults to false. */
-  enableComments?: InputMaybe<Scalars['Boolean']['input']>;
+  enableComments?: InputMaybe<Scalars['Boolean']>;
   framing: CreateCalloutFramingInput;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
-  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
+  sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** The sort order to assign to this Callout. */
-  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** Callout type. */
   type: CalloutType;
   /** Visibility of the Callout. Defaults to DRAFT. */
@@ -1697,19 +1645,19 @@ export type CreateCalloutInput = {
 };
 
 export type CreateCalloutOnCalloutsSetInput = {
-  calloutsSetID: Scalars['UUID']['input'];
+  calloutsSetID: Scalars['UUID'];
   classification?: InputMaybe<CreateClassificationInput>;
   contributionDefaults?: InputMaybe<CreateCalloutContributionDefaultsInput>;
   contributionPolicy?: InputMaybe<CreateCalloutContributionPolicyInput>;
   /** Controls if the comments are enabled for this Callout. Defaults to false. */
-  enableComments?: InputMaybe<Scalars['Boolean']['input']>;
+  enableComments?: InputMaybe<Scalars['Boolean']>;
   framing: CreateCalloutFramingInput;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
-  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
+  sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** The sort order to assign to this Callout. */
-  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** Callout type. */
   type: CalloutType;
   /** Visibility of the Callout. Defaults to DRAFT. */
@@ -1753,13 +1701,13 @@ export type CreateCollaborationInput = {
 
 export type CreateCollaborationOnSpaceInput = {
   /** Add callouts from the template to the Collaboration; defaults to true. */
-  addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  addCallouts?: InputMaybe<Scalars['Boolean']>;
   /** Add tutorial callouts to the Collaboration; defaults to false. */
-  addTutorialCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  addTutorialCallouts?: InputMaybe<Scalars['Boolean']>;
   /** The CalloutsSet to use for this Collaboration. */
   calloutsSetData: CreateCalloutsSetInput;
   /** The Template to use for instantiating the Collaboration. */
-  collaborationTemplateID?: InputMaybe<Scalars['UUID']['input']>;
+  collaborationTemplateID?: InputMaybe<Scalars['UUID']>;
   /** The InnovationFlow Template to use for this Collaboration. */
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
 };
@@ -1774,11 +1722,11 @@ export type CreateCommunityGuidelinesInput = {
 };
 
 export type CreateContributionOnCalloutInput = {
-  calloutID: Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
   link?: InputMaybe<CreateLinkInput>;
   post?: InputMaybe<CreatePostInput>;
   /** The sort order to assign to this Contribution. */
-  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  sortOrder?: InputMaybe<Scalars['Float']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
@@ -1796,41 +1744,41 @@ export type CreateInnovationFlowInput = {
 export type CreateInnovationFlowStateData = {
   __typename?: 'CreateInnovationFlowStateData';
   /** The explation text to clarify the State. */
-  description?: Maybe<Scalars['Markdown']['output']>;
+  description?: Maybe<Scalars['Markdown']>;
   /** The display name for the State */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
 };
 
 export type CreateInnovationFlowStateInput = {
   /** The explation text to clarify the State. */
-  description?: InputMaybe<Scalars['Markdown']['input']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the State */
-  displayName: Scalars['String']['input'];
+  displayName: Scalars['String'];
 };
 
 export type CreateInnovationHubOnAccountInput = {
   /** The Account where the InnovationHub is to be created. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   /** A list of Spaces to include in this Innovation Hub. Only valid when type 'list' is used. */
-  spaceListFilter?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  spaceListFilter?: InputMaybe<Array<Scalars['UUID']>>;
   /** Spaces with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
   spaceVisibilityFilter?: InputMaybe<SpaceVisibility>;
   /** The subdomain to associate the Innovation Hub with. */
-  subdomain: Scalars['String']['input'];
+  subdomain: Scalars['String'];
   /** The type of Innovation Hub. */
   type: InnovationHubType;
 };
 
 export type CreateInnovationPackOnAccountInput = {
   /** The Account where the InnovationPack is to be created. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateKnowledgeBaseInput = {
@@ -1842,103 +1790,103 @@ export type CreateKnowledgeBaseInput = {
 
 export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Assign this plan to all new Organization accounts */
-  assignToNewOrganizationAccounts: Scalars['Boolean']['input'];
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
   /** Assign this plan to all new User accounts */
-  assignToNewUserAccounts: Scalars['Boolean']['input'];
+  assignToNewUserAccounts: Scalars['Boolean'];
   /** Is this plan enabled? */
-  enabled: Scalars['Boolean']['input'];
+  enabled: Scalars['Boolean'];
   /** Is this plan free? */
-  isFree: Scalars['Boolean']['input'];
+  isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
   licenseCredential: LicensingCredentialBasedCredentialType;
-  licensingFrameworkID: Scalars['UUID']['input'];
+  licensingFrameworkID: Scalars['UUID'];
   /** The name of the License Plan */
-  name: Scalars['String']['input'];
+  name: Scalars['String'];
   /** The price per month of this plan. */
-  pricePerMonth?: InputMaybe<Scalars['Float']['input']>;
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
   /** Does this plan require contact support */
-  requiresContactSupport: Scalars['Boolean']['input'];
+  requiresContactSupport: Scalars['Boolean'];
   /** Does this plan require a payment method? */
-  requiresPaymentMethod: Scalars['Boolean']['input'];
+  requiresPaymentMethod: Scalars['Boolean'];
   /** The sorting order for this Plan. */
-  sortOrder: Scalars['Float']['input'];
+  sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
-  trialEnabled: Scalars['Boolean']['input'];
+  trialEnabled: Scalars['Boolean'];
   /** The type of this License Plan. */
   type: LicensingCredentialBasedPlanType;
 };
 
 export type CreateLinkInput = {
   profile: CreateProfileInput;
-  uri?: InputMaybe<Scalars['String']['input']>;
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateLocationData = {
   __typename?: 'CreateLocationData';
-  addressLine1?: Maybe<Scalars['String']['output']>;
-  addressLine2?: Maybe<Scalars['String']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
-  postalCode?: Maybe<Scalars['String']['output']>;
-  stateOrProvince?: Maybe<Scalars['String']['output']>;
+  addressLine1?: Maybe<Scalars['String']>;
+  addressLine2?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  stateOrProvince?: Maybe<Scalars['String']>;
 };
 
 export type CreateLocationInput = {
-  addressLine1?: InputMaybe<Scalars['String']['input']>;
-  addressLine2?: InputMaybe<Scalars['String']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  postalCode?: InputMaybe<Scalars['String']['input']>;
-  stateOrProvince?: InputMaybe<Scalars['String']['input']>;
+  addressLine1?: InputMaybe<Scalars['String']>;
+  addressLine2?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  stateOrProvince?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateNvpInput = {
-  name: Scalars['String']['input'];
-  sortOrder: Scalars['Float']['input'];
-  value: Scalars['String']['input'];
+  name: Scalars['String'];
+  sortOrder: Scalars['Float'];
+  value: Scalars['String'];
 };
 
 export type CreateOrganizationInput = {
-  contactEmail?: InputMaybe<Scalars['String']['input']>;
-  domain?: InputMaybe<Scalars['String']['input']>;
-  legalEntityName?: InputMaybe<Scalars['String']['input']>;
+  contactEmail?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']>;
+  legalEntityName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  website?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']>;
 };
 
 export type CreatePostInput = {
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateProfileData = {
   __typename?: 'CreateProfileData';
-  description?: Maybe<Scalars['Markdown']['output']>;
+  description?: Maybe<Scalars['Markdown']>;
   /** The display name for the entity. */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   location?: Maybe<CreateLocationData>;
   referencesData?: Maybe<Array<CreateReferenceData>>;
   /** A memorable short description for this entity. */
-  tagline?: Maybe<Scalars['String']['output']>;
-  tags?: Maybe<Array<Scalars['String']['output']>>;
+  tagline?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
   tagsets?: Maybe<Array<CreateTagsetData>>;
   /** The visuals URLs */
   visuals?: Maybe<Array<CreateVisualOnProfileData>>;
 };
 
 export type CreateProfileInput = {
-  description?: InputMaybe<Scalars['Markdown']['input']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the entity. */
-  displayName: Scalars['String']['input'];
+  displayName: Scalars['String'];
   location?: InputMaybe<CreateLocationInput>;
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
   /** A memorable short description for this entity. */
-  tagline?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  tagline?: InputMaybe<Scalars['String']>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   tagsets?: InputMaybe<Array<CreateTagsetInput>>;
   /** The visuals URLs */
   visuals?: InputMaybe<Array<CreateVisualOnProfileInput>>;
@@ -1946,40 +1894,40 @@ export type CreateProfileInput = {
 
 export type CreateReferenceData = {
   __typename?: 'CreateReferenceData';
-  description?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  uri?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  uri?: Maybe<Scalars['String']>;
 };
 
 export type CreateReferenceInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  uri?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateReferenceOnProfileInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  profileID: Scalars['UUID']['input'];
-  uri?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  profileID: Scalars['UUID'];
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateSpaceAboutInput = {
   profileData: CreateProfileInput;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
-  who?: InputMaybe<Scalars['Markdown']['input']>;
-  why?: InputMaybe<Scalars['Markdown']['input']>;
+  when?: InputMaybe<Scalars['Markdown']>;
+  who?: InputMaybe<Scalars['Markdown']>;
+  why?: InputMaybe<Scalars['Markdown']>;
 };
 
 export type CreateSpaceOnAccountInput = {
   about: CreateSpaceAboutInput;
   /** The Account where the Space is to be created. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
   collaborationData: CreateCollaborationOnSpaceInput;
   /** The license plan the user wishes to use when creating the space. */
-  licensePlanID?: InputMaybe<Scalars['UUID']['input']>;
+  licensePlanID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   type?: InputMaybe<SpaceType>;
 };
 
@@ -1987,39 +1935,39 @@ export type CreateSubspaceInput = {
   about: CreateSpaceAboutInput;
   collaborationData: CreateCollaborationOnSpaceInput;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
-  spaceID: Scalars['UUID']['input'];
+  nameID?: InputMaybe<Scalars['NameID']>;
+  spaceID: Scalars['UUID'];
   type?: InputMaybe<SpaceType>;
 };
 
 export type CreateTagsetData = {
   __typename?: 'CreateTagsetData';
-  name: Scalars['String']['output'];
-  tags?: Maybe<Array<Scalars['String']['output']>>;
+  name: Scalars['String'];
+  tags?: Maybe<Array<Scalars['String']>>;
   type?: Maybe<TagsetType>;
 };
 
 export type CreateTagsetInput = {
-  name: Scalars['String']['input'];
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  name: Scalars['String'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<TagsetType>;
 };
 
 export type CreateTagsetOnProfileInput = {
-  name: Scalars['String']['input'];
-  profileID?: InputMaybe<Scalars['UUID']['input']>;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  name: Scalars['String'];
+  profileID?: InputMaybe<Scalars['UUID']>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<TagsetType>;
 };
 
 export type CreateTemplateFromCollaborationOnTemplatesSetInput = {
   /** The Collaboration to use as the content for the Template. */
-  collaborationID: Scalars['UUID']['input'];
+  collaborationID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  templatesSetID: Scalars['UUID']['input'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
 };
 
 export type CreateTemplateOnTemplatesSetInput = {
@@ -2030,12 +1978,12 @@ export type CreateTemplateOnTemplatesSetInput = {
   /** The Community guidelines to associate with this template. */
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** Post Template: The default description to be pre-filled. */
-  postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
+  postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  templatesSetID: Scalars['UUID']['input'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
   /** The type of the Template to be created. */
   type: TemplateType;
   /** The Whiteboard to associate with this template. */
@@ -2043,30 +1991,30 @@ export type CreateTemplateOnTemplatesSetInput = {
 };
 
 export type CreateUserGroupInput = {
-  parentID: Scalars['UUID']['input'];
+  parentID: Scalars['UUID'];
   profile: CreateProfileInput;
 };
 
 export type CreateUserInput = {
-  accountUpn?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  lastName?: InputMaybe<Scalars['String']['input']>;
+  accountUpn?: InputMaybe<Scalars['String']>;
+  email: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
+  phone?: InputMaybe<Scalars['String']>;
   profileData: CreateProfileInput;
 };
 
 export type CreateVirtualContributorOnAccountInput = {
   /** The Account where the VirtualContributor is to be created. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
   /** Data used to create the AI Persona */
   aiPersona: CreateAiPersonaInput;
   /** The KnowledgeBase to use for this Collaboration. */
   knowledgeBaseData?: InputMaybe<CreateKnowledgeBaseInput>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
 };
 
@@ -2075,69 +2023,69 @@ export type CreateVisualOnProfileData = {
   /** The type of visual. */
   name: VisualType;
   /** The URI of the image. Needs to be a url inside Alkemio already uploaded to a StorageBucket. It will be then copied to the Profile holding this Visual. */
-  uri: Scalars['String']['output'];
+  uri: Scalars['String'];
 };
 
 export type CreateVisualOnProfileInput = {
   /** The type of visual. */
   name: VisualType;
   /** The URI of the image. Needs to be a url inside Alkemio already uploaded to a StorageBucket. It will be then copied to the Profile holding this Visual. */
-  uri: Scalars['String']['input'];
+  uri: Scalars['String'];
 };
 
 export type CreateWhiteboardData = {
   __typename?: 'CreateWhiteboardData';
-  content?: Maybe<Scalars['WhiteboardContent']['output']>;
+  content?: Maybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: Maybe<Scalars['NameID']['output']>;
+  nameID?: Maybe<Scalars['NameID']>;
   profile?: Maybe<CreateProfileData>;
 };
 
 export type CreateWhiteboardInput = {
-  content?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   profile?: InputMaybe<CreateProfileInput>;
 };
 
 export type Credential = {
   __typename?: 'Credential';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The timestamp for the expiry of this credential. */
-  expires?: Maybe<Scalars['Float']['output']>;
+  expires?: Maybe<Scalars['Float']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The User issuing the credential */
-  issuer?: Maybe<Scalars['UUID']['output']>;
-  resourceID: Scalars['String']['output'];
+  issuer?: Maybe<Scalars['UUID']>;
+  resourceID: Scalars['String'];
   type: CredentialType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type CredentialDefinition = {
   __typename?: 'CredentialDefinition';
   /** The resourceID for this CredentialDefinition */
-  resourceID: Scalars['String']['output'];
+  resourceID: Scalars['String'];
   /** The type for this CredentialDefinition */
-  type: Scalars['String']['output'];
+  type: Scalars['String'];
 };
 
 export type CredentialMetadataOutput = {
   __typename?: 'CredentialMetadataOutput';
   /** A json description of what the claim contains and schema validation definition */
-  context: Scalars['String']['output'];
+  context: Scalars['String'];
   /** The purpose of the credential */
-  description: Scalars['String']['output'];
+  description: Scalars['String'];
   /** The display name of the credential */
-  name: Scalars['String']['output'];
+  name: Scalars['String'];
   /** The schema that the credential will be validated against */
-  schema: Scalars['String']['output'];
+  schema: Scalars['String'];
   /** The credential types that are associated with this credential */
-  types: Array<Scalars['String']['output']>;
+  types: Array<Scalars['String']>;
   /** System recognized unique type for the credential */
-  uniqueType: Scalars['String']['output'];
+  uniqueType: Scalars['String'];
 };
 
 export enum CredentialType {
@@ -2174,104 +2122,104 @@ export enum CredentialType {
 }
 
 export type DeleteAiPersonaServiceInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteApplicationInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteCalendarEventInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteCalloutInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteDiscussionInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteDocumentInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteInnovationHubInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteInnovationPackInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteInvitationInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteLicensePlanInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteLinkInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteOrganizationInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeletePlatformInvitationInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeletePostInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteReferenceInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteSpaceInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteStorageBuckeetInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteTemplateInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteUserGroupInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteUserInput = {
-  ID: Scalars['UUID']['input'];
-  deleteIdentity?: InputMaybe<Scalars['Boolean']['input']>;
+  ID: Scalars['UUID'];
+  deleteIdentity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type DeleteVirtualContributorInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteWhiteboardInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type DirectRoom = {
   __typename?: 'DirectRoom';
   /** The display name of the room */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The identifier of the direct room */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** The messages that have been sent to the Direct Room. */
   messages: Array<Message>;
   /** The recepient userID */
-  receiverID?: Maybe<Scalars['String']['output']>;
+  receiverID?: Maybe<Scalars['String']>;
 };
 
 export type Discussion = {
@@ -2283,26 +2231,26 @@ export type Discussion = {
   /** The comments for this Discussion. */
   comments: Room;
   /** The id of the user that created this discussion */
-  createdBy?: Maybe<Scalars['UUID']['output']>;
+  createdBy?: Maybe<Scalars['UUID']>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** Privacy mode for the Discussion. Note: this is not yet implemented in the authorization policy. */
   privacy: ForumDiscussionPrivacy;
   /** The Profile for this Discussion. */
   profile: Profile;
   /** The timestamp for the creation of this Discussion. */
-  timestamp?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type DiscussionsInput = {
   /** The number of Discussion entries to return; if omitted return all Discussions. */
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
   /** The sort order of the Discussions to return. */
   orderBy?: InputMaybe<DiscussionsOrderBy>;
 };
@@ -2319,49 +2267,49 @@ export type Document = {
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The display name. */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Mime type for this Document. */
   mimeType: MimeType;
   /** Size of the Document. */
-  size: Scalars['Float']['output'];
+  size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
   /** Whether this Document is in its end location or not. */
-  temporaryLocation: Scalars['Boolean']['output'];
+  temporaryLocation: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The uploaded date of this Document */
-  uploadedDate: Scalars['DateTime']['output'];
+  uploadedDate: Scalars['DateTime'];
   /** The URL to be used to retrieve the Document */
-  url: Scalars['String']['output'];
+  url: Scalars['String'];
 };
 
 export type ExploreSpacesInput = {
   /** Take into account only the activity in the past X days. */
-  daysOld?: InputMaybe<Scalars['Float']['input']>;
+  daysOld?: InputMaybe<Scalars['Float']>;
   /** Amount of Spaces returned. */
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type ExternalConfig = {
   __typename?: 'ExternalConfig';
   /** The API key for the external LLM provider. */
-  apiKey?: Maybe<Scalars['String']['output']>;
+  apiKey?: Maybe<Scalars['String']>;
   /** The assistant ID backing the service in OpenAI`s assistant API */
-  assistantId?: Maybe<Scalars['String']['output']>;
+  assistantId?: Maybe<Scalars['String']>;
   /** The OpenAI model to use for the service */
   model: OpenAiModel;
 };
 
 export type ExternalConfigInput = {
   /** The API key for the external LLM provider. */
-  apiKey?: InputMaybe<Scalars['String']['input']>;
+  apiKey?: InputMaybe<Scalars['String']>;
   /** The assistant ID backing the service in OpenAI`s assistant API */
-  assistantId?: InputMaybe<Scalars['String']['input']>;
+  assistantId?: InputMaybe<Scalars['String']>;
   /** The OpenAI model to use for the service */
   model?: OpenAiModel;
 };
@@ -2369,35 +2317,35 @@ export type ExternalConfigInput = {
 export type FileStorageConfig = {
   __typename?: 'FileStorageConfig';
   /** Max file size, in bytes. */
-  maxFileSize: Scalars['Float']['output'];
+  maxFileSize: Scalars['Float'];
 };
 
 export type Form = {
   __typename?: 'Form';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** A description of the purpose of this Form. */
-  description?: Maybe<Scalars['Markdown']['output']>;
+  description?: Maybe<Scalars['Markdown']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The set of Questions in this Form. */
   questions: Array<FormQuestion>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type FormQuestion = {
   __typename?: 'FormQuestion';
   /** The explation text to clarify the question. */
-  explanation: Scalars['String']['output'];
+  explanation: Scalars['String'];
   /** The maxiumum length of the answer, in characters, up to a limit of 512. */
-  maxLength: Scalars['Float']['output'];
+  maxLength: Scalars['Float'];
   /** The question to be answered */
-  question: Scalars['String']['output'];
+  question: Scalars['String'];
   /** Whether this Question requires an answer or not. */
-  required: Scalars['Boolean']['output'];
+  required: Scalars['Boolean'];
   /** The sort order of this question in a wider set of questions. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Float'];
 };
 
 export type Forum = {
@@ -2405,20 +2353,20 @@ export type Forum = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** A particular Discussions active in this Forum. */
   discussion?: Maybe<Discussion>;
   discussionCategories: Array<ForumDiscussionCategory>;
   /** The Discussions active in this Forum. */
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type ForumDiscussionArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type ForumDiscussionsArgs = {
@@ -2429,9 +2377,9 @@ export type ForumCreateDiscussionInput = {
   /** The category for the Discussion */
   category: ForumDiscussionCategory;
   /** The identifier for the Forum entity the Discussion is being created on. */
-  forumID: Scalars['UUID']['input'];
+  forumID: Scalars['UUID'];
   profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export enum ForumDiscussionCategory {
@@ -2452,22 +2400,22 @@ export enum ForumDiscussionPrivacy {
 export type Geo = {
   __typename?: 'Geo';
   /** Endpoint where geo information is consumed from. */
-  endpoint: Scalars['String']['output'];
+  endpoint: Scalars['String'];
 };
 
 export type GrantAuthorizationCredentialInput = {
   /** The resource to which this credential is tied. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
+  resourceID?: InputMaybe<Scalars['UUID']>;
   type: AuthorizationCredential;
   /** The user to whom the credential is being granted. */
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type GrantOrganizationAuthorizationCredentialInput = {
   /** The Organization to whom the credential is being granted. */
-  organizationID: Scalars['UUID']['input'];
+  organizationID: Scalars['UUID'];
   /** The resource to which this credential is tied. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
+  resourceID?: InputMaybe<Scalars['UUID']>;
   type: AuthorizationCredential;
 };
 
@@ -2479,11 +2427,11 @@ export type Groupable = {
 export type ISearchCategoryResult = {
   __typename?: 'ISearchCategoryResult';
   /** Provide this with your next search query to fetch the next set of results. */
-  cursor?: Maybe<Scalars['SearchCursor']['output']>;
+  cursor?: Maybe<Scalars['SearchCursor']>;
   /** The ranked search results for this category, sorted by relevance */
   results: Array<SearchResult>;
   /** The total number of search results. Not implemented yet. */
-  total: Scalars['Float']['output'];
+  total: Scalars['Float'];
 };
 
 export type ISearchResults = {
@@ -2502,13 +2450,13 @@ export type ISearchResults = {
 export type InAppNotification = {
   /** Which category (role) is this notification targeted to. */
   category: InAppNotificationCategory;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** The current state of the notification */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
+  triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
@@ -2521,7 +2469,7 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
   callout?: Maybe<Callout>;
   /** Which category (role) is this notification targeted to. */
   category: InAppNotificationCategory;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** Where the callout is located. */
@@ -2529,7 +2477,7 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
   /** The current state of the notification */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
+  triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
@@ -2551,7 +2499,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   category: InAppNotificationCategory;
   /** The type of the Contributor that joined. */
   contributorType: RoleSetContributorType;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** The Space that was joined. */
@@ -2559,7 +2507,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   /** The current state of the notification */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
+  triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
@@ -2577,20 +2525,20 @@ export type InAppNotificationUserMentioned = InAppNotification & {
   /** Which category (role) is this notification targeted to. */
   category: InAppNotificationCategory;
   /** The comment that the contributor was mentioned in. */
-  comment: Scalars['String']['output'];
+  comment: Scalars['String'];
   /** The display name of the resource where the comment was created. */
-  commentOriginName: Scalars['String']['output'];
+  commentOriginName: Scalars['String'];
   /** The url of the resource where the comment was created. */
-  commentUrl: Scalars['String']['output'];
+  commentUrl: Scalars['String'];
   /** The type of the Contributor that joined. */
   contributorType: RoleSetContributorType;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** The current state of the notification */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
+  triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
@@ -2602,11 +2550,11 @@ export type InnovationFlow = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The currently selected State in this Flow. */
   currentState: InnovationFlowState;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Profile for this InnovationFlow. */
   profile: Profile;
   /** The settings for this InnovationFlow. */
@@ -2614,23 +2562,23 @@ export type InnovationFlow = {
   /** The set of States in use in this Flow. */
   states: Array<InnovationFlowState>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type InnovationFlowSettings = {
   __typename?: 'InnovationFlowSettings';
   /** The maximum number of allowed states. */
-  maximumNumberOfStates: Scalars['Float']['output'];
+  maximumNumberOfStates: Scalars['Float'];
   /** The minimum number of allowed states */
-  minimumNumberOfStates: Scalars['Float']['output'];
+  minimumNumberOfStates: Scalars['Float'];
 };
 
 export type InnovationFlowState = {
   __typename?: 'InnovationFlowState';
   /** The explanation text to clarify the state. */
-  description: Scalars['Markdown']['output'];
+  description: Scalars['Markdown'];
   /** The display name for the State */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
 };
 
 export type InnovationHub = {
@@ -2640,13 +2588,13 @@ export type InnovationHub = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Flag to control if this InnovationHub is listed in the platform store. */
-  listedInStore: Scalars['Boolean']['output'];
+  listedInStore: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Innovation Hub profile. */
   profile: Profile;
   /** The InnovationHub provider. */
@@ -2657,11 +2605,11 @@ export type InnovationHub = {
   /** If defined, what type of visibility to filter the Spaces on. You can have only one type of filter active at any given time. */
   spaceVisibilityFilter?: Maybe<SpaceVisibility>;
   /** The subdomain associated with this Innovation Hub. */
-  subdomain: Scalars['String']['output'];
+  subdomain: Scalars['String'];
   /** Type of Innovation Hub */
   type: InnovationHubType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum InnovationHubType {
@@ -2674,13 +2622,13 @@ export type InnovationPack = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Flag to control if this InnovationPack is listed in the platform store. */
-  listedInStore: Scalars['Boolean']['output'];
+  listedInStore: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Profile for this InnovationPack. */
   profile: Profile;
   /** The InnovationPack provider. */
@@ -2690,12 +2638,12 @@ export type InnovationPack = {
   /** The templatesSet in use by this InnovationPack */
   templatesSet?: Maybe<TemplatesSet>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type InnovationPacksInput = {
   /** The number of Discussion entries to return; if omitted return all InnovationPacks. */
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
   /** The sort order of the InnovationPacks to return. Defaults to number of templates Descending. */
   orderBy?: InputMaybe<InnovationPacksOrderBy>;
 };
@@ -2721,23 +2669,23 @@ export type InputCreatorQueryResults = {
 };
 
 export type InputCreatorQueryResultsCalloutArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type InputCreatorQueryResultsCollaborationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type InputCreatorQueryResultsCommunityGuidelinesArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type InputCreatorQueryResultsInnovationFlowArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type InputCreatorQueryResultsWhiteboardArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type Invitation = {
@@ -2750,42 +2698,42 @@ export type Invitation = {
   contributorType: RoleSetContributorType;
   /** The User who triggered the invitation. */
   createdBy?: Maybe<User>;
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
   extraRole?: Maybe<RoleName>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
-  invitedToParent: Scalars['Boolean']['output'];
+  invitedToParent: Scalars['Boolean'];
   /** Is this lifecycle in a final state (done). */
-  isFinalized: Scalars['Boolean']['output'];
+  isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
-  nextEvents: Array<Scalars['String']['output']>;
+  nextEvents: Array<Scalars['String']>;
   /** The current state of this Lifecycle. */
-  state: Scalars['String']['output'];
-  updatedDate: Scalars['DateTime']['output'];
-  welcomeMessage?: Maybe<Scalars['String']['output']>;
+  state: Scalars['String'];
+  updatedDate: Scalars['DateTime'];
+  welcomeMessage?: Maybe<Scalars['String']>;
 };
 
 export type InvitationEventInput = {
-  eventName: Scalars['String']['input'];
-  invitationID: Scalars['UUID']['input'];
+  eventName: Scalars['String'];
+  invitationID: Scalars['UUID'];
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
   /** An additional role to assign in addition to the entry Role. */
   extraRole?: InputMaybe<RoleName>;
   /** The identifiers for the contributors being invited. */
-  invitedContributorIDs: Array<Scalars['UUID']['input']>;
-  invitedUserEmails: Array<Scalars['String']['input']>;
-  roleSetID: Scalars['UUID']['input'];
+  invitedContributorIDs: Array<Scalars['UUID']>;
+  invitedUserEmails: Array<Scalars['String']>;
+  roleSetID: Scalars['UUID'];
   /** The welcome message to send */
-  welcomeMessage?: InputMaybe<Scalars['String']['input']>;
+  welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
 export type JoinAsEntryRoleOnRoleSetInput = {
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type KnowledgeBase = {
@@ -2795,21 +2743,21 @@ export type KnowledgeBase = {
   /** The calloutsSet with Callouts in use by this KnowledgeBase */
   calloutsSet: CalloutsSet;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Profile for describing this KnowledgeBase. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type LatestReleaseDiscussion = {
   __typename?: 'LatestReleaseDiscussion';
   /** Id of the latest release discussion. */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** NameID of the latest release discussion. */
-  nameID: Scalars['String']['output'];
+  nameID: Scalars['String'];
 };
 
 export type Library = {
@@ -2817,9 +2765,9 @@ export type Library = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The InnovationHub listed on this platform */
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Packs in the platform Innovation Library. */
@@ -2827,7 +2775,7 @@ export type Library = {
   /** The Templates in the Innovation Library, together with information about the InnovationPack. */
   templates: Array<TemplateResult>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The VirtualContributors listed on this platform */
   virtualContributors: Array<VirtualContributor>;
 };
@@ -2852,37 +2800,37 @@ export type License = {
   /** The set of License Entitlement Types on that entity. */
   availableEntitlements?: Maybe<Array<LicenseEntitlementType>>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of Entitlements associated with the License applicable to this entity. */
   entitlements: Array<LicenseEntitlement>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The type of entity that this License is being used with. */
   type?: Maybe<LicenseType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type LicenseEntitlement = {
   __typename?: 'LicenseEntitlement';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** Data type of the entitlement, e.g. Limit, Feature flag etc. */
   dataType: LicenseEntitlementDataType;
   /** If the Entitlement is enabled */
-  enabled: Scalars['Boolean']['output'];
+  enabled: Scalars['Boolean'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Whether the specified entitlement is available. */
-  isAvailable: Scalars['Boolean']['output'];
+  isAvailable: Scalars['Boolean'];
   /** Limit of the entitlement */
-  limit: Scalars['Float']['output'];
+  limit: Scalars['Float'];
   /** Type of the entitlement, e.g. Space, Whiteboard contributors etc. */
   type: LicenseEntitlementType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The amount of the spcified entitlement used. */
-  usage: Scalars['Float']['output'];
+  usage: Scalars['Float'];
 };
 
 export enum LicenseEntitlementDataType {
@@ -2908,35 +2856,35 @@ export enum LicenseEntitlementType {
 export type LicensePlan = {
   __typename?: 'LicensePlan';
   /** Assign this plan to all new Organization accounts */
-  assignToNewOrganizationAccounts: Scalars['Boolean']['output'];
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
   /** Assign this plan to all new User accounts */
-  assignToNewUserAccounts: Scalars['Boolean']['output'];
+  assignToNewUserAccounts: Scalars['Boolean'];
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** Is this plan enabled? */
-  enabled: Scalars['Boolean']['output'];
+  enabled: Scalars['Boolean'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Is this plan free? */
-  isFree: Scalars['Boolean']['output'];
+  isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
   licenseCredential: LicensingCredentialBasedCredentialType;
   /** The name of the License Plan */
-  name: Scalars['String']['output'];
+  name: Scalars['String'];
   /** The price per month of this plan. */
-  pricePerMonth?: Maybe<Scalars['Float']['output']>;
+  pricePerMonth?: Maybe<Scalars['Float']>;
   /** Does this plan require contact support */
-  requiresContactSupport: Scalars['Boolean']['output'];
+  requiresContactSupport: Scalars['Boolean'];
   /** Does this plan require a payment method? */
-  requiresPaymentMethod: Scalars['Boolean']['output'];
+  requiresPaymentMethod: Scalars['Boolean'];
   /** The sorting order for this Plan. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
-  trialEnabled: Scalars['Boolean']['output'];
+  trialEnabled: Scalars['Boolean'];
   /** The type of this License Plan. */
   type: LicensingCredentialBasedPlanType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type LicensePolicy = {
@@ -2944,13 +2892,13 @@ export type LicensePolicy = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this License Policy. */
   credentialRules: Array<LicensingCredentialBasedPolicyCredentialRule>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum LicenseType {
@@ -2966,15 +2914,15 @@ export type Licensing = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
   plans: Array<LicensePlan>;
   /** The LicensePolicy in use by the Licensing setup. */
   policy: LicensePolicy;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum LicensingCredentialBasedCredentialType {
@@ -2999,12 +2947,12 @@ export type LicensingCredentialBasedPolicyCredentialRule = {
   __typename?: 'LicensingCredentialBasedPolicyCredentialRule';
   credentialType: LicensingCredentialBasedCredentialType;
   grantedEntitlements: Array<LicensingGrantedEntitlement>;
-  name?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type LicensingGrantedEntitlement = {
   __typename?: 'LicensingGrantedEntitlement';
-  limit: Scalars['Float']['output'];
+  limit: Scalars['Float'];
   /** The entitlement that is granted. */
   type: LicenseEntitlementType;
 };
@@ -3012,11 +2960,11 @@ export type LicensingGrantedEntitlement = {
 export type Lifecycle = {
   __typename?: 'Lifecycle';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type Link = {
@@ -3024,79 +2972,79 @@ export type Link = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Profile for framing the associated Link Contribution. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** URI of the Link */
-  uri: Scalars['String']['output'];
+  uri: Scalars['String'];
 };
 
 export type Location = {
   __typename?: 'Location';
-  addressLine1?: Maybe<Scalars['String']['output']>;
-  addressLine2?: Maybe<Scalars['String']['output']>;
+  addressLine1?: Maybe<Scalars['String']>;
+  addressLine2?: Maybe<Scalars['String']>;
   /** City of the location. */
-  city?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  postalCode?: Maybe<Scalars['String']['output']>;
-  stateOrProvince?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID'];
+  postalCode?: Maybe<Scalars['String']>;
+  stateOrProvince?: Maybe<Scalars['String']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
   /** Lookup the ID of the specified InnovationHub using a NameID */
-  innovationHub?: Maybe<Scalars['String']['output']>;
+  innovationHub?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified InnovationPack using a NameID */
-  innovationPack?: Maybe<Scalars['String']['output']>;
+  innovationPack?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified Organization using a NameID */
-  organization?: Maybe<Scalars['String']['output']>;
+  organization?: Maybe<Scalars['String']>;
   /** Lookup a Space using a NameID */
   space?: Maybe<Space>;
   /** Lookup the ID of the specified Template using a templatesSetId and the template NameID */
-  template?: Maybe<Scalars['String']['output']>;
+  template?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified User using a NameID */
-  user?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified Virtual Contributor using a NameID */
-  virtualContributor?: Maybe<Scalars['String']['output']>;
+  virtualContributor?: Maybe<Scalars['String']>;
 };
 
 export type LookupByNameQueryResultsInnovationHubArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupByNameQueryResultsInnovationPackArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupByNameQueryResultsOrganizationArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupByNameQueryResultsSpaceArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupByNameQueryResultsTemplateArgs = {
-  NAMEID: Scalars['NameID']['input'];
-  templatesSetID: Scalars['UUID']['input'];
+  NAMEID: Scalars['NameID'];
+  templatesSetID: Scalars['UUID'];
 };
 
 export type LookupByNameQueryResultsUserArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupByNameQueryResultsVirtualContributorArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupMyPrivilegesQueryResults = {
@@ -3160,115 +3108,115 @@ export type LookupMyPrivilegesQueryResults = {
 };
 
 export type LookupMyPrivilegesQueryResultsAccountArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsApplicationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsCalendarArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsCalendarEventArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsCalloutArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsCollaborationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsCommunityArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsCommunityGuidelinesArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsDocumentArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsInnovationFlowArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsInnovationHubArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsInnovationPackArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsInvitationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsLicenseArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsPostArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsProfileArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsRoleSetArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsRoomArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsSpaceArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsSpaceAboutArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsStorageAggregatorArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsStorageBucketArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsTemplateArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsTemplatesManagerArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsTemplatesSetArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsUserArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsVirtualContributorArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupMyPrivilegesQueryResultsWhiteboardArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResults = {
@@ -3344,136 +3292,136 @@ export type LookupQueryResults = {
 };
 
 export type LookupQueryResultsAboutArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsAccountArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsApplicationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsAuthorizationPolicyArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsAuthorizationPrivilegesForUserArgs = {
-  authorizationPolicyID: Scalars['UUID']['input'];
-  userID: Scalars['UUID']['input'];
+  authorizationPolicyID: Scalars['UUID'];
+  userID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCalendarArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCalendarEventArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCalloutArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCalloutsSetArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCollaborationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCommunityArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsCommunityGuidelinesArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsDocumentArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsInnovationFlowArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsInnovationHubArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsInnovationPackArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsInvitationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsKnowledgeBaseArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsLicenseArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsOrganizationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsPostArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsProfileArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsRoleSetArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsRoomArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsSpaceArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsStorageAggregatorArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsStorageBucketArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsTemplateArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsTemplatesManagerArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsTemplatesSetArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsUserArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsVirtualContributorArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsWhiteboardArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type MeQueryResults = {
@@ -3483,9 +3431,9 @@ export type MeQueryResults = {
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
   /** The number of invitations the current authenticated user can act on. */
-  communityInvitationsCount: Scalars['Float']['output'];
+  communityInvitationsCount: Scalars['Float'];
   /** The query id */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The Spaces the current user is a member of as a flat list. */
@@ -3497,53 +3445,53 @@ export type MeQueryResults = {
 };
 
 export type MeQueryResultsCommunityApplicationsArgs = {
-  states?: InputMaybe<Array<Scalars['String']['input']>>;
+  states?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type MeQueryResultsCommunityInvitationsArgs = {
-  states?: InputMaybe<Array<Scalars['String']['input']>>;
+  states?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type MeQueryResultsCommunityInvitationsCountArgs = {
-  states?: InputMaybe<Array<Scalars['String']['input']>>;
+  states?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type MeQueryResultsMySpacesArgs = {
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
 export type Message = {
   __typename?: 'Message';
   /** The id for the message event. */
-  id: Scalars['MessageID']['output'];
+  id: Scalars['MessageID'];
   /** The message being sent */
-  message: Scalars['Markdown']['output'];
+  message: Scalars['Markdown'];
   /** Reactions on this message */
   reactions: Array<Reaction>;
   /** The User or Virtual Contributor that created this Message */
   sender?: Maybe<Contributor>;
   /** The message being replied to */
-  threadID?: Maybe<Scalars['String']['output']>;
+  threadID?: Maybe<Scalars['String']>;
   /** The server timestamp in UTC */
-  timestamp: Scalars['Float']['output'];
+  timestamp: Scalars['Float'];
 };
 
 /** A detailed answer to a question, typically from an AI service. */
 export type MessageAnswerQuestion = {
   __typename?: 'MessageAnswerQuestion';
   /** Error message if an error occurred */
-  error?: Maybe<Scalars['String']['output']>;
+  error?: Maybe<Scalars['String']>;
   /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']>;
   /** The original question */
-  question: Scalars['String']['output'];
+  question: Scalars['String'];
   /** Message successfully sent. If false, error will have the reason. */
-  success: Scalars['Boolean']['output'];
+  success: Scalars['Boolean'];
 };
 
 export type Metadata = {
@@ -3555,7 +3503,7 @@ export type Metadata = {
 export type MigrateEmbeddings = {
   __typename?: 'MigrateEmbeddings';
   /** Result from the mutation execution. */
-  success: Scalars['Boolean']['output'];
+  success: Scalars['Boolean'];
 };
 
 export enum MimeType {
@@ -3587,31 +3535,31 @@ export enum MimeType {
 
 export type MoveCalloutContributionInput = {
   /** ID of the Callout to move the Contribution to. */
-  calloutID: Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
   /** ID of the Contribution to move. */
-  contributionID: Scalars['UUID']['input'];
+  contributionID: Scalars['UUID'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
-  addIframeAllowedURL: Array<Scalars['String']['output']>;
+  addIframeAllowedURL: Array<Scalars['String']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
-  adminCommunicationEnsureAccessToCommunications: Scalars['Boolean']['output'];
+  adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
-  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean']['output'];
+  adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the state flags of a particular rule. */
-  adminCommunicationUpdateRoomState: Scalars['Boolean']['output'];
+  adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
-  adminSearchIngestFromScratch: Scalars['String']['output'];
+  adminSearchIngestFromScratch: Scalars['String'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
   /** Create a test customer on wingback. */
-  adminWingbackCreateTestCustomer: Scalars['String']['output'];
+  adminWingbackCreateTestCustomer: Scalars['String'];
   /** Get wingback customer entitlements. */
   adminWingbackGetCustomerEntitlements: Array<LicensingGrantedEntitlement>;
   /** Reset the Authorization Policy on the specified AiServer. */
@@ -3641,7 +3589,7 @@ export type Mutation = {
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
   /** Reset the Authorization Policy on all entities */
-  authorizationPolicyResetAll: Scalars['String']['output'];
+  authorizationPolicyResetAll: Scalars['String'];
   /** Reset the Authorization Policy on the specified Account. */
   authorizationPolicyResetOnAccount: Account;
   /** Reset the Authorization Policy on the specified Organization. */
@@ -3709,7 +3657,7 @@ export type Mutation = {
   /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
   /** Creates an account in Wingback */
-  createWingbackAccount: Scalars['String']['output'];
+  createWingbackAccount: Scalars['String'];
   /** Deletes the specified CalendarEvent. */
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
@@ -3769,27 +3717,27 @@ export type Mutation = {
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
   /** Mark multiple notifications as read. */
-  markNotificationsAsRead: Scalars['Boolean']['output'];
+  markNotificationsAsRead: Scalars['Boolean'];
   /** Mark multiple notifications as unread. */
-  markNotificationsAsUnread: Scalars['Boolean']['output'];
+  markNotificationsAsUnread: Scalars['Boolean'];
   /** Sends a message on the specified User`s behalf and returns the room id */
-  messageUser: Scalars['String']['output'];
+  messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
-  refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
+  refreshAllBodiesOfKnowledge: Scalars['Boolean'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
-  refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
+  refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes an Iframe Allowed URL from the Platform Settings */
-  removeIframeAllowedURL: Array<Scalars['String']['output']>;
+  removeIframeAllowedURL: Array<Scalars['String']>;
   /** Removes a message. */
-  removeMessageOnRoom: Scalars['MessageID']['output'];
+  removeMessageOnRoom: Scalars['MessageID'];
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
-  removeReactionToMessageInRoom: Scalars['Boolean']['output'];
+  removeReactionToMessageInRoom: Scalars['Boolean'];
   /** Removes an Organization from a Role in the specified Community. */
   removeRoleFromOrganization: Organization;
   /** Removes a User from a Role in the specified Community. */
@@ -3799,7 +3747,7 @@ export type Mutation = {
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
   /** Resets the interaction with the chat engine. */
-  resetChatGuidance: Scalars['Boolean']['output'];
+  resetChatGuidance: Scalars['Boolean'];
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Space;
   /** Removes an authorization credential from an Organization. */
@@ -3813,13 +3761,13 @@ export type Mutation = {
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
-  sendMessageToCommunityLeads: Scalars['Boolean']['output'];
+  sendMessageToCommunityLeads: Scalars['Boolean'];
   /** Send message to an Organization. */
-  sendMessageToOrganization: Scalars['Boolean']['output'];
+  sendMessageToOrganization: Scalars['Boolean'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
   /** Send message to a User. */
-  sendMessageToUser: Scalars['Boolean']['output'];
+  sendMessageToUser: Scalars['Boolean'];
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -3833,7 +3781,7 @@ export type Mutation = {
   /** Updates the specified AiPersona. */
   updateAiPersona: AiPersona;
   /** User vote if a specific answer is relevant. */
-  updateAnswerRelevance: Scalars['Boolean']['output'];
+  updateAnswerRelevance: Scalars['Boolean'];
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
   /** Updates the specified CalendarEvent. */
@@ -3925,13 +3873,13 @@ export type Mutation = {
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
   /** Create a new Document on the Storage and return the public Url. */
-  uploadFileOnStorageBucket: Scalars['String']['output'];
+  uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
 
 export type MutationAddIframeAllowedUrlArgs = {
-  whitelistedURL: Scalars['String']['input'];
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -3951,15 +3899,15 @@ export type MutationAdminCommunicationUpdateRoomStateArgs = {
 };
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
-  profileID: Scalars['UUID']['input'];
+  profileID: Scalars['UUID'];
 };
 
 export type MutationAdminUserAccountDeleteArgs = {
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type MutationAdminWingbackGetCustomerEntitlementsArgs = {
-  customerID: Scalars['String']['input'];
+  customerID: Scalars['String'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -4023,15 +3971,15 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
 };
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
-  authorizationID: Scalars['String']['input'];
+  authorizationID: Scalars['String'];
 };
 
 export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs = {
-  communityID: Scalars['String']['input'];
+  communityID: Scalars['String'];
 };
 
 export type MutationBeginVerifiedCredentialRequestInteractionArgs = {
-  types: Array<Scalars['String']['input']>;
+  types: Array<Scalars['String']>;
 };
 
 export type MutationConvertSpaceL1ToSpaceL0Args = {
@@ -4123,7 +4071,7 @@ export type MutationCreateVirtualContributorArgs = {
 };
 
 export type MutationCreateWingbackAccountArgs = {
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
 };
 
 export type MutationDeleteCalendarEventArgs = {
@@ -4243,11 +4191,11 @@ export type MutationLicenseResetOnAccountArgs = {
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  notificationIds: Array<Scalars['String']>;
 };
 
 export type MutationMarkNotificationsAsUnreadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  notificationIds: Array<Scalars['String']>;
 };
 
 export type MutationMessageUserArgs = {
@@ -4267,7 +4215,7 @@ export type MutationRemoveCommunityGuidelinesContentArgs = {
 };
 
 export type MutationRemoveIframeAllowedUrlArgs = {
-  whitelistedURL: Scalars['String']['input'];
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -4535,22 +4483,22 @@ export type MutationUpdateWhiteboardArgs = {
 };
 
 export type MutationUploadFileOnLinkArgs = {
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileOnLinkInput;
 };
 
 export type MutationUploadFileOnReferenceArgs = {
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileOnReferenceInput;
 };
 
 export type MutationUploadFileOnStorageBucketArgs = {
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileInput;
 };
 
 export type MutationUploadImageOnVisualArgs = {
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: VisualUploadImageInput;
 };
 
@@ -4569,13 +4517,13 @@ export type MySpaceResults = {
 export type Nvp = {
   __typename?: 'NVP';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  name: Scalars['String']['output'];
+  id: Scalars['UUID'];
+  name: Scalars['String'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
-  value: Scalars['String']['output'];
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  value: Scalars['String'];
 };
 
 /** The type of the notification */
@@ -4645,23 +4593,23 @@ export type Organization = Contributor &
     /** The authorization rules for the Contributor */
     authorization?: Maybe<Authorization>;
     /** Organization contact email */
-    contactEmail?: Maybe<Scalars['String']['output']>;
+    contactEmail?: Maybe<Scalars['String']>;
     /** The date at which the entity was created. */
-    createdDate?: Maybe<Scalars['DateTime']['output']>;
+    createdDate?: Maybe<Scalars['DateTime']>;
     /** Domain name; what is verified, eg. alkem.io */
-    domain?: Maybe<Scalars['String']['output']>;
+    domain?: Maybe<Scalars['String']>;
     /** Group defined on this organization. */
     group?: Maybe<UserGroup>;
     /** Groups defined on this organization. */
     groups?: Maybe<Array<UserGroup>>;
     /** The ID of the Contributor */
-    id: Scalars['UUID']['output'];
+    id: Scalars['UUID'];
     /** Legal name - required if hosting an Space */
-    legalEntityName?: Maybe<Scalars['String']['output']>;
+    legalEntityName?: Maybe<Scalars['String']>;
     /** Metrics about the activity within this Organization. */
     metrics?: Maybe<Array<Nvp>>;
     /** A name identifier of the Contributor, unique within a given scope. */
-    nameID: Scalars['NameID']['output'];
+    nameID: Scalars['NameID'];
     /** The profile for this Organization. */
     profile: Profile;
     /** The RoleSet for this Organization. */
@@ -4671,27 +4619,27 @@ export type Organization = Contributor &
     /** The StorageAggregator for managing storage buckets in use by this Organization */
     storageAggregator?: Maybe<StorageAggregator>;
     /** The date at which the entity was last updated. */
-    updatedDate?: Maybe<Scalars['DateTime']['output']>;
+    updatedDate?: Maybe<Scalars['DateTime']>;
     verification: OrganizationVerification;
     /** Organization website */
-    website?: Maybe<Scalars['String']['output']>;
+    website?: Maybe<Scalars['String']>;
   };
 
 export type OrganizationGroupArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type OrganizationAuthorizationResetInput = {
   /** The identifier of the Organization whose Authorization Policy should be reset. */
-  organizationID: Scalars['UUID']['input'];
+  organizationID: Scalars['UUID'];
 };
 
 export type OrganizationFilterInput = {
-  contactEmail?: InputMaybe<Scalars['String']['input']>;
-  displayName?: InputMaybe<Scalars['String']['input']>;
-  domain?: InputMaybe<Scalars['String']['input']>;
-  nameID?: InputMaybe<Scalars['String']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
+  contactEmail?: InputMaybe<Scalars['String']>;
+  displayName?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']>;
+  nameID?: InputMaybe<Scalars['String']>;
+  website?: InputMaybe<Scalars['String']>;
 };
 
 export type OrganizationSettings = {
@@ -4705,13 +4653,13 @@ export type OrganizationSettings = {
 export type OrganizationSettingsMembership = {
   __typename?: 'OrganizationSettingsMembership';
   /** Allow Users with email addresses matching the domain of this Organization to join. */
-  allowUsersMatchingDomainToJoin: Scalars['Boolean']['output'];
+  allowUsersMatchingDomainToJoin: Scalars['Boolean'];
 };
 
 export type OrganizationSettingsPrivacy = {
   __typename?: 'OrganizationSettingsPrivacy';
   /** Allow contribution roles (membership, lead etc) in Spaces to be visible. */
-  contributionRolesPubliclyVisible: Scalars['Boolean']['output'];
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
 export type OrganizationVerification = {
@@ -4719,20 +4667,20 @@ export type OrganizationVerification = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Is this lifecycle in a final state (done). */
-  isFinalized: Scalars['Boolean']['output'];
+  isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
-  nextEvents: Array<Scalars['String']['output']>;
+  nextEvents: Array<Scalars['String']>;
   /** The current state of this Lifecycle. */
-  state: Scalars['String']['output'];
+  state: Scalars['String'];
   /** Organization verification type */
   status: OrganizationVerificationEnum;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum OrganizationVerificationEnum {
@@ -4741,8 +4689,8 @@ export enum OrganizationVerificationEnum {
 }
 
 export type OrganizationVerificationEventInput = {
-  eventName: Scalars['String']['input'];
-  organizationVerificationID: Scalars['UUID']['input'];
+  eventName: Scalars['String'];
+  organizationVerificationID: Scalars['UUID'];
 };
 
 export type OrganizationsInRolesResponse = {
@@ -4754,41 +4702,41 @@ export type OrganizationsInRolesResponse = {
 export type OryConfig = {
   __typename?: 'OryConfig';
   /** Ory Issuer. */
-  issuer: Scalars['String']['output'];
+  issuer: Scalars['String'];
   /** Ory Kratos Public Base URL. Used by all Kratos Public Clients. */
-  kratosPublicBaseURL: Scalars['String']['output'];
+  kratosPublicBaseURL: Scalars['String'];
 };
 
 export type PageInfo = {
   __typename?: 'PageInfo';
   /** The last cursor of the page result */
-  endCursor?: Maybe<Scalars['String']['output']>;
+  endCursor?: Maybe<Scalars['String']>;
   /** Indicate whether more items exist after the returned ones */
-  hasNextPage: Scalars['Boolean']['output'];
+  hasNextPage: Scalars['Boolean'];
   /** Indicate whether more items exist before the returned ones */
-  hasPreviousPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean'];
   /** The first cursor of the page result */
-  startCursor?: Maybe<Scalars['String']['output']>;
+  startCursor?: Maybe<Scalars['String']>;
 };
 
 export type PaginatedOrganization = {
   __typename?: 'PaginatedOrganization';
   organization: Array<Organization>;
   pageInfo: PageInfo;
-  total: Scalars['Float']['output'];
+  total: Scalars['Float'];
 };
 
 export type PaginatedSpaces = {
   __typename?: 'PaginatedSpaces';
   pageInfo: PageInfo;
   spaces: Array<Space>;
-  total: Scalars['Float']['output'];
+  total: Scalars['Float'];
 };
 
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   pageInfo: PageInfo;
-  total: Scalars['Float']['output'];
+  total: Scalars['Float'];
   users: Array<User>;
 };
 
@@ -4801,11 +4749,11 @@ export type Platform = {
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Forum for the platform */
   forum: Forum;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Details about the current Innovation Hub you are in. */
   innovationHub?: Maybe<InnovationHub>;
   /** The latest release discussion. */
@@ -4825,18 +4773,18 @@ export type Platform = {
   /** The TemplatesManager in use by the Platform */
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type PlatformInnovationHubArgs = {
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  subdomain?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['UUID']>;
+  subdomain?: InputMaybe<Scalars['String']>;
 };
 
 export type PlatformFeatureFlag = {
   __typename?: 'PlatformFeatureFlag';
   /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean']['output'];
+  enabled: Scalars['Boolean'];
   /** The name of the feature flag */
   name: PlatformFeatureFlagName;
 };
@@ -4855,7 +4803,7 @@ export enum PlatformFeatureFlagName {
 export type PlatformIntegrationSettings = {
   __typename?: 'PlatformIntegrationSettings';
   /** The list of allowed URLs for iFrames within Markdown content. */
-  iframeAllowedUrls: Array<Scalars['String']['output']>;
+  iframeAllowedUrls: Array<Scalars['String']>;
 };
 
 export type PlatformInvitation = {
@@ -4865,78 +4813,78 @@ export type PlatformInvitation = {
   /** The User who created the platformInvitation. */
   createdBy: User;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The email address of the external user being invited */
-  email: Scalars['String']['output'];
-  firstName?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  lastName?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID'];
+  lastName?: Maybe<Scalars['String']>;
   /** The platform role the user will receive when they sign up */
   platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
-  profileCreated: Scalars['Boolean']['output'];
+  profileCreated: Scalars['Boolean'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
   roleSetExtraRole?: Maybe<RoleName>;
   /** Whether to also add the invited user to the parent community. */
-  roleSetInvitedToParent: Scalars['Boolean']['output'];
+  roleSetInvitedToParent: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
-  welcomeMessage?: Maybe<Scalars['String']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  welcomeMessage?: Maybe<Scalars['String']>;
 };
 
 export type PlatformLocations = {
   __typename?: 'PlatformLocations';
   /** URL to a page about the platform */
-  about: Scalars['String']['output'];
+  about: Scalars['String'];
   /** URL where users can get tips and tricks */
-  aup: Scalars['String']['output'];
+  aup: Scalars['String'];
   /** URL to the blog of the platform */
-  blog: Scalars['String']['output'];
+  blog: Scalars['String'];
   /** URL where users can see the community forum */
-  community: Scalars['String']['output'];
+  community: Scalars['String'];
   /** URL for the link Contact in the HomePage and to create a new space with Enterprise plan */
-  contactsupport: Scalars['String']['output'];
+  contactsupport: Scalars['String'];
   /** URL for the documentation site */
-  documentation: Scalars['String']['output'];
+  documentation: Scalars['String'];
   /** Main domain of the environment */
-  domain: Scalars['String']['output'];
+  domain: Scalars['String'];
   /** Name of the environment */
-  environment: Scalars['String']['output'];
+  environment: Scalars['String'];
   /** URL to a form for providing feedback */
-  feedback: Scalars['String']['output'];
+  feedback: Scalars['String'];
   /** URL to latest forum release discussion where users can get information about the latest release */
-  forumreleases: Scalars['String']['output'];
+  forumreleases: Scalars['String'];
   /** URL for the link Foundation in the HomePage of the application */
-  foundation: Scalars['String']['output'];
+  foundation: Scalars['String'];
   /** URL where users can get help */
-  help: Scalars['String']['output'];
+  help: Scalars['String'];
   /** URL for the link Impact in the HomePage of the application */
-  impact: Scalars['String']['output'];
+  impact: Scalars['String'];
   /** URL to a page about the innovation library */
-  innovationLibrary: Scalars['String']['output'];
+  innovationLibrary: Scalars['String'];
   /** URL to a page about the collaboration tools */
-  inspiration: Scalars['String']['output'];
+  inspiration: Scalars['String'];
   /** URL to the landing page of the platform */
-  landing: Scalars['String']['output'];
+  landing: Scalars['String'];
   /** URL where new users can get onboarding help */
-  newuser: Scalars['String']['output'];
+  newuser: Scalars['String'];
   /** URL for the link Opensource in the HomePage of the application */
-  opensource: Scalars['String']['output'];
+  opensource: Scalars['String'];
   /** URL to the privacy policy for the platform */
-  privacy: Scalars['String']['output'];
+  privacy: Scalars['String'];
   /** URL where users can get information about previous releases */
-  releases: Scalars['String']['output'];
+  releases: Scalars['String'];
   /** URL to the security policy for the platform */
-  security: Scalars['String']['output'];
+  security: Scalars['String'];
   /** URL where users can get support for the platform */
-  support: Scalars['String']['output'];
+  support: Scalars['String'];
   /** URL for the link Contact in the HomePage to switch between plans */
-  switchplan: Scalars['String']['output'];
+  switchplan: Scalars['String'];
   /** URL to the terms of usage for the platform */
-  terms: Scalars['String']['output'];
+  terms: Scalars['String'];
   /** URL where users can get tips and tricks */
-  tips: Scalars['String']['output'];
+  tips: Scalars['String'];
 };
 
 export type PlatformSettings = {
@@ -4954,15 +4902,15 @@ export type Post = {
   /** The user that created this Post */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Profile for this Post. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type Preference = {
@@ -4970,33 +4918,33 @@ export type Preference = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The definition for the Preference */
   definition: PreferenceDefinition;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Value of the preference */
-  value: Scalars['String']['output'];
+  value: Scalars['String'];
 };
 
 export type PreferenceDefinition = {
   __typename?: 'PreferenceDefinition';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** Preference description */
-  description: Scalars['String']['output'];
+  description: Scalars['String'];
   /** The name */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The group for the preference within the containing entity type. */
-  group: Scalars['String']['output'];
+  group: Scalars['String'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The type of the Preference, specific to the Entity it is on. */
   type: PreferenceType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Preference value type */
   valueType: PreferenceValueType;
 };
@@ -5043,13 +4991,13 @@ export type Profile = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** A description of the entity associated with this profile. */
-  description?: Maybe<Scalars['Markdown']['output']>;
+  description?: Maybe<Scalars['Markdown']>;
   /** The display name. */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The location for this Profile. */
   location?: Maybe<Location>;
   /** A list of URLs to relevant information. */
@@ -5057,7 +5005,7 @@ export type Profile = {
   /** The storage bucket for this Profile. */
   storageBucket: StorageBucket;
   /** The tagline for this entity. */
-  tagline?: Maybe<Scalars['String']['output']>;
+  tagline?: Maybe<Scalars['String']>;
   /** The default or named tagset. */
   tagset?: Maybe<Tagset>;
   /** A list of named tagsets, each of which has a list of tags. */
@@ -5065,9 +5013,9 @@ export type Profile = {
   /** A type of entity that this Profile is being used with. */
   type?: Maybe<ProfileType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The URL at which this profile can be viewed. */
-  url: Scalars['String']['output'];
+  url: Scalars['String'];
   /** A particular type of visual for this Profile. */
   visual?: Maybe<Visual>;
   /** A list of visuals for this Profile. */
@@ -5085,9 +5033,9 @@ export type ProfileVisualArgs = {
 export type ProfileCredentialVerified = {
   __typename?: 'ProfileCredentialVerified';
   /** The email */
-  userEmail: Scalars['String']['output'];
+  userEmail: Scalars['String'];
   /** The vc. */
-  vc: Scalars['String']['output'];
+  vc: Scalars['String'];
 };
 
 export enum ProfileType {
@@ -5184,11 +5132,11 @@ export type Query = {
 };
 
 export type QueryActivityFeedArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  after?: InputMaybe<Scalars['UUID']>;
   args?: InputMaybe<ActivityFeedQueryArgs>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['UUID']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryActivityFeedGroupedArgs = {
@@ -5208,21 +5156,21 @@ export type QueryExploreSpacesArgs = {
 };
 
 export type QueryOrganizationArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type QueryOrganizationsArgs = {
   filter?: InputMaybe<ContributorFilterInput>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryOrganizationsPaginatedArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<OrganizationFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<OrganizationVerificationEnum>;
 };
 
@@ -5243,20 +5191,20 @@ export type QuerySearchArgs = {
 };
 
 export type QuerySpacesArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   filter?: InputMaybe<SpaceFilterInput>;
 };
 
 export type QuerySpacesPaginatedArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<SpaceFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryTaskArgs = {
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 };
 
 export type QueryTasksArgs = {
@@ -5264,11 +5212,11 @@ export type QueryTasksArgs = {
 };
 
 export type QueryUrlResolverArgs = {
-  url: Scalars['String']['input'];
+  url: Scalars['String'];
 };
 
 export type QueryUserArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type QueryUserAuthorizationPrivilegesArgs = {
@@ -5276,19 +5224,19 @@ export type QueryUserAuthorizationPrivilegesArgs = {
 };
 
 export type QueryUsersArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   filter?: InputMaybe<ContributorFilterInput>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersPaginatedArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  withTags?: InputMaybe<Scalars['Boolean']['input']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  withTags?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
@@ -5296,38 +5244,38 @@ export type QueryUsersWithAuthorizationCredentialArgs = {
 };
 
 export type QueryVirtualContributorArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type QueryVirtualContributorsArgs = {
   filter?: InputMaybe<ContributorFilterInput>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Question = {
   __typename?: 'Question';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  name: Scalars['String']['output'];
+  id: Scalars['UUID'];
+  name: Scalars['String'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
-  value: Scalars['String']['output'];
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  value: Scalars['String'];
 };
 
 /** A reaction to a message. */
 export type Reaction = {
   __typename?: 'Reaction';
   /** The reaction Emoji */
-  emoji: Scalars['Emoji']['output'];
+  emoji: Scalars['Emoji'];
   /** The id for the reaction. */
-  id: Scalars['MessageID']['output'];
+  id: Scalars['MessageID'];
   /** The user that reacted */
   sender?: Maybe<User>;
   /** The server timestamp in UTC */
-  timestamp: Scalars['Float']['output'];
+  timestamp: Scalars['Float'];
 };
 
 export type Reference = {
@@ -5335,22 +5283,22 @@ export type Reference = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** Description of this reference */
-  description?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Name of the reference, e.g. Linkedin, Twitter etc. */
-  name: Scalars['String']['output'];
+  name: Scalars['String'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** URI of the reference */
-  uri: Scalars['String']['output'];
+  uri: Scalars['String'];
 };
 
 export type RefreshVirtualContributorBodyOfKnowledgeInput = {
   /** The ID of the Virtual Contributor to update. */
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type RelayPaginatedSpace = {
@@ -5370,17 +5318,17 @@ export type RelayPaginatedSpace = {
   /** Get the Community for the Space.  */
   community: Community;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
-  levelZeroSpaceID: Scalars['String']['output'];
+  levelZeroSpaceID: Scalars['String'];
   /** The License operating on this Space. */
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -5393,22 +5341,20 @@ export type RelayPaginatedSpace = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
 
 export type RelayPaginatedSpaceSubspaceByNameIdArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type RelayPaginatedSpaceSubspacesArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type RelayPaginatedSpaceEdge = {
@@ -5419,90 +5365,90 @@ export type RelayPaginatedSpaceEdge = {
 export type RelayPaginatedSpacePageInfo = {
   __typename?: 'RelayPaginatedSpacePageInfo';
   /** The last cursor of the page result */
-  endCursor?: Maybe<Scalars['String']['output']>;
+  endCursor?: Maybe<Scalars['String']>;
   /** Indicate whether more items exist after the returned ones */
-  hasNextPage: Scalars['Boolean']['output'];
+  hasNextPage: Scalars['Boolean'];
   /** Indicate whether more items exist before the returned ones */
-  hasPreviousPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean'];
   /** The first cursor of the page result */
-  startCursor?: Maybe<Scalars['String']['output']>;
+  startCursor?: Maybe<Scalars['String']>;
 };
 
 export type RemoveCommunityGuidelinesContentInput = {
   /** ID of the CommunityGuidelines that will be emptied */
-  communityGuidelinesID: Scalars['UUID']['input'];
+  communityGuidelinesID: Scalars['UUID'];
 };
 
 export type RemovePlatformRoleInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
 };
 
 export type RemoveRoleOnRoleSetFromOrganizationInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type RemoveRoleOnRoleSetFromUserInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type RemoveRoleOnRoleSetFromVirtualContributorInput = {
-  contributorID: Scalars['UUID']['input'];
+  contributorID: Scalars['UUID'];
   role: RoleName;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type RemoveUserGroupMemberInput = {
-  groupID: Scalars['UUID']['input'];
-  userID: Scalars['UUID']['input'];
+  groupID: Scalars['UUID'];
+  userID: Scalars['UUID'];
 };
 
 export type RevokeAuthorizationCredentialInput = {
   /** The resource to which access is being removed. */
-  resourceID: Scalars['String']['input'];
+  resourceID: Scalars['String'];
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type RevokeLicensePlanFromAccount = {
   /** The ID of the Account to assign the LicensePlan to. */
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
   /** The ID of the LicensePlan to assign. */
-  licensePlanID: Scalars['UUID']['input'];
+  licensePlanID: Scalars['UUID'];
   /** The ID of the Licensing to use. */
-  licensingID?: InputMaybe<Scalars['UUID']['input']>;
+  licensingID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type RevokeLicensePlanFromSpace = {
   /** The ID of the LicensePlan to assign. */
-  licensePlanID: Scalars['UUID']['input'];
+  licensePlanID: Scalars['UUID'];
   /** The ID of the Licensing to use. */
-  licensingID?: InputMaybe<Scalars['UUID']['input']>;
+  licensingID?: InputMaybe<Scalars['UUID']>;
   /** The ID of the Space to assign the LicensePlan to. */
-  spaceID: Scalars['UUID']['input'];
+  spaceID: Scalars['UUID'];
 };
 
 export type RevokeOrganizationAuthorizationCredentialInput = {
   /** The Organization from whom the credential is being removed. */
-  organizationID: Scalars['UUID']['input'];
+  organizationID: Scalars['UUID'];
   /** The resource to which access is being removed. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
+  resourceID?: InputMaybe<Scalars['UUID']>;
   type: AuthorizationCredential;
 };
 
 export type Role = {
   __typename?: 'Role';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Credential associated with this Role. */
   credential: CredentialDefinition;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The CommunityRole that this role definition is for. */
   name: RoleName;
   /** The role policy that applies for Organizations in this Role. */
@@ -5510,11 +5456,11 @@ export type Role = {
   /** The Credential associated with this Role. */
   parentCredentials: Array<CredentialDefinition>;
   /** Flag to indicate if this Role requires the entry level role to be held. */
-  requiresEntryRole: Scalars['Boolean']['output'];
+  requiresEntryRole: Scalars['Boolean'];
   /** Flag to indicate if this Role requires having the same role in the Parent RoleSet. */
-  requiresSameRoleInParentRoleSet: Scalars['Boolean']['output'];
+  requiresSameRoleInParentRoleSet: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The role policy that applies for Users in this Role. */
   userPolicy: ContributorRolePolicy;
   /** The role policy that applies for VirtualContributors in this Role. */
@@ -5551,11 +5497,11 @@ export type RoleSet = {
   /** All available users that are could join this RoleSet in the entry role. */
   availableUsersForEntryRole: PaginatedUsers;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Role that acts as the entry Role for the RoleSet, so other roles potentially require it. */
   entryRoleName: RoleName;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Invitations for this roleSet. */
   invitations: Array<Invitation>;
   /** The License operating on this RoleSet. */
@@ -5581,7 +5527,7 @@ export type RoleSet = {
   /** A type of entity that this RoleSet is being used with. */
   type?: Maybe<RoleSetType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** All users that are contributing to this Community in the specified Role. */
   usersInRole: Array<User>;
   /** All users that have a Role in this RoleSet in the specified Roles. */
@@ -5593,20 +5539,20 @@ export type RoleSet = {
 };
 
 export type RoleSetAvailableUsersForElevatedRoleArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
   role: RoleName;
 };
 
 export type RoleSetAvailableUsersForEntryRoleArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type RoleSetOrganizationsInRoleArgs = {
@@ -5626,12 +5572,12 @@ export type RoleSetRoleDefinitionsArgs = {
 };
 
 export type RoleSetUsersInRoleArgs = {
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
   role: RoleName;
 };
 
 export type RoleSetUsersInRolesArgs = {
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
   roles: Array<RoleName>;
 };
 
@@ -5679,49 +5625,47 @@ export type RolesOrganizationInput = {
   /** Return membership in Spaces matching the provided filter. */
   filter?: InputMaybe<SpaceFilterInput>;
   /** The ID of the organization to retrieve the roles of. */
-  organizationID: Scalars['UUID']['input'];
+  organizationID: Scalars['UUID'];
 };
 
 export type RolesResult = {
   __typename?: 'RolesResult';
   /** Display name of the entity */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** Name Identifier of the entity */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The roles held by the contributor */
-  roles: Array<Scalars['String']['output']>;
+  roles: Array<Scalars['String']>;
 };
 
 export type RolesResultCommunity = {
   __typename?: 'RolesResultCommunity';
   /** Display name of the entity */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
-  id: Scalars['String']['output'];
-  /** The level of the Space e.g. space/challenge/opportunity. */
+  id: Scalars['String'];
+  /** The level of the Space e.g. L0/L1/L2. */
   level: SpaceLevel;
   /** Name Identifier of the entity */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The roles held by the contributor */
-  roles: Array<Scalars['String']['output']>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
+  roles: Array<Scalars['String']>;
 };
 
 export type RolesResultOrganization = {
   __typename?: 'RolesResultOrganization';
   /** Display name of the entity */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
-  id: Scalars['String']['output'];
+  id: Scalars['String'];
   /** Name Identifier of the entity */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Organization ID. */
-  organizationID: Scalars['String']['output'];
+  organizationID: Scalars['String'];
   /** The roles held by the contributor */
-  roles: Array<Scalars['String']['output']>;
+  roles: Array<Scalars['String']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
 };
@@ -5729,21 +5673,19 @@ export type RolesResultOrganization = {
 export type RolesResultSpace = {
   __typename?: 'RolesResultSpace';
   /** Display name of the entity */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
-  id: Scalars['String']['output'];
-  /** The level of the Space e.g. space/challenge/opportunity. */
+  id: Scalars['String'];
+  /** The level of the Space e.g. L0/L1/L2. */
   level: SpaceLevel;
   /** Name Identifier of the entity */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The roles held by the contributor */
-  roles: Array<Scalars['String']['output']>;
+  roles: Array<Scalars['String']>;
   /** The Space ID */
-  spaceID: Scalars['String']['output'];
+  spaceID: Scalars['String'];
   /** Details of the Subspace the user is a member of */
   subspaces: Array<RolesResultCommunity>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -5752,12 +5694,12 @@ export type RolesUserInput = {
   /** Return membership in Spaces matching the provided filter. */
   filter?: InputMaybe<SpaceFilterInput>;
   /** The ID of the user to retrieve the roles of. */
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type RolesVirtualContributorInput = {
   /** The ID or nameID of the VC to retrieve the roles of. */
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type Room = {
@@ -5765,26 +5707,26 @@ export type Room = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
-  messagesCount: Scalars['Float']['output'];
+  messagesCount: Scalars['Float'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Virtual Contributor Interactions in this Room. */
   vcInteractions: Array<VcInteraction>;
 };
 
 export type RoomAddReactionToMessageInput = {
   /** The reaction to the message. */
-  emoji: Scalars['Emoji']['input'];
+  emoji: Scalars['Emoji'];
   /** The message id that is being reacted to */
-  messageID: Scalars['MessageID']['input'];
+  messageID: Scalars['MessageID'];
   /** The Room to remove a message from. */
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
 };
 
 /** The event happened in the subscribed room */
@@ -5797,7 +5739,7 @@ export type RoomEventSubscriptionResult = {
   /** The Room on which the event happened. */
   room: Room;
   /** The identifier for the Room on which the event happened. */
-  roomID: Scalars['String']['output'];
+  roomID: Scalars['String'];
 };
 
 /** A message event happened in the subscribed room */
@@ -5815,39 +5757,39 @@ export type RoomMessageReactionEventSubscriptionResult = {
   /** A message related event. */
   data: Reaction;
   /** The message on which the reaction event happened. */
-  messageID?: Maybe<Scalars['String']['output']>;
+  messageID?: Maybe<Scalars['String']>;
   /** The type of event. */
   type: MutationType;
 };
 
 export type RoomRemoveMessageInput = {
   /** The message id that should be removed */
-  messageID: Scalars['MessageID']['input'];
+  messageID: Scalars['MessageID'];
   /** The Room to remove a message from. */
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
 };
 
 export type RoomRemoveReactionToMessageInput = {
   /** The reaction that is being removed */
-  reactionID: Scalars['MessageID']['input'];
+  reactionID: Scalars['MessageID'];
   /** The Room to remove a message from. */
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
 };
 
 export type RoomSendMessageInput = {
   /** The message being sent */
-  message: Scalars['String']['input'];
+  message: Scalars['String'];
   /** The Room the message is being sent to */
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
 };
 
 export type RoomSendMessageReplyInput = {
   /** The message being sent */
-  message: Scalars['String']['input'];
+  message: Scalars['String'];
   /** The Room the message is being sent to */
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
   /** The message starting the thread being replied to */
-  threadID: Scalars['MessageID']['input'];
+  threadID: Scalars['MessageID'];
 };
 
 /** The category in which to search. A category may include a couple of entity types, e.g. "responses" include posts, whiteboard, etc. */
@@ -5862,9 +5804,9 @@ export type SearchFilterInput = {
   /** Include this category in the search results. */
   category: SearchCategory;
   /** The cursor after which we want results (offset) - pass this from your previous search to request additional results. Useful for paginating results. */
-  cursor?: InputMaybe<Scalars['SearchCursor']['input']>;
+  cursor?: InputMaybe<Scalars['SearchCursor']>;
   /** How many results per category to return. Useful for paginating results. */
-  size?: InputMaybe<Scalars['Float']['input']>;
+  size?: InputMaybe<Scalars['Float']>;
   /** Which types to include. Defaults to all in the category. */
   types?: InputMaybe<Array<SearchResultType>>;
 };
@@ -5873,20 +5815,20 @@ export type SearchInput = {
   /** Return results that satisfy these conditions. */
   filters?: InputMaybe<Array<SearchFilterInput>>;
   /** Restrict the search to only the specified Space. Default is all Spaces. */
-  searchInSpaceFilter?: InputMaybe<Scalars['UUID']['input']>;
+  searchInSpaceFilter?: InputMaybe<Scalars['UUID']>;
   /** Expand the search to includes Tagsets with the provided names. Max 2. */
-  tagsetNames?: InputMaybe<Array<Scalars['String']['input']>>;
+  tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Space. Max 5. */
-  terms: Array<Scalars['String']['input']>;
+  terms: Array<Scalars['String']>;
 };
 
 export type SearchResult = {
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float']['output'];
+  score: Scalars['Float'];
   /** The terms that were matched for this result */
-  terms: Array<Scalars['String']['output']>;
+  terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
 };
@@ -5896,13 +5838,13 @@ export type SearchResultCallout = SearchResult & {
   /** The Callout that was found. */
   callout: Callout;
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float']['output'];
+  score: Scalars['Float'];
   /** The parent Space of the Callout. */
   space: Space;
   /** The terms that were matched for this result */
-  terms: Array<Scalars['String']['output']>;
+  terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
 };
@@ -5910,13 +5852,13 @@ export type SearchResultCallout = SearchResult & {
 export type SearchResultOrganization = SearchResult & {
   __typename?: 'SearchResultOrganization';
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Organization that was found. */
   organization: Organization;
   /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float']['output'];
+  score: Scalars['Float'];
   /** The terms that were matched for this result */
-  terms: Array<Scalars['String']['output']>;
+  terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
 };
@@ -5926,15 +5868,15 @@ export type SearchResultPost = SearchResult & {
   /** The Callout of the Post. */
   callout: Callout;
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Post that was found. */
   post: Post;
   /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float']['output'];
+  score: Scalars['Float'];
   /** The Space of the Post. */
   space: Space;
   /** The terms that were matched for this result */
-  terms: Array<Scalars['String']['output']>;
+  terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
 };
@@ -5942,15 +5884,15 @@ export type SearchResultPost = SearchResult & {
 export type SearchResultSpace = SearchResult & {
   __typename?: 'SearchResultSpace';
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The parent of this Space, if any. */
   parentSpace?: Maybe<Space>;
   /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float']['output'];
+  score: Scalars['Float'];
   /** The Space that was found. */
   space: Space;
   /** The terms that were matched for this result */
-  terms: Array<Scalars['String']['output']>;
+  terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
 };
@@ -5969,11 +5911,11 @@ export enum SearchResultType {
 export type SearchResultUser = SearchResult & {
   __typename?: 'SearchResultUser';
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float']['output'];
+  score: Scalars['Float'];
   /** The terms that were matched for this result */
-  terms: Array<Scalars['String']['output']>;
+  terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
   /** The User that was found. */
@@ -5989,21 +5931,21 @@ export enum SearchVisibility {
 export type Sentry = {
   __typename?: 'Sentry';
   /** Flag indicating if the client should use Sentry for monitoring. */
-  enabled: Scalars['Boolean']['output'];
+  enabled: Scalars['Boolean'];
   /** URL to the Sentry endpoint. */
-  endpoint: Scalars['String']['output'];
+  endpoint: Scalars['String'];
   /** The Sentry environment to report to. */
-  environment: Scalars['String']['output'];
+  environment: Scalars['String'];
   /** Flag indicating if PII should be submitted on Sentry events. */
-  submitPII: Scalars['Boolean']['output'];
+  submitPII: Scalars['Boolean'];
 };
 
 export type ServiceMetadata = {
   __typename?: 'ServiceMetadata';
   /** Service name e.g. CT Server */
-  name?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
-  version?: Maybe<Scalars['String']['output']>;
+  version?: Maybe<Scalars['String']>;
 };
 
 export type Space = {
@@ -6023,17 +5965,17 @@ export type Space = {
   /** Get the Community for the Space.  */
   community: Community;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
-  levelZeroSpaceID: Scalars['String']['output'];
+  levelZeroSpaceID: Scalars['String'];
   /** The License operating on this Space. */
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -6046,22 +5988,20 @@ export type Space = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
 
 export type SpaceSubspaceByNameIdArgs = {
-  NAMEID: Scalars['NameID']['input'];
+  NAMEID: Scalars['NameID'];
 };
 
 export type SpaceSubspacesArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type SpaceAbout = {
@@ -6069,13 +6009,13 @@ export type SpaceAbout = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The guidelines for members of this Community. */
   guidelines: CommunityGuidelines;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Is the content of this Space visible to non-Members?. */
-  isContentPublic: Scalars['Boolean']['output'];
+  isContentPublic: Scalars['Boolean'];
   /** The membership information for this Space. */
   membership: SpaceAboutMembership;
   /** Metrics about activity within this Space. */
@@ -6085,11 +6025,11 @@ export type SpaceAbout = {
   /** The Space provider (host). */
   provider: Contributor;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** Who should get involved in this challenge */
-  who?: Maybe<Scalars['Markdown']['output']>;
+  who?: Maybe<Scalars['Markdown']>;
   /** The goal that is being pursued */
-  why?: Maybe<Scalars['Markdown']['output']>;
+  why?: Maybe<Scalars['Markdown']>;
 };
 
 export type SpaceAboutMembership = {
@@ -6097,7 +6037,7 @@ export type SpaceAboutMembership = {
   /** The Form used for Applications to this Space. */
   applicationForm: Form;
   /** The identifier of the Community within the Space. */
-  communityID: Scalars['UUID']['output'];
+  communityID: Scalars['UUID'];
   /** The Lead Organizations that are associated with this Space. */
   leadOrganizations: Array<Organization>;
   /** The Lead Users that are associated with this Space. */
@@ -6107,7 +6047,7 @@ export type SpaceAboutMembership = {
   /** The privileges granted to the current user based on the Space membership policy. */
   myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
   /** The identifier of the RoleSet within the Space. */
-  roleSetID: Scalars['UUID']['output'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type SpaceFilterInput = {
@@ -6128,7 +6068,7 @@ export type SpacePendingMembershipInfo = {
   /** The CommunityGuidelines for the Space */
   communityGuidelines: CommunityGuidelines;
   /** The Space ID */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Level of the Space */
   level: SpaceLevel;
 };
@@ -6151,29 +6091,29 @@ export type SpaceSettings = {
 export type SpaceSettingsCollaboration = {
   __typename?: 'SpaceSettingsCollaboration';
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
-  allowEventsFromSubspaces: Scalars['Boolean']['output'];
+  allowEventsFromSubspaces: Scalars['Boolean'];
   /** Flag to control if members can create callouts. */
-  allowMembersToCreateCallouts: Scalars['Boolean']['output'];
+  allowMembersToCreateCallouts: Scalars['Boolean'];
   /** Flag to control if members can create subspaces. */
-  allowMembersToCreateSubspaces: Scalars['Boolean']['output'];
+  allowMembersToCreateSubspaces: Scalars['Boolean'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
-  inheritMembershipRights: Scalars['Boolean']['output'];
+  inheritMembershipRights: Scalars['Boolean'];
 };
 
 export type SpaceSettingsMembership = {
   __typename?: 'SpaceSettingsMembership';
   /** Allow subspace admins to invite to this Space. */
-  allowSubspaceAdminsToInviteMembers: Scalars['Boolean']['output'];
+  allowSubspaceAdminsToInviteMembers: Scalars['Boolean'];
   /** The membership policy in usage for this Space */
   policy: CommunityMembershipPolicy;
   /** The organizations that are trusted to Join as members for this Space */
-  trustedOrganizations: Array<Scalars['UUID']['output']>;
+  trustedOrganizations: Array<Scalars['UUID']>;
 };
 
 export type SpaceSettingsPrivacy = {
   __typename?: 'SpaceSettingsPrivacy';
   /** Flag to control if Platform Support has admin rights. */
-  allowPlatformSupportAsAdmin: Scalars['Boolean']['output'];
+  allowPlatformSupportAsAdmin: Scalars['Boolean'];
   /** The privacy mode for this Space */
   mode: SpacePrivacyMode;
 };
@@ -6181,7 +6121,7 @@ export type SpaceSettingsPrivacy = {
 export type SpaceSubscription = {
   __typename?: 'SpaceSubscription';
   /** The expiry date of this subscription, null if it does never expire. */
-  expires?: Maybe<Scalars['DateTime']['output']>;
+  expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
   name: LicensingCredentialBasedCredentialType;
 };
@@ -6205,15 +6145,15 @@ export type StorageAggregator = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Storage Bucket for files directly on this Storage Aggregator (legacy). */
   directStorageBucket: StorageBucket;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The key information about the entity using this StorageAggregator, if any. */
   parentEntity?: Maybe<StorageAggregatorParent>;
   /** The aggregate size of all StorageBuckets for this StorageAggregator. */
-  size: Scalars['Float']['output'];
+  size: Scalars['Float'];
   /** The list of child storageAggregators for this StorageAggregator. */
   storageAggregators: Array<StorageAggregator>;
   /** The Storage Buckets that are being managed via this StorageAggregators. */
@@ -6221,20 +6161,20 @@ export type StorageAggregator = {
   /** A type of entity that this StorageAggregator is being used with. */
   type?: Maybe<StorageAggregatorType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 /** Valid parent is Account, Space, User, Organization, Platform */
 export type StorageAggregatorParent = {
   __typename?: 'StorageAggregatorParent';
   /** The display name. */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The UUID of the parent entity. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** If the parent entity is a Space, then the level of the Space. */
   level?: Maybe<SpaceLevel>;
   /** The URL that can be used to access the parent entity. */
-  url: Scalars['String']['output'];
+  url: Scalars['String'];
 };
 
 export enum StorageAggregatorType {
@@ -6248,60 +6188,60 @@ export enum StorageAggregatorType {
 export type StorageBucket = {
   __typename?: 'StorageBucket';
   /** Mime types allowed to be stored on this StorageBucket. */
-  allowedMimeTypes: Array<Scalars['String']['output']>;
+  allowedMimeTypes: Array<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** A single Document */
   document?: Maybe<Document>;
   /** The list of Documents for this StorageBucket. */
   documents: Array<Document>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Maximum allowed file size on this StorageBucket. */
-  maxFileSize: Scalars['Float']['output'];
+  maxFileSize: Scalars['Float'];
   /** The key information about the entity using this StorageBucket, if any. */
   parentEntity?: Maybe<StorageBucketParent>;
   /** The aggregate size of all Documents for this StorageBucket. */
-  size: Scalars['Float']['output'];
+  size: Scalars['Float'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type StorageBucketDocumentArgs = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type StorageBucketDocumentsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type StorageBucketParent = {
   __typename?: 'StorageBucketParent';
   /** The display name. */
-  displayName: Scalars['String']['output'];
+  displayName: Scalars['String'];
   /** The UUID of the parent entity. */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The type of entity that this StorageBucket is being used with. */
   type: ProfileType;
   /** The URL that can be used to access the parent entity. */
-  url: Scalars['String']['output'];
+  url: Scalars['String'];
 };
 
 export type StorageBucketUploadFileInput = {
-  storageBucketId: Scalars['String']['input'];
+  storageBucketId: Scalars['String'];
   /** Is this a temporary Document that will be moved later to another StorageBucket. */
-  temporaryLocation?: InputMaybe<Scalars['Boolean']['input']>;
+  temporaryLocation?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type StorageBucketUploadFileOnLinkInput = {
-  linkID: Scalars['String']['input'];
+  linkID: Scalars['String'];
 };
 
 export type StorageBucketUploadFileOnReferenceInput = {
-  referenceID: Scalars['String']['input'];
+  referenceID: Scalars['String'];
 };
 
 export type StorageConfig = {
@@ -6334,29 +6274,29 @@ export type SubscriptionActivityCreatedArgs = {
 };
 
 export type SubscriptionCalloutPostCreatedArgs = {
-  calloutID: Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
 };
 
 export type SubscriptionForumDiscussionUpdatedArgs = {
-  forumID: Scalars['UUID']['input'];
+  forumID: Scalars['UUID'];
 };
 
 export type SubscriptionRoomEventsArgs = {
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
 };
 
 export type SubscriptionSubspaceCreatedArgs = {
-  spaceID: Scalars['UUID']['input'];
+  spaceID: Scalars['UUID'];
 };
 
 export type SubscriptionVirtualContributorUpdatedArgs = {
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type SubspaceCreated = {
   __typename?: 'SubspaceCreated';
   /** The identifier for the Space on which the subspace was created. */
-  spaceID: Scalars['UUID']['output'];
+  spaceID: Scalars['UUID'];
   /** The subspace that has been created. */
   subspace: Space;
 };
@@ -6364,25 +6304,25 @@ export type SubspaceCreated = {
 export type Tagset = {
   __typename?: 'Tagset';
   /** The allowed values for this Tagset. */
-  allowedValues: Array<Scalars['String']['output']>;
+  allowedValues: Array<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  name: Scalars['String']['output'];
-  tags: Array<Scalars['String']['output']>;
+  id: Scalars['UUID'];
+  name: Scalars['String'];
+  tags: Array<Scalars['String']>;
   type: TagsetType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type TagsetArgs = {
   /** Return only Callouts that match one of the tagsets and any of the tags in them. */
   name: TagsetReservedName;
   /** A list of tags to include. */
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export enum TagsetReservedName {
@@ -6395,17 +6335,17 @@ export enum TagsetReservedName {
 
 export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
-  allowedValues: Array<Scalars['String']['output']>;
+  allowedValues: Array<Scalars['String']>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** For Tagsets of type SELECT_ONE, the default selected value. */
-  defaultSelectedValue?: Maybe<Scalars['String']['output']>;
+  defaultSelectedValue?: Maybe<Scalars['String']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  name: Scalars['String']['output'];
+  id: Scalars['UUID'];
+  name: Scalars['String'];
   type: TagsetType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum TagsetType {
@@ -6417,27 +6357,27 @@ export enum TagsetType {
 export type Task = {
   __typename?: 'Task';
   /** The timestamp when the task was created */
-  created: Scalars['Float']['output'];
+  created: Scalars['Float'];
   /** the timestamp when the task was completed */
-  end?: Maybe<Scalars['Float']['output']>;
+  end?: Maybe<Scalars['Float']>;
   /** info about the errors of the task */
-  errors?: Maybe<Array<Scalars['String']['output']>>;
+  errors?: Maybe<Array<Scalars['String']>>;
   /** The UUID of the task */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Amount of items that need to be processed */
-  itemsCount?: Maybe<Scalars['Float']['output']>;
+  itemsCount?: Maybe<Scalars['Float']>;
   /** Amount of items that are already processed */
-  itemsDone?: Maybe<Scalars['Float']['output']>;
+  itemsDone?: Maybe<Scalars['Float']>;
   /** The progress  of the task if the total item count is defined */
-  progress?: Maybe<Scalars['Float']['output']>;
+  progress?: Maybe<Scalars['Float']>;
   /** info about the completed part of the task */
-  results?: Maybe<Array<Scalars['String']['output']>>;
+  results?: Maybe<Array<Scalars['String']>>;
   /** The timestamp when the task was started */
-  start: Scalars['Float']['output'];
+  start: Scalars['Float'];
   /** The current status of the task */
   status: TaskStatus;
   /** TBD */
-  type?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']>;
 };
 
 /** The current status of the task */
@@ -6458,19 +6398,19 @@ export type Template = {
   /** The Community Guidelines for this Template. */
   communityGuidelines?: Maybe<CommunityGuidelines>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The description for Post Templates to users filling out a new Post based on this Template. */
-  postDefaultDescription?: Maybe<Scalars['Markdown']['output']>;
+  postDefaultDescription?: Maybe<Scalars['Markdown']>;
   /** The Profile for this Template. */
   profile: Profile;
   /** The type for this Template. */
   type: TemplateType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Whiteboard for this Template. */
   whiteboard?: Maybe<Whiteboard>;
 };
@@ -6482,15 +6422,15 @@ export type TemplateDefault = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The template accessible via this TemplateDefault, if any. */
   template?: Maybe<Template>;
   /** The type of this TemplateDefault. */
   type: TemplateDefaultType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export enum TemplateDefaultType {
@@ -6522,15 +6462,15 @@ export type TemplatesManager = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The TemplateDefaults in this TemplatesManager. */
   templateDefaults: Array<TemplateDefault>;
   /** The templatesSet in use by this TemplatesManager. */
   templatesSet?: Maybe<TemplatesSet>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type TemplatesSet = {
@@ -6540,33 +6480,33 @@ export type TemplatesSet = {
   /** The CalloutTemplates in this TemplatesSet. */
   calloutTemplates: Array<Template>;
   /** The total number of CalloutTemplates in this TemplatesSet. */
-  calloutTemplatesCount: Scalars['Float']['output'];
+  calloutTemplatesCount: Scalars['Float'];
   /** The CollaborationTemplates in this TemplatesSet. */
   collaborationTemplates: Array<Template>;
   /** The total number of CollaborationTemplates in this TemplatesSet. */
-  collaborationTemplatesCount: Scalars['Float']['output'];
+  collaborationTemplatesCount: Scalars['Float'];
   /** The CommunityGuidelines in this TemplatesSet. */
   communityGuidelinesTemplates: Array<Template>;
   /** The total number of CommunityGuidelinesTemplates in this TemplatesSet. */
-  communityGuidelinesTemplatesCount: Scalars['Float']['output'];
+  communityGuidelinesTemplatesCount: Scalars['Float'];
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Post Templates in this TemplatesSet. */
   postTemplates: Array<Template>;
   /** The total number of Post Templates in this TemplatesSet. */
-  postTemplatesCount: Scalars['Float']['output'];
+  postTemplatesCount: Scalars['Float'];
   /** The Templates in this TemplatesSet. */
   templates: Array<Template>;
   /** The total number of Templates in this TemplatesSet. */
-  templatesCount: Scalars['Float']['output'];
+  templatesCount: Scalars['Float'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
   /** The WhiteboardTemplates in this TemplatesSet. */
   whiteboardTemplates: Array<Template>;
   /** The total number of WhiteboardTemplates in this TemplatesSet. */
-  whiteboardTemplatesCount: Scalars['Float']['output'];
+  whiteboardTemplatesCount: Scalars['Float'];
 };
 
 export type Timeline = {
@@ -6576,92 +6516,92 @@ export type Timeline = {
   /** The Innovation Library for the timeline */
   calendar: Calendar;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type TransferAccountInnovationHubInput = {
   /** The Innovation Hub to be transferred. */
-  innovationHubID: Scalars['UUID']['input'];
+  innovationHubID: Scalars['UUID'];
   /** The Account to which the Innovation Hub will be transferred. */
-  targetAccountID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID'];
 };
 
 export type TransferAccountInnovationPackInput = {
   /** The InnovationPack to be transferred. */
-  innovationPackID: Scalars['UUID']['input'];
+  innovationPackID: Scalars['UUID'];
   /** The Account to which the Innovation Pack will be transferred. */
-  targetAccountID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID'];
 };
 
 export type TransferAccountSpaceInput = {
   /** The Space to be transferred. */
-  spaceID: Scalars['UUID']['input'];
+  spaceID: Scalars['UUID'];
   /** The Account to which the Space will be transferred. */
-  targetAccountID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID'];
 };
 
 export type TransferAccountVirtualContributorInput = {
   /** The Account to which the Virtual Contributor will be transferred. */
-  targetAccountID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID'];
   /** The Virtual Contributor to be transferred. */
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type TransferCalloutInput = {
   /** The Callout to be transferred. */
-  calloutID: Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
   /** The target CalloutsSet to which the Callout will be transferred. */
-  targetCalloutsSetID: Scalars['UUID']['input'];
+  targetCalloutsSetID: Scalars['UUID'];
 };
 
 export type UpdateAiPersonaInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
 };
 
 export type UpdateAiPersonaServiceInput = {
-  ID: Scalars['UUID']['input'];
-  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']['input']>;
+  ID: Scalars['UUID'];
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
-  prompt?: InputMaybe<Array<Scalars['String']['input']>>;
+  prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateApplicationFormOnRoleSetInput = {
   formData: UpdateFormInput;
-  roleSetID: Scalars['UUID']['input'];
+  roleSetID: Scalars['UUID'];
 };
 
 export type UpdateCalendarEventInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The length of the event in days. */
-  durationDays?: InputMaybe<Scalars['Float']['input']>;
+  durationDays?: InputMaybe<Scalars['Float']>;
   /** The length of the event in minutes. */
-  durationMinutes: Scalars['Float']['input'];
+  durationMinutes: Scalars['Float'];
   /** Flag to indicate if this event is for multiple days. */
-  multipleDays: Scalars['Boolean']['input'];
+  multipleDays: Scalars['Boolean'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** The state date for the event. */
-  startDate: Scalars['DateTime']['input'];
+  startDate: Scalars['DateTime'];
   type?: InputMaybe<CalendarEventType>;
   /** Is the event visible on the parent calendar. */
-  visibleOnParentCalendar?: InputMaybe<Scalars['Boolean']['input']>;
+  visibleOnParentCalendar?: InputMaybe<Scalars['Boolean']>;
   /** Flag to indicate if this event is for a whole day. */
-  wholeDay: Scalars['Boolean']['input'];
+  wholeDay: Scalars['Boolean'];
 };
 
 export type UpdateCalloutContributionDefaultsInput = {
   /** The default description to use for new Post contributions. */
-  postDescription?: InputMaybe<Scalars['Markdown']['input']>;
+  postDescription?: InputMaybe<Scalars['Markdown']>;
   /** The default description to use for new Whiteboard contributions. */
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
 export type UpdateCalloutContributionPolicyInput = {
@@ -6670,48 +6610,48 @@ export type UpdateCalloutContributionPolicyInput = {
 };
 
 export type UpdateCalloutEntityInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   classification?: InputMaybe<UpdateClassificationInput>;
   contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
   contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
   framing?: InputMaybe<UpdateCalloutFramingInput>;
   /** Set Group for this Callout. */
-  groupName?: InputMaybe<Scalars['String']['input']>;
+  groupName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The sort order to assign to this Callout. */
-  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  sortOrder?: InputMaybe<Scalars['Float']>;
 };
 
 export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The new content to be used. */
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
 export type UpdateCalloutPublishInfoInput = {
   /** The identifier for the Callout whose publisher is to be updated. */
-  calloutID: Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
   /** The timestamp to set for the publishing of the Callout. */
-  publishDate?: InputMaybe<Scalars['Float']['input']>;
+  publishDate?: InputMaybe<Scalars['Float']>;
   /** The identifier of the publisher of the Callout. */
-  publisherID?: InputMaybe<Scalars['UUID']['input']>;
+  publisherID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type UpdateCalloutVisibilityInput = {
   /** The identifier for the Callout whose visibility is to be updated. */
-  calloutID: Scalars['String']['input'];
+  calloutID: Scalars['String'];
   /** Send a notification on publishing. */
-  sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
+  sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
 };
 
 export type UpdateCalloutsSortOrderInput = {
   /** The IDs of the callouts to update the sort order on */
-  calloutIDs: Array<Scalars['UUID']['input']>;
-  calloutsSetID: Scalars['UUID']['input'];
+  calloutIDs: Array<Scalars['UUID']>;
+  calloutsSetID: Scalars['UUID'];
 };
 
 export type UpdateClassificationInput = {
@@ -6719,71 +6659,71 @@ export type UpdateClassificationInput = {
 };
 
 export type UpdateClassificationSelectTagsetValueInput = {
-  classificationID: Scalars['UUID']['input'];
-  selectedValue: Scalars['String']['input'];
-  tagsetName: Scalars['String']['input'];
+  classificationID: Scalars['UUID'];
+  selectedValue: Scalars['String'];
+  tagsetName: Scalars['String'];
 };
 
 export type UpdateCollaborationFromTemplateInput = {
   /** Add the Callouts from the Collaboration Template */
-  addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  addCallouts?: InputMaybe<Scalars['Boolean']>;
   /** ID of the Collaboration to be updated */
-  collaborationID: Scalars['UUID']['input'];
+  collaborationID: Scalars['UUID'];
   /** The Collaboration Template that will be used for updates to the Collaboration */
-  collaborationTemplateID: Scalars['UUID']['input'];
+  collaborationTemplateID: Scalars['UUID'];
 };
 
 export type UpdateCommunityGuidelinesEntityInput = {
   /** ID of the CommunityGuidelines */
-  communityGuidelinesID: Scalars['UUID']['input'];
+  communityGuidelinesID: Scalars['UUID'];
   /** The Profile for this community guidelines. */
   profile: UpdateProfileInput;
 };
 
 export type UpdateContributionCalloutsSortOrderInput = {
-  calloutID: Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
   /** The IDs of the contributions to update the sort order on */
-  contributionIDs: Array<Scalars['UUID']['input']>;
+  contributionIDs: Array<Scalars['UUID']>;
 };
 
 export type UpdateDiscussionInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The category for the Discussion */
   category?: InputMaybe<ForumDiscussionCategory>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateDocumentInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The display name for the Document. */
-  displayName: Scalars['String']['input'];
+  displayName: Scalars['String'];
   tagset?: InputMaybe<UpdateTagsetInput>;
 };
 
 export type UpdateFormInput = {
-  description: Scalars['Markdown']['input'];
+  description: Scalars['Markdown'];
   questions: Array<UpdateFormQuestionInput>;
 };
 
 export type UpdateFormQuestionInput = {
   /** The explation text to clarify the question. */
-  explanation: Scalars['String']['input'];
+  explanation: Scalars['String'];
   /** The maxiumum length of the answer, in characters, up to a limit of 512. */
-  maxLength: Scalars['Float']['input'];
+  maxLength: Scalars['Float'];
   /** The question to be answered */
-  question: Scalars['String']['input'];
+  question: Scalars['String'];
   /** Whether an answer is required for this Question. */
-  required: Scalars['Boolean']['input'];
+  required: Scalars['Boolean'];
   /** The sort order of this question in a wider set of questions. */
-  sortOrder: Scalars['Float']['input'];
+  sortOrder: Scalars['Float'];
 };
 
 export type UpdateInnovationFlowEntityInput = {
   /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID']['input'];
+  innovationFlowID: Scalars['UUID'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
@@ -6791,48 +6731,48 @@ export type UpdateInnovationFlowEntityInput = {
 
 export type UpdateInnovationFlowSelectedStateInput = {
   /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID']['input'];
+  innovationFlowID: Scalars['UUID'];
   /** The State that the Innovation Flow is in */
-  selectedState: Scalars['String']['input'];
+  selectedState: Scalars['String'];
 };
 
 export type UpdateInnovationFlowSingleStateInput = {
   /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID']['input'];
+  innovationFlowID: Scalars['UUID'];
   /** The name of the Innovation Flow State to be updated */
-  stateDisplayName: Scalars['String']['input'];
+  stateDisplayName: Scalars['String'];
   stateUpdatedData: UpdateInnovationFlowStateInput;
 };
 
 export type UpdateInnovationFlowStateInput = {
   /** The explation text to clarify the State. */
-  description?: InputMaybe<Scalars['Markdown']['input']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the State */
-  displayName: Scalars['String']['input'];
+  displayName: Scalars['String'];
 };
 
 export type UpdateInnovationHubInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** Flag to control the visibility of the InnovationHub in the platform store. */
-  listedInStore?: InputMaybe<Scalars['Boolean']['input']>;
+  listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Visibility of the InnovationHub in searches. */
   searchVisibility?: InputMaybe<SearchVisibility>;
   /** A list of Spaces to include in this Innovation Hub. Only valid when type 'list' is used. */
-  spaceListFilter?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  spaceListFilter?: InputMaybe<Array<Scalars['UUID']>>;
   /** Spaces with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
   spaceVisibilityFilter?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateInnovationPackInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** Flag to control the visibility of the InnovationPack in the platform Library. */
-  listedInStore?: InputMaybe<Scalars['Boolean']['input']>;
+  listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Visibility of the InnovationPack in searches. */
@@ -6845,70 +6785,70 @@ export type UpdateKnowledgeBaseInput = {
 };
 
 export type UpdateLicensePlanInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** Assign this plan to all new Organization accounts */
-  assignToNewOrganizationAccounts?: InputMaybe<Scalars['Boolean']['input']>;
+  assignToNewOrganizationAccounts?: InputMaybe<Scalars['Boolean']>;
   /** Assign this plan to all new User accounts */
-  assignToNewUserAccounts?: InputMaybe<Scalars['Boolean']['input']>;
+  assignToNewUserAccounts?: InputMaybe<Scalars['Boolean']>;
   /** Is this plan enabled? */
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']>;
   /** Is this plan free? */
-  isFree?: InputMaybe<Scalars['Boolean']['input']>;
+  isFree?: InputMaybe<Scalars['Boolean']>;
   /** The credential to represent this plan */
   licenseCredential?: InputMaybe<LicensingCredentialBasedCredentialType>;
   /** The price per month of this plan. */
-  pricePerMonth?: InputMaybe<Scalars['Float']['input']>;
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
   /** Does this plan require contact support */
-  requiresContactSupport?: InputMaybe<Scalars['Boolean']['input']>;
+  requiresContactSupport?: InputMaybe<Scalars['Boolean']>;
   /** Does this plan require a payment method? */
-  requiresPaymentMethod?: InputMaybe<Scalars['Boolean']['input']>;
+  requiresPaymentMethod?: InputMaybe<Scalars['Boolean']>;
   /** The sorting order for this Plan. */
-  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** Is there a trial period enabled */
-  trialEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  trialEnabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateLinkInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The Profile of the Link. */
   profile?: InputMaybe<UpdateProfileInput>;
-  uri?: InputMaybe<Scalars['String']['input']>;
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateLocationInput = {
-  addressLine1?: InputMaybe<Scalars['String']['input']>;
-  addressLine2?: InputMaybe<Scalars['String']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  postalCode?: InputMaybe<Scalars['String']['input']>;
-  stateOrProvince?: InputMaybe<Scalars['String']['input']>;
+  addressLine1?: InputMaybe<Scalars['String']>;
+  addressLine2?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  stateOrProvince?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateNotificationStateInput = {
   /** The ID of the notification to update. */
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The new state of the notification. */
   state: InAppNotificationState;
 };
 
 export type UpdateOrganizationInput = {
   /** The ID of the Organization to update. */
-  ID: Scalars['UUID']['input'];
-  contactEmail?: InputMaybe<Scalars['String']['input']>;
-  domain?: InputMaybe<Scalars['String']['input']>;
-  legalEntityName?: InputMaybe<Scalars['String']['input']>;
+  ID: Scalars['UUID'];
+  contactEmail?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']>;
+  legalEntityName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  website?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateOrganizationPlatformSettingsInput = {
   /** Upate the URL path for the Organization. */
-  nameID: Scalars['NameID']['input'];
+  nameID: Scalars['NameID'];
   /** The ID of the Organization to update. */
-  organizationID: Scalars['UUID']['input'];
+  organizationID: Scalars['UUID'];
 };
 
 export type UpdateOrganizationSettingsEntityInput = {
@@ -6918,19 +6858,19 @@ export type UpdateOrganizationSettingsEntityInput = {
 
 export type UpdateOrganizationSettingsInput = {
   /** The identifier for the Organization whose settings are to be updated. */
-  organizationID: Scalars['UUID']['input'];
+  organizationID: Scalars['UUID'];
   /** Update the settings for the Organization. */
   settings: UpdateOrganizationSettingsEntityInput;
 };
 
 export type UpdateOrganizationSettingsMembershipInput = {
   /** Allow Users with email addresses matching the domain of this Organization to join. */
-  allowUsersMatchingDomainToJoin: Scalars['Boolean']['input'];
+  allowUsersMatchingDomainToJoin: Scalars['Boolean'];
 };
 
 export type UpdateOrganizationSettingsPrivacyInput = {
   /** Allow contribution roles (membership, lead etc) in Spaces to be visible. */
-  contributionRolesPubliclyVisible: Scalars['Boolean']['input'];
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
 export type UpdatePlatformSettingsInput = {
@@ -6939,79 +6879,79 @@ export type UpdatePlatformSettingsInput = {
 
 export type UpdatePlatformSettingsIntegrationInput = {
   /** Update the list of allowed URLs for iFrames within Markdown content. */
-  iframeAllowedUrls: Array<Scalars['String']['input']>;
+  iframeAllowedUrls: Array<Scalars['String']>;
 };
 
 export type UpdatePostInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateProfileDirectInput = {
-  description?: InputMaybe<Scalars['Markdown']['input']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']['input']>;
+  displayName?: InputMaybe<Scalars['String']>;
   location?: InputMaybe<UpdateLocationInput>;
-  profileID: Scalars['UUID']['input'];
+  profileID: Scalars['UUID'];
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** A memorable short description for this entity. */
-  tagline?: InputMaybe<Scalars['String']['input']>;
+  tagline?: InputMaybe<Scalars['String']>;
   tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateProfileInput = {
-  description?: InputMaybe<Scalars['Markdown']['input']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']['input']>;
+  displayName?: InputMaybe<Scalars['String']>;
   location?: InputMaybe<UpdateLocationInput>;
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** A memorable short description for this entity. */
-  tagline?: InputMaybe<Scalars['String']['input']>;
+  tagline?: InputMaybe<Scalars['String']>;
   tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateReferenceInput = {
-  ID: Scalars['UUID']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  uri?: InputMaybe<Scalars['String']['input']>;
+  ID: Scalars['UUID'];
+  description?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSpaceAboutInput = {
   /** The Profile of this Space. */
   profile?: InputMaybe<UpdateProfileInput>;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
-  who?: InputMaybe<Scalars['Markdown']['input']>;
-  why?: InputMaybe<Scalars['Markdown']['input']>;
+  when?: InputMaybe<Scalars['Markdown']>;
+  who?: InputMaybe<Scalars['Markdown']>;
+  why?: InputMaybe<Scalars['Markdown']>;
 };
 
 export type UpdateSpaceInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** Update the Space About information. */
   about?: InputMaybe<UpdateSpaceAboutInput>;
 };
 
 export type UpdateSpacePlatformSettingsInput = {
   /** Upate the URL path for the Space. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The identifier for the Space whose license etc is to be updated. */
-  spaceID: Scalars['UUID']['input'];
+  spaceID: Scalars['UUID'];
   /** Visibility of the Space, only on L0 spaces. */
   visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
-  allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  allowEventsFromSubspaces: Scalars['Boolean'];
   /** Flag to control if members can create callouts. */
-  allowMembersToCreateCallouts: Scalars['Boolean']['input'];
+  allowMembersToCreateCallouts: Scalars['Boolean'];
   /** Flag to control if members can create subspaces. */
-  allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  allowMembersToCreateSubspaces: Scalars['Boolean'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
-  inheritMembershipRights: Scalars['Boolean']['input'];
+  inheritMembershipRights: Scalars['Boolean'];
 };
 
 export type UpdateSpaceSettingsEntityInput = {
@@ -7024,93 +6964,93 @@ export type UpdateSpaceSettingsInput = {
   /** Update the settings for the Space. */
   settings: UpdateSpaceSettingsEntityInput;
   /** The identifier for the Space whose settings are to be updated. */
-  spaceID: Scalars['String']['input'];
+  spaceID: Scalars['String'];
 };
 
 export type UpdateSpaceSettingsMembershipInput = {
   /** Flag to control if Subspace admins can invite for this Space. */
-  allowSubspaceAdminsToInviteMembers: Scalars['Boolean']['input'];
+  allowSubspaceAdminsToInviteMembers: Scalars['Boolean'];
   /** The membership policy in usage for this Space */
   policy: CommunityMembershipPolicy;
   /** The organizations that are trusted to Join as members for this Space */
-  trustedOrganizations: Array<Scalars['UUID']['input']>;
+  trustedOrganizations: Array<Scalars['UUID']>;
 };
 
 export type UpdateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
-  allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
+  allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']>;
   mode?: InputMaybe<SpacePrivacyMode>;
 };
 
 export type UpdateTagsetInput = {
-  ID: Scalars['UUID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-  tags: Array<Scalars['String']['input']>;
+  ID: Scalars['UUID'];
+  name?: InputMaybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
 };
 
 export type UpdateTemplateDefaultTemplateInput = {
   /** The identifier for the TemplateDefault to be updated. */
-  templateDefaultID: Scalars['UUID']['input'];
+  templateDefaultID: Scalars['UUID'];
   /** The ID for the Template to use. */
-  templateID: Scalars['UUID']['input'];
+  templateID: Scalars['UUID'];
 };
 
 export type UpdateTemplateFromCollaborationInput = {
   /** The Collaboration whose content should be copied to this Template. */
-  collaborationID: Scalars['UUID']['input'];
+  collaborationID: Scalars['UUID'];
   /** The ID of the Template. */
-  templateID: Scalars['UUID']['input'];
+  templateID: Scalars['UUID'];
 };
 
 export type UpdateTemplateInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The default description to be pre-filled when users create Posts based on this template. */
-  postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
+  postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The new content to be used. */
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
 export type UpdateUserGroupInput = {
-  ID: Scalars['UUID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
+  ID: Scalars['UUID'];
+  name?: InputMaybe<Scalars['String']>;
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateUserInput = {
-  ID: Scalars['UUID']['input'];
-  accountUpn?: InputMaybe<Scalars['String']['input']>;
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  lastName?: InputMaybe<Scalars['String']['input']>;
+  ID: Scalars['UUID'];
+  accountUpn?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
+  phone?: InputMaybe<Scalars['String']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Set this user profile as being used as a service account or not. */
-  serviceProfile?: InputMaybe<Scalars['Boolean']['input']>;
+  serviceProfile?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateUserPlatformSettingsInput = {
-  email?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']>;
   /** Upate the URL path for the User. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The identifier for the User whose platform managed information is to be updated. */
-  userID: Scalars['String']['input'];
+  userID: Scalars['String'];
 };
 
 export type UpdateUserPreferenceInput = {
   /** Type of the user preference */
   type: PreferenceType;
   /** ID of the User */
-  userID: Scalars['UUID']['input'];
-  value: Scalars['String']['input'];
+  userID: Scalars['UUID'];
+  value: Scalars['String'];
 };
 
 export type UpdateUserSettingsCommunicationInput = {
   /** Allow Users to send messages to this User. */
-  allowOtherUsersToSendMessages: Scalars['Boolean']['input'];
+  allowOtherUsersToSendMessages: Scalars['Boolean'];
 };
 
 export type UpdateUserSettingsEntityInput = {
@@ -7124,23 +7064,23 @@ export type UpdateUserSettingsInput = {
   /** Update the settings for the User. */
   settings: UpdateUserSettingsEntityInput;
   /** The identifier for the User whose settings are to be updated. */
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type UpdateUserSettingsPrivacyInput = {
   /** Allow contribution roles (communication, lead etc) in Spaces to be visible. */
-  contributionRolesPubliclyVisible: Scalars['Boolean']['input'];
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
 export type UpdateVirtualContributorInput = {
   /** The ID of the Virtual Contributor to update. */
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   /** The KnowledgeBase to use for this Collaboration. */
   knowledgeBaseData?: InputMaybe<UpdateKnowledgeBaseInput>;
   /** Flag to control the visibility of the VC in the platform store. */
-  listedInStore?: InputMaybe<Scalars['Boolean']['input']>;
+  listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Visibility of the VC in searches. */
@@ -7155,54 +7095,54 @@ export type UpdateVirtualContributorSettingsInput = {
   /** Update the settings for the VirtualContributor. */
   settings: UpdateVirtualContributorSettingsEntityInput;
   /** The identifier for the VirtualCOntributor whose settings are to be updated. */
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type UpdateVirtualContributorSettingsPrivacyInput = {
   /** Enable the content of knowledge bases to be accessed or not. */
-  knowledgeBaseContentVisible: Scalars['Boolean']['input'];
+  knowledgeBaseContentVisible: Scalars['Boolean'];
 };
 
 export type UpdateVisualInput = {
-  alternativeText?: InputMaybe<Scalars['String']['input']>;
-  uri: Scalars['String']['input'];
-  visualID: Scalars['String']['input'];
+  alternativeText?: InputMaybe<Scalars['String']>;
+  uri: Scalars['String'];
+  visualID: Scalars['String'];
 };
 
 export type UpdateWhiteboardEntityInput = {
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UrlResolverQueryResultCalendar = {
   __typename?: 'UrlResolverQueryResultCalendar';
-  calendarEventId?: Maybe<Scalars['UUID']['output']>;
-  id: Scalars['UUID']['output'];
+  calendarEventId?: Maybe<Scalars['UUID']>;
+  id: Scalars['UUID'];
 };
 
 export type UrlResolverQueryResultCalloutsSet = {
   __typename?: 'UrlResolverQueryResultCalloutsSet';
-  calloutId?: Maybe<Scalars['UUID']['output']>;
-  contributionId?: Maybe<Scalars['UUID']['output']>;
-  id: Scalars['UUID']['output'];
-  postId?: Maybe<Scalars['UUID']['output']>;
+  calloutId?: Maybe<Scalars['UUID']>;
+  contributionId?: Maybe<Scalars['UUID']>;
+  id: Scalars['UUID'];
+  postId?: Maybe<Scalars['UUID']>;
   type: UrlType;
-  whiteboardId?: Maybe<Scalars['UUID']['output']>;
+  whiteboardId?: Maybe<Scalars['UUID']>;
 };
 
 export type UrlResolverQueryResultCollaboration = {
   __typename?: 'UrlResolverQueryResultCollaboration';
   calloutsSet: UrlResolverQueryResultCalloutsSet;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
 };
 
 export type UrlResolverQueryResultInnovationPack = {
   __typename?: 'UrlResolverQueryResultInnovationPack';
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   templatesSet: UrlResolverQueryResultTemplatesSet;
 };
 
@@ -7210,34 +7150,34 @@ export type UrlResolverQueryResultSpace = {
   __typename?: 'UrlResolverQueryResultSpace';
   calendar?: Maybe<UrlResolverQueryResultCalendar>;
   collaboration: UrlResolverQueryResultCollaboration;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   level: SpaceLevel;
-  levelZeroSpaceID: Scalars['UUID']['output'];
-  parentSpaces: Array<Scalars['UUID']['output']>;
+  levelZeroSpaceID: Scalars['UUID'];
+  parentSpaces: Array<Scalars['UUID']>;
   templatesSet?: Maybe<UrlResolverQueryResultTemplatesSet>;
 };
 
 export type UrlResolverQueryResultTemplatesSet = {
   __typename?: 'UrlResolverQueryResultTemplatesSet';
-  id: Scalars['UUID']['output'];
-  templateId?: Maybe<Scalars['UUID']['output']>;
+  id: Scalars['UUID'];
+  templateId?: Maybe<Scalars['UUID']>;
 };
 
 export type UrlResolverQueryResultVirtualContributor = {
   __typename?: 'UrlResolverQueryResultVirtualContributor';
   calloutsSet: UrlResolverQueryResultCalloutsSet;
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
 };
 
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
-  discussionId?: Maybe<Scalars['UUID']['output']>;
-  innovationHubId?: Maybe<Scalars['UUID']['output']>;
+  discussionId?: Maybe<Scalars['UUID']>;
+  innovationHubId?: Maybe<Scalars['UUID']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
-  organizationId?: Maybe<Scalars['UUID']['output']>;
+  organizationId?: Maybe<Scalars['UUID']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
   type: UrlType;
-  userId?: Maybe<Scalars['UUID']['output']>;
+  userId?: Maybe<Scalars['UUID']>;
   virtualContributor?: Maybe<UrlResolverQueryResultVirtualContributor>;
 };
 
@@ -7270,7 +7210,7 @@ export type User = Contributor & {
   /** The account hosted by this User. */
   account?: Maybe<Account>;
   /** The unique personal identifier (upn) for the account associated with this user profile */
-  accountUpn: Scalars['String']['output'];
+  accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
   /** Details about the authentication used for this User. */
@@ -7280,23 +7220,23 @@ export type User = Contributor & {
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The direct rooms this user is a member of */
   directRooms?: Maybe<Array<DirectRoom>>;
   /** The email address for this User. */
-  email: Scalars['String']['output'];
-  firstName: Scalars['String']['output'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
   /** Guidance Chat Room for this user */
   guidanceRoom?: Maybe<Room>;
   /** The ID of the Contributor */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Can a message be sent to this User. */
-  isContactable: Scalars['Boolean']['output'];
-  lastName: Scalars['String']['output'];
+  isContactable: Scalars['Boolean'];
+  lastName: Scalars['String'];
   /** A name identifier of the Contributor, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The phone number for this User. */
-  phone?: Maybe<Scalars['String']['output']>;
+  phone?: Maybe<Scalars['String']>;
   /** The preferences for this user */
   preferences: Array<Preference>;
   /** The Profile for this User. */
@@ -7306,36 +7246,36 @@ export type User = Contributor & {
   /** The StorageAggregator for managing storage buckets in use by this User */
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type UserAuthenticationResult = {
   __typename?: 'UserAuthenticationResult';
   /** When the Kratos Account for the user last logged in */
-  authenticatedAt?: Maybe<Scalars['DateTime']['output']>;
+  authenticatedAt?: Maybe<Scalars['DateTime']>;
   /** When the Kratos Account for the user was created */
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
   /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
   method: AuthenticationType;
 };
 
 export type UserAuthorizationPrivilegesInput = {
   /** The authorization definition to evaluate the user credentials against. */
-  authorizationID: Scalars['UUID']['input'];
+  authorizationID: Scalars['UUID'];
   /** The user to evaluate privileges granted based on held credentials. */
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type UserAuthorizationResetInput = {
   /** The identifier of the User whose Authorization Policy should be reset. */
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 };
 
 export type UserFilterInput = {
-  displayName?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  lastName?: InputMaybe<Scalars['String']['input']>;
+  displayName?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
 };
 
 export type UserGroup = {
@@ -7343,9 +7283,9 @@ export type UserGroup = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The Users that are members of this User Group. */
   members?: Maybe<Array<User>>;
   /** Containing entity for this UserGroup. */
@@ -7353,14 +7293,14 @@ export type UserGroup = {
   /** The profile for the user group */
   profile?: Maybe<Profile>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type UserSendMessageInput = {
   /** The message being sent */
-  message: Scalars['String']['input'];
+  message: Scalars['String'];
   /** The user a message is being sent to */
-  receivingUserID: Scalars['String']['input'];
+  receivingUserID: Scalars['String'];
 };
 
 export type UserSettings = {
@@ -7374,13 +7314,13 @@ export type UserSettings = {
 export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
   /** Allow Users to send messages to this User. */
-  allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
+  allowOtherUsersToSendMessages: Scalars['Boolean'];
 };
 
 export type UserSettingsPrivacy = {
   __typename?: 'UserSettingsPrivacy';
   /** Allow contribution roles (communication, lead etc) in Spaces to be visible. */
-  contributionRolesPubliclyVisible: Scalars['Boolean']['output'];
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
 export type UsersInRolesResponse = {
@@ -7391,7 +7331,7 @@ export type UsersInRolesResponse = {
 
 export type UsersWithAuthorizationCredentialInput = {
   /** The resource to which a credential needs to be bound. */
-  resourceID?: InputMaybe<Scalars['UUID']['input']>;
+  resourceID?: InputMaybe<Scalars['UUID']>;
   /** The type of credential. */
   type: AuthorizationCredential;
 };
@@ -7399,14 +7339,14 @@ export type UsersWithAuthorizationCredentialInput = {
 export type VcInteraction = {
   __typename?: 'VcInteraction';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   room: Room;
-  threadID: Scalars['String']['output'];
+  threadID: Scalars['String'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
-  virtualContributorID: Scalars['UUID']['output'];
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type VerifiedCredential = {
@@ -7414,25 +7354,25 @@ export type VerifiedCredential = {
   /** The time at which the credential is no longer valid */
   claims: Array<VerifiedCredentialClaim>;
   /** JSON for the context in the credential */
-  context: Scalars['JSON']['output'];
+  context: Scalars['JSON'];
   /** The time at which the credential is no longer valid */
-  expires: Scalars['String']['output'];
+  expires: Scalars['String'];
   /** The time at which the credential was issued */
-  issued: Scalars['String']['output'];
+  issued: Scalars['String'];
   /** The party issuing the VC */
-  issuer: Scalars['String']['output'];
+  issuer: Scalars['String'];
   /** The name of the VC */
-  name: Scalars['String']['output'];
+  name: Scalars['String'];
   /** The type of VC */
-  type: Scalars['String']['output'];
+  type: Scalars['String'];
 };
 
 export type VerifiedCredentialClaim = {
   __typename?: 'VerifiedCredentialClaim';
   /** The name of the claim */
-  name: Scalars['JSON']['output'];
+  name: Scalars['JSON'];
   /** The value for the claim */
-  value: Scalars['JSON']['output'];
+  value: Scalars['JSON'];
 };
 
 export type VirtualContributor = Contributor & {
@@ -7446,15 +7386,15 @@ export type VirtualContributor = Contributor & {
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the Contributor */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** The KnowledgeBase being used by this virtual contributor */
   knowledgeBase?: Maybe<KnowledgeBase>;
   /** Flag to control if this VC is listed in the platform store. */
-  listedInStore: Scalars['Boolean']['output'];
+  listedInStore: Scalars['Boolean'];
   /** A name identifier of the Contributor, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The profile for this Virtual. */
   profile: Profile;
   /** The Virtual Contributor provider. */
@@ -7466,7 +7406,7 @@ export type VirtualContributor = Contributor & {
   /** The status of the virtual contributor */
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type VirtualContributorSettings = {
@@ -7478,7 +7418,7 @@ export type VirtualContributorSettings = {
 export type VirtualContributorSettingsPrivacy = {
   __typename?: 'VirtualContributorSettingsPrivacy';
   /** Are the contents of the knowledge base publicly visible. */
-  knowledgeBaseContentVisible: Scalars['Boolean']['output'];
+  knowledgeBaseContentVisible: Scalars['Boolean'];
 };
 
 export enum VirtualContributorStatus {
@@ -7501,44 +7441,44 @@ export type VirtualContributorsInRolesResponse = {
 
 export type Visual = {
   __typename?: 'Visual';
-  allowedTypes: Array<Scalars['String']['output']>;
-  alternativeText?: Maybe<Scalars['String']['output']>;
+  allowedTypes: Array<Scalars['String']>;
+  alternativeText?: Maybe<Scalars['String']>;
   /** Post ratio width / height. */
-  aspectRatio: Scalars['Float']['output'];
+  aspectRatio: Scalars['Float'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Maximum height resolution. */
-  maxHeight: Scalars['Float']['output'];
+  maxHeight: Scalars['Float'];
   /** Maximum width resolution. */
-  maxWidth: Scalars['Float']['output'];
+  maxWidth: Scalars['Float'];
   /** Minimum height resolution. */
-  minHeight: Scalars['Float']['output'];
+  minHeight: Scalars['Float'];
   /** Minimum width resolution. */
-  minWidth: Scalars['Float']['output'];
-  name: Scalars['String']['output'];
+  minWidth: Scalars['Float'];
+  name: Scalars['String'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
-  uri: Scalars['String']['output'];
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  uri: Scalars['String'];
 };
 
 export type VisualConstraints = {
   __typename?: 'VisualConstraints';
   /** Allowed file types. */
-  allowedTypes: Array<Scalars['String']['output']>;
+  allowedTypes: Array<Scalars['String']>;
   /** Dimensions ratio width / height. */
-  aspectRatio: Scalars['Float']['output'];
+  aspectRatio: Scalars['Float'];
   /** Maximum height resolution. */
-  maxHeight: Scalars['Float']['output'];
+  maxHeight: Scalars['Float'];
   /** Maximum width resolution. */
-  maxWidth: Scalars['Float']['output'];
+  maxWidth: Scalars['Float'];
   /** Minimum height resolution. */
-  minHeight: Scalars['Float']['output'];
+  minHeight: Scalars['Float'];
   /** Minimum width resolution. */
-  minWidth: Scalars['Float']['output'];
+  minWidth: Scalars['Float'];
 };
 
 export enum VisualType {
@@ -7549,8 +7489,8 @@ export enum VisualType {
 }
 
 export type VisualUploadImageInput = {
-  alternativeText?: InputMaybe<Scalars['String']['input']>;
-  visualID: Scalars['String']['input'];
+  alternativeText?: InputMaybe<Scalars['String']>;
+  visualID: Scalars['String'];
 };
 
 export type Whiteboard = {
@@ -7558,27 +7498,27 @@ export type Whiteboard = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The visual content of the Whiteboard. */
-  content: Scalars['WhiteboardContent']['output'];
+  content: Scalars['WhiteboardContent'];
   /** The policy governing who can update the Whiteboard contet. */
   contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this Whiteboard */
   createdBy?: Maybe<User>;
   /** The date at which the Whiteboard was created. */
-  createdDate: Scalars['DateTime']['output'];
+  createdDate: Scalars['DateTime'];
   /** The ID of the entity */
-  id: Scalars['UUID']['output'];
+  id: Scalars['UUID'];
   /** Whether the Whiteboard is multi-user enabled on Space level. */
-  isMultiUser: Scalars['Boolean']['output'];
+  isMultiUser: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  nameID: Scalars['NameID'];
   /** The Profile for this Whiteboard. */
   profile: Profile;
   /** The date at which the Whiteboard was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type UploadFileOnReferenceMutationVariables = Exact<{
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileOnReferenceInput;
 }>;
 
@@ -7588,7 +7528,7 @@ export type UploadFileOnReferenceMutation = {
 };
 
 export type UploadFileOnLinkMutationVariables = Exact<{
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileOnLinkInput;
 }>;
 
@@ -7598,7 +7538,7 @@ export type UploadFileOnLinkMutation = {
 };
 
 export type UploadFileMutationVariables = Exact<{
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileInput;
 }>;
 
@@ -7629,7 +7569,7 @@ export type DefaultVisualTypeConstraintsQuery = {
 };
 
 export type InnovationPackProfilePageQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID']['input'];
+  innovationPackId: Scalars['UUID'];
 }>;
 
 export type InnovationPackProfilePageQuery = {
@@ -7730,7 +7670,7 @@ export type AdminInnovationPacksListQuery = {
 };
 
 export type DeleteInnovationPackMutationVariables = Exact<{
-  innovationPackId: Scalars['UUID']['input'];
+  innovationPackId: Scalars['UUID'];
 }>;
 
 export type DeleteInnovationPackMutation = {
@@ -7761,7 +7701,7 @@ export type InnovationPackProfileFragment = {
 };
 
 export type AdminInnovationPackQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID']['input'];
+  innovationPackId: Scalars['UUID'];
 }>;
 
 export type AdminInnovationPackQuery = {
@@ -7968,9 +7908,9 @@ export type InnovationPackCardFragment = {
 };
 
 export type ApplicationButtonQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-  parentSpaceId?: Scalars['UUID']['input'];
-  includeParentSpace?: Scalars['Boolean']['input'];
+  spaceId: Scalars['UUID'];
+  parentSpaceId?: Scalars['UUID'];
+  includeParentSpace?: Scalars['Boolean'];
 }>;
 
 export type ApplicationButtonQuery = {
@@ -8002,7 +7942,7 @@ export type ApplicationButtonQuery = {
         }
       | undefined;
   };
-  parentSpace?: {
+  parentSpace: {
     __typename?: 'LookupQueryResults';
     space?:
       | {
@@ -8033,7 +7973,7 @@ export type ApplicationButtonQuery = {
 };
 
 export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   questions: Array<CreateNvpInput> | CreateNvpInput;
 }>;
 
@@ -8052,14 +7992,14 @@ export type EventOnApplicationMutation = {
 };
 
 export type JoinRoleSetMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
 }>;
 
 export type JoinRoleSetMutation = { __typename?: 'Mutation'; joinRoleSet: { __typename?: 'RoleSet'; id: string } };
 
 export type InvitationStateEventMutationVariables = Exact<{
-  eventName: Scalars['String']['input'];
-  invitationId: Scalars['UUID']['input'];
+  eventName: Scalars['String'];
+  invitationId: Scalars['UUID'];
 }>;
 
 export type InvitationStateEventMutation = {
@@ -8068,10 +8008,10 @@ export type InvitationStateEventMutation = {
 };
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
-  invitedContributorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
-  invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
-  welcomeMessage?: InputMaybe<Scalars['String']['input']>;
+  roleSetId: Scalars['UUID'];
+  invitedContributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
+  invitedUserEmails: Array<Scalars['String']> | Scalars['String'];
+  welcomeMessage?: InputMaybe<Scalars['String']>;
   extraRole?: InputMaybe<RoleName>;
 }>;
 
@@ -8086,7 +8026,7 @@ export type InviteForEntryRoleOnRoleSetMutation = {
 };
 
 export type DeleteInvitationMutationVariables = Exact<{
-  invitationId: Scalars['UUID']['input'];
+  invitationId: Scalars['UUID'];
 }>;
 
 export type DeleteInvitationMutation = {
@@ -8095,7 +8035,7 @@ export type DeleteInvitationMutation = {
 };
 
 export type DeletePlatformInvitationMutationVariables = Exact<{
-  invitationId: Scalars['UUID']['input'];
+  invitationId: Scalars['UUID'];
 }>;
 
 export type DeletePlatformInvitationMutation = {
@@ -8104,7 +8044,7 @@ export type DeletePlatformInvitationMutation = {
 };
 
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
 }>;
 
 export type CommunityApplicationsInvitationsQuery = {
@@ -8537,8 +8477,8 @@ export type AvailableUsersForRoleSetPaginatedFragment = {
 };
 
 export type PlatformRoleAvailableUsersQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
@@ -8557,9 +8497,9 @@ export type PlatformRoleAvailableUsersQuery = {
 };
 
 export type AvailableUsersForEntryRoleQueryVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  roleSetId: Scalars['UUID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
@@ -8586,10 +8526,10 @@ export type AvailableUsersForEntryRoleQuery = {
 };
 
 export type AvailableUsersForElevatedRoleQueryVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
@@ -8616,8 +8556,8 @@ export type AvailableUsersForElevatedRoleQuery = {
 };
 
 export type AvailableOrganizationsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<OrganizationFilterInput>;
 }>;
 
@@ -8642,7 +8582,7 @@ export type AvailableOrganizationsQuery = {
 
 export type AssignPlatformRoleToUserMutationVariables = Exact<{
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignPlatformRoleToUserMutation = {
@@ -8651,9 +8591,9 @@ export type AssignPlatformRoleToUserMutation = {
 };
 
 export type AssignRoleToUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignRoleToUserMutation = {
@@ -8662,9 +8602,9 @@ export type AssignRoleToUserMutation = {
 };
 
 export type AssignRoleToOrganizationMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignRoleToOrganizationMutation = {
@@ -8673,9 +8613,9 @@ export type AssignRoleToOrganizationMutation = {
 };
 
 export type AssignRoleToVirtualContributorMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignRoleToVirtualContributorMutation = {
@@ -8685,7 +8625,7 @@ export type AssignRoleToVirtualContributorMutation = {
 
 export type RemovePlatformRoleFromUserMutationVariables = Exact<{
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemovePlatformRoleFromUserMutation = {
@@ -8698,9 +8638,9 @@ export type RemovePlatformRoleFromUserMutation = {
 };
 
 export type RemoveRoleFromUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemoveRoleFromUserMutation = {
@@ -8709,9 +8649,9 @@ export type RemoveRoleFromUserMutation = {
 };
 
 export type RemoveRoleFromOrganizationMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemoveRoleFromOrganizationMutation = {
@@ -8720,9 +8660,9 @@ export type RemoveRoleFromOrganizationMutation = {
 };
 
 export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   role: RoleName;
-  contributorId: Scalars['UUID']['input'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemoveRoleFromVirtualContributorMutation = {
@@ -8828,7 +8768,7 @@ export type RoleSetMemberVirtualContributorFragment = {
 };
 
 export type RoleSetAuthorizationQueryVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
 }>;
 
 export type RoleSetAuthorizationQuery = {
@@ -8855,12 +8795,12 @@ export type RoleSetAuthorizationQuery = {
 };
 
 export type RoleSetRoleAssignmentQueryVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   roles: Array<RoleName> | RoleName;
-  includeUsers?: InputMaybe<Scalars['Boolean']['input']>;
-  includeOrganizations?: InputMaybe<Scalars['Boolean']['input']>;
-  includeVirtualContributors?: InputMaybe<Scalars['Boolean']['input']>;
-  includeRoleDefinitions?: InputMaybe<Scalars['Boolean']['input']>;
+  includeUsers?: InputMaybe<Scalars['Boolean']>;
+  includeOrganizations?: InputMaybe<Scalars['Boolean']>;
+  includeVirtualContributors?: InputMaybe<Scalars['Boolean']>;
+  includeRoleDefinitions?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type RoleSetRoleAssignmentQuery = {
@@ -8979,7 +8919,7 @@ export type RoleSetRoleAssignmentQuery = {
 };
 
 export type SubspaceCommunityAndRoleSetIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SubspaceCommunityAndRoleSetIdQuery = {
@@ -8997,7 +8937,7 @@ export type SubspaceCommunityAndRoleSetIdQuery = {
 };
 
 export type AccountInformationQueryVariables = Exact<{
-  accountId: Scalars['UUID']['input'];
+  accountId: Scalars['UUID'];
 }>;
 
 export type AccountInformationQuery = {
@@ -9153,8 +9093,8 @@ export type AccountItemProfileFragment = {
 };
 
 export type CalloutPageCalloutQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-  includeClassification?: InputMaybe<Scalars['Boolean']['input']>;
+  calloutId: Scalars['UUID'];
+  includeClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutPageCalloutQuery = {
@@ -9473,7 +9413,7 @@ export type CalloutPageCalloutQuery = {
 };
 
 export type InnovationFlowSettingsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID']['input'];
+  collaborationId: Scalars['UUID'];
 }>;
 
 export type InnovationFlowSettingsQuery = {
@@ -9579,7 +9519,7 @@ export type InnovationFlowSettingsQuery = {
 };
 
 export type InnovationFlowDetailsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID']['input'];
+  collaborationId: Scalars['UUID'];
 }>;
 
 export type InnovationFlowDetailsQuery = {
@@ -9764,9 +9704,9 @@ export type InnovationFlowCollaborationFragment = {
 };
 
 export type UpdateCalloutFlowStateMutationVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-  flowStateTagsetId: Scalars['UUID']['input'];
-  value: Scalars['String']['input'];
+  calloutId: Scalars['UUID'];
+  flowStateTagsetId: Scalars['UUID'];
+  value: Scalars['String'];
 }>;
 
 export type UpdateCalloutFlowStateMutation = {
@@ -9795,8 +9735,8 @@ export type UpdateCalloutFlowStateMutation = {
 };
 
 export type UpdateInnovationFlowCurrentStateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID']['input'];
-  currentState: Scalars['String']['input'];
+  innovationFlowId: Scalars['UUID'];
+  currentState: Scalars['String'];
 }>;
 
 export type UpdateInnovationFlowCurrentStateMutation = {
@@ -9809,7 +9749,7 @@ export type UpdateInnovationFlowCurrentStateMutation = {
 };
 
 export type UpdateInnovationFlowStatesMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID']['input'];
+  innovationFlowId: Scalars['UUID'];
   states: Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput;
 }>;
 
@@ -9823,9 +9763,9 @@ export type UpdateInnovationFlowStatesMutation = {
 };
 
 export type UpdateCollaborationFromTemplateMutationVariables = Exact<{
-  collaborationId: Scalars['UUID']['input'];
-  collaborationTemplateId: Scalars['UUID']['input'];
-  addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  collaborationId: Scalars['UUID'];
+  collaborationTemplateId: Scalars['UUID'];
+  addCallouts?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateCollaborationFromTemplateMutation = {
@@ -9843,8 +9783,8 @@ export type UpdateCollaborationFromTemplateMutation = {
 };
 
 export type UpdateInnovationFlowSingleStateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID']['input'];
-  stateName: Scalars['String']['input'];
+  innovationFlowId: Scalars['UUID'];
+  stateName: Scalars['String'];
   stateUpdatedData: UpdateInnovationFlowStateInput;
 }>;
 
@@ -10003,22 +9943,9 @@ export type ActivityLogCalloutWhiteboardContentModifiedFragment = {
   };
 };
 
-export type ActivityLogChallengeCreatedFragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
+export type ActivityLogSubspaceCreatedFragment = {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   subspace: {
-    __typename?: 'Space';
-    id: string;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    };
-  };
-};
-
-export type ActivityLogOpportunityCreatedFragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
-  subsubspace: {
     __typename?: 'Space';
     id: string;
     about: {
@@ -10211,21 +10138,6 @@ export type ActivityCreatedSubscription = {
           };
         }
       | {
-          __typename?: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          createdDate: Date;
-          type: ActivityEventType;
-          subspace: {
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            };
-          };
-        }
-      | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           createdDate: Date;
@@ -10268,11 +10180,11 @@ export type ActivityCreatedSubscription = {
               };
         }
       | {
-          __typename?: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntrySubspaceCreated';
           id: string;
           createdDate: Date;
           type: ActivityEventType;
-          subsubspace: {
+          subspace: {
             __typename?: 'Space';
             id: string;
             about: {
@@ -10431,22 +10343,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragmen
   };
 };
 
-type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
-  id: string;
-  createdDate: Date;
-  type: ActivityEventType;
-  subspace: {
-    __typename?: 'Space';
-    id: string;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    };
-  };
-};
-
 type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   id: string;
@@ -10490,12 +10386,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       };
 };
 
-type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
+type ActivityLogOnCollaboration_ActivityLogEntrySubspaceCreated_Fragment = {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   id: string;
   createdDate: Date;
   type: ActivityEventType;
-  subsubspace: {
+  subspace: {
     __typename?: 'Space';
     id: string;
     about: {
@@ -10523,14 +10419,13 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardContentModified_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntrySubspaceCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
 
 export type ActivityLogOnCollaborationQueryVariables = Exact<{
-  collaborationID: Scalars['UUID']['input'];
-  limit: Scalars['Float']['input'];
+  collaborationID: Scalars['UUID'];
+  limit: Scalars['Float'];
   types?: InputMaybe<Array<ActivityEventType> | ActivityEventType>;
 }>;
 
@@ -10545,7 +10440,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10589,7 +10484,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10637,7 +10532,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10686,7 +10581,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10730,7 +10625,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10783,7 +10678,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10832,7 +10727,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10885,7 +10780,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10931,54 +10826,6 @@ export type ActivityLogOnCollaborationQuery = {
         };
       }
     | {
-        __typename?: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        child: boolean;
-        journeyDisplayName: string;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                };
-              };
-            }
-          | undefined;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        };
-        subspace: {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-        };
-      }
-    | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
         collaborationID: string;
@@ -10986,7 +10833,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11054,14 +10901,14 @@ export type ActivityLogOnCollaborationQuery = {
             };
       }
     | {
-        __typename?: 'ActivityLogEntryOpportunityCreated';
+        __typename?: 'ActivityLogEntrySubspaceCreated';
         id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11091,7 +10938,7 @@ export type ActivityLogOnCollaborationQuery = {
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
         };
-        subsubspace: {
+        subspace: {
           __typename?: 'Space';
           id: string;
           about: {
@@ -11110,7 +10957,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         message: string;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11704,7 +11551,7 @@ export type UpdateCalloutVisibilityMutation = {
 };
 
 export type DeleteCalloutMutationVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
@@ -11749,7 +11596,7 @@ export type UpdateLinkMutation = {
 };
 
 export type CalloutPostCreatedSubscriptionVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CalloutPostCreatedSubscription = {
@@ -11807,7 +11654,7 @@ export type CalloutPostCreatedSubscription = {
 };
 
 export type CalloutPostsQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CalloutPostsQuery = {
@@ -11991,7 +11838,7 @@ export type PostCardFragment = {
 };
 
 export type CalloutWhiteboardsQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CalloutWhiteboardsQuery = {
@@ -12040,8 +11887,8 @@ export type WhiteboardCollectionCalloutCardFragment = {
 };
 
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{
-  calloutsSetID: Scalars['UUID']['input'];
-  calloutIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+  calloutsSetID: Scalars['UUID'];
+  calloutIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type UpdateCalloutsSortOrderMutation = {
@@ -12050,8 +11897,8 @@ export type UpdateCalloutsSortOrderMutation = {
 };
 
 export type UpdateContributionsSortOrderMutationVariables = Exact<{
-  calloutID: Scalars['UUID']['input'];
-  contributionIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+  calloutID: Scalars['UUID'];
+  contributionIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type UpdateContributionsSortOrderMutation = {
@@ -12099,7 +11946,7 @@ export type DashboardTopCalloutFragment = {
 };
 
 export type CalloutsSetAuthorizationQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
+  calloutsSetId: Scalars['UUID'];
 }>;
 
 export type CalloutsSetAuthorizationQuery = {
@@ -12375,9 +12222,9 @@ export type CreateCalloutMutation = {
 };
 
 export type CalloutsOnCalloutsSetUsingClassificationQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
+  calloutsSetId: Scalars['UUID'];
   classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
-  withClassification?: InputMaybe<Scalars['Boolean']['input']>;
+  withClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutsOnCalloutsSetUsingClassificationQuery = {
@@ -12446,8 +12293,8 @@ export type CalloutFragment = {
 };
 
 export type CalloutDetailsQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-  withClassification?: InputMaybe<Scalars['Boolean']['input']>;
+  calloutId: Scalars['UUID'];
+  withClassification?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalloutDetailsQuery = {
@@ -13034,7 +12881,7 @@ export type CalloutDetailsFragment = {
 };
 
 export type CalloutContentQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CalloutContentQuery = {
@@ -13095,7 +12942,7 @@ export type CalloutContentQuery = {
 };
 
 export type PostQueryVariables = Exact<{
-  postId: Scalars['UUID']['input'];
+  postId: Scalars['UUID'];
 }>;
 
 export type PostQuery = {
@@ -13320,14 +13167,14 @@ export type UpdatePostMutation = {
 };
 
 export type DeletePostMutationVariables = Exact<{
-  postId: Scalars['UUID']['input'];
+  postId: Scalars['UUID'];
 }>;
 
 export type DeletePostMutation = { __typename?: 'Mutation'; deletePost: { __typename?: 'Post'; id: string } };
 
 export type MoveContributionToCalloutMutationVariables = Exact<{
-  contributionId: Scalars['UUID']['input'];
-  calloutId: Scalars['UUID']['input'];
+  contributionId: Scalars['UUID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type MoveContributionToCalloutMutation = {
@@ -13342,8 +13189,8 @@ export type MoveContributionToCalloutMutation = {
 };
 
 export type PostSettingsQueryVariables = Exact<{
-  postId: Scalars['UUID']['input'];
-  calloutId: Scalars['UUID']['input'];
+  postId: Scalars['UUID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type PostSettingsQuery = {
@@ -13568,7 +13415,7 @@ export type PostSettingsCalloutFragment = {
 };
 
 export type PostCalloutsInCalloutSetQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
+  calloutsSetId: Scalars['UUID'];
 }>;
 
 export type PostCalloutsInCalloutSetQuery = {
@@ -13906,8 +13753,8 @@ export type CollaborationWithWhiteboardDetailsFragment = {
 };
 
 export type WhiteboardFromCalloutQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-  contributionId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
+  contributionId: Scalars['UUID'];
 }>;
 
 export type WhiteboardFromCalloutQuery = {
@@ -14106,7 +13953,7 @@ export type WhiteboardFromCalloutQuery = {
 };
 
 export type WhiteboardWithContentQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
+  whiteboardId: Scalars['UUID'];
 }>;
 
 export type WhiteboardWithContentQuery = {
@@ -14194,7 +14041,7 @@ export type WhiteboardWithContentQuery = {
 };
 
 export type WhiteboardWithoutContentQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
+  whiteboardId: Scalars['UUID'];
 }>;
 
 export type WhiteboardWithoutContentQuery = {
@@ -14281,7 +14128,7 @@ export type WhiteboardWithoutContentQuery = {
 };
 
 export type WhiteboardLastUpdatedDateQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
+  whiteboardId: Scalars['UUID'];
 }>;
 
 export type WhiteboardLastUpdatedDateQuery = {
@@ -14402,7 +14249,7 @@ export type UpdateWhiteboardMutation = {
 };
 
 export type WhiteboardContentUpdatePolicyQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
+  whiteboardId: Scalars['UUID'];
 }>;
 
 export type WhiteboardContentUpdatePolicyQuery = {
@@ -14414,7 +14261,7 @@ export type WhiteboardContentUpdatePolicyQuery = {
 };
 
 export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
+  whiteboardId: Scalars['UUID'];
   contentUpdatePolicy: ContentUpdatePolicy;
 }>;
 
@@ -14509,7 +14356,7 @@ export type TagsetDetailsFragment = {
 };
 
 export type UploadVisualMutationVariables = Exact<{
-  file: Scalars['Upload']['input'];
+  file: Scalars['Upload'];
   uploadData: VisualUploadImageInput;
 }>;
 
@@ -15008,7 +14855,7 @@ export type DiscussionCardFragment = {
 };
 
 export type PlatformDiscussionQueryVariables = Exact<{
-  discussionId: Scalars['UUID']['input'];
+  discussionId: Scalars['UUID'];
 }>;
 
 export type PlatformDiscussionQuery = {
@@ -15165,7 +15012,7 @@ export type PlatformDiscussionQuery = {
 };
 
 export type ForumDiscussionUpdatedSubscriptionVariables = Exact<{
-  forumID: Scalars['UUID']['input'];
+  forumID: Scalars['UUID'];
 }>;
 
 export type ForumDiscussionUpdatedSubscription = {
@@ -15219,9 +15066,9 @@ export type SendMessageToCommunityLeadsMutationVariables = Exact<{
 export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
 
 export type AddReactionMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  messageId: Scalars['MessageID']['input'];
-  emoji: Scalars['Emoji']['input'];
+  roomId: Scalars['UUID'];
+  messageId: Scalars['MessageID'];
+  emoji: Scalars['Emoji'];
 }>;
 
 export type AddReactionMutation = {
@@ -15439,16 +15286,16 @@ export type CommentsWithMessagesFragment = {
 };
 
 export type RemoveReactionMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  reactionId: Scalars['MessageID']['input'];
+  roomId: Scalars['UUID'];
+  reactionId: Scalars['MessageID'];
 }>;
 
 export type RemoveReactionMutation = { __typename?: 'Mutation'; removeReactionToMessageInRoom: boolean };
 
 export type ReplyToMessageMutationVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
-  message: Scalars['String']['input'];
-  threadId: Scalars['MessageID']['input'];
+  roomId: Scalars['UUID'];
+  message: Scalars['String'];
+  threadId: Scalars['MessageID'];
 }>;
 
 export type ReplyToMessageMutation = {
@@ -15475,9 +15322,9 @@ export type VcInteractionsDetailsFragment = {
 
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  roleSetId?: Scalars['UUID']['input'];
-  includeVirtualContributors: Scalars['Boolean']['input'];
+  first?: InputMaybe<Scalars['Int']>;
+  roleSetId?: Scalars['UUID'];
+  includeVirtualContributors: Scalars['Boolean'];
 }>;
 
 export type MentionableUsersQuery = {
@@ -15546,7 +15393,7 @@ export type RemoveMessageOnRoomMutationVariables = Exact<{
 export type RemoveMessageOnRoomMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
 export type RoomEventsSubscriptionVariables = Exact<{
-  roomID: Scalars['UUID']['input'];
+  roomID: Scalars['UUID'];
 }>;
 
 export type RoomEventsSubscription = {
@@ -15688,7 +15535,7 @@ export type RoomEventsSubscription = {
 };
 
 export type CommunityUpdatesQueryVariables = Exact<{
-  communityId: Scalars['UUID']['input'];
+  communityId: Scalars['UUID'];
 }>;
 
 export type CommunityUpdatesQuery = {
@@ -15825,7 +15672,7 @@ export type CommunityUpdatesQuery = {
 };
 
 export type ApplicationDialogQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type ApplicationDialogQuery = {
@@ -15893,7 +15740,7 @@ export type ApplicationDialogQuery = {
 };
 
 export type RoleSetApplicationFormQueryVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
 }>;
 
 export type RoleSetApplicationFormQuery = {
@@ -15937,7 +15784,7 @@ export type ApplicationFormFragment = {
 };
 
 export type UpdateApplicationFormOnRoleSetMutationVariables = Exact<{
-  roleSetId: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID'];
   formData: UpdateFormInput;
 }>;
 
@@ -15947,7 +15794,7 @@ export type UpdateApplicationFormOnRoleSetMutation = {
 };
 
 export type CommunityGuidelinesQueryVariables = Exact<{
-  communityGuidelinesId: Scalars['UUID']['input'];
+  communityGuidelinesId: Scalars['UUID'];
 }>;
 
 export type CommunityGuidelinesQuery = {
@@ -16059,8 +15906,8 @@ export type BasicOrganizationDetailsFragment = {
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<OrganizationFilterInput>;
 }>;
 
@@ -16089,14 +15936,14 @@ export type AllOrganizationsQuery = {
 };
 
 export type CreateWingbackAccountMutationVariables = Exact<{
-  accountID: Scalars['UUID']['input'];
+  accountID: Scalars['UUID'];
 }>;
 
 export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
 
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   status?: InputMaybe<OrganizationVerificationEnum>;
   filter?: InputMaybe<OrganizationFilterInput>;
 }>;
@@ -16129,10 +15976,10 @@ export type ContributorsPageOrganizationsQuery = {
 };
 
 export type ContributorsPageUsersQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
-  withTags?: InputMaybe<Scalars['Boolean']['input']>;
+  withTags?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ContributorsPageUsersQuery = {
@@ -16387,7 +16234,7 @@ export type ContributorDetailsFragment =
   | ContributorDetails_VirtualContributor_Fragment;
 
 export type AssociatedOrganizationQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type AssociatedOrganizationQuery = {
@@ -16470,7 +16317,7 @@ export type OrganizationInfoFragment = {
 };
 
 export type OrganizationInfoQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type OrganizationInfoQuery = {
@@ -16621,7 +16468,7 @@ export type DeleteOrganizationMutation = {
 };
 
 export type OrganizationAuthorizationQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type OrganizationAuthorizationQuery = {
@@ -16641,7 +16488,7 @@ export type OrganizationAuthorizationQuery = {
 };
 
 export type OrganizationProfileInfoQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type OrganizationProfileInfoQuery = {
@@ -16707,7 +16554,7 @@ export type OrganizationProfileInfoQuery = {
 };
 
 export type RolesOrganizationQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type RolesOrganizationQuery = {
@@ -16733,7 +16580,7 @@ export type RolesOrganizationQuery = {
 };
 
 export type AccountResourcesInfoQueryVariables = Exact<{
-  accountId: Scalars['UUID']['input'];
+  accountId: Scalars['UUID'];
 }>;
 
 export type AccountResourcesInfoQuery = {
@@ -16852,7 +16699,7 @@ export type AccountResourceProfileFragment = {
 };
 
 export type OrganizationAccountQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type OrganizationAccountQuery = {
@@ -16871,7 +16718,7 @@ export type OrganizationAccountQuery = {
 };
 
 export type OrganizationSettingsQueryVariables = Exact<{
-  orgId: Scalars['UUID']['input'];
+  orgId: Scalars['UUID'];
 }>;
 
 export type OrganizationSettingsQuery = {
@@ -16971,8 +16818,8 @@ export type PendingInvitationsCountQuery = {
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-  includeCommunityGuidelines?: Scalars['Boolean']['input'];
+  spaceId: Scalars['UUID'];
+  includeCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsSpaceQuery = {
@@ -17022,7 +16869,7 @@ export type PendingMembershipsSpaceQuery = {
 };
 
 export type PendingMembershipsUserQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type PendingMembershipsUserQuery = {
@@ -17076,7 +16923,7 @@ export type CommunityGuidelinesSummaryFragment = {
 };
 
 export type SpaceContributionDetailsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceContributionDetailsQuery = {
@@ -17110,7 +16957,7 @@ export type SpaceContributionDetailsQuery = {
 
 export type UserSelectorQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']>;
 }>;
 
 export type UserSelectorQuery = {
@@ -17134,7 +16981,7 @@ export type UserSelectorQuery = {
 };
 
 export type UserSelectorUserDetailsQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type UserSelectorUserDetailsQuery = {
@@ -17296,9 +17143,9 @@ export type DeleteUserMutationVariables = Exact<{
 export type DeleteUserMutation = { __typename?: 'Mutation'; deleteUser: { __typename?: 'User'; id: string } };
 
 export type UpdatePreferenceOnUserMutationVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
   type: PreferenceType;
-  value: Scalars['String']['input'];
+  value: Scalars['String'];
 }>;
 
 export type UpdatePreferenceOnUserMutation = {
@@ -17307,7 +17154,7 @@ export type UpdatePreferenceOnUserMutation = {
 };
 
 export type UserAccountQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserAccountQuery = {
@@ -17331,7 +17178,7 @@ export type UserAccountQuery = {
 };
 
 export type UserQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type UserQuery = {
@@ -17397,7 +17244,7 @@ export type UserQuery = {
 };
 
 export type UserNotificationsPreferencesQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserNotificationsPreferencesQuery = {
@@ -17428,7 +17275,7 @@ export type UserNotificationsPreferencesQuery = {
 };
 
 export type UserModelFullQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserModelFullQuery = {
@@ -17495,7 +17342,7 @@ export type UserModelFullQuery = {
 };
 
 export type UsersModelFullQueryVariables = Exact<{
-  ids: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+  ids: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type UsersModelFullQuery = {
@@ -17550,27 +17397,8 @@ export type UsersModelFullQuery = {
   }>;
 };
 
-export type UserContributionDisplayNamesQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-}>;
-
-export type UserContributionDisplayNamesQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    spaces: Array<{
-      __typename?: 'RolesResultSpace';
-      id: string;
-      displayName: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
-    }>;
-    organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; displayName: string }>;
-  };
-};
-
 export type UserContributionsQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserContributionsQuery = {
@@ -17582,19 +17410,13 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       roles: Array<string>;
-      subspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        type: SpaceType;
-        level: SpaceLevel;
-        roles: Array<string>;
-      }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; level: SpaceLevel; roles: Array<string> }>;
     }>;
   };
 };
 
 export type UserOrganizationIdsQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserOrganizationIdsQuery = {
@@ -17679,7 +17501,7 @@ export type UpdateUserSettingsMutation = {
 };
 
 export type UserSettingsQueryVariables = Exact<{
-  userID: Scalars['UUID']['input'];
+  userID: Scalars['UUID'];
 }>;
 
 export type UserSettingsQuery = {
@@ -17822,7 +17644,7 @@ export type EntitlementDetailsFragment = {
 };
 
 export type AiPersonaServiceQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type AiPersonaServiceQuery = {
@@ -17847,7 +17669,7 @@ export type AiPersonaServiceQuery = {
 };
 
 export type VirtualContributorQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type VirtualContributorQuery = {
@@ -18015,7 +17837,7 @@ export type VirtualContributorQuery = {
 };
 
 export type VirtualContributorProfileQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type VirtualContributorProfileQuery = {
@@ -18073,7 +17895,7 @@ export type VirtualContributorProfileQuery = {
 };
 
 export type VirtualContributorProviderQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type VirtualContributorProviderQuery = {
@@ -18178,7 +18000,7 @@ export type VirtualContributorProviderQuery = {
 };
 
 export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery = {
@@ -18192,7 +18014,7 @@ export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery = {
 };
 
 export type SpaceBodyOfKnowledgeAboutQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceBodyOfKnowledgeAboutQuery = {
@@ -18367,7 +18189,7 @@ export type VirtualContributorFullFragment = {
 };
 
 export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
-  virtualContributorID: Scalars['UUID']['input'];
+  virtualContributorID: Scalars['UUID'];
 }>;
 
 export type VirtualContributorUpdatesSubscription = {
@@ -18379,7 +18201,7 @@ export type VirtualContributorUpdatesSubscription = {
 };
 
 export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type VirtualContributorKnowledgeBaseQuery = {
@@ -18402,7 +18224,7 @@ export type VirtualContributorKnowledgeBaseQuery = {
 };
 
 export type VirtualContributorKnowledgePrivilegesQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
+  id: Scalars['UUID'];
 }>;
 
 export type VirtualContributorKnowledgePrivilegesQuery = {
@@ -18423,7 +18245,7 @@ export type VirtualContributorKnowledgePrivilegesQuery = {
 };
 
 export type VcMembershipsQueryVariables = Exact<{
-  virtualContributorId: Scalars['UUID']['input'];
+  virtualContributorId: Scalars['UUID'];
 }>;
 
 export type VcMembershipsQuery = {
@@ -18488,7 +18310,7 @@ export type VcMembershipsQuery = {
 };
 
 export type BannerInnovationHubQueryVariables = Exact<{
-  subdomain?: InputMaybe<Scalars['String']['input']>;
+  subdomain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type BannerInnovationHubQuery = {
@@ -18502,6 +18324,27 @@ export type BannerInnovationHubQuery = {
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationHubBannerWideQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            bannerWide?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
         }
       | undefined;
   };
@@ -18557,7 +18400,7 @@ export type AdminInnovationHubsListQuery = {
 };
 
 export type DeleteInnovationHubMutationVariables = Exact<{
-  innovationHubId: Scalars['UUID']['input'];
+  innovationHubId: Scalars['UUID'];
 }>;
 
 export type DeleteInnovationHubMutation = {
@@ -18813,7 +18656,7 @@ export type InnovationHubProfileFragment = {
 };
 
 export type InnovationHubSettingsQueryVariables = Exact<{
-  innovationHubId: Scalars['UUID']['input'];
+  innovationHubId: Scalars['UUID'];
 }>;
 
 export type InnovationHubSettingsQuery = {
@@ -18969,29 +18812,8 @@ export type InnovationHubSettingsFragment = {
     | undefined;
 };
 
-export type JourneyBreadcrumbsInnovationHubQueryVariables = Exact<{ [key: string]: never }>;
-
-export type JourneyBreadcrumbsInnovationHubQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
 export type InnovationHubQueryVariables = Exact<{
-  subdomain?: InputMaybe<Scalars['String']['input']>;
+  subdomain?: InputMaybe<Scalars['String']>;
 }>;
 
 export type InnovationHubQuery = {
@@ -19053,9 +18875,9 @@ export type PlatformRoleSetQuery = {
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
-  licensePlanId: Scalars['UUID']['input'];
-  accountId: Scalars['UUID']['input'];
-  licensingId: Scalars['UUID']['input'];
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+  licensingId: Scalars['UUID'];
 }>;
 
 export type AssignLicensePlanToAccountMutation = {
@@ -19064,9 +18886,9 @@ export type AssignLicensePlanToAccountMutation = {
 };
 
 export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
-  licensePlanId: Scalars['UUID']['input'];
-  accountId: Scalars['UUID']['input'];
-  licensingId: Scalars['UUID']['input'];
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+  licensingId: Scalars['UUID'];
 }>;
 
 export type RevokeLicensePlanFromAccountMutation = {
@@ -19075,8 +18897,8 @@ export type RevokeLicensePlanFromAccountMutation = {
 };
 
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<OrganizationFilterInput>;
 }>;
 
@@ -19127,8 +18949,8 @@ export type AdminOrganizationVerifyMutation = {
 };
 
 export type AssignLicensePlanToSpaceMutationVariables = Exact<{
-  licensePlanId: Scalars['UUID']['input'];
-  spaceId: Scalars['UUID']['input'];
+  licensePlanId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type AssignLicensePlanToSpaceMutation = {
@@ -19141,8 +18963,8 @@ export type AssignLicensePlanToSpaceMutation = {
 };
 
 export type RevokeLicensePlanFromSpaceMutationVariables = Exact<{
-  licensePlanId: Scalars['UUID']['input'];
-  spaceId: Scalars['UUID']['input'];
+  licensePlanId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type RevokeLicensePlanFromSpaceMutation = {
@@ -19155,8 +18977,8 @@ export type RevokeLicensePlanFromSpaceMutation = {
 };
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-  nameId: Scalars['NameID']['input'];
+  spaceId: Scalars['UUID'];
+  nameId: Scalars['NameID'];
   visibility: SpaceVisibility;
 }>;
 
@@ -19265,8 +19087,8 @@ export type AdminSpaceFragment = {
 };
 
 export type UserListQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
@@ -19472,7 +19294,7 @@ export type PageInfoFragment = {
 };
 
 export type SpaceAboutBaseQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceAboutBaseQuery = {
@@ -19519,7 +19341,7 @@ export type SpaceAboutBaseQuery = {
 };
 
 export type SpaceAboutDetailsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceAboutDetailsQuery = {
@@ -19775,7 +19597,7 @@ export type SpaceAboutDetailsQuery = {
 };
 
 export type SpaceAboutFullQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceAboutFullQuery = {
@@ -20323,8 +20145,8 @@ export type SpaceAboutMinimalUrlFragment = {
 };
 
 export type SubspacePageBannerQueryVariables = Exact<{
-  level0Space: Scalars['UUID']['input'];
-  spaceId: Scalars['UUID']['input'];
+  level0Space: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SubspacePageBannerQuery = {
@@ -20394,15 +20216,15 @@ export type SpaceCardFragment = {
   };
 };
 
-export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-  subspaceL1Id?: InputMaybe<Scalars['UUID']['input']>;
-  subspaceL2Id?: InputMaybe<Scalars['UUID']['input']>;
-  includeSubspaceL1?: InputMaybe<Scalars['Boolean']['input']>;
-  includeSubspaceL2?: InputMaybe<Scalars['Boolean']['input']>;
+export type SpaceBreadcrumbsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  subspaceL1Id?: InputMaybe<Scalars['UUID']>;
+  subspaceL2Id?: InputMaybe<Scalars['UUID']>;
+  includeSubspaceL1?: InputMaybe<Scalars['Boolean']>;
+  includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type JourneyBreadcrumbsSpaceQuery = {
+export type SpaceBreadcrumbsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -20463,7 +20285,7 @@ export type JourneyBreadcrumbsSpaceQuery = {
   };
 };
 
-export type JourneyBreadcrumbsSpaceFragment = {
+export type BreadcrumbsSpaceL0Fragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
@@ -20480,7 +20302,7 @@ export type JourneyBreadcrumbsSpaceFragment = {
   };
 };
 
-export type JourneyBreadcrumbsSubpaceFragment = {
+export type BreadcrumbsSubspaceFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
@@ -20498,7 +20320,7 @@ export type JourneyBreadcrumbsSubpaceFragment = {
 };
 
 export type SpaceDashboardNavigationSubspacesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceDashboardNavigationSubspacesQuery = {
@@ -20553,7 +20375,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
 };
 
 export type SpaceEntitlementsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceEntitlementsQuery = {
@@ -20638,7 +20460,7 @@ export type PlansTableQuery = {
 };
 
 export type AccountPlanAvailabilityQueryVariables = Exact<{
-  accountId: Scalars['UUID']['input'];
+  accountId: Scalars['UUID'];
 }>;
 
 export type AccountPlanAvailabilityQuery = {
@@ -20673,7 +20495,7 @@ export type ContactSupportLocationQuery = {
 };
 
 export type SpaceTemplatesManagerQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceTemplatesManagerQuery = {
@@ -20709,7 +20531,7 @@ export type SpaceTemplatesManagerQuery = {
 };
 
 export type SpaceSubspaceCardsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceSubspaceCardsQuery = {
@@ -20811,7 +20633,7 @@ export type SubspacesOnSpaceFragment = {
 };
 
 export type DeleteSpaceMutationVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type DeleteSpaceMutation = { __typename?: 'Mutation'; deleteSpace: { __typename?: 'Space'; id: string } };
@@ -21288,7 +21110,7 @@ export type SpaceInfoFragment = {
 };
 
 export type SpaceAndCommunityPrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceAndCommunityPrivilegesQuery = {
@@ -21315,7 +21137,7 @@ export type SpaceAndCommunityPrivilegesQuery = {
 };
 
 export type SubspacesInSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SubspacesInSpaceQuery = {
@@ -21350,7 +21172,7 @@ export type SubspacesInSpaceQuery = {
 };
 
 export type SubspaceCreatedSubscriptionVariables = Exact<{
-  subspaceId: Scalars['UUID']['input'];
+  subspaceId: Scalars['UUID'];
 }>;
 
 export type SubspaceCreatedSubscription = {
@@ -21383,7 +21205,7 @@ export type SubspaceCreatedSubscription = {
 };
 
 export type SpacePermissionsAndEntitlementsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpacePermissionsAndEntitlementsQuery = {
@@ -21431,7 +21253,7 @@ export type SpacePermissionsAndEntitlementsQuery = {
 
 export type CreateSubspaceMutationVariables = Exact<{
   input: CreateSubspaceInput;
-  includeVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+  includeVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateSubspaceMutation = {
@@ -21475,7 +21297,7 @@ export type CreateSubspaceMutation = {
 };
 
 export type SubspacePageQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SubspacePageQuery = {
@@ -21577,7 +21399,7 @@ export type SubspacePageSpaceFragment = {
 };
 
 export type SpaceTabQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceTabQuery = {
@@ -21632,7 +21454,7 @@ export type SpaceTabQuery = {
 };
 
 export type SpacePageQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpacePageQuery = {
@@ -21969,7 +21791,7 @@ export type SpacePageQuery = {
 };
 
 export type SpaceDashboardReferencesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceDashboardReferencesQuery = {
@@ -22322,7 +22144,7 @@ export type SpacePageFragment = {
 };
 
 export type SpaceTabsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceTabsQuery = {
@@ -22349,7 +22171,7 @@ export type SpaceTabsQuery = {
 };
 
 export type SpaceAccountQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceAccountQuery = {
@@ -22534,7 +22356,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
 };
 
 export type AvailableVirtualContributorsInSpaceAccountQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type AvailableVirtualContributorsInSpaceAccountQuery = {
@@ -22598,7 +22420,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
 };
 
 export type AvailableVirtualContributorsInSpaceL0QueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type AvailableVirtualContributorsInSpaceL0Query = {
@@ -22666,7 +22488,7 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
 };
 
 export type SpaceSettingsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceSettingsQuery = {
@@ -22773,7 +22595,7 @@ export type UpdateSpaceSettingsMutation = {
 };
 
 export type SpaceStorageAdminPageQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceStorageAdminPageQuery = {
@@ -22895,7 +22717,7 @@ export type SpaceStorageAdminPageQuery = {
 };
 
 export type StorageAggregatorLookupQueryVariables = Exact<{
-  storageAggregatorId: Scalars['UUID']['input'];
+  storageAggregatorId: Scalars['UUID'];
 }>;
 
 export type StorageAggregatorLookupQuery = {
@@ -23147,7 +22969,7 @@ export type DocumentDataFragment = {
 };
 
 export type DeleteDocumentMutationVariables = Exact<{
-  documentId: Scalars['UUID']['input'];
+  documentId: Scalars['UUID'];
 }>;
 
 export type DeleteDocumentMutation = {
@@ -23156,7 +22978,7 @@ export type DeleteDocumentMutation = {
 };
 
 export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceAdminDefaultTemplatesCollaborationDetailsQuery = {
@@ -23296,7 +23118,7 @@ export type SpaceAdminDefaultTemplatesCollaborationDetailsQuery = {
 };
 
 export type SpacePrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpacePrivilegesQuery = {
@@ -23315,11 +23137,11 @@ export type SpacePrivilegesQuery = {
   };
 };
 
-export type JourneyStorageConfigQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+export type SpaceStorageConfigQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
 }>;
 
-export type JourneyStorageConfigQuery = {
+export type SpaceStorageConfigQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -23354,7 +23176,7 @@ export type JourneyStorageConfigQuery = {
 };
 
 export type CalloutStorageConfigQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CalloutStorageConfigQuery = {
@@ -23392,7 +23214,7 @@ export type CalloutStorageConfigQuery = {
 };
 
 export type CalloutPostStorageConfigQueryVariables = Exact<{
-  postId: Scalars['UUID']['input'];
+  postId: Scalars['UUID'];
 }>;
 
 export type CalloutPostStorageConfigQuery = {
@@ -23422,7 +23244,7 @@ export type CalloutPostStorageConfigQuery = {
 };
 
 export type UserStorageConfigQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserStorageConfigQuery = {
@@ -23452,7 +23274,7 @@ export type UserStorageConfigQuery = {
 };
 
 export type VirtualContributorStorageConfigQueryVariables = Exact<{
-  virtualContributorId: Scalars['UUID']['input'];
+  virtualContributorId: Scalars['UUID'];
 }>;
 
 export type VirtualContributorStorageConfigQuery = {
@@ -23482,7 +23304,7 @@ export type VirtualContributorStorageConfigQuery = {
 };
 
 export type OrganizationStorageConfigQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type OrganizationStorageConfigQuery = {
@@ -23512,7 +23334,7 @@ export type OrganizationStorageConfigQuery = {
 };
 
 export type InnovationPackStorageConfigQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID']['input'];
+  innovationPackId: Scalars['UUID'];
 }>;
 
 export type InnovationPackStorageConfigQuery = {
@@ -23542,7 +23364,7 @@ export type InnovationPackStorageConfigQuery = {
 };
 
 export type InnovationHubStorageConfigQueryVariables = Exact<{
-  innovationHubId: Scalars['UUID']['input'];
+  innovationHubId: Scalars['UUID'];
 }>;
 
 export type InnovationHubStorageConfigQuery = {
@@ -23572,7 +23394,7 @@ export type InnovationHubStorageConfigQuery = {
 };
 
 export type TemplateStorageConfigQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
 }>;
 
 export type TemplateStorageConfigQuery = {
@@ -23628,7 +23450,7 @@ export type PlatformStorageConfigQuery = {
 };
 
 export type AccountStorageConfigQueryVariables = Exact<{
-  accountId: Scalars['UUID']['input'];
+  accountId: Scalars['UUID'];
 }>;
 
 export type AccountStorageConfigQuery = {
@@ -23705,7 +23527,7 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
 };
 
 export type SpaceCollaborationTemplatesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceCollaborationTemplatesQuery = {
@@ -23738,7 +23560,7 @@ export type SpaceCollaborationTemplatesQuery = {
 };
 
 export type SpaceDefaultTemplatesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceDefaultTemplatesQuery = {
@@ -23773,9 +23595,9 @@ export type SpaceDefaultTemplatesQuery = {
 };
 
 export type ImportTemplateDialogQueryVariables = Exact<{
-  templatesSetId: Scalars['UUID']['input'];
-  includeCollaboration?: InputMaybe<Scalars['Boolean']['input']>;
-  includeCallout?: InputMaybe<Scalars['Boolean']['input']>;
+  templatesSetId: Scalars['UUID'];
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
+  includeCallout?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ImportTemplateDialogQuery = {
@@ -23841,8 +23663,8 @@ export type ImportTemplateDialogQuery = {
 
 export type ImportTemplateDialogPlatformTemplatesQueryVariables = Exact<{
   templateTypes?: InputMaybe<Array<TemplateType> | TemplateType>;
-  includeCollaboration?: InputMaybe<Scalars['Boolean']['input']>;
-  includeCallout?: InputMaybe<Scalars['Boolean']['input']>;
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
+  includeCallout?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ImportTemplateDialogPlatformTemplatesQuery = {
@@ -23947,7 +23769,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
 };
 
 export type AllTemplatesInTemplatesSetQueryVariables = Exact<{
-  templatesSetId: Scalars['UUID']['input'];
+  templatesSetId: Scalars['UUID'];
 }>;
 
 export type AllTemplatesInTemplatesSetQuery = {
@@ -24199,7 +24021,7 @@ export type AllTemplatesInTemplatesSetQuery = {
 };
 
 export type SpaceCollaborationIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceCollaborationIdQuery = {
@@ -24239,12 +24061,12 @@ export type TemplateCardProfileInfoFragment = {
 };
 
 export type TemplateContentQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
-  includeCallout?: InputMaybe<Scalars['Boolean']['input']>;
-  includeCommunityGuidelines?: InputMaybe<Scalars['Boolean']['input']>;
-  includeCollaboration?: InputMaybe<Scalars['Boolean']['input']>;
-  includePost?: InputMaybe<Scalars['Boolean']['input']>;
-  includeWhiteboard?: InputMaybe<Scalars['Boolean']['input']>;
+  templateId: Scalars['UUID'];
+  includeCallout?: InputMaybe<Scalars['Boolean']>;
+  includeCommunityGuidelines?: InputMaybe<Scalars['Boolean']>;
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
+  includePost?: InputMaybe<Scalars['Boolean']>;
+  includeWhiteboard?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type TemplateContentQuery = {
@@ -24516,7 +24338,7 @@ export type TemplateContentQuery = {
 };
 
 export type CollaborationTemplateContentQueryVariables = Exact<{
-  collaborationId: Scalars['UUID']['input'];
+  collaborationId: Scalars['UUID'];
 }>;
 
 export type CollaborationTemplateContentQuery = {
@@ -25077,16 +24899,16 @@ export type CommunityGuidelinesTemplateFragment = {
 };
 
 export type CreateTemplateMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID']['input'];
+  templatesSetId: Scalars['UUID'];
   profileData: CreateProfileInput;
   type: TemplateType;
-  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   calloutData?: InputMaybe<CreateCalloutInput>;
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
   collaborationData?: InputMaybe<CreateCollaborationInput>;
-  postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
+  postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
-  includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+  includeProfileVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateTemplateMutation = {
@@ -25105,10 +24927,10 @@ export type CreateTemplateMutation = {
 };
 
 export type CreateTemplateFromCollaborationMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID']['input'];
+  templatesSetId: Scalars['UUID'];
   profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-  collaborationId: Scalars['UUID']['input'];
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  collaborationId: Scalars['UUID'];
 }>;
 
 export type CreateTemplateFromCollaborationMutation = {
@@ -25117,11 +24939,11 @@ export type CreateTemplateFromCollaborationMutation = {
 };
 
 export type UpdateTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
   profile: UpdateProfileInput;
-  postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
-  includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+  postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
+  includeProfileVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateTemplateMutation = {
@@ -25141,8 +24963,8 @@ export type UpdateTemplateMutation = {
 };
 
 export type UpdateTemplateFromCollaborationMutationVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
-  collaborationId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
+  collaborationId: Scalars['UUID'];
 }>;
 
 export type UpdateTemplateFromCollaborationMutation = {
@@ -25151,7 +24973,7 @@ export type UpdateTemplateFromCollaborationMutation = {
 };
 
 export type DeleteTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
 }>;
 
 export type DeleteTemplateMutation = {
@@ -25160,7 +24982,7 @@ export type DeleteTemplateMutation = {
 };
 
 export type TemplateNameQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
 }>;
 
 export type TemplateNameQuery = {
@@ -25174,8 +24996,8 @@ export type TemplateNameQuery = {
 };
 
 export type UpdateTemplateDefaultMutationVariables = Exact<{
-  templateDefaultID: Scalars['UUID']['input'];
-  templateID: Scalars['UUID']['input'];
+  templateDefaultID: Scalars['UUID'];
+  templateID: Scalars['UUID'];
 }>;
 
 export type UpdateTemplateDefaultMutation = {
@@ -25420,7 +25242,7 @@ export type TemplatesSetTemplatesFragment = {
 };
 
 export type CreateTemplateInputQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
 }>;
 
 export type CreateTemplateInputQuery = {
@@ -25442,7 +25264,7 @@ export type CreateTemplateInputQuery = {
 };
 
 export type CreateCommunityGuidelinesInputQueryVariables = Exact<{
-  communityGuidelinesId: Scalars['UUID']['input'];
+  communityGuidelinesId: Scalars['UUID'];
 }>;
 
 export type CreateCommunityGuidelinesInputQuery = {
@@ -25471,7 +25293,7 @@ export type CreateCommunityGuidelinesInputQuery = {
 };
 
 export type CreateCalloutInputQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type CreateCalloutInputQuery = {
@@ -25505,7 +25327,7 @@ export type CreateCalloutInputQuery = {
 };
 
 export type CreateCollaborationInputQueryVariables = Exact<{
-  collaborationId: Scalars['UUID']['input'];
+  collaborationId: Scalars['UUID'];
 }>;
 
 export type CreateCollaborationInputQuery = {
@@ -25533,7 +25355,7 @@ export type CreateCollaborationInputQuery = {
 };
 
 export type CreateWhiteboardInputQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
+  whiteboardId: Scalars['UUID'];
 }>;
 
 export type CreateWhiteboardInputQuery = {
@@ -25545,7 +25367,7 @@ export type CreateWhiteboardInputQuery = {
 };
 
 export type CreatePostInputQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID'];
 }>;
 
 export type CreatePostInputQuery = {
@@ -25557,8 +25379,8 @@ export type CreatePostInputQuery = {
 };
 
 export type SpaceCalendarEventsQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-  includeSubspace?: InputMaybe<Scalars['Boolean']['input']>;
+  spaceId: Scalars['UUID'];
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpaceCalendarEventsQuery = {
@@ -25817,8 +25639,8 @@ export type CalendarEventInfoFragment = {
 };
 
 export type CalendarEventDetailsQueryVariables = Exact<{
-  eventId: Scalars['UUID']['input'];
-  includeSubspace?: InputMaybe<Scalars['Boolean']['input']>;
+  eventId: Scalars['UUID'];
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalendarEventDetailsQuery = {
@@ -26265,7 +26087,7 @@ export type EventProfileFragment = {
 
 export type CreateCalendarEventMutationVariables = Exact<{
   eventData: CreateCalendarEventOnCalendarInput;
-  includeSubspace?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateCalendarEventMutation = {
@@ -26469,7 +26291,7 @@ export type CreateCalendarEventMutation = {
 
 export type UpdateCalendarEventMutationVariables = Exact<{
   eventData: UpdateCalendarEventInput;
-  includeSubspace?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateCalendarEventMutation = {
@@ -26681,7 +26503,7 @@ export type DeleteCalendarEventMutation = {
 };
 
 export type AuthorizationPolicyQueryVariables = Exact<{
-  authorizationPolicyId: Scalars['UUID']['input'];
+  authorizationPolicyId: Scalars['UUID'];
 }>;
 
 export type AuthorizationPolicyQuery = {
@@ -26716,8 +26538,8 @@ export type AuthorizationPolicyQuery = {
 };
 
 export type AuthorizationPrivilegesForUserQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  authorizationPolicyId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
+  authorizationPolicyId: Scalars['UUID'];
 }>;
 
 export type AuthorizationPrivilegesForUserQuery = {
@@ -26767,7 +26589,7 @@ export type GuidanceRoomIdQuery = {
 };
 
 export type GuidanceRoomMessagesQueryVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
+  roomId: Scalars['UUID'];
 }>;
 
 export type GuidanceRoomMessagesQuery = {
@@ -27357,7 +27179,7 @@ export type InAppNotificationsQuery = {
 };
 
 export type UpdateNotificationStateMutationVariables = Exact<{
-  ID: Scalars['UUID']['input'];
+  ID: Scalars['UUID'];
   state: InAppNotificationState;
 }>;
 
@@ -27367,7 +27189,7 @@ export type UpdateNotificationStateMutation = {
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
-  notificationIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  notificationIds: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
@@ -27821,7 +27643,7 @@ export type InAppNotificationUserMentionedFragment = {
 };
 
 export type UrlResolverQueryVariables = Exact<{
-  url: Scalars['String']['input'];
+  url: Scalars['String'];
 }>;
 
 export type UrlResolverQuery = {
@@ -27888,11 +27710,11 @@ export type UrlResolverQuery = {
 };
 
 export type SpaceUrlResolverQueryVariables = Exact<{
-  spaceNameId: Scalars['NameID']['input'];
-  subspaceL1NameId?: InputMaybe<Scalars['NameID']['input']>;
-  subspaceL2NameId?: InputMaybe<Scalars['NameID']['input']>;
-  includeSubspaceL1?: InputMaybe<Scalars['Boolean']['input']>;
-  includeSubspaceL2?: InputMaybe<Scalars['Boolean']['input']>;
+  spaceNameId: Scalars['NameID'];
+  subspaceL1NameId?: InputMaybe<Scalars['NameID']>;
+  subspaceL2NameId?: InputMaybe<Scalars['NameID']>;
+  includeSubspaceL1?: InputMaybe<Scalars['Boolean']>;
+  includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpaceUrlResolverQuery = {
@@ -28745,7 +28567,7 @@ export type SearchResultSpaceFragment = {
 };
 
 export type UserRolesSearchCardsQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId: Scalars['UUID'];
 }>;
 
 export type UserRolesSearchCardsQuery = {
@@ -28764,7 +28586,7 @@ export type UserRolesSearchCardsQuery = {
 };
 
 export type SearchScopeDetailsSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SearchScopeDetailsSpaceQuery = {
@@ -29264,7 +29086,7 @@ export type CampaignBlockCredentialsQuery = {
 };
 
 export type DashboardWithMembershipsQueryVariables = Exact<{
-  limit?: Scalars['Float']['input'];
+  limit?: Scalars['Float'];
 }>;
 
 export type DashboardWithMembershipsQuery = {
@@ -29451,7 +29273,7 @@ export type ExploreAllSpacesQuery = {
 };
 
 export type WelcomeSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type WelcomeSpaceQuery = {
@@ -29550,8 +29372,8 @@ export type PendingInvitationsQuery = {
 };
 
 export type LatestContributionsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<ActivityFeedQueryArgs>;
 }>;
 
@@ -29568,7 +29390,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29613,7 +29435,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29662,7 +29484,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29716,7 +29538,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29761,7 +29583,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29815,7 +29637,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29865,7 +29687,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29919,7 +29741,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29966,55 +29788,6 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename?: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          child: boolean;
-          journeyDisplayName: string;
-          space?:
-            | {
-                __typename?: 'Space';
-                id: string;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                  };
-                };
-              }
-            | undefined;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          };
-          subspace: {
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            };
-          };
-        }
-      | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           collaborationID: string;
@@ -30022,7 +29795,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30091,14 +29864,14 @@ export type LatestContributionsQuery = {
               };
         }
       | {
-          __typename?: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntrySubspaceCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30129,7 +29902,7 @@ export type LatestContributionsQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           };
-          subsubspace: {
+          subspace: {
             __typename?: 'Space';
             id: string;
             about: {
@@ -30148,7 +29921,7 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           message: string;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30200,7 +29973,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30232,7 +30005,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30268,7 +30041,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30305,7 +30078,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30337,7 +30110,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30378,7 +30151,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30415,7 +30188,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30456,7 +30229,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30490,42 +30263,6 @@ export type LatestContributionsGroupedQuery = {
         };
       }
     | {
-        __typename?: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        child: boolean;
-        journeyDisplayName: string;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                };
-              };
-            }
-          | undefined;
-        subspace: {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-        };
-      }
-    | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
         collaborationID: string;
@@ -30533,7 +30270,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30589,14 +30326,14 @@ export type LatestContributionsGroupedQuery = {
             };
       }
     | {
-        __typename?: 'ActivityLogEntryOpportunityCreated';
+        __typename?: 'ActivityLogEntrySubspaceCreated';
         id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30614,7 +30351,7 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        subsubspace: {
+        subspace: {
           __typename?: 'Space';
           id: string;
           about: {
@@ -30633,7 +30370,7 @@ export type LatestContributionsGroupedQuery = {
         type: ActivityEventType;
         child: boolean;
         message: string;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30678,7 +30415,7 @@ export type LatestContributionsSpacesFlatQuery = {
 };
 
 export type MyMembershipsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
 }>;
 
 export type MyMembershipsQuery = {
@@ -30818,17 +30555,8 @@ export type SpaceMembershipFragment = {
   };
 };
 
-export type MyMembershipsChildJourneyProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  tagline?: string | undefined;
-  url: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
 export type MyResourcesQueryVariables = Exact<{
-  accountId: Scalars['UUID']['input'];
+  accountId: Scalars['UUID'];
 }>;
 
 export type MyResourcesQuery = {
@@ -31036,7 +30764,7 @@ export type NewVirtualContributorMySpacesQuery = {
 };
 
 export type AllSpaceSubspacesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type AllSpaceSubspacesQuery = {
@@ -31188,7 +30916,7 @@ export type SpaceProfileCommunityDetailsFragment = {
 };
 
 export type RecentSpacesQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']>;
 }>;
 
 export type RecentSpacesQuery = {
@@ -31224,9 +30952,9 @@ export type RecentSpacesQuery = {
   };
 };
 
-export type ChallengeExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
+export type MySpacesExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChallengeExplorerPageQuery = {
+export type MySpacesExplorerPageQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
@@ -31324,7 +31052,7 @@ export type SpaceExplorerSearchSpaceFragment = {
 };
 
 export type SpaceExplorerMemberSpacesQueryVariables = Exact<{
-  spaceIDs?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+  spaceIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
 export type SpaceExplorerMemberSpacesQuery = {
@@ -31379,8 +31107,8 @@ export type SpaceExplorerMemberSpacesQuery = {
 };
 
 export type SpaceExplorerAllSpacesQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
   visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
 }>;
 
@@ -31423,7 +31151,7 @@ export type SpaceExplorerAllSpacesQuery = {
 };
 
 export type SpaceExplorerSubspacesQueryVariables = Exact<{
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+  IDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
 export type SpaceExplorerSubspacesQuery = {
@@ -31506,7 +31234,7 @@ export type SpaceExplorerSubspaceFragment = {
 };
 
 export type SpaceExplorerWelcomeSpaceQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceExplorerWelcomeSpaceQuery = {

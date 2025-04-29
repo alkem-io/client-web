@@ -1,7 +1,6 @@
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
-import SubspacePageBanner from '@/domain/space/components/SubspacePageBanner/SubspacePageBanner';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
@@ -11,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { spaceAdminTabsL1 } from './SpaceAdminTabsL1';
 import { spaceAdminTabsL2 } from './SpaceAdminTabsL2';
 import { useSpace } from '../../space/context/useSpace';
-import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 
 interface SubspaceSettingsLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;
@@ -28,12 +27,10 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const { t } = useTranslation();
 
   // TODO: this should ideally come from the SpaceContext
-  const journeyPath: JourneyPath =
+  const spaceHierarchyPath: SpaceHierarchyPath =
     spaceLevel === SpaceLevel.L1 ? [levelZeroSpaceId, spaceId] : [levelZeroSpaceId, parentSpaceId!, spaceId];
 
   const tabs = spaceLevel === SpaceLevel.L1 ? spaceAdminTabsL1 : spaceAdminTabsL2;
-
-  const spaceBannerElement = <SubspacePageBanner journeyId={spaceId} levelZeroSpaceId={levelZeroSpaceId} />;
 
   const spaceBackButtonElement = (
     <RouterLink to={about.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
@@ -43,13 +40,12 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     </RouterLink>
   );
 
-  const spaceBreadcrumbsElement = <SpaceBreadcrumbs journeyPath={journeyPath} settings />;
+  const spaceBreadcrumbsElement = <SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} settings />;
 
   return (
     <EntitySettingsLayout
       entityTypeName="subspace"
       subheaderTabs={tabs}
-      pageBanner={spaceBannerElement}
       breadcrumbs={spaceBreadcrumbsElement}
       backButton={spaceBackButtonElement}
       {...subspaceContext}

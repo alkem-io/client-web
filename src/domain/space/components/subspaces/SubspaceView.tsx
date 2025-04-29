@@ -51,7 +51,7 @@ export interface SubspaceViewProps<ChildEntity extends BaseChildEntity> {
   onClickCreate?: (isOpen: boolean) => void;
 }
 
-const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
+const SubspaceView = <ChildEntity extends BaseChildEntity>({
   childEntities = [],
   childEntitiesIcon,
   level,
@@ -92,9 +92,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}
         />
-
         {createSubentityDialog}
-
         <PageContentBlock>
           {childEntities.length > 3 && (
             <SearchField
@@ -167,4 +165,4 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   );
 };
 
-export default ChildJourneyView;
+export default SubspaceView;

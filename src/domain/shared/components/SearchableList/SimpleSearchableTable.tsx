@@ -36,7 +36,7 @@ export interface SearchableListProps<Item extends SearchableListItem> {
   onSearchTermChange: (searchTerm: string) => void;
   totalCount?: number;
   hasMore: boolean | undefined;
-  itemActions?: (item: Item) => ReactNode | ReactNode;
+  itemActions?: (item: Item) => ReactNode;
 }
 
 export interface SearchableListItem {

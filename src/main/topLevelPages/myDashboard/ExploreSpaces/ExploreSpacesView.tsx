@@ -66,7 +66,7 @@ export const ExploreSpacesView = ({
   };
 
   const renderSkeleton = (size: number) =>
-    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} journey={undefined} columns={cardColumns} />);
+    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} space={undefined} columns={cardColumns} />);
 
   const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
@@ -115,12 +115,12 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && <SpaceTile journey={welcomeSpace} columns={cardColumns} />}
+        {visibleFirstWelcomeSpace && <SpaceTile space={welcomeSpace} columns={cardColumns} />}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <SpaceTile key={space.id} journey={space} columns={cardColumns} />
+                <SpaceTile key={space.id} space={space} columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}

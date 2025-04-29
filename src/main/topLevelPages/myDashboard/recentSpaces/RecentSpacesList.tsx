@@ -6,15 +6,15 @@ import { Caption } from '@/core/ui/typography';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import GridItem from '@/core/ui/grid/GridItem';
-import SpaceTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
+import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { useMemo } from 'react';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
-interface RecentJourneysListProps {
+interface RecentSpacesListProps {
   onSeeMore?: () => void;
 }
 
-const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
+const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
   const { t } = useTranslation();
   const columns = useColumns();
   const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
@@ -30,7 +30,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
         <SpaceTile
           key={result.space.id}
           columns={cardColumns}
-          journey={{
+          space={{
             about: result.space.about,
             level: result.space.level,
           }}
@@ -42,14 +42,14 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
           variant="outlined"
           component={Button}
           endIcon={<DoubleArrowOutlined />}
-          sx={{ textTransform: 'none', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
+          sx={{ textTransform: 'none', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
           onClick={onSeeMore}
         >
-          <Caption>{t('pages.home.sections.recentJourneys.seeMore')}</Caption>
+          <Caption>{t('pages.home.sections.recentSpaces.seeMore')}</Caption>
         </Paper>
       </GridItem>
     </PageContentBlockSeamless>
   );
 };
 
-export default RecentJourneysList;
+export default RecentSpacesList;

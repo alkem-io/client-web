@@ -95,7 +95,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
             {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => (
               <SpaceTile
                 key={contributionItem.id}
-                journey={{
+                space={{
                   about: contributionItem.about,
                   level: SpaceLevel.L0,
                 }}

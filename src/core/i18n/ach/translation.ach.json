@@ -596,9 +596,9 @@
       "virtualInvitationsSectionTitle": "crwdns18288:0crwdne18288:0",
       "applicationsSectionTitle": "crwdns18290:0crwdne18290:0",
       "invitationDialog": {
-        "title": "crwdns18292:0{{journey}}crwdne18292:0",
+        "title": "crwdns18292:0{{space}}crwdne18292:0",
         "vc": {
-          "title": "crwdns18294:0{{journey}}crwdne18294:0"
+          "title": "crwdns18294:0{{space}}crwdne18294:0"
         },
         "actions": {
           "hide": "crwdns18296:0crwdne18296:0",
@@ -607,7 +607,7 @@
           "accept": "crwdns18302:0crwdne18302:0"
         }
       },
-      "invitationTitle": "crwdns18304:0{{time}}crwdnd18304:0{{user}}crwdnd18304:0{{invitedEntity}}crwdnd18304:0{{journey}}crwdne18304:0",
+      "invitationTitle": "crwdns18304:0{{time}}crwdnd18304:0{{user}}crwdnd18304:0{{invitedEntity}}crwdnd18304:0{{space}}crwdne18304:0",
       "you": "crwdns18306:0crwdne18306:0",
       "vc": "crwdns18308:0crwdne18308:0"
     },
@@ -980,7 +980,7 @@
       "parentJourney": "crwdns18724:0crwdne18724:0"
     },
     "journeyMetrics": {
-      "title": "crwdns18726:0{{journey}}crwdne18726:0"
+      "title": "crwdns18726:0{{space}}crwdne18726:0"
     },
     "dashboardNavigation": {
       "help": "crwdns18728:0crwdne18728:0",
@@ -1198,7 +1198,7 @@
         "CALENDAR_EVENT_CREATED": "crwdns18982:0{{subject}}crwdne18982:0"
       },
       "detailedDescription": {
-        "parentLink": "crwdns18984:0{{journeyDisplayName}}crwdne18984:0"
+        "parentLink": "crwdns18984:0{{spaceDisplayName}}crwdne18984:0"
       }
     },
     "innovationFlow": {
@@ -1367,7 +1367,7 @@
       "goToSubspace": "crwdns19184:0$t(common.subspace)crwdne19184:0",
       "parent-pending": "crwdns19186:0crwdne19186:0",
       "applyTo": "crwdns19188:0crwdne19188:0",
-      "extendedMessage": "crwdns19190:0{{join}}crwdnd19190:0{{journey}}crwdne19190:0",
+      "extendedMessage": "crwdns19190:0{{join}}crwdnd19190:0{{space}}crwdne19190:0",
       "dialog-apply-parent": {
         "title": "crwdns19192:0{{parentCommunityName}}crwdne19192:0",
         "body": "crwdns19194:0{{subspaceName}}crwdnd19194:0{{spaceName}}crwdne19194:0"
@@ -1751,7 +1751,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "crwdns19534:0{{space}}crwdne19534:0",
-    "foreignJourney": "crwdns19536:0{{journey}}crwdnd19536:0{{space}}crwdne19536:0",
+    "foreignJourney": "crwdns19536:0{{space}}crwdnd19536:0{{space}}crwdne19536:0",
     "outsideOfSpace": {
       "forum": "crwdns19538:0{{space}}crwdne19538:0",
       "subspaces": "crwdns19540:0{{space}}crwdne19540:0",
@@ -1800,11 +1800,11 @@
       },
       "archived-notice": {
         "archived-space": "crwdns19582:0crwdne19582:0",
-        "archived-journey": "crwdns19584:0{{journey}}crwdne19584:0"
+        "archived-journey": "crwdns19584:0{{space}}crwdne19584:0"
       },
       "demo-notice": {
         "demo-space": "crwdns19586:0crwdne19586:0",
-        "demo-journey": "crwdns19588:0{{journey}}crwdne19588:0"
+        "demo-journey": "crwdns19588:0{{space}}crwdne19588:0"
       }
     },
     "contribute": {
@@ -2303,14 +2303,14 @@
         "myLatestContributions": {
           "title": "crwdns20084:0crwdne20084:0",
           "card": {
-            "journey": "crwdns20086:0{{journey}}crwdne20086:0"
+            "journey": "crwdns20086:0{{space}}crwdne20086:0"
           },
           "noContributions": "crwdns20088:0crwdne20088:0"
         },
         "createAccountBanner": {
           "message": "crwdns20090:0crwdne20090:0"
         },
-        "recentJourneys": {
+        "recentSpaces": {
           "seeMore": "crwdns20092:0crwdne20092:0",
           "seeMoreSubspaces": "crwdns28744:0crwdne28744:0"
         },
@@ -2357,15 +2357,15 @@
           "seeMore": "crwdns20146:0crwdne20146:0",
           "seeAll": "crwdns20148:0crwdne20148:0",
           "invitation": {
-            "message": "crwdns20150:0{{journey}}crwdne20150:0",
+            "message": "crwdns20150:0{{space}}crwdne20150:0",
             "caption": "crwdns20152:0crwdne20152:0"
           },
           "application": {
-            "message": "crwdns20154:0{{journey}}crwdne20154:0",
+            "message": "crwdns20154:0{{space}}crwdne20154:0",
             "caption": "crwdns20156:0crwdne20156:0"
           },
           "membership": {
-            "message": "crwdns20158:0{{journey}}crwdne20158:0",
+            "message": "crwdns20158:0{{space}}crwdne20158:0",
             "caption": "crwdns20160:0{{tagline}}crwdne20160:0"
           }
         },

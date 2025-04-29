@@ -596,9 +596,9 @@
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Ausstehende Anträge",
       "invitationDialog": {
-        "title": "My Pending Membership: {{journey}}",
+        "title": "My Pending Membership: {{space}}",
         "vc": {
-          "title": "Pending Virtual Contributor membership: {{journey}}"
+          "title": "Pending Virtual Contributor membership: {{space}}"
         },
         "actions": {
           "hide": "Einladung verstecken",
@@ -607,7 +607,7 @@
           "accept": "Beitreten"
         }
       },
-      "invitationTitle": "{{time}} {{user}} hat Sie zu <journeyicon /> {{journey}} eingeladen",
+      "invitationTitle": "{{time}} {{user}} hat Sie zu <journeyicon /> {{space}} eingeladen",
       "you": "you",
       "vc": "your Virtual Contributor"
     },
@@ -980,7 +980,7 @@
       "parentJourney": "Part of:"
     },
     "journeyMetrics": {
-      "title": "{{journey}} Statistiken"
+      "title": "{{space}} Statistiken"
     },
     "dashboardNavigation": {
       "help": "Dieser Raum enthält die folgenden Herausforderungen. Wenn diese Herausforderungen Chancen haben, sind diese auch sichtbar.",
@@ -1198,7 +1198,7 @@
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
-        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
+        "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
       }
     },
     "innovationFlow": {
@@ -1367,7 +1367,7 @@
       "goToSubspace": "Go to $t(common.subspace)",
       "parent-pending": "Ausstehende Bewerbung als Nachhilfelehrer",
       "applyTo": "Anwenden auf",
-      "extendedMessage": "{{join}} our {{journey}} and start making change!",
+      "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Um <strong title='Challenge name'>'{{challengeName}}'</strong> beizutreten, musst du zuerst <strong title='Space name'>'{{spaceName}}'</strong> Hub beitreten. Bitte füge die Herausforderung hinzu, der du beitreten möchtest."
@@ -1751,7 +1751,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Leerzeichen",
-    "foreignJourney": "Dieser {{journey}} ist nicht in der Auswahl von {{space}}. Sie sind trotzdem sehr herzlich eingeladen, einen Beitrag zu leisten. <strong>Viel Spaß beim Entdecken!</strong>",
+    "foreignJourney": "Dieser {{space}} ist nicht in der Auswahl von {{space}}. Sie sind trotzdem sehr herzlich eingeladen, einen Beitrag zu leisten. <strong>Viel Spaß beim Entdecken!</strong>",
     "outsideOfSpace": {
       "forum": "Dies ist das allgemeine Alkemio-Forum, außerhalb des <strong>{{space}}</strong> Platzes. Sie sind sehr eingeladen zu erkunden und mitzuwirken!",
       "subspaces": "Here you can find all Subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
@@ -2303,14 +2303,14 @@
         "myLatestContributions": {
           "title": "My Latest Activity",
           "card": {
-            "journey": "in: <journeyicon /> {{journey}}"
+            "journey": "in: <journeyicon /> {{space}}"
           },
           "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
-        "recentJourneys": {
+        "recentSpaces": {
           "seeMore": "Explore all your Spaces",
           "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
@@ -2348,15 +2348,15 @@
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
           "invitation": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Click here to see the invitation"
           },
           "application": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Your application still has to be approved"
           },
           "membership": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "{{tagline}}"
           }
         },

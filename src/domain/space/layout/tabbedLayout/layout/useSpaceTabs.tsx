@@ -42,7 +42,7 @@ type useSpaceTabsProvided = {
   showSettings: boolean;
 };
 
-const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTabsProvided => {
+const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: boolean }): useSpaceTabsProvided => {
   const { t, i18n } = useTranslation();
 
   const { permissions } = useSpace();
@@ -51,7 +51,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId,
+    skip: !spaceId || skip,
   });
 
   const { tabs, defaultTabIndex } = useMemo(() => {
@@ -107,7 +107,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
       tabs: result,
       defaultTabIndex: currentStateIndex,
     };
-  }, [t, i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
+  }, [i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
 
   return {
     tabs,

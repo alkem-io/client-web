@@ -16,7 +16,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import ApplyCollaborationTemplateDialog from '@/domain/templates/components/Dialogs/ApplyCollaborationTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
-type InnovationFlowSettingsDialogProps = {
+export type InnovationFlowSettingsDialogProps = {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
