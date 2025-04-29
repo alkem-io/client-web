@@ -75,7 +75,7 @@ const SpaceProtectedRoutes = () => {
   return <Outlet />;
 };
 
-const SpaceTabbedPages = () => {
+export const SpaceTabbedPages = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
   const { isSmallScreen } = useScreenSize();
