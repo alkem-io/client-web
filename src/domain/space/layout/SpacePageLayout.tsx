@@ -13,13 +13,13 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = () => {
-  const { spaceId, journeyPath } = useUrlResolver();
+  const { spaceId, spaceHierarchyPath } = useUrlResolver();
 
   const { isSmallScreen } = useScreenSize();
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
-      <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs journeyPath={journeyPath} />} />
+    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
+      <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} />} />
 
       <SpacePageBanner />
       <SubspacePageBanner />

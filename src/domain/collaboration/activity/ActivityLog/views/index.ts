@@ -6,7 +6,7 @@ export * from './ActivityCalloutLinkCreatedView';
 export * from './ActivityDiscussionCommentCreatedView';
 export * from './ActivityLoadingView';
 export * from './ActivityMemberJoinedView';
-export * from './ActivityChallengeCreatedView';
-export * from './ActivityOpportunityCreatedView';
+export * from './ActivitySpaceL1CreatedView';
+export * from './ActivitySpaceL2CreatedView';
 
 export * from './ActivityViewProps';

@@ -12,9 +12,9 @@ import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElement
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
 import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
-import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
 
 export const TITLE_HEIGHT = 6;
 
@@ -48,8 +48,8 @@ const TopNotices = styled(Box)(() => ({
 }));
 
 interface PageNoticeProps extends BoxProps {
-  level: JourneyPageBannerProps['level'];
-  isAdmin: JourneyPageBannerProps['isAdmin'];
+  level: SpacePageBannerProps['level'];
+  isAdmin: SpacePageBannerProps['isAdmin'];
 }
 
 const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
@@ -69,12 +69,12 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
   switch (level) {
     case SpaceLevel.L0: {
       if (visibility === SpaceVisibility.Archived) {
-        message = tLinks('pages.generic.archived-notice.archived-space', {
+        message = tLinks('pages.generic.archivedNotice.archivedSpace', {
           contact: { href: locations?.feedback, target: '_blank' },
         });
       }
       if (visibility === SpaceVisibility.Demo) {
-        message = tLinks('pages.generic.demo-notice.demo-space', {
+        message = tLinks('pages.generic.demoNotice.demoSpace', {
           alkemio: { href: ALKEMIO_DOMAIN, target: '_blank' },
         });
       }
@@ -83,20 +83,20 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
     default: {
       if (visibility === SpaceVisibility.Archived) {
         message = tLinks(
-          'pages.generic.archived-notice.archived-journey',
+          'pages.generic.archivedNotice.archivedSubspace',
           {
             contact: { href: locations?.feedback, target: '_blank' },
           },
-          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
+          { space: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       if (visibility === SpaceVisibility.Demo) {
         message = tLinks(
-          'pages.generic.demo-notice.demo-journey',
+          'pages.generic.demoNotice.demoSubspace',
           {
             alkemio: { href: '/', target: '_blank' },
           },
-          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
+          { space: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       break;
@@ -128,7 +128,7 @@ const WatermarkContainer = (props: BoxProps) => (
   <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
 );
 
-export interface JourneyPageBannerProps {
+export interface SpacePageBannerProps {
   loading?: boolean;
   level?: SpaceLevel;
   isAdmin?: boolean;
@@ -136,13 +136,7 @@ export interface JourneyPageBannerProps {
   title?: string;
 }
 
-const SpacePageBanner = ({
-  level,
-  isAdmin,
-  loading: dataLoading = false,
-  watermark,
-  title,
-}: JourneyPageBannerProps) => {
+const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, watermark, title }: SpacePageBannerProps) => {
   const { spaceLevel } = useUrlResolver();
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
@@ -162,7 +156,7 @@ const SpacePageBanner = ({
   const profile = data?.lookup.space?.about.profile;
 
   const bannerTitle = title ?? profile?.displayName;
-  const ribbon = useInnovationHubJourneyBannerRibbon({
+  const ribbon = useInnovationHubSpaceBannerRibbon({
     spaceId,
   });
 

@@ -2,19 +2,19 @@ import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
-import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from '../CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import SpaceL1Icon2 from '../../../icons/SpaceL1Icon2';
 
-export interface CreateJourneyProps {
+export interface CreateSubspaceProps {
   isVisible: boolean;
   onClose: () => void;
   parentSpaceId: string | undefined;
 }
 
-export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }: CreateJourneyProps) => {
+export const CreateSubspace = ({ isVisible = false, onClose, parentSpaceId = '' }: CreateSubspaceProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   });
 
   const handleCreate = useCallback(
-    async (value: JourneyFormValues) => {
+    async (value: SpaceFormValues) => {
       const result = await createSubspace({
         spaceID: parentSpaceId,
         about: {
@@ -53,7 +53,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
     <SubspaceCreationDialog
       icon={<SpaceL1Icon2 fill="primary" />}
       open={isVisible}
-      journeyName={t('common.subspace')}
+      spaceDisplayName={t('common.subspace')}
       onClose={onClose}
       onCreate={handleCreate}
       formComponent={CreateSubspaceForm}
@@ -61,4 +61,4 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   );
 };
 
-export default CreateJourney;
+export default CreateSubspace;

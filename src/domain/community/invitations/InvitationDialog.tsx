@@ -52,12 +52,12 @@ const InvitationDialog = ({
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
-        journey: invitation?.space.about.profile.displayName,
+        space: invitation?.space.about.profile.displayName,
       });
     }
 
     return t('community.pendingMembership.invitationDialog.title', {
-      journey: invitation?.space.about.profile.displayName,
+      space: invitation?.space.about.profile.displayName,
     });
   };
 
@@ -106,7 +106,7 @@ const InvitationDialog = ({
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
                       banner={invitation.space.about.profile.cardBanner}
-                      journeyUri={invitation.space.about.profile.url}
+                      spaceUri={invitation.space.about.profile.url}
                       onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >
                       <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
@@ -115,8 +115,8 @@ const InvitationDialog = ({
                       <Caption>
                         <DetailedActivityDescription
                           i18nKey="community.pendingMembership.invitationTitle"
-                          journeyDisplayName={invitation.space.about.profile.displayName}
-                          journeyUrl={invitation.space.about.profile.url}
+                          spaceDisplayName={invitation.space.about.profile.displayName}
+                          spaceUrl={invitation.space.about.profile.url}
                           spaceLevel={invitation.space.level}
                           createdDate={invitation.invitation.createdDate}
                           author={{ displayName: invitation.userDisplayName }}

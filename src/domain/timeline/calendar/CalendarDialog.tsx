@@ -33,7 +33,7 @@ export interface CalendarDialogProps {
 const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocation = false }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, parentSpaceId, journeyPath: parentPath, calendarEventId } = useUrlResolver();
+  const { spaceId, parentSpaceId, spaceHierarchyPath: parentPath, calendarEventId } = useUrlResolver();
 
   const params = useQueryParams();
   const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
@@ -89,7 +89,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={spaceId} parentSpaceId={parentSpaceId}>
+      <CalendarEventsContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },

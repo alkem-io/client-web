@@ -31,7 +31,7 @@ export interface CommunityGuidelinesBlockProps {
   spaceUrl: string | undefined;
 }
 
-const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl }: CommunityGuidelinesBlockProps) => {
+const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl }: CommunityGuidelinesBlockProps) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
@@ -62,7 +62,7 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl: journeyUrl 
             hasEditPrivilege && (
               <IconButton
                 component={RouterLink}
-                to={`${buildSettingsUrl(journeyUrl || '')}/community`}
+                to={`${buildSettingsUrl(spaceUrl || '')}/community`}
                 sx={{ mr: '-8px', color: 'primary.main' }}
               >
                 <EditOutlined color="primary" />

@@ -37,8 +37,8 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export const buildUpdatesUrl = (journeyLocation: string) => {
-  return `${journeyLocation}/updates`;
+export const buildUpdatesUrl = (spaceUrl: string) => {
+  return `${spaceUrl}/updates`;
 };
 
 export const buildSpaceSectionUrl = (

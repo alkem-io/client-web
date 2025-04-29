@@ -110,7 +110,7 @@ export const SubspacePageLayout = () => {
       <PageContent>
         <SubspaceInfoColumn />
         <PageContentColumnBase columns={isCollapsed ? 12 : 9} flexBasis={0} flexGrow={1} flexShrink={1} minWidth={0}>
-          <ApplicationButtonContainer journeyId={spaceId} parentSpaceId={parentSpaceId}>
+          <ApplicationButtonContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
             {(applicationButtonProps, loading) => {
               if (loading || applicationButtonProps.isMember) {
                 return null;
@@ -122,7 +122,7 @@ export const SubspacePageLayout = () => {
                     loading={loading}
                     component={FullWidthButton}
                     extended={hasExtendedApplicationButton}
-                    journeyId={spaceId}
+                    spaceId={spaceId}
                     spaceLevel={SpaceLevel.L1}
                   />
                 </PageContentColumn>

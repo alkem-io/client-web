@@ -596,9 +596,9 @@
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Applications ouvertes",
       "invitationDialog": {
-        "title": "My Pending Membership: {{journey}}",
+        "title": "My Pending Membership: {{space}}",
         "vc": {
-          "title": "Pending Virtual Contributor membership: {{journey}}"
+          "title": "Pending Virtual Contributor membership: {{space}}"
         },
         "actions": {
           "hide": "Masquer ce bouton",
@@ -607,7 +607,7 @@
           "accept": "Joindre"
         }
       },
-      "invitationTitle": "{{time}} {{user}} vous a invité à <journeyicon /> {{journey}}",
+      "invitationTitle": "{{time}} {{user}} vous a invité à <journeyicon /> {{space}}",
       "you": "you",
       "vc": "your Virtual Contributor"
     },
@@ -980,7 +980,7 @@
       "parentJourney": "Partie de:"
     },
     "journeyMetrics": {
-      "title": "Statistiques de {{journey}}"
+      "title": "Statistiques de {{space}}"
     },
     "dashboardNavigation": {
       "help": "Cet espace contient les défis suivants. Quand ces défis ont des opportunités, ils sont également visibles.",
@@ -1198,7 +1198,7 @@
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
-        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
+        "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
       }
     },
     "innovationFlow": {
@@ -1367,7 +1367,7 @@
       "goToSubspace": "Go to $t(common.subspace)",
       "parent-pending": "Demande de tutorat en cours",
       "applyTo": "Appliquer à",
-      "extendedMessage": "{{join}} our {{journey}} and start making change!",
+      "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "Pour rejoindre le hub <strong title='Challenge name'>'{{challengeName}}'</strong> vous devez d'abord rejoindre <strong title='Space name'>'{{spaceName}}'</strong> . Veuillez ajouter le défi que vous souhaitez rejoindre dans le formulaire de demande du hub."
@@ -1751,7 +1751,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "Espaces {{space}}",
-    "foreignJourney": "Cet {{journey}} ne fait pas partie de la sélection de {{space}}. Vous êtes de toute façon les bienvenus pour contribuer. <strong>Bonne exploration !</strong>",
+    "foreignJourney": "Cet {{space}} ne fait pas partie de la sélection de {{space}}. Vous êtes de toute façon les bienvenus pour contribuer. <strong>Bonne exploration !</strong>",
     "outsideOfSpace": {
       "forum": "Ceci est le forum général d'Alkemio, en dehors de l'espace <strong>{{space}}</strong> . Vous êtes très invité à explorer et à contribuer !",
       "subspaces": "Here you can find all Subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
@@ -1800,11 +1800,11 @@
       },
       "archived-notice": {
         "archived-space": "Ce Hub est actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio.",
-        "archived-journey": "Cet {{journey}} est sous un Hub actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio."
+        "archived-journey": "Cet {{space}} est sous un Hub actuellement archivé. Vous voulez le ramener à la vie ? <contact>Cliquez ici</contact> pour contacter Alkemio."
       },
       "demo-notice": {
         "demo-space": "Ceci est un Hub de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans les Hubs actifs.",
-        "demo-journey": "Ceci {{journey}} est dans un Hub de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans des Hubs actifs."
+        "demo-journey": "Ceci {{space}} est dans un Hub de démonstration. <alkemio>Cliquez ici</alkemio> pour collaborer dans des Hubs actifs."
       }
     },
     "contribute": {
@@ -2303,14 +2303,14 @@
         "myLatestContributions": {
           "title": "My Latest Activity",
           "card": {
-            "journey": "in: <journeyicon /> {{journey}}"
+            "journey": "in: <journeyicon /> {{space}}"
           },
           "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
-        "recentJourneys": {
+        "recentSpaces": {
           "seeMore": "Explore all your Spaces",
           "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
@@ -2348,15 +2348,15 @@
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
           "invitation": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Click here to see the invitation"
           },
           "application": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Your application still has to be approved"
           },
           "membership": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "{{tagline}}"
           }
         },

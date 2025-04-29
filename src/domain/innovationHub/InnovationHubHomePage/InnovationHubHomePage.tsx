@@ -58,11 +58,11 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 key={space.id}
                 banner={space.about.profile.cardBanner}
                 displayName={space.about.profile.displayName!}
-                vision={space.about.why!}
+                why={space.about.why!}
                 membersCount={getMetricCount(space.about.metrics, MetricType.Member)}
                 tagline={space.about.profile.tagline!}
                 tags={space.about.profile.tagset?.tags ?? []}
-                journeyUri={space.about.profile.url}
+                spaceUri={space.about.profile.url}
                 member={isMember(space.about)}
                 spaceVisibility={space.visibility}
               />

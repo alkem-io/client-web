@@ -51,7 +51,7 @@ export interface SubspaceViewProps<ChildEntity extends BaseChildEntity> {
   onClickCreate?: (isOpen: boolean) => void;
 }
 
-const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
+const SubspaceView = <ChildEntity extends BaseChildEntity>({
   childEntities = [],
   childEntitiesIcon,
   level,
@@ -165,4 +165,4 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   );
 };
 
-export default ChildJourneyView;
+export default SubspaceView;

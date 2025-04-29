@@ -21,9 +21,9 @@ const SpaceBreadcrumbs = forwardRef<Collapsible, SpaceBreadcrumbsProps<Expandabl
   <ItemProps extends Expandable>({ settings, ...props }: SpaceBreadcrumbsProps<ItemProps>, ref) => {
     const { t } = useTranslation();
     const { pathname } = useLocation();
-    const { loading, journeyPath } = useUrlResolver();
+    const { loading, spaceHierarchyPath } = useUrlResolver();
     const { breadcrumbs } = useSpaceBreadcrumbs({
-      journeyPath,
+      spaceHierarchyPath,
       loading,
     });
 

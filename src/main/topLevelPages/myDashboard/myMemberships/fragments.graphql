@@ -1,9 +1,0 @@
-fragment MyMembershipsChildJourneyProfile on Profile {
-  id
-  displayName
-  tagline
-  url
-  avatar: visual(type: AVATAR) {
-    ...VisualUri
-  }
-}

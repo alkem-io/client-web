@@ -1,4 +1,4 @@
-query ChallengeExplorerPage {
+query MySpacesExplorerPage {
   me {
     spaceMembershipsFlat {
       id

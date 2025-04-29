@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
-import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
@@ -14,9 +14,9 @@ import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
-import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
+import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ const SpaceSubspacesPage = () => {
   const { createSubspace } = useSubspaceCreation();
 
   const handleCreate = useCallback(
-    async (value: JourneyFormValues) => {
+    async (value: SpaceFormValues) => {
       if (!spaceId) {
         return;
       }
@@ -96,7 +96,7 @@ const SpaceSubspacesPage = () => {
   }, [space?.level]);
 
   return (
-    <ChildJourneyView
+    <SubspaceView
       childEntities={subspaces}
       level={level}
       childEntitiesIcon={<SpaceL1Icon />}
@@ -110,7 +110,7 @@ const SpaceSubspacesPage = () => {
           tags={item.about.profile.tagset?.tags!}
           tagline={item.about.profile.tagline!}
           vision={item.about.why!}
-          journeyUri={item.about.profile.url}
+          spaceUri={item.about.profile.url}
           locked={!item.about.isContentPublic}
           spaceVisibility={visibility}
           level={childLevel}
@@ -124,7 +124,7 @@ const SpaceSubspacesPage = () => {
         <SubspaceCreationDialog
           open={isCreateDialogOpen}
           icon={<SpaceL1Icon2 fill="primary" />}
-          journeyName={t('common.subspace')}
+          spaceDisplayName={t('common.subspace')}
           onClose={() => setCreateDialogOpen(false)}
           onCreate={handleCreate}
           formComponent={CreateSubspaceForm}
