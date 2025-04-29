@@ -1188,10 +1188,9 @@
     "activityLogView": {
       "description": {
         "CALLOUT_PUBLISHED": "crwdns18960:0{{subject}}crwdne18960:0",
-        "CHALLENGE_CREATED": "crwdns18962:0{{subject}}crwdne18962:0",
+        "SUBSPACE_CREATED": "crwdns36912:0{{subject}}crwdne36912:0",
         "DISCUSSION_COMMENT": "crwdns18964:0{{subject}}crwdne18964:0",
         "MEMBER_JOINED": "crwdns18966:0{{subject}}crwdne18966:0",
-        "OPPORTUNITY_CREATED": "crwdns18968:0{{subject}}crwdne18968:0",
         "CALLOUT_POST_COMMENT": "crwdns18970:0{{subject}}crwdne18970:0",
         "CALLOUT_POST_CREATED": "crwdns18972:0{{subject}}crwdne18972:0",
         "CALLOUT_LINK_CREATED": "crwdns18974:0{{subject}}crwdne18974:0",
