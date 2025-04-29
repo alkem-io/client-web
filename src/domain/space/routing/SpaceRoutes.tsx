@@ -75,7 +75,7 @@ const SpaceProtectedRoutes = () => {
   return <Outlet />;
 };
 
-const SpaceTabbedPages = () => {
+export const SpaceTabbedPages = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
   const { isSmallScreen } = useScreenSize();
@@ -91,7 +91,7 @@ const SpaceTabbedPages = () => {
     if (defaultTabIndex && defaultTabIndex >= 0) {
       sectionIndex = defaultTabIndex.toString();
     } else {
-      sectionIndex = '1';
+      sectionIndex = '0'; // set default to dashboard
     }
   } else {
     sectionIndex = `${parseInt(sectionIndex) - 1}`;
