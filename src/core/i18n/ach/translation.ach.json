@@ -1854,6 +1854,9 @@
           "communications": {
             "description": "crwdns19622:0{{entity}}crwdne19622:0"
           },
+          "subspaces": {
+            "description": "crwdns36914:0crwdne36914:0"
+          },
           "subsubspaces": {
             "description": "crwdns19624:0crwdne19624:0"
           },
