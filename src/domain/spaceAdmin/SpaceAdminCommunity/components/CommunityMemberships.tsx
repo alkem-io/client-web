@@ -1,12 +1,10 @@
-import { Box, IconButton, Link, Tooltip } from '@mui/material';
+import { Box, IconButton, Link } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { TFunction, useTranslation } from 'react-i18next';
-import { BlockTitle } from '@/core/ui/typography';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { gutters } from '@/core/ui/grid/utils';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
 import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog';
@@ -114,7 +112,6 @@ type PlatformInvitation = {
 interface CommunityApplicationsProps {
   applications: ApplicationModel[] | undefined;
   onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
-  canHandleInvitations?: boolean;
   invitations?: InvitationModel[] | undefined;
   platformInvitations?: PlatformInvitation[] | undefined;
   onInvitationStateChange?: (invitationId: string, state: string) => Promise<unknown>;
@@ -181,7 +178,6 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: PlatformInvita
 const CommunityMemberships = ({
   applications = [],
   onApplicationStateChange,
-  canHandleInvitations = false,
   invitations = [],
   platformInvitations = [],
   onInvitationStateChange,
@@ -293,16 +289,6 @@ const CommunityMemberships = ({
 
   return (
     <>
-      <Box display="flex" justifyContent="space-between">
-        <BlockTitle>
-          {t(canHandleInvitations ? 'community.pendingMemberships' : 'community.pendingApplications')}
-        </BlockTitle>
-        <Tooltip title={t('community.applicationsHelp')} arrow>
-          <IconButton aria-label={t('common.help')}>
-            <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
       <Box minHeight={gutters(10)}>
         {loading ? (
           <DataGridSkeleton />

@@ -81,7 +81,7 @@ const PreviewContributorDialog = ({
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
       <DialogHeader
         icon={<VCIcon />}
-        title={t('community.invitations.inviteContributorsDialog.title')}
+        title={t('community.invitations.inviteContributorsDialog.vcs.title')}
         onClose={onClose}
       />
 

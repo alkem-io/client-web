@@ -15,7 +15,7 @@ import { InvitationModel } from '../model/InvitationModel';
 import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
 
 type useRoleSetApplicationsAndInvitationsParams = {
-  roleSetId: string;
+  roleSetId: string | undefined;
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {

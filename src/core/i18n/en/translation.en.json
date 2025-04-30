@@ -528,7 +528,6 @@
     "memberUsers": "Member Users ({{count}})",
     "leading-organizations": "Leading Organizations",
     "memberOrganizations": "Member Organizations ({{count}})",
-    "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
     "leads": "Leads",
     "members": "Members",
@@ -578,12 +577,10 @@
     },
 
     "invitations": {
-      "invitationDialog": {
-        "inviteButton": {
-          "USER": "Invite people to this Space",
-          "ORGANIZATION": "Invite people to this Space",
-          "VIRTUAL": "Invite Virtual Contributor"
-        }
+      "inviteButton": {
+        "USER": "Invite people to this Space",
+        "ORGANIZATION": "Invite people to this Space",
+        "VIRTUAL": "Invite Virtual Contributor"
       },
       "invitationSent": "Invitation sent successfully",
       "inviteExternalVC": "Invite External VC",
@@ -611,8 +608,15 @@
       },
       "inviteToRole": "Invite to be a: ",
       "inviteContributorsDialog": {
-        "title": "Virtual Contributors Store",
+        "users": {
+          "title": "Invite others to join '{{spaceName}}'",
+          "description": "Search for people below or directly add their email address",
+          "note": "Keep in mind that your email address will be visible to anyone you invite.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to The Sandbox. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "placeholder": "Username or email..."
+        },
         "vcs": {
+          "title": "Virtual Contributors Store",
           "onAccount": {
             "title": "Virtual Contributors linked to this Space's account"
           },
@@ -621,6 +625,7 @@
           },
           "emptyMessage": "No available Virtual Contributors"
         },
+        "welcomeMessage": "Message",
         "successfullyAdded": "{{contributor}} added successfully",
         "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
       }
@@ -903,7 +908,8 @@
       "nonBlank": "{{field}} must not consist of just spaces",
       "atLeastOne": "At least one {{item}} must be selected.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
-      "invalidUrl": "Invalid URL"
+      "invalidUrl": "Invalid URL",
+      "invalidEmail": "Invalid Email address"
     }
   },
   "templateDialog": {

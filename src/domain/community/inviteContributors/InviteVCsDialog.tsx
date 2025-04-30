@@ -245,7 +245,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogHeader
         icon={<VCIcon />}
-        title={t('community.invitations.inviteContributorsDialog.title')}
+        title={t('community.invitations.inviteContributorsDialog.vcs.title')}
         onClose={onClose}
       />
 
