@@ -59,8 +59,8 @@ const CommentsCalloutLayout = ({
         calloutActions={calloutActions}
       />
       {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
-      <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()} paddingBottom={gutters(0.5)}>
-        <WrapperMarkdown caption className={MARKDOWN_CLASS_NAME} sx={expandedStyles}>
+      <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()} paddingBottom={gutters(0.5)} className={MARKDOWN_CLASS_NAME}>
+        <WrapperMarkdown caption sx={expandedStyles}>
           {callout.framing.profile.description ?? ''}
         </WrapperMarkdown>
       </Box>

@@ -35,6 +35,7 @@ export const WrapperMarkdown = ({
     >
       <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}>
         <ReactMarkdown
+          // @ts-ignore
           components={components}
           remarkPlugins={[
             gfm,

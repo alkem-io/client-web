@@ -75,7 +75,8 @@
     "testEnvironment": "jsdom"
   },
   "resolutions": {
-    "**/@emotion/styled": "^11.0.0"
+    "**/@emotion/styled": "^11.0.0",
+    "unified": "^11.0.4"
   },
   "dependencies": {
     "@alkemio/excalidraw": "0.18.0-alkemio-1",
@@ -139,18 +140,18 @@
     "react-image-crop": "^9.0.5",
     "react-image-file-resizer": "^0.4.7",
     "react-intersection-observer": "^9.1.0",
-    "react-markdown": "^8.0.3",
+    "react-markdown": "^10.1.0",
     "react-mentions": "^4.4.7",
     "react-resize-detector": "^7.0.0",
     "react-router-dom": "^7.4.0",
     "react-scroll": "^1.8.7",
-    "rehype-parse": "^8.0.4",
-    "rehype-raw": "^6.1.1",
-    "rehype-remark": "^9.1.2",
-    "rehype-sanitize": "^5.0.1",
-    "rehype-stringify": "^9.0.3",
-    "remark-gfm": "^3.0.1",
-    "remark-stringify": "^10.0.2",
+    "rehype-parse": "^9.0.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-remark": "^10.0.1",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-stringify": "^11.0.0",
     "socket.io-client": "^4.8.1",
     "ts-semaphore": "^1.0.0",
     "typescript": "~5.3.3",
@@ -205,6 +206,9 @@
     "glob-parent": "^5.1.2",
     "got": "11.8.5",
     "nth-check": "^2.0.1",
-    "chokidar": "^3.5.3"
+    "chokidar": "^3.5.3",
+    "react-markdown": {
+      "unified": "^10.1.2"
+    }
   }
 }

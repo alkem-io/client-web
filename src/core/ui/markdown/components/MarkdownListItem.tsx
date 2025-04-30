@@ -1,7 +1,13 @@
-import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 import createMarkdownComponent from './MarkdownComponent';
+import { SxProps } from '@mui/material';
+import { ReactNode } from 'react';
 
 const Base = createMarkdownComponent('li');
+
+interface ReactMarkdownProps {
+  sx?: SxProps;
+  node?: ReactNode;
+}
 
 const MarkdownListItem = (props: ReactMarkdownProps) => {
   // not sure when and what adds the `ordered` property but it results in
