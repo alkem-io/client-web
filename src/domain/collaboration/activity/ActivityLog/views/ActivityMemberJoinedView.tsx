@@ -1,16 +1,16 @@
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
 import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 
 interface ActivityMemberJoinedViewProps extends ActivityViewProps {
-  member: Author;
+  member: AuthorModel;
   type: ActivityEventType.MemberJoined;
 }
 
 export const ActivityMemberJoinedView = ({
-  journeyDisplayName,
+  spaceDisplayName,
   member,
   type,
   ...rest
@@ -21,6 +21,6 @@ export const ActivityMemberJoinedView = ({
     avatarUrl={member.avatarUrl}
     title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
     url={member.url}
-    contextDisplayName={journeyDisplayName}
+    contextDisplayName={spaceDisplayName}
   />
 );

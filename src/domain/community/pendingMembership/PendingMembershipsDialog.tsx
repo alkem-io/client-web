@@ -22,7 +22,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
-import { spaceIconByLevel } from '@/domain/space/icons/SpaceIconByLevel';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 const PendingMembershipsDialog = () => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ const PendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      journeyUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
+      spaceUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
     });
   };
 
@@ -60,8 +60,8 @@ const PendingMembershipsDialog = () => {
   );
 
   const onInvitationAccept = () => {
-    if (openDialog?.journeyUri) {
-      navigate(openDialog?.journeyUri);
+    if (openDialog?.spaceUri) {
+      navigate(openDialog?.spaceUri);
       defer(closeDialog); // Deferring for appearance purpose only
     } else {
       setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
@@ -128,11 +128,11 @@ const PendingMembershipsDialog = () => {
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <SpaceCardBase
-                          iconComponent={spaceIconByLevel[hydratedApplication.space.level]}
+                          iconComponent={spaceLevelIcon[hydratedApplication.space.level]}
                           header={hydratedApplication.space.about.profile.displayName}
                           tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.about.profile.cardBanner}
-                          journeyUri={hydratedApplication.space.about.profile.url}
+                          spaceUri={hydratedApplication.space.about.profile.url}
                         >
                           <SpaceCardTagline>{hydratedApplication.space.about.profile.tagline ?? ''}</SpaceCardTagline>
                         </SpaceCardBase>

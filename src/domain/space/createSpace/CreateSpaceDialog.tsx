@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { Checkbox, DialogContent, FormControlLabel, Link } from '@mui/material';
+import { Button, Checkbox, DialogContent, FormControlLabel, Link } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -18,7 +18,7 @@ import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { gutters } from '@/core/ui/grid/utils';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { Navigate } from 'react-router-dom';
 import NameIdField from '@/core/utils/nameId/NameIdField';
@@ -33,7 +33,6 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
-import { LoadingButton } from '@mui/lab';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 
 interface FormValues {
@@ -76,7 +75,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   const config = useConfig();
   const { isAuthenticated } = useAuthenticationContext();
 
-  const { accountId: currentUserAccountId } = useUserContext();
+  const { accountId: currentUserAccountId } = useCurrentUserContext();
 
   // either the account is passed in or we pick it up from the user context
   const accountId = account?.id ?? currentUserAccountId;
@@ -266,14 +265,14 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
 
                   <DialogFooter>
                     <Actions justifyContent="end" padding={gutters()}>
-                      <LoadingButton
+                      <Button
                         variant="contained"
                         loading={creatingLoading}
                         onClick={() => handleSubmit()}
                         disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms || creatingLoading}
                       >
                         {t('buttons.create')}
-                      </LoadingButton>
+                      </Button>
                     </Actions>
                   </DialogFooter>
                 </PageContentBlockSeamless>

@@ -15,9 +15,10 @@ import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import EditButton from '@/core/ui/actions/EditButton';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -25,25 +26,14 @@ export const INIT_CREATING_EVENT_PARAM = 'new';
 
 export interface CalendarDialogProps {
   open: boolean;
-  journeyId: string | undefined;
-  parentSpaceId: string | undefined;
   onClose: () => void;
-  parentPath: string;
-  calendarEventId?: string;
   temporaryLocation?: boolean;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({
-  open,
-  journeyId,
-  parentSpaceId,
-  onClose,
-  parentPath,
-  calendarEventId,
-  temporaryLocation = false,
-}) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocation = false }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { spaceId, parentSpaceId, spaceHierarchyPath: parentPath, calendarEventId } = useUrlResolver();
 
   const params = useQueryParams();
   const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
@@ -99,7 +89,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
+      <CalendarEventsContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },

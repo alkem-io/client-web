@@ -8,17 +8,16 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
 import Reconnectable from '@/core/utils/reconnectable';
 import { useTick } from '@/core/utils/time/tick';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import type {
   AppState,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/excalidraw/types';
-import { LoadingButton } from '@mui/lab';
+} from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
@@ -34,6 +33,7 @@ const SAVE_FILE_TO_DISK = true;
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   await import('@alkemio/excalidraw/index.css');
+  await import('./styles/excalidraw-overrides.css');
   return { default: Excalidraw };
 });
 
@@ -106,8 +106,8 @@ const CollaborativeExcalidrawWrapper = ({
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
-  const { user } = useUserContext();
-  const username = user?.user.profile.displayName ?? 'User';
+  const { userModel } = useCurrentUserContext();
+  const username = userModel?.profile.displayName ?? 'User';
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
@@ -268,14 +268,14 @@ const CollaborativeExcalidrawWrapper = ({
           )}
         </DialogContent>
         <DialogActions>
-          <LoadingButton onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
+          <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
             Reconnect
             <Caption textTransform="none">
               {autoReconnectTime !== null &&
                 autoReconnectTime - time > 0 &&
                 ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
             </Caption>
-          </LoadingButton>
+          </Button>
           <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
         </DialogActions>
       </Dialog>

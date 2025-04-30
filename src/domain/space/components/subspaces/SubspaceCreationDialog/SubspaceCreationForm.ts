@@ -3,7 +3,7 @@ interface VisualUpload {
   altText?: string;
 }
 
-export interface JourneyFormValues {
+export interface SpaceFormValues {
   displayName: string;
   tagline: string;
   why?: string;
@@ -17,8 +17,8 @@ export interface JourneyFormValues {
   };
 }
 
-export interface JourneyCreationForm {
+export interface SpaceCreationForm {
   isSubmitting: boolean;
   onValidChanged: (valid: boolean) => void;
-  onChanged: (value: JourneyFormValues) => void;
+  onChanged: (value: SpaceFormValues) => void;
 }

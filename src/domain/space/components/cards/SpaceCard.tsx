@@ -13,17 +13,17 @@ import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 export interface SpaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
   tagline: string;
   spaceId?: string;
-  displayName: string;
-  vision: string;
-  membersCount: number;
   spaceVisibility?: SpaceVisibility;
-  journeyUri: string;
+  spaceUri: string;
+  displayName: string;
+  why: string;
+  membersCount: number;
 }
 
 const SpaceCard = ({
   spaceId,
   displayName,
-  vision,
+  why: vision,
   membersCount,
   tagline,
   spaceVisibility,
@@ -57,7 +57,7 @@ const SpaceCard = ({
       }
       expansionActions={
         <CardActions>
-          <SpaceCardGoToButton spaceUri={props.journeyUri} />
+          <SpaceCardGoToButton spaceUri={props.spaceUri} />
         </CardActions>
       }
       bannerOverlay={ribbon}

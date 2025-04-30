@@ -2,13 +2,12 @@ import { PropsWithChildren } from 'react';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import visibleOnFocus from './visibleOnFocus';
-import { Theme } from '@mui/material/styles';
-import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
+import { SxProps, Theme } from '@mui/material/styles';
 
 const SKIP_LINK_Z_INDEX = 1;
 
 type SkipLinkProps = {
-  sx?: SystemStyleObject<Theme>;
+  sx?: SxProps<Theme>;
   anchor?: Element | null | (() => Element | null);
 };
 

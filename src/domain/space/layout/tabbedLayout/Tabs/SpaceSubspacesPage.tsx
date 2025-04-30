@@ -1,23 +1,22 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '@/_deprecatedToKeep/journeyCardValueGetter';
 import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
-import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
-import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
-import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
-import SpaceL1Icon2 from '@/_deprecated/icons/SpaceL1Icon2';
+import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
-import ChildJourneyView from '@/domain/space/components/subspaces/SubspaceView';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
+import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -30,7 +29,7 @@ const SpaceSubspacesPage = () => {
     calloutsSetId,
   } = useSpaceTabProvider({ tabPosition: 2 });
 
-  const { spaceId, journeyPath } = urlInfo;
+  const { spaceId } = urlInfo;
 
   const { permissions, visibility } = useSpace();
 
@@ -39,7 +38,7 @@ const SpaceSubspacesPage = () => {
   const { createSubspace } = useSubspaceCreation();
 
   const handleCreate = useCallback(
-    async (value: JourneyFormValues) => {
+    async (value: SpaceFormValues) => {
       if (!spaceId) {
         return;
       }
@@ -97,54 +96,52 @@ const SpaceSubspacesPage = () => {
   }, [space?.level]);
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 2 }}>
-      <ChildJourneyView
-        childEntities={subspaces}
-        level={level}
-        childEntitiesIcon={<SpaceL1Icon />}
-        childEntityValueGetter={journeyCardValueGetter}
-        childEntityTagsGetter={journeyCardTagsGetter}
-        state={{ loading: loading, error: error }}
-        renderChildEntityCard={item => (
-          <SubspaceCard
-            displayName={item.about.profile.displayName}
-            banner={item.about.profile.cardBanner}
-            tags={item.about.profile.tagset?.tags!}
-            tagline={item.about.profile.tagline!}
-            vision={item.about.why!}
-            journeyUri={item.about.profile.url}
-            locked={!item.about.isContentPublic}
-            spaceVisibility={visibility}
-            level={childLevel}
-            member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
-          />
-        )}
-        onClickCreate={() => setCreateDialogOpen(true)}
-        childEntityCreateAccess={permissions.canCreateSubspaces}
-        childEntityOnCreate={() => setCreateDialogOpen(true)}
-        createSubentityDialog={
-          <SubspaceCreationDialog
-            open={isCreateDialogOpen}
-            icon={<SpaceL1Icon2 fill="primary" />}
-            journeyName={t('common.subspace')}
-            onClose={() => setCreateDialogOpen(false)}
-            onCreate={handleCreate}
-            formComponent={CreateSubspaceForm}
-          />
-        }
-        children={
-          <CalloutsGroupView
-            calloutsSetId={calloutsSetId}
-            createInFlowState={flowStateForTab?.displayName}
-            callouts={callouts}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-          />
-        }
-      />
-    </SpacePageLayout>
+    <SubspaceView
+      childEntities={subspaces}
+      level={level}
+      childEntitiesIcon={<SpaceL1Icon />}
+      childEntityValueGetter={spaceAboutValueGetter}
+      childEntityTagsGetter={spaceAboutTagsGetter}
+      state={{ loading: loading, error: error }}
+      renderChildEntityCard={item => (
+        <SubspaceCard
+          displayName={item.about.profile.displayName}
+          banner={item.about.profile.cardBanner}
+          tags={item.about.profile.tagset?.tags!}
+          tagline={item.about.profile.tagline!}
+          vision={item.about.why!}
+          spaceUri={item.about.profile.url}
+          locked={!item.about.isContentPublic}
+          spaceVisibility={visibility}
+          level={childLevel}
+          member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
+        />
+      )}
+      onClickCreate={() => setCreateDialogOpen(true)}
+      childEntityCreateAccess={permissions.canCreateSubspaces}
+      childEntityOnCreate={() => setCreateDialogOpen(true)}
+      createSubentityDialog={
+        <SubspaceCreationDialog
+          open={isCreateDialogOpen}
+          icon={<SpaceL1Icon2 fill="primary" />}
+          spaceDisplayName={t('common.subspace')}
+          onClose={() => setCreateDialogOpen(false)}
+          onCreate={handleCreate}
+          formComponent={CreateSubspaceForm}
+        />
+      }
+      children={
+        <CalloutsGroupView
+          calloutsSetId={calloutsSetId}
+          createInFlowState={flowStateForTab?.displayName}
+          callouts={callouts}
+          canCreateCallout={canCreateCallout}
+          loading={loading}
+          onSortOrderUpdate={onCalloutsSortOrderUpdate}
+          onCalloutUpdate={refetchCallout}
+        />
+      }
+    />
   );
 };
 

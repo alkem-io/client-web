@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Paper, Button, Avatar, useTheme, useMediaQuery, Theme } from '@mui/material';
+import { Paper, Button, Avatar, useTheme } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -11,14 +11,14 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import SpaceTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
+import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
 import { useEffect, useMemo } from 'react';
-import { LoadingButton } from '@mui/lab';
 import { Actions } from '@/core/ui/actions/Actions';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
@@ -75,15 +75,15 @@ const DashboardSpaces = () => {
     exploreAllButton: {
       textTransform: 'none',
       border: `1px solid ${theme.palette.divider}`,
-      aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO,
+      aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO,
     },
   };
 
   const { t } = useTranslation();
 
   const columns = useColumns();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const cardColumns = useMemo(() => (isMobile ? columns / 2 : columns / 4), [isMobile, columns]);
+  const { isSmallScreen } = useScreenSize();
+  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
   const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
 
   useEffect(() => {
@@ -151,7 +151,7 @@ const DashboardSpaces = () => {
                     <SpaceTile
                       key={id}
                       columns={cardColumns}
-                      journey={{
+                      space={{
                         about: about,
                         level: level,
                       }}
@@ -168,7 +168,7 @@ const DashboardSpaces = () => {
                       onClick={handleDialogOpen(idx, profile?.displayName)}
                     >
                       <Caption>
-                        {t('pages.home.sections.recentJourneys.seeMoreSubspaces', {
+                        {t('pages.home.sections.recentSpaces.seeMoreSubspaces', {
                           spaceName: profile?.displayName,
                         })}
                       </Caption>
@@ -182,9 +182,9 @@ const DashboardSpaces = () => {
       })}
       {hasMore && (
         <Actions justifyContent="center" sx={{ width: '100%' }}>
-          <LoadingButton variant="contained" loading={loading} onClick={() => fetchSpaces(DASHBOARD_MEMBERSHIPS_ALL)}>
+          <Button variant="contained" loading={loading} onClick={() => fetchSpaces(DASHBOARD_MEMBERSHIPS_ALL)}>
             {t('buttons.load-more')}
-          </LoadingButton>
+          </Button>
         </Actions>
       )}
 

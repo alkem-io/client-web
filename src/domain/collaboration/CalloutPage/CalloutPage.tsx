@@ -1,18 +1,16 @@
-import React, { ReactElement, ReactNode, useMemo } from 'react';
+import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import { AuthorizationPrivilege, CalloutVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useLocation } from 'react-router-dom';
-import { DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { DialogContent } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundPageLayout } from '@/domain/space/layout/EntityPageLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useBackToPath from '@/core/routing/useBackToPath';
-import usePageLayoutByEntity from '@/domain/shared/utils/usePageLayoutByEntity';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +18,8 @@ import { NavigationState } from '@/core/routing/ScrollToTop';
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -47,15 +47,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
-  const {
-    spaceId,
-    levelZeroSpaceId,
-    parentSpaceId,
-    calloutId,
-    spaceLevel,
-    journeyPath,
-    loading: urlResolverLoading,
-  } = useUrlResolver();
+  const { calloutId, loading: urlResolverLoading } = useUrlResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
@@ -107,40 +99,42 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const backOrElse = useBackToPath();
 
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-
-  const PageLayout = usePageLayoutByEntity(spaceLevel === SpaceLevel.L0);
+  const { isSmallScreen } = useScreenSize();
 
   const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
   const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
     val => val === calloutFlowState
   );
+
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
+  let [searchParams, setSearchParams] = useSearchParams();
+  const currentSection = parseInt(searchParams.get('tab') || '-1') + 1;
+
+  useEffect(() => {
+    if (calloutSection < 0) {
+      return;
+    }
+
+    if (currentSection !== calloutSection) {
+      setSearchParams({ tab: `${calloutSection + 1}` });
+    }
+  }, [calloutSection, currentSection]);
+
   if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
-    return (
-      <PageLayout
-        journeyId={spaceId}
-        levelZeroSpaceId={levelZeroSpaceId}
-        spaceLevel={spaceLevel}
-        journeyPath={journeyPath}
-        parentSpaceId={parentSpaceId}
-        currentSection={{ sectionIndex: calloutSection }}
-      >
-        <Loading />
-      </PageLayout>
-    );
+    return <Loading />;
   }
 
   if (isApolloNotFoundError(error)) {
     return (
-      <NotFoundPageLayout>
+      <TopLevelLayout>
         <Error404 />
-      </NotFoundPageLayout>
+      </TopLevelLayout>
     );
   }
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutPosition) : parentRoute;
+
   const handleClose = () => {
     backOrElse(parentPagePath);
   };

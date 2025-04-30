@@ -3,10 +3,10 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
 import { gutters } from '@/core/ui/grid/utils';
-import useCurrentBreakpoint from '@/_deprecatedToKeep/useCurrentBreakpoint';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
@@ -42,9 +42,9 @@ const PostMessageToCommentsForm = ({
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
 
-  const { user } = useUserContext();
+  const { userModel } = useCurrentUserContext();
 
-  const userAvatarUri = user?.user?.profile.avatar?.uri;
+  const userAvatarUri = userModel?.profile.avatar?.uri;
 
   const initialValues: formValues = {
     post: '',
@@ -63,16 +63,14 @@ const PostMessageToCommentsForm = ({
     }
   };
 
-  const breakpoint = useCurrentBreakpoint();
-
-  const isCompact = breakpoint === 'xs';
+  const { isSmallScreen } = useScreenSize();
 
   return (
     <Box display="flex" alignItems="start" gap={gutters(0.5)} {...containerProps}>
       <UserAvatar
         src={userAvatarUri}
         variant="rounded"
-        aria-label={t('common.avatar-of', { user: user?.user?.profile.displayName })}
+        aria-label={t('common.avatar-of', { user: userModel?.profile.displayName })}
       />
       <Box flexGrow={1} minWidth={0}>
         <Formik
@@ -99,7 +97,7 @@ const PostMessageToCommentsForm = ({
                 sx={{
                   height: gutters(2),
                 }}
-                compactMode={isCompact}
+                compactMode={isSmallScreen}
               />
             </Form>
           )}

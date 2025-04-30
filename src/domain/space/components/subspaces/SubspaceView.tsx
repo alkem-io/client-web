@@ -1,6 +1,6 @@
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import { CardLayoutContainer } from '@/_deprecatedToKeep/CardsLayout';
+import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
@@ -51,7 +51,7 @@ export interface SubspaceViewProps<ChildEntity extends BaseChildEntity> {
   onClickCreate?: (isOpen: boolean) => void;
 }
 
-const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
+const SubspaceView = <ChildEntity extends BaseChildEntity>({
   childEntities = [],
   childEntitiesIcon,
   level,
@@ -92,9 +92,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}
         />
-
         {createSubentityDialog}
-
         <PageContentBlock>
           {childEntities.length > 3 && (
             <SearchField
@@ -113,7 +111,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           <PageContentBlockSeamless>
             <Caption textAlign="center">
               {t('pages.generic.sections.subEntities.empty', {
-                entities: t(`common.space-level.${level}`),
+                entities: t('common.space-level.L1'),
                 parentEntity: t(`common.space-level.${level}`),
               })}
             </Caption>
@@ -127,7 +125,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                 valueGetter={childEntityValueGetter}
                 tagsGetter={childEntityTagsGetter}
                 title={t('common.entitiesWithCount', {
-                  entityType: t(`common.space-level.${level}`),
+                  entityType: t('common.space-level.L1'),
                   count: childEntities.length,
                 })}
               >
@@ -167,4 +165,4 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   );
 };
 
-export default ChildJourneyView;
+export default SubspaceView;

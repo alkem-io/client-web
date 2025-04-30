@@ -1,3 +1,4 @@
+import { forwardRef, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -12,10 +13,8 @@ import {
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
-import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import React, { forwardRef, useMemo, useState } from 'react';
+import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
-import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { gutters } from '@/core/ui/grid/utils';
@@ -25,6 +24,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useDashboardContext } from '../DashboardContext';
 import { Caption } from '@/core/ui/typography';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -45,9 +45,19 @@ const Loader = forwardRef((props, ref) => {
   );
 });
 
+export interface RoleOption {
+  value: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
+  label: string;
+}
+
+export interface SpaceOption {
+  value: string | typeof SPACE_OPTION_ALL;
+  label: string;
+}
+
 const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+  const { isSmallScreen } = useScreenSize();
 
   const [filter, setFilter] = useState<{
     space: string;
@@ -71,14 +81,14 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
       space: event.target.value as string | typeof SPACE_OPTION_ALL,
     }));
 
-  const spaceOptions = useMemo(() => {
-    const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
+  const spaceOptions = useMemo<SpaceOption[]>(() => {
+    const spaces: SpaceOption[] =
       spaceMemberships?.map(space => ({
         value: space.id,
         label: space.about.profile.displayName,
       })) ?? [];
 
-    spaces?.unshift({
+    spaces.unshift({
       value: SPACE_OPTION_ALL,
       label: t('pages.home.sections.latestContributions.filter.space.all'),
     });
@@ -104,8 +114,8 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
 
   const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });
 
-  const roleOptions = useMemo(() => {
-    const options: Partial<SelectOption<ActivityFeedRoles | typeof ROLE_OPTION_ALL>>[] = SELECTABLE_ROLES.map(role => ({
+  const roleOptions = useMemo<RoleOption[]>(() => {
+    const options: RoleOption[] = SELECTABLE_ROLES.map(role => ({
       value: role,
       label: t(`common.roles.${role}` as const),
     }));
@@ -148,7 +158,11 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
 
   return (
     <>
-      <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+      <Gutters
+        disablePadding
+        disableGap
+        sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isSmallScreen ? gutters(30) : 0 }}
+      >
         {renderFilters()}
 
         {!data && loading ? (

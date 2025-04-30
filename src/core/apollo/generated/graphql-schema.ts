@@ -112,10 +112,9 @@ export enum ActivityEventType {
   CalloutPublished = 'CALLOUT_PUBLISHED',
   CalloutWhiteboardContentModified = 'CALLOUT_WHITEBOARD_CONTENT_MODIFIED',
   CalloutWhiteboardCreated = 'CALLOUT_WHITEBOARD_CREATED',
-  ChallengeCreated = 'CHALLENGE_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
-  OpportunityCreated = 'OPPORTUNITY_CREATED',
+  SubspaceCreated = 'SUBSPACE_CREATED',
   UpdateSent = 'UPDATE_SENT',
 }
 
@@ -172,8 +171,6 @@ export type ActivityLogEntry = {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -199,8 +196,6 @@ export type ActivityLogEntryCalendarEventCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -224,8 +219,6 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -251,8 +244,6 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   link: Link;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -276,8 +267,6 @@ export type ActivityLogEntryCalloutPostComment = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Post that was commented on. */
   post: Post;
   /** The Space where the activity happened */
@@ -303,8 +292,6 @@ export type ActivityLogEntryCalloutPostCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Post that was created. */
   post: Post;
   /** The Space where the activity happened */
@@ -330,8 +317,6 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -355,8 +340,6 @@ export type ActivityLogEntryCalloutWhiteboardContentModified = ActivityLogEntry 
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -382,8 +365,6 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -392,31 +373,6 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
   type: ActivityEventType;
   /** The Whiteboard that was created. */
   whiteboard: Whiteboard;
-};
-
-export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryChallengeCreated';
-  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
-  child: Scalars['Boolean'];
-  /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID'];
-  /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime'];
-  /** The text details for this Activity. */
-  description: Scalars['String'];
-  id: Scalars['UUID'];
-  /** The display name of the parent */
-  parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
-  /** The Space where the activity happened */
-  space?: Maybe<Space>;
-  /** The Subspace that was created. */
-  subspace: Space;
-  /** The user that triggered this Activity. */
-  triggeredBy: User;
-  /** The event type for this Activity. */
-  type: ActivityEventType;
 };
 
 export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
@@ -438,8 +394,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -448,8 +402,8 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   type: ActivityEventType;
 };
 
-export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
+export type ActivityLogEntrySubspaceCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
   child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
@@ -461,12 +415,10 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
-  /** The Subsubspace that was created. */
-  subsubspace: Space;
+  /** The Subspace that was created. */
+  subspace: Space;
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -490,8 +442,6 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   message: Scalars['String'];
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
-  /** The nameID of the parent */
-  parentNameID: Scalars['NameID'];
   /** The Space where the activity happened */
   space?: Maybe<Space>;
   /** The user that triggered this Activity. */
@@ -793,9 +743,11 @@ export enum AuthorizationCredential {
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
+  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
@@ -923,6 +875,7 @@ export enum AuthorizationPrivilege {
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
+  ReadLicense = 'READ_LICENSE',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -2143,9 +2096,11 @@ export enum CredentialType {
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
+  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
@@ -2342,12 +2297,10 @@ export type ExploreSpacesInput = {
 
 export type ExternalConfig = {
   __typename?: 'ExternalConfig';
-  /** The signature of the API key */
+  /** The API key for the external LLM provider. */
   apiKey?: Maybe<Scalars['String']>;
-  /** The assistent ID backing the service in OpenAI`s assistant API */
+  /** The assistant ID backing the service in OpenAI`s assistant API */
   assistantId?: Maybe<Scalars['String']>;
-  /** The ExternalConfig for this Virtual. */
-  externalConfig?: Maybe<ExternalConfig>;
   /** The OpenAI model to use for the service */
   model: OpenAiModel;
 };
@@ -2355,7 +2308,7 @@ export type ExternalConfig = {
 export type ExternalConfigInput = {
   /** The API key for the external LLM provider. */
   apiKey?: InputMaybe<Scalars['String']>;
-  /** The assistent ID backing the service in OpenAI`s assistant API */
+  /** The assistant ID backing the service in OpenAI`s assistant API */
   assistantId?: InputMaybe<Scalars['String']>;
   /** The OpenAI model to use for the service */
   model?: OpenAiModel;
@@ -2769,21 +2722,13 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
-  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  /** An additional role to assign in addition to the entry Role. */
   extraRole?: InputMaybe<RoleName>;
   /** The identifiers for the contributors being invited. */
-  invitedContributors: Array<Scalars['UUID']>;
+  invitedContributorIDs: Array<Scalars['UUID']>;
+  invitedUserEmails: Array<Scalars['String']>;
   roleSetID: Scalars['UUID'];
-  welcomeMessage?: InputMaybe<Scalars['String']>;
-};
-
-export type InviteNewContributorForRoleOnRoleSetInput = {
-  email: Scalars['String'];
-  firstName?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
-  /** An additional role to assign to the Contributors, in addition to the entry Role. */
-  roleSetExtraRole?: InputMaybe<RoleName>;
-  roleSetID: Scalars['UUID'];
+  /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
@@ -3597,6 +3542,8 @@ export type MoveCalloutContributionInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Adds an Iframe Allowed URL to the Platform Settings */
+  addIframeAllowedURL: Array<Scalars['String']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -3763,14 +3710,16 @@ export type Mutation = {
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Invite an existing Contributor to join the specified RoleSet in the Entry Role. */
-  inviteContributorsEntryRoleOnRoleSet: Array<Invitation>;
-  /** Invite a User to join the platform and the specified RoleSet as a member. */
-  inviteUserToPlatformAndRoleSet: PlatformInvitation;
+  /** Invite new Contributors or users by email to join the specified RoleSet in the Entry Role. */
+  inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
+  /** Mark multiple notifications as read. */
+  markNotificationsAsRead: Scalars['Boolean'];
+  /** Mark multiple notifications as unread. */
+  markNotificationsAsUnread: Scalars['Boolean'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
@@ -3781,6 +3730,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Removes an Iframe Allowed URL from the Platform Settings */
+  removeIframeAllowedURL: Array<Scalars['String']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Removes a User from a Role on the Platform. */
@@ -3843,6 +3794,8 @@ export type Mutation = {
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
   updateCalloutsSortOrder: Array<Callout>;
+  /** Updates a Tagset on a Classification. */
+  updateClassificationTagset: Tagset;
   /** Updates the Collaboration, including InnovationFlow states, from the specified Collaboration Template. */
   updateCollaborationFromTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
@@ -3881,8 +3834,8 @@ export type Mutation = {
   updatePost: Post;
   /** Updates one of the Preferences on a Space */
   updatePreferenceOnUser: Preference;
-  /** Updates the specified Tagset. */
-  updateProfile: Tagset;
+  /** Updates the specified Profile. */
+  updateProfile: Profile;
   /** Updates the specified Reference. */
   updateReference: Reference;
   /** Updates the Space. */
@@ -3923,6 +3876,10 @@ export type Mutation = {
   uploadFileOnStorageBucket: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4221,12 +4178,8 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
-export type MutationInviteContributorsEntryRoleOnRoleSetArgs = {
+export type MutationInviteForEntryRoleOnRoleSetArgs = {
   invitationData: InviteForEntryRoleOnRoleSetInput;
-};
-
-export type MutationInviteUserToPlatformAndRoleSetArgs = {
-  invitationData: InviteNewContributorForRoleOnRoleSetInput;
 };
 
 export type MutationJoinRoleSetArgs = {
@@ -4235,6 +4188,14 @@ export type MutationJoinRoleSetArgs = {
 
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
+};
+
+export type MutationMarkNotificationsAsReadArgs = {
+  notificationIds: Array<Scalars['String']>;
+};
+
+export type MutationMarkNotificationsAsUnreadArgs = {
+  notificationIds: Array<Scalars['String']>;
 };
 
 export type MutationMessageUserArgs = {
@@ -4251,6 +4212,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveIframeAllowedUrlArgs = {
+  whitelistedURL: Scalars['String'];
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -4369,6 +4334,10 @@ export type MutationUpdateCalloutsSortOrderArgs = {
   sortOrderData: UpdateCalloutsSortOrderInput;
 };
 
+export type MutationUpdateClassificationTagsetArgs = {
+  updateData: UpdateClassificationSelectTagsetValueInput;
+};
+
 export type MutationUpdateCollaborationFromTemplateArgs = {
   updateData: UpdateCollaborationFromTemplateInput;
 };
@@ -4446,7 +4415,7 @@ export type MutationUpdatePreferenceOnUserArgs = {
 };
 
 export type MutationUpdateProfileArgs = {
-  updateData: UpdateClassificationSelectTagsetValueInput;
+  profileData: UpdateProfileDirectInput;
 };
 
 export type MutationUpdateReferenceArgs = {
@@ -5372,8 +5341,6 @@ export type RelayPaginatedSpace = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -5506,8 +5473,10 @@ export enum RoleName {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
+  GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
@@ -5626,6 +5595,21 @@ export enum RoleSetContributorType {
   Virtual = 'VIRTUAL',
 }
 
+export type RoleSetInvitationResult = {
+  __typename?: 'RoleSetInvitationResult';
+  invitation?: Maybe<Invitation>;
+  platformInvitation?: Maybe<PlatformInvitation>;
+  type: RoleSetInvitationResultType;
+};
+
+export enum RoleSetInvitationResultType {
+  AlreadyInvitedToPlatformAndRoleSet = 'ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET',
+  AlreadyInvitedToRoleSet = 'ALREADY_INVITED_TO_ROLE_SET',
+  InvitationToParentNotAuthorized = 'INVITATION_TO_PARENT_NOT_AUTHORIZED',
+  InvitedToPlatformAndRoleSet = 'INVITED_TO_PLATFORM_AND_ROLE_SET',
+  InvitedToRoleSet = 'INVITED_TO_ROLE_SET',
+}
+
 export enum RoleSetRoleImplicit {
   AccountAdmin = 'ACCOUNT_ADMIN',
   SubspaceAdmin = 'SUBSPACE_ADMIN',
@@ -5662,14 +5646,12 @@ export type RolesResultCommunity = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
-  /** The level of the Space e.g. space/challenge/opportunity. */
+  /** The level of the Space e.g. L0/L1/L2. */
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
   roles: Array<Scalars['String']>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
 };
 
 export type RolesResultOrganization = {
@@ -5694,7 +5676,7 @@ export type RolesResultSpace = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
-  /** The level of the Space e.g. space/challenge/opportunity. */
+  /** The level of the Space e.g. L0/L1/L2. */
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
@@ -5704,8 +5686,6 @@ export type RolesResultSpace = {
   spaceID: Scalars['String'];
   /** Details of the Subspace the user is a member of */
   subspaces: Array<RolesResultCommunity>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -6008,8 +5988,6 @@ export type Space = {
   subspaces: Array<Space>;
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
-  /** The Type of the Space e.g. space/challenge/opportunity. */
-  type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** Visibility of the Space. */
@@ -6910,6 +6888,18 @@ export type UpdatePostInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateProfileDirectInput = {
+  description?: InputMaybe<Scalars['Markdown']>;
+  /** The display name for the entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<UpdateLocationInput>;
+  profileID: Scalars['UUID'];
+  references?: InputMaybe<Array<UpdateReferenceInput>>;
+  /** A memorable short description for this entity. */
+  tagline?: InputMaybe<Scalars['String']>;
+  tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateProfileInput = {
@@ -8017,28 +8007,22 @@ export type InvitationStateEventMutation = {
   eventOnInvitation: { __typename?: 'Invitation'; id: string; nextEvents: Array<string>; state: string };
 };
 
-export type InviteContributorsEntryRoleOnRoleSetMutationVariables = Exact<{
-  contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
+export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  message?: InputMaybe<Scalars['String']>;
+  invitedContributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
+  invitedUserEmails: Array<Scalars['String']> | Scalars['String'];
+  welcomeMessage?: InputMaybe<Scalars['String']>;
   extraRole?: InputMaybe<RoleName>;
 }>;
 
-export type InviteContributorsEntryRoleOnRoleSetMutation = {
+export type InviteForEntryRoleOnRoleSetMutation = {
   __typename?: 'Mutation';
-  inviteContributorsEntryRoleOnRoleSet: Array<{ __typename?: 'Invitation'; id: string }>;
-};
-
-export type InviteUserToPlatformAndRoleSetMutationVariables = Exact<{
-  email: Scalars['String'];
-  roleSetId: Scalars['UUID'];
-  message?: InputMaybe<Scalars['String']>;
-  extraRole?: InputMaybe<RoleName>;
-}>;
-
-export type InviteUserToPlatformAndRoleSetMutation = {
-  __typename?: 'Mutation';
-  inviteUserToPlatformAndRoleSet: { __typename?: 'PlatformInvitation'; id: string };
+  inviteForEntryRoleOnRoleSet: Array<{
+    __typename?: 'RoleSetInvitationResult';
+    type: RoleSetInvitationResultType;
+    invitation?: { __typename?: 'Invitation'; id: string } | undefined;
+    platformInvitation?: { __typename?: 'PlatformInvitation'; id: string } | undefined;
+  }>;
 };
 
 export type DeleteInvitationMutationVariables = Exact<{
@@ -9108,119 +9092,6 @@ export type AccountItemProfileFragment = {
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
-export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
-
-export type ProfileVerifiedCredentialSubscription = {
-  __typename?: 'Subscription';
-  profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
-};
-
-export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetSupportedCredentialMetadataQuery = {
-  __typename?: 'Query';
-  getSupportedVerifiedCredentialMetadata: Array<{
-    __typename?: 'CredentialMetadataOutput';
-    name: string;
-    description: string;
-    schema: string;
-    types: Array<string>;
-    uniqueType: string;
-    context: string;
-  }>;
-};
-
-export type BeginCredentialRequestInteractionMutationVariables = Exact<{
-  types: Array<Scalars['String']> | Scalars['String'];
-}>;
-
-export type BeginCredentialRequestInteractionMutation = {
-  __typename?: 'Mutation';
-  beginVerifiedCredentialRequestInteraction: {
-    __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-    qrCodeImg: string;
-    jwt: string;
-  };
-};
-
-export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<{ [key: string]: never }>;
-
-export type BeginAlkemioUserCredentialOfferInteractionMutation = {
-  __typename?: 'Mutation';
-  beginAlkemioUserVerifiedCredentialOfferInteraction: {
-    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    jwt: string;
-    qrCodeImg: string;
-  };
-};
-
-export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Exact<{
-  communityID: Scalars['String'];
-}>;
-
-export type BeginCommunityMemberCredentialOfferInteractionMutation = {
-  __typename?: 'Mutation';
-  beginCommunityMemberVerifiedCredentialOfferInteraction: {
-    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    jwt: string;
-    qrCodeImg: string;
-  };
-};
-
-export type UserAgentSsiFragment = {
-  __typename?: 'User';
-  id: string;
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    did?: string | undefined;
-    verifiedCredentials?:
-      | Array<{
-          __typename?: 'VerifiedCredential';
-          context: string;
-          issued: string;
-          expires: string;
-          issuer: string;
-          name: string;
-          type: string;
-          claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-        }>
-      | undefined;
-  };
-};
-
-export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserSsiQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          agent: {
-            __typename?: 'Agent';
-            id: string;
-            did?: string | undefined;
-            verifiedCredentials?:
-              | Array<{
-                  __typename?: 'VerifiedCredential';
-                  context: string;
-                  issued: string;
-                  expires: string;
-                  issuer: string;
-                  name: string;
-                  type: string;
-                  claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-                }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
 export type CalloutPageCalloutQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
   includeClassification?: InputMaybe<Scalars['Boolean']>;
@@ -10072,22 +9943,9 @@ export type ActivityLogCalloutWhiteboardContentModifiedFragment = {
   };
 };
 
-export type ActivityLogChallengeCreatedFragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
+export type ActivityLogSubspaceCreatedFragment = {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   subspace: {
-    __typename?: 'Space';
-    id: string;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    };
-  };
-};
-
-export type ActivityLogOpportunityCreatedFragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
-  subsubspace: {
     __typename?: 'Space';
     id: string;
     about: {
@@ -10280,21 +10138,6 @@ export type ActivityCreatedSubscription = {
           };
         }
       | {
-          __typename?: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          createdDate: Date;
-          type: ActivityEventType;
-          subspace: {
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            };
-          };
-        }
-      | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           createdDate: Date;
@@ -10337,11 +10180,11 @@ export type ActivityCreatedSubscription = {
               };
         }
       | {
-          __typename?: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntrySubspaceCreated';
           id: string;
           createdDate: Date;
           type: ActivityEventType;
-          subsubspace: {
+          subspace: {
             __typename?: 'Space';
             id: string;
             about: {
@@ -10500,22 +10343,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragmen
   };
 };
 
-type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
-  id: string;
-  createdDate: Date;
-  type: ActivityEventType;
-  subspace: {
-    __typename?: 'Space';
-    id: string;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    };
-  };
-};
-
 type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   id: string;
@@ -10559,12 +10386,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       };
 };
 
-type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
+type ActivityLogOnCollaboration_ActivityLogEntrySubspaceCreated_Fragment = {
+  __typename?: 'ActivityLogEntrySubspaceCreated';
   id: string;
   createdDate: Date;
   type: ActivityEventType;
-  subsubspace: {
+  subspace: {
     __typename?: 'Space';
     id: string;
     about: {
@@ -10592,9 +10419,8 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardContentModified_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntrySubspaceCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
 
 export type ActivityLogOnCollaborationQueryVariables = Exact<{
@@ -10614,7 +10440,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10658,7 +10484,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10706,7 +10532,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10755,7 +10581,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10799,7 +10625,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10852,7 +10678,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10901,7 +10727,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -10954,7 +10780,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11000,54 +10826,6 @@ export type ActivityLogOnCollaborationQuery = {
         };
       }
     | {
-        __typename?: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        child: boolean;
-        journeyDisplayName: string;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                };
-              };
-            }
-          | undefined;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        };
-        subspace: {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-        };
-      }
-    | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
         collaborationID: string;
@@ -11055,7 +10833,7 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11123,14 +10901,14 @@ export type ActivityLogOnCollaborationQuery = {
             };
       }
     | {
-        __typename?: 'ActivityLogEntryOpportunityCreated';
+        __typename?: 'ActivityLogEntrySubspaceCreated';
         id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -11160,7 +10938,7 @@ export type ActivityLogOnCollaborationQuery = {
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
         };
-        subsubspace: {
+        subspace: {
           __typename?: 'Space';
           id: string;
           about: {
@@ -11179,7 +10957,7 @@ export type ActivityLogOnCollaborationQuery = {
         type: ActivityEventType;
         child: boolean;
         message: string;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -14603,41 +14381,6 @@ export type VisualFullFragment = {
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
 
-export type AuthorDetailsQueryVariables = Exact<{
-  ids: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type AuthorDetailsQuery = {
-  __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    isContactable: boolean;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-        | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  }>;
-};
-
 export type LatestReleaseDiscussionQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LatestReleaseDiscussionQuery = {
@@ -17195,6 +16938,7 @@ export type SpaceContributionDetailsQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            isContentPublic: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -17389,53 +17133,7 @@ export type CreateUserNewRegistrationMutationVariables = Exact<{ [key: string]: 
 
 export type CreateUserNewRegistrationMutation = {
   __typename?: 'Mutation';
-  createUserNewRegistration: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-        | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
+  createUserNewRegistration: { __typename?: 'User'; id: string };
 };
 
 export type DeleteUserMutationVariables = Exact<{
@@ -17576,11 +17274,11 @@ export type UserNotificationsPreferencesQuery = {
   };
 };
 
-export type UserProfileQueryVariables = Exact<{
-  input: Scalars['UUID'];
+export type UserModelFullQueryVariables = Exact<{
+  userId: Scalars['UUID'];
 }>;
 
-export type UserProfileQuery = {
+export type UserModelFullQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -17641,41 +17339,192 @@ export type UserProfileQuery = {
         }
       | undefined;
   };
+};
+
+export type UsersModelFullQueryVariables = Exact<{
+  ids: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type UsersModelFullQuery = {
+  __typename?: 'Query';
+  users: Array<{
+    __typename?: 'User';
+    isContactable: boolean;
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline?: string | undefined;
+      description?: string | undefined;
+      url: string;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  }>;
+};
+
+export type UserContributionsQueryVariables = Exact<{
+  userId: Scalars['UUID'];
+}>;
+
+export type UserContributionsQuery = {
+  __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
     id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
-      displayName: string;
       roles: Array<string>;
-      visibility: SpaceVisibility;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string; roles: Array<string> }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; level: SpaceLevel; roles: Array<string> }>;
     }>;
-    organizations: Array<{
-      __typename?: 'RolesResultOrganization';
+  };
+};
+
+export type UserOrganizationIdsQueryVariables = Exact<{
+  userId: Scalars['UUID'];
+}>;
+
+export type UserOrganizationIdsQuery = {
+  __typename?: 'Query';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
+    id: string;
+    organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
+  };
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+export type UpdateUserMutation = {
+  __typename?: 'Mutation';
+  updateUser: {
+    __typename?: 'User';
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string | undefined;
+    profile: {
+      __typename?: 'Profile';
       id: string;
       displayName: string;
-      roles: Array<string>;
-    }>;
+      tagline?: string | undefined;
+      description?: string | undefined;
+      url: string;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
   };
-  platform: {
-    __typename?: 'Platform';
-    authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+};
+
+export type UpdateUserSettingsMutationVariables = Exact<{
+  settingsData: UpdateUserSettingsInput;
+}>;
+
+export type UpdateUserSettingsMutation = {
+  __typename?: 'Mutation';
+  updateUserSettings: {
+    __typename?: 'User';
+    id: string;
+    settings: {
+      __typename?: 'UserSettings';
+      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+    };
+  };
+};
+
+export type UserSettingsQueryVariables = Exact<{
+  userID: Scalars['UUID'];
+}>;
+
+export type UserSettingsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+            privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+          };
+        }
       | undefined;
-    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
   };
 };
 
-export type MyPrivilegesFragment = {
-  __typename?: 'Authorization';
-  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-};
+export type CurrentUserFullQueryVariables = Exact<{ [key: string]: never }>;
 
-export type UserProviderQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserProviderQuery = {
+export type CurrentUserFullQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
@@ -17792,156 +17641,6 @@ export type EntitlementDetailsFragment = {
   isAvailable: boolean;
   dataType: LicenseEntitlementDataType;
   enabled: boolean;
-};
-
-export type UserContributionDisplayNamesQueryVariables = Exact<{
-  userId: Scalars['UUID'];
-}>;
-
-export type UserContributionDisplayNamesQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    spaces: Array<{
-      __typename?: 'RolesResultSpace';
-      id: string;
-      displayName: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
-    }>;
-    organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; displayName: string }>;
-  };
-};
-
-export type UserContributionsQueryVariables = Exact<{
-  userId: Scalars['UUID'];
-}>;
-
-export type UserContributionsQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    spaces: Array<{
-      __typename?: 'RolesResultSpace';
-      id: string;
-      roles: Array<string>;
-      subspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        type: SpaceType;
-        level: SpaceLevel;
-        roles: Array<string>;
-      }>;
-    }>;
-  };
-};
-
-export type UserOrganizationIdsQueryVariables = Exact<{
-  userId: Scalars['UUID'];
-}>;
-
-export type UserOrganizationIdsQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
-  };
-};
-
-export type UpdateUserMutationVariables = Exact<{
-  input: UpdateUserInput;
-}>;
-
-export type UpdateUserMutation = {
-  __typename?: 'Mutation';
-  updateUser: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-        | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
-};
-
-export type UpdateUserSettingsMutationVariables = Exact<{
-  settingsData: UpdateUserSettingsInput;
-}>;
-
-export type UpdateUserSettingsMutation = {
-  __typename?: 'Mutation';
-  updateUserSettings: {
-    __typename?: 'User';
-    id: string;
-    settings: {
-      __typename?: 'UserSettings';
-      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
-      communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
-    };
-  };
-};
-
-export type UserSettingsQueryVariables = Exact<{
-  userID: Scalars['UUID'];
-}>;
-
-export type UserSettingsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          settings: {
-            __typename?: 'UserSettings';
-            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
-            privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
-          };
-        }
-      | undefined;
-  };
 };
 
 export type AiPersonaServiceQueryVariables = Exact<{
@@ -18195,6 +17894,111 @@ export type VirtualContributorProfileQuery = {
   };
 };
 
+export type VirtualContributorProviderQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+export type VirtualContributorProviderQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    virtualContributor?:
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          provider:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                };
+              };
+        }
+      | undefined;
+  };
+};
+
 export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -18369,6 +18173,9 @@ export type VirtualContributorFullFragment = {
     location?:
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
       | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
   };
   aiPersona?:
     | {
@@ -18376,6 +18183,7 @@ export type VirtualContributorFullFragment = {
         bodyOfKnowledge?: string | undefined;
         bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
         bodyOfKnowledgeID?: string | undefined;
+        engine: AiPersonaEngine;
       }
     | undefined;
 };
@@ -18516,6 +18324,27 @@ export type BannerInnovationHubQuery = {
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationHubBannerWideQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            bannerWide?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
         }
       | undefined;
   };
@@ -18981,27 +18810,6 @@ export type InnovationHubSettingsFragment = {
         };
       }>
     | undefined;
-};
-
-export type JourneyBreadcrumbsInnovationHubQueryVariables = Exact<{ [key: string]: never }>;
-
-export type JourneyBreadcrumbsInnovationHubQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    innovationHub?:
-      | {
-          __typename?: 'InnovationHub';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        }
-      | undefined;
-  };
 };
 
 export type InnovationHubQueryVariables = Exact<{
@@ -19485,51 +19293,6 @@ export type PageInfoFragment = {
   hasNextPage: boolean;
 };
 
-export type CreateSubspaceMutationVariables = Exact<{
-  input: CreateSubspaceInput;
-  includeVisuals?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type CreateSubspaceMutation = {
-  __typename?: 'Mutation';
-  createSubspace: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      isContentPublic: boolean;
-      why?: string | undefined;
-      profile?: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              tags: Array<string>;
-              name: string;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      membership: {
-        __typename?: 'SpaceAboutMembership';
-        myMembershipStatus?: CommunityMembershipStatus | undefined;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      };
-    };
-  };
-};
-
 export type SpaceAboutBaseQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -19823,6 +19586,7 @@ export type SpaceAboutDetailsQuery = {
                 | undefined;
             };
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+            metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20078,6 +19842,7 @@ export type SpaceAboutFullQuery = {
                 | undefined;
             };
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+            metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20339,6 +20104,7 @@ export type SpaceAboutDetailsFragment = {
       | undefined;
   };
   guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
 export type SpaceAboutLightFragment = {
@@ -20450,7 +20216,7 @@ export type SpaceCardFragment = {
   };
 };
 
-export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
+export type SpaceBreadcrumbsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   subspaceL1Id?: InputMaybe<Scalars['UUID']>;
   subspaceL2Id?: InputMaybe<Scalars['UUID']>;
@@ -20458,7 +20224,7 @@ export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
   includeSubspaceL2?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type JourneyBreadcrumbsSpaceQuery = {
+export type SpaceBreadcrumbsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -20519,7 +20285,7 @@ export type JourneyBreadcrumbsSpaceQuery = {
   };
 };
 
-export type JourneyBreadcrumbsSpaceFragment = {
+export type BreadcrumbsSpaceL0Fragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
@@ -20536,7 +20302,7 @@ export type JourneyBreadcrumbsSpaceFragment = {
   };
 };
 
-export type JourneyBreadcrumbsSubpaceFragment = {
+export type BreadcrumbsSubspaceFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
@@ -21106,6 +20872,7 @@ export type UpdateSpaceMutation = {
           | undefined;
       };
       guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -21338,6 +21105,7 @@ export type SpaceInfoFragment = {
         | undefined;
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -21480,6 +21248,51 @@ export type SpacePermissionsAndEntitlementsQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type CreateSubspaceMutationVariables = Exact<{
+  input: CreateSubspaceInput;
+  includeVisuals?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CreateSubspaceMutation = {
+  __typename?: 'Mutation';
+  createSubspace: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      why?: string | undefined;
+      profile?: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              tags: Array<string>;
+              name: string;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      };
+    };
   };
 };
 
@@ -22518,6 +22331,15 @@ export type AvailableVirtualContributorsInLibraryQuery = {
           location?:
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
         };
         aiPersona?:
           | {
@@ -22525,6 +22347,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
               bodyOfKnowledge?: string | undefined;
               bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
               bodyOfKnowledgeID?: string | undefined;
+              engine: AiPersonaEngine;
             }
           | undefined;
       }>;
@@ -22570,6 +22393,15 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
+                references?:
+                  | Array<{
+                      __typename?: 'Reference';
+                      id: string;
+                      name: string;
+                      uri: string;
+                      description?: string | undefined;
+                    }>
+                  | undefined;
               };
               aiPersona?:
                 | {
@@ -22577,6 +22409,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                     bodyOfKnowledge?: string | undefined;
                     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                     bodyOfKnowledgeID?: string | undefined;
+                    engine: AiPersonaEngine;
                   }
                 | undefined;
             }>;
@@ -22627,6 +22460,15 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
                 };
                 aiPersona?:
                   | {
@@ -22634,6 +22476,7 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                       bodyOfKnowledge?: string | undefined;
                       bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
                       bodyOfKnowledgeID?: string | undefined;
+                      engine: AiPersonaEngine;
                     }
                   | undefined;
               }>;
@@ -23294,11 +23137,11 @@ export type SpacePrivilegesQuery = {
   };
 };
 
-export type JourneyStorageConfigQueryVariables = Exact<{
+export type SpaceStorageConfigQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type JourneyStorageConfigQuery = {
+export type SpaceStorageConfigQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -27345,6 +27188,12 @@ export type UpdateNotificationStateMutation = {
   updateNotificationState: InAppNotificationState;
 };
 
+export type MarkNotificationsAsReadMutationVariables = Exact<{
+  notificationIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
+
 type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
   __typename?: 'InAppNotificationCalloutPublished';
   id: string;
@@ -29541,7 +29390,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29586,7 +29435,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29635,7 +29484,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29689,7 +29538,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29734,7 +29583,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29788,7 +29637,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29838,7 +29687,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29892,7 +29741,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -29939,55 +29788,6 @@ export type LatestContributionsQuery = {
           };
         }
       | {
-          __typename?: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          child: boolean;
-          journeyDisplayName: string;
-          space?:
-            | {
-                __typename?: 'Space';
-                id: string;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                  };
-                };
-              }
-            | undefined;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          };
-          subspace: {
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            };
-          };
-        }
-      | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
           collaborationID: string;
@@ -29995,7 +29795,7 @@ export type LatestContributionsQuery = {
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30064,14 +29864,14 @@ export type LatestContributionsQuery = {
               };
         }
       | {
-          __typename?: 'ActivityLogEntryOpportunityCreated';
+          __typename?: 'ActivityLogEntrySubspaceCreated';
           id: string;
           collaborationID: string;
           createdDate: Date;
           description: string;
           type: ActivityEventType;
           child: boolean;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30102,7 +29902,7 @@ export type LatestContributionsQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           };
-          subsubspace: {
+          subspace: {
             __typename?: 'Space';
             id: string;
             about: {
@@ -30121,7 +29921,7 @@ export type LatestContributionsQuery = {
           type: ActivityEventType;
           child: boolean;
           message: string;
-          journeyDisplayName: string;
+          spaceDisplayName: string;
           space?:
             | {
                 __typename?: 'Space';
@@ -30173,7 +29973,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30205,7 +30005,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30241,7 +30041,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30278,7 +30078,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30310,7 +30110,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30351,7 +30151,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30388,7 +30188,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30429,7 +30229,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30463,42 +30263,6 @@ export type LatestContributionsGroupedQuery = {
         };
       }
     | {
-        __typename?: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        child: boolean;
-        journeyDisplayName: string;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                };
-              };
-            }
-          | undefined;
-        subspace: {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-        };
-      }
-    | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
         collaborationID: string;
@@ -30506,7 +30270,7 @@ export type LatestContributionsGroupedQuery = {
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30562,14 +30326,14 @@ export type LatestContributionsGroupedQuery = {
             };
       }
     | {
-        __typename?: 'ActivityLogEntryOpportunityCreated';
+        __typename?: 'ActivityLogEntrySubspaceCreated';
         id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
         type: ActivityEventType;
         child: boolean;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30587,7 +30351,7 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        subsubspace: {
+        subspace: {
           __typename?: 'Space';
           id: string;
           about: {
@@ -30606,7 +30370,7 @@ export type LatestContributionsGroupedQuery = {
         type: ActivityEventType;
         child: boolean;
         message: string;
-        journeyDisplayName: string;
+        spaceDisplayName: string;
         space?:
           | {
               __typename?: 'Space';
@@ -30789,15 +30553,6 @@ export type SpaceMembershipFragment = {
     id: string;
     roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
   };
-};
-
-export type MyMembershipsChildJourneyProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  tagline?: string | undefined;
-  url: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
 export type MyResourcesQueryVariables = Exact<{
@@ -31197,9 +30952,9 @@ export type RecentSpacesQuery = {
   };
 };
 
-export type ChallengeExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
+export type MySpacesExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ChallengeExplorerPageQuery = {
+export type MySpacesExplorerPageQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';

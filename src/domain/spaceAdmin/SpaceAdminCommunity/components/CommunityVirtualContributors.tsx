@@ -4,9 +4,8 @@ import {
   GridColDef,
   GridFilterModel,
   GridInitialState,
-  GridLinkOperator,
+  GridLogicOperator,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,23 +15,26 @@ import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
 import CommunityAddMembersDialog from '../dialogs/CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
-import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
-type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
-type GetterParams = GridValueGetterParams<string, ContributorViewProps>;
+type RenderParams = GridRenderCellParams<ContributorViewProps>;
+type GetterParams = ContributorViewProps | undefined;
 
-const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
+const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
+const PAGE_SIZE = 10;
 const initialState: GridInitialState = {
   pagination: {
-    page: 0,
-    pageSize: 10,
+    paginationModel: {
+      page: 0,
+      pageSize: PAGE_SIZE,
+    },
   },
   sorting: {
     sortModel: [
@@ -59,7 +61,7 @@ type CommunityVirtualContributorsProps = {
   fetchAvailableVirtualContributorsInLibrary: (filter?: string) => Promise<Entity[] | undefined>;
   onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
-  inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
+  inviteContributors: (params: InviteContributorsData) => Promise<unknown>;
   spaceDisplayName?: string;
 };
 
@@ -71,7 +73,7 @@ const CommunityVirtualContributors = ({
   fetchAvailableVirtualContributors,
   onAddMember,
   loading,
-  inviteExistingUser,
+  inviteContributors,
   spaceDisplayName = '',
 }: CommunityVirtualContributorsProps) => {
   const { t } = useTranslation();
@@ -80,14 +82,15 @@ const CommunityVirtualContributors = ({
     {
       field: 'profile.displayName',
       headerName: t('common.name'),
-      renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
         </Link>
       ),
-      valueGetter: ({ row }: GetterParams) => row.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       resizable: true,
+      filterable: false,
+      flex: 1,
     },
   ];
 
@@ -100,12 +103,12 @@ const CommunityVirtualContributors = ({
         items: [
           {
             id: 1,
-            columnField: 'profile.displayName',
-            operatorValue: 'contains',
+            field: 'profile.displayName',
+            operator: 'contains',
             value: terms,
           },
         ],
-        linkOperator: GridLinkOperator.And,
+        logicOperator: GridLogicOperator.And,
       });
     } else {
       setFilterModel(EmptyFilter);
@@ -184,7 +187,7 @@ const CommunityVirtualContributors = ({
             actions={[
               {
                 name: 'remove',
-                render: ({ row }: { row: ContributorViewProps }) => {
+                render: ({ row }: RenderParams) => {
                   return (
                     <IconButton onClick={() => setDeletingMemberId(row.id)} aria-label={t('buttons.remove')}>
                       <Remove color="primary" />
@@ -194,9 +197,8 @@ const CommunityVirtualContributors = ({
               },
             ]}
             initialState={initialState}
+            pageSizeOptions={[PAGE_SIZE]}
             filterModel={filterModel}
-            pageSize={10}
-            disableDelete={() => true}
           />
         )}
       </Box>
@@ -234,7 +236,7 @@ const CommunityVirtualContributors = ({
           open={isInvitingExternal}
           onClose={closeInvitationDialog}
           contributorId={selectedVirtualContributorId}
-          onInviteVirtualContributor={inviteExistingUser}
+          onInviteVirtualContributor={inviteContributors}
         />
       )}
     </>

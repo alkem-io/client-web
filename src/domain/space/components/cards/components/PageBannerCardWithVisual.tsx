@@ -1,7 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
-
-import { Box, BoxProps, CircularProgress, Theme, useMediaQuery, useTheme } from '@mui/material';
-
+import { Box, BoxProps, CircularProgress, useTheme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption, PageTitle } from '@/core/ui/typography';
@@ -10,6 +8,7 @@ import PageBannerCardWrapper, {
 } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface PageBannerCardWithVisualProps extends PageBannerCardWrapperProps {
   header?: ReactNode;
@@ -35,7 +34,7 @@ const PageBannerCardWithVisual = ({
   ...props
 }: PageBannerCardWithVisualProps) => {
   const theme = useTheme();
-  const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.only('xs'));
+  const { isSmallScreen } = useScreenSize();
 
   return (
     <PageBannerCardWrapper disablePadding paddingRight={gutters(0.5)} {...props}>
@@ -43,7 +42,7 @@ const PageBannerCardWithVisual = ({
         visual={<Gutters paddingRight={0}>{loading ? <CircularProgress size={gutters(4)(theme)} /> : visual}</Gutters>}
       >
         <Box display="flex" flexDirection="column" paddingY={gutters(0.5)}>
-          <RowContainer {...(isSmall ? { flexWrap: 'wrap', gap: 0 } : {})}>
+          <RowContainer {...(isSmallScreen ? { flexWrap: 'wrap', gap: 0 } : {})}>
             {header ?? (
               <PageTitle color="primary" noWrap>
                 {title}

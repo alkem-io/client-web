@@ -2,7 +2,7 @@ import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'rea
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, getAccountLink } from '@/main/routing/urlBuilders';
 import PendingMembershipsDialog from '@/domain/community/pendingMembership/PendingMembershipsDialog';
 import {
   AssignmentIndOutlined,
@@ -16,7 +16,7 @@ import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import LanguageSelect from '@/core/ui/language/LanguageSelect';
@@ -26,7 +26,6 @@ import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { useLocation } from 'react-router-dom';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
-import { FocusTrap } from '@mui/base/FocusTrap';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import Avatar from '@/core/ui/avatar/Avatar';
 import {
@@ -34,6 +33,8 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
+import FocusTrap from '@mui/material/Unstable_TrapFocus';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -55,9 +56,14 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
     const { setOpenDialog } = usePendingMembershipsDialog();
 
-    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
+    const {
+      userModel,
+      platformPrivilegeWrapper: userWrapper,
+      isAuthenticated,
+      platformRoles,
+    } = useCurrentUserContext();
 
-    const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
+    const isAdmin = userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
     const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
@@ -86,15 +92,15 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     return (
       <>
         <Wrapper ref={ref}>
-          {user && (
+          {userModel && (
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
               <Avatar
                 size="large"
-                src={user.profile.avatar?.uri}
+                src={userModel.profile.avatar?.uri}
                 aria-label="User avatar"
-                alt={t('common.avatar-of', { user: user.profile?.displayName })}
+                alt={t('common.avatar-of', { user: userModel.profile?.displayName })}
               />
-              <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
+              <BlockTitle lineHeight={gutters(2)}>{userModel.profile.displayName}</BlockTitle>
               {role && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">
                   {role}
@@ -103,7 +109,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             </Gutters>
           )}
           <FocusTrap open>
-            <MenuList autoFocus disablePadding sx={{ paddingY: 1 }}>
+            <MenuList autoFocus disablePadding sx={{ paddingY: 1, outline: 'none' }}>
               {!isAuthenticated && (
                 <NavigatableMenuItem
                   iconComponent={MeetingRoomOutlined}
@@ -118,12 +124,25 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
               <NavigatableMenuItem iconComponent={DashboardOutlined} route={homeUrl} onClick={onClose}>
                 {t('pages.home.title')}
               </NavigatableMenuItem>
-              {user && (
-                <NavigatableMenuItem iconComponent={AssignmentIndOutlined} route={user.profile.url} onClick={onClose}>
+              {userModel && (
+                <NavigatableMenuItem
+                  iconComponent={AssignmentIndOutlined}
+                  route={userModel.profile.url}
+                  onClick={onClose}
+                >
                   {t('pages.user-profile.title')}
                 </NavigatableMenuItem>
               )}
-              {user && (
+              {userModel && (
+                <NavigatableMenuItem
+                  iconComponent={LocalOfferOutlinedIcon}
+                  route={getAccountLink(userModel.profile.url)}
+                  onClick={onClose}
+                >
+                  {t('pages.home.mainNavigation.myAccount')}
+                </NavigatableMenuItem>
+              )}
+              {userModel && (
                 <NavigatableMenuItem
                   iconComponent={HdrStrongOutlined}
                   onClick={() => {
@@ -182,7 +201,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             </MenuList>
           </FocusTrap>
         </Wrapper>
-        {user && <PendingMembershipsDialog />}
+        {userModel && <PendingMembershipsDialog />}
         <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       </>
     );

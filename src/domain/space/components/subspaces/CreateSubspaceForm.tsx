@@ -9,8 +9,8 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {
-  JourneyCreationForm,
-  JourneyFormValues,
+  SpaceCreationForm,
+  SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
@@ -19,17 +19,17 @@ import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { Theme, useMediaQuery } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
-  JourneyFormValues,
+  SpaceFormValues,
   'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
 >;
 
-interface CreateSubspaceFormProps extends JourneyCreationForm {}
+interface CreateSubspaceFormProps extends SpaceCreationForm {}
 
 export const CreateSubspaceForm = ({
   isSubmitting,
@@ -37,7 +37,7 @@ export const CreateSubspaceForm = ({
   onChanged,
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const validationRequiredString = t('forms.validations.required');
 
@@ -125,7 +125,7 @@ export const CreateSubspaceForm = ({
             helpTextIcon={t(`context.${level}.tags.tooltip`)}
           />
           <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
-            <PageContentBlock sx={{ flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between' }}>
+            <PageContentBlock sx={{ flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}>
               <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>

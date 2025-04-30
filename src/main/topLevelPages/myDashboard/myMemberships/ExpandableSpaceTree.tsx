@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Theme, Button, useMediaQuery } from '@mui/material';
+import { Button } from '@mui/material';
 
 import Avatar from '@/core/ui/avatar/Avatar';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -13,6 +13,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Caption, BlockTitle, BlockSectionTitle } from '@/core/ui/typography';
 
 import { gutters } from '@/core/ui/grid/utils';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { MembershipProps } from './MyMembershipsDialog.model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
@@ -29,7 +30,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
 
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
@@ -78,11 +79,11 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
               </Avatar>
             }
           >
-            <BlockTitle sx={isMobile ? webkitLineClamp(2) : undefined}>{displayName}</BlockTitle>
+            <BlockTitle sx={isSmallScreen ? webkitLineClamp(2) : undefined}>{displayName}</BlockTitle>
 
-            <BlockSectionTitle sx={isMobile ? webkitLineClamp(2) : undefined}>{tagline}</BlockSectionTitle>
+            <BlockSectionTitle sx={isSmallScreen ? webkitLineClamp(2) : undefined}>{tagline}</BlockSectionTitle>
 
-            {isMobile && (
+            {isSmallScreen && (
               <Caption color="primary">
                 {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
               </Caption>
@@ -90,7 +91,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
           </BadgeCardView>
 
           <Gutters flexDirection="row" disableGap padding={0}>
-            {!isMobile && (
+            {!isSmallScreen && (
               <Caption color="primary" display="flex" alignItems="center">
                 {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
               </Caption>

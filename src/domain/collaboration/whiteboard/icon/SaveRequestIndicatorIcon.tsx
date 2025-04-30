@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CloudOff, CloudDone } from '@mui/icons-material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import { Theme, Tooltip, IconButton, useMediaQuery, Dialog, DialogContent, DialogContentText } from '@mui/material';
+import { Tooltip, IconButton, Dialog, DialogContent, DialogContentText } from '@mui/material';
 
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 
@@ -21,7 +22,7 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
 
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isMediumSmallScreen } = useScreenSize();
 
   const handleMessageOpen = () => setIsOpen(true);
   const handleMessageClose = () => setIsOpen(false);
@@ -51,8 +52,8 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
 
   return (
     <>
-      {isMobile ? (
-        <IconButton>
+      {isMediumSmallScreen ? (
+        <IconButton onClick={handleMessageOpen}>
           <ClickAwayListener onClickAway={handleMessageClose}>
             {isSaved ? (
               <Tooltip
@@ -72,19 +73,19 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
                 slotProps={{ popper: { disablePortal: true } }}
                 onClose={handleMessageClose}
               >
-                <CloudOff sx={theme => ({ color: theme.palette.error.main })} onClick={handleMessageOpen} />
+                <CloudOff sx={theme => ({ color: theme.palette.error.main })} />
               </Tooltip>
             )}
           </ClickAwayListener>
         </IconButton>
       ) : (
-        <IconButton>
+        <IconButton onClick={handleMessageOpen}>
           {isSaved ? (
-            <Tooltip placement="bottom" title={savedText} onClick={handleMessageOpen}>
+            <Tooltip placement="bottom" title={savedText}>
               <CloudDone />
             </Tooltip>
           ) : (
-            <Tooltip placement="bottom" title={unsavedText} onClick={handleMessageOpen}>
+            <Tooltip placement="bottom" title={unsavedText}>
               <CloudOff sx={theme => ({ color: theme.palette.error.main })} />
             </Tooltip>
           )}

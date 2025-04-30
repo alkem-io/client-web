@@ -46,7 +46,7 @@ export const SpaceAdminL1Route: FC = () => {
   const settingsPageProps: SpaceAdminSettingsPageProps = {
     useL0Layout: false,
     spaceId: subspace?.id,
-    isSubspace: false,
+    level: subspace?.level,
     membershipsEnabled: true,
     subspacesEnabled: true,
     privateSettingsEnabled: true,
@@ -67,7 +67,7 @@ export const SpaceAdminL1Route: FC = () => {
 
   return (
     <NonSpaceAdminRedirect spaceId={subspace?.id}>
-      <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
+      <StorageConfigContextProvider locationType="space" spaceId={subspace?.id}>
         <Routes>
           <Route path={'/'}>
             <Route index element={<Navigate to="about" replace />} />

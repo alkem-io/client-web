@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import RecentJourneysList from '../recentSpaces/RecentJourneysList';
+import RecentSpacesList from '../recentSpaces/RecentSpacesList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
 import { MyMembershipsDialog } from '../myMemberships/MyMembershipsDialog';
@@ -9,12 +9,12 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
-import { Theme, useMediaQuery } from '@mui/material';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
   const columns = useColumns();
 
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
@@ -25,7 +25,7 @@ const DashboardActivity = () => {
     skip: !isMyMembershipsDialogOpen,
   });
 
-  const blockColumns = isMobile ? columns : columns / 2;
+  const blockColumns = isSmallScreen ? columns : columns / 2;
 
   const renderSpaceActivityBlock = useCallback(
     () => (
@@ -53,8 +53,8 @@ const DashboardActivity = () => {
 
   return (
     <>
-      <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-      {isMobile
+      <RecentSpacesList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
+      {isSmallScreen
         ? [renderMyActivityBlock(), renderSpaceActivityBlock()]
         : [renderSpaceActivityBlock(), renderMyActivityBlock()]}
 

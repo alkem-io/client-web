@@ -10,16 +10,16 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/core/ui/actions/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
-import { InviteExternalUserData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteExternalUserData) => Promise<unknown>;
+  onInviteUser: (params: InviteContributorsData) => Promise<unknown>;
   title?: ReactNode;
   subtitle?: ReactNode;
   communityRoles: readonly RoleName[];
@@ -36,15 +36,15 @@ const InviteExternalUserDialog = ({
 }: MessageDialogProps) => {
   const { t } = useTranslation();
 
-  const [isMessageSent, setMessageSent] = useState(false);
+  const [isInvitationSent, setInvitationSent] = useState(false);
 
-  const [handleSendMessage, isLoading, error] = useLoadingState(
-    async (values: InviteExternalUserData, formikHelpers: FormikHelpers<InviteExternalUserData>) => {
+  const [handleSendInvitation, isLoading, error] = useLoadingState(
+    async (values: InviteContributorsDataTemp, formikHelpers: FormikHelpers<InviteContributorsDataTemp>) => {
       try {
-        await onInviteUser({ ...values, email: values.email.trim() });
+        await onInviteUser({ ...values, invitedUserEmails: [values.email] });
 
         if (!error) {
-          setMessageSent(true);
+          setInvitationSent(true);
           formikHelpers.resetForm();
         }
       } catch (err) {
@@ -55,18 +55,25 @@ const InviteExternalUserDialog = ({
 
   const handleClose = () => {
     onClose();
-    setMessageSent(false);
+    setInvitationSent(false);
   };
 
   const validationSchema = yup.object().shape({
-    message: yup.string(),
+    welcomeMessage: yup.string(),
     email: yup.string().required(),
   });
 
-  const initialValues: InviteExternalUserData = {
+  // Todo: remove this when we have a better way to handle the form
+  type InviteContributorsDataTemp = InviteContributorsData & {
+    email: string;
+  };
+
+  const initialValues: InviteContributorsDataTemp = {
     email: '',
+    invitedUserEmails: [],
+    invitedContributorIds: [],
     extraRole: RoleName.Member,
-    message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
+    welcomeMessage: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
   return (
@@ -80,7 +87,7 @@ const InviteExternalUserDialog = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={handleSendMessage}
+          onSubmit={handleSendInvitation}
         >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
@@ -106,18 +113,18 @@ const InviteExternalUserDialog = ({
                   )}
                 </Gutters>
                 <FormikInputField
-                  name="message"
+                  name="welcomeMessage"
                   title={t('messaging.message')}
                   placeholder={t('messaging.message')}
                   multiline
                   rows={5}
-                  onFocus={() => setMessageSent(false)}
+                  onFocus={() => setInvitationSent(false)}
                   maxLength={LONG_TEXT_LENGTH}
                 />
               </Gutters>
               <Caption>{t('share-dialog.warning')}</Caption>
               <DialogActions sx={{ paddingX: 0 }}>
-                {isMessageSent && (
+                {isInvitationSent && (
                   <Alert severity="info" sx={{ marginRight: 'auto' }}>
                     {t('messaging.successfully-sent')}
                   </Alert>

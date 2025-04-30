@@ -1,24 +1,23 @@
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, DialogActions, DialogContent, SvgIconProps } from '@mui/material';
 import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationForm, JourneyFormValues } from './SubspaceCreationForm';
+import { SpaceCreationForm, SpaceFormValues } from './SubspaceCreationForm';
 
 interface SubspaceCreationDialogProps {
   open: boolean;
   icon?: ReactElement<SvgIconProps>;
-  journeyName: string;
+  spaceDisplayName: string;
   onClose: () => void;
-  onCreate: (value: JourneyFormValues) => Promise<void>;
-  formComponent: React.ComponentType<JourneyCreationForm>;
+  onCreate: (value: SpaceFormValues) => Promise<void>;
+  formComponent: React.ComponentType<SpaceCreationForm>;
 }
 
 export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   open,
   icon,
-  journeyName,
+  spaceDisplayName,
   onClose,
   onCreate,
   formComponent: FormComponent,
@@ -26,7 +25,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   const { t } = useTranslation();
   const [formInvalid, setFormInvalid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [value, setValue] = useState<JourneyFormValues>({
+  const [value, setValue] = useState<SpaceFormValues>({
     displayName: '',
     tagline: '',
     tags: [],
@@ -38,7 +37,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
     },
   });
 
-  const handleChange = (value: JourneyFormValues) => setValue(value);
+  const handleChange = (value: SpaceFormValues) => setValue(value);
   const handleValidChange = (valid: boolean) => setFormInvalid(!valid);
   const handleCreate = async () => {
     setSubmitting(true);
@@ -49,7 +48,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
   return (
     <DialogWithGrid open={open} maxWidth="xs" fullWidth>
       <DialogHeader onClose={onClose} icon={icon}>
-        {t('journey-creation.dialog-title', { entity: journeyName })}
+        {t('space-creation.dialog-title', { entity: spaceDisplayName })}
       </DialogHeader>
       <DialogContent>
         <FormComponent isSubmitting={submitting} onChanged={handleChange} onValidChanged={handleValidChange} />
@@ -58,7 +57,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
         <Button onClick={onClose} variant="text" disabled={submitting} sx={{ alignSelf: 'start' }}>
           {t('buttons.cancel')}
         </Button>
-        <LoadingButton
+        <Button
           onClick={handleCreate}
           variant="contained"
           loading={submitting}
@@ -66,7 +65,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
           sx={{ alignSelf: 'end' }}
         >
           {t('buttons.create')}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </DialogWithGrid>
   );

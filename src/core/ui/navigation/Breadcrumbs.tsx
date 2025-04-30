@@ -9,7 +9,7 @@ import {
   useImperativeHandle,
   useState,
 } from 'react';
-import { Box, ClickAwayListener, Theme, useMediaQuery } from '@mui/material';
+import { Box, ClickAwayListener } from '@mui/material';
 import { DoubleArrow } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { Expandable } from './Expandable';
@@ -17,6 +17,7 @@ import { some } from 'lodash';
 import { Collapsible } from './Collapsible';
 import { UncontrolledExpandable } from './UncontrolledExpandable';
 import flattenChildren from '../utils/flattenChildren';
+import { useScreenSize } from '../grid/constants';
 
 export type OneOrMany<Item> = Item | Item[];
 
@@ -43,11 +44,11 @@ const BreadcrumbsSeparator = () => (
   </Box>
 );
 
-type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
+type SpaceBreadcrumbsExpandedState = Record<string | number, boolean>;
 
 const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>>(
   <ItemProps extends Expandable>({ onExpand, children }: BreadcrumbsInternalProps<ItemProps>, ref) => {
-    const [expandedState, setExpandedState] = useState<JourneyBreadcrumbsExpandedState>({});
+    const [expandedState, setExpandedState] = useState<SpaceBreadcrumbsExpandedState>({});
     const [isExpanded, setIsExpanded] = useState(false);
 
     const [firstChild, ...restChildren] = (flattenChildren(children) as ReactElement<ItemProps>[]).map(child => {
@@ -60,12 +61,12 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>
       return cloneElement(child, { expanded, onExpand, onCollapse } as Partial<ItemProps>);
     });
 
-    const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+    const { isLargeScreen } = useScreenSize();
 
     useEffect(() => {
       setExpandedState({});
       setIsExpanded(false);
-    }, [isSmallScreen]);
+    }, [isLargeScreen]);
 
     useEffect(() => {
       onExpand?.(isExpanded || some(expandedState));
@@ -101,7 +102,7 @@ const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>
     };
 
     const handleClick: MouseEventHandler = event => {
-      if (!isSmallScreen) {
+      if (isLargeScreen) {
         return;
       }
       if (!isExpanded) {

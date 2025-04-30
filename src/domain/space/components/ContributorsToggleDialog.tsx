@@ -6,33 +6,33 @@ import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSet
 import { useSubspaceCommunityAndRoleSetIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
 import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
   onClose?: () => void;
-  journeyId: string;
 }
 
 /**
- * Represents a dialog component that displays contributors in a journey (space, subspace, subsubspace).
- * @param journeyId is a spaceId from the context.
+ * Represents a dialog component that displays contributors in a space, subspace, subsubspace
  */
-const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: ContributorsToggleDialogProps) => {
-  const { isAuthenticated } = useUserContext();
+const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleDialogProps) => {
+  const { isAuthenticated } = useCurrentUserContext();
   const { t } = useTranslation();
+  const { spaceId } = useUrlResolver();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
-      spaceId: journeyId,
+      spaceId: spaceId!,
     },
-    skip: !open || !journeyId,
+    skip: !open || !spaceId,
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 

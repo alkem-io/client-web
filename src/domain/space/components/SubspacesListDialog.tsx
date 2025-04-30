@@ -1,24 +1,26 @@
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import { CardLayoutContainer } from '@/_deprecatedToKeep/CardsLayout';
+import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Loading from '@/core/ui/loading/Loading';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
-import { journeyCardValueGetter } from '@/_deprecatedToKeep/journeyCardValueGetter';
+import { spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SubspaceCard from './cards/SubspaceCard';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
   onClose?: () => void;
-  spaceId: string;
 }
 
-const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDialogProps) => {
+const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps) => {
   const { t } = useTranslation();
+  const { spaceId } = useUrlResolver();
+
   const { visibility } = useSpace();
 
   const { data, loading } = useSpaceSubspaceCardsQuery({
@@ -43,7 +45,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
         <DialogContent>
           {loading && <Loading />}
           {!loading && subspaces.length > 0 && (
-            <SpaceFilter data={subspaces} valueGetter={journeyCardValueGetter}>
+            <SpaceFilter data={subspaces} valueGetter={spaceAboutValueGetter}>
               {filteredEntities => (
                 <CardLayoutContainer>
                   {filteredEntities.map((subspace, index) => {
@@ -56,7 +58,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
                         tags={subspace.about.profile.tagset?.tags!}
                         tagline={subspace.about.profile.tagline!}
                         vision={subspace.about.why!}
-                        journeyUri={subspace.about.profile.url}
+                        spaceUri={subspace.about.profile.url}
                         locked={!subspace.about.isContentPublic}
                         spaceVisibility={visibility}
                         level={subspace.level}

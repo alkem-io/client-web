@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Theme } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -21,6 +21,7 @@ import {
   LicensingCredentialBasedCredentialType,
   LicensingCredentialBasedPlanType,
 } from '@/core/apollo/generated/graphql-schema';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -35,8 +36,7 @@ interface PlansTableDialogProps {
  */
 const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps) => {
   const { t } = useTranslation();
-  const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
 
   const { data, loading } = usePlansTableQuery({
     skip: !open,
@@ -101,7 +101,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={onClose} columns={isSmall ? 6 : 12} fullScreen={isMobile}>
+      <DialogWithGrid open={open} onClose={onClose} columns={isMediumSmallScreen ? 6 : 12} fullScreen={isSmallScreen}>
         <DialogHeader onClose={onClose}>{t('plansTable.title')}</DialogHeader>
         <Gutters>
           <GridContainer sameHeight disablePadding disableGap>
@@ -109,37 +109,39 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
             {plansData.map(plan => {
               const planTranslation = planTranslations[plan.name] ?? {};
               return (
-                <GridItem key={plan.id} columns={isSmall ? 6 : 3}>
+                <GridItem key={plan.id} columns={isMediumSmallScreen ? 6 : 3}>
                   <Box
-                    borderRight={isSmall ? 'none' : lines}
+                    borderRight={isMediumSmallScreen ? 'none' : lines}
                     sx={{
                       '&:last-of-type': { borderRight: 'none' },
-                      '&:first-of-type': { marginLeft: isSmall ? undefined : gutters(1.5) },
+                      '&:first-of-type': { marginLeft: isMediumSmallScreen ? undefined : gutters(1.5) },
                     }}
-                    marginY={isSmall ? gutters(1) : undefined}
+                    marginY={isMediumSmallScreen ? gutters(1) : undefined}
                   >
                     <Box
-                      borderBottom={isSmall ? undefined : lines}
+                      borderBottom={isMediumSmallScreen ? undefined : lines}
                       textAlign="center"
                       paddingBottom={gutters()}
                       paddingX={gutters()}
                     >
                       <PlanName>{planTranslation.displayName}</PlanName>
                       <PlanPrice plan={plan} />
-                      <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
+                      <Text textAlign="center" height={gutters(4)} sx={{ color: theme => theme.palette.primary.main }}>
                         {planTranslation.priceDescription}
                       </Text>
                       <SelectPlanButton plan={plan} onClick={() => handlePlanClick(plan)} />
                     </Box>
                     <Box
-                      borderBottom={isSmall ? lines : undefined}
+                      borderBottom={isMediumSmallScreen ? lines : undefined}
                       paddingX={gutters()}
-                      color={theme => theme.palette.primary.main}
+                      sx={{ color: theme => theme.palette.primary.main }}
                     >
                       <PlanFeatures
                         planTranslation={planTranslation}
                         sx={
-                          isSmall ? { marginX: 'auto', width: '60%' } : { marginTop: gutters(), marginLeft: gutters(2) }
+                          isMediumSmallScreen
+                            ? { marginX: 'auto', width: '60%' }
+                            : { marginTop: gutters(), marginLeft: gutters(2) }
                         }
                       />
                       {plan.enabled && <Caption marginBottom={gutters()}>{planTranslation.disclaimer}</Caption>}

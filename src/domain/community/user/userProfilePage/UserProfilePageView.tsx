@@ -1,14 +1,10 @@
-import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { CredentialsView } from '@/domain/community/profile/views';
 import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
-import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
-import ContributionsView from '@/domain/community/contributor/Contributions/ContributionsView';
+import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
 import { CaptionSmall } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -27,14 +23,10 @@ export interface UserProfileViewPageProps extends UserProfileViewProps {
 export const UserProfilePageView = ({
   contributions = [],
   organizationIds,
-  entities,
+  userModel,
   accountResources,
 }: UserProfileViewPageProps) => {
   const { t } = useTranslation();
-  const { user } = entities.userMetadata;
-  const { id } = user;
-
-  const { isFeatureEnabled } = useConfig();
 
   const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [
     RoleType.Lead,
@@ -46,21 +38,12 @@ export const UserProfilePageView = ({
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        <UserProfileView entities={entities} />
+        <UserProfileView userModel={userModel} />
         <AssociatedOrganizationsLazilyFetched
           organizationIds={organizationIds ?? []}
           title={t('pages.user-profile.associated-organizations.title')}
           helpText={t('pages.user-profile.associated-organizations.help')}
         />
-        {isFeatureEnabled(PlatformFeatureFlagName.Ssi) && (
-          <Grid item>
-            <CredentialsView
-              userID={id}
-              title={t('pages.user-profile.verifiable-credentials.title')}
-              helpText={t('pages.user-profile.verifiable-credentials.help')}
-            />
-          </Grid>
-        )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
         {hasAccountResources && (
@@ -70,13 +53,13 @@ export const UserProfilePageView = ({
           />
         )}
         {filteredMemberships.length > 0 && (
-          <ContributionsView
+          <TilesContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}
             contributions={filteredMemberships}
           />
         )}
         {remainingMemberships.length > 0 ? (
-          <ContributionsView
+          <TilesContributionsView
             title={t('pages.user-profile.communities.allMembershipsTitle')}
             contributions={remainingMemberships}
           />

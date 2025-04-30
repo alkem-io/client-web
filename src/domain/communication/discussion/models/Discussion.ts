@@ -4,8 +4,8 @@ import {
   DiscussionCardFragment,
   ForumDiscussionCategory,
 } from '@/core/apollo/generated/graphql-schema';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
-import { useAuthorsDetails } from '@/domain/communication/communication/useAuthorsDetails';
+import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
+import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
 import { Room } from '@/domain/communication/room/models/Room';
 
 export interface Discussion {
@@ -14,8 +14,8 @@ export interface Discussion {
   title: string;
   category: ForumDiscussionCategory;
   myPrivileges: AuthorizationPrivilege[] | undefined;
-  author?: Author;
-  authors: Author[];
+  author?: AuthorModel;
+  authors: AuthorModel[];
   description?: string;
   createdAt: Date | undefined;
   comments: Room;

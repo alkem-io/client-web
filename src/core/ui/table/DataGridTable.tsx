@@ -2,8 +2,6 @@ import { IconButton, styled } from '@mui/material';
 import { DataGrid, DataGridProps, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ReactNode, useMemo } from 'react';
-import { CardText } from '../typography';
-import SwapColors from '../palette/SwapColors';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -13,28 +11,35 @@ export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnHeaders': {
     color: theme.palette.primary.contrastText,
     background: theme.palette.primary.main,
-    borderRadius: 0,
+    '.MuiDataGrid-row--borderBottom': {
+      background: theme.palette.primary.main,
+    },
     '.MuiIconButton-root': {
       color: theme.palette.primary.contrastText,
     },
   },
-  '.MuiDataGrid-row:nth-child(odd)': {
+  '.MuiDataGrid-row:nth-of-type(odd)': {
     background: theme.palette.background.default,
   },
-  '.MuiDataGrid-row:nth-child(even)': {
+  '.MuiDataGrid-row:nth-of-type(even)': {
     background: theme.palette.background.paper,
   },
   '.MuiDataGrid-columnSeparator': {
     color: 'transparent',
+  },
+  '.MuiDataGrid-cell': {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   '.MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
     outline: 'none',
   },
 })) as typeof DataGrid;
 
-interface Action<Item extends Identifiable, V = unknown> {
+interface Action<Item extends Identifiable> {
   name: string;
-  render: (params: GridRenderCellParams<V, Item>) => ReactNode;
+  render: (params: GridRenderCellParams<Item>) => ReactNode;
 }
 
 const actionDefaultProps: Partial<GridColDef> = {
@@ -43,23 +48,16 @@ const actionDefaultProps: Partial<GridColDef> = {
   headerName: '',
   sortable: false,
   filterable: false,
-  hideable: false,
   disableColumnMenu: true,
-};
-
-type Formatters<Item extends {}> = {
-  [K in keyof Item]?: (item: Item) => ReactNode;
 };
 
 interface DataGridTableProps<Item extends Identifiable> extends Omit<DataGridProps<Item>, 'columns'> {
   rows: Item[];
-  columns: ((keyof Item & string) | GridColDef<Item>)[];
+  columns: GridColDef<Item>[];
   actions?: Action<Item>[];
   canDelete?: (item: Item) => boolean;
   disableDelete?: (item: Item) => boolean;
   onDelete?: (item: Item) => void;
-  flex?: Record<keyof Item & string, number>;
-  format?: Formatters<Item>;
   dependencies?: unknown[];
 }
 
@@ -72,10 +70,8 @@ const getRowHeight = () => GUTTER_PX * 2;
 const DataGridTable = <Item extends Identifiable>({
   rows,
   columns,
-  format,
   actions,
   onDelete,
-  flex,
   canDelete = alwaysTrue,
   disableDelete = alwaysFalse,
   dependencies = [],
@@ -86,21 +82,11 @@ const DataGridTable = <Item extends Identifiable>({
   const columnDefinitions = useMemo<GridColDef<Item>[]>(
     () =>
       columns.map(column => {
-        const definition = (typeof column === 'string' ? { field: column } : column) as GridColDef<Item>;
-
-        const formatter = format?.[definition.field] ?? ((item: Item) => item[definition.field]);
-
         return {
-          headerName: t(`fields.${definition.field}` as TranslationKey) as string,
-          renderHeader: ({ colDef }) => (
-            <SwapColors>
-              <CardText fontWeight="bold">{colDef.headerName}</CardText>
-            </SwapColors>
-          ),
-          renderCell: ({ row }) => <CardText>{formatter(row)}</CardText>,
+          headerName: t(`fields.${column.field}` as TranslationKey) as string,
+          renderHeader: ({ colDef }) => <>{colDef.headerName}</>,
           resizable: true,
-          flex: flex ? flex[definition.field] : 1,
-          ...definition,
+          ...column,
         };
       }),
     [t, ...dependencies]
@@ -112,7 +98,7 @@ const DataGridTable = <Item extends Identifiable>({
     if (onDelete) {
       actionDefinitions.push({
         name: 'delete',
-        render: ({ row }) =>
+        render: ({ row }: { row: Item }) =>
           canDelete(row) && (
             <IconButton onClick={() => onDelete(row)} disabled={disableDelete(row)} aria-label={t('buttons.delete')}>
               <DeleteOutlineIcon color={disableDelete(row) ? 'disabled' : 'warning'} />
@@ -140,9 +126,8 @@ const DataGridTable = <Item extends Identifiable>({
       isRowSelectable={alwaysFalse}
       rows={rows}
       columns={mergedColumnDefinitions}
-      headerHeight={getRowHeight()}
+      columnHeaderHeight={getRowHeight()}
       getRowHeight={getRowHeight}
-      autoHeight
       {...props}
     />
   );

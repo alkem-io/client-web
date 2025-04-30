@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Tooltip, IconButton, Theme, useMediaQuery, Link } from '@mui/material';
+import { Box, Tooltip, IconButton, Link } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -9,6 +9,7 @@ import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { noop } from 'lodash';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface DocumentItemProps {
   document: DocumentValues;
@@ -22,18 +23,18 @@ export const DocumentItem = ({ document, index, onDelete, onChange = noop }: Doc
   const { locations } = useConfig();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isSmallScreen } = useScreenSize();
 
   return (
-    <Gutters key={index} data-reference={index} row={!isMobile} disablePadding>
+    <Gutters key={index} data-reference={index} row={!isSmallScreen} disablePadding>
       <FormikInputField
         name={`documents[${index}].name`}
         title={t('createVirtualContributorWizard.addContent.documents.referenceTitle')}
-        fullWidth={isMobile}
+        fullWidth={isSmallScreen}
         value={document.name}
         required
       />
-      <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+      <Box flexGrow={1} width={isSmallScreen ? '100%' : undefined}>
         <Box display="flex">
           <FormikFileInput
             name={`documents[${index}].url`}

@@ -24,7 +24,6 @@ import CommunityGuidelinesContainer, {
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -34,7 +33,7 @@ import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.mo
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
-import ConfirmationDialog from '@/_deprecatedToKeep/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -77,8 +76,7 @@ const SpaceAdminCommunityPage = ({
       onAdd: onAddUser,
       onRemove: onRemoveUser,
       getAvailable: getAvailableUsers,
-      inviteExisting: inviteExistingUser,
-      inviteExternal: inviteExternalUser,
+      inviteContributors: inviteUsers,
     },
     organizationAdmin: {
       members: organizations,
@@ -190,8 +188,7 @@ const SpaceAdminCommunityPage = ({
             <PageContentBlockSeamless columns={4} disablePadding>
               <InvitationOptionsBlock
                 spaceDisplayName={about.profile.displayName}
-                inviteExistingUser={inviteExistingUser}
-                inviteExternalUser={inviteExternalUser}
+                inviteUsers={inviteUsers}
                 currentApplicationsUserIds={currentApplicationsUserIds}
                 currentInvitationsUserIds={currentInvitationsUserIds}
                 currentMembersIds={currentMembersIds}
@@ -262,9 +259,9 @@ const SpaceAdminCommunityPage = ({
                     onSelectTemplate={onSelectCommunityGuidelinesTemplate}
                     enablePlatformTemplates
                     actionButton={
-                      <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                      <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                         {t('buttons.use')}
-                      </LoadingButton>
+                      </Button>
                     }
                   />
                 </>
@@ -331,7 +328,7 @@ const SpaceAdminCommunityPage = ({
               fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
               fetchAvailableVirtualContributors={getAvailableVirtualContributors}
               onAddMember={onAddVirtualContributor}
-              inviteExistingUser={inviteExistingUser}
+              inviteContributors={inviteUsers}
               loading={loading}
             />
           </PageContentBlock>

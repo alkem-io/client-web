@@ -1,15 +1,13 @@
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useEffect, useState } from 'react';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
 import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
@@ -21,9 +19,6 @@ import {
   removeVCCreationCache,
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
 import { InfoOutlined } from '@mui/icons-material';
-import { Theme } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
@@ -39,27 +34,20 @@ export type SpaceDashboardSpaceDetails = {
 
 type SpaceDashboardViewProps = {
   space?: SpaceDashboardSpaceDetails;
-  tabDescription?: string;
-  flowStateForNewCallouts: InnovationFlowState | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
-  organization?: unknown;
-  entityReadAccess: boolean;
-  readUsersAccess: boolean;
-  childEntitiesCount?: number;
-  recommendations?: ReactNode;
-  loading: boolean;
-  shareUpdatesUrl: string;
   calloutsSetProvided: UseCalloutsSetProvided;
+  shareUpdatesUrl: string;
+  flowStateForNewCallouts: InnovationFlowState | undefined;
+  tabDescription?: string;
   canEdit?: boolean;
+  readUsersAccess: boolean;
 };
 
 const SpaceDashboardView = ({
   space,
-  tabDescription,
   dashboardNavigation,
   dashboardNavigationLoading,
-  loading,
   calloutsSetProvided,
   shareUpdatesUrl,
   flowStateForNewCallouts,
@@ -77,15 +65,9 @@ const SpaceDashboardView = ({
 
   const translatedSpaceLevel = t(`common.space-level.${level}`);
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+  const { directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-
-  const host = space?.about?.provider;
-
-  const welcomeBlockContributors = useMemo(() => host && [host], [host]);
 
   const onCloseTryVirtualContributor = () => {
     setTryVirtualContributorOpen(false);
@@ -122,8 +104,6 @@ const SpaceDashboardView = ({
   }, [space?.id]);
 
   const membership = about?.membership;
-  const leadUsers = membership?.leadUsers || [];
-  const myMembershipStatus = membership?.myMembershipStatus;
   const communityId = membership?.communityID;
   const calloutsSetId = calloutsSetProvided.calloutsSetId;
 
@@ -131,41 +111,11 @@ const SpaceDashboardView = ({
     <>
       {directMessageDialog}
       <PageContent>
-        {!loading && (
-          <ApplicationButtonContainer journeyId={space?.id}>
-            {(applicationButtonProps, loading) => {
-              if (loading || applicationButtonProps.isMember) {
-                return null;
-              }
-
-              return (
-                <PageContentColumn columns={12}>
-                  <ApplicationButton
-                    {...applicationButtonProps}
-                    loading={loading}
-                    component={FullWidthButton}
-                    extended={hasExtendedApplicationButton}
-                    journeyId={space?.id}
-                    spaceLevel={level}
-                  />
-                </PageContentColumn>
-              );
-            }}
-          </ApplicationButtonContainer>
-        )}
         <InfoColumn>
           <PageContentBlock accent>
-            <SpaceWelcomeBlock
-              description={tabDescription ?? ''}
-              leadUsers={leadUsers}
-              onContactLeadUser={receiver => sendMessage('user', receiver)}
-              leadOrganizations={welcomeBlockContributors}
-              onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              onClickReadMore={() => setAboutDialogOpen(true)}
-              level={level}
-              member={myMembershipStatus === CommunityMembershipStatus.Member}
-            />
+            <SpaceWelcomeBlock spaceAbout={space?.about!} />
           </PageContentBlock>
+
           <FullWidthButton
             startIcon={<InfoOutlined />}
             onClick={() => setAboutDialogOpen(true)}
@@ -174,12 +124,13 @@ const SpaceDashboardView = ({
           >
             {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>
+
           <DashboardNavigation
             currentItemId={space?.id}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {readUsersAccess && <DashboardCalendarSection journeyId={space?.id} level={level} />}
+          {readUsersAccess && <DashboardCalendarSection spaceId={space?.id} level={level} />}
           {readUsersAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 

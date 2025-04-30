@@ -10,7 +10,7 @@ interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
 }
 
 export const ActivityCalloutPublishedView = ({
-  journeyDisplayName,
+  spaceDisplayName,
   callout,
   type,
   ...rest
@@ -20,7 +20,7 @@ export const ActivityCalloutPublishedView = ({
     calloutType={callout.type}
     title={<ActivityDescriptionByType activityType={type} subject={callout.framing.profile.displayName} />}
     url={callout.framing.profile.url}
-    contextDisplayName={journeyDisplayName}
+    contextDisplayName={spaceDisplayName}
     {...rest}
   />
 );

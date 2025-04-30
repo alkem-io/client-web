@@ -1,7 +1,6 @@
 import { Button as MuiButton, CircularProgress } from '@mui/material';
-import { forwardRef, Ref, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
@@ -9,7 +8,7 @@ import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { InvitationItem } from '@/domain/community/user/providers/UserProvider/InvitationItem';
+import { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
 import InvitationDialog from '@/domain/community/invitations/InvitationDialog';
 import useNavigate from '@/core/routing/useNavigate';
@@ -17,12 +16,13 @@ import ApplicationDialog from './ApplicationDialog';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface ApplicationButtonProps {
-  journeyId: string | undefined;
+  spaceId: string | undefined;
+  spaceLevel: SpaceLevel | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
   isParentMember: boolean;
   applicationState: string | undefined;
-  userInvitation: InvitationItem | undefined;
+  userInvitation: PendingInvitationItem | undefined;
   parentApplicationState: string | undefined;
   applyUrl: string | undefined;
   parentUrl: string | undefined;
@@ -38,15 +38,15 @@ export interface ApplicationButtonProps {
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
-  spaceLevel: SpaceLevel | undefined;
   onUpdateInvitation?: () => void | Promise<void>;
+  noAuthApplyButtonText?: string;
 }
 
-export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
+export const ApplicationButton = forwardRef<HTMLButtonElement, ApplicationButtonProps>(
   (
     {
       isAuthenticated,
-      journeyId,
+      spaceId,
       applicationState,
       userInvitation,
       parentApplicationState,
@@ -68,6 +68,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       component: Button = MuiButton,
       extended = false,
       onUpdateInvitation,
+      noAuthApplyButtonText,
     },
     ref
   ) => {
@@ -142,25 +143,19 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: spaceLevel !== SpaceLevel.L0 ? t('common.subspace') : t('common.community'),
+            space: spaceLevel !== SpaceLevel.L0 ? t('common.subspace') : t('common.community'),
           })
         : verb;
 
     const renderApplicationButton = () => {
       if (loading) {
-        return <Button ref={ref as Ref<HTMLButtonElement>} disabled startIcon={<CircularProgress size={24} />} />;
+        return <Button ref={ref} disabled startIcon={<CircularProgress size={24} />} />;
       }
 
       if (!isAuthenticated) {
         return (
-          <Button
-            ref={ref as Ref<HTMLAnchorElement>}
-            variant="contained"
-            component={RouterLink}
-            to={buildLoginUrl(applyUrl)}
-            sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
-          >
-            {t('components.application-button.apply-not-signed')}
+          <Button ref={ref} variant="contained" onClick={() => navigate(buildLoginUrl(applyUrl))}>
+            {noAuthApplyButtonText ?? t('components.application-button.apply-not-signed')}
           </Button>
         );
       }
@@ -168,7 +163,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (isMember) {
         return (
           <Button
-            ref={ref as Ref<HTMLButtonElement>}
+            ref={ref}
             variant="outlined"
             startIcon={<PersonOutlined />}
             disabled
@@ -187,7 +182,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (canAcceptInvitation) {
         return (
           <Button
-            ref={ref as Ref<HTMLButtonElement>}
+            ref={ref}
             startIcon={extended ? <AddOutlined /> : undefined}
             onClick={handleClickAcceptInvitation}
             variant="contained"
@@ -201,7 +196,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (canJoinCommunity) {
         return (
           <Button
-            ref={ref as Ref<HTMLButtonElement>}
+            ref={ref}
             startIcon={extended ? <AddOutlined /> : undefined}
             onClick={handleClickJoin}
             variant="contained"
@@ -214,7 +209,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
       if (isApplicationPending(applicationState)) {
         return (
-          <Button ref={ref as Ref<HTMLButtonElement>} disabled>
+          <Button ref={ref} disabled>
             {t('components.application-button.apply-pending')}
           </Button>
         );
@@ -224,7 +219,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         const verb = extended ? t('components.application-button.applyTo') : t('buttons.apply');
         return (
           <Button
-            ref={ref as Ref<HTMLButtonElement>}
+            ref={ref}
             startIcon={extended ? <AddOutlined /> : undefined}
             onClick={handleClickApply}
             variant="contained"
@@ -239,7 +234,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (isParentMember) {
         return (
           <Button
-            ref={ref as Ref<HTMLButtonElement>}
+            ref={ref}
             disabled
             variant="outlined"
             sx={{
@@ -256,7 +251,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
       if (isApplicationPending(parentApplicationState)) {
         return (
-          <Button ref={ref as Ref<HTMLButtonElement>} disabled>
+          <Button ref={ref} disabled>
             {t('components.application-button.parent-pending')}
           </Button>
         );
@@ -264,7 +259,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
       if (canJoinParentCommunity) {
         return (
-          <Button ref={ref as Ref<HTMLButtonElement>} onClick={handleClickJoinParent} variant={'contained'}>
+          <Button ref={ref} onClick={handleClickJoinParent} variant={'contained'}>
             {t('components.application-button.join')}
           </Button>
         );
@@ -272,14 +267,14 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
       if (canApplyToParentCommunity) {
         return (
-          <Button ref={ref as Ref<HTMLButtonElement>} onClick={handleClickApplyParent} variant={'contained'}>
+          <Button ref={ref} onClick={handleClickApplyParent} variant={'contained'}>
             {t('buttons.apply')}
           </Button>
         );
       }
 
       return (
-        <Button ref={ref as Ref<HTMLButtonElement>} disabled variant={'contained'}>
+        <Button ref={ref} disabled variant={'contained'}>
           {t('components.application-button.apply-disabled')}
         </Button>
       );
@@ -297,7 +292,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           <ApplicationDialog
             open={isApplicationDialogOpen}
             onClose={handleClose}
-            spaceId={journeyId}
+            spaceId={spaceId}
             canJoinCommunity={canJoinCommunity}
             onJoin={onJoin}
             onApply={handleOpenApplicationSubmittedDialog}

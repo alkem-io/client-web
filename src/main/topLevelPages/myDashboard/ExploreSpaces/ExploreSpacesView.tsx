@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -12,6 +12,7 @@ import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
 import SpaceTile from '@/domain/space/components/cards/SpaceTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -37,10 +38,10 @@ export const ExploreSpacesView = ({
   const { t } = useTranslation();
 
   const columns = useColumns();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
+
   // 2 items on small and full width on mobile; issue with 8 columns on isSmall instead of 12
-  const cardColumns = isMobile ? columns : columns / (isSmall ? 2 : 4);
+  const cardColumns = isSmallScreen ? columns : columns / (isMediumSmallScreen ? 2 : 4);
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const enabledFilters = filtersConfig.flatMap(category => category.key);
@@ -65,7 +66,7 @@ export const ExploreSpacesView = ({
   };
 
   const renderSkeleton = (size: number) =>
-    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} journey={undefined} columns={cardColumns} />);
+    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} space={undefined} columns={cardColumns} />);
 
   const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
@@ -114,12 +115,12 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && <SpaceTile journey={welcomeSpace} columns={cardColumns} />}
+        {visibleFirstWelcomeSpace && <SpaceTile space={welcomeSpace} columns={cardColumns} />}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <SpaceTile key={space.id} journey={space} columns={cardColumns} />
+                <SpaceTile key={space.id} space={space} columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}

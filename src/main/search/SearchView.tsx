@@ -26,7 +26,7 @@ import {
   SearchResultOrganizationFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { useUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/user';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -64,8 +64,8 @@ export type SearchResultMetaType =
 
 interface SearchViewProps {
   searchRoute: string;
-  journeyFilterConfig: FilterConfig;
-  journeyFilterTitle: ReactNode;
+  spaceFilterConfig: FilterConfig;
+  spaceFilterTitle: ReactNode;
 }
 
 interface SearchViewSections {
@@ -95,8 +95,8 @@ const tagsetNames = ['skills', 'keywords'];
 
 const Logo = () => <AlkemioLogo />;
 
-const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: SearchViewProps) => {
-  const [canJourneyLoadMore, setCanJourneyLoadMore] = useState(true);
+const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: SearchViewProps) => {
+  const [canSpaceLoadMore, setCanSpaceLoadMore] = useState(true);
   const [canCalloutLoadMore, setCalloutCanLoadMore] = useState(true);
   const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
   const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
@@ -107,7 +107,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     contributionCursor: undefined,
     collaborationCursor: undefined,
   });
-  const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
+  const [spaceFilter, setSpaceFilter] = useState<FilterDefinition>(spaceFilterConfig.all);
   const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
   const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
   const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
@@ -120,14 +120,14 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const queryParams = useMemoizedQueryParams();
 
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const spaceNameId = queryParams[SEARCH_SPACE_URL_PARAM]?.[0] ?? undefined;
 
   const handleTermsChange = useCallback(
     (newValue: string[]) => {
       setCalloutCanLoadMore(true);
-      setCanJourneyLoadMore(true);
+      setCanSpaceLoadMore(true);
       setContributorCanLoadMore(true);
       setCanContributionLoadMore(true);
 
@@ -184,7 +184,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           {
             category: SearchCategory.Spaces,
             size: SEARCH_RESULTS_COUNT,
-            types: journeyFilterConfig.all.value,
+            types: spaceFilterConfig.all.value,
             cursor: undefined,
           },
           {
@@ -232,7 +232,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               {
                 category: SearchCategory.Spaces,
                 size: SEARCH_RESULTS_COUNT,
-                types: journeyFilter.value,
+                types: spaceFilter.value,
                 cursor: resultsCursors.spaceCursor,
               },
             ];
@@ -275,7 +275,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
               {
                 category: SearchCategory.Spaces,
                 size: SEARCH_RESULTS_COUNT,
-                types: journeyFilter.value,
+                types: spaceFilter.value,
                 cursor: resultsCursors.spaceCursor,
               },
               {
@@ -313,7 +313,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
           switch (resultsType) {
             case SearchCategory.Spaces: {
-              setCanJourneyLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
+              setCanSpaceLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
               break;
             }
 
@@ -405,7 +405,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       spaceId,
       termsFromUrl,
       resultsCursors,
-      journeyFilter.value,
+      spaceFilter.value,
       contributorFilter.value,
       contributionFilter.value,
       fetchMore,
@@ -414,7 +414,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   useEffect(() => {
     if (hasNoTermsLength) {
-      setJourneyFilter(journeyFilterConfig.all);
+      setSpaceFilter(spaceFilterConfig.all);
       setContributionFilter(contributionFilterConfig.all);
       setContributorFilter(contributorFilterConfig.all);
     }
@@ -434,10 +434,10 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
   const filteredSpaceResults =
-    journeyFilter.typename === 'all'
+    spaceFilter.typename === 'all'
       ? spaceResults
       : spaceResults?.filter(space =>
-          journeyFilter.typename === 'space' ? space.type === 'SPACE' : space.type === 'SUBSPACE'
+          spaceFilter.typename === 'space' ? space.type === 'SPACE' : space.type === 'SUBSPACE'
         );
 
   const filteredContributionResults =
@@ -499,16 +499,16 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           <SectionWrapper>
             <SearchResultSection
               tagId="spaces"
-              title={journeyFilterTitle}
-              filterTitle={t('pages.search.filter.type.journey')}
+              title={spaceFilterTitle}
+              filterTitle={t('pages.search.filter.type.space')}
               count={data?.search?.spaceResults?.total ?? 0}
-              filterConfig={journeyFilterConfig}
+              filterConfig={spaceFilterConfig}
               results={filteredSpaceResults}
-              currentFilter={journeyFilter}
-              onFilterChange={setJourneyFilter}
+              currentFilter={spaceFilter}
+              onFilterChange={setSpaceFilter}
               loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
               cardComponent={SearchResultPostChooser}
-              canLoadMore={canJourneyLoadMore}
+              canLoadMore={canSpaceLoadMore}
               onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
             />
           </SectionWrapper>

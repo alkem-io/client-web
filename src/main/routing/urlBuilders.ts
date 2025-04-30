@@ -1,4 +1,4 @@
-import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
 
@@ -8,6 +8,11 @@ export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 // tests fail to import because they are in different modules
 const URL_PARAM_SECTION = 'tab';
 const URL_PARAM_DIALOG = 'dialog';
+
+export enum TabbedLayoutParams {
+  Section = URL_PARAM_SECTION,
+  Dialog = URL_PARAM_DIALOG,
+}
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
@@ -24,16 +29,16 @@ export const buildLoginUrl = (returnUrl?: string) => {
   return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
 };
 
+export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
+  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params}`;
+};
+
 export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export const buildUpdatesUrl = (journeyLocation: string) => {
-  return `${journeyLocation}?dialog=updates`;
-};
-
-export const buildUpdatesUrlLegacy = (journeyLocation: string) => {
-  return `${journeyLocation}/updates`;
+export const buildUpdatesUrl = (spaceUrl: string) => {
+  return `${spaceUrl}/updates`;
 };
 
 export const buildSpaceSectionUrl = (

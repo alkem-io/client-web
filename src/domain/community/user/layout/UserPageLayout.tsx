@@ -3,19 +3,23 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useUserMetadata } from '../../../../_deprecatedToKeep/useUserMetadata';
+import { useUserProvider } from '../hooks/useUserProvider';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { Settings } from '@mui/icons-material';
 
 interface UserPageLayoutProps {}
 
 const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
-  const { userId, loading: urlResolverLoading } = useUrlResolver();
-  const { user, loading } = useUserMetadata(userId);
-
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const { userId, loading: urlResolverLoading } = useUrlResolver();
+  const { user, loading } = useUserProvider(userId);
+
+  const settings = pathname.split('/').includes('settings');
 
   return (
     <TopLevelLayout
@@ -26,12 +30,17 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={urlResolverLoading || loading || !user}
-            avatar={user?.user.profile.avatar}
+            avatar={user?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={user?.user.profile.url}
+            uri={user?.profile.url}
           >
-            {user?.user.profile.displayName}
+            {user?.profile.displayName}
           </BreadcrumbsItem>
+          {settings && (
+            <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>
+              {t('common.settings')}
+            </BreadcrumbsItem>
+          )}
         </TopLevelPageBreadcrumbs>
       }
       header={<UserPageBanner />}

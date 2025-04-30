@@ -1,6 +1,9 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
 import React, { FC } from 'react';
 
+/**
+ * This is still used but the old version of L1 icon.
+ */
 export const SpaceL1Icon: FC<SvgIconProps> = props => {
   return (
     <SvgIcon {...props}>

@@ -1,13 +1,11 @@
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import FormRow from '@/_deprecated/FormRow';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle, Text } from '@/core/ui/typography/components';
-import { LoadingButton } from '@mui/lab';
 import { Box, DialogContent } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -78,10 +76,10 @@ const CalloutVisibilityChangeDialog = ({
                   <WrapperMarkdown>{callout?.framing.profile.description ?? ''}</WrapperMarkdown>
                 </Box>
                 {callout?.draft && (
-                  <FormRow>
+                  <Box>
                     <BlockTitle>{t('common.notifications')}</BlockTitle>
                     <FormikSwitch name="sendNotifications" title={t('components.callout-publish.notify-members')} />
-                  </FormRow>
+                  </Box>
                 )}
               </Gutters>
             </DialogContent>
@@ -89,9 +87,9 @@ const CalloutVisibilityChangeDialog = ({
               <Button onClick={onClose} disabled={loading} variant="text">
                 {t('buttons.cancel')}
               </Button>
-              <LoadingButton type="submit" loading={loading} variant="contained" onClick={() => handleSubmit()}>
+              <Button type="submit" loading={loading} variant="contained" onClick={() => handleSubmit()}>
                 {t(`buttons.${callout?.draft ? '' : 'un'}publish` as const)}
-              </LoadingButton>
+              </Button>
             </Actions>
           </>
         )}
