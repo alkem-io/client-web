@@ -76,7 +76,7 @@
   },
   "resolutions": {
     "**/@emotion/styled": "^11.0.0",
-    "unified": "^11.0.4"
+    "unified": "^11.0.5"
   },
   "dependencies": {
     "@alkemio/excalidraw": "0.18.0-alkemio-1",
@@ -155,7 +155,7 @@
     "socket.io-client": "^4.8.1",
     "ts-semaphore": "^1.0.0",
     "typescript": "~5.3.3",
-    "unified": "^10.0.0",
+    "unified": "^11.0.5",
     "unist-builder": "^3.0.1",
     "use-deep-compare-effect": "^1.8.1",
     "uuid": "^8.3.2",
@@ -206,9 +206,6 @@
     "glob-parent": "^5.1.2",
     "got": "11.8.5",
     "nth-check": "^2.0.1",
-    "chokidar": "^3.5.3",
-    "react-markdown": {
-      "unified": "^10.1.2"
-    }
+    "chokidar": "^3.5.3"
   }
 }
