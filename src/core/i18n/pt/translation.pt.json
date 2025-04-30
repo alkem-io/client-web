@@ -1854,6 +1854,9 @@
           "communications": {
             "description": "Aqui você pode postar atualizações que serão visíveis para todos os membros deste {{entity}}."
           },
+          "subspaces": {
+            "description": "Here you can edit Subspaces for this Space."
+          },
           "subsubspaces": {
             "description": "Here you can edit Subspaces for this Subspace."
           },
