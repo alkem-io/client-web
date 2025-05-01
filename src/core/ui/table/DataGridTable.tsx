@@ -44,7 +44,6 @@ interface Action<Item extends Identifiable> {
 
 const actionDefaultProps: Partial<GridColDef> = {
   width: 30,
-  resizable: false,
   headerName: '',
   sortable: false,
   filterable: false,
@@ -85,7 +84,6 @@ const DataGridTable = <Item extends Identifiable>({
         return {
           headerName: t(`fields.${column.field}` as TranslationKey) as string,
           renderHeader: ({ colDef }) => <>{colDef.headerName}</>,
-          resizable: true,
           ...column,
         };
       }),

@@ -219,7 +219,6 @@ const CommunityMemberships = ({
         );
       },
       valueGetter: (_, row: GetterParams) => row?.displayName,
-      resizable: true,
       filterable: false,
       flex: 1,
     },
@@ -228,7 +227,6 @@ const CommunityMemberships = ({
       headerName: t('common.email'),
       renderCell: ({ row }: RenderParams) => <>{row.email}</>,
       valueGetter: (_, row: GetterParams) => row?.email,
-      resizable: true,
       filterable: false,
       flex: 1,
     },
