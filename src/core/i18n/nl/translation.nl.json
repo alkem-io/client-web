@@ -1855,7 +1855,7 @@
             "description": "Hier kan je updates plaatsen die zichtbaar zullen zijn voor alle leden van deze {{entity}}."
           },
           "subspaces": {
-            "description": "Here you can edit Subspaces for this Space."
+            "description": "Hier kan je de Subspaces van deze Space aanpassen."
           },
           "subsubspaces": {
             "description": "Hier kan je de Subspaces van deze Subspace aanpassen."
