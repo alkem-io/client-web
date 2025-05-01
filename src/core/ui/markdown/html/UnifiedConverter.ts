@@ -82,32 +82,27 @@ export default UnifiedConverter;
 function alkemioCustomHtmlToMarkdownMdastPlugin() {
   return (tree: Root) => {
     // TODO: with the updated version, so we need the em, strong and paragraph changes
-    // Add <br> to empty paragraphs
-    visit(tree, 'paragraph', (node: Element, index: number, parent: Parent) => {
-      if (!node.children || node.children.length === 0) {
+    visit(tree, 'paragraph', (node: Paragraph, index: number | undefined, parent: Parent) => {
+      if (index !== undefined && node.children?.length === 0) {
         parent.children[index] = { type: 'html', value: '<br>' } as HTML;
       }
     });
 
     visit(tree, 'em', (node: Element) => {
-      if (node.children && node.children[0]) {
-        const firstChild = node.children[0];
-        if (firstChild.type === 'text' && 'value' in firstChild) {
-          const value = (firstChild as Text).value;
-          const trimmed = value.trim();
-          (firstChild as Text).value = trimmed;
-        }
+      const firstChild = node.children?.[0];
+      if (firstChild?.type === 'text' && 'value' in firstChild) {
+        const value = (firstChild as Text).value;
+        const trimmed = value.trim();
+        (firstChild as Text).value = trimmed;
       }
     });
 
     visit(tree, 'strong', (node: Element) => {
-      if (node.children && node.children[0]) {
-        const firstChild = node.children[0];
-        if (firstChild.type === 'text' && 'value' in firstChild) {
-          const value = (firstChild as Text).value;
-          const trimmed = value.trim();
-          (firstChild as Text).value = trimmed;
-        }
+      const firstChild = node.children?.[0];
+      if (firstChild?.type === 'text' && 'value' in firstChild) {
+        const value = (firstChild as Text).value;
+        const trimmed = value.trim();
+        (firstChild as Text).value = trimmed;
       }
     });
 
