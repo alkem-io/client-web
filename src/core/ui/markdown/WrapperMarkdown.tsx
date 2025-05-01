@@ -12,7 +12,7 @@ const allowedNodeTypes = ['iframe'] as const;
 
 export const MARKDOWN_CLASS_NAME = 'markdown'; // global styles applied
 
-export interface MarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
+export interface WrapperMarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
 
 export const WrapperMarkdown = ({
   card = false,
@@ -22,7 +22,7 @@ export const WrapperMarkdown = ({
   caption = false,
   sx,
   ...props
-}: MarkdownProps) => {
+}: WrapperMarkdownProps) => {
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
 
   return (
@@ -42,9 +42,7 @@ export const WrapperMarkdown = ({
             [PlainText, { enabled: plain }],
             [remarkVerifyIframe, { allowedIFrameOrigins: iframeAllowedUrls }],
           ]}
-          rehypePlugins={
-            plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
-          }
+          rehypePlugins={plain ? undefined : [[rehypeRaw, { passThrough: allowedNodeTypes }]]}
           {...props}
         />
       </Box>
