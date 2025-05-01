@@ -81,6 +81,7 @@ export default UnifiedConverter;
 
 function alkemioCustomHtmlToMarkdownMdastPlugin() {
   return (tree: Root) => {
+    // TODO: with the updated version, so we need the em, strong and paragraph changes
     // Add <br> to empty paragraphs
     visit(tree, 'paragraph', (node: Element, index: number, parent: Parent) => {
       if (!node.children || node.children.length === 0) {
