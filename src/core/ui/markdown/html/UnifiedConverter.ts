@@ -1,11 +1,14 @@
+import { useTranslation } from 'react-i18next';
+import { Converter } from './Converter';
 import { once } from 'lodash';
-import type { Element, Root } from 'hast';
-import { Text, HTML, Paragraph } from 'mdast';
-// import { Strong, Emphasis  } from 'mdast';
-import type { Parent } from 'unist';
-import type { Converter } from './Converter';
-import { visit } from 'unist-util-visit';
-import { t } from 'i18next';
+import { html } from 'mdast-builder';
+import type { Element, ElementContent } from 'hast';
+import type { Html, Parent, Parents } from 'mdast';
+import { u } from 'unist-builder';
+import { State as M2HState } from 'mdast-util-to-hast';
+import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-util-to-mdast';
+
+const isEmptyLine = (node: Html, parent: Parent | null | undefined) => node.value === '<br>' && parent?.type === 'root';
 
 const allowDangerousHtmlIframeProps = [
   'src',
@@ -20,6 +23,7 @@ const allowDangerousHtmlIframeProps = [
 ];
 
 const UnifiedConverter = (): Converter => {
+  const { t } = useTranslation();
   const constructHtmlToMarkdownPipeline = once(async () => {
     const { unified } = await import('unified');
     const { default: rehypeParse } = await import('rehype-parse');
@@ -27,23 +31,72 @@ const UnifiedConverter = (): Converter => {
     const { default: rehypeRaw } = await import('rehype-raw');
     const { default: remarkStringify } = await import('remark-stringify');
 
-    return unified()
-      .use(rehypeParse, { fragment: true })
-      .use(rehypeRaw)
-      .use(rehypeRemark)
-      .use(alkemioCustomHtmlToMarkdownMdastPlugin)
-      .use(remarkStringify);
+    const trimmer = (nodeType: 'strong' | 'emphasis') => (state: H2MState, element: Element) => {
+      if (element.children.length === 1) {
+        if (element.children[0].type === 'text') {
+          const value = element.children[0].value;
+          const trimmed = value.trim();
+          const space = '<span> </span>';
+          if (trimmed === '' && value !== trimmed) {
+            return html(space);
+          }
+
+          return html(
+            `${value.startsWith(' ') ? space : ''}<${nodeType}>${trimmed}</${nodeType}>${
+              value.endsWith(' ') ? space : ''
+            }`
+          );
+        }
+      }
+      return defaultHTMLHandlers[nodeType](state, element);
+    };
+    return (
+      unified()
+        .use(rehypeParse, { fragment: true }) // don't expect a full HTML Document
+        .use(rehypeRaw)
+        // @ts-ignore
+        .use(rehypeRemark, {
+          handlers: {
+            p: (state: H2MState, element: Element) => {
+              if (element.children.length === 0) {
+                return html('<br>');
+              } else {
+                return defaultHTMLHandlers.p(state, element);
+              }
+            },
+            strong: trimmer('strong'),
+            emphasis: trimmer('emphasis'),
+            iframe: (_state: H2MState, element: Element) => ({
+              type: 'html',
+              value: `<iframe
+                src="${element.properties.src}"
+                position="absolute"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                webkitallowfullscreen
+                 mozallowfullscreen
+                 allowfullscreen
+                 allow="clipboard-write"
+                  title="${t('components.wysiwyg-editor.embed.iframeAria', {
+                    title: element.properties.title ?? 'Embedded video iframe',
+                  })}"
+              loading="lazy"></iframe>`,
+            }),
+          },
+        })
+        .use(remarkStringify)
+    );
   });
 
   const constructMarkdownToHTMLPipeline = once(async () => {
     const { unified } = await import('unified');
     const { default: remarkParse } = await import('remark-parse');
-    const { default: remarkRehype } = await import('remark-rehype');
+    const { default: remarkRehype, defaultHandlers: defaultMarkdownHandlers } = await import('remark-rehype');
     const { default: rehypeRaw } = await import('rehype-raw');
     const { default: rehypeSanitize } = await import('rehype-sanitize');
     const { default: rehypeStringify } = await import('rehype-stringify');
     const { defaultSchema } = await import('hast-util-sanitize');
-
     const sanitizeOptions = {
       ...defaultSchema,
       tagNames: [...(defaultSchema.tagNames || []), 'iframe'],
@@ -55,22 +108,36 @@ const UnifiedConverter = (): Converter => {
 
     return unified()
       .use(remarkParse)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(alkemioCustomMarkdownToHtmlHandlerPlugin)
+      .use(remarkRehype, {
+        allowDangerousHtml: true,
+        handlers: {
+          html: (state: M2HState, node: Html, parent: Parents | undefined): ElementContent => {
+            if (isEmptyLine(node, parent)) {
+              return u('element', { tagName: 'p', children: [], properties: {} });
+            }
+            return (
+              defaultMarkdownHandlers.html(state, node) ?? u('element', { tagName: 'p', children: [], properties: {} })
+            );
+          },
+        },
+      })
       .use(rehypeRaw, { passThrough: ['iframe'] })
       .use(rehypeSanitize, sanitizeOptions)
       .use(rehypeStringify);
   });
 
   const markdownToHTML = async (markdown: string) => {
-    const pipeline = await constructMarkdownToHTMLPipeline();
-    const result = await pipeline.process(markdown);
+    const markdownToHTMLPipeline = await constructMarkdownToHTMLPipeline();
+    const result = await markdownToHTMLPipeline.process(markdown);
+    console.log('markdownToHTML', markdown, String(result));
     return String(result);
   };
 
   const HTMLToMarkdown = async (html: string) => {
-    const pipeline = await constructHtmlToMarkdownPipeline();
-    const result = await pipeline.process(html);
+    const htmlToMarkdownPipeline = await constructHtmlToMarkdownPipeline();
+    const result = await htmlToMarkdownPipeline.process(html);
+    console.log('HTMLToMarkdown', html, String(result));
+
     return String(result);
   };
 
@@ -78,61 +145,3 @@ const UnifiedConverter = (): Converter => {
 };
 
 export default UnifiedConverter;
-
-function alkemioCustomHtmlToMarkdownMdastPlugin() {
-  return (tree: Root) => {
-    // TODO: with the updated version, so we need the em, strong and paragraph changes
-    visit(tree, 'paragraph', (node: Paragraph, index: number | undefined, parent: Parent) => {
-      if (index !== undefined && node.children?.length === 0) {
-        parent.children[index] = { type: 'html', value: '<br>' } as HTML;
-      }
-    });
-
-    visit(tree, 'em', (node: Element) => {
-      const firstChild = node.children?.[0];
-      if (firstChild?.type === 'text' && 'value' in firstChild) {
-        const value = (firstChild as Text).value;
-        const trimmed = value.trim();
-        (firstChild as Text).value = trimmed;
-      }
-    });
-
-    visit(tree, 'strong', (node: Element) => {
-      const firstChild = node.children?.[0];
-      if (firstChild?.type === 'text' && 'value' in firstChild) {
-        const value = (firstChild as Text).value;
-        const trimmed = value.trim();
-        (firstChild as Text).value = trimmed;
-      }
-    });
-
-    // Make the iFrame properties safe
-    visit(tree, 'iframe', (node: Element) => {
-      node.properties.src = `${node.properties.src}`;
-      node.properties.position = 'absolute';
-      node.properties.width = '100%';
-      node.properties.height = '100%';
-      node.properties.frameborder = '0';
-      node.properties.webkitallowfullscreen = true;
-      node.properties.allowfullscreen = true;
-      node.properties.allow = 'clipboard-write';
-      node.properties.title = t('components.wysiwyg-editor.embed.iframeAria', {
-        title: node.properties?.title ?? 'Embedded iframe',
-      });
-      node.properties.loading = 'lazy';
-    });
-  };
-}
-
-function alkemioCustomMarkdownToHtmlHandlerPlugin() {
-  return (tree: Root) => {
-    // Replace <br> html nodes at root with <p>
-    visit(tree, 'html', (node: Element, index: number, parent: Parent) => {
-      if ('value' in node) {
-        if (typeof node.value === 'string' && node.value.trim() === '<br>' && parent?.type === 'root') {
-          parent.children[index] = { type: 'paragraph', children: [] } as Paragraph;
-        }
-      }
-    });
-  };
-}

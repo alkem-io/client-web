@@ -13,16 +13,16 @@ const getTextFromHTML = (html: string) => {
 
 const collect = (node: HandledNode): Node[] => {
   if (node.type === 'html') {
-    const { value } = node as Literal<string>;
-    const textContent = getTextFromHTML(value);
+    const { value } = node as Literal;
+    const textContent = getTextFromHTML(`${value}`);
     if (!textContent) {
       return [];
     }
     return pad(text(textContent));
   }
   if (node.type === 'code') {
-    const { value } = node as Literal<string>;
-    return pad(text(value));
+    const { value } = node as Literal;
+    return pad(text(`${value}`));
   }
   if ('children' in node) {
     return pad(...(node.children as HandledNode[]).flatMap(collect));
