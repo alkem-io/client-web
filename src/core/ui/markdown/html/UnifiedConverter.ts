@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Converter } from './Converter';
 import { once } from 'lodash';
-import { html } from 'mdast-builder';
 import type { Element, ElementContent } from 'hast';
 import type { Html, Parent, Parents } from 'mdast';
-import { u } from 'unist-builder';
 import { State as M2HState } from 'mdast-util-to-hast';
 import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-util-to-mdast';
+import { emptyParagraph, html } from '../utils/unist-builders';
 
 const isEmptyLine = (node: Html, parent: Parent | null | undefined) => node.value === '<br>' && parent?.type === 'root';
 
@@ -113,11 +112,9 @@ const UnifiedConverter = (): Converter => {
         handlers: {
           html: (state: M2HState, node: Html, parent: Parents | undefined): ElementContent => {
             if (isEmptyLine(node, parent)) {
-              return u('element', { tagName: 'p', children: [], properties: {} });
+              return emptyParagraph();
             }
-            return (
-              defaultMarkdownHandlers.html(state, node) ?? u('element', { tagName: 'p', children: [], properties: {} })
-            );
+            return defaultMarkdownHandlers.html(state, node) ?? emptyParagraph();
           },
         },
       })

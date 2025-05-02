@@ -1,6 +1,6 @@
 import { Plugin } from 'unified';
-import { paragraph, root, text } from 'mdast-builder';
 import { Literal, Node, Parent } from 'unist';
+import { paragraph, root, text } from './utils/unist-builders';
 
 type HandledNode = Parent | Literal;
 
@@ -42,7 +42,7 @@ const PlainText: Plugin =
       return tree;
     }
 
-    return root(paragraph(collect(tree as Parent)));
+    return root([paragraph(collect(tree as Parent))]);
   };
 
 export default PlainText;
