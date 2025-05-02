@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import produce from 'immer';
+import { produce } from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';

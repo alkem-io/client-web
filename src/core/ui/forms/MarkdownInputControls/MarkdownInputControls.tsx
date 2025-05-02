@@ -20,7 +20,7 @@ import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
 import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeButton';
-import produce from 'immer';
+import { produce } from 'immer';
 import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 import { useTranslation } from 'react-i18next';
 import { ChainedCommands } from '@tiptap/core';
