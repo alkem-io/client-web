@@ -1,6 +1,13 @@
 import React from 'react';
-import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 import RouterLink from '@/core/ui/link/RouterLink';
+
+interface ReactMarkdownProps {
+  node?: {
+    properties?: {
+      href?: string;
+    };
+  };
+}
 
 const MarkdownLink = ({
   node,
@@ -8,7 +15,7 @@ const MarkdownLink = ({
   ...props
 }: ReactMarkdownProps &
   Omit<React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>, 'ref'>) => (
-  <RouterLink to={node.properties?.href as string} underline="always" {...props} />
+  <RouterLink to={node?.properties?.href as string} underline="always" {...props} />
 );
 
 export default MarkdownLink;

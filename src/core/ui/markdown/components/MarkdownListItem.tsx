@@ -1,9 +1,15 @@
-import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 import createMarkdownComponent from './MarkdownComponent';
+import { SxProps } from '@mui/material';
+import { ReactNode } from 'react';
 
 const Base = createMarkdownComponent('li');
 
-const MarkdownListItem = (props: ReactMarkdownProps) => {
+interface ReactMarkdownProps {
+  sx?: SxProps;
+  node?: ReactNode;
+}
+
+const MarkdownListItem = (props: ReactMarkdownProps): ReactNode => {
   // not sure when and what adds the `ordered` property but it results in
   //
   // hook.js:608 Warning: Received `true` for a non-boolean attribute `ordered`.
