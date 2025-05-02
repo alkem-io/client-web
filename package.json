@@ -182,7 +182,7 @@
     "eslint-config-react-app": "^7.0.1",
     "husky": "^4.3.7",
     "lint-staged": "^13.0.3",
-    "prettier": "^2.5.1",
+    "prettier": "^3.5.3",
     "serve": "^14.2.4",
     "source-map-explorer": "^2.5.3",
     "vite": "^5.3.4",
