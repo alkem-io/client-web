@@ -12,7 +12,12 @@ const allowedNodeTypes = ['iframe'] as const;
 
 export const MARKDOWN_CLASS_NAME = 'markdown'; // global styles applied
 
-export interface WrapperMarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
+export interface WrapperMarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {
+  // Do not remove. Even if it's not used directly, React adds a className
+  // when using sx, that gets passed to ReactMarkdown and it throws an error
+  // because it doesn't support it anymore
+  className?: string;
+}
 
 export const WrapperMarkdown = ({
   card = false,
@@ -21,6 +26,7 @@ export const WrapperMarkdown = ({
   disableParagraphPadding = card,
   caption = false,
   sx,
+  className,
   ...props
 }: WrapperMarkdownProps) => {
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
@@ -33,7 +39,10 @@ export const WrapperMarkdown = ({
       disableParagraphPadding={disableParagraphPadding}
       caption={caption}
     >
-      <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}>
+      <Box
+        sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}
+        className={className}
+      >
         <ReactMarkdown
           // @ts-ignore
           components={components}
