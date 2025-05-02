@@ -9,7 +9,7 @@ interface ReactMarkdownProps {
   node?: ReactNode;
 }
 
-const MarkdownListItem = (props: ReactMarkdownProps) => {
+const MarkdownListItem = (props: ReactMarkdownProps): ReactNode => {
   // not sure when and what adds the `ordered` property but it results in
   //
   // hook.js:608 Warning: Received `true` for a non-boolean attribute `ordered`.

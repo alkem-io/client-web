@@ -1,9 +1,7 @@
 import React from 'react';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { SxProps } from '@mui/material';
 
 interface ReactMarkdownProps {
-  sx?: SxProps;
   node?: {
     properties?: {
       href?: string;

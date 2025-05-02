@@ -56,13 +56,8 @@ const UnifiedConverter = (): Converter => {
         // @ts-ignore
         .use(rehypeRemark, {
           handlers: {
-            p: (state: H2MState, element: Element) => {
-              if (element.children.length === 0) {
-                return html('<br>');
-              } else {
-                return defaultHTMLHandlers.p(state, element);
-              }
-            },
+            p: (state: H2MState, element: Element) =>
+              element.children.length === 0 ? html('<br>') : defaultHTMLHandlers.p(state, element),
             strong: trimmer('strong'),
             emphasis: trimmer('emphasis'),
             iframe: (_state: H2MState, element: Element) => ({
@@ -70,16 +65,12 @@ const UnifiedConverter = (): Converter => {
               value: `<iframe
                 src="${element.properties.src}"
                 position="absolute"
-                width="100%"
-                height="100%"
-                frameborder="0"
-                webkitallowfullscreen
-                 mozallowfullscreen
-                 allowfullscreen
-                 allow="clipboard-write"
-                  title="${t('components.wysiwyg-editor.embed.iframeAria', {
-                    title: element.properties.title ?? 'Embedded video iframe',
-                  })}"
+                width="100%" height="100%" frameborder="0"
+                webkitallowfullscreen mozallowfullscreen allowfullscreen
+                allow="clipboard-write"
+                title="${t('components.wysiwyg-editor.embed.iframeAria', {
+                  title: element.properties.title ?? 'Embedded video iframe',
+                })}"
               loading="lazy"></iframe>`,
             }),
           },
@@ -126,15 +117,12 @@ const UnifiedConverter = (): Converter => {
   const markdownToHTML = async (markdown: string) => {
     const markdownToHTMLPipeline = await constructMarkdownToHTMLPipeline();
     const result = await markdownToHTMLPipeline.process(markdown);
-    console.log('markdownToHTML', markdown, String(result));
     return String(result);
   };
 
   const HTMLToMarkdown = async (html: string) => {
     const htmlToMarkdownPipeline = await constructHtmlToMarkdownPipeline();
     const result = await htmlToMarkdownPipeline.process(html);
-    console.log('HTMLToMarkdown', html, String(result));
-
     return String(result);
   };
 

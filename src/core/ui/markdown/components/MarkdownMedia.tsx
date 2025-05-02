@@ -1,12 +1,11 @@
 import { ElementType } from 'react';
-import { Box, SxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 
 interface ReactMarkdownProps {
-  sx?: SxProps;
   node?: {
     tagName?: ElementType;
-  }
+  };
 }
 
 const MarkdownMedia = ({ node, ...props }: ReactMarkdownProps) => {
