@@ -15,7 +15,8 @@ const Icons = {
 const ChatWidgetFooter = () => {
   const { t } = useTranslation();
 
-  const references = t('chatbot.references', { returnObjects: true });
+  const referencesRaw = t('chatbot.references', { returnObjects: true });
+  const references = Array.isArray(referencesRaw) ? referencesRaw : Object.values(referencesRaw);
 
   return (
     <SwapColors>

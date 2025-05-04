@@ -9,7 +9,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 export const TipsAndTricks = () => {
   const { t } = useTranslation();
 
-  const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
+  const itemsRaw = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
+  const items = Array.isArray(itemsRaw) ? itemsRaw : Object.values(itemsRaw);
 
   return (
     <Gutters disablePadding>

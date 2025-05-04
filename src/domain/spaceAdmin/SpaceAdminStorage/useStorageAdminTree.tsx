@@ -4,7 +4,8 @@ import {
   useSpaceStorageAdminPageLazyQuery,
   useStorageAggregatorLookupLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TFunction, useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import HistoryIcon from '@mui/icons-material/History';
 import {
   DocumentDataFragment,

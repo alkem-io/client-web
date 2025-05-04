@@ -3,7 +3,7 @@ import { resources } from '../../src/core/i18n/config';
 
 declare module 'react-i18next' {
   interface CustomTypeOptions {
-    defautlNS: 'translation';
+    defaultNS: 'translation';
     resources: typeof resources['en'];
   }
 }

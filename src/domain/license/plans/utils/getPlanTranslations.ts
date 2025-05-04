@@ -1,4 +1,4 @@
-import { TFunction } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 interface PlanTranslation {
   name: string;
@@ -10,8 +10,8 @@ interface PlanTranslation {
 }
 
 export const getPlanTranslations = (t: TFunction<'translation', undefined>): Record<string, PlanTranslation> => {
-  return t('plansTable.plans', { returnObjects: true }).reduce(
-    (acc, plan: PlanTranslation) => ({ ...acc, [plan.name]: plan }),
-    {}
-  );
+  const plans = t('plansTable.plans', { returnObjects: true });
+  // Convert object to array if needed
+  const plansArray = Array.isArray(plans) ? plans : Object.values(plans);
+  return plansArray.reduce((acc, plan: PlanTranslation) => ({ ...acc, [plan.name]: plan }), {});
 };

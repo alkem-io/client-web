@@ -11,7 +11,7 @@ import {
   SettingsOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import { TFuncKey, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
@@ -62,7 +62,7 @@ export const DialogActionButton = ({
   if (dialog === SubspaceDialog.Timeline) {
     tooltipKey = 'events';
   }
-  const tooltip = t(`spaceDialog.${tooltipKey}` as TFuncKey) as string;
+  const tooltip = t(`spaceDialog.${tooltipKey}`) as string;
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
   return (

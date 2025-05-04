@@ -1,4 +1,4 @@
-import { TFunction } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 const ONE_SECOND = 1000;
 const ONE_MINUTE = 60 * ONE_SECOND;
