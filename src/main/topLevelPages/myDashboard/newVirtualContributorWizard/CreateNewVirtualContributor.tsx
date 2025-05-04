@@ -19,7 +19,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { theme } from '@/core/ui/themes/default/Theme';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikVisualUpload, { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
@@ -104,7 +104,11 @@ const CreateNewVirtualContributor = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().trim().min(3, MessageWithPayload('forms.validations.minLength')).required(),
+    name: yup
+      .string()
+      .trim()
+      .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
+      .required(),
     tagline: yup.string(),
     description: yup.string(),
   });

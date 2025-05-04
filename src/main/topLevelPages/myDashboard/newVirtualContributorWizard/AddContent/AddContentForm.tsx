@@ -8,7 +8,7 @@ import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined';
 import { gutters } from '@/core/ui/grid/utils';
 import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { BoKCalloutsFormValues } from './AddContentProps';
 import { PostItem } from './PostItem';
@@ -45,24 +45,30 @@ export const AddContentForm = ({
         yup.object().shape({
           title: yup
             .string()
-            .min(3, MessageWithPayload('forms.validations.minLength'))
-            .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-            .required(MessageWithPayload('forms.validations.requiredField')),
+            .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
+            .max(SMALL_TEXT_LENGTH, params =>
+              TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+            )
+            .required(TranslatedValidatedMessageWithPayload('forms.validations.requiredField')),
           description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
         })
       )
-      .min(1, MessageWithPayload('forms.validations.minLength')),
+      .min(1, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min })),
     documents: yup.array().of(
       yup.object().shape({
         name: yup
           .string()
-          .min(3, MessageWithPayload('forms.validations.minLength'))
-          .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-          .required(MessageWithPayload('forms.validations.requiredField')),
+          .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
+          .max(SMALL_TEXT_LENGTH, params =>
+            TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+          )
+          .required(TranslatedValidatedMessageWithPayload('forms.validations.requiredField')),
         url: yup
           .string()
-          .required(MessageWithPayload('forms.validations.requiredField'))
-          .max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+          .required(TranslatedValidatedMessageWithPayload('forms.validations.requiredField'))
+          .max(MID_TEXT_LENGTH, params =>
+            TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+          ),
       })
     ),
   });

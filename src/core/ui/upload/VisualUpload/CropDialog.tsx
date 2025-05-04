@@ -10,7 +10,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ALT_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
@@ -59,7 +59,12 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
   };
 
   const validationSchema = yup.object().shape({
-    altText: yup.string().trim().max(ALT_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    altText: yup
+      .string()
+      .trim()
+      .max(ALT_TEXT_LENGTH, params =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+      ),
   });
 
   const onCropChange = (crop: Crop, _percentCrop: Crop) => {

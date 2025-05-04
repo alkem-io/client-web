@@ -140,9 +140,9 @@ const CalloutForm = ({
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    whiteboardContent: yup.string().when('type', {
-      is: CalloutType.Whiteboard,
-      then: yup.string().required(),
+    whiteboardContent: yup.string().when('type', (type, schema) => {
+      const value = Array.isArray(type) ? type[0] : type;
+      return value === CalloutType.Whiteboard ? schema.required() : schema;
     }),
     references: referenceSegmentSchema,
   });

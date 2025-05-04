@@ -16,7 +16,7 @@ import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 
@@ -36,16 +36,20 @@ export interface ReferenceSegmentProps extends BoxProps {
 export const referenceSegmentValidationObject = yup.object().shape({
   name: yup
     .string()
-    .min(3, MessageWithPayload('forms.validations.minLength'))
-    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+    .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
+    .max(SMALL_TEXT_LENGTH, params =>
+      TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+    )
     .required('forms.validations.required'),
   uri: yup
     .string()
-    .max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+    .max(MID_TEXT_LENGTH, params =>
+      TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+    )
     .test(
       // The yup .url() validation doesn't allow localhost urls
       'is-valid-url',
-      MessageWithPayload('forms.validations.invalidUrl'),
+      TranslatedValidatedMessageWithPayload('forms.validations.invalidUrl'),
       value => {
         if (!value) return true; // Allow empty values if not required
         try {

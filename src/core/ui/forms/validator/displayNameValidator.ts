@@ -1,10 +1,16 @@
 import * as yup from 'yup';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { SMALL_TEXT_LENGTH } from '../field-length.constants';
 
 export const displayNameValidator = yup
   .string()
-  .test('is-not-spaces', MessageWithPayload('forms.validations.nonBlank'), value => !value || !/^[\s]*$/.test(value))
-  .required(MessageWithPayload('forms.validations.required'))
-  .min(3, MessageWithPayload('forms.validations.minLength'))
-  .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'));
+  .test(
+    'is-not-spaces',
+    TranslatedValidatedMessageWithPayload('forms.validations.nonBlank'),
+    value => !value || !/^[\s]*$/.test(value)
+  )
+  .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
+  .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
+  .max(SMALL_TEXT_LENGTH, params =>
+    TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+  );

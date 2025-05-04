@@ -43,10 +43,9 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
       .oneOf(PROVIDERS.map(({ id }) => id))
       .required(),
     apiKey: yup.string().required(),
-    assistantId: yup.string().when('engine', {
-      is: AiPersonaEngine.OpenaiAssistant,
-      then: yup.string().required(),
-      otherwise: yup.string().notRequired(),
+    assistantId: yup.string().when('engine', (engine, schema) => {
+      const value = Array.isArray(engine) ? engine[0] : engine;
+      return value === AiPersonaEngine.OpenaiAssistant ? schema.required() : schema;
     }),
   });
 

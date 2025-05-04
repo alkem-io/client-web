@@ -8,7 +8,7 @@ import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useSendMessageToUserMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '@/domain/community/user';
@@ -50,8 +50,13 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
     aiService: yup
       .string()
       .required()
-      .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+      .min(3, params => {
+        const adaptedParams = { min: params.min };
+        return TranslatedValidatedMessageWithPayload('forms.validations.minLength')(adaptedParams);
+      })
+      .max(MID_TEXT_LENGTH, params =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+      ),
     sendResponse: yup.string().oneOf([ContactOptions.option1, ContactOptions.option2]).required(),
   });
 
