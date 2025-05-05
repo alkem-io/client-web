@@ -159,7 +159,7 @@
     "use-deep-compare-effect": "^1.8.1",
     "uuid": "^11.1.0",
     "xstate": "^5.19.2",
-    "yup": "^0.31.1"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.5",
