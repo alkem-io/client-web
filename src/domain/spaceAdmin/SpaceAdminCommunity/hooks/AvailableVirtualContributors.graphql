@@ -33,11 +33,21 @@ query AvailableVirtualContributorsInSpaceL0($spaceId: UUID!) {
         id
         roleSet {
           id
-          virtualContributorsInRole(role: MEMBER) {
-            ...VirtualContributorFull
+          availableVirtualContributorsForEntryRole {
+            ...AvailableVirtualContributorsForRoleSetPaginated
           }
         }
       }
     }
+  }
+}
+
+fragment AvailableVirtualContributorsForRoleSetPaginated on PaginatedVirtualContributor {
+  virtualContributors {
+    ...VirtualContributorFull
+  }
+  pageInfo {
+    hasNextPage
+    endCursor
   }
 }

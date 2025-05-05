@@ -35,6 +35,7 @@ export const typePolicies: TypedTypePolicies = {
     fields: {
       availableUsersForElevatedRole: paginationFieldPolicy(['filter'], 'User'),
       availableUsersForEntryRole: paginationFieldPolicy(['filter'], 'User'),
+      availableVirtualContributorsForEntryRole: paginationFieldPolicy(['filter'], 'VirtualContributor'),
     },
   },
   Post: {
