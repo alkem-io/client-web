@@ -1,22 +1,8 @@
-import {
-  SelfServiceLoginFlow,
-  SelfServiceRecoveryFlow,
-  SelfServiceRegistrationFlow,
-  SelfServiceSettingsFlow,
-  SelfServiceVerificationFlow,
-  V0alpha2Api,
-} from '@ory/kratos-client';
+import { LoginFlow, RecoveryFlow, RegistrationFlow, SettingsFlow, VerificationFlow } from '@ory/kratos-client';
 import { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useKratosClient } from './useKratosClient';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-
-type FlowTypes =
-  | SelfServiceLoginFlow
-  | SelfServiceRegistrationFlow
-  | SelfServiceSettingsFlow
-  | SelfServiceVerificationFlow
-  | SelfServiceRecoveryFlow;
 
 export enum FlowTypeName {
   Login = 'Login',
@@ -27,11 +13,11 @@ export enum FlowTypeName {
 }
 
 type ReturnFlowType = {
-  [FlowTypeName.Login]: SelfServiceLoginFlow;
-  [FlowTypeName.Registration]: SelfServiceRegistrationFlow;
-  [FlowTypeName.Settings]: SelfServiceSettingsFlow;
-  [FlowTypeName.Verification]: SelfServiceVerificationFlow;
-  [FlowTypeName.Recovery]: SelfServiceRecoveryFlow;
+  [FlowTypeName.Login]: LoginFlow;
+  [FlowTypeName.Registration]: RegistrationFlow;
+  [FlowTypeName.Settings]: SettingsFlow;
+  [FlowTypeName.Verification]: VerificationFlow;
+  [FlowTypeName.Recovery]: RecoveryFlow;
 };
 
 interface ReturnValue<Name extends FlowTypeName> {
@@ -63,7 +49,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
   }, []);
 
   const handlePromise = useCallback(
-    async (promise: Promise<AxiosResponse<FlowTypes>>) => {
+    async (promise: Promise<AxiosResponse<ReturnFlowType[Name]>>) => {
       try {
         setLoading(true);
         const { status, data } = await promise;
@@ -72,7 +58,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
           setError(error);
           logError(error, { category: TagCategoryValues.AUTH });
         }
-        setFlow(data as ReturnFlowType[Name]);
+        setFlow(data);
       } catch (error) {
         handleFlowError(error);
       } finally {
@@ -83,36 +69,36 @@ const useKratosFlow = <Name extends FlowTypeName>(
   );
 
   const initializeFlow = useCallback(
-    (client: V0alpha2Api) => {
+    client => {
       switch (flowTypeName as FlowTypeName) {
         case FlowTypeName.Login:
-          return client.initializeSelfServiceLoginFlowForBrowsers();
+          return client.createBrowserLoginFlow();
         case FlowTypeName.Registration:
-          return client.initializeSelfServiceRegistrationFlowForBrowsers();
+          return client.createBrowserRegistrationFlow();
         case FlowTypeName.Recovery:
-          return client.initializeSelfServiceRecoveryFlowForBrowsers();
+          return client.createBrowserRecoveryFlow();
         case FlowTypeName.Verification:
-          return client.initializeSelfServiceVerificationFlowForBrowsers();
+          return client.createBrowserVerificationFlow();
         case FlowTypeName.Settings:
-          return client.initializeSelfServiceSettingsFlowForBrowsers();
+          return client.createBrowserSettingsFlow();
       }
     },
     [flowTypeName]
   );
 
   const getFlow = useCallback(
-    (client: V0alpha2Api, flowId: string) => {
+    (client, flowId: string) => {
       switch (flowTypeName as FlowTypeName) {
         case FlowTypeName.Login:
-          return client.getSelfServiceLoginFlow(flowId);
+          return client.getLoginFlow({ id: flowId });
         case FlowTypeName.Registration:
-          return client.getSelfServiceRegistrationFlow(flowId);
+          return client.getRegistrationFlow({ id: flowId });
         case FlowTypeName.Recovery:
-          return client.getSelfServiceRecoveryFlow(flowId);
+          return client.getRecoveryFlow({ id: flowId });
         case FlowTypeName.Verification:
-          return client.getSelfServiceVerificationFlow(flowId);
+          return client.getVerificationFlow({ id: flowId });
         case FlowTypeName.Settings:
-          return client.getSelfServiceSettingsFlow(flowId);
+          return client.getSettingsFlow({ id: flowId });
       }
     },
     [flowTypeName]

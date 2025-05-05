@@ -23,7 +23,7 @@ import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptT
 import PlatformIntroduction from '../components/PlatformIntroduction';
 import { useTranslation } from 'react-i18next';
 import KratosForm from '../components/Kratos/KratosForm';
-import { UiContainer } from '@ory/kratos-client';
+import { UiContainer, UiNode } from '@ory/kratos-client';
 import { KRATOS_INPUT_NAME_CSRF, KRATOS_TRAIT_NAME_ACCEPTED_TERMS } from '../components/Kratos/constants';
 import { isInputNode } from '../components/Kratos/helpers';
 import { useStoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
@@ -97,7 +97,7 @@ const SignUp = () => {
               <KratosVisibleAcceptTermsCheckbox
                 value={hasAcceptedTerms}
                 onChange={setHasAcceptedTerms}
-                node={checkbox}
+                node={checkbox as UiNode}
                 sx={{ marginBottom: 2, alignSelf: 'center' }}
               />
             )}

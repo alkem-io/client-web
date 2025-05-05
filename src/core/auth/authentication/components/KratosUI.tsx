@@ -15,7 +15,6 @@ import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import KratosSocialButton from './Kratos/KratosSocialButton';
-import { UiNodeInput } from './Kratos/UiNodeTypes';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import { useKratosT } from './Kratos/messages';
@@ -24,7 +23,7 @@ interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
   resetPasswordElement?: ReactNode;
   acceptTermsComponent?: ComponentType<KratosAcceptTermsProps>;
-  renderAcceptTermsCheckbox?: (checkbox: UiNodeInput) => ReactNode;
+  renderAcceptTermsCheckbox?: (checkbox: UiNode) => ReactNode;
   buttonComponent?: ComponentType<AuthActionButtonProps>;
   // TODO Make hidden fields actually consume zero space by changing them into type="hidden" in the UI array
   removedFields?: readonly KratosRemovedFieldAttributes[];
@@ -152,7 +151,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
 
     if (isAcceptTermsCheckbox(node)) {
-      return renderAcceptTermsCheckbox(node as UiNodeInput);
+      return renderAcceptTermsCheckbox(node as UiNode);
     }
 
     if (node.group === 'oidc' && isSubmitButton(node)) {

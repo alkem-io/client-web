@@ -2,6 +2,7 @@ import { Session } from '@ory/kratos-client';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';
+import axios from 'axios';
 
 export const useWhoami = () => {
   const { t } = useTranslation();
@@ -12,12 +13,11 @@ export const useWhoami = () => {
   const kratosClient = useKratosClient();
 
   useEffect(() => {
-    if (kratosClient)
-      kratosClient
-        .toSession()
+    if (kratosClient) {
+      axios
+        .get(`${kratosClient.basePath}/sessions/whoami`, { withCredentials: true })
         .then(result => {
           setIsAuthenticated(result.status === 200);
-
           if (result.status === 200) {
             setSession(result.data);
           } else if (result.status === 401) {
@@ -28,13 +28,14 @@ export const useWhoami = () => {
         })
         .catch(err => {
           setIsAuthenticated(false);
-          if (err.request && err.request.status === 401) {
-            setError(`${err.request.status} - ${t('kratos.errors.401')}`);
+          if (err.response && err.response.status === 401) {
+            setError(`${err.response.status} - ${t('kratos.errors.401')}`);
           } else {
             setError(err.message ? err.message : t('kratos.errors.session.default'));
           }
         })
         .finally(() => setLoading(false));
+    }
   }, [kratosClient, t]);
 
   const verified = useMemo(() => {

@@ -5,9 +5,9 @@ import microsoftTheme from '../AuthProviders/MicrosoftTheme';
 import MicrosoftIcon from '../AuthProviders/Microsoft.svg?react';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import ButtonStyling from '../AuthProviders/ButtonStyling';
-import { UiNodeInput } from './UiNodeTypes';
 import { useTranslation } from 'react-i18next';
 import { AuthActionButtonProps } from '../Button';
+import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 
 interface SocialCustomization {
   icon: FC<React.SVGProps<SVGSVGElement> & { title?: string }>;
@@ -29,7 +29,7 @@ const socialCustomizations: Record<string, SocialCustomization> = {
 };
 
 interface KratosSocialButtonProps {
-  node: UiNodeInput;
+  node: UiNode & { attributes: UiNodeInputAttributes };
   buttonComponent: ComponentType<AuthActionButtonProps>;
 }
 
