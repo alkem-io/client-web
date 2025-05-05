@@ -7,7 +7,7 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 const translationKey: TranslationKey = 'components.wysiwyg-editor.validation.maxLength';
 
 const MarkdownValidator = (maxLength: MarkdownTextMaxLength) =>
-  string().max(maxLength, params => TranslatedValidatedMessageWithPayload(translationKey)({ max: params.max }));
+  string().max(maxLength, ({ max }) => TranslatedValidatedMessageWithPayload(translationKey)({ max }));
 
 export const isMarkdownMaxLengthError = (
   error: string | ValidationMessageWithPayload

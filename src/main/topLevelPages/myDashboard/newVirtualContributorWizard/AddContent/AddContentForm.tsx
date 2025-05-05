@@ -45,29 +45,29 @@ export const AddContentForm = ({
         yup.object().shape({
           title: yup
             .string()
-            .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
-            .max(SMALL_TEXT_LENGTH, params =>
-              TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+            .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+            .max(SMALL_TEXT_LENGTH, ({ max }) =>
+              TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
             )
             .required(TranslatedValidatedMessageWithPayload('forms.validations.requiredField')),
           description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
         })
       )
-      .min(1, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min })),
+      .min(1, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min })),
     documents: yup.array().of(
       yup.object().shape({
         name: yup
           .string()
-          .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
-          .max(SMALL_TEXT_LENGTH, params =>
-            TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+          .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+          .max(SMALL_TEXT_LENGTH, ({ max }) =>
+            TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
           )
           .required(TranslatedValidatedMessageWithPayload('forms.validations.requiredField')),
         url: yup
           .string()
           .required(TranslatedValidatedMessageWithPayload('forms.validations.requiredField'))
-          .max(MID_TEXT_LENGTH, params =>
-            TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+          .max(MID_TEXT_LENGTH, ({ max }) =>
+            TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
           ),
       })
     ),

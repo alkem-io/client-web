@@ -69,17 +69,17 @@ export const CreateSubspaceForm = ({
     displayName: yup
       .string()
       .trim()
-      .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
-      .max(SMALL_TEXT_LENGTH, params =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
       )
       .required(validationRequiredString),
     tagline: yup
       .string()
       .trim()
-      .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
-      .max(SMALL_TEXT_LENGTH, params =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
       ),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),

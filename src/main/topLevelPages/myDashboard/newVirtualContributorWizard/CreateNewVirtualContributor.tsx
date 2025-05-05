@@ -107,7 +107,7 @@ const CreateNewVirtualContributor = ({
     name: yup
       .string()
       .trim()
-      .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
       .required(),
     tagline: yup.string(),
     description: yup.string(),

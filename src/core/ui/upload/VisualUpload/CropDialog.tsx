@@ -62,9 +62,7 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
     altText: yup
       .string()
       .trim()
-      .max(ALT_TEXT_LENGTH, params =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
-      ),
+      .max(ALT_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
   });
 
   const onCropChange = (crop: Crop, _percentCrop: Crop) => {

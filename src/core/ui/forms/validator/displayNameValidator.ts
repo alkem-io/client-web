@@ -10,7 +10,5 @@ export const displayNameValidator = yup
     value => !value || !/^[\s]*$/.test(value)
   )
   .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
-  .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
-  .max(SMALL_TEXT_LENGTH, params =>
-    TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
-  );
+  .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+  .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }));

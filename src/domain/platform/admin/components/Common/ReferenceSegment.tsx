@@ -36,16 +36,12 @@ export interface ReferenceSegmentProps extends BoxProps {
 export const referenceSegmentValidationObject = yup.object().shape({
   name: yup
     .string()
-    .min(3, params => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min: params.min }))
-    .max(SMALL_TEXT_LENGTH, params =>
-      TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
-    )
+    .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+    .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }))
     .required('forms.validations.required'),
   uri: yup
     .string()
-    .max(MID_TEXT_LENGTH, params =>
-      TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
-    )
+    .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }))
     .test(
       // The yup .url() validation doesn't allow localhost urls
       'is-valid-url',

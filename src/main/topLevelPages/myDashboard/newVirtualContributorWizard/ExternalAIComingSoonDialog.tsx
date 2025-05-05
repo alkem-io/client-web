@@ -50,13 +50,8 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
     aiService: yup
       .string()
       .required()
-      .min(3, params => {
-        const adaptedParams = { min: params.min };
-        return TranslatedValidatedMessageWithPayload('forms.validations.minLength')(adaptedParams);
-      })
-      .max(MID_TEXT_LENGTH, params =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max: params.max })
-      ),
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
     sendResponse: yup.string().oneOf([ContactOptions.option1, ContactOptions.option2]).required(),
   });
 
