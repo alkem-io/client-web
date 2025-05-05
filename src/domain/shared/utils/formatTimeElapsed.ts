@@ -7,11 +7,7 @@ const ONE_DAY = 24 * ONE_HOUR;
 const ONE_MONTH = 31 * ONE_DAY;
 const ONE_YEAR = 256 * ONE_DAY;
 
-export const formatTimeElapsed = (
-  date: Date | string,
-  t: TFunction<'translation', undefined>,
-  format: 'short' | 'long' = 'short'
-): string => {
+export const formatTimeElapsed = (date: Date | string, t: TFunction, format: 'short' | 'long' = 'short'): string => {
   const currentDate = new Date();
   const formatCandidate = new Date(date);
 

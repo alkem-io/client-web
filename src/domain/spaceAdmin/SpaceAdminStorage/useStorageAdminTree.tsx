@@ -71,10 +71,7 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
   },
 });
 
-const newStorageBucketRow = (
-  storageBucket: StorageBucketFragment,
-  t: TFunction<'translation', undefined>
-): StorageAdminTreeItem => {
+const newStorageBucketRow = (storageBucket: StorageBucketFragment, t: TFunction): StorageAdminTreeItem => {
   if (storageBucket.parentEntity) {
     return {
       id: storageBucket.id,
@@ -145,7 +142,7 @@ const findBranch = (rows: StorageAdminTreeItem[], id: string): StorageAdminTreeI
 };
 
 // Turn the tree into a grid just flattening the open branches
-const tree2Grid = (treeData: TreeData, t: TFunction<'translation', undefined>): StorageAdminGridRow[] => {
+const tree2Grid = (treeData: TreeData, t: TFunction): StorageAdminGridRow[] => {
   const result: StorageAdminGridRow[] = [];
 
   let emptyRowsCount = 0;

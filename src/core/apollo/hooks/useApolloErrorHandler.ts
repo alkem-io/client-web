@@ -2,7 +2,7 @@ import { Severity } from '@/core/state/global/notifications/notificationMachine'
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ApolloError } from '@apollo/client';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { TFunction, i18n } from 'i18next';
+import type { TFunction, i18n } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 

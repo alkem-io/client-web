@@ -22,11 +22,7 @@ const tabsDefaultNames: Record<string, TranslationKey> = {
   contribute: 'pages.space.sections.tabs.contribute',
 };
 
-const tabName = (
-  t: TFunction<'translation', undefined>,
-  customName: string | undefined,
-  defaultName: TranslationKey
-): string => {
+const tabName = (t: TFunction, customName: string | undefined, defaultName: TranslationKey): string => {
   if (!customName) {
     return String(t(defaultName));
   }

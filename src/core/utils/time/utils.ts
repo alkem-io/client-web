@@ -120,7 +120,7 @@ const timeFormatOptions: Intl.DateTimeFormatOptions = {
 
 export const formatTimeAndDuration = (
   event: { startDate?: Date; durationMinutes?: number; wholeDay?: boolean; durationDays?: number },
-  t: TFunction<'translation', undefined>
+  t: TFunction
 ) => {
   if (!event.startDate) return '';
   if (event.wholeDay) {

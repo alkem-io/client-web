@@ -51,7 +51,7 @@ const getDeleteDialogTranslationNamespace = (row: MembershipTableItem) => {
   }
 };
 
-const formatState = (item: MembershipTableItem, t: TFunction<'translation', undefined>) => {
+const formatState = (item: MembershipTableItem, t: TFunction) => {
   if (item.type === MembershipType.Application) {
     switch (item.state) {
       case 'new':
