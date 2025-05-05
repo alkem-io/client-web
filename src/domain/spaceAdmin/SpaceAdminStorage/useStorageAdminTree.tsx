@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 import { useEffect, useMemo, useState } from 'react';
 import {
   useSpaceStorageAdminPageLazyQuery,

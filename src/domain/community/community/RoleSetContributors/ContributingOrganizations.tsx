@@ -60,18 +60,17 @@ const ContributingOrganizations = ({
 
   const mappedOrganizations = organizations?.map(org => ({
     id: org.id,
-    profile:
-      {
-        displayName: org.name || '',
-        avatar: {
-          uri: org.avatar || '',
-        },
-        location: {
-          city: org.city,
-          country: org.country,
-        },
-        url: org.url,
-      } || undefined,
+    profile: {
+      displayName: org.name || '',
+      avatar: {
+        uri: org.avatar || '',
+      },
+      location: {
+        city: org.city,
+        country: org.country,
+      },
+      url: org.url,
+    },
     titleEndAmendment: renderAssociatesCount(org),
     onContact: () => {
       sendMessage('organization', {

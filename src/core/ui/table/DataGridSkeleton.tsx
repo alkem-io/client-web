@@ -12,7 +12,6 @@ const DataGridSkeleton = ({ rowsCount = 5 }: { rowsCount?: number }) => {
       renderCell: () => <Skeleton width="100%" />,
       filterable: false,
       sortable: false,
-      resizable: false,
       flex: 1,
     },
   ];
