@@ -28,8 +28,6 @@ type ApplicationDialogProps = {
   onApply?: () => void;
 };
 
-type MyFormValues = Record<string, string>;
-
 const ApplicationDialog = ({
   open,
   spaceId,
@@ -62,7 +60,7 @@ const ApplicationDialog = ({
     [questions]
   );
 
-  const validationSchema: yup.ObjectSchema<MyFormValues> = useMemo(
+  const validationSchema: yup.ObjectSchema<Record<string, string>> = useMemo(
     () =>
       questions.reduce(
         (acc, val) =>

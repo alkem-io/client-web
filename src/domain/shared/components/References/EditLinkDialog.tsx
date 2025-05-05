@@ -75,7 +75,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
           onSubmit={() => {}}
         >
           {formikState => {
-            const { values } = formikState;
+            const { values, isValid } = formikState;
 
             return (
               <>
@@ -108,7 +108,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
                 )}
                 <Actions paddingX={gutters()} justifyContent="space-between">
                   <Button onClick={onClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => onSave(values)}>
+                  <Button variant="contained" onClick={() => onSave(values)} disabled={!isValid}>
                     {t('buttons.save')}
                   </Button>
                 </Actions>
