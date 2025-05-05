@@ -49,12 +49,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     const graphqlErrors = error.graphQLErrors;
 
     graphqlErrors.forEach((error: GraphQLFormattedError) => {
-      // something is off with the latest i18next
-      // not casting the T function results in:
-      //
-      //  Argument of type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/react-i18next/ts4.1/index").TFunction<"translation", undefined>' is not assignable to parameter of type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/i18next/typescript/t").TFunction<"translation", undefined>'.
-      // Property '$TFunctionBrand' is missing in type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/react-i18next/ts4.1/index").TFunction<"translation", undefined>' but required in type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/i18next/typescript/t").TFunction<"translation", undefined>'.
-      const translation = getTranslationForCode(error, t as unknown as TFunction, i18n);
+      const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
     });
   };
