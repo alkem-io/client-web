@@ -77,14 +77,8 @@ const validator = {
           references: referenceSegmentSchema,
           tagsets: tagsetsSegmentSchema,
         }),
-        whiteboard: yup.object().when('type', {
-          is: (type: CalloutType) => type === CalloutType.Whiteboard,
-          then: yup.object().shape({
-            content: yup.string().required(),
-          }),
-          otherwise: yup.object().shape({
-            content: yup.string(),
-          }),
+        whiteboard: yup.object().when(['type'], ([type], schema) => {
+          return type === CalloutType.Whiteboard ? schema.required() : schema;
         }),
       }),
       contributionDefaults: yup.object().shape({
