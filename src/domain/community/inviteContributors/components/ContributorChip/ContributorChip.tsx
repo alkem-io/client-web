@@ -1,8 +1,13 @@
 import { gutters } from '@/core/ui/grid/utils';
 import { Box, BoxProps, styled, Tooltip } from '@mui/material';
-import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField';
+import {
+  ContributorSelectorType,
+  SelectedContributor,
+} from '../FormikContributorsSelectorField/FormikContributorsSelectorField.models';
 import { Caption } from '@/core/ui/typography';
 import ClearIcon from '@mui/icons-material/Clear';
+import ContributorTooltip from '../ContributorTooltip/ContributorTooltip';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 interface ContributorChipProps {
   contributor: SelectedContributor;
@@ -35,11 +40,15 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
   switch (contributor.type) {
     case ContributorSelectorType.User:
       return (
-        <Tooltip title={validationError}>
+        <ContributorTooltip
+          contributorId={contributor.id}
+          contributorType={RoleSetContributorType.User}
+          override={validationError}
+        >
           <RootChip invalid={!!validationError}>
             <Caption>{contributor.displayName}</Caption> <ClearIcon fontSize="small" onClick={onRemove} />
           </RootChip>
-        </Tooltip>
+        </ContributorTooltip>
       );
     case ContributorSelectorType.Email:
       return (

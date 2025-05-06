@@ -16482,6 +16482,30 @@ export type AccountResourceProfileFragment = {
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
+export type ContributorTooltipQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  includeUser?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+export type ContributorTooltipQuery = {
+  __typename?: 'Query';
+  user?: {
+    __typename?: 'User';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+    };
+  };
+};
+
 export type OrganizationAccountQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
 }>;

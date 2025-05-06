@@ -11293,6 +11293,100 @@ export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountR
   return { query: AccountResourcesInfoDocument, variables: variables };
 }
 
+export const ContributorTooltipDocument = gql`
+  query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
+    user(ID: $userId) @include(if: $includeUser) {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+        location {
+          id
+          city
+          country
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+        url
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useContributorTooltipQuery__
+ *
+ * To run a query within a React component, call `useContributorTooltipQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorTooltipQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorTooltipQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      includeUser: // value for 'includeUser'
+ *   },
+ * });
+ */
+export function useContributorTooltipQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorTooltipQuery,
+    SchemaTypes.ContributorTooltipQueryVariables
+  > &
+    ({ variables: SchemaTypes.ContributorTooltipQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
+    ContributorTooltipDocument,
+    options
+  );
+}
+
+export function useContributorTooltipLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorTooltipQuery,
+    SchemaTypes.ContributorTooltipQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
+    ContributorTooltipDocument,
+    options
+  );
+}
+
+export function useContributorTooltipSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
+    ContributorTooltipDocument,
+    options
+  );
+}
+
+export type ContributorTooltipQueryHookResult = ReturnType<typeof useContributorTooltipQuery>;
+export type ContributorTooltipLazyQueryHookResult = ReturnType<typeof useContributorTooltipLazyQuery>;
+export type ContributorTooltipSuspenseQueryHookResult = ReturnType<typeof useContributorTooltipSuspenseQuery>;
+export type ContributorTooltipQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorTooltipQuery,
+  SchemaTypes.ContributorTooltipQueryVariables
+>;
+export function refetchContributorTooltipQuery(variables: SchemaTypes.ContributorTooltipQueryVariables) {
+  return { query: ContributorTooltipDocument, variables: variables };
+}
+
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {
     lookup {

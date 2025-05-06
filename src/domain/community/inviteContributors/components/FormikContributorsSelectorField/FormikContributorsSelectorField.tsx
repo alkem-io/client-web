@@ -6,53 +6,26 @@ import { Box, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { useMemo, useState } from 'react';
-import * as yup from 'yup';
 import { CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { isArray } from 'lodash';
+import { isArray, uniqWith } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
-import ContributorChip from './ContributorChip';
+import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContext';
+import ContributorChip from '../ContributorChip/ContributorChip';
+import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
+import emailParser from './emailParser';
 
 const MAX_USERS_SHOWN = 20;
 
-export enum ContributorSelectorType {
-  User = 'user',
-  Email = 'email',
-}
-export type SelectedContributor =
-  | {
-      type: ContributorSelectorType.User;
-      id: string;
-      displayName: string;
-    }
-  | {
-      type: ContributorSelectorType.Email;
-      email: string;
-    };
-
-export const SelectedContributorSchema = yup.object().shape({
-  type: yup
-    .mixed<ContributorSelectorType>()
-    .oneOf([ContributorSelectorType.User, ContributorSelectorType.Email])
-    .required(),
-  id: yup.string().when(['type'], ([type], schema) => {
-    return type === ContributorSelectorType.User ? schema.required() : schema.notRequired();
-  }),
-  email: yup.string().when(['type'], ([type], schema) => {
-    return type === ContributorSelectorType.Email ? schema.required() : schema.notRequired();
-  }),
-});
-
 type HydratorFn = <U extends Identifiable>(users: U[]) => (U & { message?: string; disabled?: boolean })[];
 
-type FormikContributorsSelectorFieldProps = {
+interface FormikContributorsSelectorFieldProps {
   name: string;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
-};
+}
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
 
@@ -67,6 +40,16 @@ export const FormikContributorsSelectorField = ({
 
   // This field is the array of the selected Contributors (userIds or emails for the moment)
   const [field, meta, helpers] = useField<SelectedContributor[]>(name);
+  const setFieldValue = (newValue: SelectedContributor[]) => {
+    const uniqueValues = uniqWith(
+      newValue,
+      (a, b) =>
+        (a.type === ContributorSelectorType.Email && b.type === ContributorSelectorType.Email && a.email === b.email) ||
+        (a.type === ContributorSelectorType.User && b.type === ContributorSelectorType.User && a.id === b.id)
+    );
+
+    helpers.setValue(uniqueValues);
+  };
 
   // This is an array of strings, or undefined, that represent the validation errors of each Contributor selected
   const validationErrors =
@@ -126,15 +109,15 @@ export const FormikContributorsSelectorField = ({
 
   const onAddUser = (user: Identifiable & { profile: { displayName: string } }) => {
     const fieldValue = Array.isArray(field.value) ? field.value : [];
-    helpers.setValue([
+    setFieldValue([
       ...fieldValue,
       { type: ContributorSelectorType.User, id: user.id, displayName: user.profile.displayName },
     ]);
   };
 
-  const onAddEmailAddress = (email: string) => {
+  const onAddEmailAddress = (email: string, displayName: string = email) => {
     const fieldValue = Array.isArray(field.value) ? field.value : [];
-    helpers.setValue([...fieldValue, { type: ContributorSelectorType.Email, email }]);
+    setFieldValue([...fieldValue, { type: ContributorSelectorType.Email, email, displayName }]);
   };
 
   const onTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,16 +135,19 @@ export const FormikContributorsSelectorField = ({
     }
   };
   const onTextFieldPaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedData = event.clipboardData.getData('text');
-
-    // Regex to match things like "John Doe <john.d@example.com>""
-    const emailRegex = /(?:[^<,]+<)?([\w.-]+@[\w.-]+\.[a-zA-Z]{2,})(?:>)?/g;
-
-    let match;
-    // Extract all email addresses from the pasted content
-    while ((match = emailRegex.exec(pastedData)) !== null) {
-      onAddEmailAddress(match[1]);
+    const fieldValue = Array.isArray(field.value) ? field.value : [];
+    event.preventDefault();
+    const pastedData = event.clipboardData.getData('text') ?? '';
+    const emails = emailParser(pastedData);
+    for (const email of emails) {
+      onAddEmailAddress(email.email, email.displayName);
     }
+    const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
+      type: ContributorSelectorType.Email,
+      ...parsedEmail,
+    }));
+
+    setFieldValue([...fieldValue, ...newValues]);
     setAutocompleteValue(null);
     setInputValue('');
   };
@@ -176,7 +162,7 @@ export const FormikContributorsSelectorField = ({
       }
 
       const nextValue = value.filter(c => !(c.type === ContributorSelectorType.User && c.id === contributor.id));
-      helpers.setValue(nextValue);
+      setFieldValue(nextValue);
     } else if (contributor.type === ContributorSelectorType.Email) {
       const value = field.value;
       if (!Array.isArray(value) || !contributor.email) {
@@ -184,7 +170,7 @@ export const FormikContributorsSelectorField = ({
       }
 
       const nextValue = value.filter(c => !(c.type === ContributorSelectorType.Email && c.email === contributor.email));
-      helpers.setValue(nextValue);
+      setFieldValue(nextValue);
     }
   };
 
