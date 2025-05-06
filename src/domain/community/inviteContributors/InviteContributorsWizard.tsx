@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InviteContributorDialog from './InviteContributorsDialog';
 
-interface InviteContributorsButtonProps extends ButtonProps {
+interface InviteContributorsWizardProps extends ButtonProps {
   contributorType: RoleSetContributorType;
 }
 
-const InviteContributorsButton = ({ contributorType, children, ...buttonProps }: InviteContributorsButtonProps) => {
+const InviteContributorsWizard = ({ contributorType, children, ...buttonProps }: InviteContributorsWizardProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,4 +22,4 @@ const InviteContributorsButton = ({ contributorType, children, ...buttonProps }:
   );
 };
 
-export default InviteContributorsButton;
+export default InviteContributorsWizard;

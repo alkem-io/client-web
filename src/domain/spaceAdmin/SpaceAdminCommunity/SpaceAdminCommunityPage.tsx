@@ -42,7 +42,7 @@ import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import InviteContributorsButton from '@/domain/community/inviteContributors/InviteContributorsButton';
+import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -182,9 +182,9 @@ const SpaceAdminCommunityPage = ({
         {pendingMembershipsEnabled && (
           <PageContentBlock>
             <PageContentBlockHeader title={t('community.pendingMemberships')}>
-              <InviteContributorsButton contributorType={RoleSetContributorType.User} startIcon={<GroupAddIcon />}>
+              <InviteContributorsWizard contributorType={RoleSetContributorType.User} startIcon={<GroupAddIcon />}>
                 {t('buttons.invite')}
-              </InviteContributorsButton>
+              </InviteContributorsWizard>
               <Tooltip title={t('community.applicationsHelp')} arrow>
                 <IconButton aria-label={t('common.help')} sx={{ marginLeft: gutters() }}>
                   <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />

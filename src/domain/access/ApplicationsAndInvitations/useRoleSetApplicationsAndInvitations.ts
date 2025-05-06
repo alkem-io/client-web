@@ -27,7 +27,7 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     roleSetId: string,
     questions: { name: string; value: string; sortOrder: number }[]
   ) => Promise<unknown>;
-  applicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
+  applicationStateChange: (applicationId: string, eventName: string) => Promise<unknown>;
   inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
     invitedContributorIds: string[];

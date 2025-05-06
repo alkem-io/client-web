@@ -2,18 +2,18 @@ import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { Box, BoxProps, styled, SxProps, TextField, Theme, Tooltip } from '@mui/material';
+import { Box, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { useMemo, useState } from 'react';
 import * as yup from 'yup';
-import { Caption, CaptionSmall } from '@/core/ui/typography';
+import { CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import ClearIcon from '@mui/icons-material/Clear';
 import { isArray } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
+import ContributorChip from './ContributorChip';
 
 const MAX_USERS_SHOWN = 20;
 
@@ -37,15 +37,11 @@ export const SelectedContributorSchema = yup.object().shape({
     .mixed<ContributorSelectorType>()
     .oneOf([ContributorSelectorType.User, ContributorSelectorType.Email])
     .required(),
-  id: yup.string().when('type', {
-    is: ContributorSelectorType.User,
-    then: yup.string().required(),
-    otherwise: yup.string().notRequired(),
+  id: yup.string().when(['type'], ([type], schema) => {
+    return type === ContributorSelectorType.User ? schema.required() : schema.notRequired();
   }),
-  email: yup.string().when('type', {
-    is: ContributorSelectorType.Email,
-    then: yup.string().email().required(),
-    otherwise: yup.string().notRequired(),
+  email: yup.string().when(['type'], ([type], schema) => {
+    return type === ContributorSelectorType.Email ? schema.required() : schema.notRequired();
   }),
 });
 
@@ -253,54 +249,6 @@ export const FormikContributorsSelectorField = ({
       </Box>
     </Box>
   );
-};
-
-interface ContributorChipProps {
-  contributor: SelectedContributor;
-  validationError?: string;
-  onRemove: () => void;
-}
-
-const RootChip = styled(Box)<BoxProps & { invalid?: boolean }>(({ theme, invalid }) => ({
-  color: theme.palette.primary.main,
-  border: '1px solid',
-  borderColor: invalid ? theme.palette.error.main : theme.palette.divider,
-  borderRadius: theme.shape.borderRadius,
-  marginX: gutters(),
-  whiteSpace: 'nowrap',
-  display: 'flex',
-  alignItems: 'center',
-  gap: gutters(0.5)(theme),
-  padding: `${gutters(0.25)(theme)} ${gutters(0.5)(theme)}`,
-  '& > svg': {
-    cursor: 'pointer',
-    height: gutters(0.7)(theme),
-    color: theme.palette.primary.main,
-    '&:hover': {
-      color: theme.palette.primary.light,
-    },
-  },
-}));
-
-const ContributorChip = ({ contributor, validationError, onRemove }: ContributorChipProps) => {
-  switch (contributor.type) {
-    case ContributorSelectorType.User:
-      return (
-        <Tooltip title={validationError}>
-          <RootChip invalid={!!validationError}>
-            <Caption>{contributor.displayName}</Caption> <ClearIcon fontSize="small" onClick={onRemove} />
-          </RootChip>
-        </Tooltip>
-      );
-    case ContributorSelectorType.Email:
-      return (
-        <Tooltip title={validationError}>
-          <RootChip invalid={!!validationError}>
-            <Caption>{contributor.email}</Caption> <ClearIcon fontSize="small" onClick={onRemove} />
-          </RootChip>
-        </Tooltip>
-      );
-  }
 };
 
 export default FormikContributorsSelectorField;
