@@ -614,7 +614,17 @@
           "description": "Search for people below or directly add their email address",
           "note": "Keep in mind that your email address will be visible to anyone you invite.",
           "defaultWelcomeMessage": "Hi, I would like to invite you to The Sandbox. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-          "placeholder": "Username or email..."
+          "placeholder": "Username or email...",
+          "success": "Your invitation was successfully sent to the following recipients:",
+          "failure": "We couldn’t send the invitation to the following recipients:",
+          "back": "Send another invitation",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "",
+            "ALREADY_INVITED_TO_ROLE_SET": "",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "",
+            "INVITED_TO_ROLE_SET": ""
+          }
         },
         "vcs": {
           "title": "Virtual Contributors Store",

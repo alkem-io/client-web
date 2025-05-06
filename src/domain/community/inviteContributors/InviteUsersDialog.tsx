@@ -3,7 +3,7 @@ import { InviteContributorDialogProps } from './InviteContributorsProps';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { Box, DialogActions, DialogContent } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -24,6 +24,7 @@ import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAn
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { compact } from 'lodash';
+import { useState } from 'react';
 
 const AvailableRoles = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -36,6 +37,7 @@ type InviteUsersData = {
 const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
+  const [invitationSent, setInvitationSent] = useState(false);
   const {
     space: {
       about: {
@@ -79,6 +81,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
       welcomeMessage: data.welcomeMessage,
       extraRole: data.extraRole,
     });
+    setInvitationSent(true);
   });
 
   const loading = spaceLoading || loadingRoleSet || invitingUsers;
@@ -90,39 +93,74 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
         onClose={onClose}
       />
       <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-        {({ handleSubmit, isValid }) => (
+        {({ handleSubmit, isValid, setFieldValue }) => (
           <>
-            <DialogContent>
-              <Gutters disablePadding>
-                <Caption>{t('community.invitations.inviteContributorsDialog.users.description')}</Caption>
-                <FormikContributorsSelectorField name="selectedContributors" />
-                <FormikInputField
-                  name="welcomeMessage"
-                  title={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
-                  placeholder={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
-                  multiline
-                  rows={5}
-                  maxLength={LONG_TEXT_LENGTH}
-                />
-                <Gutters disablePadding row justifyContent="space-between" alignItems="center">
-                  <Caption>{t('community.invitations.inviteContributorsDialog.users.note')}</Caption>
-                  <Box display="flex" gap={gutters()} alignItems="center">
-                    <Caption sx={{ whiteSpace: 'nowrap' }}>{t('community.invitations.inviteToRole')}</Caption>
-                    <FormikSelect
-                      name="extraRole"
-                      values={AvailableRoles.map(role => ({
-                        id: role,
-                        name: t(`common.roles.${role}`),
-                      }))}
-                      required
+            {!invitationSent && (
+              <>
+                <DialogContent>
+                  <Gutters disablePadding>
+                    <Caption>{t('community.invitations.inviteContributorsDialog.users.description')}</Caption>
+                    <FormikContributorsSelectorField name="selectedContributors" />
+                    <FormikInputField
+                      name="welcomeMessage"
+                      title={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
+                      placeholder={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
+                      multiline
+                      rows={5}
+                      maxLength={LONG_TEXT_LENGTH}
                     />
-                  </Box>
-                </Gutters>
-              </Gutters>
-            </DialogContent>
-            <DialogActions>
-              <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
-            </DialogActions>
+                    <Gutters disablePadding row justifyContent="space-between" alignItems="center">
+                      <Caption>{t('community.invitations.inviteContributorsDialog.users.note')}</Caption>
+                      <Box display="flex" gap={gutters()} alignItems="center">
+                        <Caption sx={{ whiteSpace: 'nowrap' }}>{t('community.invitations.inviteToRole')}</Caption>
+                        <FormikSelect
+                          name="extraRole"
+                          values={AvailableRoles.map(role => ({
+                            id: role,
+                            name: t(`common.roles.${role}`),
+                          }))}
+                          required
+                        />
+                      </Box>
+                    </Gutters>
+                  </Gutters>
+                </DialogContent>
+                <DialogActions>
+                  <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
+                </DialogActions>
+              </>
+            )}
+            {invitationSent && (
+              <>
+                <DialogContent>
+                  <Gutters disablePadding>
+                    <Caption>{t('community.invitations.inviteContributorsDialog.users.success')}</Caption>
+                    <Caption>{t('community.invitations.inviteContributorsDialog.users.failure')}</Caption>
+                  </Gutters>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setFieldValue('selectedContributors', []);
+                      setInvitationSent(false);
+                    }}
+                  >
+                    {t('community.invitations.inviteContributorsDialog.users.back')}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setFieldValue('selectedContributors', []);
+                      setInvitationSent(false);
+                      onClose();
+                    }}
+                  >
+                    {t('buttons.close')}
+                  </Button>
+                </DialogActions>
+              </>
+            )}
           </>
         )}
       </Formik>
