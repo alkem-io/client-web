@@ -1,7 +1,7 @@
 import { UiNode, UiNodeAttributes, UiNodeAnchorAttributes, UiNodeInputAttributes } from '@ory/kratos-client';
 import { FormEvent } from 'react';
 import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
-import { TFunction } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export function isUiNodeAnchorAttributes(attr: UiNodeAttributes) {
