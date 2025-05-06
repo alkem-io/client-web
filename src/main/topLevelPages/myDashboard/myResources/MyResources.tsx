@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
@@ -37,9 +37,7 @@ const MyResources = () => {
 
   return (
     <PageContentBlock>
-      {innovationHubs?.map(hub => (
-        <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />
-      ))}
+      {innovationHubs?.map(hub => <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />)}
       {spaces.map(space => (
         <SpaceCardHorizontal
           key={space.id}
@@ -55,9 +53,7 @@ const MyResources = () => {
       {virtualContributors?.map(vc => (
         <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" withUnifiedTitle seamless />
       ))}
-      {innovationPacks?.map(pack => (
-        <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />
-      ))}
+      {innovationPacks?.map(pack => <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />)}
     </PageContentBlock>
   );
 };

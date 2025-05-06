@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { PartialRecord } from '@/core/utils/PartialRecords';
+import { PartialRecord } from '@/core/utils/PartialRecord';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -197,10 +197,13 @@ const useRoleSetManager = ({
     }
 
     const rolesDefinitions: Record<RoleName, RoleDefinition> | undefined =
-      roleSetData?.lookup.roleSet?.roleDefinitions?.reduce((acc, roleDefinition) => {
-        acc[roleDefinition.name] = roleDefinition;
-        return acc;
-      }, {} as Record<RoleName, RoleDefinition>);
+      roleSetData?.lookup.roleSet?.roleDefinitions?.reduce(
+        (acc, roleDefinition) => {
+          acc[roleDefinition.name] = roleDefinition;
+          return acc;
+        },
+        {} as Record<RoleName, RoleDefinition>
+      );
 
     return {
       users: Object.values(usersById),
