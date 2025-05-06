@@ -141,8 +141,9 @@ export const SubspaceInfoColumn = () => {
         dashboardNavigation={dashboardNavigation.dashboardNavigation}
         onCreateSubspace={handleOpenCreateSubspace}
       />
-      {/*   onCurrentItemNotFound={dashboardNavigation.refetch} */}
-      <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
+      {!isCollapsed && (
+        <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
+      )}
       <CreateSubspace
         isVisible={createSpaceState.isDialogVisible}
         onClose={onCreateSubspaceClose}

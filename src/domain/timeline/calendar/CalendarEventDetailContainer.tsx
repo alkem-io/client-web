@@ -3,7 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useCalendarEventDetailsQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { Message } from '@/domain/communication/room/models/Message';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';

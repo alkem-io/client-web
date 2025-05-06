@@ -31,7 +31,7 @@ import {
 import ExistingSpace, { SelectableKnowledgeSpace } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { addVCCreationCache } from './TryVC/utils';

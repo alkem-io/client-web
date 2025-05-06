@@ -3055,10 +3055,12 @@
     "subspaces": "Subspaces",
     "contributors": "Contributors",
     "activity": "Activity",
+    "calendar": "Calendar",
     "events": "Events",
     "share": "Share",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Settings"
+    "settings": "Settings",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Create a Space",

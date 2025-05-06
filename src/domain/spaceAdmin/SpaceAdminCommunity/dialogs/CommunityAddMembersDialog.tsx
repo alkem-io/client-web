@@ -75,7 +75,6 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
       renderCell: ({ row }: RenderParams) => <>{createCellText(row)}</>,
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       filterable: false,
-      resizable: true,
       flex: 1,
     },
   ];

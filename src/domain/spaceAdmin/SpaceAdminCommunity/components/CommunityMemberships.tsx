@@ -1,6 +1,7 @@
 import { Box, IconButton, Link, Tooltip } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { TFunction, useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '@/core/ui/typography';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
@@ -50,7 +51,7 @@ const getDeleteDialogTranslationNamespace = (row: MembershipTableItem) => {
   }
 };
 
-const formatState = (item: MembershipTableItem, t: TFunction<'translation', undefined>) => {
+const formatState = (item: MembershipTableItem, t: TFunction) => {
   if (item.type === MembershipType.Application) {
     switch (item.state) {
       case 'new':
@@ -219,7 +220,6 @@ const CommunityMemberships = ({
         );
       },
       valueGetter: (_, row: GetterParams) => row?.displayName,
-      resizable: true,
       filterable: false,
       flex: 1,
     },
@@ -228,7 +228,6 @@ const CommunityMemberships = ({
       headerName: t('common.email'),
       renderCell: ({ row }: RenderParams) => <>{row.email}</>,
       valueGetter: (_, row: GetterParams) => row?.email,
-      resizable: true,
       filterable: false,
       flex: 1,
     },

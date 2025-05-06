@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCookies } from 'react-cookie';
