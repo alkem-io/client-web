@@ -179,7 +179,8 @@
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
     "invite": "Invite",
-    "visit": "Visit"
+    "visit": "Visit",
+    "returnToDashboard": "Return to dashboard as guest"
   },
   "tooltips": {
     "click-more-info": "Нажміть, щоб дізнатись більше",
@@ -2835,8 +2836,9 @@
       "added-successfully": "Credential successfully added"
     },
     "authentication-required": {
-      "header": "Для доступу на цю сторінку, необхітно аторизуватись.",
-      "subheader": "Щоб продовжити, будь ласка, авторизуйтесь, або зареєструйтесь!"
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
     "user-notifications-settings": {
       "general": {
