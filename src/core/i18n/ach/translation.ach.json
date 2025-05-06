@@ -179,7 +179,8 @@
     "createOwnSpace": "crwdns17630:0crwdne17630:0",
     "notifications": "crwdns17632:0crwdne17632:0",
     "invite": "crwdns17634:0crwdne17634:0",
-    "visit": "crwdns17636:0crwdne17636:0"
+    "visit": "crwdns17636:0crwdne17636:0",
+    "returnToDashboard": "crwdns36920:0crwdne36920:0"
   },
   "tooltips": {
     "click-more-info": "crwdns17638:0crwdne17638:0",
@@ -2835,8 +2836,9 @@
       "added-successfully": "crwdns20598:0crwdne20598:0"
     },
     "authentication-required": {
-      "header": "crwdns20600:0crwdne20600:0",
-      "subheader": "crwdns20602:0crwdne20602:0"
+      "header": "crwdns36922:0crwdne36922:0",
+      "subheader": "crwdns36924:0crwdne36924:0",
+      "subheader2": "crwdns36926:0crwdne36926:0"
     },
     "user-notifications-settings": {
       "general": {
