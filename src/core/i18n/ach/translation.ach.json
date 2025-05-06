@@ -3077,10 +3077,12 @@
     "subspaces": "crwdns20848:0crwdne20848:0",
     "contributors": "crwdns20850:0crwdne20850:0",
     "activity": "crwdns20852:0crwdne20852:0",
+    "calendar": "crwdns36916:0crwdne36916:0",
     "events": "crwdns20854:0crwdne20854:0",
     "share": "crwdns20856:0crwdne20856:0",
     "manageFlow": "crwdns20858:0$t(components.innovationFlowSettings.buttonTooltip)crwdne20858:0",
-    "settings": "crwdns20860:0crwdne20860:0"
+    "settings": "crwdns20860:0crwdne20860:0",
+    "updates": "crwdns36918:0crwdne36918:0"
   },
   "createSpace": {
     "title": "crwdns20862:0crwdne20862:0",
