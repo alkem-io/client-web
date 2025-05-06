@@ -3077,10 +3077,12 @@
     "subspaces": "Subspaces",
     "contributors": "Bijdragers",
     "activity": "Activiteit",
+    "calendar": "Calendar",
     "events": "Evenementen",
     "share": "Delen",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Creëer een Space",
