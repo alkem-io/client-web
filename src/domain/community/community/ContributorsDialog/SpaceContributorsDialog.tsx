@@ -9,13 +9,13 @@ import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 
-export interface SpaceContributorsDialogProps {
+interface SpaceContributorsDialogProps {
   open: boolean;
   onClose: () => void;
   roleSetId: string | undefined;
 }
 
-const SpaceContributorsDialog = ({ open, onClose, roleSetId }) => {
+const SpaceContributorsDialog = ({ open, onClose, roleSetId }: SpaceContributorsDialogProps) => {
   const { t } = useTranslation();
 
   const handleClose = () => {
