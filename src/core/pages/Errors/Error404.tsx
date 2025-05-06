@@ -14,15 +14,14 @@ import { gutters } from '@/core/ui/grid/utils';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import { useLocation } from 'react-router-dom';
 
-const Container = styled(Box)(({ theme }) => ({
+export const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
   display: 'flex',
   flexDirection: 'row',
-  alignItems: 'center',
 }));
 
-const LeftArea = styled(Box)(({ theme }) => ({
-  width: theme.spacing(56),
+export const LeftArea = styled(Box)(({ theme }) => ({
+  width: theme.spacing(50),
   [theme.breakpoints.down('md')]: {
     width: '75%',
     margin: theme.spacing(0, 'auto'),
@@ -32,14 +31,13 @@ const LeftArea = styled(Box)(({ theme }) => ({
   },
 }));
 
-const RightArea = styled(Box)(({ theme }) => ({
-  marginLeft: theme.spacing(-10),
+export const RightArea = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
 }));
 
-const Picture = styled(ImageFadeIn)(({ theme }) => ({
+export const Picture = styled(ImageFadeIn)(({ theme }) => ({
   width: theme.spacing(68),
   [theme.breakpoints.down('lg')]: {
     width: theme.spacing(50),
@@ -53,12 +51,8 @@ const Picture = styled(ImageFadeIn)(({ theme }) => ({
   },
 }));
 
-const UsefulLinks = styled(Box)(({ theme }) => ({
+const UsefulLinks = styled(Box)(() => ({
   width: '75%',
-  marginBottom: theme.spacing(20), // Empty white area after links, remove pixeles if you are modre links
-  [theme.breakpoints.only('xs')]: {
-    marginBottom: 0,
-  },
 }));
 
 const StyledSearchBox = styled(SearchBar)(({ theme }) => ({
@@ -105,7 +99,7 @@ export const Error404 = () => {
                   [theme.breakpoints.up('md')]: { display: 'none' },
                 })}
               />
-              <Tagline>{t('pages.four-ou-four.message')}</Tagline>
+              <Tagline sx={{ marginTop: gutters(2) }}>{t('pages.four-ou-four.message')}</Tagline>
               <StyledSearchBox withRedirect />
               <UsefulLinks>
                 <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>

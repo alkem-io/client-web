@@ -1,7 +1,7 @@
 import { Grid, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import PreferenceSection from '@/main/ui/settings/PreferenceSection';
 import { gutters } from '@/core/ui/grid/utils';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';

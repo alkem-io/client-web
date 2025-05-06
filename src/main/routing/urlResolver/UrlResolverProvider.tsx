@@ -2,7 +2,7 @@ import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
-import { PartialRecord } from '@/core/utils/PartialRecords';
+import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { TabbedLayoutParams } from '../urlBuilders';

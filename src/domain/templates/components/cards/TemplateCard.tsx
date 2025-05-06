@@ -6,29 +6,24 @@ import PostTemplateCard from './PostTemplateCard';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
-import CollaborationTemplateCard from './CollabTemplateCard';
+import CollaborationTemplateCard from './CollaborationTemplateCard';
 
 export interface TemplateCardProps extends AnyTemplateWithInnovationPack, ContributeCardProps {
-  link?: {
-    to?: string;
-    state?: Record<string, unknown>;
-    onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  };
   loading?: boolean;
 }
 
-const TemplateCard: FC<TemplateCardProps> = ({ template, link, ...rest }) => {
+const TemplateCard: FC<TemplateCardProps> = ({ template, ...rest }) => {
   switch (template.type) {
     case TemplateType.Collaboration:
-      return <CollaborationTemplateCard template={template} {...link} {...rest} />;
+      return <CollaborationTemplateCard template={template} {...rest} />;
     case TemplateType.Callout:
-      return <CalloutTemplateCard template={template} {...link} {...rest} />;
+      return <CalloutTemplateCard template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplateCard template={template} {...link} {...rest} />;
+      return <CommunityGuidelinesTemplateCard template={template} {...rest} />;
     case TemplateType.Post:
-      return <PostTemplateCard template={template} {...link} {...rest} />;
+      return <PostTemplateCard template={template} {...rest} />;
     case TemplateType.Whiteboard:
-      return <WhiteboardTemplateCard template={template} {...link} {...rest} />;
+      return <WhiteboardTemplateCard template={template} {...rest} />;
   }
   return null;
 };

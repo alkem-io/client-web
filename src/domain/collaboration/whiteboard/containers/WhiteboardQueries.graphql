@@ -104,23 +104,6 @@ query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
   }
 }
 
-query WhiteboardWithContent($whiteboardId: UUID!) {
-  lookup {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
-      ...WhiteboardContent
-    }
-  }
-}
-
-query WhiteboardWithoutContent($whiteboardId: UUID!) {
-  lookup {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
-    }
-  }
-}
-
 query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {

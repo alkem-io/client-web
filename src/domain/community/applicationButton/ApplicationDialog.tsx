@@ -60,7 +60,7 @@ const ApplicationDialog = ({
     [questions]
   );
 
-  const validationSchema: yup.ObjectSchema = useMemo(
+  const validationSchema: yup.ObjectSchema<Record<string, string>> = useMemo(
     () =>
       questions.reduce(
         (acc, val) =>

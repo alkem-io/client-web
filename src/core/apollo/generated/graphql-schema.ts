@@ -5505,7 +5505,7 @@ export type RoleSet = {
   availableUsersForElevatedRole: PaginatedUsers;
   /** All available users that are could join this RoleSet in the entry role. */
   availableUsersForEntryRole: PaginatedUsers;
-  /** All available VirtualContributors that are could join this RoleSet in the entry role. */
+  /** All available VirtualContributors that are eligible to invite to this RoleSet in the entry role. */
   availableVirtualContributorsForEntryRole: PaginatedVirtualContributor;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']['output']>;
@@ -13970,181 +13970,6 @@ export type WhiteboardFromCalloutQuery = {
   };
 };
 
-export type WhiteboardWithContentQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-}>;
-
-export type WhiteboardWithContentQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboard?:
-      | {
-          __typename?: 'Whiteboard';
-          id: string;
-          nameID: string;
-          createdDate: Date;
-          contentUpdatePolicy: ContentUpdatePolicy;
-          content: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            preview?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
-          };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          createdBy?:
-            | {
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type WhiteboardWithoutContentQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-}>;
-
-export type WhiteboardWithoutContentQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboard?:
-      | {
-          __typename?: 'Whiteboard';
-          id: string;
-          nameID: string;
-          createdDate: Date;
-          contentUpdatePolicy: ContentUpdatePolicy;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            preview?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
-          };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          createdBy?:
-            | {
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type WhiteboardLastUpdatedDateQueryVariables = Exact<{
   whiteboardId: Scalars['UUID']['input'];
 }>;
@@ -15923,36 +15748,6 @@ export type BasicOrganizationDetailsFragment = {
   };
 };
 
-export type AllOrganizationsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  filter?: InputMaybe<OrganizationFilterInput>;
-}>;
-
-export type AllOrganizationsQuery = {
-  __typename?: 'Query';
-  organizationsPaginated: {
-    __typename?: 'PaginatedOrganization';
-    organization: Array<{
-      __typename?: 'Organization';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
-    };
-  };
-};
-
 export type CreateWingbackAccountMutationVariables = Exact<{
   accountID: Scalars['UUID']['input'];
 }>;
@@ -16447,19 +16242,6 @@ export type OrganizationProfileInfoFragment = {
           type: TagsetType;
         }>
       | undefined;
-  };
-};
-
-export type CreateGroupOnOrganizationMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnOrganizationMutation = {
-  __typename?: 'Mutation';
-  createGroupOnOrganization: {
-    __typename?: 'UserGroup';
-    id: string;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
   };
 };
 
@@ -17090,61 +16872,6 @@ export type UserDisplayNameFragment = {
   __typename?: 'User';
   id: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
-export type CreateUserMutationVariables = Exact<{
-  input: CreateUserInput;
-}>;
-
-export type CreateUserMutation = {
-  __typename?: 'Mutation';
-  createUser: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-        | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
 };
 
 export type CreateUserNewRegistrationMutationVariables = Exact<{ [key: string]: never }>;
@@ -21127,33 +20854,6 @@ export type SpaceInfoFragment = {
   };
 };
 
-export type SpaceAndCommunityPrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-}>;
-
-export type SpaceAndCommunityPrivilegesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          community: {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
 export type SubspacesInSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -21800,40 +21500,6 @@ export type SpacePageQuery = {
               id: string;
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SpaceDashboardReferencesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-}>;
-
-export type SpaceDashboardReferencesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
                 | undefined;
             };
           };
@@ -25303,143 +24969,6 @@ export type TemplatesSetTemplatesFragment = {
         | undefined;
     };
   }>;
-};
-
-export type CreateTemplateInputQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
-}>;
-
-export type CreateTemplateInputQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    template?:
-      | {
-          __typename?: 'Template';
-          profile: {
-            __typename?: 'Profile';
-            displayName: string;
-            description?: string | undefined;
-            tagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CreateCommunityGuidelinesInputQueryVariables = Exact<{
-  communityGuidelinesId: Scalars['UUID']['input'];
-}>;
-
-export type CreateCommunityGuidelinesInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    communityGuidelines?:
-      | {
-          __typename?: 'CreateCommunityGuidelinesData';
-          profile: {
-            __typename?: 'CreateProfileData';
-            displayName: string;
-            description?: string | undefined;
-            referencesData?:
-              | Array<{
-                  __typename?: 'CreateReferenceData';
-                  name: string;
-                  uri?: string | undefined;
-                  description?: string | undefined;
-                }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CreateCalloutInputQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-}>;
-
-export type CreateCalloutInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    callout?:
-      | {
-          __typename?: 'CreateCalloutData';
-          type: CalloutType;
-          framing: {
-            __typename?: 'CreateCalloutFramingData';
-            profile: {
-              __typename?: 'CreateProfileData';
-              displayName: string;
-              description?: string | undefined;
-              tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
-            };
-            whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
-          };
-          contributionDefaults?:
-            | {
-                __typename?: 'CreateCalloutContributionDefaultsData';
-                postDescription?: string | undefined;
-                whiteboardContent?: string | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CreateCollaborationInputQueryVariables = Exact<{
-  collaborationId: Scalars['UUID']['input'];
-}>;
-
-export type CreateCollaborationInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    collaboration?:
-      | {
-          __typename?: 'CreateCollaborationData';
-          calloutsSetData: {
-            __typename?: 'CreateCalloutsSetData';
-            calloutsData?:
-              | Array<{
-                  __typename?: 'CreateCalloutData';
-                  framing: {
-                    __typename?: 'CreateCalloutFramingData';
-                    profile: { __typename?: 'CreateProfileData'; displayName: string };
-                  };
-                }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CreateWhiteboardInputQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-}>;
-
-export type CreateWhiteboardInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
-  };
-};
-
-export type CreatePostInputQueryVariables = Exact<{
-  templateId: Scalars['UUID']['input'];
-}>;
-
-export type CreatePostInputQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    template?: { __typename?: 'Template'; id: string; postDefaultDescription?: string | undefined } | undefined;
-  };
 };
 
 export type SpaceCalendarEventsQueryVariables = Exact<{

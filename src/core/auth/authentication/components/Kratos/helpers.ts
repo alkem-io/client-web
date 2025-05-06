@@ -9,7 +9,7 @@ import {
 import { FormEvent } from 'react';
 import { UiNodeAnchor, UiNodeInput } from './UiNodeTypes';
 import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
-import { TFunction } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export function isUiNodeAnchorAttributes(pet: UiNodeAttributes): pet is UiNodeAnchorAttributes {
