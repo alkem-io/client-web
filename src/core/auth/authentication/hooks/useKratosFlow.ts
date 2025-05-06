@@ -1,8 +1,17 @@
-import { LoginFlow, RecoveryFlow, RegistrationFlow, SettingsFlow, VerificationFlow } from '@ory/kratos-client';
+import {
+  FrontendApi,
+  LoginFlow,
+  RecoveryFlow,
+  RegistrationFlow,
+  SettingsFlow,
+  VerificationFlow,
+} from '@ory/kratos-client';
 import { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useKratosClient } from './useKratosClient';
-import { error as logSentryError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+
+type FlowTypes = LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
 
 export enum FlowTypeName {
   Login = 'Login',
@@ -43,22 +52,22 @@ const useKratosFlow = <Name extends FlowTypeName>(
       } else {
         const error = new Error(err.message);
         setError(error);
-        logSentryError(error, { category: TagCategoryValues.AUTH });
+        logError(error, { category: TagCategoryValues.AUTH });
       }
     }
   }, []);
 
   const handlePromise = useCallback(
-    async (promise: Promise<AxiosResponse<ReturnFlowType[Name]>>) => {
+    async (promise: Promise<AxiosResponse<FlowTypes>>) => {
       try {
         setLoading(true);
         const { status, data } = await promise;
         if (status !== 200) {
           const error = new Error(`Error loading flow! Status: ${status}`);
           setError(error);
-          logSentryError(error, { category: TagCategoryValues.AUTH });
+          logError(error, { category: TagCategoryValues.AUTH });
         }
-        setFlow(data);
+        setFlow(data as ReturnFlowType[Name]);
       } catch (error) {
         handleFlowError(error);
       } finally {
@@ -69,7 +78,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
   );
 
   const initializeFlow = useCallback(
-    client => {
+    (client: FrontendApi) => {
       switch (flowTypeName as FlowTypeName) {
         case FlowTypeName.Login:
           return client.createBrowserLoginFlow();
@@ -87,7 +96,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
   );
 
   const getFlow = useCallback(
-    (client, flowId: string) => {
+    (client: FrontendApi, flowId: string) => {
       switch (flowTypeName as FlowTypeName) {
         case FlowTypeName.Login:
           return client.getLoginFlow({ id: flowId });

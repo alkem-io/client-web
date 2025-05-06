@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';
-import axios from 'axios';
 
 export const useLogoutUrl = () => {
   const { t } = useTranslation();
@@ -16,9 +15,7 @@ export const useLogoutUrl = () => {
     }
     try {
       setLoading(true);
-      const { status, data } = await axios.get(`${client.basePath}/self-service/logout/browser`, {
-        withCredentials: true,
-      });
+      const { status, data } = await client.createBrowserLogoutFlow();
       if (status !== 200) {
         console.error(data);
       }
