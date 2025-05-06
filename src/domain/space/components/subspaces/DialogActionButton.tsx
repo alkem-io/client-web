@@ -19,6 +19,7 @@ import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import { MENU_STATE_KEY, MenuState } from '../../layout/SubspaceInfoColumn';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import { Caption } from '@/core/ui/typography';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const ACTION_CONFIG = {
   [SubspaceDialog.About]: InfoOutlined,
@@ -58,11 +59,11 @@ export const DialogActionButton = ({
   const Icon = ACTION_CONFIG[dialog];
 
   // calendar, event and timeline are used all over the place so hacking it together for now
-  let tooltipKey: string = dialog;
+  let tooltipKey: TranslationKey = `spaceDialog.${dialog}` as const;
   if (dialog === SubspaceDialog.Timeline) {
-    tooltipKey = 'events';
+    tooltipKey = 'spaceDialog.events';
   }
-  const tooltip = t(`spaceDialog.${tooltipKey}`) as string;
+  const tooltip = t(tooltipKey);
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
   return (

@@ -12,11 +12,19 @@ const Icons = {
   EmailOutlined,
 };
 
+type ChatbotReferencesTranslation = {
+  icon: string; // keyof typeof Icons;
+  uri: string;
+  title: string;
+};
+
 const ChatWidgetFooter = () => {
   const { t } = useTranslation();
 
   const referencesRaw = t('chatbot.references', { returnObjects: true });
-  const references = Array.isArray(referencesRaw) ? referencesRaw : Object.values(referencesRaw);
+  const references: ChatbotReferencesTranslation[] = Array.isArray(referencesRaw)
+    ? referencesRaw
+    : Object.values(referencesRaw);
 
   return (
     <SwapColors>
