@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 import { useReturnUrl } from '../utils/SignUpReturnUrl';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export const LoginSuccessPage = () => {
   const returnUrl = useReturnUrl();

@@ -7,7 +7,7 @@ import {
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
-import { toPlatformPrivilegeWrapper } from '@/domain/community/user';
+import { toPlatformPrivilegeWrapper } from './usePlatformPrivilegeWrapper';
 import { CurrentUserModel } from '../model/CurrentUserModel';
 
 const CurrentUserContext = createContext<CurrentUserModel>({

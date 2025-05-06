@@ -7,7 +7,7 @@ import Breadcrumbs from '@/core/ui/navigation/Breadcrumbs';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
 import { useTranslation } from 'react-i18next';
 import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import SearchDialog from '@/main/search/SearchDialog';
 
 const HomePageLayout = ({ children }: PropsWithChildren) => {

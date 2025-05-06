@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useSubSpace } from '../hooks/useSubSpace';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
-import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
+import SpaceContributorsDialog from '@/domain/community/community/ContributorsDialog/SpaceContributorsDialog';
 import { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 import useNavigate from '@/core/routing/useNavigate';
 import { useSpace } from '../context/useSpace';
@@ -44,10 +43,10 @@ const SubspaceAboutPage = () => {
         hasReadPrivilege={permissions.canRead}
         hasEditPrivilege={permissions.canUpdate}
       />
-      <ContributorsDialog
+      <SpaceContributorsDialog
         open={isContributorsDialogOpen}
         onClose={() => setIsContributorsDialogOpen(false)}
-        dialogContent={SubspaceContributorsDialogContent}
+        roleSetId={about.membership.roleSetID}
       />
     </>
   );
