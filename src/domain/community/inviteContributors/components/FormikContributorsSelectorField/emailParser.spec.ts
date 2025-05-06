@@ -101,16 +101,3 @@ describe('emailParser', () => {
     expect(result).toEqual([{ displayName: 'john.doe@example.com', email: 'john.doe@example.com' }]);
   });
 });
-
-/*
-john.doe@example.com
-jane.smith@domain.com
-random.user123@mail.com
-test.account@webmail.org
-alex.brown@company.net
-emily.white@service.io
-user.name456@provider.co
-charlie.green@platform.dev
-beta.tester@demo.app
-support.team@helpdesk.com
-*/
