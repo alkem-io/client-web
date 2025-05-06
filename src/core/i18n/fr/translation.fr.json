@@ -179,7 +179,8 @@
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
     "invite": "Invite",
-    "visit": "Visit"
+    "visit": "Visit",
+    "returnToDashboard": "Return to dashboard as guest"
   },
   "tooltips": {
     "click-more-info": "Cliquez pour plus d'informations",
@@ -2835,8 +2836,9 @@
       "added-successfully": "Identification ajoutée avec succès"
     },
     "authentication-required": {
-      "header": "La page que vous essayez d'atteindre nécessite que vous soyez connecté.",
-      "subheader": "Veuillez vous connecter ou vous inscrire pour continuer!"
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
     "user-notifications-settings": {
       "general": {
