@@ -2,7 +2,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { compact, groupBy, sortBy } from 'lodash';
 import { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { Box, IconButton } from '@mui/material';
 import { AddReactionOutlined } from '@mui/icons-material';
 import { CardText } from '@/core/ui/typography/components';

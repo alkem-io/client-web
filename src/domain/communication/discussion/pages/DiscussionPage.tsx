@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,

@@ -21,7 +21,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
-import { InnovationFlowState } from '../InnovationFlow';
+import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
@@ -39,11 +39,11 @@ const StyledDragAndDropBlock = styled(Box)(({ theme }) => ({
 
 export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
-  children?: (state: InnovationFlowState) => React.ReactNode;
+  children?: (state: InnovationFlowStateModel) => React.ReactNode;
   innovationFlow:
     | {
-        currentState: Pick<InnovationFlowState, 'displayName'>;
-        states: InnovationFlowState[];
+        currentState: Pick<InnovationFlowStateModel, 'displayName'>;
+        states: InnovationFlowStateModel[];
         settings: {
           maximumNumberOfStates: number;
           minimumNumberOfStates: number;
@@ -55,10 +55,10 @@ export interface InnovationFlowDragNDropEditorProps {
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCurrentState?: (state: string) => void;
   onCreateFlowState: (
-    newState: InnovationFlowState,
+    newState: InnovationFlowStateModel,
     options: { after: string; last: false } | { after?: never; last: true }
   ) => Promise<unknown> | void;
-  onEditFlowState: (oldState: InnovationFlowState, newState: InnovationFlowState) => Promise<unknown> | void;
+  onEditFlowState: (oldState: InnovationFlowStateModel, newState: InnovationFlowStateModel) => Promise<unknown> | void;
   onDeleteFlowState: (state: string) => Promise<unknown> | void;
   /**
    * Prevents the user from changing the number of states, adding or removing
@@ -102,7 +102,7 @@ const InnovationFlowDragNDropEditor = ({
   const [createFlowState, setCreateFlowState] = useState<
     { after: string; last: false } | { after?: never; last: true } | undefined
   >(undefined);
-  const [editFlowState, setEditFlowState] = useState<InnovationFlowState | undefined>();
+  const [editFlowState, setEditFlowState] = useState<InnovationFlowStateModel | undefined>();
   const [deleteFlowState, setDeleteFlowState] = useState<string | undefined>();
 
   const handleDragEnd: OnDragEndResponder = (result, provided) => {

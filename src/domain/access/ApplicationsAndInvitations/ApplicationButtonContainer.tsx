@@ -10,7 +10,7 @@ import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';

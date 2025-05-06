@@ -9,7 +9,7 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { InnovationFlowProfile } from './InnovationFlowProfileBlock';
+import { InnovationFlowProfileModel } from '../models/InnovationFlowProfileModel';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
@@ -22,7 +22,7 @@ export interface InnovationFlowProfileFormValues {
 }
 
 interface InnovationFlowProfileFormProps {
-  profile?: InnovationFlowProfile;
+  profile?: InnovationFlowProfileModel;
   onSubmit: (formData: InnovationFlowProfileFormValues) => Promise<unknown> | void;
   onCancel?: () => void;
   actionsRenderer?: ComponentType<{ children: ReactElement }>;

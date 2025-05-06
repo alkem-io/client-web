@@ -3,7 +3,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { UserForm } from '../../user/userForm/UserForm';
 import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,

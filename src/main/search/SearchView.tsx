@@ -26,7 +26,7 @@ import {
   SearchResultOrganizationFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -577,19 +577,19 @@ function toResultType(query?: SearchQuery): SearchResultMetaType[] {
   }
 
   const spaceResults = (query.search.spaceResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
   const contributionResults = (query.search.contributionResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
   const contributorResults = (query.search.contributorResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
   const calloutResults = (query.search.calloutResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType)
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
   return [...spaceResults, ...contributionResults, ...contributorResults, ...calloutResults];

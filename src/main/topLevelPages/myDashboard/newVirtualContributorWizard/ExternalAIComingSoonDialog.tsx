@@ -11,7 +11,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useSendMessageToUserMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { warn as logWarn } from '@/core/logging/sentry/log';

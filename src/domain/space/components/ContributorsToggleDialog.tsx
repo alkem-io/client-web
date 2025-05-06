@@ -6,7 +6,7 @@ import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSet
 import { useSubspaceCommunityAndRoleSetIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
 import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';

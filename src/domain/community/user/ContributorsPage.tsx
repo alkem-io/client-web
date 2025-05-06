@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
-import { useCurrentUserContext } from './';
+import { useCurrentUserContext } from '../userCurrent/useCurrentUserContext';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
