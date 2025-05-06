@@ -88,7 +88,6 @@ const CommunityVirtualContributors = ({
         </Link>
       ),
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
-      resizable: true,
       filterable: false,
       flex: 1,
     },

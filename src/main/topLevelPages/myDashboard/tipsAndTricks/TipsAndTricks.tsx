@@ -6,10 +6,18 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 
+type TipsAndTricksItemTranslation = {
+  title: string;
+  description: string;
+  imageUrl: string;
+  url: string;
+};
+
 export const TipsAndTricks = () => {
   const { t } = useTranslation();
 
-  const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
+  const itemsRaw = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
+  const items: TipsAndTricksItemTranslation[] = Array.isArray(itemsRaw) ? itemsRaw : Object.values(itemsRaw);
 
   return (
     <Gutters disablePadding>

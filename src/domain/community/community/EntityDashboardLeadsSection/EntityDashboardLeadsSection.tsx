@@ -1,7 +1,7 @@
 import { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AssociatedOrganizationsView from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { SvgIconProps } from '@mui/material';

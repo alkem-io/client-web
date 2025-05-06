@@ -2,9 +2,10 @@ import { Severity } from '@/core/state/global/notifications/notificationMachine'
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ApolloError } from '@apollo/client';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { TFunction, i18n } from 'i18next';
+import type { TFunction, i18n } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
@@ -16,7 +17,7 @@ const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n:
     return t('apollo.errors.generic', meta);
   }
 
-  const key = `apollo.errors.${code}`;
+  const key = `apollo.errors.${code}` as TranslationKey;
 
   if (!i18n.exists(key)) {
     // if the error text is missing for that code
@@ -49,12 +50,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     const graphqlErrors = error.graphQLErrors;
 
     graphqlErrors.forEach((error: GraphQLFormattedError) => {
-      // something is off with the latest i18next
-      // not casting the T function results in:
-      //
-      //  Argument of type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/react-i18next/ts4.1/index").TFunction<"translation", undefined>' is not assignable to parameter of type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/i18next/typescript/t").TFunction<"translation", undefined>'.
-      // Property '$TFunctionBrand' is missing in type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/react-i18next/ts4.1/index").TFunction<"translation", undefined>' but required in type 'import("/Users/vlad/projects/alkem.io/client-web/node_modules/i18next/typescript/t").TFunction<"translation", undefined>'.
-      const translation = getTranslationForCode(error, t as unknown as TFunction, i18n);
+      const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
     });
   };

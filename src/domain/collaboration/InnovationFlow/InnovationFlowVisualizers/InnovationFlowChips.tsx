@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import { ArrowRight } from '@mui/icons-material';
 import { Button, Divider, styled, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { InnovationFlowState } from '../InnovationFlow';
+import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 interface InnovationFlowChipsProps extends InnovationFlowVisualizerProps {}
@@ -37,14 +37,14 @@ const InnovationFlowChips = ({
       ? t(`common.enums.innovationFlowState.${stateName}` as TranslationKey)
       : stateName;
 
-  const getStateButtonVariant = (state: InnovationFlowState) => {
+  const getStateButtonVariant = (state: InnovationFlowStateModel) => {
     if (state.displayName === selectedState) {
       return 'contained';
     }
     return 'outlined';
   };
 
-  const getStateButtonBackgroundColor = (state: InnovationFlowState) => {
+  const getStateButtonBackgroundColor = (state: InnovationFlowStateModel) => {
     if (state.displayName === selectedState) {
       return 'primary.main';
     }

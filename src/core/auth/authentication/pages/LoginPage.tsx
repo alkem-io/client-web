@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import produce from 'immer';
+import { produce } from 'immer';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '@/domain/shared/components/Text/SubHeading';
 import { Text } from '@/core/ui/typography';

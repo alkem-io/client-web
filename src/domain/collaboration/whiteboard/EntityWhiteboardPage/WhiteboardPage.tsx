@@ -1,21 +1,20 @@
-import useBackToParentPage from '@/_deprecated/useBackToParentPage';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 
 export interface WhiteboardPageProps {
   parentUrl: string;
 }
 
 const WhiteboardPage = ({ parentUrl, ...props }: WhiteboardPageProps) => {
-  const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
-  const backToWhiteboards = () => backToExplore();
+  const backToParentPage = useBackWithDefaultUrl(parentUrl);
 
   return (
     <WhiteboardProvider>
       {(entities, state) => (
         <WhiteboardView
           whiteboardId={entities.whiteboard?.id}
-          backToWhiteboards={backToWhiteboards}
+          backToWhiteboards={backToParentPage}
           whiteboardShareUrl={entities.whiteboard?.profile.url ?? ''}
           whiteboard={entities.whiteboard}
           authorization={entities.whiteboard?.authorization}

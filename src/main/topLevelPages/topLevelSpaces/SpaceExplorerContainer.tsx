@@ -6,7 +6,7 @@ import {
   useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   SearchCategory,
   AuthorizationPrivilege,

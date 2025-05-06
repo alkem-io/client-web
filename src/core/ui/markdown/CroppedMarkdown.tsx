@@ -1,9 +1,9 @@
-import WrapperMarkdown, { MarkdownProps } from './WrapperMarkdown';
+import WrapperMarkdown, { WrapperMarkdownProps } from './WrapperMarkdown';
 import { gutters } from '../grid/utils';
 import OverflowGradient, { OverflowGradientProps } from '../overflow/OverflowGradient';
 import { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../card/CardDescription';
 
-interface CroppedMarkdownProps extends MarkdownProps {
+interface CroppedMarkdownProps extends WrapperMarkdownProps {
   children: string;
   backgroundColor?: OverflowGradientProps['backgroundColor'];
   maxHeightGutters?: number;

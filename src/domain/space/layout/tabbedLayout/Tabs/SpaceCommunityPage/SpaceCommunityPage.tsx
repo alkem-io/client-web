@@ -23,7 +23,7 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';

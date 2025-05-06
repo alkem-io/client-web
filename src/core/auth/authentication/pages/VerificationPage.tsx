@@ -10,7 +10,7 @@ import FixedHeightLogo from '../components/FixedHeightLogo';
 import { BlockTitle, PageTitle } from '@/core/ui/typography';
 import { SelfServiceVerificationFlow } from '@ory/kratos-client';
 import { useSignUpReturnUrl } from '../utils/SignUpReturnUrl';
-import produce from 'immer';
+import { produce } from 'immer';
 import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
 import { UiNodeAnchor } from '../components/Kratos/UiNodeTypes';
 

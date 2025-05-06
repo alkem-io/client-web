@@ -31,7 +31,7 @@ import {
 import 'react-chat-widget-react-18/lib/styles.css';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
