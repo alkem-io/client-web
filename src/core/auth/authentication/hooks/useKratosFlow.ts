@@ -2,7 +2,7 @@ import { LoginFlow, RecoveryFlow, RegistrationFlow, SettingsFlow, VerificationFl
 import { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useKratosClient } from './useKratosClient';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { error as logSentryError, TagCategoryValues } from '@/core/logging/sentry/log';
 
 export enum FlowTypeName {
   Login = 'Login',
@@ -43,7 +43,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
       } else {
         const error = new Error(err.message);
         setError(error);
-        logError(error, { category: TagCategoryValues.AUTH });
+        logSentryError(error, { category: TagCategoryValues.AUTH });
       }
     }
   }, []);
@@ -56,7 +56,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
         if (status !== 200) {
           const error = new Error(`Error loading flow! Status: ${status}`);
           setError(error);
-          logError(error, { category: TagCategoryValues.AUTH });
+          logSentryError(error, { category: TagCategoryValues.AUTH });
         }
         setFlow(data);
       } catch (error) {

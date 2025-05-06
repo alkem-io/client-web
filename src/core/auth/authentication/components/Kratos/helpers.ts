@@ -4,29 +4,8 @@ import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './
 import type { TFunction } from 'i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
-export function isUiNodeAnchorAttributes(attr: UiNodeAttributes) {
-  if (attr.node_type === 'a') {
-    return true;
-  }
-  return false;
-}
-
-export function isUiNodeImageAttributes(attr: UiNodeAttributes) {
-  if (attr.node_type === 'img') {
-    return true;
-  }
-  return false;
-}
-
 export function isUiNodeInputAttributes(attr: UiNodeAttributes) {
   if (attr.node_type === 'input') {
-    return true;
-  }
-  return false;
-}
-
-export function isUiNodeTextAttributes(attr: UiNodeAttributes) {
-  if (attr.node_type === 'text') {
     return true;
   }
   return false;
