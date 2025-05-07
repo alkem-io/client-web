@@ -4081,9 +4081,19 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
       type
       invitation {
         id
+        contributor {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
       }
       platformInvitation {
         id
+        email
+        firstName
+        lastName
       }
     }
   }

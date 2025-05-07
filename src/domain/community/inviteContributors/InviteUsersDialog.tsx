@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { InviteContributorDialogProps } from './InviteContributorsProps';
+import { InviteContributorsDialogProps } from './InviteContributorsProps';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -25,6 +25,8 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { compact } from 'lodash';
 import { useState } from 'react';
+import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
+import InvitationsResultDialogContent from './components/InvitationsResults/InvitationsResultDialogContent';
 
 const AvailableRoles = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -34,10 +36,10 @@ type InviteUsersData = {
   extraRole: RoleName;
 };
 
-const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
+const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
-  const [invitationSent, setInvitationSent] = useState(false);
+  const [invitationsResults, setInvitationSent] = useState<InvitationResultModel[] | undefined>(undefined);
   const {
     space: {
       about: {
@@ -74,14 +76,14 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
         contributor.type === ContributorSelectorType.Email ? contributor.email : undefined
       )
     );
-    await inviteContributorsOnRoleSet({
+    const result = await inviteContributorsOnRoleSet({
       roleSetId: requiredRoleSetId,
       invitedContributorIds,
       invitedUserEmails,
       welcomeMessage: data.welcomeMessage,
       extraRole: data.extraRole,
     });
-    setInvitationSent(true);
+    setInvitationSent(result);
   });
 
   const loading = spaceLoading || loadingRoleSet || invitingUsers;
@@ -95,7 +97,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
       <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
         {({ handleSubmit, isValid, setFieldValue }) => (
           <>
-            {!invitationSent && (
+            {!invitationsResults && (
               <>
                 <DialogContent>
                   <Gutters disablePadding>
@@ -130,20 +132,15 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
                 </DialogActions>
               </>
             )}
-            {invitationSent && (
+            {invitationsResults && (
               <>
-                <DialogContent>
-                  <Gutters disablePadding>
-                    <Caption>{t('community.invitations.inviteContributorsDialog.users.success')}</Caption>
-                    <Caption>{t('community.invitations.inviteContributorsDialog.users.failure')}</Caption>
-                  </Gutters>
-                </DialogContent>
+                <InvitationsResultDialogContent invitationsResults={invitationsResults} />
                 <DialogActions>
                   <Button
                     variant="outlined"
                     onClick={() => {
                       setFieldValue('selectedContributors', []);
-                      setInvitationSent(false);
+                      setInvitationSent(undefined);
                     }}
                   >
                     {t('community.invitations.inviteContributorsDialog.users.back')}
@@ -152,7 +149,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorDialogProps) => {
                     variant="contained"
                     onClick={() => {
                       setFieldValue('selectedContributors', []);
-                      setInvitationSent(false);
+                      setInvitationSent(undefined);
                       onClose();
                     }}
                   >

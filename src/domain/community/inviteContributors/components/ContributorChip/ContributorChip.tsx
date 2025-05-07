@@ -12,7 +12,7 @@ import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 interface ContributorChipProps {
   contributor: SelectedContributor;
   validationError?: string;
-  onRemove: () => void;
+  onRemove?: () => void;
 }
 
 const RootChip = styled(Box)<BoxProps & { invalid?: boolean }>(({ theme, invalid }) => ({
@@ -46,7 +46,8 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
           override={validationError}
         >
           <RootChip invalid={!!validationError}>
-            <Caption>{contributor.displayName}</Caption> <ClearIcon fontSize="small" onClick={onRemove} />
+            <Caption>{contributor.displayName}</Caption>
+            {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
           </RootChip>
         </ContributorTooltip>
       );
@@ -54,7 +55,8 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
       return (
         <Tooltip title={validationError}>
           <RootChip invalid={!!validationError}>
-            <Caption>{contributor.email}</Caption> <ClearIcon fontSize="small" onClick={onRemove} />
+            <Caption>{contributor.email}</Caption>
+            {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
           </RootChip>
         </Tooltip>
       );

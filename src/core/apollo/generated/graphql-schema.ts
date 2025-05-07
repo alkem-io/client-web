@@ -8022,8 +8022,33 @@ export type InviteForEntryRoleOnRoleSetMutation = {
   inviteForEntryRoleOnRoleSet: Array<{
     __typename?: 'RoleSetInvitationResult';
     type: RoleSetInvitationResultType;
-    invitation?: { __typename?: 'Invitation'; id: string } | undefined;
-    platformInvitation?: { __typename?: 'PlatformInvitation'; id: string } | undefined;
+    invitation?:
+      | {
+          __typename?: 'Invitation';
+          id: string;
+          contributor:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              };
+        }
+      | undefined;
+    platformInvitation?:
+      | {
+          __typename?: 'PlatformInvitation';
+          id: string;
+          email: string;
+          firstName?: string | undefined;
+          lastName?: string | undefined;
+        }
+      | undefined;
   }>;
 };
 

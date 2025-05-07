@@ -1,18 +1,20 @@
 import { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 
 type InvitationResultModel = {
-  id: string;
-  result: RoleSetInvitationResultType;
-  displayName: string;
-} & (
-  | {
-      type: 'existingContributor';
-      userId: string;
-    }
-  | {
-      type: 'platformInvitation';
-      email: string;
-    }
-);
+  type: RoleSetInvitationResultType;
+  invitation?: {
+    id: string;
+    contributor: {
+      id: string;
+      profile: { displayName: string };
+    };
+  };
+  platformInvitation?: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+  };
+};
 
 export default InvitationResultModel;
