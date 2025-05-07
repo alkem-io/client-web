@@ -51,9 +51,6 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
                 contributor={{
                   type: ContributorSelectorType.Email,
                   email: invite.platformInvitation.email,
-                  displayName:
-                    `${invite.platformInvitation.firstName} ${invite.platformInvitation.lastName}`.trim() ||
-                    invite.platformInvitation.email,
                 }}
               />
             ) : undefined

@@ -13,7 +13,7 @@ import * as yup from 'yup';
 import { gutters } from '@/core/ui/grid/utils';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { FormikContributorsSelectorField } from './components/FormikContributorsSelectorField/FormikContributorsSelectorField';
+import FormikContributorsSelectorField from './components/FormikContributorsSelectorField/FormikContributorsSelectorField';
 import {
   ContributorSelectorType,
   SelectedContributor,

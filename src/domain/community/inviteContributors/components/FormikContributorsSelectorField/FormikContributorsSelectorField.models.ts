@@ -11,5 +11,5 @@ export type SelectedContributor =
   | {
       type: ContributorSelectorType.Email;
       email: string;
-      displayName: string;
+      displayName?: string;
     };

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -10,8 +10,6 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
 import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
 import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import InvitationOptionsBlock from '@/domain/community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
@@ -136,22 +134,6 @@ const SpaceAdminCommunityPage = ({
     spaceVirtualContributorEntitlementEnabled &&
     (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
 
-  const currentApplicationsUserIds = useMemo(
-    () =>
-      applications?.filter(application => application.state === 'new').map(application => application.contributor.id) ??
-      [],
-    [applications]
-  );
-
-  const currentInvitationsUserIds = useMemo(
-    () =>
-      invitations?.filter(invitation => invitation.state === 'invited').map(invitation => invitation.contributor.id) ??
-      [],
-    [invitations]
-  );
-
-  const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
-
   const currentCommunityGuidelines = useRef<CommunityGuidelines>();
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -203,16 +185,6 @@ const SpaceAdminCommunityPage = ({
             />
           </PageContentBlock>
         )}
-        <PageContentBlockSeamless columns={4} disablePadding>
-          <InvitationOptionsBlock
-            spaceDisplayName={about.profile.displayName}
-            inviteUsers={inviteUsers}
-            currentApplicationsUserIds={currentApplicationsUserIds}
-            currentInvitationsUserIds={currentInvitationsUserIds}
-            currentMembersIds={currentMembersIds}
-            parentSpaceId={undefined}
-          />
-        </PageContentBlockSeamless>
         <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
           <Text marginBottom={gutters(2)}>
             <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />

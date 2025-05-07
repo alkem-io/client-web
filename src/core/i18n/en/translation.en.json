@@ -592,20 +592,8 @@
       "inviteOrganizations": "Invite Organizations",
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
       "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "inviteExistingUserDialog": {
-        "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
-        "selector": {
-          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
-          "alreadyInvited": "This user is already invited",
-          "alreadyMember": "This user is already a member"
-        }
-      },
       "inviteExistingVCDialog": {
         "title": "Invite Virtual Contributor to join this Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "Send an email invitation"
       },
       "inviteToRole": "Invite to be a: ",
       "inviteContributorsDialog": {

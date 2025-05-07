@@ -29,7 +29,7 @@ interface FormikContributorsSelectorFieldProps {
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
 
-export const FormikContributorsSelectorField = ({
+const FormikContributorsSelectorField = ({
   name = 'selectedContributors',
   sortUsers = identityFn,
   hydrateUsers = identityFn as HydratorFn,
