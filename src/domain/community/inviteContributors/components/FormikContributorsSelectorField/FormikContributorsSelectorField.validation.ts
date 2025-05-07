@@ -10,6 +10,6 @@ export const SelectedContributorSchema = yup.object().shape({
     return type === ContributorSelectorType.User ? schema.required() : schema.notRequired();
   }),
   email: yup.string().when(['type'], ([type], schema) => {
-    return type === ContributorSelectorType.Email ? schema.required() : schema.notRequired();
+    return type === ContributorSelectorType.Email ? schema.email().required() : schema.notRequired();
   }),
 });

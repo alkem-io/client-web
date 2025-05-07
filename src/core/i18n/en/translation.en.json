@@ -618,12 +618,13 @@
           "success": "Your invitation was successfully sent to the following recipients:",
           "failure": "We couldn’t send the invitation to the following recipients:",
           "back": "Send another invitation",
+          "invitationsSent": "{{count}} invitations will be sent.",
           "results": {
-            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "",
-            "ALREADY_INVITED_TO_ROLE_SET": "",
-            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "",
-            "INVITED_TO_PLATFORM_AND_ROLE_SET": "",
-            "INVITED_TO_ROLE_SET": ""
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
+            "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
+            "INVITED_TO_ROLE_SET": "Invited to join the community"
           }
         },
         "vcs": {

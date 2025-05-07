@@ -6,7 +6,7 @@ import { Box, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { useMemo, useState } from 'react';
-import { CaptionSmall } from '@/core/ui/typography';
+import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { isArray, uniqWith } from 'lodash';
@@ -97,7 +97,7 @@ export const FormikContributorsSelectorField = ({
       return;
     }
     if (typeof value === 'string') {
-      onAddEmailAddress(value);
+      return; // This is a call from the Autocomplete, strings will be handled in the text field events
     } else if (typeof value === 'object' && value.id) {
       onAddUser(value);
     }
@@ -115,11 +115,6 @@ export const FormikContributorsSelectorField = ({
     ]);
   };
 
-  const onAddEmailAddress = (email: string, displayName: string = email) => {
-    const fieldValue = Array.isArray(field.value) ? field.value : [];
-    setFieldValue([...fieldValue, { type: ContributorSelectorType.Email, email, displayName }]);
-  };
-
   const onTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(value ? { email: value, displayName: value } : undefined); // If no value, the full filter is undefined
   };
@@ -128,28 +123,19 @@ export const FormikContributorsSelectorField = ({
     if (event.key === 'Enter' || event.key === ';' || event.key === ',') {
       event.preventDefault();
       if (inputValue) {
-        onAddEmailAddress(inputValue);
+        const emails = emailParser(inputValue);
+
+        const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
+          type: ContributorSelectorType.Email,
+          ...parsedEmail,
+        }));
+
+        const currentFieldValue = Array.isArray(field.value) ? field.value : [];
+        setFieldValue([...currentFieldValue, ...newValues]);
         setAutocompleteValue(null);
         setInputValue('');
       }
     }
-  };
-  const onTextFieldPaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
-    const fieldValue = Array.isArray(field.value) ? field.value : [];
-    event.preventDefault();
-    const pastedData = event.clipboardData.getData('text') ?? '';
-    const emails = emailParser(pastedData);
-    for (const email of emails) {
-      onAddEmailAddress(email.email, email.displayName);
-    }
-    const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
-      type: ContributorSelectorType.Email,
-      ...parsedEmail,
-    }));
-
-    setFieldValue([...fieldValue, ...newValues]);
-    setAutocompleteValue(null);
-    setInputValue('');
   };
 
   const handleRemove = (contributor: SelectedContributor) => {
@@ -219,7 +205,7 @@ export const FormikContributorsSelectorField = ({
             name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
             onChange={onTextFieldChange}
             onKeyDown={onTextFieldKeyDown}
-            onPaste={onTextFieldPaste}
+            multiline
           />
         )}
       />
@@ -233,6 +219,11 @@ export const FormikContributorsSelectorField = ({
           />
         ))}
       </Box>
+      {field.value.length > 9 && (
+        <Caption align="right" marginTop={gutters(0.5)}>
+          {t('community.invitations.inviteContributorsDialog.users.invitationsSent', { count: field.value.length })}
+        </Caption>
+      )}
     </Box>
   );
 };

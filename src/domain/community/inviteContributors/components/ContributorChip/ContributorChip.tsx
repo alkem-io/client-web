@@ -53,7 +53,7 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
       );
     case ContributorSelectorType.Email:
       return (
-        <Tooltip title={validationError}>
+        <Tooltip title={validationError ? validationError : contributor.displayName} arrow>
           <RootChip invalid={!!validationError}>
             <Caption>{contributor.email}</Caption>
             {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}

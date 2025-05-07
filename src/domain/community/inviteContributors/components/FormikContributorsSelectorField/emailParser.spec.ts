@@ -34,6 +34,7 @@ describe('emailParser', () => {
       'username@domain..com', // Double dot in domain
       'username@domain..com', // Double dot in domain
       'username@domain..com', // Double dot in domain
+      'username@@', // Double @ symbol
     ];
     const result = inputs.map(input => emailParser(input));
     expect(result).toEqual(times(inputs.length, () => []));
@@ -86,7 +87,6 @@ describe('emailParser', () => {
     const input = `john.doe@example.com, Name Surname <name.surname@email.com>;
     jane.smith@domain.com random.user123@mail.com`;
     const result = emailParser(input);
-    console.log('result', result);
     expect(result).toEqual([
       { displayName: 'john.doe@example.com', email: 'john.doe@example.com' },
       { displayName: 'Name Surname', email: 'name.surname@email.com' },

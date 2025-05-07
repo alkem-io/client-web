@@ -60,27 +60,25 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
           )}
         </Box>
         <Caption>{t('community.invitations.inviteContributorsDialog.users.failure')}</Caption>
-        <Box>
-          <ul>
-            {failedInvitations.map(invite =>
-              invite.invitation ? (
-                <li>
-                  <Caption>{invite.invitation.contributor.profile.displayName}</Caption>
-                  <CaptionSmall>
-                    {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
-                  </CaptionSmall>
-                </li>
-              ) : invite.platformInvitation ? (
-                <li>
-                  <Caption>{invite.platformInvitation.email}</Caption>
-                  <CaptionSmall>
-                    {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
-                  </CaptionSmall>
-                </li>
-              ) : undefined
-            )}
-          </ul>
-        </Box>
+        <ul>
+          {failedInvitations.map(invite =>
+            invite.invitation ? (
+              <li key={invite.invitation.id}>
+                <Caption display="inline">{invite.invitation.contributor.profile.displayName}</Caption>
+                <CaptionSmall marginLeft={gutters()} display="inline">
+                  {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
+                </CaptionSmall>
+              </li>
+            ) : invite.platformInvitation ? (
+              <li key={invite.platformInvitation.id}>
+                <Caption display="inline">{invite.platformInvitation.email}</Caption>
+                <CaptionSmall marginLeft={gutters()} display="inline">
+                  {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
+                </CaptionSmall>
+              </li>
+            ) : undefined
+          )}
+        </ul>
       </Gutters>
     </DialogContent>
   );
