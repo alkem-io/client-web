@@ -48,7 +48,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
 
   const validationSchema = yup.object().shape({
     welcomeMessage: yup.string().required(),
-    selectedContributors: yup.array().of(SelectedContributorSchema).required(),
+    selectedContributors: yup.array().of(SelectedContributorSchema).min(1).required(),
     extraRole: yup.string().oneOf(INVITE_USERS_TO_ROLES).required(),
   });
 
@@ -88,7 +88,13 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
         title={t('community.invitations.inviteContributorsDialog.users.title', { spaceName })}
         onClose={onClose}
       />
-      <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        validateOnMount
+        onSubmit={onSubmit}
+      >
         {({ handleSubmit, isValid, setFieldValue }) => (
           <>
             {!invitationsResults && (

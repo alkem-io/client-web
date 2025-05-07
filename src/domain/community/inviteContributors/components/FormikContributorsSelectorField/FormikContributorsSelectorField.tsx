@@ -219,7 +219,7 @@ const FormikContributorsSelectorField = ({
           />
         ))}
       </Box>
-      {field.value.length > 9 && (
+      {field.value?.length > 9 && (
         <Caption align="right" marginTop={gutters(0.5)}>
           {t('community.invitations.inviteContributorsDialog.users.invitationsSent', { count: field.value.length })}
         </Caption>

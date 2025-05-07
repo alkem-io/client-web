@@ -31,8 +31,8 @@ const ContributorTooltip = ({
           break;
         case RoleSetContributorType.Organization: // TODO: Pending implementation
         case RoleSetContributorType.Virtual:
-        default:
-          throw new Error('Unsupported contributor type for tooltip');
+        default: // Do nothing for now - Inviting Organizations is not implemented and Virtual Contributors are invited in a different way
+        // throw new Error('Unsupported contributor type for tooltip');
       }
     }
   };

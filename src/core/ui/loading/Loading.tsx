@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from '@mui/material';
 import { Caption } from '../typography';
 
-export const Loading = ({ text = 'Loading' }: { text?: string }) => {
+const Loading = ({ text = 'Loading' }: { text?: string }) => {
   return (
     <Box
       sx={{

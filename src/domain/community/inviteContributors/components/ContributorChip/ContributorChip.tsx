@@ -6,7 +6,7 @@ import {
 } from '../FormikContributorsSelectorField/FormikContributorsSelectorField.models';
 import { Caption } from '@/core/ui/typography';
 import ClearIcon from '@mui/icons-material/Clear';
-import ContributorTooltip from '../ContributorTooltip/ContributorTooltip';
+import ContributorTooltip from '../../../contributor/ContributorTooltip/ContributorTooltip';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 interface ContributorChipProps {
@@ -15,7 +15,7 @@ interface ContributorChipProps {
   onRemove?: () => void;
 }
 
-const RootChip = styled(Box)<BoxProps & { invalid?: boolean }>(({ theme, invalid }) => ({
+const StyledChip = styled(Box)<BoxProps & { invalid?: boolean }>(({ theme, invalid }) => ({
   color: theme.palette.primary.main,
   border: '1px solid',
   borderColor: invalid ? theme.palette.error.main : theme.palette.divider,
@@ -45,19 +45,19 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
           contributorType={RoleSetContributorType.User}
           override={validationError}
         >
-          <RootChip invalid={!!validationError}>
+          <StyledChip invalid={!!validationError}>
             <Caption>{contributor.displayName}</Caption>
             {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
-          </RootChip>
+          </StyledChip>
         </ContributorTooltip>
       );
     case ContributorSelectorType.Email:
       return (
         <Tooltip title={validationError ? validationError : contributor.displayName} arrow>
-          <RootChip invalid={!!validationError}>
+          <StyledChip invalid={!!validationError}>
             <Caption>{contributor.email}</Caption>
             {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
-          </RootChip>
+          </StyledChip>
         </Tooltip>
       );
   }

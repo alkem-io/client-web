@@ -135,7 +135,9 @@ const SpaceCommunityPage = () => {
         <ContactLeadsButton onClick={openContactLeadsDialog}>
           {t('buttons.contact-leads', { contact: t('community.host') })}
         </ContactLeadsButton>
-        <InviteContributorsWizard contributorType={RoleSetContributorType.User} sx={{ width: '100%' }} />
+        {hasInvitePrivilege && (
+          <InviteContributorsWizard contributorType={RoleSetContributorType.User} sx={{ width: '100%' }} />
+        )}
         <DirectMessageDialog
           title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
           open={isContactLeadUsersDialogOpen}

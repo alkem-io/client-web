@@ -2,6 +2,7 @@ export enum ContributorSelectorType {
   User = 'user',
   Email = 'email',
 }
+
 export type SelectedContributor =
   | {
       type: ContributorSelectorType.User;
