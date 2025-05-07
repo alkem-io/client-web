@@ -1,7 +1,7 @@
 import GridItem from '@/core/ui/grid/GridItem';
-import UserCard from '../user/userCard/UserCard';
+import UserCard from '../../user/userCard/UserCard';
 import GridContainer from '@/core/ui/grid/GridContainer';
-import { ContributorProps } from './InviteContributorsProps';
+import { ContributorProps } from '../InviteContributorsProps';
 import { noop } from 'lodash';
 
 interface InviteContributorsListProps {

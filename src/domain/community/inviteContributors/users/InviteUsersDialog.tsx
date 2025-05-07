@@ -1,24 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { InviteContributorsDialogProps } from './InviteContributorsProps';
+import { InviteContributorsDialogProps } from '../InviteContributorsProps';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { Box, Button, DialogActions, DialogContent } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
+import { Button, DialogActions } from '@mui/material';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
-import Gutters from '@/core/ui/grid/Gutters';
-import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { gutters } from '@/core/ui/grid/utils';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import FormikContributorsSelectorField from './components/FormikContributorsSelectorField/FormikContributorsSelectorField';
 import {
   ContributorSelectorType,
   SelectedContributor,
-} from './components/FormikContributorsSelectorField/FormikContributorsSelectorField.models';
-import { SelectedContributorSchema } from './components/FormikContributorsSelectorField/FormikContributorsSelectorField.validation';
+} from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.models';
+import { SelectedContributorSchema } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.validation';
 import SendButton from '@/core/ui/actions/SendButton';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -26,9 +19,10 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 import { compact } from 'lodash';
 import { useState } from 'react';
 import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
-import InvitationsResultDialogContent from './components/InvitationsResults/InvitationsResultDialogContent';
+import InvitationsResultDialogContent from './InvitationsResultDialogContent';
+import InviteUsersFormDialogContent from './InviteUsersFormDialogContent';
 
-const AvailableRoles = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
+export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
 type InviteUsersData = {
   welcomeMessage: string;
@@ -55,7 +49,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
   const validationSchema = yup.object().shape({
     welcomeMessage: yup.string().required(),
     selectedContributors: yup.array().of(SelectedContributorSchema).required(),
-    extraRole: yup.string().oneOf(AvailableRoles).required(),
+    extraRole: yup.string().oneOf(INVITE_USERS_TO_ROLES).required(),
   });
 
   const initialValues: InviteUsersData = {
@@ -99,34 +93,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
           <>
             {!invitationsResults && (
               <>
-                <DialogContent>
-                  <Gutters disablePadding>
-                    <Caption>{t('community.invitations.inviteContributorsDialog.users.description')}</Caption>
-                    <FormikContributorsSelectorField name="selectedContributors" />
-                    <FormikInputField
-                      name="welcomeMessage"
-                      title={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
-                      placeholder={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
-                      multiline
-                      rows={5}
-                      maxLength={LONG_TEXT_LENGTH}
-                    />
-                    <Gutters disablePadding row justifyContent="space-between" alignItems="center">
-                      <Caption>{t('community.invitations.inviteContributorsDialog.users.note')}</Caption>
-                      <Box display="flex" gap={gutters()} alignItems="center">
-                        <Caption sx={{ whiteSpace: 'nowrap' }}>{t('community.invitations.inviteToRole')}</Caption>
-                        <FormikSelect
-                          name="extraRole"
-                          values={AvailableRoles.map(role => ({
-                            id: role,
-                            name: t(`common.roles.${role}`),
-                          }))}
-                          required
-                        />
-                      </Box>
-                    </Gutters>
-                  </Gutters>
-                </DialogContent>
+                <InviteUsersFormDialogContent />
                 <DialogActions>
                   <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
                 </DialogActions>

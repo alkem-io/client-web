@@ -4,8 +4,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import { Box, DialogContent } from '@mui/material';
-import ContributorChip from '../ContributorChip/ContributorChip';
-import { ContributorSelectorType } from '../FormikContributorsSelectorField/FormikContributorsSelectorField.models';
+import ContributorChip from '../components/ContributorChip/ContributorChip';
+import { ContributorSelectorType } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.models';
 import { gutters } from '@/core/ui/grid/utils';
 
 interface InvitationsResultDialogContentProps {

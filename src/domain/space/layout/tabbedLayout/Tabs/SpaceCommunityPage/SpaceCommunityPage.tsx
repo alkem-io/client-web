@@ -30,6 +30,7 @@ import useSpaceTabProvider from '../../SpaceTabProvider';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useSpace } from '@/domain/space/context/useSpace';
+import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 
 const SpaceCommunityPage = () => {
   const { space, entitlements } = useSpace();
@@ -134,6 +135,7 @@ const SpaceCommunityPage = () => {
         <ContactLeadsButton onClick={openContactLeadsDialog}>
           {t('buttons.contact-leads', { contact: t('community.host') })}
         </ContactLeadsButton>
+        <InviteContributorsWizard contributorType={RoleSetContributorType.User} sx={{ width: '100%' }} />
         <DirectMessageDialog
           title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
           open={isContactLeadUsersDialogOpen}

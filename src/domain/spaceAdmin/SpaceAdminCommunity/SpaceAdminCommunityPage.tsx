@@ -29,7 +29,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
@@ -164,7 +163,7 @@ const SpaceAdminCommunityPage = ({
         {pendingMembershipsEnabled && (
           <PageContentBlock>
             <PageContentBlockHeader title={t('community.pendingMemberships')}>
-              <InviteContributorsWizard contributorType={RoleSetContributorType.User} startIcon={<GroupAddIcon />}>
+              <InviteContributorsWizard contributorType={RoleSetContributorType.User}>
                 {t('buttons.invite')}
               </InviteContributorsWizard>
               <Tooltip title={t('community.applicationsHelp')} arrow>

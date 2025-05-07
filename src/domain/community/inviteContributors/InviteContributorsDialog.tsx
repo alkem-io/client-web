@@ -1,7 +1,7 @@
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { InviteContributorsDialogProps } from './InviteContributorsProps';
-import InviteVCsDialog from './InviteVCsDialog';
-import InviteUsersDialog from './InviteUsersDialog';
+import InviteVCsDialog from './virtualContributors/InviteVCsDialog';
+import InviteUsersDialog from './users/InviteUsersDialog';
 
 const InviteContributorsDialog = (props: InviteContributorsDialogProps) => {
   switch (props.type) {

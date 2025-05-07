@@ -18,7 +18,7 @@ import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
-import InviteVirtualContributorDialog from '@/domain/community/inviteContributors/_oldDialogs/InviteVirtualContributorDialog';
+import InviteVirtualContributorDialog from '@/domain/community/inviteContributors/virtualContributors/InviteVirtualContributorDialog';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
