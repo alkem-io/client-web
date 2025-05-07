@@ -126,7 +126,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
       await onAddVirtualContributor(selectedVirtualContributor.id);
 
       notify(
-        t('community.invitations.inviteContributorsDialog.successfullyAdded', {
+        t('community.invitations.inviteContributorsDialog.vcs.successfullyAdded', {
           contributor: t('community.virtualContributor'),
         }),
         'success'
@@ -201,7 +201,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
         setOnAccount(accountVCs);
         setInLibrary(filteredLibraryVCs);
       } catch (error) {
-        notify(t('community.invitations.inviteContributorsDialog.vcFetchErrorMessage'), 'error');
+        notify(t('community.invitations.inviteContributorsDialog.vcs.vcFetchErrorMessage'), 'error');
       }
     };
 
@@ -302,7 +302,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
       </DialogActions>
       {openInviteDialog && selectedVirtualContributor?.id && (
         <InviteVirtualContributorDialog
-          title={t('community.invitations.inviteExistingVCDialog.title')}
+          title={t('community.invitations.inviteContributorsDialog.vcs.dialogTitle')}
           spaceDisplayName={''}
           open={openInviteDialog}
           onClose={onCloseInvite}

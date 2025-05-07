@@ -155,7 +155,7 @@ const CommunityVirtualContributors = ({
       disabled={!canAddVirtualContributors}
       onClick={() => openAvailableContributorsDialog(external)}
     >
-      {external ? t('community.invitations.inviteExternalVC') : t('common.add')}
+      {external ? t('community.invitations.inviteContributorsDialog.vcs.inviteExternalVC') : t('common.add')}
     </ButtonWithTooltip>
   );
 
@@ -230,7 +230,7 @@ const CommunityVirtualContributors = ({
       )}
       {isInvitingExternal && (
         <InviteVirtualContributorDialog
-          title={t('community.invitations.inviteExistingVCDialog.title')}
+          title={t('community.invitations.inviteContributorsDialog.vcs.dialogTitle')}
           spaceDisplayName={spaceDisplayName}
           open={isInvitingExternal}
           onClose={closeInvitationDialog}
