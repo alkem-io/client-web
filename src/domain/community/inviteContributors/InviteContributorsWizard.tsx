@@ -2,7 +2,7 @@ import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import InviteContributorDialog from './InviteContributorsDialog';
+import InviteContributorsDialog from './InviteContributorsDialog';
 
 interface InviteContributorsWizardProps extends ButtonProps {
   contributorType: RoleSetContributorType;
@@ -17,7 +17,7 @@ const InviteContributorsWizard = ({ contributorType, children, ...buttonProps }:
       <Button variant="contained" onClick={() => setIsOpen(true)} {...buttonProps}>
         {children ?? t(`community.invitations.inviteButton.${contributorType}`)}
       </Button>
-      <InviteContributorDialog type={contributorType} open={isOpen} onClose={() => setIsOpen(false)} />
+      <InviteContributorsDialog type={contributorType} open={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 };

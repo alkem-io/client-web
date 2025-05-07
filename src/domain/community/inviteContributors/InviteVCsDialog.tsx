@@ -8,7 +8,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useSpace } from '@/domain/space/context/useSpace';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
-import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
+import { ContributorProps, InviteContributorsDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from './_oldDialogs/InviteVirtualContributorDialog';
 import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
@@ -27,7 +27,7 @@ import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetai
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 
-const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
+const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
