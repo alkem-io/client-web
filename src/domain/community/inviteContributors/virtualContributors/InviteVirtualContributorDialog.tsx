@@ -76,9 +76,7 @@ const InviteVirtualContributorDialog = ({
       <DialogHeader onClose={onClose}>
         <BlockTitle>{title}</BlockTitle>
       </DialogHeader>
-      <Gutters paddingTop={0} sx={{ border: '1px solid red' }}>
-        {' '}
-        {/* //!! */}
+      <Gutters paddingTop={0}>
         {subtitle && <Text>{subtitle}</Text>}
         <Formik
           initialValues={initialValues}
