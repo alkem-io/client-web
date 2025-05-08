@@ -180,7 +180,9 @@
     "notifications": "Notifications Button",
     "invite": "Invite",
     "visit": "Visit",
-    "returnToDashboard": "Return to dashboard as guest"
+    "returnToDashboard": "Return to dashboard as guest",
+    "approveApplication": "Approve application",
+    "rejectApplication": "Reject application"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -468,6 +470,11 @@
       },
       "invitationExternalStatus": {
         "invited": "Invited to join Alkemio & this Space"
+      },
+      "roleSetContributorType": {
+        "USER": "User",
+        "ORGANIZATION": "Organization",
+        "VIRTUAL": "Virtual Contributor"
       }
     },
     "blocks": {
@@ -576,7 +583,6 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
-
     "invitations": {
       "inviteButton": {
         "USER": "Invite people to this Space",
@@ -623,17 +629,31 @@
         "welcomeMessage": "Message"
       }
     },
-    "confirmDeleteApplication": {
-      "title": "Deleting application from {{user}}",
-      "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
-    },
-    "confirmDeleteInvitation": {
-      "title": "Deleting invitation from {{user}}",
-      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "Deleting invitation from {{user}}",
-      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Deleting application from '{{user}}'",
+          "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+        },
+        "invitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        },
+        "platformInvitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        }
+      },
+      "approve": {
+        "title": "Approve application from {{user}}",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
+        "confirmButton": "Yes, approve"
+      },
+      "reject": {
+        "title": "Reject application from {{user}}",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
+        "confirmButton": "Yes, reject"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending Memberships",

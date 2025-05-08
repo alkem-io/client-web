@@ -1,4 +1,4 @@
-import { Box, IconButton, Link } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import { useMemo, useState } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,8 @@ import DataGridTable from '@/core/ui/table/DataGridTable';
 import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { gutters } from '@/core/ui/grid/utils';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
 import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -16,9 +18,21 @@ import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
 import { MembershipType } from '../../../access/model/MembershipType';
 import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import { InvitationModel } from '@/domain/access/model/InvitationModel';
+import DataGridActionButton from '@/core/ui/table/DataGridActionButton';
+import {
+  ApplicationEvent,
+  ApplicationState,
+  InvitationEvent,
+  InvitationState,
+} from '@/domain/community/models/InvitationApplicationConstants';
 
 type RenderParams = GridRenderCellParams<MembershipTableItem>;
 type GetterParams = MembershipTableItem | undefined;
+enum ActionType {
+  Approve = 'approve',
+  Reject = 'reject',
+  Delete = 'delete',
+}
 
 const PAGE_SIZE = 5;
 const initialState: GridInitialState = {
@@ -38,36 +52,25 @@ const initialState: GridInitialState = {
   },
 };
 
-const getDeleteDialogTranslationNamespace = (row: MembershipTableItem) => {
-  switch (row.type) {
-    case MembershipType.Application:
-      return 'confirmDeleteApplication';
-    case MembershipType.Invitation:
-      return 'confirmDeleteInvitation';
-    case MembershipType.PlatformInvitation:
-      return 'confirmDeletePlatformInvitation';
-  }
-};
-
 const formatState = (item: MembershipTableItem, t: TFunction) => {
   if (item.type === MembershipType.Application) {
     switch (item.state) {
-      case 'new':
+      case ApplicationState.NEW:
         return <strong>{t('community.applicationStatus.applicationReceived')}</strong>;
-      case 'approved':
+      case ApplicationState.APPROVED:
         return t('community.applicationStatus.applicationApproved');
-      case 'rejected':
+      case ApplicationState.REJECTED:
         return t('community.applicationStatus.applicationRejected');
-      case 'archived':
+      case ApplicationState.ARCHIVED:
         return t('community.applicationStatus.applicationArchived');
     }
   } else if (item.type === MembershipType.Invitation) {
     switch (item.state) {
-      case 'invited':
+      case InvitationState.INVITED:
         return t('common.enums.invitationStatus.invited');
-      case 'accepted':
+      case InvitationState.ACCEPTED:
         return t('common.enums.invitationStatus.accepted');
-      case 'rejected':
+      case InvitationState.REJECTED:
         return t('common.enums.invitationStatus.rejected');
     }
   } else {
@@ -81,13 +84,13 @@ const sortState = (item: MembershipTableItem | undefined): number => {
   }
   const state = item.state;
   switch (state) {
-    case 'new':
+    case ApplicationState.NEW:
       return 100;
-    case 'approved':
+    case ApplicationState.APPROVED:
       return 50;
-    case 'rejected':
+    case ApplicationState.REJECTED:
       return 50;
-    case 'archived':
+    case ApplicationState.ARCHIVED:
       return 10;
     default: {
       switch (item.type) {
@@ -188,7 +191,6 @@ const CommunityMemberships = ({
 }: CommunityApplicationsProps) => {
   const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = useState<MembershipTableItem>();
-  const [deletingItem, setDeletingItem] = useState<MembershipTableItem>();
 
   const tableItems = useMemo<MembershipTableItem[]>(
     () => [
@@ -246,45 +248,155 @@ const CommunityMemberships = ({
     {
       field: 'contributorType',
       headerName: t('common.type'),
-      renderCell: ({ row }: RenderParams) => <>{row.contributorType}</>,
+      renderCell: ({ row }: RenderParams) => <>{t(`common.enums.roleSetContributorType.${row.contributorType}`)}</>,
       valueGetter: (_, row: GetterParams) => row?.contributorType,
       filterable: false,
+      flex: 1,
     },
   ];
 
   const visibleTableItems = useMemo(() => tableItems.filter(item => item.state !== 'archived'), [tableItems]);
 
-  const [handleDeleteItem, isDeletingItem] = useLoadingState(async (item: MembershipTableItem) => {
-    if (item.type === MembershipType.Application) {
+  const [handleDeleteItem, isDeletingItem] = useLoadingState(async (item: GetterParams) => {
+    if (item?.type === MembershipType.Application) {
       switch (item.state) {
-        case 'new': {
-          await onApplicationStateChange(item.id, 'REJECT');
-          await onApplicationStateChange(item.id, 'ARCHIVE');
+        case ApplicationState.NEW: {
+          await onApplicationStateChange(item.id, ApplicationEvent.REJECT);
+          await onApplicationStateChange(item.id, ApplicationEvent.ARCHIVE);
           break;
         }
-        case 'approved':
-        case 'rejected': {
-          await onApplicationStateChange(item.id, 'ARCHIVE');
+        case ApplicationState.APPROVED:
+        case ApplicationState.REJECTED: {
+          await onApplicationStateChange(item.id, ApplicationEvent.ARCHIVE);
           break;
         }
       }
-    } else if (item.type === MembershipType.Invitation) {
+    } else if (item?.type === MembershipType.Invitation) {
       switch (item.state) {
-        case 'invited': {
+        case InvitationState.INVITED: {
           await onDeleteInvitation?.(item.id);
           break;
         }
-        case 'approved':
-        case 'rejected': {
-          await onInvitationStateChange?.(item.id, 'ARCHIVE');
+        case InvitationState.ACCEPTED:
+        case InvitationState.REJECTED: {
+          await onInvitationStateChange?.(item.id, InvitationEvent.ARCHIVE);
           break;
         }
       }
-    } else {
+    } else if (item?.type === MembershipType.PlatformInvitation) {
       await onDeletePlatformInvitation?.(item.id);
     }
-    setDeletingItem(undefined);
+    setConfirmActionOnItem(undefined);
   });
+
+  const [handleApproveApplication, isApprovingApplication] = useLoadingState(async (item: GetterParams) => {
+    if (item?.type === MembershipType.Application) {
+      switch (item.state) {
+        case ApplicationState.NEW: {
+          await onApplicationStateChange(item.id, ApplicationEvent.APPROVE);
+          break;
+        }
+        case ApplicationState.APPROVED:
+        case ApplicationState.REJECTED: {
+          await onApplicationStateChange(item.id, ApplicationEvent.ARCHIVE);
+          break;
+        }
+      }
+    }
+    setConfirmActionOnItem(undefined);
+  });
+
+  const [handleRejectApplication, isRejectingApplication] = useLoadingState(async (item: GetterParams) => {
+    if (item?.type === MembershipType.Application) {
+      switch (item.state) {
+        case ApplicationState.NEW: {
+          await onApplicationStateChange(item.id, ApplicationEvent.REJECT);
+          break;
+        }
+        case ApplicationState.APPROVED:
+        case ApplicationState.REJECTED: {
+          await onApplicationStateChange(item.id, ApplicationEvent.ARCHIVE);
+          break;
+        }
+      }
+    }
+    setConfirmActionOnItem(undefined);
+  });
+
+  const [confirmActionOnItem, setConfirmActionOnItem] = useState<{ action: ActionType; item: GetterParams }>();
+  const confirmableActions = {
+    [ActionType.Delete]: {
+      confirmationDialog: {
+        getTitle(item: GetterParams) {
+          switch (item?.type) {
+            case MembershipType.Application:
+              return t('community.confirmationDialogs.delete.application.title', {
+                user: item.displayName,
+              });
+            case MembershipType.Invitation:
+              return t('community.confirmationDialogs.delete.invitation.title', {
+                user: item.displayName,
+              });
+            case MembershipType.PlatformInvitation:
+              return t('community.confirmationDialogs.delete.platformInvitation.title', {
+                user: item.displayName,
+              });
+          }
+        },
+        getContent(item: GetterParams) {
+          switch (item?.type) {
+            case MembershipType.Application:
+              return t('community.confirmationDialogs.delete.application.content');
+            case MembershipType.Invitation:
+              return t('community.confirmationDialogs.delete.invitation.content');
+            case MembershipType.PlatformInvitation:
+              return t('community.confirmationDialogs.delete.platformInvitation.content');
+          }
+        },
+        getConfirmButtonText(item: GetterParams) {
+          switch (item?.type) {
+            case MembershipType.Application:
+              return t('buttons.archive');
+            case MembershipType.Invitation:
+              return t('buttons.delete');
+            case MembershipType.PlatformInvitation:
+              return t('buttons.delete');
+          }
+        },
+        onConfirm: handleDeleteItem,
+      },
+    },
+    [ActionType.Approve]: {
+      confirmationDialog: {
+        getTitle(item: GetterParams) {
+          return t('community.confirmationDialogs.approve.title', {
+            user: item?.displayName,
+          });
+        },
+        getContent() {
+          return t('community.confirmationDialogs.approve.content');
+        },
+        getConfirmButtonText: () => t('community.confirmationDialogs.approve.confirmButton'),
+        onConfirm: handleApproveApplication,
+      },
+    },
+    [ActionType.Reject]: {
+      confirmationDialog: {
+        getTitle(item: GetterParams) {
+          return t('community.confirmationDialogs.reject.title', {
+            user: item?.displayName,
+          });
+        },
+        getContent() {
+          return t('community.confirmationDialogs.reject.content');
+        },
+        getConfirmButtonText: () => t('community.confirmationDialogs.reject.confirmButton'),
+        onConfirm: handleRejectApplication,
+      },
+    },
+  };
+
+  const isConfirmingAction = isDeletingItem || isApprovingApplication || isRejectingApplication;
 
   return (
     <>
@@ -299,19 +411,47 @@ const CommunityMemberships = ({
               {
                 name: 'view',
                 render: ({ row }: RenderParams) =>
-                  /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
                   row.type === MembershipType.Application && (
-                    <IconButton onClick={() => setSelectedItem(row)} aria-label={t('buttons.view')}>
-                      <VisibilityOutlinedIcon color="primary" />
-                    </IconButton>
+                    <DataGridActionButton
+                      item={row}
+                      tooltip={t('buttons.view')}
+                      icon={VisibilityOutlinedIcon}
+                      onClick={() => setSelectedItem(row)}
+                    />
+                  ),
+              },
+              {
+                name: 'approve',
+                render: ({ row }: RenderParams) =>
+                  row.type === MembershipType.Application && (
+                    <DataGridActionButton
+                      item={row}
+                      tooltip={t('buttons.approveApplication')}
+                      icon={CheckCircleOutlineIcon}
+                      isDisabled={item => item.state !== ApplicationState.NEW}
+                      onClick={() => setConfirmActionOnItem({ action: ActionType.Approve, item: row })}
+                    />
+                  ),
+              },
+              {
+                name: 'reject',
+                render: ({ row }: RenderParams) =>
+                  row.type === MembershipType.Application && (
+                    <DataGridActionButton
+                      item={row}
+                      tooltip={t('buttons.rejectApplication')}
+                      icon={HighlightOffIcon}
+                      isDisabled={item => item.state !== ApplicationState.NEW}
+                      onClick={() => setConfirmActionOnItem({ action: ActionType.Reject, item: row })}
+                    />
                   ),
               },
             ]}
             initialState={initialState}
             pageSizeOptions={[PAGE_SIZE]}
             canDelete={() => true}
-            disableDelete={(row: GetterParams) => row?.state === 'approved'}
-            onDelete={(row: GetterParams) => setDeletingItem(row)}
+            disableDelete={(row: GetterParams) => row?.state === ApplicationState.APPROVED}
+            onDelete={(row: GetterParams) => setConfirmActionOnItem({ action: ActionType.Delete, item: row })}
           />
         )}
       </Box>
@@ -322,24 +462,31 @@ const CommunityMemberships = ({
           onSetNewState={onApplicationStateChange}
         />
       )}
-      {deletingItem && (
+      {confirmActionOnItem &&
+        (() => {
+          debugger;
+        })}
+      {confirmActionOnItem && (
         <ConfirmationDialog
           actions={{
-            onConfirm: () => handleDeleteItem(deletingItem),
-            onCancel: () => setDeletingItem(undefined),
+            onConfirm: () =>
+              confirmableActions[confirmActionOnItem.action].confirmationDialog.onConfirm(confirmActionOnItem.item),
+            onCancel: () => setConfirmActionOnItem(undefined),
           }}
           options={{
-            show: Boolean(deletingItem),
+            show: true,
           }}
           entities={{
-            title: t(`community.${getDeleteDialogTranslationNamespace(deletingItem)}.title` as const, {
-              user: deletingItem.displayName,
-            }),
-            content: t(`community.${getDeleteDialogTranslationNamespace(deletingItem)}.content` as const),
-            confirmButtonTextId: 'buttons.archive',
+            title: confirmableActions[confirmActionOnItem.action].confirmationDialog.getTitle(confirmActionOnItem.item),
+            content: confirmableActions[confirmActionOnItem.action]?.confirmationDialog.getContent(
+              confirmActionOnItem.item
+            ),
+            confirmButtonText: confirmableActions[confirmActionOnItem.action]?.confirmationDialog.getConfirmButtonText(
+              confirmActionOnItem.item
+            ),
           }}
           state={{
-            isLoading: isDeletingItem,
+            isLoading: isConfirmingAction,
           }}
         />
       )}

@@ -1,5 +1,5 @@
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../access/ApplicationState';
+import { ApplicationState } from '../models/InvitationApplicationConstants';
 
 const isApplicationPending = (applicationState?: string) =>
-  applicationState === APPLICATION_STATE_NEW || applicationState === APPLICATION_STATE_REJECTED;
+  applicationState === ApplicationState.NEW || applicationState === ApplicationState.REJECTED;
 export default isApplicationPending;

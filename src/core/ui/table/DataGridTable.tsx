@@ -1,4 +1,4 @@
-import { IconButton, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { DataGrid, DataGridProps, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ReactNode, useMemo } from 'react';
@@ -6,6 +6,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { GUTTER_PX } from '../grid/constants';
+import DataGridActionButton from './DataGridActionButton';
+import React from 'react';
 
 export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnHeaders': {
@@ -41,14 +43,6 @@ interface Action<Item extends Identifiable> {
   name: string;
   render: (params: GridRenderCellParams<Item>) => ReactNode;
 }
-
-const actionDefaultProps: Partial<GridColDef> = {
-  width: 30,
-  headerName: '',
-  sortable: false,
-  filterable: false,
-  disableColumnMenu: true,
-};
 
 interface DataGridTableProps<Item extends Identifiable> extends Omit<DataGridProps<Item>, 'columns'> {
   rows: Item[];
@@ -90,7 +84,7 @@ const DataGridTable = <Item extends Identifiable>({
     [t, ...dependencies]
   );
 
-  const actionColumnDefinitions = useMemo<GridColDef<Item>[]>(() => {
+  const actionsColumnDefinition = useMemo<GridColDef<Item>>(() => {
     const actionDefinitions = [...(actions ?? [])];
 
     if (onDelete) {
@@ -98,25 +92,40 @@ const DataGridTable = <Item extends Identifiable>({
         name: 'delete',
         render: ({ row }: { row: Item }) =>
           canDelete(row) && (
-            <IconButton onClick={() => onDelete(row)} disabled={disableDelete(row)} aria-label={t('buttons.delete')}>
-              <DeleteOutlineIcon color={disableDelete(row) ? 'disabled' : 'warning'} />
-            </IconButton>
+            <DataGridActionButton
+              item={row}
+              tooltip={t('buttons.delete')}
+              icon={DeleteOutlineIcon}
+              iconColor="warning"
+              isDisabled={disableDelete}
+              onClick={onDelete}
+            />
           ),
       });
     }
 
-    return actionDefinitions.map(({ name, render }) => {
-      return {
-        ...actionDefaultProps,
-        field: name,
-        renderCell: render,
-      };
-    });
+    return {
+      headerName: actionDefinitions.length > 1 ? 'Actions' : '',
+      width: actionDefinitions.length * 50,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      field: 'actions',
+      renderCell: (...renderParams) => {
+        return (
+          <Box marginLeft="auto">
+            {actionDefinitions.map(({ render, name }) => (
+              <React.Fragment key={name}>{render(...renderParams)}</React.Fragment>
+            ))}
+          </Box>
+        );
+      },
+    };
   }, [onDelete, ...dependencies]);
 
   const mergedColumnDefinitions = useMemo(
-    () => [...columnDefinitions, ...actionColumnDefinitions],
-    [columnDefinitions, actionColumnDefinitions]
+    () => [...columnDefinitions, actionsColumnDefinition],
+    [columnDefinitions, actionsColumnDefinition]
   );
 
   return (
