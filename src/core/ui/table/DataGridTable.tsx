@@ -105,8 +105,9 @@ const DataGridTable = <Item extends Identifiable>({
     }
 
     return {
-      headerName: actionDefinitions.length > 1 ? 'Actions' : '',
-      width: actionDefinitions.length * 50,
+      headerName: actionDefinitions.length > 1 ? t('common.actions') : '',
+      width: actionDefinitions.length * GUTTER_PX * 2.5,
+      resizable: false,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -114,7 +115,7 @@ const DataGridTable = <Item extends Identifiable>({
       renderCell: (...renderParams) => {
         return (
           <Box marginLeft="auto">
-            {actionDefinitions.map(({ render, name }) => (
+            {actionDefinitions.map(({ name, render }) => (
               <React.Fragment key={name}>{render(...renderParams)}</React.Fragment>
             ))}
           </Box>
