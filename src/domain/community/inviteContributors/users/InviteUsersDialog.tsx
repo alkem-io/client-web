@@ -70,7 +70,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
 
   const initialValues: InviteUsersData = {
     welcomeMessage: t('community.invitations.inviteContributorsDialog.users.defaultWelcomeMessage', {
-      spaceName: subspaceDisplayName ?? spaceDisplayName,
+      spaceName: subspaceDisplayName || spaceDisplayName, // do not use ??, subspaceDisplayName can be an empty string
     }),
     selectedContributors: [],
     extraRole: RoleName.Member,
