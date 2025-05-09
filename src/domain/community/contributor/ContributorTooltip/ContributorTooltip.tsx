@@ -64,7 +64,9 @@ const ContributorTooltip = ({
         </RootThemeProvider>
       );
     }
-  }, [data, loading, override]);
+    // TODO: Handle Organization and Virtual Contributor types
+    return <div>Details not available</div>; // In theory this will never be reached
+  }, [data, loading, override, contributorType]);
 
   return (
     <Tooltip

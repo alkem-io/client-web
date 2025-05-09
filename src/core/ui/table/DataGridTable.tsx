@@ -122,11 +122,13 @@ const DataGridTable = <Item extends Identifiable>({
         );
       },
     };
-  }, [onDelete, ...dependencies]);
+  }, [actions, onDelete, canDelete, disableDelete, t, ...dependencies]);
+
+  const hasActions = Boolean((actions && actions.length > 0) || onDelete);
 
   const mergedColumnDefinitions = useMemo(
-    () => [...columnDefinitions, actionsColumnDefinition],
-    [columnDefinitions, actionsColumnDefinition]
+    () => (hasActions ? [...columnDefinitions, actionsColumnDefinition] : columnDefinitions),
+    [hasActions, columnDefinitions, actionsColumnDefinition]
   );
 
   return (

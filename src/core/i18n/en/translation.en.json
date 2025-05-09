@@ -596,7 +596,7 @@
           "title": "Invite others to join '{{spaceName}}'",
           "description": "Search for people below or directly add their email address",
           "note": "Keep in mind that your email address will be visible to anyone you invite.",
-          "defaultWelcomeMessage": "Hi, I would like to invite you to The Sandbox. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
           "placeholder": "Username or email...",
           "success": "Your invitation was successfully sent to the following recipients:",
           "failure": "We couldn’t send the invitation to the following recipients:",

@@ -462,10 +462,6 @@ const CommunityMemberships = ({
           onSetNewState={onApplicationStateChange}
         />
       )}
-      {confirmActionOnItem &&
-        (() => {
-          debugger;
-        })}
       {confirmActionOnItem && (
         <ConfirmationDialog
           actions={{

@@ -21,6 +21,7 @@ import { useState } from 'react';
 import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import InvitationsResultDialogContent from './InvitationsResultDialogContent';
 import InviteUsersFormDialogContent from './InviteUsersFormDialogContent';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 
 export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -32,6 +33,21 @@ type InviteUsersData = {
 
 const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
+  const {
+    space: {
+      about: {
+        profile: { displayName: spaceDisplayName },
+      },
+    },
+  } = useSpace();
+  const {
+    subspace: {
+      about: {
+        profile: { displayName: subspaceDisplayName },
+      },
+    },
+  } = useSubSpace();
+
   const ensurePresence = useEnsurePresence();
   const [invitationsResults, setInvitationSent] = useState<InvitationResultModel[] | undefined>(undefined);
   const {
@@ -53,7 +69,9 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
   });
 
   const initialValues: InviteUsersData = {
-    welcomeMessage: t('community.invitations.inviteContributorsDialog.users.defaultWelcomeMessage'),
+    welcomeMessage: t('community.invitations.inviteContributorsDialog.users.defaultWelcomeMessage', {
+      spaceName: subspaceDisplayName ?? spaceDisplayName,
+    }),
     selectedContributors: [],
     extraRole: RoleName.Member,
   };
