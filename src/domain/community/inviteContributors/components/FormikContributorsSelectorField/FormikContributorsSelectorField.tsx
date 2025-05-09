@@ -185,7 +185,7 @@ const FormikContributorsSelectorField = ({
         }}
         onChange={(_, value) => handleSelect(value)}
         renderOption={(props, user) => (
-          <li {...props}>
+          <li {...props} key={user.id}>
             <ProfileChipView
               displayName={user.profile.displayName}
               avatarUrl={user.profile.visual?.uri}
