@@ -8,7 +8,7 @@ import { SvgIconProps } from '@mui/material';
 import DashboardLeads from './DashboardLeads';
 import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
+import { ContributorViewModel } from '../utils/ContributorViewModel';
 
 const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 
@@ -17,9 +17,9 @@ const ContributorCard = ({ contributor }: { contributor: ContributorCardHorizont
 );
 
 interface EntityDashboardLeadsProps {
-  leadUsers: ContributorViewProps[] | undefined;
-  leadOrganizations: ContributorViewProps[] | undefined;
-  provider?: ContributorViewProps;
+  leadUsers: ContributorViewModel[] | undefined;
+  leadOrganizations: ContributorViewModel[] | undefined;
+  provider?: ContributorViewModel;
   organizationsHeader: string;
   organizationsHeaderIcon?: ReactElement<SvgIconProps>;
   usersHeader?: string;
