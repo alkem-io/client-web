@@ -17,6 +17,7 @@ import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
 import { isInputNode } from '../components/Kratos/helpers';
 
+// TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
 const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
   return typeof flowId === 'string' && sessionStorage.getItem(`kratosFlow:${flowId}:hasAcceptedTerms`) === 'true';
 };
@@ -40,14 +41,15 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
   const registrationFlowWithAcceptedTerms =
     registrationFlow &&
     produce(registrationFlow, nextFlow => {
-      const termsCheckbox = nextFlow?.ui.nodes.find(isAcceptTermsCheckbox) as UiNode | undefined;
+      const termsCheckbox = nextFlow?.ui.nodes.find(isAcceptTermsCheckbox);
       if (termsCheckbox && isInputNode(termsCheckbox) && !termsCheckbox.attributes.value) {
         termsCheckbox.attributes.value = hasAcceptedTerms;
       }
     });
 
-  const termsCheckbox = registrationFlowWithAcceptedTerms?.ui.nodes.find(isAcceptTermsCheckbox) as UiNode | undefined;
+  const termsCheckbox = registrationFlowWithAcceptedTerms?.ui.nodes.find(isAcceptTermsCheckbox);
 
+  // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
   const storeHasAcceptedTerms = () => {
     if (registrationFlow?.id && termsCheckbox && isInputNode(termsCheckbox) && areTermsAccepted(termsCheckbox)) {
       sessionStorage.setItem(`kratosFlow:${registrationFlow.id}:hasAcceptedTerms`, 'true');
@@ -67,10 +69,8 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
     return <ErrorDisplay />;
   }
 
-  let mustAcceptTerms = false;
-  if (termsCheckbox && isInputNode(termsCheckbox)) {
-    mustAcceptTerms = !Boolean(termsCheckbox.attributes.value);
-  }
+  const mustAcceptTerms =
+    termsCheckbox && isInputNode(termsCheckbox) ? !Boolean(termsCheckbox.attributes.value) : false;
 
   return (
     <KratosForm ui={registrationFlow?.ui}>

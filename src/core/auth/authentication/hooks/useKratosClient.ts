@@ -22,12 +22,11 @@ const logFlowErrors = (response: AxiosResponse<{ ui: UiContainer } | {}>) => {
   }
 };
 
-const isWhoamiError401 = (error: AxiosError) => {
-  const data = error.response?.data as { error?: { code?: number } } | undefined;
-  return error.config?.url?.endsWith('/sessions/whoami') && data?.error?.code === 401;
-};
+const isWhoamiError401 = (error: AxiosError<{ error?: { code?: number } }>) =>
+  error.config?.url?.endsWith('/sessions/whoami') && error.response?.data?.error?.code === 401;
 
-const isAxiosError = (error: { isAxiosError: boolean }): error is AxiosError => error.isAxiosError;
+const isAxiosError = (error: { isAxiosError: boolean }): error is AxiosError<{ error?: { code?: number } }> =>
+  error.isAxiosError;
 
 const getKratosErrorMessage = (requestError: AxiosError) => {
   const errMessage = requestError.message;

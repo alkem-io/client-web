@@ -123,7 +123,7 @@ export const KratosUI: FC<KratosUIProps> = ({
   const toUiControl = (node: UiNode, key: number) => {
     if (isAnchorNode(node)) {
       return (
-        <Button href={node.attributes.href} variant="contained">
+        <Button href={node.attributes.href} variant="contained" key={key}>
           {kratosT(node.attributes.title)}
         </Button>
       );
@@ -151,7 +151,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
 
     if (isAcceptTermsCheckbox(node)) {
-      return renderAcceptTermsCheckbox(node as UiNode);
+      return <Box key={key}>{renderAcceptTermsCheckbox(node)}</Box>;
     }
 
     if (node.group === 'oidc' && isSubmitButton(node)) {
