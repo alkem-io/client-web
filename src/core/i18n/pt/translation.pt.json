@@ -179,7 +179,8 @@
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
     "invite": "Invite",
-    "visit": "Visit"
+    "visit": "Visit",
+    "returnToDashboard": "Return to dashboard as guest"
   },
   "tooltips": {
     "click-more-info": "Clique aqui para mais informações",
@@ -1854,6 +1855,9 @@
           "communications": {
             "description": "Aqui você pode postar atualizações que serão visíveis para todos os membros deste {{entity}}."
           },
+          "subspaces": {
+            "description": "Here you can edit Subspaces for this Space."
+          },
           "subsubspaces": {
             "description": "Here you can edit Subspaces for this Subspace."
           },
@@ -2339,7 +2343,16 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -2366,7 +2379,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
-          "welcome-back": "Welcome back, {{username}}!",
+          "welcome-back": "Welcome, {{username}}!",
           "join": "Deseja participar da comunidade e ver mais?",
           "existing-user": {
             "header": "Usuário existente? Entre novamente aqui!",
@@ -2823,8 +2836,9 @@
       "added-successfully": "Credencial adicionada com sucesso"
     },
     "authentication-required": {
-      "header": "A página que você está tentando acessar requer que você esteja logado.",
-      "subheader": "Por favor, faça login ou registre-se para continuar!"
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
     "user-notifications-settings": {
       "general": {
@@ -2998,27 +3012,42 @@
       {
         "key": "transição-energética",
         "name": "Transição Energética",
-        "tags": ["Transição Energética", "Transição Energética"]
+        "tags": [
+          "Transição Energética",
+          "Transição Energética"
+        ]
       },
       {
         "key": "sociedade-inclusiva",
         "name": "Sociedade Inclusiva",
-        "tags": ["Sociedade Inclusiva", "Sociedade Inclusiva"]
+        "tags": [
+          "Sociedade Inclusiva",
+          "Sociedade Inclusiva"
+        ]
       },
       {
         "key": "serviços-públicos",
         "name": "Serviços Públicos",
-        "tags": ["Serviços Públicos", "Serviços Públicos"]
+        "tags": [
+          "Serviços Públicos",
+          "Serviços Públicos"
+        ]
       },
       {
         "key": "inovação",
         "name": "Inovação",
-        "tags": ["Inovação", "Inovação"]
+        "tags": [
+          "Inovação",
+          "Inovação"
+        ]
       },
       {
         "key": "digitalização-da-sociedade",
         "name": "Digitalização da sociedade",
-        "tags": ["Digitalização da sociedade", "Digitalização"]
+        "tags": [
+          "Digitalização da sociedade",
+          "Digitalização"
+        ]
       }
     ]
   },
@@ -3050,10 +3079,12 @@
     "subspaces": "Subspaces",
     "contributors": "Contributors",
     "activity": "Activity",
+    "calendar": "Calendar",
     "events": "Events",
     "share": "Share",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Settings"
+    "settings": "Settings",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Create a Space",
@@ -3085,7 +3116,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "features": [
+          "Up to 10 members",
+          "Various tools, including standard Whiteboards"
+        ],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -3093,7 +3127,11 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "features": [
+          "Up to 100 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },

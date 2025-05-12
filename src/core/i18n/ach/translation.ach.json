@@ -179,7 +179,8 @@
     "createOwnSpace": "crwdns17630:0crwdne17630:0",
     "notifications": "crwdns17632:0crwdne17632:0",
     "invite": "crwdns17634:0crwdne17634:0",
-    "visit": "crwdns17636:0crwdne17636:0"
+    "visit": "crwdns17636:0crwdne17636:0",
+    "returnToDashboard": "crwdns36920:0crwdne36920:0"
   },
   "tooltips": {
     "click-more-info": "crwdns17638:0crwdne17638:0",
@@ -1854,6 +1855,9 @@
           "communications": {
             "description": "crwdns19622:0{{entity}}crwdne19622:0"
           },
+          "subspaces": {
+            "description": "crwdns36914:0crwdne36914:0"
+          },
           "subsubspaces": {
             "description": "crwdns19624:0crwdne19624:0"
           },
@@ -2375,7 +2379,7 @@
         "welcome": {
           "welcomeUnauthenticated": "crwdns20162:0crwdne20162:0",
           "welcomeUnauthenticatedSubtitle": "crwdns20164:0crwdne20164:0",
-          "welcome-back": "crwdns20166:0{{username}}crwdne20166:0",
+          "welcome-back": "crwdns36928:0{{username}}crwdne36928:0",
           "join": "crwdns20168:0crwdne20168:0",
           "existing-user": {
             "header": "crwdns20170:0crwdne20170:0",
@@ -2832,8 +2836,9 @@
       "added-successfully": "crwdns20598:0crwdne20598:0"
     },
     "authentication-required": {
-      "header": "crwdns20600:0crwdne20600:0",
-      "subheader": "crwdns20602:0crwdne20602:0"
+      "header": "crwdns36922:0crwdne36922:0",
+      "subheader": "crwdns36924:0crwdne36924:0",
+      "subheader2": "crwdns36926:0crwdne36926:0"
     },
     "user-notifications-settings": {
       "general": {
@@ -3007,27 +3012,42 @@
       {
         "key": "crwdns20792:0crwdne20792:0",
         "name": "crwdns20794:0crwdne20794:0",
-        "tags": ["crwdns20796:0crwdne20796:0", "crwdns20798:0crwdne20798:0"]
+        "tags": [
+          "crwdns20796:0crwdne20796:0",
+          "crwdns20798:0crwdne20798:0"
+        ]
       },
       {
         "key": "crwdns20800:0crwdne20800:0",
         "name": "crwdns20802:0crwdne20802:0",
-        "tags": ["crwdns20804:0crwdne20804:0", "crwdns20806:0crwdne20806:0"]
+        "tags": [
+          "crwdns20804:0crwdne20804:0",
+          "crwdns20806:0crwdne20806:0"
+        ]
       },
       {
         "key": "crwdns20808:0crwdne20808:0",
         "name": "crwdns20810:0crwdne20810:0",
-        "tags": ["crwdns20812:0crwdne20812:0", "crwdns20814:0crwdne20814:0"]
+        "tags": [
+          "crwdns20812:0crwdne20812:0",
+          "crwdns20814:0crwdne20814:0"
+        ]
       },
       {
         "key": "crwdns20816:0crwdne20816:0",
         "name": "crwdns20818:0crwdne20818:0",
-        "tags": ["crwdns20820:0crwdne20820:0", "crwdns20822:0crwdne20822:0"]
+        "tags": [
+          "crwdns20820:0crwdne20820:0",
+          "crwdns20822:0crwdne20822:0"
+        ]
       },
       {
         "key": "crwdns20824:0crwdne20824:0",
         "name": "crwdns20826:0crwdne20826:0",
-        "tags": ["crwdns20828:0crwdne20828:0", "crwdns20830:0crwdne20830:0"]
+        "tags": [
+          "crwdns20828:0crwdne20828:0",
+          "crwdns20830:0crwdne20830:0"
+        ]
       }
     ]
   },
@@ -3059,10 +3079,12 @@
     "subspaces": "crwdns20848:0crwdne20848:0",
     "contributors": "crwdns20850:0crwdne20850:0",
     "activity": "crwdns20852:0crwdne20852:0",
+    "calendar": "crwdns36916:0crwdne36916:0",
     "events": "crwdns20854:0crwdne20854:0",
     "share": "crwdns20856:0crwdne20856:0",
     "manageFlow": "crwdns20858:0$t(components.innovationFlowSettings.buttonTooltip)crwdne20858:0",
-    "settings": "crwdns20860:0crwdne20860:0"
+    "settings": "crwdns20860:0crwdne20860:0",
+    "updates": "crwdns36918:0crwdne36918:0"
   },
   "createSpace": {
     "title": "crwdns20862:0crwdne20862:0",
@@ -3094,7 +3116,10 @@
         "name": "crwdns20894:0crwdne20894:0",
         "displayName": "crwdns20896:0crwdne20896:0",
         "priceDescription": "crwdns20898:0crwdne20898:0",
-        "features": ["crwdns20900:0crwdne20900:0", "crwdns20902:0crwdne20902:0"],
+        "features": [
+          "crwdns20900:0crwdne20900:0",
+          "crwdns20902:0crwdne20902:0"
+        ],
         "disclaimer": "crwdns20904:0crwdne20904:0",
         "disabledDisclaimer": "crwdns20906:0crwdne20906:0"
       },
@@ -3102,7 +3127,11 @@
         "name": "crwdns20908:0crwdne20908:0",
         "displayName": "crwdns20910:0crwdne20910:0",
         "priceDescription": "crwdns20912:0crwdne20912:0",
-        "features": ["crwdns20914:0crwdne20914:0", "crwdns20916:0crwdne20916:0", "crwdns20918:0crwdne20918:0"],
+        "features": [
+          "crwdns20914:0crwdne20914:0",
+          "crwdns20916:0crwdne20916:0",
+          "crwdns20918:0crwdne20918:0"
+        ],
         "disclaimer": "crwdns20920:0crwdne20920:0",
         "disabledDisclaimer": "crwdns20922:0crwdne20922:0"
       },

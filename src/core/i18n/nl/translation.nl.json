@@ -179,7 +179,8 @@
     "createOwnSpace": "...of klik hier om je eigen Space te maken",
     "notifications": "Notificatie Knop",
     "invite": "Nodig uit",
-    "visit": "Bezoek"
+    "visit": "Bezoek",
+    "returnToDashboard": "Terug naar het dashboard als gast"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -1854,6 +1855,9 @@
           "communications": {
             "description": "Hier kan je updates plaatsen die zichtbaar zullen zijn voor alle leden van deze {{entity}}."
           },
+          "subspaces": {
+            "description": "Hier kan je de Subspaces van deze Space aanpassen."
+          },
           "subsubspaces": {
             "description": "Hier kan je de Subspaces van deze Subspace aanpassen."
           },
@@ -2339,7 +2343,16 @@
             "title": "...of zoek je Community hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovatie",
+            "Energie",
+            "Inclusief",
+            "3D",
+            "Community",
+            "Transitie",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -2366,7 +2379,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welkom op Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Veilige Spaces voor Samenwerking",
-          "welcome-back": "Welkom terug {{username}}!",
+          "welcome-back": "Welkom, {{username}}!",
           "join": "Deelnemen aan de Community en meer zien?",
           "existing-user": {
             "header": "Bestaande gebruiker?",
@@ -2823,8 +2836,9 @@
       "added-successfully": "Identiteitsverificatie succesvol toegevoegd"
     },
     "authentication-required": {
-      "header": "Je moet ingelogd zijn voor de pagina die je probeert te bereiken.",
-      "subheader": "Log in of registreer om door te gaan!"
+      "header": "Beperkte toegang",
+      "subheader": "De pagina die je probeert te openen, is alleen beschikbaar voor geregistreerde gebruikers.",
+      "subheader2": "Log in om verder te gaan. Heb je nog geen account? Meld je gratis aan."
     },
     "user-notifications-settings": {
       "general": {
@@ -2998,27 +3012,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -3050,10 +3079,12 @@
     "subspaces": "Subspaces",
     "contributors": "Bijdragers",
     "activity": "Activiteit",
+    "calendar": "Kalender",
     "events": "Evenementen",
     "share": "Delen",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Creëer een Space",
@@ -3085,7 +3116,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": ["Tot 10 leden", "Diverse tools, waaronder standaard Whiteboards"],
+        "features": [
+          "Tot 10 leden",
+          "Diverse tools, waaronder standaard Whiteboards"
+        ],
         "disclaimer": "Gratis Spaces zijn beperkt tot 1 Space per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis Space hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },
