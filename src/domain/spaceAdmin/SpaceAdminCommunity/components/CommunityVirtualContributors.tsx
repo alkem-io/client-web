@@ -19,12 +19,12 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
 import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { ContributorViewModel } from '../../../community/community/utils/ContributorViewModel';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
-type RenderParams = GridRenderCellParams<ContributorViewProps>;
-type GetterParams = ContributorViewProps | undefined;
+type RenderParams = GridRenderCellParams<ContributorViewModel>;
+type GetterParams = ContributorViewModel | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
@@ -54,7 +54,7 @@ interface Entity extends Identifiable {
 }
 
 type CommunityVirtualContributorsProps = {
-  virtualContributors: ContributorViewProps[] | undefined;
+  virtualContributors: ContributorViewModel[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
