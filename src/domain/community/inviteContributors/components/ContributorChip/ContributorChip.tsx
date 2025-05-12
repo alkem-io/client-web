@@ -8,6 +8,7 @@ import { Caption } from '@/core/ui/typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import ContributorTooltip from '../../../contributor/ContributorTooltip/ContributorTooltip';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { useTranslation } from 'react-i18next';
 
 interface ContributorChipProps {
   contributor: SelectedContributor;
@@ -37,6 +38,8 @@ const StyledChip = styled(Box)<BoxProps & { invalid?: boolean }>(({ theme, inval
 }));
 
 const ContributorChip = ({ contributor, validationError, onRemove }: ContributorChipProps) => {
+  const { t } = useTranslation();
+
   switch (contributor.type) {
     case ContributorSelectorType.User:
       return (
@@ -53,7 +56,16 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
       );
     case ContributorSelectorType.Email:
       return (
-        <Tooltip title={validationError ? validationError : contributor.displayName} arrow>
+        <Tooltip
+          arrow
+          title={
+            validationError
+              ? validationError
+              : t('community.invitations.inviteContributorsDialog.users.invitationByEmailTooltip', {
+                  email: contributor.displayName,
+                })
+          }
+        >
           <StyledChip invalid={!!validationError}>
             <Caption>{contributor.email}</Caption>
             {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
