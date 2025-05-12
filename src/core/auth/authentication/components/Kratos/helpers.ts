@@ -1,36 +1,19 @@
-import {
-  UiNode,
-  UiNodeAnchorAttributes,
-  UiNodeAttributes,
-  UiNodeImageAttributes,
-  UiNodeInputAttributes,
-  UiNodeTextAttributes,
-} from '@ory/kratos-client';
+import { UiNode, UiNodeAttributes, UiNodeAnchorAttributes, UiNodeInputAttributes } from '@ory/kratos-client';
 import { FormEvent } from 'react';
-import { UiNodeAnchor, UiNodeInput } from './UiNodeTypes';
 import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
 import type { TFunction } from 'i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
-export function isUiNodeAnchorAttributes(pet: UiNodeAttributes): pet is UiNodeAnchorAttributes {
-  return (pet as UiNodeAnchorAttributes).href !== undefined;
-}
-
-export function isUiNodeImageAttributes(pet: UiNodeAttributes): pet is UiNodeImageAttributes {
-  return (pet as UiNodeImageAttributes).src !== undefined;
-}
-
-export function isUiNodeInputAttributes(pet: UiNodeAttributes): pet is UiNodeInputAttributes {
-  return (pet as UiNodeInputAttributes).name !== undefined;
-}
-
-export function isUiNodeTextAttributes(pet: UiNodeAttributes): pet is UiNodeTextAttributes {
-  return (pet as UiNodeTextAttributes).text !== undefined;
+export function isUiNodeInputAttributes(attr: UiNodeAttributes) {
+  if (attr.node_type === 'input') {
+    return true;
+  }
+  return false;
 }
 
 export function getNodeName({ attributes }: UiNode) {
   if (isUiNodeInputAttributes(attributes)) {
-    return attributes.name;
+    return (attributes as UiNodeInputAttributes).name;
   }
 
   return '';
@@ -38,7 +21,7 @@ export function getNodeName({ attributes }: UiNode) {
 
 export function getNodeValue({ attributes }: UiNode) {
   if (isUiNodeInputAttributes(attributes)) {
-    return attributes.value;
+    return (attributes as UiNodeInputAttributes).value;
   }
 
   return '';
@@ -63,11 +46,11 @@ export const guessVariant = ({ attributes }: UiNode) => {
     return 'text';
   }
 
-  if (attributes.name === 'identifier') {
+  if ((attributes as UiNodeInputAttributes).name === 'identifier') {
     return 'username';
   }
 
-  switch (attributes.type) {
+  switch ((attributes as UiNodeInputAttributes).type) {
     case 'hidden':
       return null;
     case 'email':
@@ -76,8 +59,6 @@ export const guessVariant = ({ attributes }: UiNode) => {
       return null;
     case 'password':
       return 'password';
-    case 'profile':
-      return 'profile';
     default:
       return 'text';
   }
@@ -98,15 +79,14 @@ export const isSubmittingPasswordFlow = (event: FormEvent<HTMLFormElement>) => {
   return button && button.name === 'method' && button.value === 'password';
 };
 
-export const isInputNode = (node: UiNode): node is UiNodeInput => node.type === 'input';
+export const isInputNode = (node: UiNode): node is UiNode & { attributes: UiNodeInputAttributes } =>
+  node.attributes.node_type === 'input';
+export const isAnchorNode = (node: UiNode): node is UiNode & { attributes: UiNodeAnchorAttributes } =>
+  node.attributes.node_type === 'a';
+export const isSubmitButton = (node: UiNode): node is UiNode & { attributes: UiNodeInputAttributes } =>
+  node.attributes.node_type === 'input' && (node.attributes as UiNodeInputAttributes).type === 'submit';
+export const isHiddenInput = (node: UiNode): node is UiNode & { attributes: UiNodeInputAttributes } =>
+  node.attributes.node_type === 'input' && (node.attributes as UiNodeInputAttributes).type === 'hidden';
 
-export const isAnchorNode = (node: UiNode): node is UiNodeAnchor => node.type === 'a';
-
-export const isSubmitButton = (node: UiNode): node is UiNodeInput =>
-  isInputNode(node) && node.attributes.type === 'submit';
-
-export const isHiddenInput = (node: UiNode): node is UiNodeInput =>
-  isInputNode(node) && node.attributes.type === 'hidden';
-
-export const isVerificationContinueLink = (link: UiNodeAnchor) =>
+export const isVerificationContinueLink = (link: UiNode & { attributes: UiNodeAnchorAttributes }) =>
   link.meta.label?.id === KRATOS_VERIFICATION_CONTINUE_LINK_ID;
