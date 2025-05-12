@@ -164,7 +164,7 @@ const WhiteboardDialogFooter = ({
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
               values={{
-                spaceLevel: t(`common.space-level.${spaceLevel}`),
+                spaceType: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
               }}
               components={{
@@ -173,7 +173,7 @@ const WhiteboardDialogFooter = ({
                 ) : (
                   <span />
                 ),
-                spaceLink: spaceAboutProfile ? (
+                spacelink: spaceAboutProfile ? (
                   <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
                 ) : (
                   <span />
