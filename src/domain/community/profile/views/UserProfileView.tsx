@@ -9,7 +9,7 @@ import {
   isSocialNetworkSupported,
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { Grid, styled } from '@mui/material';
+import { GridLegacy, styled } from '@mui/material';
 import { groupBy } from 'lodash';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -47,38 +47,38 @@ export const UserProfileView = ({ userModel }: UserProfileViewProps) => {
 
   return (
     <PageContentBlock>
-      <Grid item>
+      <GridLegacy item>
         <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
-      </Grid>
+      </GridLegacy>
 
       {keywords.length > 0 && (
-        <Grid item>
+        <GridLegacy item>
           <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
           <TagsWithOffset tags={keywords} />
-        </Grid>
+        </GridLegacy>
       )}
 
       {skills.length > 0 && (
-        <Grid item>
+        <GridLegacy item>
           <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
           <TagsWithOffset tags={skills} />
-        </Grid>
+        </GridLegacy>
       )}
 
       {Number(links[OTHER_LINK_GROUP]?.length) > 0 && (
-        <Grid item container direction="column">
+        <GridLegacy item container direction="column">
           <BlockSectionTitle mb={gutters()}>{t('components.profile.fields.links.title')}</BlockSectionTitle>
           <References
             references={links[OTHER_LINK_GROUP]}
             noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
           />
-        </Grid>
+        </GridLegacy>
       )}
 
       {socialLinks.length > 0 && (
-        <Grid item display="flex" flexGrow={1} justifyContent="end">
+        <GridLegacy item display="flex" flexGrow={1} justifyContent="end">
           <SocialLinks items={socialLinks} />
-        </Grid>
+        </GridLegacy>
       )}
     </PageContentBlock>
   );

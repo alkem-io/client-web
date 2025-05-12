@@ -1,6 +1,5 @@
 import { Member } from '@/domain/community/user/models/UserModel';
-import { Box, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { Box, GridLegacy, Typography } from '@mui/material';
 import TableCell from '@mui/material/TableCell';
 import { FC } from 'react';
 import { AvailableMembers, EditMembers } from './EditMembers';
@@ -44,8 +43,8 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
           {title}
         </Box>
       )}
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
+      <GridLegacy container spacing={2}>
+        <GridLegacy item xs={8}>
           Group members:
           <EditMembers
             members={members}
@@ -93,9 +92,9 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             )}
             isRemoveDisabled={isRemoveDisabled}
           />
-        </Grid>
+        </GridLegacy>
 
-        <Grid item sm={4}>
+        <GridLegacy item sm={4}>
           Available users:
           <AvailableMembers
             onAdd={onAdd!}
@@ -113,8 +112,8 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
               </TableCell>
             )}
           />
-        </Grid>
-      </Grid>
+        </GridLegacy>
+      </GridLegacy>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { Grid, MenuItem, TextField } from '@mui/material';
+import { GridLegacy, MenuItem, TextField } from '@mui/material';
 import { orderBy } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -63,8 +63,8 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
 
   return (
     <>
-      <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
-        <Grid item xs={12} lg={sort ? 9 : 12}>
+      <GridLegacy container item spacing={2} justifyContent="space-between" alignItems="center">
+        <GridLegacy item xs={12} lg={sort ? 9 : 12}>
           <TextField
             placeholder={placeholder ?? t('components.filter.placeholder')}
             onChange={handleSearch}
@@ -73,9 +73,9 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
             InputLabelProps={{ shrink: true }}
             sx={{ background: theme => theme.palette.primary.contrastText }}
           />
-        </Grid>
+        </GridLegacy>
         {sort && (
-          <Grid item xs={12} lg={3}>
+          <GridLegacy item xs={12} lg={3}>
             <TextField
               fullWidth
               select
@@ -90,9 +90,9 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
                 </MenuItem>
               ))}
             </TextField>
-          </Grid>
+          </GridLegacy>
         )}
-      </Grid>
+      </GridLegacy>
       {children(filteredData)}
     </>
   );
