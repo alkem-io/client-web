@@ -2379,7 +2379,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
-          "welcome-back": "Welcome back, {{username}}!",
+          "welcome-back": "Welcome, {{username}}!",
           "join": "Vous voulez rejoindre la communauté et en voir plus?",
           "existing-user": {
             "header": "Utilisateur existant? Sautez dedans !",
