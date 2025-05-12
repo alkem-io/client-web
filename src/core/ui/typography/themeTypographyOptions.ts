@@ -1,4 +1,4 @@
-import { TypographyOptions } from '@mui/material/styles/createTypography';
+import { TypographyVariantsOptions } from '@mui/material/styles/createTypography';
 import { GUTTER_PX } from '../grid/constants';
 import { rem } from './utils';
 
@@ -12,7 +12,7 @@ export const fontWeightBold = 700;
 const lineHeightSingle = rem(GUTTER_PX);
 const lineHeightDouble = rem(GUTTER_PX * 2);
 
-export const themeTypographyOptions: TypographyOptions = {
+export const themeTypographyOptions: TypographyVariantsOptions = {
   h1: {
     fontFamily: fontFamilyMontserrat,
     fontSize: rem(25),
