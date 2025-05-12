@@ -1,5 +1,5 @@
 import { PropsWithChildren, ReactElement } from 'react';
-import { Box, Grid, IconButton, SvgIconProps } from '@mui/material';
+import { Box, GridLegacy, IconButton, SvgIconProps } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -78,14 +78,14 @@ const AboutDescription = ({
       {description && <WrapperMarkdown>{description}</WrapperMarkdown>}
       {children}
       {(location || metrics) && (
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
+        <GridLegacy container spacing={1}>
+          <GridLegacy item xs={6}>
             {location && <LocationCaption color="white" {...location} />}
-          </Grid>
-          <Grid item xs={6}>
+          </GridLegacy>
+          <GridLegacy item xs={6}>
             {metricsItems?.[0] && <MetricViewItem text={metricsItems[0].name} count={metricsItems[0].count} />}
-          </Grid>
-        </Grid>
+          </GridLegacy>
+        </GridLegacy>
       )}
     </Box>
   );

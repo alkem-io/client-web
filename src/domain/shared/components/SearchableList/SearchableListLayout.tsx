@@ -1,7 +1,7 @@
 import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, GridLegacy, Typography } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,29 +14,29 @@ export const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, childr
   const { t } = useTranslation();
 
   return (
-    <Grid container spacing={2} justifyContent="center">
+    <GridLegacy container spacing={2} justifyContent="center">
       {(title || newLink) && (
-        <Grid container item xs={10} paddingX={gutters(1)}>
-          <Grid item xs={10}>
+        <GridLegacy container item xs={10} paddingX={gutters(1)}>
+          <GridLegacy item xs={10}>
             {title && (
               <Typography variant="h3" mb={1} fontWeight="medium">
                 {title}
               </Typography>
             )}
-          </Grid>
-          <Grid container item justifyContent="flex-end" xs={2}>
+          </GridLegacy>
+          <GridLegacy container item justifyContent="flex-end" xs={2}>
             {newLink && (
               <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newLink}>
                 {t('buttons.create')}
               </Button>
             )}
-          </Grid>
-        </Grid>
+          </GridLegacy>
+        </GridLegacy>
       )}
-      <Grid item xs={10}>
+      <GridLegacy item xs={10}>
         {children}
-      </Grid>
-    </Grid>
+      </GridLegacy>
+    </GridLegacy>
   );
 };
 
