@@ -13,7 +13,7 @@ import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
 import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
 import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
-import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
+import { BasicSpaceProps } from '../virtualContributor/vcProfilePage/model';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
