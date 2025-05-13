@@ -177,8 +177,8 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
 
   const handleSave = useCallback(
     async (values: CropDialogFormValues) => {
-      if (!imgRef.current) return;
-      const newImage = await getCroppedImg(imgRef.current, crop as Crop, 'newFile.jpg');
+      if (!imgRef.current || !crop) return;
+      const newImage = await getCroppedImg(imgRef.current, crop, 'newFile.jpg');
       if (onSave) await onSave(newImage, values.altText);
       handleClose();
     },
