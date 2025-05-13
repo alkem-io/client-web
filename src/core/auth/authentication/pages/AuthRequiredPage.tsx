@@ -12,6 +12,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import PageContent from '@/core/ui/content/PageContent';
 import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 export const AuthRequiredPage = () => {
   const returnUrl = useQueryParams().get('returnUrl') ?? undefined;
@@ -27,6 +28,7 @@ export const AuthRequiredPage = () => {
    */
   const returnUrlParam = buildReturnUrlParam(returnUrl, '');
   const signUpUrl = `${AUTH_SIGN_UP_PATH}${returnUrlParam}`;
+  const homeUrl = `/${TopLevelRoutePath.Home}`;
 
   return (
     <TopLevelLayout>
@@ -55,7 +57,7 @@ export const AuthRequiredPage = () => {
                     {`${t('authentication.sign-in')} / ${t('authentication.sign-up')}`}
                   </Button>
                   <Caption>{t('common.or')}</Caption>
-                  <Button component={Link} to="/" variant="outlined" color="primary" sx={{ minWidth: '70%' }}>
+                  <Button component={Link} to={homeUrl} variant="outlined" color="primary" sx={{ minWidth: '70%' }}>
                     {t('buttons.returnToDashboard')}
                   </Button>
                 </Box>

@@ -87,10 +87,9 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
     if ('section' in currentTab) {
       selectedTab = currentTab.section;
     }
-  } else {
-    if (pathname.split('/').includes('settings')) {
-      selectedTab = EntityPageSection.Settings;
-    }
+  }
+  if (pathname.split('/').includes('settings')) {
+    selectedTab = EntityPageSection.Settings;
   }
 
   if (mobile) {
