@@ -37,9 +37,12 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
     space: {
       about: {
         profile: { displayName: spaceDisplayName },
+        membership,
       },
     },
+    loading: spaceLoading,
   } = useSpace();
+
   const {
     subspace: {
       about: {
@@ -48,17 +51,10 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
     },
   } = useSubSpace();
 
+  const spaceName = subspaceDisplayName || spaceDisplayName; // do not use ?? here, subspaceDisplayName can be an empty string
   const ensurePresence = useEnsurePresence();
   const [invitationsResults, setInvitationSent] = useState<InvitationResultModel[] | undefined>(undefined);
-  const {
-    space: {
-      about: {
-        profile: { displayName: spaceName },
-        membership,
-      },
-    },
-    loading: spaceLoading,
-  } = useSpace();
+
   const roleSetId = membership?.roleSetID;
   const { inviteContributorsOnRoleSet, loading: loadingRoleSet } = useRoleSetApplicationsAndInvitations({ roleSetId });
 
@@ -70,7 +66,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
 
   const initialValues: InviteUsersData = {
     welcomeMessage: t('community.invitations.inviteContributorsDialog.users.defaultWelcomeMessage', {
-      spaceName: subspaceDisplayName || spaceDisplayName, // do not use ??, subspaceDisplayName can be an empty string
+      spaceName,
     }),
     selectedContributors: [],
     extraRole: RoleName.Member,

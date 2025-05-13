@@ -84,9 +84,11 @@ const DataGridTable = <Item extends Identifiable>({
     [t, ...dependencies]
   );
 
-  const actionsColumnDefinition = useMemo<GridColDef<Item>>(() => {
+  const actionsColumnDefinition = useMemo<GridColDef<Item> | undefined>(() => {
     const actionDefinitions = [...(actions ?? [])];
-
+    if (!onDelete && actionDefinitions.length === 0) {
+      return undefined;
+    }
     if (onDelete) {
       actionDefinitions.push({
         name: 'delete',
@@ -124,11 +126,9 @@ const DataGridTable = <Item extends Identifiable>({
     };
   }, [actions, onDelete, canDelete, disableDelete, t, ...dependencies]);
 
-  const hasActions = Boolean((actions && actions.length > 0) || onDelete);
-
   const mergedColumnDefinitions = useMemo(
-    () => (hasActions ? [...columnDefinitions, actionsColumnDefinition] : columnDefinitions),
-    [hasActions, columnDefinitions, actionsColumnDefinition]
+    () => (actionsColumnDefinition ? [...columnDefinitions, actionsColumnDefinition] : columnDefinitions),
+    [columnDefinitions, actionsColumnDefinition]
   );
 
   return (

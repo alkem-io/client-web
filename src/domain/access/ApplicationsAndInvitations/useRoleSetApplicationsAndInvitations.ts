@@ -172,6 +172,7 @@ const useRoleSetApplicationsAndInvitations = ({
         welcomeMessage,
         extraRole: role,
       },
+      onCompleted: () => refetch(),
     });
     return result.data?.inviteForEntryRoleOnRoleSet ?? [];
   };

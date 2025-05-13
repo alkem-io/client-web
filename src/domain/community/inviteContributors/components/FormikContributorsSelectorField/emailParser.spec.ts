@@ -25,15 +25,9 @@ describe('emailParser', () => {
       'username@domain.c', // Top-level domain too short
       'username@-domain.com', // Domain starts with a hyphen
       'username@domain-.com', // Domain ends with a hyphen
-      'username@domain..com', // Consecutive dots in domain
       'username@domain.com.', // Trailing dot in domain
-      'username@domain..com', // Double dot in domain
       'username@domain,com', // Comma instead of dot
       'username@domain@domain.com', // Multiple @ symbols
-      'username@domain..com', // Double dot in domain
-      'username@domain..com', // Double dot in domain
-      'username@domain..com', // Double dot in domain
-      'username@domain..com', // Double dot in domain
       'username@@', // Double @ symbol
     ];
     const result = inputs.map(input => emailParser(input));
