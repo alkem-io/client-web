@@ -10,7 +10,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
-import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog';
+import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog/CommunityApplicationDialog';
+import { CommunityInvitationDialog } from './CommunityInvitationDialog/CommunityInvitationDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -140,8 +141,7 @@ const CreatePendingMembershipForApplication = (application: ApplicationModel) =>
     createdDate: new Date(application.createdDate),
     updatedDate: new Date(application.updatedDate),
     contributor: applicant,
-    questions: application.questions,
-  } as const;
+  };
   return result;
 };
 
@@ -159,7 +159,6 @@ const CreatePendingMembershipForInvitation = (invitation: InvitationModel) => {
     createdDate: new Date(invitation.createdDate),
     updatedDate: new Date(invitation.updatedDate),
     contributor: contributor,
-    questions: [],
   };
   return result;
 };
@@ -174,7 +173,6 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: PlatformInvita
     url: '',
     email: invitation.email,
     createdDate: invitation.createdDate ? new Date(invitation.createdDate) : undefined,
-    questions: [],
   };
   return result;
 };
@@ -410,15 +408,14 @@ const CommunityMemberships = ({
             actions={[
               {
                 name: 'view',
-                render: ({ row }: RenderParams) =>
-                  row.type === MembershipType.Application && (
-                    <DataGridActionButton
-                      item={row}
-                      tooltip={t('buttons.view')}
-                      icon={VisibilityOutlinedIcon}
-                      onClick={() => setSelectedItem(row)}
-                    />
-                  ),
+                render: ({ row }: RenderParams) => (
+                  <DataGridActionButton
+                    item={row}
+                    tooltip={t('buttons.view')}
+                    icon={VisibilityOutlinedIcon}
+                    onClick={() => setSelectedItem(row)}
+                  />
+                ),
               },
               {
                 name: 'approve',
@@ -457,11 +454,16 @@ const CommunityMemberships = ({
       </Box>
       {selectedItem && selectedItem.type === MembershipType.Application && (
         <CommunityApplicationDialog
-          app={selectedItem}
+          application={selectedItem}
           onClose={() => setSelectedItem(undefined)}
           onSetNewState={onApplicationStateChange}
         />
       )}
+      {selectedItem &&
+        (selectedItem.type === MembershipType.Invitation ||
+          selectedItem.type === MembershipType.PlatformInvitation) && (
+          <CommunityInvitationDialog invitation={selectedItem} onClose={() => setSelectedItem(undefined)} />
+        )}
       {confirmActionOnItem && (
         <ConfirmationDialog
           actions={{

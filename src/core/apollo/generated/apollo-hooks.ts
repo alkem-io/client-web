@@ -85,18 +85,9 @@ export const AdminCommunityCandidateMemberFragmentDoc = gql`
     profile {
       id
       displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
       url
     }
   }
-  ${VisualUriFragmentDoc}
 `;
 export const AdminCommunityApplicationFragmentDoc = gql`
   fragment AdminCommunityApplication on Application {
@@ -110,11 +101,6 @@ export const AdminCommunityApplicationFragmentDoc = gql`
       ... on User {
         email
       }
-    }
-    questions {
-      id
-      name
-      value
     }
   }
   ${AdminCommunityCandidateMemberFragmentDoc}
@@ -10356,6 +10342,100 @@ export type CreateWingbackAccountMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateWingbackAccountMutation,
   SchemaTypes.CreateWingbackAccountMutationVariables
 >;
+export const ContributorTooltipDocument = gql`
+  query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
+    user(ID: $userId) @include(if: $includeUser) {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+        location {
+          id
+          city
+          country
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+        url
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useContributorTooltipQuery__
+ *
+ * To run a query within a React component, call `useContributorTooltipQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorTooltipQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorTooltipQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      includeUser: // value for 'includeUser'
+ *   },
+ * });
+ */
+export function useContributorTooltipQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorTooltipQuery,
+    SchemaTypes.ContributorTooltipQueryVariables
+  > &
+    ({ variables: SchemaTypes.ContributorTooltipQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
+    ContributorTooltipDocument,
+    options
+  );
+}
+
+export function useContributorTooltipLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorTooltipQuery,
+    SchemaTypes.ContributorTooltipQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
+    ContributorTooltipDocument,
+    options
+  );
+}
+
+export function useContributorTooltipSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
+    ContributorTooltipDocument,
+    options
+  );
+}
+
+export type ContributorTooltipQueryHookResult = ReturnType<typeof useContributorTooltipQuery>;
+export type ContributorTooltipLazyQueryHookResult = ReturnType<typeof useContributorTooltipLazyQuery>;
+export type ContributorTooltipSuspenseQueryHookResult = ReturnType<typeof useContributorTooltipSuspenseQuery>;
+export type ContributorTooltipQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorTooltipQuery,
+  SchemaTypes.ContributorTooltipQueryVariables
+>;
+export function refetchContributorTooltipQuery(variables: SchemaTypes.ContributorTooltipQueryVariables) {
+  return { query: ContributorTooltipDocument, variables: variables };
+}
+
 export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations(
     $first: Int!
@@ -11301,100 +11381,6 @@ export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
   return { query: AccountResourcesInfoDocument, variables: variables };
-}
-
-export const ContributorTooltipDocument = gql`
-  query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
-    user(ID: $userId) @include(if: $includeUser) {
-      id
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
-        }
-        location {
-          id
-          city
-          country
-        }
-        tagsets {
-          id
-          name
-          tags
-        }
-        url
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useContributorTooltipQuery__
- *
- * To run a query within a React component, call `useContributorTooltipQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributorTooltipQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributorTooltipQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *      includeUser: // value for 'includeUser'
- *   },
- * });
- */
-export function useContributorTooltipQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ContributorTooltipQuery,
-    SchemaTypes.ContributorTooltipQueryVariables
-  > &
-    ({ variables: SchemaTypes.ContributorTooltipQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
-    ContributorTooltipDocument,
-    options
-  );
-}
-
-export function useContributorTooltipLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributorTooltipQuery,
-    SchemaTypes.ContributorTooltipQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
-    ContributorTooltipDocument,
-    options
-  );
-}
-
-export function useContributorTooltipSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
-    ContributorTooltipDocument,
-    options
-  );
-}
-
-export type ContributorTooltipQueryHookResult = ReturnType<typeof useContributorTooltipQuery>;
-export type ContributorTooltipLazyQueryHookResult = ReturnType<typeof useContributorTooltipLazyQuery>;
-export type ContributorTooltipSuspenseQueryHookResult = ReturnType<typeof useContributorTooltipSuspenseQuery>;
-export type ContributorTooltipQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributorTooltipQuery,
-  SchemaTypes.ContributorTooltipQueryVariables
->;
-export function refetchContributorTooltipQuery(variables: SchemaTypes.ContributorTooltipQueryVariables) {
-  return { query: ContributorTooltipDocument, variables: variables };
 }
 
 export const OrganizationAccountDocument = gql`
@@ -17945,6 +17931,219 @@ export type SpaceAccountQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceAccountQuery(variables: SchemaTypes.SpaceAccountQueryVariables) {
   return { query: SpaceAccountDocument, variables: variables };
+}
+
+export const CommunityApplicationDocument = gql`
+  query CommunityApplication($applicationId: UUID!) {
+    lookup {
+      application(ID: $applicationId) {
+        id
+        createdDate
+        updatedDate
+        contributor {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              city
+              country
+            }
+            url
+          }
+        }
+        questions {
+          id
+          name
+          value
+        }
+        state
+        nextEvents
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useCommunityApplicationQuery__
+ *
+ * To run a query within a React component, call `useCommunityApplicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityApplicationQuery({
+ *   variables: {
+ *      applicationId: // value for 'applicationId'
+ *   },
+ * });
+ */
+export function useCommunityApplicationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityApplicationQuery,
+    SchemaTypes.CommunityApplicationQueryVariables
+  > &
+    ({ variables: SchemaTypes.CommunityApplicationQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityApplicationQuery, SchemaTypes.CommunityApplicationQueryVariables>(
+    CommunityApplicationDocument,
+    options
+  );
+}
+
+export function useCommunityApplicationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityApplicationQuery,
+    SchemaTypes.CommunityApplicationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityApplicationQuery, SchemaTypes.CommunityApplicationQueryVariables>(
+    CommunityApplicationDocument,
+    options
+  );
+}
+
+export function useCommunityApplicationSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CommunityApplicationQuery,
+        SchemaTypes.CommunityApplicationQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CommunityApplicationQuery, SchemaTypes.CommunityApplicationQueryVariables>(
+    CommunityApplicationDocument,
+    options
+  );
+}
+
+export type CommunityApplicationQueryHookResult = ReturnType<typeof useCommunityApplicationQuery>;
+export type CommunityApplicationLazyQueryHookResult = ReturnType<typeof useCommunityApplicationLazyQuery>;
+export type CommunityApplicationSuspenseQueryHookResult = ReturnType<typeof useCommunityApplicationSuspenseQuery>;
+export type CommunityApplicationQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityApplicationQuery,
+  SchemaTypes.CommunityApplicationQueryVariables
+>;
+export function refetchCommunityApplicationQuery(variables: SchemaTypes.CommunityApplicationQueryVariables) {
+  return { query: CommunityApplicationDocument, variables: variables };
+}
+
+export const CommunityInvitationDocument = gql`
+  query CommunityInvitation($invitationId: UUID!, $isPlatformInvitation: Boolean!) {
+    lookup {
+      invitation(ID: $invitationId) @skip(if: $isPlatformInvitation) {
+        id
+        createdDate
+        updatedDate
+        welcomeMessage
+        contributorType
+        contributor {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              city
+              country
+            }
+            url
+          }
+        }
+      }
+      platformInvitation(ID: $invitationId) @include(if: $isPlatformInvitation) {
+        id
+        createdDate
+        updatedDate
+        email
+        welcomeMessage
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useCommunityInvitationQuery__
+ *
+ * To run a query within a React component, call `useCommunityInvitationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityInvitationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityInvitationQuery({
+ *   variables: {
+ *      invitationId: // value for 'invitationId'
+ *      isPlatformInvitation: // value for 'isPlatformInvitation'
+ *   },
+ * });
+ */
+export function useCommunityInvitationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityInvitationQuery,
+    SchemaTypes.CommunityInvitationQueryVariables
+  > &
+    ({ variables: SchemaTypes.CommunityInvitationQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityInvitationQuery, SchemaTypes.CommunityInvitationQueryVariables>(
+    CommunityInvitationDocument,
+    options
+  );
+}
+
+export function useCommunityInvitationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityInvitationQuery,
+    SchemaTypes.CommunityInvitationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityInvitationQuery, SchemaTypes.CommunityInvitationQueryVariables>(
+    CommunityInvitationDocument,
+    options
+  );
+}
+
+export function useCommunityInvitationSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CommunityInvitationQuery,
+        SchemaTypes.CommunityInvitationQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CommunityInvitationQuery, SchemaTypes.CommunityInvitationQueryVariables>(
+    CommunityInvitationDocument,
+    options
+  );
+}
+
+export type CommunityInvitationQueryHookResult = ReturnType<typeof useCommunityInvitationQuery>;
+export type CommunityInvitationLazyQueryHookResult = ReturnType<typeof useCommunityInvitationLazyQuery>;
+export type CommunityInvitationSuspenseQueryHookResult = ReturnType<typeof useCommunityInvitationSuspenseQuery>;
+export type CommunityInvitationQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityInvitationQuery,
+  SchemaTypes.CommunityInvitationQueryVariables
+>;
+export function refetchCommunityInvitationQuery(variables: SchemaTypes.CommunityInvitationQueryVariables) {
+  return { query: CommunityInvitationDocument, variables: variables };
 }
 
 export const AvailableVirtualContributorsInLibraryDocument = gql`

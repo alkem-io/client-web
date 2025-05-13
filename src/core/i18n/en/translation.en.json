@@ -628,7 +628,7 @@
           "successfullyAdded": "{{contributor}} added successfully",
           "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
         },
-        "welcomeMessage": "Message"
+        "welcomeMessage": "Invitation Message"
       }
     },
     "confirmationDialogs": {
