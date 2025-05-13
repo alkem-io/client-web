@@ -1,4 +1,4 @@
-import { Grid, Link } from '@mui/material';
+import { GridLegacy, Link } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorCardSquare, {
@@ -37,29 +37,29 @@ export const AssociatesView = ({
     <PageContentBlock>
       <PageContentBlockHeader title={t('components.associates.title', { count: totalCount })} />
 
-      <Grid container spacing={2} columns={{ xs: 4, sm: 8 }}>
+      <GridLegacy container spacing={2} columns={{ xs: 4, sm: 8 }}>
         {canReadUsers ? (
           <>
             {associatesToShow.map(associate => (
-              <Grid key={associate.id} item xs={2}>
+              <GridLegacy key={associate.id} item xs={2}>
                 <ContributorCardSquare {...associate} />
-              </Grid>
+              </GridLegacy>
             ))}
-            <Grid item container justifyContent="flex-end">
+            <GridLegacy item container justifyContent="flex-end">
               {usersCount > 0 && (
                 <Link component="button" onClick={toggleShowAll}>
                   {!showAll && t('associates-view.more', { count: usersCount })}
                   {showAll && t('associates-view.less')}
                 </Link>
               )}
-            </Grid>
+            </GridLegacy>
           </>
         ) : (
-          <Grid item>
+          <GridLegacy item>
             <BlockSectionTitle>{t('associates-view.sign-in')}</BlockSectionTitle>
-          </Grid>
+          </GridLegacy>
         )}
-      </Grid>
+      </GridLegacy>
     </PageContentBlock>
   );
 };

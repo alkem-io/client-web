@@ -11,10 +11,18 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useNavigate from '@/core/routing/useNavigate';
 import { useParams } from 'react-router-dom';
+import PageContent from '@/core/ui/content/PageContent';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const SpaceDashboardPage = () => {
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
     useSpaceTabProvider({ tabPosition: 0 });
+
+  const { isSmallScreen } = useScreenSize();
 
   const params = useParams();
   const { dialog } = params;
@@ -65,6 +73,31 @@ const SpaceDashboardPage = () => {
 
   return (
     <>
+      <PageContent>
+        {!loading && (
+          <ApplicationButtonContainer spaceId={spaceId}>
+            {(applicationButtonProps, loading) => {
+              if (loading || applicationButtonProps.isMember) {
+                return null;
+              }
+
+              return (
+                <PageContentColumn columns={12}>
+                  <ApplicationButton
+                    {...applicationButtonProps}
+                    loading={loading}
+                    component={FullWidthButton}
+                    extended={!isSmallScreen}
+                    spaceId={spaceId}
+                    spaceLevel={spaceLevel}
+                  />
+                </PageContentColumn>
+              );
+            }}
+          </ApplicationButtonContainer>
+        )}
+      </PageContent>
+
       <SpaceDashboardView
         space={space}
         tabDescription={tabDescription}

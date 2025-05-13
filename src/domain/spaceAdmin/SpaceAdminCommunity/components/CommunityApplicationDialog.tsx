@@ -4,8 +4,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
-import { Box, Button } from '@mui/material';
-import Dialog from '@mui/material/Dialog/Dialog';
+import { Box, Button, Dialog } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 export type ApplicationDialogDataType = {

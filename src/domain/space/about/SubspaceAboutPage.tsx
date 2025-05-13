@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { useSubSpace } from '../hooks/useSubSpace';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import SpaceContributorsDialog from '@/domain/community/community/ContributorsDialog/SpaceContributorsDialog';
 import { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 import useNavigate from '@/core/routing/useNavigate';
 import { useSpace } from '../context/useSpace';
@@ -17,8 +15,6 @@ const SubspaceAboutPage = () => {
   } = useSpace();
   const { subspace, permissions, loading, parentSpaceId } = useSubSpace();
   const { about } = subspace;
-
-  const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
   const space: SpaceDashboardSpaceDetails = {
     id: subspace.id,
@@ -42,11 +38,6 @@ const SubspaceAboutPage = () => {
         onClose={handleClose}
         hasReadPrivilege={permissions.canRead}
         hasEditPrivilege={permissions.canUpdate}
-      />
-      <SpaceContributorsDialog
-        open={isContributorsDialogOpen}
-        onClose={() => setIsContributorsDialogOpen(false)}
-        roleSetId={about.membership.roleSetID}
       />
     </>
   );
