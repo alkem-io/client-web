@@ -10,21 +10,53 @@ import SearchDialog from '@/main/search/SearchDialog';
 import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { useState } from 'react';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import SpaceTabs from './tabbedLayout/Tabs/SpaceTabs';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import { gutters } from '@/core/ui/grid/utils';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import { useSectionIndex } from './useSectionIndex';
+import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = () => {
-  const { spaceId, spaceHierarchyPath } = useUrlResolver();
+  const { spaceId, spaceHierarchyPath, spaceLevel } = useUrlResolver();
+  const sectionIndex = useSectionIndex({ spaceId, spaceLevel });
 
   const { isSmallScreen } = useScreenSize();
+
+  const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
+
+  const isLevelZero = spaceLevel === SpaceLevel.L0;
 
   return (
     <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} />} />
 
-      <SpacePageBanner />
+      <SpacePageBanner watermark={!isSmallScreen && <PageBannerWatermark />} />
       <SubspacePageBanner />
-
+      {!isSmallScreen && isLevelZero && (
+        <SpaceTabs
+          mobile={isSmallScreen}
+          onMenuOpen={setTabsMenuOpen}
+          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
+        />
+      )}
       <Outlet />
+      {isSmallScreen && isLevelZero && (
+        <SpaceTabs
+          mobile={isSmallScreen}
+          onMenuOpen={setTabsMenuOpen}
+          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
+        />
+      )}
+
+      <FloatingActionButtons
+        {...(isSmallScreen ? { bottom: gutters(3) } : {})}
+        visible={!isTabsMenuOpen}
+        floatingActions={<PlatformHelpButton />}
+      />
 
       <PlatformFooter />
 

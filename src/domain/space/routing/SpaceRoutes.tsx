@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react';
-import { Route, Routes, Navigate, useSearchParams, Outlet } from 'react-router-dom';
+import { useContext } from 'react';
+import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import Redirect from '@/core/routing/Redirect';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
@@ -14,18 +14,11 @@ import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/S
 import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import SpaceKnowledgeBasePage from '../layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
 import SubspaceRoutes from './SubspaceRoutes';
-import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
-import { parseInt } from 'lodash';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpaceTabs from '../layout/tabbedLayout/Tabs/SpaceTabs';
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import { gutters } from '@/core/ui/grid/utils';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import Loading from '@/core/ui/loading/Loading';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
+import { useSectionIndex } from '../layout/useSectionIndex';
 
 const LegacyRoutesRedirects = () => {
   const {
@@ -77,52 +70,15 @@ const SpaceProtectedRoutes = () => {
 
 export const SpaceTabbedPages = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
-  const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
-  const { isSmallScreen } = useScreenSize();
 
-  const isLevelZero = spaceLevel === SpaceLevel.L0;
-
-  const [searchParams] = useSearchParams();
-
-  const { defaultTabIndex } = useSpaceTabs({ spaceId: spaceId, skip: spaceLevel !== SpaceLevel.L0 });
-
-  let sectionIndex = searchParams.get(TabbedLayoutParams.Section);
-  if (!sectionIndex) {
-    if (defaultTabIndex && defaultTabIndex >= 0) {
-      sectionIndex = defaultTabIndex.toString();
-    } else {
-      sectionIndex = '0'; // set default to dashboard
-    }
-  } else {
-    sectionIndex = `${parseInt(sectionIndex) - 1}`;
-  }
+  const sectionIndex = useSectionIndex({ spaceId, spaceLevel });
 
   return (
     <>
-      {!isSmallScreen && isLevelZero && (
-        <SpaceTabs
-          mobile={isSmallScreen}
-          onMenuOpen={setTabsMenuOpen}
-          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
-        />
-      )}
       {sectionIndex === '0' && <SpaceDashboardPage />}
       {sectionIndex === '1' && <SpaceCommunityPage />}
       {sectionIndex === '2' && <SpaceSubspacesPage />}
       {sectionIndex === '3' && <SpaceKnowledgeBasePage sectionIndex={3} />}
-      {isSmallScreen && isLevelZero && (
-        <SpaceTabs
-          mobile={isSmallScreen}
-          onMenuOpen={setTabsMenuOpen}
-          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
-        />
-      )}
-
-      <FloatingActionButtons
-        {...(isSmallScreen ? { bottom: gutters(3) } : {})}
-        visible={!isTabsMenuOpen}
-        floatingActions={<PlatformHelpButton />}
-      />
     </>
   );
 };
