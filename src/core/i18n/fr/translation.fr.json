@@ -1183,8 +1183,8 @@
     "activity-log-section": {
       "title": "Contributions récurrentes",
       "activity-sign-in-error-message": "Pour voir les contributions récentes, veuillez vous connecter.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceLevel}}."
     },
     "activityLogView": {
       "description": {
@@ -1709,7 +1709,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
-          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
@@ -2606,8 +2606,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
-        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",
