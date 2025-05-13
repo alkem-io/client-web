@@ -1183,8 +1183,8 @@
     "activity-log-section": {
       "title": "Recente bijdragen",
       "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
-      "activity-join-error-message": "Om recente bijdragen te zien, wordt lid van deze {{spaceType}} als je nog geen lid bent.",
-      "activity-sign-in-and-join-error-message": "Om recente bijdragen te zien, log in en wordt lid van deze {{spaceType}} als je nog geen lid bent."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceLevel}}."
     },
     "activityLogView": {
       "description": {
@@ -1709,7 +1709,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - Nieuw {{calloutType}} is gepubliceerd \"{{calloutName}}\", neem een kijkje!",
-          "description": "{{contributorName}} heeft een nieuwe {{calloutType}} gepubliceerd in {{spaceType}}: {{spaceName}}, met naam: {{calloutName}}."
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} heeft je genoemd in een reactie op {{calloutName}}:",
@@ -2606,8 +2606,8 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "Je moet lid zijn van {{spaceType}} om dit whiteboard te kunnen bewerken. <spacelink>Klik hier om je aan te melden</spacelink>",
-        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{spaceType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "Alleen bekijken modus",
