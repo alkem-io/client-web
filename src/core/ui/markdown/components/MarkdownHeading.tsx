@@ -21,7 +21,6 @@ const MarkdownHeading = ({ level, node, ...props }: HeadingProps) => {
 
     return <Typography variant={variant} {...props} />;
   } else {
-    // eslint-disable-next-line jsx-a11y/aria-props
     return <div role="heading" aria-level={markdownHeadingLevel} {...props} />;
   }
 };
