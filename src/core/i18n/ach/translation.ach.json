@@ -1183,8 +1183,8 @@
     "activity-log-section": {
       "title": "crwdns18952:0crwdne18952:0",
       "activity-sign-in-error-message": "crwdns18954:0crwdne18954:0",
-      "activity-join-error-message": "crwdns28944:0{{spaceType}}crwdne28944:0",
-      "activity-sign-in-and-join-error-message": "crwdns28946:0{{spaceType}}crwdne28946:0"
+      "activity-join-error-message": "crwdns36930:0{{spaceLevel}}crwdne36930:0",
+      "activity-sign-in-and-join-error-message": "crwdns36932:0{{spaceLevel}}crwdne36932:0"
     },
     "activityLogView": {
       "description": {
@@ -1709,7 +1709,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "crwdns19496:0{{spaceName}}crwdnd19496:0{{calloutType}}crwdnd19496:0{{calloutName}}crwdne19496:0",
-          "description": "crwdns19498:0{{contributorName}}crwdnd19498:0{{calloutType}}crwdnd19498:0{{spaceType}}crwdnd19498:0{{spaceName}}crwdnd19498:0{{calloutName}}crwdne19498:0"
+          "description": "crwdns36934:0{{contributorName}}crwdnd36934:0{{calloutType}}crwdnd36934:0{{spaceLevel}}crwdnd36934:0{{spaceName}}crwdnd36934:0{{calloutName}}crwdne36934:0"
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "crwdns19500:0{{commenterName}}crwdnd19500:0{{calloutName}}crwdne19500:0",
@@ -2606,8 +2606,8 @@
       "readonlyReason": {
         "readonly": "crwdns20396:0crwdne20396:0",
         "contentUpdatePolicy": "crwdns20398:0{{ownerName}}crwdne20398:0",
-        "noMembership": "crwdns36908:0{{spaceType}}crwdne36908:0",
-        "unauthenticated": "crwdns28952:0{{spaceType}}crwdne28952:0"
+        "noMembership": "crwdns36936:0{{spaceLevel}}crwdne36936:0",
+        "unauthenticated": "crwdns36938:0{{spaceLevel}}crwdne36938:0"
       },
       "readonlyDialog": {
         "title": "crwdns20404:0crwdne20404:0",
