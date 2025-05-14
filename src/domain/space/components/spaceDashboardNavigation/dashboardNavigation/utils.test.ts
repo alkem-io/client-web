@@ -11,13 +11,13 @@ const dashboardNavigation: DashboardNavigationItem = {
     {
       id: 'subspace_0',
       url: '',
-      displayName: 'Challenge 0',
+      displayName: 'Subspace 0',
       member: true,
       children: [
         {
           id: 'subspace_0_1',
           url: '',
-          displayName: 'Opportunity 0',
+          displayName: 'Subsubspace 0',
           member: false,
         },
       ],
@@ -25,19 +25,19 @@ const dashboardNavigation: DashboardNavigationItem = {
     {
       id: 'subspace_1',
       url: '',
-      displayName: 'Challenge 1',
+      displayName: 'Subspace 1',
       member: true,
       children: [
         {
           id: 'subspace_1_1',
           url: '',
-          displayName: 'Opportunity 1',
+          displayName: 'Subsubspace 1',
           member: false,
         },
         {
           id: 'subspace_1_2',
           url: '',
-          displayName: 'Opportunity 2',
+          displayName: 'Subsubspace 2',
           member: false,
           children: [
             {
@@ -53,19 +53,19 @@ const dashboardNavigation: DashboardNavigationItem = {
     {
       id: 'subspace_2',
       url: '',
-      displayName: 'Challenge 2',
+      displayName: 'Subspace 2',
       member: true,
       children: [
         {
           id: 'subspace_2_1',
           url: '',
-          displayName: 'Opportunity 3',
+          displayName: 'Subsubspace 3',
           member: false,
         },
         {
           id: 'subspace_2_2',
           url: '',
-          displayName: 'Opportunity 4',
+          displayName: 'Subsubspace 4',
           member: false,
         },
       ],

@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import produce from 'immer';
+import { produce } from 'immer';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '@/domain/shared/components/Text/SubHeading';
 import { Text } from '@/core/ui/typography';
@@ -10,7 +10,7 @@ import { useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
-import { SelfServiceLoginFlow } from '@ory/kratos-client';
+import { LoginFlow } from '@ory/kratos-client';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { AUTH_REMINDER_PATH, AUTH_RESET_PASSWORD_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
@@ -23,14 +23,14 @@ interface LoginPageProps {
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 
-const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
-  return flow.ui.messages?.some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
+const isEmailNotVerified = (flow: LoginFlow) => {
+  return (flow.ui?.messages ?? []).some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
 };
 
 // See a TODO below
 // const EMAIL_FIELD_NAME = 'password_identifier';
 //
-// const getEmailAddress = (flow: SelfServiceLoginFlow): string | undefined => {
+// const getEmailAddress = (flow: LoginFlow): string | undefined => {
 //   const node = flow.ui.nodes.find((node ) => {
 //     const attributes = node.attributes as UiNodeInputAttributes;
 //     return attributes.name === EMAIL_FIELD_NAME;
@@ -44,6 +44,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
 
+  // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
     produce(loginFlow.ui, ui => {

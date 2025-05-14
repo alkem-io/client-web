@@ -83,7 +83,7 @@ const WhiteboardDialogFooter = ({
     }
   };
 
-  const getJourneyProfile = () => {
+  const getSpaceAboutProfile = () => {
     switch (spaceLevel) {
       case SpaceLevel.L0:
         return spaceAbout.profile;
@@ -92,7 +92,7 @@ const WhiteboardDialogFooter = ({
     }
   };
 
-  const journeyProfile = getJourneyProfile();
+  const spaceAboutProfile = getSpaceAboutProfile();
 
   const getReadonlyReason = () => {
     if (canUpdateContent) {
@@ -164,7 +164,7 @@ const WhiteboardDialogFooter = ({
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
               values={{
-                spaceLevel: t(`common.space-level.${spaceLevel}`),
+                spaceType: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
               }}
               components={{
@@ -173,7 +173,11 @@ const WhiteboardDialogFooter = ({
                 ) : (
                   <span />
                 ),
-                journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+                spacelink: spaceAboutProfile ? (
+                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                ) : (
+                  <span />
+                ),
                 signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
                 learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
               }}

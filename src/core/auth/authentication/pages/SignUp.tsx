@@ -15,7 +15,7 @@ import {
   STORAGE_KEY_RETURN_URL,
 } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
-import produce from 'immer';
+import { produce } from 'immer';
 import KratosUI from '../components/KratosUI';
 import AcceptTermsButton from '../components/AcceptTermsButton';
 import AcceptTermsButtonContextual from '../components/AcceptTermsButtonContextual';

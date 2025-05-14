@@ -34,12 +34,10 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   ... on ActivityLogEntryCalloutDiscussionComment {
     ...ActivityLogCalloutDiscussionComment
   }
-  ... on ActivityLogEntryChallengeCreated {
-    ...ActivityLogChallengeCreated
+  ... on ActivityLogEntrySubspaceCreated {
+    ...ActivityLogSubspaceCreated
   }
-  ... on ActivityLogEntryOpportunityCreated {
-    ...ActivityLogOpportunityCreated
-  }
+
   ... on ActivityLogEntryUpdateSent {
     ...ActivityLogUpdateSent
   }

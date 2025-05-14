@@ -1,7 +1,7 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import UserForm from '@/domain/community/user/userForm/UserForm';
-import { Loading } from '@/core/ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 import {
   useCreateTagsetOnProfileMutation,
   useDeleteUserMutation,

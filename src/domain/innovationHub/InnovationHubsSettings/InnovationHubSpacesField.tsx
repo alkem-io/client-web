@@ -77,7 +77,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       renderCell: ({ row }: RenderParams) => <>{row.about.profile.displayName}</>,
       valueGetter: (_, row: GetterParams) => row?.about.profile.displayName,
       filterable: false,
-      resizable: true,
       flex: 1,
     },
     {
@@ -86,7 +85,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       renderCell: ({ row }: RenderParams) => <>{row.visibility}</>,
       valueGetter: (_, row: GetterParams) => row?.visibility,
       filterable: false,
-      resizable: true,
     },
     {
       field: 'host.profile.displayName',
@@ -94,7 +92,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile.displayName}</>,
       valueGetter: (_, row: GetterParams) => row?.about.provider?.profile.displayName,
       filterable: false,
-      resizable: true,
       flex: 1,
     },
   ];

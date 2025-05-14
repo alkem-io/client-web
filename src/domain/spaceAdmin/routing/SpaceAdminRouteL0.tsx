@@ -87,7 +87,7 @@ const SpaceAdminL0Route: FC = () => {
 
   return (
     <NonSpaceAdminRedirect spaceId={spaceId}>
-      <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+      <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />

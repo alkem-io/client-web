@@ -1,4 +1,4 @@
-import { IconButton, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { DataGrid, DataGridProps, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ReactNode, useMemo } from 'react';
@@ -6,6 +6,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { GUTTER_PX } from '../grid/constants';
+import DataGridActionButton from './DataGridActionButton';
+import React from 'react';
 
 export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnHeaders': {
@@ -42,15 +44,6 @@ interface Action<Item extends Identifiable> {
   render: (params: GridRenderCellParams<Item>) => ReactNode;
 }
 
-const actionDefaultProps: Partial<GridColDef> = {
-  width: 30,
-  resizable: false,
-  headerName: '',
-  sortable: false,
-  filterable: false,
-  disableColumnMenu: true,
-};
-
 interface DataGridTableProps<Item extends Identifiable> extends Omit<DataGridProps<Item>, 'columns'> {
   rows: Item[];
   columns: GridColDef<Item>[];
@@ -85,40 +78,57 @@ const DataGridTable = <Item extends Identifiable>({
         return {
           headerName: t(`fields.${column.field}` as TranslationKey) as string,
           renderHeader: ({ colDef }) => <>{colDef.headerName}</>,
-          resizable: true,
           ...column,
         };
       }),
     [t, ...dependencies]
   );
 
-  const actionColumnDefinitions = useMemo<GridColDef<Item>[]>(() => {
+  const actionsColumnDefinition = useMemo<GridColDef<Item> | undefined>(() => {
     const actionDefinitions = [...(actions ?? [])];
-
+    if (!onDelete && actionDefinitions.length === 0) {
+      return undefined;
+    }
     if (onDelete) {
       actionDefinitions.push({
         name: 'delete',
         render: ({ row }: { row: Item }) =>
           canDelete(row) && (
-            <IconButton onClick={() => onDelete(row)} disabled={disableDelete(row)} aria-label={t('buttons.delete')}>
-              <DeleteOutlineIcon color={disableDelete(row) ? 'disabled' : 'warning'} />
-            </IconButton>
+            <DataGridActionButton
+              item={row}
+              tooltip={t('buttons.delete')}
+              icon={DeleteOutlineIcon}
+              iconColor="warning"
+              isDisabled={disableDelete}
+              onClick={onDelete}
+            />
           ),
       });
     }
 
-    return actionDefinitions.map(({ name, render }) => {
-      return {
-        ...actionDefaultProps,
-        field: name,
-        renderCell: render,
-      };
-    });
-  }, [onDelete, ...dependencies]);
+    return {
+      headerName: actionDefinitions.length > 1 ? t('common.actions') : '',
+      width: actionDefinitions.length * GUTTER_PX * 2.5,
+      resizable: false,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      field: 'actions',
+      renderCell: (...renderParams) => {
+        return (
+          <Box marginLeft="auto">
+            {actionDefinitions.map(({ name, render }) => (
+              <React.Fragment key={name}>{render(...renderParams)}</React.Fragment>
+            ))}
+          </Box>
+        );
+      },
+    };
+  }, [actions, onDelete, canDelete, disableDelete, t, ...dependencies]);
 
   const mergedColumnDefinitions = useMemo(
-    () => [...columnDefinitions, ...actionColumnDefinitions],
-    [columnDefinitions, actionColumnDefinitions]
+    () => (actionsColumnDefinition ? [...columnDefinitions, actionsColumnDefinition] : columnDefinitions),
+    [columnDefinitions, actionsColumnDefinition]
   );
 
   return (

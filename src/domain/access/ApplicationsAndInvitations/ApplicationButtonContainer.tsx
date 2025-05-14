@@ -10,22 +10,22 @@ import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo
 import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
 
 export interface ApplicationButtonContainerProps {
   parentSpaceId?: string;
-  journeyId?: string;
+  spaceId?: string;
   loading?: boolean;
   onJoin?: (params: { communityId: string }) => void;
-  children: (props: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>, loading: boolean) => ReactNode;
+  children: (props: Omit<ApplicationButtonProps, 'spaceId' | 'spaceLevel'>, loading: boolean) => ReactNode;
 }
 
 export const ApplicationButtonContainer = ({
   parentSpaceId,
-  journeyId,
+  spaceId,
   loading: loadingParams = false,
   onJoin,
   children,
@@ -50,11 +50,11 @@ export const ApplicationButtonContainer = ({
     refetch,
   } = useApplicationButtonQuery({
     variables: {
-      spaceId: journeyId!,
+      spaceId: spaceId!,
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     },
-    skip: loadingParams || !journeyId,
+    skip: loadingParams || !spaceId,
   });
 
   // TODO ideally this should be a dependency passed from the context where the button is rendered
@@ -65,14 +65,14 @@ export const ApplicationButtonContainer = ({
     const refetchSpaceQuery = parentSpaceId ? fetchSubspace : fetchSpace;
 
     await refetch({
-      spaceId: journeyId!,
+      spaceId: spaceId!,
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     });
 
     refetchSpaceQuery({
       variables: {
-        spaceId: journeyId!,
+        spaceId: spaceId!,
       },
     });
 
@@ -95,17 +95,17 @@ export const ApplicationButtonContainer = ({
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
-  const userApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === journeyId);
+  const userApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === spaceId);
 
-  const userInvitation = pendingInvitations?.find(x => x.spacePendingMembershipInfo.id === journeyId);
+  const userInvitation = pendingInvitations?.find(x => x.spacePendingMembershipInfo.id === spaceId);
 
-  // find an application which does not have a challengeID, meaning it's on space level,
-  // but you are at least at challenge level to have a parent application
+  // find an application which does not have a spaceID, meaning it's on space level,
+  // but you are at least at Space level to have a parent application
   const parentApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === parentSpaceId);
 
   const isMember = space?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const isChildJourney = !!parentSpaceId;
+  const isSubspace = !!parentSpaceId;
   const isParentMember = parentSpace?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentUrl = parentSpace?.about.profile.url;
@@ -113,16 +113,16 @@ export const ApplicationButtonContainer = ({
   const rolesetPrivileges = space?.about.membership.myPrivileges ?? [];
 
   const canJoinCommunity =
-    (isChildJourney && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin)) ||
-    (!isChildJourney && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin));
+    (isSubspace && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin)) ||
+    (!isSubspace && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin));
 
   // Changed from parent to current space
   const canAcceptInvitation =
     space?.about.membership.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
   const canApplyToCommunity =
-    (isChildJourney && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply)) ||
-    (!isChildJourney && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply));
+    (isSubspace && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply)) ||
+    (!isSubspace && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply));
 
   const parentRoleSetPrivileges = parentSpace?.about.membership.myPrivileges ?? [];
 
@@ -149,7 +149,7 @@ export const ApplicationButtonContainer = ({
     notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
 
-  const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'> = {
+  const applicationButtonProps: Omit<ApplicationButtonProps, 'spaceId' | 'spaceLevel'> = {
     isAuthenticated,
     isMember,
     isParentMember,

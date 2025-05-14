@@ -17,7 +17,7 @@ import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege, CalloutState } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { nanoid } from 'nanoid';
+import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
@@ -100,7 +100,7 @@ const LinkCollectionCallout = ({
             profile: {
               // Link names have to be unique, if everything goes well this name will never be shown:
               displayName: t('callout.link-collection.new-temporary-reference', {
-                temp: nanoid(4),
+                temp: uuid().slice(0, 4),
               }),
             },
           },

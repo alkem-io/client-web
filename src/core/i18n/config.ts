@@ -1,4 +1,5 @@
 import i18n from 'i18next';
+import 'react-i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import translationEn from './en/translation.en.json';
@@ -12,6 +13,7 @@ import translationPt from './pt/translation.pt.json';
 import inContextTranslation from './ach/translation.ach.json';
 import { env } from '@/main/env';
 
+export const defaultNS = 'translation';
 export const resources = {
   en: {
     translation: translationEn,
@@ -56,6 +58,8 @@ i18n
   .init({
     fallbackLng: supportedLngs[0],
     supportedLngs,
+    ns: [defaultNS],
+    defaultNS,
     resources,
     interpolation: {
       format: (value, format, _lng) => {

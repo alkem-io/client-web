@@ -14,7 +14,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 export interface EditLinkFormValues {
@@ -28,11 +28,16 @@ const validationSchema = yup.object().shape({
   id: yup.string().required(),
   name: yup
     .string()
-    .required(MessageWithPayload('forms.validations.required'))
-    .min(3, MessageWithPayload('forms.validations.minLength'))
-    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-  uri: yup.string().required().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-  description: yup.string().max(LONG_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
+    .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+    .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
+  uri: yup
+    .string()
+    .required()
+    .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
+  description: yup
+    .string()
+    .max(LONG_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
 });
 
 interface EditLinkDialogProps {
@@ -70,7 +75,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
           onSubmit={() => {}}
         >
           {formikState => {
-            const { values } = formikState;
+            const { values, isValid } = formikState;
 
             return (
               <>
@@ -103,7 +108,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
                 )}
                 <Actions paddingX={gutters()} justifyContent="space-between">
                   <Button onClick={onClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => onSave(values)}>
+                  <Button variant="contained" onClick={() => onSave(values)} disabled={!isValid}>
                     {t('buttons.save')}
                   </Button>
                 </Actions>

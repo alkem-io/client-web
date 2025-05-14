@@ -3,14 +3,15 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import CalloutsList from './CalloutsList';
 import useCalloutsSet from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface CalloutsListDialogProps {
   open?: boolean;
   onClose?: () => void;
-  calloutsSetId: string;
 }
 
-const CalloutsListDialog = ({ open = false, onClose, calloutsSetId }: CalloutsListDialogProps) => {
+const CalloutsListDialog = ({ open = false, onClose }: CalloutsListDialogProps) => {
+  const { calloutsSetId } = useUrlResolver();
   const { t } = useTranslation();
   const { callouts } = useCalloutsSet({
     calloutsSetId: calloutsSetId,

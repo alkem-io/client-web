@@ -14,7 +14,7 @@ import DashboardNavigationItemView, {
 import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { Actions } from '@/core/ui/actions/Actions';
 
-import produce from 'immer';
+import { produce } from 'immer';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
 import { findCurrentPath } from './utils';
@@ -76,7 +76,7 @@ const DashboardNavigation = ({
 
   const tooltipPlacement = isMediumSmallScreen ? 'left' : 'right';
 
-  // TODO: receive journeyPath as argument, revise the currentLevel && isTopLevel logic!
+  // TODO: receive spaceHierarchyPath as argument, revise the currentLevel && isTopLevel logic!
   // TODO: simplify the logic here and in the DashboardNavigationItemView
   const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;

@@ -1,9 +1,12 @@
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { InviteContributorDialogProps } from './InviteContributorsProps';
-import InviteVCsDialog from './InviteVCsDialog';
+import { InviteContributorsDialogProps } from './InviteContributorsProps';
+import InviteVCsDialog from './virtualContributors/InviteVCsDialog';
+import InviteUsersDialog from './users/InviteUsersDialog';
 
-const InviteContributorDialog = (props: InviteContributorDialogProps) => {
+const InviteContributorsDialog = (props: InviteContributorsDialogProps) => {
   switch (props.type) {
+    case RoleSetContributorType.User:
+      return <InviteUsersDialog {...props} />;
     case RoleSetContributorType.Virtual:
       return <InviteVCsDialog {...props} />;
     default:
@@ -11,4 +14,4 @@ const InviteContributorDialog = (props: InviteContributorDialogProps) => {
   }
 };
 
-export default InviteContributorDialog;
+export default InviteContributorsDialog;

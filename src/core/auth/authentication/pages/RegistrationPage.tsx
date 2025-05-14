@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import produce from 'immer';
+import { produce } from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
@@ -12,9 +12,10 @@ import Paragraph from '@/domain/shared/components/Text/Paragraph';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import { UiNodeInput } from '../components/Kratos/UiNodeTypes';
+import { UiNode } from '@ory/kratos-client';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
+import { isInputNode } from '../components/Kratos/helpers';
 
 // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
 const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
@@ -35,24 +36,22 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
-  const areTermsAccepted = (checkbox: UiNodeInput) => checkbox.attributes.value || hasAcceptedTerms;
+  const areTermsAccepted = (checkbox: UiNode) => (isInputNode(checkbox) ? checkbox.attributes.value : hasAcceptedTerms);
 
   const registrationFlowWithAcceptedTerms =
     registrationFlow &&
     produce(registrationFlow, nextFlow => {
-      const termsCheckbox = nextFlow?.ui.nodes.find(isAcceptTermsCheckbox) as UiNodeInput | undefined;
-      if (termsCheckbox && !termsCheckbox.attributes.value) {
+      const termsCheckbox = nextFlow?.ui.nodes.find(isAcceptTermsCheckbox);
+      if (termsCheckbox && isInputNode(termsCheckbox) && !termsCheckbox.attributes.value) {
         termsCheckbox.attributes.value = hasAcceptedTerms;
       }
     });
 
-  const termsCheckbox = registrationFlowWithAcceptedTerms?.ui.nodes.find(isAcceptTermsCheckbox) as
-    | UiNodeInput
-    | undefined;
+  const termsCheckbox = registrationFlowWithAcceptedTerms?.ui.nodes.find(isAcceptTermsCheckbox);
 
   // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
   const storeHasAcceptedTerms = () => {
-    if (registrationFlow?.id && termsCheckbox && areTermsAccepted(termsCheckbox)) {
+    if (registrationFlow?.id && termsCheckbox && isInputNode(termsCheckbox) && areTermsAccepted(termsCheckbox)) {
       sessionStorage.setItem(`kratosFlow:${registrationFlow.id}:hasAcceptedTerms`, 'true');
     }
   };
@@ -70,7 +69,8 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
     return <ErrorDisplay />;
   }
 
-  const mustAcceptTerms = termsCheckbox ? !termsCheckbox.attributes.value : false;
+  const mustAcceptTerms =
+    termsCheckbox && isInputNode(termsCheckbox) ? !Boolean(termsCheckbox.attributes.value) : false;
 
   return (
     <KratosForm ui={registrationFlow?.ui}>

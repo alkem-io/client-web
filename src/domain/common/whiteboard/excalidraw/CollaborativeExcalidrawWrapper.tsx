@@ -8,7 +8,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
 import Reconnectable from '@/core/utils/reconnectable';
 import { useTick } from '@/core/utils/time/tick';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';

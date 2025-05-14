@@ -2,11 +2,12 @@ import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
-import { PartialRecord } from '@/core/utils/PartialRecords';
+import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
-import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { TabbedLayoutParams } from '../urlBuilders';
 
-export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
+export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
 export type UrlResolverContextValue = {
   type: UrlType | undefined;
@@ -20,7 +21,7 @@ export type UrlResolverContextValue = {
   /**
    * [level0, level1, level2]
    */
-  journeyPath: JourneyPath | undefined;
+  spaceHierarchyPath: SpaceHierarchyPath | undefined;
   /**
    * The parent space id of the current space
    */
@@ -62,7 +63,7 @@ const emptyResult: UrlResolverContextValue = {
   spaceId: undefined,
   spaceLevel: undefined,
   levelZeroSpaceId: undefined,
-  journeyPath: [],
+  spaceHierarchyPath: [],
   parentSpaceId: undefined,
   collaborationId: undefined,
   calloutsSetId: undefined,
@@ -133,11 +134,19 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     },
     skip: !currentUrl,
   });
+
   if (!urlResolverLoading && error && isUrlResolverError(error)) {
     throw new NotFoundError();
   }
 
   useEffect(() => {
+    // strip parts of the URL that go below the resolved wentity
+    const maskedUrlParts = [
+      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      /\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/,
+      // Remove tabs from the URL as well
+      `/${TabbedLayoutParams.Section}(?:/[a-zA-Z0-9-]+)?/?$`,
+    ];
     const handleUrlChange = () => {
       let nextUrl = window.location.origin + window.location.pathname;
 
@@ -146,12 +155,13 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         nextUrl = nextUrl.slice(0, -1);
       }
 
-      if (/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
-        // TODO: We need to rework the Urls of the templates anyway. See #8061
-        // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
-      } else {
-        // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
-        nextUrl = nextUrl.replace(/\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/, '');
+      // TODO: We need to rework the Urls of the templates anyway. See #8061
+      // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
+      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
+      if (!/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
+        for (const mask of maskedUrlParts) {
+          nextUrl = nextUrl.replace(mask, '');
+        }
       }
 
       if (nextUrl !== currentUrl) {
@@ -172,22 +182,25 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  // create cache for the resolver value
+  const valueRef = useRef<UrlResolverContextValue>(emptyResult);
   const value = useMemo<UrlResolverContextValue>(() => {
+    // start generating the context value on successfull request
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
       const data = urlResolverData.urlResolver;
       const spaceId = data?.space?.id;
       const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
-      const journeyPath = spacesIds.length > 0 ? (spacesIds as JourneyPath) : undefined;
+      const spaceHierarchyPath = spacesIds.length > 0 ? (spacesIds as SpaceHierarchyPath) : undefined;
 
-      return {
+      const value = {
         type,
         // Space:
         spaceId: data.space?.id,
         spaceLevel: data.space?.level,
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
         parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
-        journeyPath: journeyPath,
+        spaceHierarchyPath: spaceHierarchyPath,
 
         // Collaboration:
         collaborationId: data.space?.collaboration.id,
@@ -240,9 +253,16 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         discussionId: data.discussionId,
         loading: urlResolverLoading,
       };
-    } else {
-      return emptyResult;
+      // store in the cache
+      valueRef.current = value;
+      return value;
     }
+    // return the cached value until the new request is resolved
+    if (urlResolverLoading) {
+      return valueRef.current;
+    }
+    // if the value is not resolved and loading is complete return empty result
+    return emptyResult;
   }, [urlResolverData, urlResolverLoading]);
 
   return <UrlResolverContext.Provider value={value}>{children}</UrlResolverContext.Provider>;

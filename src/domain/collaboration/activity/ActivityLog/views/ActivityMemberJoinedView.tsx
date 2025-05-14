@@ -10,7 +10,7 @@ interface ActivityMemberJoinedViewProps extends ActivityViewProps {
 }
 
 export const ActivityMemberJoinedView = ({
-  journeyDisplayName,
+  spaceDisplayName,
   member,
   type,
   ...rest
@@ -21,6 +21,6 @@ export const ActivityMemberJoinedView = ({
     avatarUrl={member.avatarUrl}
     title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
     url={member.url}
-    contextDisplayName={journeyDisplayName}
+    contextDisplayName={spaceDisplayName}
   />
 );

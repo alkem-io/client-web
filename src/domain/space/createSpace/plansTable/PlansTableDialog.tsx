@@ -32,7 +32,7 @@ interface PlansTableDialogProps {
 }
 
 /**
- * @deprecated Not used, keeping it for reference
+ * Not used, but keeping it for reference
  */
 const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps) => {
   const { t } = useTranslation();

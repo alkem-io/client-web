@@ -61,13 +61,14 @@ const PromptConfig = ({ vc }) => {
   if (!vc) {
     return null;
   }
+  const availableVariables = 'duration, audience, workshop_type, role, purpose';
 
   return (
     <PageContent background="background.paper">
       <PageContentColumn columns={12}>
         <PageContentBlock>
           <BlockTitle>{t('pages.virtualContributorProfile.settings.prompt.title')}</BlockTitle>
-          <Caption>{t('pages.virtualContributorProfile.settings.prompt.infoText')}</Caption>
+          <Caption>{t('pages.virtualContributorProfile.settings.prompt.infoText', { availableVariables })}</Caption>
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}

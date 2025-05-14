@@ -9,6 +9,11 @@ export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 const URL_PARAM_SECTION = 'tab';
 const URL_PARAM_DIALOG = 'dialog';
 
+export enum TabbedLayoutParams {
+  Section = URL_PARAM_SECTION,
+  Dialog = URL_PARAM_DIALOG,
+}
+
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
@@ -32,8 +37,8 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export const buildUpdatesUrl = (journeyLocation: string) => {
-  return `${journeyLocation}/updates`;
+export const buildUpdatesUrl = (spaceUrl: string) => {
+  return `${spaceUrl}/updates`;
 };
 
 export const buildSpaceSectionUrl = (

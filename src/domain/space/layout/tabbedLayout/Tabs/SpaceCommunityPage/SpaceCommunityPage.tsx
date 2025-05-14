@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
@@ -18,19 +18,19 @@ import {
   RoleSetContributorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import SpacePageLayout from '../../layout/SpacePageLayout';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useSpace } from '@/domain/space/context/useSpace';
+import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 
 const SpaceCommunityPage = () => {
   const { space, entitlements } = useSpace();
@@ -38,7 +38,6 @@ const SpaceCommunityPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
   const {
-    urlInfo,
     classificationTagsets,
     tabDescription,
     flowStateForNewCallouts: flowStateForTab,
@@ -46,8 +45,6 @@ const SpaceCommunityPage = () => {
   } = useSpaceTabProvider({
     tabPosition: 1,
   });
-
-  const { journeyPath } = urlInfo;
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
   const openContactLeadsDialog = () => {
@@ -121,62 +118,62 @@ const SpaceCommunityPage = () => {
     calloutsSetId,
     classificationTagsets,
   });
-
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={{ sectionIndex: 1 }}>
-      <PageContent>
-        <InfoColumn>
-          {tabDescription && (
-            <PageContentBlock accent>
-              <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
-            </PageContentBlock>
-          )}
-          <EntityDashboardLeadsSection
-            usersHeader={t('community.leads')}
-            organizationsHeader={t('pages.space.sections.dashboard.organization')}
-            leadUsers={leadUsers}
-            leadOrganizations={leadOrganizations}
+    <PageContent>
+      <InfoColumn>
+        {tabDescription && (
+          <PageContentBlock accent>
+            <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
+          </PageContentBlock>
+        )}
+        <EntityDashboardLeadsSection
+          usersHeader={t('community.leads')}
+          organizationsHeader={t('pages.space.sections.dashboard.organization')}
+          leadUsers={leadUsers}
+          leadOrganizations={leadOrganizations}
+        />
+        <ContactLeadsButton onClick={openContactLeadsDialog}>
+          {t('buttons.contact-leads', { contact: t('community.host') })}
+        </ContactLeadsButton>
+        {hasInvitePrivilege && (
+          <InviteContributorsWizard contributorType={RoleSetContributorType.User} sx={{ width: '100%' }} />
+        )}
+        <DirectMessageDialog
+          title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
+          open={isContactLeadUsersDialogOpen}
+          onClose={closeContactLeadsDialog}
+          onSendMessage={sendMessageToCommunityLeads}
+          messageReceivers={messageReceivers}
+        />
+        {showVirtualContributorsBlock && (
+          <VirtualContributorsBlock
+            virtualContributors={virtualContributors}
+            loading={roleSetLoading}
+            showInviteOption={showInviteOption}
           />
-          <ContactLeadsButton onClick={openContactLeadsDialog}>
-            {t('buttons.contact-leads', { contact: t('community.host') })}
-          </ContactLeadsButton>
-          <DirectMessageDialog
-            title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}
-            open={isContactLeadUsersDialogOpen}
-            onClose={closeContactLeadsDialog}
-            onSendMessage={sendMessageToCommunityLeads}
-            messageReceivers={messageReceivers}
-          />
-          {showVirtualContributorsBlock && (
-            <VirtualContributorsBlock
-              virtualContributors={virtualContributors}
-              loading={roleSetLoading}
-              showInviteOption={showInviteOption}
-            />
-          )}
-          {communityGuidelinesId && (
-            <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
-          )}
-        </InfoColumn>
-        <ContentColumn>
-          <RoleSetContributorsBlockWide
-            users={memberUserCards}
-            showUsers={isAuthenticated}
-            organizations={memberOrganizationCards}
-          />
-          <CalloutsGroupView
-            calloutsSetId={calloutsSetId}
-            createInFlowState={flowStateForTab?.displayName}
-            callouts={callouts}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-          />
-        </ContentColumn>
-      </PageContent>
-    </SpacePageLayout>
+        )}
+        <CommunityGuidelinesBlock communityGuidelinesId={communityGuidelinesId} spaceUrl={about.profile.url} />
+      </InfoColumn>
+      <ContentColumn>
+        <RoleSetContributorsBlockWide
+          users={memberUserCards}
+          showUsers={isAuthenticated}
+          organizations={memberOrganizationCards}
+        />
+        <CalloutsGroupView
+          calloutsSetId={calloutsSetId}
+          createInFlowState={flowStateForTab?.displayName}
+          callouts={callouts}
+          canCreateCallout={canCreateCallout}
+          loading={loading}
+          onSortOrderUpdate={onCalloutsSortOrderUpdate}
+          onCalloutUpdate={refetchCallout}
+        />
+      </ContentColumn>
+    </PageContent>
   );
 };
+
+SpaceCommunityPage.displayName = 'SpaceCommunityPage';
 
 export default SpaceCommunityPage;

@@ -9,11 +9,10 @@ import {
   ActivityLogCalloutPublishedFragment,
   ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
-  ActivityLogChallengeCreatedFragment,
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
-  ActivityLogOpportunityCreatedFragment,
   ActivityLogUpdateSentFragment,
+  ActivityLogSubspaceCreatedFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   ActivityCalloutLinkCreatedView,
@@ -21,11 +20,10 @@ import {
   ActivityCalloutPostCreatedView,
   ActivityCalloutPublishedView,
   ActivityCalloutWhiteboardActivityView,
-  ActivityChallengeCreatedView,
+  ActivitySubspaceCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
   ActivityMemberJoinedView,
-  ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
@@ -34,7 +32,7 @@ import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventC
 
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
-    journeyDisplayName: string;
+    spaceDisplayName: string;
     triggeredBy: {
       profile: {
         avatar: {
@@ -53,8 +51,7 @@ type TypedActivityLogResults = {
   [ActivityEventType.CalloutPostComment]: ActivityLogCalloutPostCommentFragment;
   [ActivityEventType.DiscussionComment]: ActivityLogCalloutDiscussionCommentFragment;
   [ActivityEventType.MemberJoined]: ActivityLogMemberJoinedFragment;
-  [ActivityEventType.ChallengeCreated]: ActivityLogChallengeCreatedFragment;
-  [ActivityEventType.OpportunityCreated]: ActivityLogOpportunityCreatedFragment;
+  [ActivityEventType.SubspaceCreated]: ActivityLogSubspaceCreatedFragment;
   [ActivityEventType.UpdateSent]: ActivityLogUpdateSentFragment;
   [ActivityEventType.CalendarEventCreated]: ActivityLogCalendarEventCreatedFragment;
 };
@@ -117,10 +114,8 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.MemberJoined:
       const userAuthor = buildAuthorFromUser(activity.contributor);
       return <ActivityMemberJoinedView member={userAuthor} {...activity} {...rest} />;
-    case ActivityEventType.ChallengeCreated:
-      return <ActivityChallengeCreatedView {...activity} {...rest} />;
-    case ActivityEventType.OpportunityCreated:
-      return <ActivityOpportunityCreatedView {...activity} {...rest} />;
+    case ActivityEventType.SubspaceCreated:
+      return <ActivitySubspaceCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalendarEventCreated:
       return <ActivityCalendarEventCreatedView {...activity} {...rest} />;
     case ActivityEventType.UpdateSent:

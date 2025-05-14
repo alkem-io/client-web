@@ -16,7 +16,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { PlanFeatures, PlanFooter, PlanName } from '@/domain/license/plans/ui/PlanCardsComponents';
 import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
