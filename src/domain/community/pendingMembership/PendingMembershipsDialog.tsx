@@ -59,6 +59,11 @@ const PendingMembershipsDialog = () => {
     invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
   );
 
+  const handleSpaceCardClick = (spaceUrl: string) => {
+    closeDialog();
+    navigate(spaceUrl);
+  };
+
   const onInvitationAccept = () => {
     if (openDialog?.spaceUri) {
       navigate(openDialog?.spaceUri);
@@ -133,6 +138,7 @@ const PendingMembershipsDialog = () => {
                           tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.about.profile.cardBanner}
                           spaceUri={hydratedApplication.space.about.profile.url}
+                          onClick={() => handleSpaceCardClick(hydratedApplication.space.about.profile.url)}
                         >
                           <SpaceCardTagline>{hydratedApplication.space.about.profile.tagline ?? ''}</SpaceCardTagline>
                         </SpaceCardBase>

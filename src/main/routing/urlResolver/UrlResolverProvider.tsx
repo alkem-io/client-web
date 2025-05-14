@@ -4,7 +4,7 @@ import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
-import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { TabbedLayoutParams } from '../urlBuilders';
 
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
@@ -134,6 +134,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     },
     skip: !currentUrl,
   });
+
   if (!urlResolverLoading && error && isUrlResolverError(error)) {
     throw new NotFoundError();
   }
@@ -181,7 +182,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  // create cache for the resolver value
+  const valueRef = useRef<UrlResolverContextValue>(emptyResult);
   const value = useMemo<UrlResolverContextValue>(() => {
+    // start generating the context value on successfull request
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
       const data = urlResolverData.urlResolver;
@@ -189,7 +193,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
       const spacesIds = compact([...(data?.space?.parentSpaces ?? []), spaceId]);
       const spaceHierarchyPath = spacesIds.length > 0 ? (spacesIds as SpaceHierarchyPath) : undefined;
 
-      return {
+      const value = {
         type,
         // Space:
         spaceId: data.space?.id,
@@ -249,9 +253,16 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         discussionId: data.discussionId,
         loading: urlResolverLoading,
       };
-    } else {
-      return emptyResult;
+      // store in the cache
+      valueRef.current = value;
+      return value;
     }
+    // return the cached value until the new request is resolved
+    if (urlResolverLoading) {
+      return valueRef.current;
+    }
+    // if the value is not resolved and loading is complete return empty result
+    return emptyResult;
   }, [urlResolverData, urlResolverLoading]);
 
   return <UrlResolverContext.Provider value={value}>{children}</UrlResolverContext.Provider>;

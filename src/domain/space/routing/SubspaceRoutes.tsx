@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Route, Routes } from 'react-router';
 import { Outlet, Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -36,19 +36,10 @@ const InnovationFlowStateContextProvider = ({ children }) => {
 
 const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   const { subspace, permissions, loading } = useSubSpace();
-
-  const { canRead, spaceId } = useMemo(
-    () => ({
-      canRead: permissions.canRead,
-      spaceId: subspace.id,
-    }),
-    [subspace, permissions]
-  );
-
   if (loading) {
     return <Loading />;
   }
-  if (spaceId && !loading && !canRead) {
+  if (subspace.id && !loading && !permissions.canRead) {
     return (
       <Routes>
         <Route path={EntityPageSection.About} element={<SubspaceAboutPage />} />
@@ -58,7 +49,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
+    <StorageConfigContextProvider locationType="space" spaceId={subspace.id}>
       <InnovationFlowStateContextProvider>
         <Routes>
           {/* subspace settings page doesn't need any subpsace layout - it uses the level 0 space page banner */}
