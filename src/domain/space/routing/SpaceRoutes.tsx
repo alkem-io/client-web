@@ -105,15 +105,17 @@ const SpaceRoutes = () => {
             />
             <Route path={`${EntityPageSection.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route path={`/:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SpaceDashboardPage />} />
-            <Route
-              path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
-              element={
-                <SubspaceContextProvider>
-                  <SubspaceRoutes />
-                </SubspaceContextProvider>
-              }
-            />
           </Route>
+          {/* subspaces have their own protections */}
+          <Route
+            path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
+            element={
+              <SubspaceContextProvider>
+                <SubspaceRoutes />
+              </SubspaceContextProvider>
+            }
+          />
+
           <Route path="*" element={<LegacyRoutesRedirects />} />
         </Route>
       </Routes>

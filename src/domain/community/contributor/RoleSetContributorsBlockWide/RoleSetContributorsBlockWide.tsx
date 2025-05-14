@@ -3,7 +3,7 @@ import { ContributorCardSquareProps } from '../ContributorCardSquare/Contributor
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ButtonBase } from '@mui/material';
+import { Box, ButtonBase } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -18,6 +18,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import Gutters from '@/core/ui/grid/Gutters';
+import InviteContributorsWizard from '../../inviteContributors/InviteContributorsWizard';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
@@ -77,33 +78,38 @@ const RoleSetContributorTypesBlockWide = ({
 
   if (isDialogView) {
     return (
-      <PageContentBlock>
-        <PageContentBlockHeader
-          title={''}
-          actions={
-            <MultipleSelect
-              onChange={onFilterChange}
-              value={filter}
-              minLength={2}
-              containerProps={{
-                marginLeft: theme => theme.spacing(2),
-              }}
-              size="xsmall"
-              inlineTerms
-            />
-          }
-        >
-          {contributorTypeToggle()}
-        </PageContentBlockHeader>
-        <RoleSetContributorsBlockWideContent
-          users={users}
-          organizations={organizations}
-          contributorType={contributorType}
-          filter={filter}
-          nested
-          compactView
-        />
-      </PageContentBlock>
+      <>
+        <Box textAlign="right">
+          <InviteContributorsWizard contributorType={RoleSetContributorType.User} />
+        </Box>
+        <PageContentBlock>
+          <PageContentBlockHeader
+            title={''}
+            actions={
+              <MultipleSelect
+                onChange={onFilterChange}
+                value={filter}
+                minLength={2}
+                containerProps={{
+                  marginLeft: theme => theme.spacing(2),
+                }}
+                size="xsmall"
+                inlineTerms
+              />
+            }
+          >
+            {contributorTypeToggle()}
+          </PageContentBlockHeader>
+          <RoleSetContributorsBlockWideContent
+            users={users}
+            organizations={organizations}
+            contributorType={contributorType}
+            filter={filter}
+            nested
+            compactView
+          />
+        </PageContentBlock>
+      </>
     );
   }
 

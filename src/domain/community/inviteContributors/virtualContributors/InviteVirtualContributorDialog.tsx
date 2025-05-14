@@ -14,7 +14,7 @@ import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useVirtualContributorProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ProfileChip } from '../contributor/ProfileChip/ProfileChip';
+import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
@@ -53,7 +53,7 @@ const InviteVirtualContributorDialog = ({
   const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteContributorsData) => {
     await onInviteVirtualContributor({ ...values, invitedContributorIds: [contributorId] });
     if (!error) {
-      notify(t('community.invitationSent'), 'success');
+      notify(t('community.invitations.inviteContributorsDialog.vcs.invitationSent'), 'success');
       onClose();
     }
   });
@@ -63,7 +63,7 @@ const InviteVirtualContributorDialog = ({
   });
 
   const initialValues: InviteContributorsData = {
-    welcomeMessage: t('components.invitations.defaultVCInvitationMessage', {
+    welcomeMessage: t('community.invitations.inviteContributorsDialog.vcs.defaultVCInvitationMessage', {
       space: spaceDisplayName,
       name: vcProfile?.lookup.virtualContributor?.profile.displayName ?? '',
     }) as string,

@@ -1963,6 +1963,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'license'
   | 'myPrivileges'
   | 'organization'
+  | 'platformInvitation'
   | 'post'
   | 'profile'
   | 'roleSet'
@@ -2000,6 +2001,7 @@ export type LookupQueryResultsFieldPolicy = {
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;

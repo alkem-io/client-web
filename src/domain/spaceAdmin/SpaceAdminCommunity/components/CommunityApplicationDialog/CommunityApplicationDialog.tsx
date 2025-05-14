@@ -1,71 +1,44 @@
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { useCommunityApplicationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { formatDateTime } from '@/core/utils/time/utils';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
 import { Box, Button, Dialog } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-export type ApplicationDialogDataType = {
-  id: string;
-  contributorType: RoleSetContributorType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nextEvents: string[];
-  email?: string;
-  createdDate: Date | undefined;
-  updatedDate?: Date;
-  questions: {
-    id: string;
-    name: string;
-    value: string;
-  }[];
-  contributor?: {
-    id: string;
-    profile: {
-      displayName: string;
-      avatar?: {
-        uri: string;
-      };
-      location?: {
-        city?: string;
-        country?: string;
-      };
-      url: string;
-    };
-  };
-};
-
 export interface ApplicationDialogProps {
-  app?: ApplicationDialogDataType;
+  application: Identifiable;
   onClose: () => void;
   onSetNewState?: (appId: string, newState: string) => void;
-  loading?: boolean;
 }
 
-export const CommunityApplicationDialog = ({ app, onClose, onSetNewState, loading }: ApplicationDialogProps) => {
+export const CommunityApplicationDialog = ({
+  application: { id: applicationId },
+  onClose,
+  onSetNewState,
+}: ApplicationDialogProps) => {
   const { t } = useTranslation();
+  const { data, loading } = useCommunityApplicationQuery({
+    variables: { applicationId },
+    skip: !applicationId,
+  });
 
-  const appId = app?.id || '';
-  const user = app?.contributor;
-  const questions = app?.questions ?? [];
-
-  const nextEvents = app?.nextEvents ?? [];
-
-  const username = user?.profile.displayName ?? '';
-  const avatarSrc = user?.profile.avatar?.uri ?? '';
-
-  const createdDate = app?.createdDate ? new Date(app?.createdDate).toLocaleString() : '';
-  const updatedDate = app?.updatedDate ? new Date(app?.updatedDate).toLocaleString() : '';
+  const application = data?.lookup.application;
+  const contributor = application?.contributor;
+  const questions = application?.questions ?? [];
+  const nextEvents = application?.nextEvents ?? [];
 
   return (
     <Dialog open maxWidth="md" fullWidth aria-labelledby="dialog-title">
       <DialogHeader onClose={onClose}>
         <ProfileChip
-          displayName={username}
-          avatarUrl={avatarSrc}
-          city={user?.profile.location?.city}
-          country={user?.profile.location?.country}
+          displayName={contributor?.profile.displayName}
+          avatarUrl={contributor?.profile.avatar?.uri}
+          city={contributor?.profile.location?.city}
+          country={contributor?.profile.location?.country}
         />
       </DialogHeader>
       {!loading && (
@@ -80,16 +53,16 @@ export const CommunityApplicationDialog = ({ app, onClose, onSetNewState, loadin
               ))}
             </Box>
           </Box>
-          {(createdDate || updatedDate) && (
+          {application && (
             <Box display="flex" flexDirection="column" alignItems="flex-end">
-              {createdDate && (
+              {application.createdDate && (
                 <Caption color="neutralMedium" aria-label="Date created">
-                  {t('components.application-dialog.created', { date: createdDate })}
+                  {t('components.application-dialog.created', { date: formatDateTime(application.createdDate) })}
                 </Caption>
               )}
-              {updatedDate && (
+              {application.updatedDate && (
                 <Caption color="neutralMedium" aria-label="Date updated">
-                  {t('components.application-dialog.updated', { date: updatedDate })}
+                  {t('components.application-dialog.updated', { date: formatDateTime(application.updatedDate) })}
                 </Caption>
               )}
             </Box>
@@ -102,7 +75,7 @@ export const CommunityApplicationDialog = ({ app, onClose, onSetNewState, loadin
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    onSetNewState && onSetNewState(appId, stateName);
+                    onSetNewState && onSetNewState(applicationId, stateName);
                     onClose();
                   }}
                 >
