@@ -60,9 +60,12 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
   const { pathname } = useLocation();
 
-  const { space, permissions } = useSpace();
+  const { space, permissions, loading } = useSpace();
   const { id: spaceId, about } = space;
-  const { tabs, showSettings } = useSpaceTabs({ spaceId: permissions.canRead ? spaceId : undefined });
+  const { tabs, showSettings } = useSpaceTabs({
+    skip: !permissions.canRead || loading,
+    spaceId: permissions.canRead ? spaceId : undefined,
+  });
 
   const spaceUrl = about.profile.url;
   const { share, shareDialog } = useShare({ url: spaceUrl, entityTypeName: 'space' });

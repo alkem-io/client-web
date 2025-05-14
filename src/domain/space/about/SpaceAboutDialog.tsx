@@ -192,7 +192,15 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Gutters disablePadding display="flex" flexDirection="column" alignItems="center" width="100%">
-                <ApplicationButtonContainer spaceId={space.id} parentSpaceId={parentSpaceId}>
+                <ApplicationButtonContainer
+                  spaceId={space.id}
+                  parentSpaceId={parentSpaceId}
+                  onJoin={() => {
+                    if (aboutProfile?.url) {
+                      navigate(aboutProfile.url);
+                    }
+                  }}
+                >
                   {(applicationButtonProps, loading) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
