@@ -180,7 +180,9 @@
     "notifications": "Notificatie Knop",
     "invite": "Nodig uit",
     "visit": "Bezoek",
-    "returnToDashboard": "Terug naar het dashboard als gast"
+    "returnToDashboard": "Terug naar het dashboard als gast",
+    "approveApplication": "Approve application",
+    "rejectApplication": "Reject application"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -218,6 +220,7 @@
       "L1": "Subspace",
       "L2": "Subspace"
     },
+    "actions": "Actions",
     "account": "Account",
     "all": "Alles",
     "knowledge-base": "Kennisbank",
@@ -460,6 +463,19 @@
         "POST_COLLECTION": "Oproepen voor Posts",
         "WHITEBOARD": "Whiteboards",
         "WHITEBOARD_COLLECTION": "Oproepen voor Whiteboards"
+      },
+      "invitationStatus": {
+        "invited": "Invited",
+        "accepted": "Invitation Accepted",
+        "rejected": "Invitation Rejected"
+      },
+      "invitationExternalStatus": {
+        "invited": "Invited to join Alkemio & this Space"
+      },
+      "roleSetContributorType": {
+        "USER": "User",
+        "ORGANIZATION": "Organization",
+        "VIRTUAL": "Virtual Contributor"
       }
     },
     "blocks": {
@@ -521,9 +537,7 @@
     "memberUsers": "Leden ({{count}})",
     "leading-organizations": "Leidende Organisaties",
     "memberOrganizations": "Organisaties ({{count}})",
-    "pendingApplications": "Openstaande aanmeldingen",
     "pendingMemberships": "Openstaande aanmeldingen & uitnodigingen",
-    "invitationSent": "Uitnodiging succesvol verzonden",
     "leads": "Leads",
     "members": "Leden",
     "host": "Host",
@@ -538,10 +552,8 @@
         "title": "Verwijder Virtual Contributor",
         "confirm": "Weet je het zeker?"
       },
-      "inviteExternalVC": "Externe VC uitnodigen",
       "externalVCsInfo": "Op dit moment kan alleen Alkemio Support een externe Virtual Contributor toevoegen aan je Space. Neem <click>hier</click> contact op met Support, we helpen je graag!",
       "searchVC": "Vind Virtual Contributor",
-      "inviteBtn": "Virtual Contributor Uitnodigen",
       "permissionRequiredTooltip": "Om Virtual Contributors te gebruiken, upgrade je licentie of neem contact op met het Alkemio-team voor ondersteuning."
     },
     "application-form": {
@@ -572,25 +584,78 @@
       "applicationRejected": "Aanmelding geweigerd",
       "applicationArchived": "Aanmelding gearchiveerd"
     },
-    "invitationStatus": {
-      "invited": "Uitgenodigd",
-      "accepted": "Uitnodiging geaccepteerd",
-      "rejected": "Uitnodiging afgewezen"
+    "invitations": {
+      "inviteButton": {
+        "USER": "Invite people to this Space",
+        "ORGANIZATION": "Invite people to this Space",
+        "VIRTUAL": "Invite Virtual Contributor"
+      },
+      "inviteToRole": "Invite to be a: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Invite others to join '{{spaceName}}'",
+          "description": "Search for people below or directly add their email address",
+          "note": "Keep in mind that your personal email address will be visible to anyone you message.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "placeholder": "Username or email...",
+          "success": "Your invitation was successfully sent to the following recipients:",
+          "failure": "We couldn’t send the invitation to the following recipients:",
+          "back": "Send another invitation",
+          "invitationsSent": "{{count}} invitations will be sent.",
+          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this Space",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
+            "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
+            "INVITED_TO_ROLE_SET": "Invited to join the community"
+          }
+        },
+        "vcs": {
+          "title": "Virtual Contributors Store",
+          "dialogTitle": "Invite Virtual Contributor to join this Space",
+          "invitationSent": "Invitation sent successfully",
+          "inviteExternalVC": "Invite External VC",
+          "inviteBtn": "Invite Virtual Contributor",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "onAccount": {
+            "title": "Virtual Contributors linked to this Space's account"
+          },
+          "inLibrary": {
+            "title": "Other Virtual Contributors"
+          },
+          "emptyMessage": "No available Virtual Contributors",
+          "successfullyAdded": "{{contributor}} added successfully",
+          "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
+        },
+        "welcomeMessage": "Invitation Message"
+      }
     },
-    "invitationExternalStatus": {
-      "invited": "Uitgenodigd om lid te worden van Alkemio & deze Space"
-    },
-    "confirmDeleteApplication": {
-      "title": "Aanmelding van {{user}} verwijderen",
-      "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als deze nog open staat."
-    },
-    "confirmDeleteInvitation": {
-      "title": "Aanmelding van {{user}} verwijderen",
-      "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als deze nog open staat."
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "Aanmelding van {{user}} verwijderen",
-      "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmelding zal worden afgewezen als deze nog open staat."
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Deleting application from '{{user}}'",
+          "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+        },
+        "invitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        },
+        "platformInvitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        }
+      },
+      "approve": {
+        "title": "Approve application from {{user}}",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
+        "confirmButton": "Yes, approve"
+      },
+      "reject": {
+        "title": "Reject application from {{user}}",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
+        "confirmButton": "Yes, reject"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "Mijn Openstaande Lidmaatschappen",
@@ -858,7 +923,8 @@
       "nonBlank": "{{field}} kan niet slechts uit spaties bestaan",
       "atLeastOne": "Selecteer ten minste één item.",
       "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
-      "invalidUrl": "Ongeldige URL"
+      "invalidUrl": "Ongeldige URL",
+      "invalidEmail": "Invalid Email address"
     }
   },
   "templateDialog": {
@@ -1047,44 +1113,6 @@
           }
         }
       }
-    },
-    "invitations": {
-      "inviteOthers": "Anderen uitnodigen",
-      "inviteExistingUser": "Alkemio gebruikers uitnodigen",
-      "inviteExternalUser": "E-mail uitnodiging sturen",
-      "inviteOrganizations": "Organisaties uitnodigen",
-      "defaultInvitationMessage": "Hallo, ik wil je graag uitnodigen voor {{space}}. Klik op de link hieronder om een kijkje te nemen of de uitnodiging direct te accepteren.",
-      "defaultVCInvitationMessage": "Hallo, ik wil je Virtual Contributor {{name}} uitnodigen voor {{space}}. Neem een kijkje in de Space of klink op de knop hieronder om de uitnodiging rechtstreeks te accepteren of weigeren.",
-      "inviteExistingUserDialog": {
-        "title": "Nodig andere Alkemio gebruikers uit voor deze Space",
-        "subtitle": "Je kunt hieronder zoeken naar Alkemio gebruikers en een gepersonaliseerd bericht toevoegen.",
-        "selector": {
-          "alreadyApplied": "Deze gebruiker heeft al een aanvraag ingediend om lid te worden. Keur deze aanvraag goed in de Community instellingen",
-          "alreadyInvited": "Deze gebruiker is al uitgenodigd",
-          "alreadyMember": "Deze gebruiker is al lid"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "Virtual Contributor uitnodigen om deel te nemen aan deze Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "E-mail uitnodiging sturen"
-      },
-      "inviteToRole": "Uitgenodigd als: "
-    },
-    "inviteContributorsDialog": {
-      "title": "Virtual Contributors Bibliotheek",
-      "vcs": {
-        "onAccount": {
-          "title": "Virtual Contributors gekoppeld aan het account van deze Space"
-        },
-        "inLibrary": {
-          "title": "Andere Virtual Contributors"
-        },
-        "emptyMessage": "Geen beschikbare Virtual Contributors"
-      },
-      "successfullyAdded": "{{contributor}} succesvol toegevoegd",
-      "vcFetchErrorMessage": "Er is een fout opgetreden bij het ophalen van de Virtual Contributors"
     },
     "confirmation-dialog": {
       "delete-comment": {
