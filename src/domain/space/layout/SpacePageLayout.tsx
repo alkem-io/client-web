@@ -22,6 +22,7 @@ import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermar
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = () => {
   const { spaceId, spaceHierarchyPath, spaceLevel } = useUrlResolver();
+
   const sectionIndex = useSectionIndex({ spaceId, spaceLevel });
 
   const { isSmallScreen } = useScreenSize();
