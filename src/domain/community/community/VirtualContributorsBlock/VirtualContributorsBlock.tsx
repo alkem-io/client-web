@@ -12,7 +12,7 @@ import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualCon
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import Gutters from '@/core/ui/grid/Gutters';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
-import InviteContributorDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
+import InviteContributorsDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
@@ -51,7 +51,7 @@ const VirtualContributorsBlock = ({
         {showInviteOption && (
           <DashboardAddButton
             sx={{ padding: 0, textAlign: 'left' }}
-            translationKey="community.virtualContributors.inviteBtn"
+            translationKey="community.invitations.inviteContributorsDialog.vcs.inviteBtn"
             onClick={onInvite}
           />
         )}
@@ -74,7 +74,7 @@ const VirtualContributorsBlock = ({
       )}
       <VirtualContributorsDialog open={dialogOpen} onClose={closeDialog} virtualContributors={virtualContributors} />
       {inviteDialogOpen && (
-        <InviteContributorDialog
+        <InviteContributorsDialog
           open={inviteDialogOpen}
           onClose={closeInviteDialog}
           type={RoleSetContributorType.Virtual}

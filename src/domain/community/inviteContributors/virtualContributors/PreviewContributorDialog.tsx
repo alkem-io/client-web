@@ -9,8 +9,8 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
-import UserCard from '../user/userCard/UserCard';
-import { ContributorProps } from './InviteContributorsProps';
+import UserCard from '../../user/userCard/UserCard';
+import { ContributorProps } from '../InviteContributorsProps';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import References from '@/domain/shared/components/References/References';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
@@ -79,7 +79,11 @@ const PreviewContributorDialog = ({
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader icon={<VCIcon />} title={t('components.inviteContributorsDialog.title')} onClose={onClose} />
+      <DialogHeader
+        icon={<VCIcon />}
+        title={t('community.invitations.inviteContributorsDialog.vcs.title')}
+        onClose={onClose}
+      />
 
       <DialogContent>
         <PageContentBlockGrid disablePadding>

@@ -12,23 +12,10 @@ export type MembershipTableItem = {
   email?: string;
   createdDate: Date | undefined;
   updatedDate?: Date;
-  questions: {
-    id: string;
-    name: string;
-    value: string;
-  }[];
   contributor?: {
     id: string;
     profile: {
       displayName: string;
-      avatar?: {
-        uri: string;
-      };
-      location?: {
-        city?: string;
-        country?: string;
-      };
-      url: string;
     };
   };
 };

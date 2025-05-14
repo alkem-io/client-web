@@ -3265,6 +3265,8 @@ export type LookupQueryResults = {
   myPrivileges?: Maybe<LookupMyPrivilegesQueryResults>;
   /** Lookup the specified Organization using a ID */
   organization?: Maybe<Organization>;
+  /** Lookup the specified PlatformInvitation */
+  platformInvitation?: Maybe<PlatformInvitation>;
   /** Lookup the specified Post */
   post?: Maybe<Post>;
   /** Lookup the specified Profile */
@@ -3371,6 +3373,10 @@ export type LookupQueryResultsLicenseArgs = {
 };
 
 export type LookupQueryResultsOrganizationArgs = {
+  ID: Scalars['UUID']['input'];
+};
+
+export type LookupQueryResultsPlatformInvitationArgs = {
   ID: Scalars['UUID']['input'];
 };
 
@@ -8022,8 +8028,33 @@ export type InviteForEntryRoleOnRoleSetMutation = {
   inviteForEntryRoleOnRoleSet: Array<{
     __typename?: 'RoleSetInvitationResult';
     type: RoleSetInvitationResultType;
-    invitation?: { __typename?: 'Invitation'; id: string } | undefined;
-    platformInvitation?: { __typename?: 'PlatformInvitation'; id: string } | undefined;
+    invitation?:
+      | {
+          __typename?: 'Invitation';
+          id: string;
+          contributor:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              };
+        }
+      | undefined;
+    platformInvitation?:
+      | {
+          __typename?: 'PlatformInvitation';
+          id: string;
+          email: string;
+          firstName?: string | undefined;
+          lastName?: string | undefined;
+        }
+      | undefined;
   }>;
 };
 
@@ -8071,47 +8102,19 @@ export type CommunityApplicationsInvitationsQuery = {
               | {
                   __typename?: 'Organization';
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | {
                   __typename?: 'User';
                   email: string;
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | {
                   __typename?: 'VirtualContributor';
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 };
-            questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
           }>;
           invitations: Array<{
             __typename?: 'Invitation';
@@ -8125,45 +8128,18 @@ export type CommunityApplicationsInvitationsQuery = {
               | {
                   __typename?: 'Organization';
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | {
                   __typename?: 'User';
                   email: string;
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | {
                   __typename?: 'VirtualContributor';
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 };
           }>;
           platformInvitations: Array<{
@@ -8188,47 +8164,19 @@ export type AdminCommunityApplicationFragment = {
     | {
         __typename?: 'Organization';
         id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }
     | {
         __typename?: 'User';
         email: string;
         id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }
     | {
         __typename?: 'VirtualContributor';
         id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
-  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
 };
 
 export type AdminCommunityInvitationFragment = {
@@ -8243,45 +8191,18 @@ export type AdminCommunityInvitationFragment = {
     | {
         __typename?: 'Organization';
         id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }
     | {
         __typename?: 'User';
         email: string;
         id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }
     | {
         __typename?: 'VirtualContributor';
         id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
 };
 
@@ -8295,46 +8216,19 @@ export type AdminPlatformInvitationCommunityFragment = {
 type AdminCommunityCandidateMember_Organization_Fragment = {
   __typename?: 'Organization';
   id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-  };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
 };
 
 type AdminCommunityCandidateMember_User_Fragment = {
   __typename?: 'User';
   id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-  };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
 };
 
 type AdminCommunityCandidateMember_VirtualContributor_Fragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-  };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
 };
 
 export type AdminCommunityCandidateMemberFragment =
@@ -15738,6 +15632,30 @@ export type CreateWingbackAccountMutationVariables = Exact<{
 
 export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
 
+export type ContributorTooltipQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  includeUser?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+export type ContributorTooltipQuery = {
+  __typename?: 'Query';
+  user?: {
+    __typename?: 'User';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+    };
+  };
+};
+
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
@@ -21962,6 +21880,146 @@ export type SpaceAccountQuery = {
       __typename?: 'Config';
       locations: { __typename?: 'PlatformLocations'; support: string; switchplan: string };
     };
+  };
+};
+
+export type CommunityApplicationQueryVariables = Exact<{
+  applicationId: Scalars['UUID']['input'];
+}>;
+
+export type CommunityApplicationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    application?:
+      | {
+          __typename?: 'Application';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          state: string;
+          nextEvents: Array<string>;
+          contributor:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+              };
+          questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+        }
+      | undefined;
+  };
+};
+
+export type CommunityInvitationQueryVariables = Exact<{
+  invitationId: Scalars['UUID']['input'];
+  isPlatformInvitation: Scalars['Boolean']['input'];
+}>;
+
+export type CommunityInvitationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    invitation?:
+      | {
+          __typename?: 'Invitation';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          welcomeMessage?: string | undefined;
+          contributorType: RoleSetContributorType;
+          contributor:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+              };
+        }
+      | undefined;
+    platformInvitation?:
+      | {
+          __typename?: 'PlatformInvitation';
+          id: string;
+          createdDate?: Date | undefined;
+          updatedDate?: Date | undefined;
+          email: string;
+          welcomeMessage?: string | undefined;
+        }
+      | undefined;
   };
 };
 

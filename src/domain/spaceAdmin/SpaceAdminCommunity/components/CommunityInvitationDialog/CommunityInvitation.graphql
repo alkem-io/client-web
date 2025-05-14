@@ -1,0 +1,34 @@
+query CommunityInvitation($invitationId: UUID!, $isPlatformInvitation: Boolean!) {
+  lookup {
+    invitation(ID: $invitationId) @skip(if: $isPlatformInvitation) {
+      id
+      createdDate
+      updatedDate
+      welcomeMessage
+      contributorType
+      contributor {
+        id
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR){
+            ...VisualUri
+          }
+          location {
+            id
+            city
+            country
+          }
+          url
+        }
+      }
+    }
+    platformInvitation(ID: $invitationId) @include(if: $isPlatformInvitation) {
+      id
+      createdDate
+      updatedDate
+      email
+      welcomeMessage
+    }
+  }
+}
