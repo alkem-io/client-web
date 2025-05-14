@@ -12,8 +12,6 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import Loading from '@/core/ui/loading/Loading';
 
-const KNOWLEDGE_BASE_FLOW_STATE = 'Knowledge';
-
 type KnowledgeBasePageProps = {
   sectionIndex: number;
 };
@@ -80,7 +78,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
-        flowState={KNOWLEDGE_BASE_FLOW_STATE}
+        flowState={flowStateForNewCallouts?.displayName}
         loading={loadingCalloutCreation}
       />
     </>
