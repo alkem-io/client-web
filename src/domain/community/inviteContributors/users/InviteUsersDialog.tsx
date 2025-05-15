@@ -10,7 +10,7 @@ import {
   ContributorSelectorType,
   SelectedContributor,
 } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.models';
-import { SelectedContributorSchema } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.validation';
+import { SelectedContributorsArraySchema } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.validation';
 import SendButton from '@/core/ui/actions/SendButton';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -51,7 +51,7 @@ const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContribu
 
   const validationSchema = yup.object().shape({
     welcomeMessage: yup.string().required(),
-    selectedContributors: yup.array().of(SelectedContributorSchema).min(1).required(),
+    selectedContributors: SelectedContributorsArraySchema.min(1).required(),
     extraRole: yup.string().oneOf(INVITE_USERS_TO_ROLES).required(),
   });
 
@@ -61,6 +61,11 @@ const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContribu
     }),
     selectedContributors: [],
     extraRole: RoleName.Member,
+  };
+
+  const handleClose = () => {
+    setInvitationSent(undefined);
+    onClose();
   };
 
   const [onSubmit, invitingUsers] = useLoadingState(async (data: InviteUsersData) => {
@@ -88,16 +93,18 @@ const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContribu
   const loading = loadingSpace || resolvingSpace || loadingRoleSet || invitingUsers;
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={12}>
+    <DialogWithGrid open={open} onClose={handleClose} columns={12}>
       <DialogHeader
         title={t('community.invitations.inviteContributorsDialog.users.title', { spaceName })}
-        onClose={onClose}
+        onClose={handleClose}
       />
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         enableReinitialize
         validateOnMount
+        validateOnBlur
+        validateOnChange
         onSubmit={onSubmit}
       >
         {({ handleSubmit, isValid, setFieldValue }) => (
@@ -127,8 +134,7 @@ const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContribu
                     variant="contained"
                     onClick={() => {
                       setFieldValue('selectedContributors', []);
-                      setInvitationSent(undefined);
-                      onClose();
+                      handleClose();
                     }}
                   >
                     {t('buttons.close')}

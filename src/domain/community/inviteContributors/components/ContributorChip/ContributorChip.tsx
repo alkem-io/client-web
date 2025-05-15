@@ -16,7 +16,9 @@ interface ContributorChipProps {
   onRemove?: () => void;
 }
 
-const StyledChip = styled(Box)<BoxProps & { invalid?: boolean }>(({ theme, invalid }) => ({
+const StyledChip = styled(Box, {
+  shouldForwardProp: prop => prop !== 'invalid', // Avoid the 'invalid' prop being passed to the DOM element
+})<BoxProps & { invalid?: boolean }>(({ theme, invalid }) => ({
   color: theme.palette.primary.main,
   border: '1px solid',
   borderColor: invalid ? theme.palette.error.main : theme.palette.divider,
