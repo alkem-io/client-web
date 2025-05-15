@@ -73,15 +73,15 @@ const SpaceDashboardPage = () => {
 
   return (
     <>
-      <PageContent>
-        {!loading && (
-          <ApplicationButtonContainer spaceId={spaceId}>
-            {(applicationButtonProps, loading) => {
-              if (loading || applicationButtonProps.isMember) {
-                return null;
-              }
+      {!loading && (
+        <ApplicationButtonContainer spaceId={spaceId}>
+          {(applicationButtonProps, loading) => {
+            if (loading || applicationButtonProps.isMember) {
+              return null;
+            }
 
-              return (
+            return (
+              <PageContent gridContainerProps={{ paddingBottom: 0 }} sx={{ flexGrow: 0 }}>
                 <PageContentColumn columns={12}>
                   <ApplicationButton
                     {...applicationButtonProps}
@@ -92,11 +92,11 @@ const SpaceDashboardPage = () => {
                     spaceLevel={spaceLevel}
                   />
                 </PageContentColumn>
-              );
-            }}
-          </ApplicationButtonContainer>
-        )}
-      </PageContent>
+              </PageContent>
+            );
+          }}
+        </ApplicationButtonContainer>
+      )}
 
       <SpaceDashboardView
         space={space}
