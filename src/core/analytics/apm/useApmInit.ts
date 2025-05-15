@@ -45,9 +45,11 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
   const rumEnabled = apmConfig?.rumEnabled ?? false;
   const endpoint = apmConfig?.endpoint;
   const environment = locations?.environment;
+  // prevent console errors in dev mode
+  const isInitAllowed = import.meta.env.MODE === 'production';
 
   return useCallback(() => {
-    if (!endpoint || !environment) {
+    if (!endpoint || !environment || !isInitAllowed) {
       return undefined;
     }
 
