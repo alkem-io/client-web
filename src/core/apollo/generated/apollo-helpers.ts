@@ -2616,6 +2616,17 @@ export type PaginatedUsersFieldPolicy = {
   total?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedVirtualContributorKeySpecifier = (
+  | 'pageInfo'
+  | 'total'
+  | 'virtualContributors'
+  | PaginatedVirtualContributorKeySpecifier
+)[];
+export type PaginatedVirtualContributorFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformKeySpecifier = (
   | 'authorization'
   | 'chatGuidanceVirtualContributor'
@@ -2872,6 +2883,7 @@ export type QueryKeySpecifier = (
   | 'organizations'
   | 'organizationsPaginated'
   | 'platform'
+  | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
   | 'rolesVirtualContributor'
@@ -2909,6 +2921,7 @@ export type QueryFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3057,6 +3070,7 @@ export type RoleSetKeySpecifier = (
   | 'authorization'
   | 'availableUsersForElevatedRole'
   | 'availableUsersForEntryRole'
+  | 'availableVirtualContributorsForEntryRole'
   | 'createdDate'
   | 'entryRoleName'
   | 'id'
@@ -3085,6 +3099,7 @@ export type RoleSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForElevatedRole?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableVirtualContributorsForEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   entryRoleName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4849,6 +4864,13 @@ export type StrictTypedTypePolicies = {
   PaginatedUsers?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedUsersKeySpecifier | (() => undefined | PaginatedUsersKeySpecifier);
     fields?: PaginatedUsersFieldPolicy;
+  };
+  PaginatedVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedVirtualContributorKeySpecifier
+      | (() => undefined | PaginatedVirtualContributorKeySpecifier);
+    fields?: PaginatedVirtualContributorFieldPolicy;
   };
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);

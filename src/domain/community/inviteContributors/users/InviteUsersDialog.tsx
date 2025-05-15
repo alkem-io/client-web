@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { InviteContributorsDialogProps } from '../InviteContributorsProps';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useSpace } from '@/domain/space/context/useSpace';
 import { Button, DialogActions } from '@mui/material';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { Formik } from 'formik';
@@ -21,7 +20,8 @@ import { useState } from 'react';
 import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import InvitationsResultDialogContent from './InvitationsResultDialogContent';
 import InviteUsersFormDialogContent from './InviteUsersFormDialogContent';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -31,31 +31,22 @@ type InviteUsersData = {
   extraRole: RoleName;
 };
 
-const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
+const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
-  const {
-    space: {
-      about: {
-        profile: { displayName: spaceDisplayName },
-        membership,
-      },
+  const { spaceId, loading: resolvingSpace } = useUrlResolver();
+  const { data, loading: loadingSpace } = useInviteUsersDialogQuery({
+    variables: {
+      spaceId: spaceId!,
     },
-    loading: spaceLoading,
-  } = useSpace();
+    skip: !open || !spaceId,
+  });
 
-  const {
-    subspace: {
-      about: {
-        profile: { displayName: subspaceDisplayName },
-      },
-    },
-  } = useSubSpace();
+  const spaceName = data?.lookup.space?.about.profile.displayName;
+  const roleSetId = data?.lookup.space?.about.membership.roleSetID;
 
-  const spaceName = subspaceDisplayName || spaceDisplayName; // do not use ?? here, subspaceDisplayName can be an empty string
   const ensurePresence = useEnsurePresence();
   const [invitationsResults, setInvitationSent] = useState<InvitationResultModel[] | undefined>(undefined);
 
-  const roleSetId = membership?.roleSetID;
   const { inviteContributorsOnRoleSet, loading: loadingRoleSet } = useRoleSetApplicationsAndInvitations({ roleSetId });
 
   const validationSchema = yup.object().shape({
@@ -94,7 +85,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
     setInvitationSent(result);
   });
 
-  const loading = spaceLoading || loadingRoleSet || invitingUsers;
+  const loading = loadingSpace || resolvingSpace || loadingRoleSet || invitingUsers;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -113,7 +104,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
           <>
             {!invitationsResults && (
               <>
-                <InviteUsersFormDialogContent />
+                <InviteUsersFormDialogContent filterUsers={filterContributors} />
                 <DialogActions>
                   <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
                 </DialogActions>

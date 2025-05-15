@@ -4819,6 +4819,13 @@ export type PaginatedUsers = {
   users: Array<User>;
 };
 
+export type PaginatedVirtualContributor = {
+  __typename?: 'PaginatedVirtualContributor';
+  pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+  virtualContributors: Array<VirtualContributor>;
+};
+
 export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
@@ -5176,6 +5183,8 @@ export type Query = {
   organizationsPaginated: PaginatedOrganization;
   /** Alkemio Platform */
   platform: Platform;
+  /** Get the list of restricted space names. */
+  restrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The roles that the specified Organization has. */
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
@@ -5575,6 +5584,8 @@ export type RoleSet = {
   availableUsersForElevatedRole: PaginatedUsers;
   /** All available users that are could join this RoleSet in the entry role. */
   availableUsersForEntryRole: PaginatedUsers;
+  /** All available VirtualContributors that are eligible to invite to this RoleSet in the entry role. */
+  availableVirtualContributorsForEntryRole: PaginatedVirtualContributor;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']['output']>;
   /** The Role that acts as the entry Role for the RoleSet, so other roles potentially require it. */
@@ -5630,6 +5641,13 @@ export type RoleSetAvailableUsersForEntryRoleArgs = {
   after?: InputMaybe<Scalars['UUID']['input']>;
   before?: InputMaybe<Scalars['UUID']['input']>;
   filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type RoleSetAvailableVirtualContributorsForEntryRoleArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -16128,6 +16146,29 @@ export type AccountResourceProfileFragment = {
   displayName: string;
   url: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type InviteUsersDialogQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type InviteUsersDialogQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            membership: { __typename?: 'SpaceAboutMembership'; roleSetID: string };
+          };
+        }
+      | undefined;
+  };
 };
 
 export type AssociatedOrganizationQueryVariables = Exact<{

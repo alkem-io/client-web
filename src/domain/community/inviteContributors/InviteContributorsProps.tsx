@@ -9,6 +9,7 @@ import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface InviteContributorsDialogProps {
   type: RoleSetContributorType;
+  filterContributors?: (contributor: Identifiable) => boolean;
   open: boolean;
   onClose: () => void;
 }
