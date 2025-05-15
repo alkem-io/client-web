@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
@@ -19,6 +19,7 @@ import Loading from '@/core/ui/loading/Loading';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import Gutters from '@/core/ui/grid/Gutters';
 import InviteContributorsWizard from '../../inviteContributors/InviteContributorsWizard';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
@@ -55,6 +56,12 @@ const RoleSetContributorTypesBlockWide = ({
   const [contributorType, setContributorType] = useState(RoleSetContributorType.User);
   const [filter, onFilterChange] = useState<string[]>([]);
 
+  // People that can be invited to the community
+  const filterInviteeContributors = useCallback(
+    (contributor: Identifiable) => !(users ?? []).some(user => user.id === contributor.id),
+    [users]
+  );
+
   const contributorTypeToggleOptions = config.map(configItem => ({
     label: t(configItem.label),
     value: configItem.value,
@@ -80,7 +87,10 @@ const RoleSetContributorTypesBlockWide = ({
     return (
       <>
         <Box textAlign="right">
-          <InviteContributorsWizard contributorType={RoleSetContributorType.User} />
+          <InviteContributorsWizard
+            contributorType={RoleSetContributorType.User}
+            filterContributors={filterInviteeContributors}
+          />
         </Box>
         <PageContentBlock>
           <PageContentBlockHeader

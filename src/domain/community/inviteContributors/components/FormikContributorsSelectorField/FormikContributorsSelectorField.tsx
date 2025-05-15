@@ -1,5 +1,5 @@
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import { User, UserFilterInput, UserSelectorQuery } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { Box, SxProps, TextField, Theme } from '@mui/material';
@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { isArray, uniqWith } from 'lodash';
+import { compact, isArray, uniqWith } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContext';
 import ContributorChip from '../ContributorChip/ContributorChip';
@@ -20,18 +20,21 @@ const MAX_USERS_SHOWN = 20;
 
 type HydratorFn = <U extends Identifiable>(users: U[]) => (U & { message?: string; disabled?: boolean })[];
 
-interface FormikContributorsSelectorFieldProps {
+export interface FormikContributorsSelectorFieldProps {
   name: string;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
+  filterUsers?: <U extends Identifiable>(users: U) => boolean;
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
 }
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
+const alwaysTrue = () => true;
 
 const FormikContributorsSelectorField = ({
   name = 'selectedContributors',
   sortUsers = identityFn,
+  filterUsers = alwaysTrue,
   hydrateUsers = identityFn as HydratorFn,
   sx,
 }: FormikContributorsSelectorFieldProps) => {
@@ -40,6 +43,11 @@ const FormikContributorsSelectorField = ({
 
   // This field is the array of the selected Contributors (userIds or emails for the moment)
   const [field, meta, helpers] = useField<SelectedContributor[]>(name);
+  const selectedUserIds = useMemo(
+    () => compact(field.value.map(user => user.type === ContributorSelectorType.User && user.id)),
+    [field.value]
+  );
+
   const setFieldValue = (newValue: SelectedContributor[]) => {
     const uniqueValues = uniqWith(
       newValue,
@@ -78,18 +86,28 @@ const FormikContributorsSelectorField = ({
       return [];
     }
     const users = data?.usersPaginated.users ?? [];
-    return hydrateUsers(
-      sortUsers(
-        users
-          .filter(user =>
-            Array.isArray(field.value)
-              ? !field.value.find(c => c.type === ContributorSelectorType.User && c.id === user.id)
-              : true
-          )
-          .filter(user => user.id !== currentUser?.id)
-      )
-    );
-  }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
+
+    const filterFunction = (user: UserSelectorQuery['usersPaginated']['users'][0]) => {
+      if (user.id === currentUser?.id) {
+        return false;
+      }
+      if (selectedUserIds.includes(user.id)) {
+        return false;
+      }
+      return filterUsers(user);
+    };
+
+    return hydrateUsers(sortUsers(users.filter(filterFunction)));
+  }, [
+    currentUser?.id,
+    selectedUserIds,
+    data?.usersPaginated.users,
+    field.value,
+    inputValue,
+    hydrateUsers,
+    sortUsers,
+    filterUsers,
+  ]);
 
   const handleSelect = (value: (Identifiable & { profile: { displayName: string } }) | string | null) => {
     helpers.setTouched(true);

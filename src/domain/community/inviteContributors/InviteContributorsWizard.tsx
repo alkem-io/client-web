@@ -4,15 +4,18 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InviteContributorsDialog from './InviteContributorsDialog';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 interface InviteContributorsWizardProps extends ButtonProps {
   contributorType: RoleSetContributorType;
+  filterContributors?: (contributor: Identifiable) => boolean;
 }
 
 const InviteContributorsWizard = ({
   contributorType,
   startIcon = <GroupAddIcon />,
   children,
+  filterContributors,
   ...buttonProps
 }: InviteContributorsWizardProps) => {
   const { t } = useTranslation();
@@ -23,7 +26,12 @@ const InviteContributorsWizard = ({
       <Button variant="contained" onClick={() => setIsOpen(true)} startIcon={startIcon} {...buttonProps}>
         {children ?? t(`community.invitations.inviteButton.${contributorType}`)}
       </Button>
-      <InviteContributorsDialog type={contributorType} open={isOpen} onClose={() => setIsOpen(false)} />
+      <InviteContributorsDialog
+        type={contributorType}
+        filterContributors={filterContributors}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </>
   );
 };
