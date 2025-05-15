@@ -1,40 +1,26 @@
 import js from '@eslint/js';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import prettier from 'eslint-config-prettier';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import reactPlugin from 'eslint-plugin-react';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import prettierPlugin from 'eslint-plugin-prettier';
 
 export default [
-  js.config({
-    extends: [
-      'eslint:recommended',
-    ],
-  }),
-  tseslint.config({
-    extends: [
-      'plugin:@typescript-eslint/recommended',
-    ],
-    parserOptions: {
-      project: './tsconfig.json',
-    },
-  }),
+  js,
   {
-    plugins: {
-      react: require('eslint-plugin-react'),
-      'jsx-a11y': require('eslint-plugin-jsx-a11y'),
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+        sourceType: 'module',
+        ecmaVersion: 'latest',
+      },
     },
-    extends: [
-      'plugin:react/recommended',
-      'plugin:jsx-a11y/recommended',
-      prettier,
-    ],
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
     rules: {
-      quotes: [
-        'error',
-        'single',
-        { avoidEscape: true },
-      ],
-      'no-multiple-empty-lines': 'error',
-      'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
-      'no-debugger': process.env.NODE_ENV === 'production' ? 1 : 0,
       '@typescript-eslint/no-unused-vars': [
         process.env.NODE_ENV === 'production' ? 2 : 1,
         {
@@ -42,32 +28,58 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
-      'import/prefer-default-export': 'off',
-      'react-hooks/exhaustive-deps': 'off',
-      'react/jsx-pascal-case': 'error',
-      'react/jsx-closing-bracket-location': 'error',
-      'react/jsx-closing-tag-location': 'error',
-      'react/jsx-tag-spacing': 'error',
-      'react/jsx-curly-spacing': 'error',
-      'react/jsx-boolean-value': 'error',
-      'react/no-string-refs': 'error',
-      'react/jsx-wrap-multilines': 'error',
-      'react/self-closing-comp': 'error',
-      'jsx-a11y/no-access-key': 'error',
-      'jsx-a11y/aria-role': 'error',
-      'jsx-a11y/alt-text': 'error',
-      'jsx-a11y/img-redundant-alt': 'error',
-      'jsx-quotes': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
-      'padding-line-between-statements': [
-        'error',
-        { blankLine: 'always', prev: ['block-like', 'class', 'function'], next: 'export' },
-      ],
       '@typescript-eslint/padding-line-between-statements': [
         'error',
         { blankLine: 'always', prev: ['interface'], next: '*' },
         { blankLine: 'always', next: ['interface'], prev: '*' },
+      ],
+    },
+  },
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      react: reactPlugin,
+      'jsx-a11y': jsxA11yPlugin,
+      prettier: prettierPlugin,
+    },
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      'prettier/prettier': 'error',
+      'react/jsx-boolean-value': 'error',
+      'react/jsx-closing-bracket-location': 'error',
+      'react/jsx-closing-tag-location': 'error',
+      'react/jsx-curly-spacing': 'error',
+      'react/jsx-pascal-case': 'error',
+      'react/jsx-tag-spacing': 'error',
+      'react/jsx-wrap-multilines': 'error',
+      'react/no-string-refs': 'error',
+      'react/self-closing-comp': 'error',
+      'react-hooks/exhaustive-deps': 'off',
+      'jsx-a11y/no-access-key': 'error',
+      'jsx-a11y/aria-role': 'error',
+      'jsx-a11y/alt-text': 'error',
+      'jsx-a11y/img-redundant-alt': 'error',
+      'quotes': [
+        'error',
+        'single',
+        { avoidEscape: true },
+      ],
+      'no-multiple-empty-lines': 'error',
+      'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
+      'no-debugger': process.env.NODE_ENV === 'production' ? 1 : 0,
+      'import/prefer-default-export': 'off',
+      'jsx-quotes': 'error',
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: ['block-like', 'class', 'function'], next: 'export' },
       ],
     },
     settings: {
@@ -80,6 +92,12 @@ export default [
       es6: true,
       jest: true,
       serviceworker: true,
+    },
+  },
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      ...prettier,
     },
   },
 ];
