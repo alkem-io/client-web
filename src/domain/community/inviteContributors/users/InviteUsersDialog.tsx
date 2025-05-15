@@ -31,7 +31,7 @@ type InviteUsersData = {
   extraRole: RoleName;
 };
 
-const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
+const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
   const { spaceId, loading: resolvingSpace } = useUrlResolver();
   const { data, loading: loadingSpace } = useInviteUsersDialogQuery({
@@ -104,7 +104,7 @@ const InviteUsersDialog = ({ open, onClose }: InviteContributorsDialogProps) => 
           <>
             {!invitationsResults && (
               <>
-                <InviteUsersFormDialogContent />
+                <InviteUsersFormDialogContent filterUsers={filterContributors} />
                 <DialogActions>
                   <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
                 </DialogActions>
