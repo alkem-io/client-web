@@ -11383,6 +11383,92 @@ export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountR
   return { query: AccountResourcesInfoDocument, variables: variables };
 }
 
+export const InviteUsersDialogDocument = gql`
+  query InviteUsersDialog($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        about {
+          id
+          profile {
+            id
+            displayName
+          }
+          membership {
+            roleSetID
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useInviteUsersDialogQuery__
+ *
+ * To run a query within a React component, call `useInviteUsersDialogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInviteUsersDialogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInviteUsersDialogQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useInviteUsersDialogQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InviteUsersDialogQuery,
+    SchemaTypes.InviteUsersDialogQueryVariables
+  > &
+    ({ variables: SchemaTypes.InviteUsersDialogQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InviteUsersDialogQuery, SchemaTypes.InviteUsersDialogQueryVariables>(
+    InviteUsersDialogDocument,
+    options
+  );
+}
+
+export function useInviteUsersDialogLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InviteUsersDialogQuery,
+    SchemaTypes.InviteUsersDialogQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InviteUsersDialogQuery, SchemaTypes.InviteUsersDialogQueryVariables>(
+    InviteUsersDialogDocument,
+    options
+  );
+}
+
+export function useInviteUsersDialogSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.InviteUsersDialogQuery, SchemaTypes.InviteUsersDialogQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.InviteUsersDialogQuery, SchemaTypes.InviteUsersDialogQueryVariables>(
+    InviteUsersDialogDocument,
+    options
+  );
+}
+
+export type InviteUsersDialogQueryHookResult = ReturnType<typeof useInviteUsersDialogQuery>;
+export type InviteUsersDialogLazyQueryHookResult = ReturnType<typeof useInviteUsersDialogLazyQuery>;
+export type InviteUsersDialogSuspenseQueryHookResult = ReturnType<typeof useInviteUsersDialogSuspenseQuery>;
+export type InviteUsersDialogQueryResult = Apollo.QueryResult<
+  SchemaTypes.InviteUsersDialogQuery,
+  SchemaTypes.InviteUsersDialogQueryVariables
+>;
+export function refetchInviteUsersDialogQuery(variables: SchemaTypes.InviteUsersDialogQueryVariables) {
+  return { query: InviteUsersDialogDocument, variables: variables };
+}
+
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {
     lookup {

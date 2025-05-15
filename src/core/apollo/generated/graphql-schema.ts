@@ -16400,6 +16400,29 @@ export type AccountResourceProfileFragment = {
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
+export type InviteUsersDialogQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type InviteUsersDialogQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            membership: { __typename?: 'SpaceAboutMembership'; roleSetID: string };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type OrganizationAccountQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
 }>;
