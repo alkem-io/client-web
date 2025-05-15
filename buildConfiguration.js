@@ -1,11 +1,15 @@
-const dotenvFlow = require('dotenv-flow');
-const dotenvExpand = require('dotenv-expand').expand;
-const { createWriteStream } = require('fs');
-const { writeFile } = require('fs/promises');
-const path = require('path');
+import dotenvFlow from 'dotenv-flow';
+import { expand as dotenvExpand } from 'dotenv-expand';
+import { createWriteStream } from 'fs';
+import { writeFile } from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const CONFIG_TEXT = 'window._env_ = ';
 const CONFIG_FILE_NAME = 'env-config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function buildConfiguration() {
   const initialConfig = dotenvFlow.config({
