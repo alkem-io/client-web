@@ -130,8 +130,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const hasReadAboutPrivilege = (space: SelectableSpace) => {
-    return space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.ReadAbout);
+  const hasReadPrivilege = (space: SelectableSpace) => {
+    return space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   };
 
   const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
@@ -141,7 +141,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     return {
       myAccountId: account?.id,
       allAccountSpaces: accountSpaces,
-      availableSpaces: accountSpaces.filter(hasReadAboutPrivilege),
+      availableSpaces: accountSpaces.filter(hasReadPrivilege),
     };
   }, [data, userModel, targetAccount]);
 
@@ -158,7 +158,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           spaceId: space.id,
         },
       });
-      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasReadAboutPrivilege) ?? [];
+      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasReadPrivilege) ?? [];
 
       result.push({
         ...space,
