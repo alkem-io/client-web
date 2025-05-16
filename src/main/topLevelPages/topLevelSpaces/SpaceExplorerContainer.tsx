@@ -1,12 +1,12 @@
 import { Dispatch, useEffect, useMemo, useState } from 'react';
 import {
-  useChallengeExplorerPageQuery,
+  useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerMemberSpacesQuery,
   useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   SearchCategory,
   AuthorizationPrivilege,
@@ -21,7 +21,7 @@ import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { uniqBy } from 'lodash';
 
-export interface ChallengeExplorerContainerEntities {
+export interface SpacesExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;
   searchTerms: string[];
   membershipFilter: SpacesExplorerMembershipFilter;
@@ -34,7 +34,7 @@ export interface ChallengeExplorerContainerEntities {
   loadingSearchResults: boolean | null;
 }
 
-interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {}
+interface SpaceExplorerContainerProps extends SimpleContainerProps<SpacesExplorerContainerEntities> {}
 
 const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
   const { userModel, isAuthenticated, loading: loadingUser } = useCurrentUserContext();
@@ -44,14 +44,14 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
 
   const shouldSearch = searchTerms.length > 0;
 
-  // PRIVATE: Challenges if the user is logged in
-  const { data: spaceMembershipsData, loading: loadingUserData } = useChallengeExplorerPageQuery({
+  // PRIVATE: Spaces if the user is logged in
+  const { data: spaceMembershipsData, loading: loadingUserData } = useMySpacesExplorerPageQuery({
     skip: !userModel?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
   });
 
   const mySpaceIds = spaceMembershipsData?.me.spaceMembershipsFlat.map(space => space.id);
 
-  const { data: challengesData, loading: isLoadingMemberSpaces } = useSpaceExplorerMemberSpacesQuery({
+  const { data: spacesExplorerData, loading: isLoadingMemberSpaces } = useSpaceExplorerMemberSpacesQuery({
     variables: {
       spaceIDs: mySpaceIds,
     },
@@ -106,9 +106,9 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
       case SpacesExplorerMembershipFilter.Public:
         return spacesData?.spacesPaginated.spaces;
       case SpacesExplorerMembershipFilter.Member:
-        return challengesData?.spaces;
+        return spacesExplorerData?.spaces;
     }
-  }, [challengesData, spacesData, membershipFilter]);
+  }, [spacesExplorerData, spacesData, membershipFilter]);
 
   // Spaces which allow this user read their subspaces:
   const readableSpacesIds = useMemo(
@@ -184,7 +184,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
         })),
       ];
     });
-  }, [challengesData, spacesData, membershipFilter, rawSearchResults, fetchedSpacesWithSubspaces]);
+  }, [spacesExplorerData, spacesData, membershipFilter, rawSearchResults, fetchedSpacesWithSubspaces]);
 
   const filteredSpaces = useMemo(() => {
     if (membershipFilter === SpacesExplorerMembershipFilter.Member) {

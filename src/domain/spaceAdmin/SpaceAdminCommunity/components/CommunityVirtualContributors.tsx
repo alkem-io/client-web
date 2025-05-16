@@ -18,13 +18,13 @@ import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
-import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import InviteVirtualContributorDialog from '@/domain/community/inviteContributors/virtualContributors/InviteVirtualContributorDialog';
+import { ContributorViewModel } from '@/domain/community/community/utils/ContributorViewModel';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
-type RenderParams = GridRenderCellParams<ContributorViewProps>;
-type GetterParams = ContributorViewProps | undefined;
+type RenderParams = GridRenderCellParams<ContributorViewModel>;
+type GetterParams = ContributorViewModel | undefined;
 
 const EmptyFilter = { items: [], linkOperator: GridLogicOperator.Or };
 
@@ -54,7 +54,7 @@ interface Entity extends Identifiable {
 }
 
 type CommunityVirtualContributorsProps = {
-  virtualContributors: ContributorViewProps[] | undefined;
+  virtualContributors: ContributorViewModel[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
@@ -88,7 +88,6 @@ const CommunityVirtualContributors = ({
         </Link>
       ),
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
-      resizable: true,
       filterable: false,
       flex: 1,
     },
@@ -156,7 +155,7 @@ const CommunityVirtualContributors = ({
       disabled={!canAddVirtualContributors}
       onClick={() => openAvailableContributorsDialog(external)}
     >
-      {external ? t('community.virtualContributors.inviteExternalVC') : t('common.add')}
+      {external ? t('community.invitations.inviteContributorsDialog.vcs.inviteExternalVC') : t('common.add')}
     </ButtonWithTooltip>
   );
 
@@ -231,7 +230,7 @@ const CommunityVirtualContributors = ({
       )}
       {isInvitingExternal && (
         <InviteVirtualContributorDialog
-          title={t('components.invitations.inviteExistingVCDialog.title')}
+          title={t('community.invitations.inviteContributorsDialog.vcs.dialogTitle')}
           spaceDisplayName={spaceDisplayName}
           open={isInvitingExternal}
           onClose={closeInvitationDialog}

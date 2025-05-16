@@ -5,7 +5,6 @@ export enum SettingsSection {
   Communications = 'communications',
   Authorization = 'authorization',
   Subspaces = 'subspaces',
-  Subsubspaces = 'subsubspaces',
   Templates = 'templates',
   Storage = 'storage',
   SpaceSettings = 'space-settings',

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
@@ -112,7 +112,7 @@ const usePost = ({ postId }: usePostProps): usePostProvided => {
   // TODO: This is temporary:
   // Disabling all comments interaction with this Posts in the VC knowledge-base until we have server fixed
   const { vcId } = useUrlResolver();
-  const commentsPrivileges = vcId ? [] : post?.comments?.authorization?.myPrivileges ?? [];
+  const commentsPrivileges = vcId ? [] : (post?.comments?.authorization?.myPrivileges ?? []);
 
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(

@@ -115,7 +115,7 @@ const RecentContributionsBlock = ({
             {accessErrorTypeName && (
               <Caption>
                 {t(`components.activity-log-section.${accessErrorTypeName}` as const, {
-                  spaceType: t('common.space'),
+                  spaceLevel: t('common.space'),
                 })}
               </Caption>
             )}

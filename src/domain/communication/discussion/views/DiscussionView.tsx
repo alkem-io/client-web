@@ -1,5 +1,5 @@
 import { FetchResult } from '@apollo/client';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, GridLegacy, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '@/domain/platform/admin/components/Common/Filter';
@@ -60,9 +60,9 @@ export const DiscussionView = ({
   const commentReactionsMutations = useCommentReactionsMutations(discussion.comments.id);
 
   return (
-    <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
-      <Grid item xs={12} container direction="column">
-        <Grid item sx={{ width: '100%' }}>
+    <GridLegacy container spacing={2} alignItems="stretch" wrap="nowrap">
+      <GridLegacy item xs={12} container direction="column">
+        <GridLegacy item sx={{ width: '100%' }}>
           <Box display="flex" justifyContent="space-between">
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
             <ShareButton url={discussion.url} entityTypeName="discussion" />
@@ -75,8 +75,8 @@ export const DiscussionView = ({
             onUpdate={onUpdateDiscussion}
             root
           />
-        </Grid>
-        <Grid item>
+        </GridLegacy>
+        <GridLegacy item>
           {comments && (
             <>
               <Box paddingY={2}>
@@ -106,9 +106,9 @@ export const DiscussionView = ({
               </Filter>
             </>
           )}
-        </Grid>
-        <Grid item container spacing={2}>
-          <Grid item xs={12}>
+        </GridLegacy>
+        <GridLegacy item container spacing={2}>
+          <GridLegacy item xs={12}>
             <Box paddingY={2}>
               {canPost && (
                 <PostMessageToCommentsForm
@@ -123,10 +123,10 @@ export const DiscussionView = ({
                 </Box>
               )}
             </Box>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+          </GridLegacy>
+        </GridLegacy>
+      </GridLegacy>
+    </GridLegacy>
   );
 };
 

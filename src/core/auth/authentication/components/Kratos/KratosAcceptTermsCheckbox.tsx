@@ -4,8 +4,8 @@ import { KratosProps } from './KratosProps';
 
 const KratosAcceptTermsCheckbox = ({ node }: KratosProps) => {
   const value = getNodeValue(node);
-
-  return <input name={getNodeName(node)} type="checkbox" checked={value} value={String(value)} hidden />;
+  // This is a hidden checkbox to pass with the rest of the kratos form
+  return <input name={getNodeName(node)} type="checkbox" checked={value} value={String(value)} hidden readOnly />;
 };
 
 export default KratosAcceptTermsCheckbox;

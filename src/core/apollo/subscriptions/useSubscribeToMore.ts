@@ -1,17 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { ApolloError, OperationVariables, SubscribeToMoreOptions } from '@apollo/client';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import { PlatformFeatureFlagName } from '../generated/graphql-schema';
 import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
-
-export interface SubscribeToMore<QueryData> {
-  <SubscriptionData, SubscriptionVariables extends OperationVariables>(
-    options: SubscribeToMoreOptions<QueryData, SubscriptionVariables, SubscriptionData>
-  ): () => void;
-}
 
 export interface Options<TVariables> {
   skip?: boolean;

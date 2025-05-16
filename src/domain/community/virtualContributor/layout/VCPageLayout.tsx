@@ -8,10 +8,14 @@ import { useTranslation } from 'react-i18next';
 import VCPageBanner from './VCPageBanner';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { Settings } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 
 interface VCPageLayoutProps {}
 
 const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
+  const { t } = useTranslation();
+  const { pathname } = useLocation();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
   const { data, loading } = useVirtualContributorQuery({
     variables: { id: vcId! },
@@ -19,7 +23,7 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
   });
   const vc = data?.lookup.virtualContributor;
 
-  const { t } = useTranslation();
+  const settings = pathname.split('/').includes('settings');
 
   return (
     <TopLevelLayout
@@ -36,6 +40,11 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
           >
             {vc?.profile.displayName}
           </BreadcrumbsItem>
+          {settings && (
+            <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>
+              {t('common.settings')}
+            </BreadcrumbsItem>
+          )}
         </TopLevelPageBreadcrumbs>
       }
       header={<VCPageBanner />}

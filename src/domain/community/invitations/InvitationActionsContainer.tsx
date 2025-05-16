@@ -6,6 +6,7 @@ import {
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { InvitationEvent } from '../models/InvitationApplicationConstants';
 
 type InvitationActionsContainerProvided = {
   updating: boolean;
@@ -35,7 +36,7 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
     updateInvitationState({
       variables: {
         invitationId,
-        eventName: 'ACCEPT',
+        eventName: InvitationEvent.ACCEPT,
       },
       onCompleted: () => {
         onAccept?.(spaceUrl);
@@ -52,7 +53,7 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
     updateInvitationState({
       variables: {
         invitationId,
-        eventName: 'REJECT',
+        eventName: InvitationEvent.REJECT,
       },
       onCompleted: () => {
         onReject?.();

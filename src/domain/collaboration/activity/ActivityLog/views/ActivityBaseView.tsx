@@ -1,8 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Badge, ListItemButtonProps, Paper } from '@mui/material';
+import { Badge, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap, Paper } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
 import { Caption } from '@/core/ui/typography';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';

@@ -37,7 +37,7 @@ const PendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      journeyUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
+      spaceUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
     });
   };
 
@@ -59,9 +59,14 @@ const PendingMembershipsDialog = () => {
     invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
   );
 
+  const handleSpaceCardClick = (spaceUrl: string) => {
+    closeDialog();
+    navigate(spaceUrl);
+  };
+
   const onInvitationAccept = () => {
-    if (openDialog?.journeyUri) {
-      navigate(openDialog?.journeyUri);
+    if (openDialog?.spaceUri) {
+      navigate(openDialog?.spaceUri);
       defer(closeDialog); // Deferring for appearance purpose only
     } else {
       setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
@@ -132,7 +137,8 @@ const PendingMembershipsDialog = () => {
                           header={hydratedApplication.space.about.profile.displayName}
                           tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.about.profile.cardBanner}
-                          journeyUri={hydratedApplication.space.about.profile.url}
+                          spaceUri={hydratedApplication.space.about.profile.url}
+                          onClick={() => handleSpaceCardClick(hydratedApplication.space.about.profile.url)}
                         >
                           <SpaceCardTagline>{hydratedApplication.space.about.profile.tagline ?? ''}</SpaceCardTagline>
                         </SpaceCardBase>

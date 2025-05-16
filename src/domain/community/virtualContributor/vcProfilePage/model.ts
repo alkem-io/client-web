@@ -1,6 +1,5 @@
 import { Reference } from '@/domain/common/profile/Profile';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { BasicSpaceProps } from '../components/BasicSpaceCard';
 
 export type VirtualContributorProfileProps = {
   id: string;
@@ -49,3 +48,13 @@ export type VCProfilePageViewProps = {
   navigateToKnowledgeBase?: boolean;
   openKnowledgeBaseDialog?: boolean;
 };
+
+export interface BasicSpaceProps {
+  // TODO: avatar is for subspaces, add cardBanner if we want support of Spaces as BOK
+  avatar?: {
+    uri: string;
+  };
+  displayName: string;
+  tagline?: string;
+  url: string;
+}

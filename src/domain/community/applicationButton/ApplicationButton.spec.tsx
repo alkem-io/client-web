@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '@/main/test/testUtils';
 import { ApplicationButton, ApplicationButtonProps } from './ApplicationButton';
 import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../access/ApplicationState';
+import { ApplicationState } from '../models/InvitationApplicationConstants';
 import { expect, test } from 'vitest';
 
 test.skip('buttons is loading', () => {
@@ -73,7 +73,7 @@ test.skip('is member', () => {
   expect(button).toBeDisabled();
 });
 
-[APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED].forEach(x =>
+[ApplicationState.NEW, ApplicationState.REJECTED].forEach(x =>
   test.skip(`${x}`, () => {
     // arrange
     const props = {
@@ -183,7 +183,7 @@ test.skip('parent has pending application', () => {
     onJoin: () => void 0,
     isMember: false,
     isParentMember: false,
-    parentApplicationState: APPLICATION_STATE_NEW,
+    parentApplicationState: ApplicationState.NEW,
   } as ApplicationButtonProps;
 
   render(

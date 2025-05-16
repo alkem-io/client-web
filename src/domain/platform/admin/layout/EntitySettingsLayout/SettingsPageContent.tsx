@@ -4,6 +4,7 @@ import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
 import TabDescriptionHeader from '@/domain/shared/layout/TabDescriptionHeader/TabDescriptionHeader';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface SettingsPageContentProps<Section extends string | number> {
   currentSection: Section;
@@ -22,12 +23,10 @@ const SettingsPageContent = <Section extends string | number>({
 }: PropsWithChildren<SettingsPageContentProps<Section>>) => {
   const { t } = useTranslation();
 
-  type TLabel = Parameters<typeof t>[0];
-
   const tabDescriptionKeys = [
     `${tabDescriptionNs}.${entityTypeName}.sections.${currentSection}.description`,
     `${tabDescriptionNs}.generic.sections.${currentSection}.description`,
-  ] as unknown as TLabel;
+  ] as unknown as TranslationKey[]; // TODO: Fix this type casting
 
   const tabDescriptionText = t(tabDescriptionKeys, {
     entity: t(`common.${entityTypeName}` as const).toLowerCase(),

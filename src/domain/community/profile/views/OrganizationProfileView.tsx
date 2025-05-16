@@ -1,5 +1,5 @@
 import { groupBy, isEmpty } from 'lodash';
-import { Box, CardContent, Grid, styled } from '@mui/material';
+import { Box, CardContent, GridLegacy, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
@@ -74,7 +74,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
             />
           )}
         </VerifiedBadge>
-        <Grid container spacing={3.5} direction="column">
+        <GridLegacy container spacing={3.5} direction="column">
           <Gutters>
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Gutters>
@@ -102,7 +102,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
               <SocialLinks items={socialLinks} />
             </Gutters>
           )}
-        </Grid>
+        </GridLegacy>
       </CardContent>
     </PageContentBlock>
   );

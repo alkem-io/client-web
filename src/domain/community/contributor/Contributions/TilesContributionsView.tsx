@@ -34,7 +34,7 @@ const ContributionItem = ({ contributionItem }) => {
   return (
     <SpaceTile
       key={contributionItem.id}
-      journey={loading || !details ? undefined : { about: details.about, level: details.level }}
+      space={loading || !details ? undefined : { about: details.about, level: details.level }}
     />
   );
 };

@@ -18,7 +18,7 @@ export interface ActivityUpdateSentViewProps extends ActivityViewProps {
 }
 
 export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
-  journeyDisplayName,
+  spaceDisplayName,
   message,
   type,
   ...rest
@@ -30,7 +30,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
       type={type}
       title={<ActivitySubjectMarkdown>{message}</ActivitySubjectMarkdown>}
       url={url}
-      contextDisplayName={journeyDisplayName}
+      contextDisplayName={spaceDisplayName}
       {...rest}
     />
   );

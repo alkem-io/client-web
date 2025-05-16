@@ -74,7 +74,6 @@ const HeaderNavigationTabs = ({
   if (!showSettings && value === 'settings') {
     value = defaultTab;
   }
-
   return (
     <Box position="relative">
       <StyledTabs

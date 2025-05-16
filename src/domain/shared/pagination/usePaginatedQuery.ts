@@ -8,7 +8,7 @@ export interface PaginationVariables {
   after?: string;
 }
 
-export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first'>;
+export type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first' | 'after'>;
 
 interface CommonPaginationOptions<Data, Variables extends PaginationVariables> {
   variables: NonPaginationVariables<Variables>;
@@ -19,8 +19,13 @@ interface CommonPaginationOptions<Data, Variables extends PaginationVariables> {
 
 export interface PaginationOptionsNonLazy<Data, Variables extends PaginationVariables>
   extends CommonPaginationOptions<Data, Variables> {
-  useQuery: (options: QueryHookOptions<Data, Variables>) => QueryResult<Data, Variables>;
-  options?: QueryHookOptions<Data, NonPaginationVariables<Variables>>;
+  useQuery: (
+    options: QueryHookOptions<Data, Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean })
+  ) => QueryResult<Data, Variables>;
+  options?: QueryHookOptions<
+    Data,
+    NonPaginationVariables<Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean })
+  >;
 }
 
 export interface PaginationOptionsLazy<Data, Variables extends PaginationVariables>
@@ -29,7 +34,7 @@ export interface PaginationOptionsLazy<Data, Variables extends PaginationVariabl
   options?: LazyQueryHookOptions<Data, NonPaginationVariables<Variables>>;
 }
 
-export interface Provided<Data> {
+interface PaginatedQueryProvided<Data> {
   data: Data | undefined;
   loading: boolean;
   error: ApolloError | undefined;
@@ -53,7 +58,7 @@ const useQuery = <Data, Variables extends PaginationVariables>(
         first: firstPageSize,
         ...variables,
       },
-    } as QueryHookOptions<Data, Variables>);
+    } as QueryHookOptions<Data, Variables> & ({ variables: Variables; skip?: boolean } | { skip: boolean }));
 
     return {
       data,
@@ -86,7 +91,7 @@ const loadNonLazyQuery = () => Promise.reject(new TypeError('Cannot load non-laz
 
 const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
   options: PaginationOptionsNonLazy<Data, Variables> | PaginationOptionsLazy<Data, Variables>
-): Provided<Data> => {
+): PaginatedQueryProvided<Data> => {
   const { getPageInfo, pageSize, firstPageSize = pageSize } = options;
 
   const {

@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { ApmBase } from '@elastic/apm-rum';
 import { useApmInit } from '@/core/analytics/apm/useApmInit';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 
 export interface ApmContextProps {

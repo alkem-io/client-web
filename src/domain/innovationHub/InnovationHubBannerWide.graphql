@@ -1,0 +1,15 @@
+query InnovationHubBannerWide {
+  platform {
+    innovationHub {
+      id
+      profile {
+        id
+        displayName
+        bannerWide: visual(type: BANNER_WIDE) {
+          id
+          ...VisualUri
+        }
+      }
+    }
+  }
+}

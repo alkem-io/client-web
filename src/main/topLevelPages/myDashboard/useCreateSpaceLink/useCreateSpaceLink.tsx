@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useMemo } from 'react';

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,

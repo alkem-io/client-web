@@ -10,7 +10,7 @@ export interface CommunityUpdatesDialogProps {
   open: boolean;
   onClose: () => void;
   communityId?: string;
-  shareUrl: string;
+  shareUrl?: string;
   loading?: boolean;
 }
 

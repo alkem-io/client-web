@@ -33,9 +33,7 @@ const DocumentationPage = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [src, setSrc] = useState('');
 
-  let srcIndex = `${locations?.documentation}/`;
-  // use for local development
-  // let srcIndex = `http://localhost:3010/documentation/`;
+  const srcIndex = `${locations?.documentation}/`;
 
   const handleMessage = (event: MessageEvent) => {
     if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {

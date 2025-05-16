@@ -2,12 +2,12 @@ import { string } from 'yup';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { ValidationMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation/ValidationMessageWithPayload';
 import { MarkdownTextMaxLength } from '../field-length.constants';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 const translationKey: TranslationKey = 'components.wysiwyg-editor.validation.maxLength';
 
 const MarkdownValidator = (maxLength: MarkdownTextMaxLength) =>
-  string().max(maxLength, MessageWithPayload(translationKey));
+  string().max(maxLength, ({ max }) => TranslatedValidatedMessageWithPayload(translationKey)({ max }));
 
 export const isMarkdownMaxLengthError = (
   error: string | ValidationMessageWithPayload

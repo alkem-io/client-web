@@ -2,11 +2,11 @@ import { Container } from '@mui/material';
 import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '@/domain/community/community/views/CommunityUpdates/CommunityUpdatesView';
 
-export interface SpaceAdminCommunityUpdatesPageProps {
+interface SpaceAdminCommunityUpdatesPageProps {
   communityId: string | undefined;
 }
 
-export const SpaceAdminCommunityUpdatesPage = ({ communityId }: { communityId: string | undefined }) => {
+export const SpaceAdminCommunityUpdatesPage = ({ communityId }: SpaceAdminCommunityUpdatesPageProps) => {
   if (!communityId) {
     return <Container maxWidth="xl">No community</Container>;
   }

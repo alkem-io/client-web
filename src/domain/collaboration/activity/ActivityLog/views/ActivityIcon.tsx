@@ -10,7 +10,6 @@ import {
   PersonOutlined,
 } from '@mui/icons-material';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
-import { SpaceL2Icon } from '@/domain/space/icons/SpaceL2Icon';
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
@@ -24,8 +23,7 @@ const ActivityIcon: Record<
   [ActivityEventType.CalloutPostCreated]: NotesOutlined,
   [ActivityEventType.CalloutPostComment]: ChatBubbleOutlineOutlined,
   [ActivityEventType.CalloutLinkCreated]: LinkOutlined,
-  [ActivityEventType.ChallengeCreated]: SpaceL1Icon,
-  [ActivityEventType.OpportunityCreated]: SpaceL2Icon,
+  [ActivityEventType.SubspaceCreated]: SpaceL1Icon, // TODO: should it distinguish between L1 and L2?
   [ActivityEventType.UpdateSent]: MicOutlined,
   [ActivityEventType.CalendarEventCreated]: CalendarMonthOutlined,
   [ActivityEventType.DiscussionComment]: ChatBubbleOutlineOutlined,

@@ -4,7 +4,7 @@ import {
   useCalloutStorageConfigQuery,
   useInnovationHubStorageConfigQuery,
   useInnovationPackStorageConfigQuery,
-  useJourneyStorageConfigQuery,
+  useSpaceStorageConfigQuery,
   useOrganizationStorageConfigQuery,
   usePlatformStorageConfigQuery,
   useTemplateStorageConfigQuery,
@@ -23,7 +23,7 @@ export interface StorageConfig {
 }
 
 type StorageConfigLocation =
-  | 'journey'
+  | 'space'
   | 'user'
   | 'virtualContributor'
   | 'organization'
@@ -42,7 +42,7 @@ interface UseStorageConfigOptionsBase {
 
 interface UseStorageConfigOptionsSpace extends UseStorageConfigOptionsBase {
   spaceId: string | undefined;
-  locationType: 'journey';
+  locationType: 'space';
 }
 
 interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase {
@@ -112,12 +112,12 @@ export interface StorageConfigProvided {
 }
 
 const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptions): StorageConfigProvided => {
-  const journeyOptions = options as UseStorageConfigOptionsSpace;
-  const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
+  const spaceOptions = options as UseStorageConfigOptionsSpace;
+  const { data: spaceStorageConfigData } = useSpaceStorageConfigQuery({
     variables: {
-      spaceId: journeyOptions.spaceId!,
+      spaceId: spaceOptions.spaceId!,
     },
-    skip: skip || locationType !== 'journey' || !journeyOptions.spaceId,
+    skip: skip || locationType !== 'space' || !spaceOptions.spaceId,
   });
 
   const calloutOptions = options as UseStorageConfigOptionsCallout;
@@ -190,12 +190,12 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'account' || !accountOptions.accountId,
   });
 
-  const journey = journeyStorageConfigData?.lookup.space;
+  const space = spaceStorageConfigData?.lookup.space;
 
   const callout = calloutStorageConfigData?.lookup.callout;
 
   const { profile } =
-    journey?.about ??
+    space?.about ??
     callout?.framing ??
     postStorageConfigData?.lookup.post ??
     templateStorageConfigData?.lookup.template ??

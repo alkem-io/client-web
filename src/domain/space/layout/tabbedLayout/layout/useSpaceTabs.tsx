@@ -1,7 +1,8 @@
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ReactNode, useMemo } from 'react';
 import { useSpace } from '../../../context/useSpace';
-import { TFunction, useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { SpaceL1Icon } from '../../../icons/SpaceL1Icon';
@@ -21,11 +22,7 @@ const tabsDefaultNames: Record<string, TranslationKey> = {
   contribute: 'pages.space.sections.tabs.contribute',
 };
 
-const tabName = (
-  t: TFunction<'translation', undefined>,
-  customName: string | undefined,
-  defaultName: TranslationKey
-): string => {
+const tabName = (t: TFunction, customName: string | undefined, defaultName: TranslationKey): string => {
   if (!customName) {
     return String(t(defaultName));
   }
@@ -42,7 +39,7 @@ type useSpaceTabsProvided = {
   showSettings: boolean;
 };
 
-const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTabsProvided => {
+const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: boolean }): useSpaceTabsProvided => {
   const { t, i18n } = useTranslation();
 
   const { permissions } = useSpace();
@@ -51,7 +48,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId,
+    skip: !spaceId || skip,
   });
 
   const { tabs, defaultTabIndex } = useMemo(() => {
@@ -107,7 +104,7 @@ const useSpaceTabs = ({ spaceId }: { spaceId: string | undefined }): useSpaceTab
       tabs: result,
       defaultTabIndex: currentStateIndex,
     };
-  }, [t, i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
+  }, [i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
 
   return {
     tabs,

@@ -11,12 +11,12 @@ import GridItem from '@/core/ui/grid/GridItem';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import Overlay from '@/core/ui/utils/Overlay';
-import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
 
-export interface PageBannerProps extends BasePageBannerProps {
+export interface PageBannerProps {
   banner: Visual | undefined;
   ribbon?: ReactNode;
   fade?: boolean;
+  watermark?: ReactNode;
 }
 
 interface CardRendererProps<CardProps extends { maxWidth?: number | string }> {

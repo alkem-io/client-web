@@ -2,15 +2,15 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {
-  JourneyCreationForm,
-  JourneyFormValues,
+  SpaceCreationForm,
+  SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
@@ -25,11 +25,11 @@ import { gutters } from '@/core/ui/grid/utils';
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
-  JourneyFormValues,
+  SpaceFormValues,
   'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
 >;
 
-interface CreateSubspaceFormProps extends JourneyCreationForm {}
+interface CreateSubspaceFormProps extends SpaceCreationForm {}
 
 export const CreateSubspaceForm = ({
   isSubmitting,
@@ -69,14 +69,18 @@ export const CreateSubspaceForm = ({
     displayName: yup
       .string()
       .trim()
-      .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+      )
       .required(validationRequiredString),
     tagline: yup
       .string()
       .trim()
-      .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+      ),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
     collaborationTemplateId: yup.string().nullable(),

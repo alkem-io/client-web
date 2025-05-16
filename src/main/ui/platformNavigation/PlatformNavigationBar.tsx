@@ -3,7 +3,7 @@ import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '@/core/ui/navi
 import PlatformNavigationUserAvatar from './PlatformNavigationUserAvatar';
 import PlatformSearch from '../platformSearch/PlatformSearch';
 import PlatformNavigationMenuButton from './PlatformNavigationMenuButton';
-import { Box, MenuItem, Slide, Theme, useMediaQuery } from '@mui/material';
+import { Box, MenuItem, Slide } from '@mui/material';
 import PlatformNavigationUserMenu, { UserMenuDivider } from './PlatformNavigationUserMenu';
 import UserMenuPlatformNavigationSegment from './platformNavigationMenu/UserMenuPlatformNavigationSegment';
 import NavigationBarSideContent from '@/core/ui/navigation/NavigationBarSideContent';
@@ -11,7 +11,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
 import { useResizeDetector } from 'react-resize-detector';
-import { GUTTER_PX } from '@/core/ui/grid/constants';
+import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
 import PlatformNavigationUncollapse from './PlatformNavigationUncollapse';
 import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ const DEFAULT_BOUNDING_CLIENT_RECT = {
 } as const;
 
 const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const { isSmallScreen } = useScreenSize();
 
   const [areBreadcrumbsHidden, setAreBreadcrumbsHidden] = useState(false);
 
@@ -43,7 +43,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
   const searchBoxRef = useRef<Collapsible>(null);
 
   const handleExpandSearch = (isExpanded: boolean) => {
-    setAreBreadcrumbsHidden(isMobile && isExpanded);
+    setAreBreadcrumbsHidden(isSmallScreen && isExpanded);
     if (isExpanded) {
       breadcrumbsRef.current?.collapse();
     }
@@ -54,7 +54,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
       searchBoxRef.current?.collapse();
     }
 
-    if (!isMobile || !areExpanded) {
+    if (!isSmallScreen || !areExpanded) {
       setRightSideShift(0);
       return;
     }
@@ -75,7 +75,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
   useLayoutEffect(() => {
     breadcrumbsRef.current?.collapse();
     searchBoxRef.current?.collapse();
-  }, [isMobile]);
+  }, [isSmallScreen]);
 
   const { t } = useTranslation();
 
@@ -96,16 +96,16 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
               `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
           }}
         >
-          <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch} compact={isMobile}>
+          <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch} compact={isSmallScreen}>
             <PlatformNavigationUncollapse ref={uncollapseButtonRef} visible={rightSideShift !== 0} />
           </PlatformSearch>
           <PlatformNotificationsButton />
-          {!isMobile && <PlatformNavigationMenuButton />}
-          <PlatformNavigationUserAvatar drawer={isMobile}>
+          {!isSmallScreen && <PlatformNavigationMenuButton />}
+          <PlatformNavigationUserAvatar drawer={isSmallScreen}>
             <PlatformNavigationUserMenu
-              surface={!isMobile}
+              surface={!isSmallScreen}
               footer={
-                isMobile && [
+                isSmallScreen && [
                   <UserMenuDivider key="divider" />,
                   <Box component={MenuItem} paddingY={gutters(0.5)} key="menu-item">
                     <PoweredBy preview />
@@ -113,8 +113,8 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
                 ]
               }
             >
-              {isMobile && <UserMenuPlatformNavigationSegment />}
-              {isMobile && <UserMenuDivider />}
+              {isSmallScreen && <UserMenuPlatformNavigationSegment />}
+              {isSmallScreen && <UserMenuDivider />}
             </PlatformNavigationUserMenu>
           </PlatformNavigationUserAvatar>
         </Box>

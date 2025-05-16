@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,

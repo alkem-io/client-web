@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
-import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowState';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowCalloutsPreview, {
   InnovationFlowCalloutsPreviewProps,
@@ -13,7 +13,7 @@ interface CollaborationTemplatePreviewProps {
   template?: {
     collaboration?: {
       innovationFlow?: {
-        states: InnovationFlowState[];
+        states: InnovationFlowStateModel[];
       };
       calloutsSet?: {
         callouts?: InnovationFlowCalloutsPreviewProps['callouts'];

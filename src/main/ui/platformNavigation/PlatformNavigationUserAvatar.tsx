@@ -1,5 +1,5 @@
 import React, { ReactElement, Ref } from 'react';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { Box, CircularProgress, Paper, useTheme } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { Person } from '@mui/icons-material';

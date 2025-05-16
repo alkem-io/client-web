@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Form, Formik } from 'formik';
-import { Button, Grid } from '@mui/material';
+import { Button, GridLegacy } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
@@ -54,8 +54,8 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ isValid, dirty, isSubmitting }) => (
         <Form noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={9}>
+          <GridLegacy container spacing={2}>
+            <GridLegacy item xs={12} md={9}>
               <FormikInputField
                 name="title"
                 title={t('components.discussionForm.title.title')}
@@ -63,8 +63,8 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
                 disabled={isSubmitting}
                 maxLength={SMALL_TEXT_LENGTH}
               />
-            </Grid>
-            <Grid item xs={12} md={3}>
+            </GridLegacy>
+            <GridLegacy item xs={12} md={3}>
               <FormikSelect
                 disabled={editMode}
                 title={t('components.discussionForm.category.title')}
@@ -72,8 +72,8 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
                 values={discussionCategories}
                 value={discussion ? discussion.category : null}
               />
-            </Grid>
-            <Grid item xs={12}>
+            </GridLegacy>
+            <GridLegacy item xs={12}>
               <FormikMarkdownField
                 name="description"
                 title={t('components.discussionForm.description.title')}
@@ -83,17 +83,17 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
                 disabled={isSubmitting}
                 maxLength={MARKDOWN_TEXT_LENGTH}
               />
-            </Grid>
-            <Grid item>
+            </GridLegacy>
+            <GridLegacy item>
               <Button type="submit" variant="contained" loading={isSubmitting} disabled={!isValid || !dirty}>
                 {isSubmitting
                   ? t('buttons.processing')
                   : editMode
-                  ? t('components.updateDiscussion.buttons.post')
-                  : t('components.newDiscussion.buttons.post')}
+                    ? t('components.updateDiscussion.buttons.post')
+                    : t('components.newDiscussion.buttons.post')}
               </Button>
-            </Grid>
-          </Grid>
+            </GridLegacy>
+          </GridLegacy>
         </Form>
       )}
     </Formik>

@@ -17,10 +17,9 @@ interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconCompon
   displayName: string;
   vision: string;
   member?: boolean;
-  journeyUri: string;
+  spaceUri?: string;
   spaceVisibility?: SpaceVisibility;
   spaceDisplayName?: string;
-  spaceUri?: string;
   hideJoin?: boolean;
   isPrivate?: boolean;
   avatarUris?: string[];
@@ -74,7 +73,7 @@ const SubspaceCard = ({
       }
       expansionActions={
         <CardActions>
-          <SpaceCardGoToButton spaceUri={props.journeyUri} />
+          <SpaceCardGoToButton spaceUri={props.spaceUri!} />
         </CardActions>
       }
       bannerOverlay={

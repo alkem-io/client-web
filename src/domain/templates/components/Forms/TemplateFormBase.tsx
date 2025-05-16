@@ -57,7 +57,7 @@ interface TemplateFormBaseProps<T extends TemplateFormProfileSubmittedValues> {
   onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void;
   actions: ReactNode | ((formState: FormikProps<T>) => ReactNode);
   children?: ReactNode | ((formState: FormikProps<T>) => ReactNode);
-  validator?: yup.ObjectSchemaDefinition<{}>;
+  validator?: yup.ObjectShape;
 }
 
 const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({

@@ -1,7 +1,14 @@
 import { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Box, Divider, ListItemButtonProps, Typography } from '@mui/material';
-import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
+import {
+  Badge,
+  Box,
+  Divider,
+  ListItemButton,
+  ListItemButtonProps,
+  ListItemButtonTypeMap,
+  Typography,
+} from '@mui/material';
 import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import { DeleteOutline } from '@mui/icons-material';

@@ -14,7 +14,7 @@ export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps
 }
 
 export const ActivityCalendarEventCreatedView = ({
-  journeyDisplayName,
+  spaceDisplayName,
   calendarEvent,
   type,
   ...rest
@@ -23,7 +23,7 @@ export const ActivityCalendarEventCreatedView = ({
     type={type}
     title={<ActivityDescriptionByType activityType={type} subject={calendarEvent.profile.displayName} />}
     url={calendarEvent.profile.url}
-    contextDisplayName={journeyDisplayName}
+    contextDisplayName={spaceDisplayName}
     {...rest}
   />
 );

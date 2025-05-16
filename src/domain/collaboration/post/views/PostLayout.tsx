@@ -10,11 +10,9 @@ export interface PostLayoutProps {
   onClose: () => void;
 }
 
-const PostLayout = ({ currentSection, onClose, children }: PropsWithChildren<PostLayoutProps>) => (
+export const PostLayout = ({ currentSection, onClose, children }: PropsWithChildren<PostLayoutProps>) => (
   <DialogWithGrid open={!!currentSection} columns={12} onClose={onClose}>
     <DialogHeader onClose={onClose} actions={<PostTabs currentTab={currentSection} />} />
     <DialogContent>{children}</DialogContent>
   </DialogWithGrid>
 );
-
-export default PostLayout;

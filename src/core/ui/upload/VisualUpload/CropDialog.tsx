@@ -10,7 +10,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ALT_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
@@ -52,18 +52,20 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
     minWidth = MIN_WIDTH,
   } = config;
   const [src, setSrc] = useState<string | null>(null);
-  const [crop, setCrop] = useState<Partial<Crop>>({ aspect: aspectRatio });
+  const [crop, setCrop] = useState<Crop | undefined>(undefined);
 
   const initialValues: CropDialogFormValues = {
     altText: '',
   };
 
   const validationSchema = yup.object().shape({
-    altText: yup.string().trim().max(ALT_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    altText: yup
+      .string()
+      .trim()
+      .max(ALT_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
   });
 
-  const onCropChange = (crop: Crop, _percentCrop: Crop) => {
-    // You could also use percentCrop:
+  const onCropChange = (crop: Crop) => {
     setCrop(crop);
   };
 
@@ -89,7 +91,6 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
         height,
         x,
         y,
-        aspect,
       });
 
       return false; // Return false if you set crop state in here.
@@ -176,8 +177,8 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
 
   const handleSave = useCallback(
     async (values: CropDialogFormValues) => {
-      if (!imgRef.current) return;
-      const newImage = await getCroppedImg(imgRef.current, crop as Crop, 'newFile.jpg');
+      if (!imgRef.current || !crop) return;
+      const newImage = await getCroppedImg(imgRef.current, crop, 'newFile.jpg');
       if (onSave) await onSave(newImage, values.altText);
       handleClose();
     },
@@ -200,7 +201,16 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
           <Form>
             <Gutters>
               <Box display="flex" justifyContent="center" sx={{ backgroundColor: t => t.palette.grey[800] }}>
-                {src && <ReactCrop src={src} crop={crop} onChange={onCropChange} onImageLoaded={onLoad} />}
+                {src && (
+                  <ReactCrop aspect={aspectRatio} crop={crop} onChange={onCropChange}>
+                    <img
+                      src={src}
+                      crossOrigin="anonymous"
+                      alt="Crop preview"
+                      onLoad={event => onLoad(event.target as HTMLImageElement)}
+                    />
+                  </ReactCrop>
+                )}
               </Box>
               <FormHelperText>
                 {tLinks('components.referenceSegment.url-helper-text', {

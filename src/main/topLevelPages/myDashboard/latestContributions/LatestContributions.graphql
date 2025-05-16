@@ -7,7 +7,7 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
       description
       type
       child
-      journeyDisplayName: parentDisplayName
+      spaceDisplayName: parentDisplayName
       space {
         id
         ... on Space {
@@ -21,21 +21,6 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
             }
           }
         }
-        # ... on RelayPaginatedSpace {
-        #   profile {
-        #     ...RecentContributionsSpaceProfile
-        #   }
-        # }
-        # ... on subspace {
-        #   profile {
-        #     ...RecentContributionsChildJourneyProfile
-        #   }
-        # }
-        # ... on Opportunity {
-        #   profile {
-        #     ...RecentContributionsChildJourneyProfile
-        #   }
-        # }
       }
       triggeredBy {
         id
@@ -72,11 +57,8 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
-      ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
-      }
-      ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
+      ... on ActivityLogEntrySubspaceCreated {
+        ...ActivityLogSubspaceCreated
       }
       ... on ActivityLogEntryUpdateSent {
         ...ActivityLogUpdateSent
@@ -91,4 +73,3 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
     }
   }
 }
-

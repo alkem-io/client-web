@@ -8,17 +8,16 @@ import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { BlockTitle, PageTitle } from '@/core/ui/typography';
-import { SelfServiceVerificationFlow } from '@ory/kratos-client';
+import { VerificationFlow } from '@ory/kratos-client';
 import { useSignUpReturnUrl } from '../utils/SignUpReturnUrl';
-import produce from 'immer';
+import { produce } from 'immer';
 import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
-import { UiNodeAnchor } from '../components/Kratos/UiNodeTypes';
 
 interface RegisterPageProps {
   flow?: string;
 }
 
-const hideVerificationMessage = (flow: SelfServiceVerificationFlow | undefined) =>
+const hideVerificationMessage = (flow: VerificationFlow | undefined) =>
   (flow?.state === 'passed_challenge' || flow?.state === 'sent_email') ?? false;
 
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
@@ -42,7 +41,9 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
         if (!continueButton) {
           return;
         }
-        (continueButton as UiNodeAnchor).attributes.href = verificationFlow.ui.action ?? returnUrl;
+        if (isAnchorNode(continueButton)) {
+          continueButton.attributes.href = verificationFlow.ui.action ?? returnUrl;
+        }
       })
     );
   }, [verificationFlow]);

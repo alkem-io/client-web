@@ -1,4 +1,4 @@
-import { Grid, Skeleton } from '@mui/material';
+import { GridLegacy, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { Caption } from '@/core/ui/typography';
@@ -24,7 +24,7 @@ type ActionableContributionsViewProps = {
 };
 
 const SkeletonItem = () => (
-  <Grid item>
+  <GridLegacy item>
     <Skeleton
       variant="rectangular"
       sx={{
@@ -42,7 +42,7 @@ const SkeletonItem = () => (
         width: theme => theme.spacing(theme.cards.contributionCard.width),
       }}
     />
-  </Grid>
+  </GridLegacy>
 );
 
 /**

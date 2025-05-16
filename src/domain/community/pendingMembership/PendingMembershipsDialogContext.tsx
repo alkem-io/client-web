@@ -11,13 +11,13 @@ export interface DialogDetails {
 
 export interface PendingMembershipsListDialogDetails extends DialogDetails {
   type: PendingMembershipsDialogType.PendingMembershipsList;
-  journeyUri?: string;
+  spaceUri?: string;
 }
 
 export interface InvitationViewDialogDetails extends DialogDetails {
   type: PendingMembershipsDialogType.InvitationView;
   invitationId: string;
-  journeyUri?: string;
+  spaceUri?: string;
 }
 
 interface PendingMembershipsContextValue {

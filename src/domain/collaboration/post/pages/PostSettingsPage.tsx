@@ -15,7 +15,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { PostDialogSection } from '../views/PostDialogSection';
-import { PostLayout } from '../views/PostLayoutWithOutlet';
 import {
   useMoveContributionToCalloutMutation,
   usePostCalloutsInCalloutSetQuery,
@@ -25,6 +24,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import { PostLayout } from '../views/PostLayout';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -92,8 +92,11 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
       return;
     }
 
-    await postSettings.handleDelete(postSettings.post.id);
+    // close the dialog optimistically before deleting to prevent errors querying the post settings
+    // use the inClose directly as we don't want to show the confirmation dialog
     onClose();
+
+    await postSettings.handleDelete(postSettings.post.id);
   }, [postSettings, post, onClose]);
 
   const onCloseEdit = useCallback(() => {

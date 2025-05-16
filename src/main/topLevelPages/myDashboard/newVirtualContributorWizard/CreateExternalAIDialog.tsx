@@ -11,6 +11,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 const PROVIDERS = [
   { id: AiPersonaEngine.OpenaiAssistant, name: 'OpenAI Assistant' },
@@ -43,16 +44,14 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
       .oneOf(PROVIDERS.map(({ id }) => id))
       .required(),
     apiKey: yup.string().required(),
-    assistantId: yup.string().when('engine', {
-      is: AiPersonaEngine.OpenaiAssistant,
-      then: yup.string().required(),
-      otherwise: yup.string().notRequired(),
+    assistantId: yup.string().when(['engine'], ([engine], schema) => {
+      return engine === AiPersonaEngine.OpenaiAssistant ? schema.required() : schema;
     }),
   });
 
-  const handleSubmit = async (values: ExternalVcFormValues) => {
-    onCreateExternal(values);
-  };
+  const [handleSubmit, submitting] = useLoadingState(async (values: ExternalVcFormValues) => {
+    await onCreateExternal(values);
+  });
 
   return (
     <Formik
@@ -92,7 +91,7 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
                   />
                 )}
                 <Actions justifyContent="end">
-                  <Button variant="contained" disabled={!isValid} type="submit">
+                  <Button variant="contained" disabled={!isValid} type="submit" loading={submitting}>
                     {t('buttons.create')}
                   </Button>
                 </Actions>

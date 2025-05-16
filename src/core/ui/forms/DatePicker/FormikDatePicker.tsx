@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
 
-interface FormikDatePickerProps extends FormikInputProps, Omit<DatePickerProps<Date>, 'name'> {}
+interface FormikDatePickerProps extends FormikInputProps, Omit<DatePickerProps, 'name'> {}
 
 const FormikDatePicker = ({ name, ...datePickerProps }: FormikDatePickerProps) => {
   const [field, , helpers] = useField(name);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleChange: DatePickerProps<Date>['onChange'] = date => {
+  const handleChange: DatePickerProps['onChange'] = date => {
     helpers.setValue(date);
   };
 

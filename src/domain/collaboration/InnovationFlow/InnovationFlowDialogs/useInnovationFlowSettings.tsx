@@ -15,7 +15,7 @@ import {
   Tagset,
   UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { InnovationFlowState } from '../InnovationFlow';
+import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
@@ -201,7 +201,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   /**
    * if stateBefore is undefined, the new state will be appended to the end of the list
    */
-  const handleCreateState = (newState: InnovationFlowState, stateBefore?: string) => {
+  const handleCreateState = (newState: InnovationFlowStateModel, stateBefore?: string) => {
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
     const states = requiredInnovationFlow.states;
     const stateBeforeIndex = !stateBefore ? -1 : states.findIndex(state => state.displayName === stateBefore);
@@ -218,7 +218,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   };
 
   const [updateInnovationFlowState] = useUpdateInnovationFlowSingleStateMutation();
-  const handleEditState = async (oldState: InnovationFlowState, newState: InnovationFlowState) => {
+  const handleEditState = async (oldState: InnovationFlowStateModel, newState: InnovationFlowStateModel) => {
     const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
 
     await updateInnovationFlowState({
@@ -247,7 +247,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   };
 
   const [updateInnovationFlow] = useUpdateInnovationFlowStatesMutation();
-  const updateInnovationFlowStates = (nextStates: InnovationFlowState[]) => {
+  const updateInnovationFlowStates = (nextStates: InnovationFlowStateModel[]) => {
     const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
 
     return updateInnovationFlow({

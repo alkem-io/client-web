@@ -11,29 +11,12 @@ const MAX_ITEMS_LIMIT = 1000;
 
 export interface SearchableListProps<
   ItemViewProps extends {},
-  Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+  Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>,
 > {
   data: Item[];
   getActions?: (item: SearchableListItem) => React.ReactNode | undefined;
   loading?: boolean;
 }
-
-export const searchableListItemMapper =
-  (editSuffix?: string) =>
-  (item: {
-    id: string;
-    displayName: string;
-    nameID?: string;
-    url?: string;
-    level?: SpaceLevel;
-  }): SearchableListItem => ({
-    id: item.id,
-    profile: {
-      displayName: item.displayName,
-      url: item.url ?? `${item.nameID ?? item.id}${editSuffix ?? ''}`,
-    },
-    level: item.level ?? SpaceLevel.L0,
-  });
 
 export interface SearchableListItem {
   id: string;
@@ -49,7 +32,7 @@ export interface SearchableListItem {
 
 export const SearchableList = <
   ItemViewProps extends {},
-  Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+  Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>,
 >({
   data = [],
   loading,

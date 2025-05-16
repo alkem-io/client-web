@@ -6,8 +6,9 @@ import {
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
 
-export interface InviteContributorDialogProps {
+export interface InviteContributorsDialogProps {
   type: RoleSetContributorType;
+  filterContributors?: (contributor: Identifiable) => boolean;
   open: boolean;
   onClose: () => void;
 }

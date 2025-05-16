@@ -179,7 +179,10 @@
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
     "invite": "Invite",
-    "visit": "Visit"
+    "visit": "Visit",
+    "returnToDashboard": "Return to dashboard as guest",
+    "approveApplication": "Approve application",
+    "rejectApplication": "Reject application"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -217,6 +220,7 @@
       "L1": "Subspace",
       "L2": "Subsubspace"
     },
+    "actions": "Actions",
     "account": "Account",
     "all": "All",
     "knowledge-base": "Knowledge base",
@@ -459,6 +463,19 @@
         "POST_COLLECTION": "Post Collection",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_COLLECTION": "Whiteboard Collection"
+      },
+      "invitationStatus": {
+        "invited": "Invited",
+        "accepted": "Invitation Accepted",
+        "rejected": "Invitation Rejected"
+      },
+      "invitationExternalStatus": {
+        "invited": "Invited to join Alkemio & this Space"
+      },
+      "roleSetContributorType": {
+        "USER": "User",
+        "ORGANIZATION": "Organization",
+        "VIRTUAL": "Virtual Contributor"
       }
     },
     "blocks": {
@@ -520,9 +537,7 @@
     "memberUsers": "Member Users ({{count}})",
     "leading-organizations": "Leading Organizations",
     "memberOrganizations": "Member Organizations ({{count}})",
-    "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Invitation sent successfully",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -537,10 +552,8 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor",
       "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
@@ -571,25 +584,82 @@
       "applicationRejected": "Application Rejected",
       "applicationArchived": "Application Archived"
     },
-    "invitationStatus": {
-      "invited": "Invited",
-      "accepted": "Invitation Accepted",
-      "rejected": "Invitation Rejected"
+    "invitations": {
+      "inviteButton": {
+        "USER": "Invite people to this Space",
+        "ORGANIZATION": "Invite people to this Space",
+        "VIRTUAL": "Invite Virtual Contributor"
+      },
+      "inviteToRole": "Invite to be a: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Invite others to join '{{spaceName}}'",
+          "description": "Search for people below or directly add their email address",
+          "note": "Keep in mind that your personal email address will be visible to anyone you message.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "placeholder": "Username or email...",
+          "success": "Your invitation was successfully sent to the following recipients:",
+          "failure": "We couldn’t send the invitation to the following recipients:",
+          "back": "Send another invitation",
+          "invitationsSent": "{{count}} invitations will be sent.",
+          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this Space",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
+            "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
+            "INVITED_TO_ROLE_SET": "Invited to join the community"
+          },
+          "validationErrors": {
+            "required": "Please add at least one contributor to invite",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
+          }
+        },
+        "vcs": {
+          "title": "Virtual Contributors Store",
+          "dialogTitle": "Invite Virtual Contributor to join this Space",
+          "invitationSent": "Invitation sent successfully",
+          "inviteExternalVC": "Invite External VC",
+          "inviteBtn": "Invite Virtual Contributor",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "onAccount": {
+            "title": "Virtual Contributors linked to this Space's account"
+          },
+          "inLibrary": {
+            "title": "Other Virtual Contributors"
+          },
+          "emptyMessage": "No available Virtual Contributors",
+          "successfullyAdded": "{{contributor}} added successfully",
+          "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
+        },
+        "welcomeMessage": "Invitation Message"
+      }
     },
-    "invitationExternalStatus": {
-      "invited": "Invited to join Alkemio & this Space"
-    },
-    "confirmDeleteApplication": {
-      "title": "Deleting application from {{user}}",
-      "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
-    },
-    "confirmDeleteInvitation": {
-      "title": "Deleting invitation from {{user}}",
-      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "Deleting invitation from {{user}}",
-      "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Deleting application from '{{user}}'",
+          "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+        },
+        "invitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        },
+        "platformInvitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        }
+      },
+      "approve": {
+        "title": "Approve application from {{user}}",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
+        "confirmButton": "Yes, approve"
+      },
+      "reject": {
+        "title": "Reject application from {{user}}",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
+        "confirmButton": "Yes, reject"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending Memberships",
@@ -598,9 +668,9 @@
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
-        "title": "My Pending Membership: {{journey}}",
+        "title": "My Pending Membership: {{space}}",
         "vc": {
-          "title": "Pending Virtual Contributor membership: {{journey}}"
+          "title": "Pending Virtual Contributor membership: {{space}}"
         },
         "actions": {
           "hide": "Hide this invitation",
@@ -609,7 +679,7 @@
           "accept": "Accept"
         }
       },
-      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <journeyicon /> {{journey}}",
+      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "you",
       "vc": "your Virtual Contributor"
     },
@@ -677,7 +747,7 @@
       }
     }
   },
-  "journey-creation": {
+  "space-creation": {
     "dialog-title": "Create a new {{entity}}"
   },
   "messaging": {
@@ -857,7 +927,9 @@
       "nonBlank": "{{field}} must not consist of just spaces",
       "atLeastOne": "At least one {{item}} must be selected.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
-      "invalidUrl": "Invalid URL"
+      "invalidUrl": "Invalid URL",
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address"
     }
   },
   "templateDialog": {
@@ -976,14 +1048,14 @@
       "label": "Powered by",
       "aria-label": "Powered by Alkemio"
     },
-    "journeyUnauthorizedDialog": {
+    "spaceUnauthorizedDialog": {
       "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, <apply>click here to apply.</apply>"
     },
-    "journeyPageBannerCard": {
-      "parentJourney": "Part of:"
+    "spacePageBannerCard": {
+      "parentSpace": "Part of:"
     },
-    "journeyMetrics": {
-      "title": "{{journey}} statistics"
+    "spaceMetrics": {
+      "title": "{{space}} statistics"
     },
     "dashboardNavigation": {
       "help": "This Space holds the following Subspaces.",
@@ -1046,44 +1118,6 @@
           }
         }
       }
-    },
-    "invitations": {
-      "inviteOthers": "Invite others",
-      "inviteExistingUser": "Invite Alkemio users",
-      "inviteExternalUser": "Send email invitation",
-      "inviteOrganizations": "Invite Organizations",
-      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "inviteExistingUserDialog": {
-        "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
-        "selector": {
-          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
-          "alreadyInvited": "This user is already invited",
-          "alreadyMember": "This user is already a member"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "Invite Virtual Contributor to join this Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "Send an email invitation"
-      },
-      "inviteToRole": "Invite to be a: "
-    },
-    "inviteContributorsDialog": {
-      "title": "Virtual Contributors Store",
-      "vcs": {
-        "onAccount": {
-          "title": "Virtual Contributors linked to this Space's account"
-        },
-        "inLibrary": {
-          "title": "Other Virtual Contributors"
-        },
-        "emptyMessage": "No available Virtual Contributors"
-      },
-      "successfullyAdded": "{{contributor}} added successfully",
-      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -1182,16 +1216,15 @@
     "activity-log-section": {
       "title": "Recent Contributions",
       "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceLevel}}."
     },
     "activityLogView": {
       "description": {
         "CALLOUT_PUBLISHED": "{{subject}}",
-        "CHALLENGE_CREATED": "{{subject}}",
+        "SUBSPACE_CREATED": "{{subject}}",
         "DISCUSSION_COMMENT": "{{subject}}",
         "MEMBER_JOINED": "{{subject}} joined",
-        "OPPORTUNITY_CREATED": "{{subject}}",
         "CALLOUT_POST_COMMENT": "{{subject}}",
         "CALLOUT_POST_CREATED": "{{subject}}",
         "CALLOUT_LINK_CREATED": "{{subject}}",
@@ -1201,7 +1234,7 @@
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
-        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
+        "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
       }
     },
     "innovationFlow": {
@@ -1370,7 +1403,7 @@
       "goToSubspace": "Go to $t(common.subspace)",
       "parent-pending": "Parent application pending",
       "applyTo": "Apply to",
-      "extendedMessage": "{{join}} our {{journey}} and start making change!",
+      "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
         "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the Subspace you want to join in the Spaces' application form."
@@ -1709,7 +1742,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
-          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
@@ -1755,7 +1788,7 @@
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",
-    "foreignJourney": "This {{journey}} is not in the selection of {{space}}. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
+    "foreignSpace": "This {{spaceDisplayName}} is not in the selection of current starting page. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
     "outsideOfSpace": {
       "forum": "This is the general Alkemio Forum, outside of the <strong>{{space}}</strong> space. You are very much invited to explore and contribute!",
       "subspaces": "Here you can find all Subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
@@ -1802,13 +1835,13 @@
           "title": "Recommended by the Host"
         }
       },
-      "archived-notice": {
-        "archived-space": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
-        "archived-journey": "This {{journey}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+      "archivedNotice": {
+        "archivedSpace": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
-      "demo-notice": {
-        "demo-space": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
-        "demo-journey": "This {{journey}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
+      "demoNotice": {
+        "demoSpace": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
+        "demoSubspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
       }
     },
     "contribute": {
@@ -1854,6 +1887,9 @@
           },
           "communications": {
             "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+          },
+          "subspaces": {
+            "description": "Here you can edit Subspaces for this Space."
           },
           "subsubspaces": {
             "description": "Here you can edit Subspaces for this Subspace."
@@ -2181,7 +2217,7 @@
       "AVATAR": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Journey card on page banner",
+        "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
@@ -2235,7 +2271,7 @@
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
         "type": {
-          "journey": "Space type",
+          "space": "Space type",
           "contribution": "Contribution type",
           "contributor": "Contributor type"
         },
@@ -2250,7 +2286,7 @@
           "callout": "Callouts (available soon)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces)"
+      "spaceFilterTitle": "$t(common.spaces)"
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
@@ -2263,7 +2299,7 @@
         "member": "Member Spaces",
         "public": "Public Spaces"
       },
-      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your journey on Alkemio!",
+      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your space on Alkemio!",
       "search": {
         "placeholder": "Search…",
         "noResults": "No results matched your search terms.",
@@ -2307,14 +2343,14 @@
         "myLatestContributions": {
           "title": "My Latest Activity",
           "card": {
-            "journey": "in: <journeyicon /> {{journey}}"
+            "space": "in: <spaceicon /> {{space}}"
           },
           "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
-        "recentJourneys": {
+        "recentSpaces": {
           "seeMore": "Explore all your Spaces",
           "seeMoreSubspaces": "See all Subspaces I'm a member of"
         },
@@ -2352,22 +2388,22 @@
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
           "invitation": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Click here to see the invitation"
           },
           "application": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "Your application still has to be approved"
           },
           "membership": {
-            "message": "{{journey}}",
+            "message": "{{space}}",
             "caption": "{{tagline}}"
           }
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
-          "welcome-back": "Welcome back, {{username}}!",
+          "welcome-back": "Welcome, {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
             "header": "Existing user? Jump back in!",
@@ -2594,8 +2630,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
-        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",
@@ -2788,7 +2824,7 @@
         },
         "prompt": {
           "title": "Prompt",
-          "infoText": "Available variables: [duration, audience, workshop_type, role] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
+          "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this Virtual Contributor.",
           "saveBtn": "Save prompt"
         },
         "externalConfig": {
@@ -2824,8 +2860,9 @@
       "added-successfully": "Credential successfully added"
     },
     "authentication-required": {
-      "header": "The page you are trying to reach requires you to be logged in.",
-      "subheader": "Please sign-in or register to continue!"
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
     "user-notifications-settings": {
       "general": {
@@ -3024,7 +3061,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+    "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
     "banner": {
@@ -3051,10 +3088,12 @@
     "subspaces": "Subspaces",
     "contributors": "Contributors",
     "activity": "Activity",
+    "calendar": "Calendar",
     "events": "Events",
     "share": "Share",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Settings"
+    "settings": "Settings",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Create a Space",

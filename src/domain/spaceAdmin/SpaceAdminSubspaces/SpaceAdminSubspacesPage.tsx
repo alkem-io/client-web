@@ -25,7 +25,7 @@ import SearchableList, { SearchableListItem } from '@/domain/platform/admin/comp
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
-import { JourneyFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
+import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
@@ -66,7 +66,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState<string>();
   const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
-  const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
+  const [subspaceCreationDialogOpen, setSubspaceCreationDialogOpen] = useState(false);
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
 
@@ -115,7 +115,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   });
 
   const handleCreate = useCallback(
-    async (value: JourneyFormValues) => {
+    async (value: SpaceFormValues) => {
       const result = await createSubspace({
         spaceID: spaceId,
         about: {
@@ -280,7 +280,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
             <Button
               startIcon={<AddOutlinedIcon />}
               variant="contained"
-              onClick={() => setJourneyCreationDialogOpen(true)}
+              onClick={() => setSubspaceCreationDialogOpen(true)}
               sx={{ alignSelf: 'end', marginBottom: 2 }}
             >
               {t('buttons.create')}
@@ -298,10 +298,10 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           onSelectCollaborationTemplate={handleSelectCollaborationTemplate}
         />
         <SubspaceCreationDialog
-          open={journeyCreationDialogOpen}
+          open={subspaceCreationDialogOpen}
           icon={subspaceIcon}
-          journeyName={t('common.subspace')}
-          onClose={() => setJourneyCreationDialogOpen(false)}
+          spaceDisplayName={t('common.subspace')}
+          onClose={() => setSubspaceCreationDialogOpen(false)}
           onCreate={handleCreate}
           formComponent={CreateSubspaceForm}
         />

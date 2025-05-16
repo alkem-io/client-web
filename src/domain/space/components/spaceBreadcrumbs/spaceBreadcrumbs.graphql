@@ -1,4 +1,4 @@
-query JourneyBreadcrumbsSpace(
+query SpaceBreadcrumbs(
   $spaceId: UUID!
   $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000"
   $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000"
@@ -7,18 +7,18 @@ query JourneyBreadcrumbsSpace(
 ) {
   lookup {
     space(ID: $spaceId) {
-      ...JourneyBreadcrumbsSpace
+      ...BreadcrumbsSpaceL0
     }
     subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
-      ...JourneyBreadcrumbsSubpace
+      ...BreadcrumbsSubspace
     }
     subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
-      ...JourneyBreadcrumbsSubpace
+      ...BreadcrumbsSubspace
     }
   }
 }
 
-fragment JourneyBreadcrumbsSpace on Space {
+fragment BreadcrumbsSpaceL0 on Space {
   id
   level
   about {
@@ -33,7 +33,7 @@ fragment JourneyBreadcrumbsSpace on Space {
     }
   }
 }
-fragment JourneyBreadcrumbsSubpace on Space {
+fragment BreadcrumbsSubspace on Space {
   id
   level
   about {

@@ -1,6 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { PageLayoutHolderWithOutlet } from '@/domain/space/layout/EntityPageLayout';
 import UserAdminProfilePage from '../tabs/UserAdminProfilePage';
 import UserAdminAccountPage from '../tabs/UserAdminAccountPage';
 import UserAdminMembershipPage from '../tabs/UserAdminMembershipPage';
@@ -11,7 +10,7 @@ import UserAdminSettingsPage from '../tabs/UserAdminSettingsPage';
 export const UserAdminRoute = () => {
   return (
     <Routes>
-      <Route path={'/'} element={<PageLayoutHolderWithOutlet />}>
+      <Route path={'/'} element={<Outlet />}>
         <Route index element={<Navigate to={'profile'} />} />
         <Route path={'profile'} element={<UserAdminProfilePage />} />
         <Route path={'account'} element={<UserAdminAccountPage />} />

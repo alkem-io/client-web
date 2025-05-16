@@ -1,10 +1,15 @@
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { InnovationFlowProfileBlockProps } from './InnovationFlowProfileBlock';
+import { InnovationFlowProfileModel } from '../models/InnovationFlowProfileModel';
 
 const InnovationFlowProfileView = ({
   innovationFlow,
 }: {
-  innovationFlow: InnovationFlowProfileBlockProps['innovationFlow'];
+  innovationFlow:
+    | {
+        id: string;
+        profile: InnovationFlowProfileModel;
+      }
+    | undefined;
 }) => (
   <>
     {/* Innovation flow name is shown in the header */}

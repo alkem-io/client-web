@@ -1,9 +1,0 @@
-mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
-  createGroupOnOrganization(groupData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

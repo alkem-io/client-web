@@ -66,7 +66,7 @@ export interface useCommunityAdminProvided {
     applications: ApplicationModel[];
     invitations: InvitationModel[];
     platformInvitations: PlatformInvitationModel[];
-    onApplicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
+    onApplicationStateChange: (applicationId: string, eventName: string) => Promise<unknown>;
     onInvitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
     onDeleteInvitation: (invitationId: string) => Promise<unknown>;
     onDeletePlatformInvitation: (invitationId: string) => Promise<unknown>;

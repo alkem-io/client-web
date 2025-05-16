@@ -1,5 +1,4 @@
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import OrganizationPageBanner from '@/domain/community/contributor/organization/OrganizationPageBanner';
 import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganizationContext';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined, Settings } from '@mui/icons-material';
@@ -20,20 +19,12 @@ const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = props => {
 
   const { t } = useTranslation();
 
-  const { organization, permissions, handleSendMessage, loading } = useOrganizationProvider();
+  const { organization, loading } = useOrganizationProvider();
 
   return (
     <EntitySettingsLayout
       entityTypeName="organization"
       subheaderTabs={organizationAdminTabs}
-      pageBanner={
-        <OrganizationPageBanner
-          organization={organization}
-          canEdit={permissions.canEdit}
-          onSendMessage={handleSendMessage}
-          loading={loading}
-        />
-      }
       breadcrumbs={
         <TopLevelPageBreadcrumbs>
           <BreadcrumbsItem iconComponent={Diversity3Outlined}>{t('common.organizations')}</BreadcrumbsItem>

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import RouterLink from '@/core/ui/link/RouterLink';
 import Loading from '@/core/ui/loading/Loading';
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 const VirtualContributorsPage: FC = () => {
   const { t } = useTranslation();
@@ -16,8 +16,8 @@ const VirtualContributorsPage: FC = () => {
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item xs={10}>
+      <GridLegacy container spacing={2} justifyContent="center">
+        <GridLegacy item xs={10}>
           {loadingVCs && <Loading />}
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -64,8 +64,8 @@ const VirtualContributorsPage: FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        </Grid>
-      </Grid>
+        </GridLegacy>
+      </GridLegacy>
     </AdminLayout>
   );
 };

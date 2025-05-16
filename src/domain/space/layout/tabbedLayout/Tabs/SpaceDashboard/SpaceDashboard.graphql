@@ -8,26 +8,6 @@ query SpacePage(
   }
 }
 
-query SpaceDashboardReferences($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      about {
-        id
-        profile {
-          id
-          references {
-            id
-            name
-            uri
-            description
-          }
-        }
-      }
-    }
-  }
-}
-
 fragment SpacePage on Space {
   id
   level

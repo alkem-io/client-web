@@ -22,7 +22,7 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
-import { BasicSpaceProps } from '../../virtualContributor/components/BasicSpaceCard';
+import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';

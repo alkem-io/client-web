@@ -8,6 +8,11 @@ interface ContributorTooltipProps extends UserCardProps {
   children: TooltipProps['children'];
 }
 
+/**
+ * @deprecated Use the other ContributorTooltip component in domain/community,
+ * which only needs the contributorId and contributorType props and
+ * retrieves the data from the server when the tooltip is opened.
+ */
 const ContributorTooltip = ({ children, ...props }: ContributorTooltipProps) => (
   <Tooltip
     arrow

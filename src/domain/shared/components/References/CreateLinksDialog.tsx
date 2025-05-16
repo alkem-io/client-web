@@ -19,7 +19,7 @@ import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { newLinkName } from '@/domain/common/link/newLinkName';
 
@@ -48,11 +48,15 @@ const fieldName = 'links';
 export const linkSegmentValidationObject = yup.object().shape({
   name: yup
     .string()
-    .required(MessageWithPayload('forms.validations.required'))
-    .min(3, MessageWithPayload('forms.validations.minLength'))
-    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
-  description: yup.string().max(LONG_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
+    .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+    .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
+  uri: yup
+    .string()
+    .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
+  description: yup
+    .string()
+    .max(LONG_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
 });
 export const linkSegmentSchema = yup.array().of(linkSegmentValidationObject);
 

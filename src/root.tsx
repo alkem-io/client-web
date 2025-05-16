@@ -59,6 +59,10 @@ const globalStyles = (theme: Theme) => ({
     flexDirection: 'column',
   },
   '[aria-role="heading"]': subHeading,
+  '.markdown': {
+    wordWrap: 'break-word',
+    padding: theme.spacing(0, 2, 1),
+  },
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
   },

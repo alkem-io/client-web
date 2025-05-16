@@ -1,4 +1,4 @@
-import { ButtonProps, Grid } from '@mui/material';
+import { ButtonProps, GridLegacy } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import { FC, useContext } from 'react';
 import { KratosUIContext } from '../KratosUI';
@@ -17,7 +17,7 @@ export const KratosButton: FC<KratosButtonProps> = ({ node, variant = 'contained
   const { t } = useTranslation();
 
   return (
-    <Grid item xs={12}>
+    <GridLegacy item xs={12}>
       <AuthActionButton
         name={getNodeName(node)}
         type={attributes.type as AuthActionButtonProps['type']}
@@ -28,7 +28,7 @@ export const KratosButton: FC<KratosButtonProps> = ({ node, variant = 'contained
       >
         {getNodeTitle(node, t)}
       </AuthActionButton>
-    </Grid>
+    </GridLegacy>
   );
 };
 

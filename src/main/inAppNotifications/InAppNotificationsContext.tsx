@@ -1,5 +1,5 @@
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { createContext, useState, useContext, ReactNode, useMemo } from 'react';
 
 interface InAppNotificationsContextProps {

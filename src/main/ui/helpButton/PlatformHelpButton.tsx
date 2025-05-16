@@ -3,7 +3,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import HelpDialog from '@/core/help/dialog/HelpDialog';
 import { IconButton } from '@mui/material';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ChatWidget from '@/main/guidance/chatWidget/ChatWidget';

@@ -3,11 +3,12 @@ import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import { useMemo } from 'react';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { ContributorViewProps, EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
+import { ContributorViewModel } from './ContributorViewModel';
+import { WithId } from '@/core/utils/WithId';
 
 interface RoleSetMembers {
-  memberUsers?: ContributorViewProps[];
-  memberOrganizations?: ContributorViewProps[];
+  memberUsers?: ContributorViewModel[];
+  memberOrganizations?: ContributorViewModel[];
 }
 
 const DEFAULT_MEMBERS_LIMIT = 12;
@@ -20,7 +21,7 @@ type Options = {
   memberOrganizationsCount?: number;
 };
 
-const mapUserToContributorCardProps = (user: ContributorViewProps): ContributorCardSquareProps => ({
+const mapUserToContributorCardProps = (user: ContributorViewModel): ContributorCardSquareProps => ({
   id: user.id,
   avatar: user.profile.avatar?.uri,
   displayName: user.profile.displayName,
@@ -48,7 +49,7 @@ export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): Con
   contributorType: RoleSetContributorType.User,
 });
 
-const mapOrganizationToContributorCardProps = (org: ContributorViewProps): ContributorCardSquareProps => ({
+const mapOrganizationToContributorCardProps = (org: ContributorViewModel): ContributorCardSquareProps => ({
   id: org.id,
   avatar: org.profile.avatar?.uri,
   displayName: org.profile.displayName,
@@ -62,6 +63,13 @@ const mapOrganizationToContributorCardProps = (org: ContributorViewProps): Contr
 
 const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | undefined =>
   limit && items ? items.slice(0, limit) : items;
+
+export interface EntityDashboardContributors {
+  memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
+  memberUsersCount: number | undefined;
+  memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
+  memberOrganizationsCount: number | undefined;
+}
 
 const useCommunityMembersAsCardProps = (
   community: RoleSetMembers | undefined,

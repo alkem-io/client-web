@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import RecentJourneysList from '../recentSpaces/RecentJourneysList';
+import RecentSpacesList from '../recentSpaces/RecentSpacesList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
 import { MyMembershipsDialog } from '../myMemberships/MyMembershipsDialog';
@@ -53,7 +53,7 @@ const DashboardActivity = () => {
 
   return (
     <>
-      <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
+      <RecentSpacesList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
       {isSmallScreen
         ? [renderMyActivityBlock(), renderSpaceActivityBlock()]
         : [renderSpaceActivityBlock(), renderMyActivityBlock()]}

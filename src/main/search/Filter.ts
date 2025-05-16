@@ -12,7 +12,7 @@ export interface FilterConfig {
   [key: string]: FilterDefinition;
 }
 
-export const journeyFilterConfig: FilterConfig = {
+export const spaceFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
     value: [SearchResultType.Space, SearchResultType.Subspace],

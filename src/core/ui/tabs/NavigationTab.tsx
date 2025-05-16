@@ -31,5 +31,6 @@ const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(
     );
   }
 );
+NavigationTab.displayName = 'NavigationTab';
 
 export default NavigationTab;

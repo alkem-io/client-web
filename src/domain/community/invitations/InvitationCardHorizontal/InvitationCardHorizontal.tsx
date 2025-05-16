@@ -27,8 +27,8 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
       <BlockSectionTitle noWrap>
         <DetailedActivityDescription
           i18nKey="community.pendingMembership.invitationTitle"
-          journeyDisplayName={invitation.space.about.profile.displayName}
-          journeyUrl={invitation.space.about.profile.url}
+          spaceDisplayName={invitation.space.about.profile.displayName}
+          spaceUrl={invitation.space.about.profile.url}
           spaceLevel={invitation.space.level}
           createdDate={invitation.invitation.createdDate}
           author={{ displayName: invitation.userDisplayName }}

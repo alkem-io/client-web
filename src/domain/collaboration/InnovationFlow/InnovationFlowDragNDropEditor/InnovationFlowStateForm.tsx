@@ -8,13 +8,13 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { InnovationFlowState } from '../InnovationFlow';
+import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import Gutters from '@/core/ui/grid/Gutters';
 
-export interface InnovationFlowStateFormValues extends InnovationFlowState {}
+export interface InnovationFlowStateFormValues extends InnovationFlowStateModel {}
 
 type InnovationFlowStateFormProps = {
-  state?: InnovationFlowState;
+  state?: InnovationFlowStateModel;
   forbiddenFlowStateNames?: string[];
   onSubmit: (formData: InnovationFlowStateFormValues) => Promise<unknown>;
   onCancel?: () => void;

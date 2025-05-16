@@ -8,14 +8,18 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { Settings } from '@mui/icons-material';
 
 interface UserPageLayoutProps {}
 
 const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
+  const { t } = useTranslation();
+  const { pathname } = useLocation();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { user, loading } = useUserProvider(userId);
 
-  const { t } = useTranslation();
+  const settings = pathname.split('/').includes('settings');
 
   return (
     <TopLevelLayout
@@ -32,6 +36,11 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
           >
             {user?.profile.displayName}
           </BreadcrumbsItem>
+          {settings && (
+            <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>
+              {t('common.settings')}
+            </BreadcrumbsItem>
+          )}
         </TopLevelPageBreadcrumbs>
       }
       header={<UserPageBanner />}

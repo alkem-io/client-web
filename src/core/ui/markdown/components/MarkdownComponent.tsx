@@ -1,13 +1,13 @@
-import { ElementType } from 'react';
-import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
+import { ElementType, ReactNode } from 'react';
 import { Caption, CardText, Text } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 import { SxProps } from '@mui/material';
 
-interface MarkdownComponentProps extends ReactMarkdownProps {
+interface MarkdownComponentProps {
   overrideDisableParagraphPadding?: boolean;
   sx?: SxProps;
+  node?: ReactNode;
 }
 
 const createMarkdownComponent =

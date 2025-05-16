@@ -1,7 +1,7 @@
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo } from 'react';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,

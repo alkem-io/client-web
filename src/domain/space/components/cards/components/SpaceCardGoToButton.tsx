@@ -9,11 +9,11 @@ interface SpaceCardGoToButtonProps {
   subspace?: boolean;
 }
 
-const SpaceCardGoToButton = ({ spaceUri: journeyUri, subspace }: SpaceCardGoToButtonProps) => {
+const SpaceCardGoToButton = ({ spaceUri, subspace }: SpaceCardGoToButtonProps) => {
   const { t } = useTranslation();
 
   return (
-    <ButtonNarrow component={RouterLink} to={journeyUri} startIcon={<ArrowForward />}>
+    <ButtonNarrow component={RouterLink} to={spaceUri} startIcon={<ArrowForward />}>
       {t('buttons.go-to-entity', { entity: t(`common.${subspace ? 'subspace' : 'space'}` as const) })}
     </ButtonNarrow>
   );

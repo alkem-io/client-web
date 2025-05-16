@@ -27,7 +27,7 @@ export interface ShareDialogProps extends ShareComponentProps {
     | 'about';
 }
 
-export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeName, ...props }) => {
+export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDialogProps) => {
   const { t } = useTranslation();
   return (
     <DialogWithGrid columns={8} open={open} onClose={onClose}>

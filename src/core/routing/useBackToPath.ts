@@ -39,6 +39,7 @@ export const useBackToStaticPath = (parentPagePath: string) => {
  * Will navigate back using the history API if possible, but will navigate to the default URL if it's not possible or if the previous URL is the same as the current one.
  */
 export const useBackWithDefaultUrl = (parentPagePath: string = `/${TopLevelRoutePath.Home}`) => {
+  parentPagePath = parentPagePath ?? `/${TopLevelRoutePath.Home}`;
   const navigate = useNavigate();
   const canGoBack = useCanGoBack();
 

@@ -6,7 +6,7 @@ import { times } from 'lodash';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
-import JourneyCalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
+import CalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
 import { CalloutInfo } from '../model/CalloutInfo.model';
 
 export interface CalloutsListProps<Callout extends CalloutInfo> {
@@ -58,7 +58,7 @@ const CalloutsList = <Callout extends CalloutInfo>({
                 <CalloutIcon sx={{ color: theme.palette.primary.dark }} />
               </ListItemIcon>
               <BlockSectionTitle minWidth={0} noWrap>
-                <JourneyCalloutsListItemTitle callout={callout} />
+                <CalloutsListItemTitle callout={callout} />
               </BlockSectionTitle>
             </ListItem>
           );

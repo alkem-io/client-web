@@ -1,7 +1,7 @@
-import { Grid, Box } from '@mui/material';
+import { GridLegacy, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import PreferenceSection from '@/main/ui/settings/PreferenceSection';
 import { gutters } from '@/core/ui/grid/utils';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
@@ -27,8 +27,8 @@ const UserNotificationsPageView = ({ preferences, loading, updatePreference }: U
   const forumGroup = preferences.filter(x => x.definition.group === 'NotificationForum');
 
   return (
-    <Grid container spacing={GUTTER_MUI}>
-      <Grid item xs={6}>
+    <GridLegacy container spacing={GUTTER_MUI}>
+      <GridLegacy item xs={6}>
         <Box display="flex" gap={gutters()} flexDirection="column">
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.general.title')}
@@ -54,8 +54,8 @@ const UserNotificationsPageView = ({ preferences, loading, updatePreference }: U
             />
           )}
         </Box>
-      </Grid>
-      <Grid item xs={6}>
+      </GridLegacy>
+      <GridLegacy item xs={6}>
         <Box display="flex" gap={gutters()} flexDirection="column">
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.forum.title')}
@@ -87,8 +87,8 @@ const UserNotificationsPageView = ({ preferences, loading, updatePreference }: U
             </>
           )}
         </Box>
-      </Grid>
-    </Grid>
+      </GridLegacy>
+    </GridLegacy>
   );
 };
 

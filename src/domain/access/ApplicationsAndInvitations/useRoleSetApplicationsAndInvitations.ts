@@ -13,9 +13,10 @@ import { useMemo } from 'react';
 import { ApplicationModel } from '../model/ApplicationModel';
 import { InvitationModel } from '../model/InvitationModel';
 import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
+import InvitationResultModel from '../model/InvitationResultModel';
 
 type useRoleSetApplicationsAndInvitationsParams = {
-  roleSetId: string;
+  roleSetId: string | undefined;
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {
@@ -27,14 +28,14 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     roleSetId: string,
     questions: { name: string; value: string; sortOrder: number }[]
   ) => Promise<unknown>;
-  applicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
+  applicationStateChange: (applicationId: string, eventName: string) => Promise<unknown>;
   inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
     invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRole?: RoleName;
-  }) => Promise<unknown>;
+  }) => Promise<InvitationResultModel[]>;
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
   deleteInvitation: (invitationId: string) => Promise<unknown>;
   deletePlatformInvitation: (invitationId: string) => Promise<unknown>;
@@ -163,7 +164,7 @@ const useRoleSetApplicationsAndInvitations = ({
   }) => {
     const role = extraRole === RoleName.Member ? undefined : extraRole;
 
-    await inviteForEntryRoleOnRoleSet({
+    const result = await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
         invitedContributorIds,
@@ -173,6 +174,7 @@ const useRoleSetApplicationsAndInvitations = ({
       },
       onCompleted: () => refetch(),
     });
+    return result.data?.inviteForEntryRoleOnRoleSet ?? [];
   };
 
   return {

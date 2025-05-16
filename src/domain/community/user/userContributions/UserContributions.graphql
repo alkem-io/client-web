@@ -6,7 +6,6 @@ query UserContributions($userId: UUID!) {
       roles
       subspaces {
         id
-        type
         level
         roles
       }

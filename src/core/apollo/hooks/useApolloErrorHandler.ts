@@ -2,9 +2,10 @@ import { Severity } from '@/core/state/global/notifications/notificationMachine'
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ApolloError } from '@apollo/client';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { i18n, TFunction } from 'i18next';
+import type { TFunction, i18n } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
@@ -16,7 +17,7 @@ const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n:
     return t('apollo.errors.generic', meta);
   }
 
-  const key = `apollo.errors.${code}`;
+  const key = `apollo.errors.${code}` as TranslationKey;
 
   if (!i18n.exists(key)) {
     // if the error text is missing for that code

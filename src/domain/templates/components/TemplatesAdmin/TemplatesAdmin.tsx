@@ -18,8 +18,7 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
-import useBackToPath from '@/core/routing/useBackToPath';
-import useBackToParentPage from '@/_deprecated/useBackToParentPage';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -82,7 +81,7 @@ const TemplatesAdmin = ({
   canDeleteTemplates = defaultPermissionDenied,
 }: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
-  const backToTemplates = useBackToPath();
+  const backToTemplates = useBackWithDefaultUrl(baseUrl);
 
   // Visuals management (for whiteboards)
   const { uploadVisuals } = useUploadWhiteboardVisuals();
@@ -225,7 +224,7 @@ const TemplatesAdmin = ({
     });
 
     setDeletingTemplate(undefined);
-    backToTemplates(baseUrl);
+    backToTemplates();
   });
 
   // Import Template
@@ -293,15 +292,13 @@ const TemplatesAdmin = ({
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
   );
-
-  const [, buildLink] = useBackToParentPage(baseUrl);
   const buildTemplateLink = (template: AnyTemplate) => {
     if (template.profile.url) {
       if (alwaysEditTemplate && baseUrl && !template.profile.url.startsWith(baseUrl)) {
         const templateId = template.profile.url.split('/').pop();
-        return buildLink(`${baseUrl}/${templateId}`);
+        return { to: `${baseUrl}/${templateId}` };
       } else {
-        return buildLink(template.profile.url);
+        return { to: template.profile.url };
       }
     }
   };
@@ -380,7 +377,7 @@ const TemplatesAdmin = ({
       {selectedTemplate && editTemplateMode && (
         <EditTemplateDialog
           open
-          onClose={() => backToTemplates(baseUrl)}
+          onClose={() => backToTemplates()}
           onCancel={alwaysEditTemplate ? undefined : () => setEditTemplateMode(false)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}
@@ -391,7 +388,7 @@ const TemplatesAdmin = ({
       {selectedTemplate && !editTemplateMode && (
         <PreviewTemplateDialog
           open
-          onClose={() => backToTemplates(baseUrl)}
+          onClose={() => backToTemplates()}
           template={selectedTemplate}
           actions={
             canEditTemplates(selectedTemplate.type) ? (

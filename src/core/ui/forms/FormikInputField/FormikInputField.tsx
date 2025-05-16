@@ -1,8 +1,7 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import HelpButton from '@/core/ui/button/HelpButton';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
+import { Box, CircularProgress, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
 import { ReactNode, useMemo } from 'react';

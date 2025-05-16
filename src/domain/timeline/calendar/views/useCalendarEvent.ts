@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';

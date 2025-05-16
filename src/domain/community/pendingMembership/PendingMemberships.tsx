@@ -63,10 +63,10 @@ type InvitationHydratorProps = {
   withCommunityGuidelines?: boolean;
 } & (
   | {
-      withJourneyDetails?: false;
+      withSpaceDetails?: false;
     }
   | {
-      withJourneyDetails: true;
+      withSpaceDetails: true;
     }
 );
 
@@ -92,7 +92,7 @@ export const InvitationHydrator = ({
     skip: !hasReadAboutPrivilege,
   });
 
-  const journey = spaceData?.lookup.space;
+  const space = spaceData?.lookup.space;
 
   const userId = invitation.invitation.createdBy?.id;
 
@@ -113,17 +113,17 @@ export const InvitationHydrator = ({
       userDisplayName,
       space: {
         ...invitation.spacePendingMembershipInfo,
-        ...journey,
+        ...space,
         level: invitation.spacePendingMembershipInfo.level,
         about: {
           ...invitation.spacePendingMembershipInfo.about,
-          ...journey?.about,
+          ...space?.about,
         },
       },
     };
-  }, [invitation, journey, userDisplayName]);
+  }, [invitation, space, userDisplayName]);
 
-  const communityGuidelines = journey?.about.guidelines;
+  const communityGuidelines = space?.about.guidelines;
 
   return <>{children({ invitation: hydratedInvitation, communityGuidelines })}</>;
 };
@@ -154,7 +154,7 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     skip: !hasReadAboutPrivilege,
   });
 
-  const journey = spaceData?.lookup.space;
+  const space = spaceData?.lookup.space;
 
   const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
     if (!application) {
@@ -164,15 +164,15 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
       ...application,
       space: {
         ...application.spacePendingMembershipInfo,
-        ...journey,
+        ...space,
         level: application.spacePendingMembershipInfo.level,
         about: {
           ...application.spacePendingMembershipInfo.about,
-          ...journey?.about,
+          ...space?.about,
         },
       },
     };
-  }, [application, journey]);
+  }, [application, space]);
 
   return <>{children({ application: hydratedApplication })}</>;
 };

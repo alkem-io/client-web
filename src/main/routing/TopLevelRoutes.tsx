@@ -1,7 +1,6 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
@@ -13,12 +12,12 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/space/layout/EntityPageLayout';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
+import TopLevelLayout from '../ui/layout/TopLevelLayout';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
@@ -41,7 +40,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(() => import('@/domain/space/createSpace/CreateSpaceDialog'));
-const SpaceRoute = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoute'));
+const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -230,14 +229,9 @@ export const TopLevelRoutes = () => {
                     path={`:${nameOfUrl.spaceNameId}/*`}
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                        <SpaceContextProvider>
-                          <EntityPageLayoutHolder>
-                            <Suspense fallback={<Loading />}>
-                              <SpaceRoute />
-                            </Suspense>
-                            <RenderPoint />
-                          </EntityPageLayoutHolder>
-                        </SpaceContextProvider>
+                        <Suspense fallback={<Loading />}>
+                          <SpaceRoutes />
+                        </Suspense>
                       </WithApmTransaction>
                     }
                   />
@@ -245,9 +239,9 @@ export const TopLevelRoutes = () => {
                     path="*"
                     element={
                       <WithApmTransaction path="*">
-                        <NotFoundPageLayout>
+                        <TopLevelLayout>
                           <Error404 />
-                        </NotFoundPageLayout>
+                        </TopLevelLayout>
                       </WithApmTransaction>
                     }
                   />

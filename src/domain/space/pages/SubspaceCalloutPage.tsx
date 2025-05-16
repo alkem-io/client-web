@@ -1,11 +1,11 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
 import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
-import { JourneyCalloutDialogProps } from '@/domain/space/pages/SpaceCalloutDialogProps';
+import { SpaceCalloutDialogProps } from '@/domain/space/pages/SpaceCalloutDialogProps';
 import { useSubSpace } from '../hooks/useSubSpace';
 
 const renderPage = () => <SubspaceHomePage />;
 
-const ChallengeCalloutPage = (props: JourneyCalloutDialogProps) => {
+const SubspaceCalloutPage = (props: SpaceCalloutDialogProps) => {
   const { subspace } = useSubSpace();
 
   const getPageRoute = () => subspace.about.profile.url;
@@ -13,4 +13,4 @@ const ChallengeCalloutPage = (props: JourneyCalloutDialogProps) => {
   return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
-export default ChallengeCalloutPage;
+export default SubspaceCalloutPage;

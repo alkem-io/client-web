@@ -1,3 +1,4 @@
+import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutState, CalloutType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -12,8 +13,6 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { Box, Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material';
-import Dialog from '@mui/material/Dialog/Dialog';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CalloutCreationTypeWithPreviewImages } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';

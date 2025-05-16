@@ -3,7 +3,7 @@ import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/a
 import Loading from '@/core/ui/loading/Loading';
 import { DashboardProvider } from './DashboardContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useLocation, Navigate } from 'react-router-dom';
 import { DIALOG_PARAM_VALUES, useMyDashboardDialogs } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';

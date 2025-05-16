@@ -5,5 +5,5 @@ import { ActivityBaseViewProps } from './ActivityBaseView';
  * Don't confuse with ActivityBaseViewProps, which are props for the ActivityBaseView component.
  */
 export interface ActivityViewProps extends Pick<ActivityBaseViewProps, 'createdDate' | 'avatarUrl' | 'loading'> {
-  journeyDisplayName: string | undefined;
+  spaceDisplayName: string | undefined;
 }

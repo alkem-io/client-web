@@ -30,11 +30,6 @@ fragment AdminCommunityApplication on Application {
       email
     }
   }
-  questions {
-    id
-    name
-    value
-  }
 }
 
 fragment AdminCommunityInvitation on Invitation {
@@ -63,14 +58,6 @@ fragment AdminCommunityCandidateMember on Contributor {
   profile {
     id
     displayName
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-    location {
-      id
-      city
-      country
-    }
     url
   }
 }

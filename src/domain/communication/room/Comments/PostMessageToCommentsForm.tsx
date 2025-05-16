@@ -3,7 +3,7 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
 import { gutters } from '@/core/ui/grid/utils';
 import { useScreenSize } from '@/core/ui/grid/constants';
