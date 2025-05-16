@@ -2,19 +2,20 @@ import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput, UserSelectorQuery } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { Box, SxProps, TextField, Theme } from '@mui/material';
+import { Box, SxProps, TextField, Theme, Button } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import { useMemo, useState } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { compact, isArray, uniqWith } from 'lodash';
+import { compact, isArray } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContext';
 import ContributorChip from '../ContributorChip/ContributorChip';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import emailParser from './emailParser';
+import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
 
 const MAX_USERS_SHOWN = 20;
 
@@ -43,20 +44,28 @@ const FormikContributorsSelectorField = ({
 
   // This field is the array of the selected Contributors (userIds or emails for the moment)
   const [field, meta, helpers] = useField<SelectedContributor[]>(name);
+  const { validateForm } = useFormikContext();
+
   const selectedUserIds = useMemo(
     () => compact(field.value.map(user => user.type === ContributorSelectorType.User && user.id)),
     [field.value]
   );
 
   const setFieldValue = (newValue: SelectedContributor[]) => {
-    const uniqueValues = uniqWith(
-      newValue,
-      (a, b) =>
-        (a.type === ContributorSelectorType.Email && b.type === ContributorSelectorType.Email && a.email === b.email) ||
-        (a.type === ContributorSelectorType.User && b.type === ContributorSelectorType.User && a.id === b.id)
-    );
+    helpers.setValue(newValue);
+    helpers.setTouched(true);
 
-    helpers.setValue(uniqueValues);
+    window.setTimeout(() => {
+      // Need to give time for the formik state to get updated before validating
+      validateForm();
+    }, 10);
+  };
+
+  const translateEmailError = (error: string) => {
+    if (error === DUPLICATED_EMAIL_ERROR) {
+      return t('forms.validations.duplicateEmail');
+    }
+    return t('forms.validations.invalidEmail');
   };
 
   // This is an array of strings, or undefined, that represent the validation errors of each Contributor selected
@@ -64,8 +73,8 @@ const FormikContributorsSelectorField = ({
     meta.error && isArray(meta.error)
       ? meta.error.map(
           error =>
-            error.email
-              ? t('forms.validations.invalidEmail') // The only validation error handled at the moment is "Invalid email"
+            error?.email
+              ? translateEmailError(error.email) // The only validation errors really handled at the moment are about emails
               : JSON.stringify(error) // For the rest of validation errors, we'll show whatever yup returns stringified
         )
       : [];
@@ -138,44 +147,37 @@ const FormikContributorsSelectorField = ({
   };
 
   const onTextFieldKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ';' || event.key === ',') {
+    helpers.setTouched(true);
+    if (event.key === 'Enter') {
       event.preventDefault();
-      if (inputValue) {
-        const emails = emailParser(inputValue);
-
-        const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
-          type: ContributorSelectorType.Email,
-          ...parsedEmail,
-        }));
-
-        const currentFieldValue = Array.isArray(field.value) ? field.value : [];
-        setFieldValue([...currentFieldValue, ...newValues]);
-        setAutocompleteValue(null);
-        setInputValue('');
-      }
+      onAddContributorEmail();
     }
   };
 
-  const handleRemove = (contributor: SelectedContributor) => {
-    helpers.setTouched(true);
+  const onAddContributorEmail = () => {
+    if (inputValue) {
+      const emails = emailParser(inputValue);
 
-    if (contributor.type === ContributorSelectorType.User) {
-      const value = field.value;
-      if (!Array.isArray(value) || !contributor.id) {
-        return;
-      }
+      const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
+        type: ContributorSelectorType.Email,
+        ...parsedEmail,
+      }));
 
-      const nextValue = value.filter(c => !(c.type === ContributorSelectorType.User && c.id === contributor.id));
-      setFieldValue(nextValue);
-    } else if (contributor.type === ContributorSelectorType.Email) {
-      const value = field.value;
-      if (!Array.isArray(value) || !contributor.email) {
-        return;
-      }
-
-      const nextValue = value.filter(c => !(c.type === ContributorSelectorType.Email && c.email === contributor.email));
-      setFieldValue(nextValue);
+      const currentFieldValue = Array.isArray(field.value) ? field.value : [];
+      setFieldValue([...currentFieldValue, ...newValues]);
+      setAutocompleteValue(null);
+      setInputValue('');
     }
+  };
+
+  const handleRemove = (indexToRemove: number) => {
+    const value = field.value;
+    if (!Array.isArray(value)) {
+      return;
+    }
+    // Create a new array without the specific contributor
+    const nextValue = [...value.slice(0, indexToRemove), ...value.slice(indexToRemove + 1)];
+    setFieldValue(nextValue);
   };
 
   return (
@@ -223,6 +225,21 @@ const FormikContributorsSelectorField = ({
             name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
             onChange={onTextFieldChange}
             onKeyDown={onTextFieldKeyDown}
+            onBlur={() => helpers.setTouched(true)}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                // Adds the button Add and the autocomplete X icon to empty the input
+                endAdornment: params.inputProps.value ? ( // Only if there's some text in the input
+                  <>
+                    <Button onClick={onAddContributorEmail} variant="contained">
+                      {t('common.add')}
+                    </Button>
+                    {params.InputProps.endAdornment}
+                  </>
+                ) : null,
+              },
+            }}
             multiline
           />
         )}
@@ -232,7 +249,7 @@ const FormikContributorsSelectorField = ({
           <ContributorChip
             key={index}
             contributor={contributor}
-            onRemove={() => handleRemove(contributor)}
+            onRemove={() => handleRemove(index)}
             validationError={validationErrors[index]}
           />
         ))}
