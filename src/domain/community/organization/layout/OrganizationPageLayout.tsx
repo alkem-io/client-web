@@ -1,11 +1,11 @@
-import OrganizationPageBanner from '@/domain/community/contributor/organization/OrganizationPageBanner';
+import OrganizationPageBanner from '@/domain/community/organization/OrganizationPageBanner';
 import React, { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined } from '@mui/icons-material';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
-import useOrganizationProvider from '../../contributor/organization/useOrganization/useOrganization';
+import useOrganizationProvider from '../useOrganization/useOrganization';
 
 interface OrganizationPageLayoutProps {}
 

@@ -3,8 +3,7 @@ import { Box, CardContent, GridLegacy, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import OrganizationVerifiedStatus from '@/domain/community/contributor/organization/OrganizationVerifiedStatus';
-import { Location } from '@/core/apollo/generated/graphql-schema';
+import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
 import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -15,12 +14,13 @@ import {
   SocialNetworkEnum,
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import SocialLinks from '@/domain/shared/components/SocialLinks/SocialLinks';
+import { LocationModelMapped } from '@/domain/common/location/LocationModelMapped';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
   settingsUrl: string;
   settingsTooltip: string;
-  location?: Location;
+  location?: LocationModelMapped;
   bio?: string;
   tagsets: { name: string; tags: string[] }[];
   references: {

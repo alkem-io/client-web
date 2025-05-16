@@ -1,20 +1,15 @@
 import {
   CreateOrganizationInput,
-  Organization,
   OrganizationVerificationEnum,
-  TagsetType,
   UpdateOrganizationInput,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { EditMode } from '@/core/ui/forms/editMode';
 import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import { EmptyLocation } from '@/domain/common/location/Location';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import { formatLocation } from '@/domain/common/location/LocationUtils';
-import { Tagset, UpdateTagset } from '@/domain/common/profile/Profile';
-import { OrganizationInput } from '@/domain/community/contributor/organization/OrganizationInput';
-import { OrgVerificationLifecycleEvents } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
+import { OrganizationInputModel } from '@/domain/community/organization/model/OrganizationInputModel';
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { FC, useCallback } from 'react';
@@ -24,80 +19,30 @@ import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationSegment, organizationSegmentSchema } from '../Common/OrganizationSegment';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
-import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
+import { TagsetSegment } from '../Common/TagsetSegment';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-
-const EmptyOrganization: Omit<Organization, 'authorization' | 'agent' | 'roleSet'> = {
-  id: '',
-  nameID: '',
-  contactEmail: undefined,
-  domain: '',
-  legalEntityName: '',
-  website: '',
-  verification: {
-    id: '',
-    lifecycle: {
-      id: '',
-    },
-    status: OrganizationVerificationEnum.NotVerified,
-    isFinalized: false,
-    nextEvents: [OrgVerificationLifecycleEvents.VERIFICATION_REQUEST],
-    state: 'notVerified',
-  },
-  account: undefined,
-  profile: {
-    id: '',
-    displayName: '',
-    tagline: '',
-    visuals: [],
-    description: '',
-    url: '',
-    tagsets: undefined,
-    references: [],
-    location: {
-      id: '',
-      city: '',
-      country: '',
-      addressLine1: '',
-      addressLine2: '',
-      stateOrProvince: '',
-      postalCode: '',
-    },
-    storageBucket: {
-      id: '',
-      allowedMimeTypes: [],
-      documents: [],
-      maxFileSize: -1,
-      size: -1,
-    },
-  },
-  settings: {
-    privacy: {
-      contributionRolesPubliclyVisible: false,
-    },
-    membership: {
-      allowUsersMatchingDomainToJoin: false,
-    },
-  },
-};
+import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
+import { EmptyProfileModel } from '@/domain/common/profile/ProfileModel';
+import {
+  mapProfileModelToCreateProfileInput,
+  mapProfileModelToUpdateProfileInput,
+} from '@/domain/common/profile/ProfileModelUtils';
 
 interface Props {
-  organization?: Organization;
+  organization?: OrganizationModel;
   editMode?: EditMode;
   onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
-  title?: string;
 }
 
 export const OrganizationForm: FC<Props> = ({
-  organization: currentOrganization = EmptyOrganization,
+  organization: currentOrganization = EmptyOrganizationModel,
   editMode = EditMode.readOnly,
   onSave,
-  title = 'Organization',
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -106,58 +51,40 @@ export const OrganizationForm: FC<Props> = ({
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
-  const {
-    nameID,
-    contactEmail,
-    domain,
-    legalEntityName,
-    website,
-    verification: { status: verificationStatus },
-    profile: { id: profileId, displayName, description, tagline, references, tagsets, visual, location },
-  } = currentOrganization;
+  const { nameID, contactEmail, domain, legalEntityName, website, profile } = currentOrganization;
 
+  const verificationStatus = currentOrganization.verification?.status || OrganizationVerificationEnum.NotVerified;
   const getUpdatedTagsets = useCallback(
-    (updatedTagsets: Tagset[]) => {
-      const result: UpdateTagset[] = [];
+    (updatedTagsets: TagsetModel[]) => {
+      const result: UpdateTagsetModel[] = [];
       updatedTagsets.forEach(updatedTagset => {
-        const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+        const originalTagset = profile.tagsets?.find(value => value.name === updatedTagset.name);
         if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
       });
 
       return result;
     },
-    [tagsets]
+    [profile.tagsets]
   );
 
-  const initialValues: OrganizationInput = {
-    name: displayName || EmptyOrganization.profile.displayName,
-    nameID: nameID || EmptyOrganization.nameID,
-    description: description || EmptyOrganization.profile.description || '',
-    tagline: tagline || EmptyOrganization.profile.tagline || '',
-    location: {
-      ...EmptyLocation,
-      ...formatLocation(location),
-    },
-    tagsets: tagsets ?? [],
-    contactEmail: contactEmail || EmptyOrganization.contactEmail,
-    domain: domain || EmptyOrganization.domain || '',
-    legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
-    website: website || EmptyOrganization.website || '',
-    verified: verificationStatus || EmptyOrganization.verification.status,
-    references: references || EmptyOrganization.profile.references || [],
+  const initialValues: OrganizationInputModel = {
+    profile: profile ?? EmptyProfileModel,
+    nameID: nameID || '',
+    contactEmail: contactEmail || EmptyOrganizationModel.contactEmail,
+    domain: domain || EmptyOrganizationModel.domain || '',
+    legalEntityName: legalEntityName || EmptyOrganizationModel.legalEntityName || '',
+    website: website || EmptyOrganizationModel.website || '',
+    verified: verificationStatus,
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name || yup.string(),
+    profile: profileSegmentSchema,
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
-    description: profileSegmentSchema.fields?.description || yup.string(),
     contactEmail: organizationSegmentSchema.fields?.contactEmail || yup.string(),
     domain: organizationSegmentSchema.fields?.domain || yup.string(),
     legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
     website: organizationSegmentSchema.fields?.website || yup.string(),
     verified: organizationSegmentSchema.fields?.verified || yup.string(),
-    tagsets: tagsetsSegmentSchema,
-    references: referenceSegmentSchema,
   });
 
   /**
@@ -167,50 +94,23 @@ export const OrganizationForm: FC<Props> = ({
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = useCallback(
-    (orgData: OrganizationInput) => {
-      const { tagsets, references, description, tagline, location, ...otherData } = orgData;
+    (orgData: OrganizationInputModel) => {
+      const { profile, ...otherData } = orgData;
 
       if (isCreateMode) {
         const organization: CreateOrganizationInput = {
           ...otherData,
-          profileData: {
-            description,
-            tagline,
-            displayName: otherData.name!, // ensured by yup
-            referencesData: references,
-            location: {
-              city: location.city,
-              country: location.country?.code,
-            },
-          },
+          profileData: mapProfileModelToCreateProfileInput(profile),
         };
 
         onSave?.(organization);
       }
 
       if (isEditMode) {
-        const updatedTagsets = getUpdatedTagsets(tagsets);
         const organization: UpdateOrganizationInput = {
           ID: currentOrganization.id,
           ...otherData,
-          profileData: {
-            displayName: otherData.name,
-            description,
-            tagline,
-            references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
-            tagsets: updatedTagsets.map(r => ({
-              ...r,
-              ID: r.id,
-              id: undefined,
-              allowedValues: [],
-              type: TagsetType.Freeform,
-              tags: r.tags ?? [],
-            })),
-            location: {
-              city: location.city,
-              country: location.country?.code,
-            },
-          },
+          profileData: mapProfileModelToUpdateProfileInput(profile),
         };
 
         onSave?.(organization);
@@ -243,7 +143,11 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={handleSubmit}
         >
-          {({ values: { references, tagsets }, handleSubmit }) => {
+          {({ values: { profile }, handleSubmit }) => {
+            const tagsets = profile.tagsets || [];
+            const references = profile.references || [];
+            const displayName = profile.displayName || '';
+            const visual = profile.visuals?.find(visual => visual?.type === VisualType.Avatar);
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
@@ -258,7 +162,7 @@ export const OrganizationForm: FC<Props> = ({
                   </PageContentColumn>
                   <PageContentColumn columns={6}>
                     <Gutters disablePadding>
-                      <PageContentBlockHeader title={title} />
+                      <PageContentBlockHeader title={t('common.organization')} />
                       <NameSegment disabled={isEditMode} required={!isEditMode} />
                       {!isCreateMode && (
                         <>
@@ -275,7 +179,7 @@ export const OrganizationForm: FC<Props> = ({
                             <ProfileReferenceSegment
                               references={references}
                               readOnly={isReadOnlyMode}
-                              profileId={profileId}
+                              profileId={profile.id}
                             />
                           )}
                         </>

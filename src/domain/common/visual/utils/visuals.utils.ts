@@ -1,5 +1,6 @@
 import { Profile, Visual } from '@/core/apollo/generated/graphql-schema';
 import { VisualName } from '../constants/visuals.constants';
+import { VisualModel } from '../model/VisualModel';
 
 type VisualNameAndUri = Pick<Visual, 'name' | 'uri'>;
 type ProfileWithVisualNameAndUri = { visuals: Pick<Visual, 'name' | 'uri'>[] };
@@ -25,14 +26,14 @@ export function getVisualCardBanner(profileOrVisual?: unknown): string | undefin
   return _getVisualByType(VisualName.CARD, profileOrVisual)?.uri;
 }
 
-export function getVisualByType(type: VisualName, profile?: ProfileWithVisualNameAndUri): Visual | undefined;
-export function getVisualByType(type: VisualName, vis?: VisualNameAndUri[]): Visual | undefined;
-export function getVisualByType(type: VisualName, vis?: VisualNameAndUri): Visual | undefined;
-export function getVisualByType(type: VisualName, profileOrVisual?: unknown): Visual | undefined {
+export function getVisualByType(type: VisualName, profile?: ProfileWithVisualNameAndUri): VisualModel | undefined;
+export function getVisualByType(type: VisualName, vis?: VisualNameAndUri[]): VisualModel | undefined;
+export function getVisualByType(type: VisualName, vis?: VisualNameAndUri): VisualModel | undefined;
+export function getVisualByType(type: VisualName, profileOrVisual?: unknown): VisualModel | undefined {
   return _getVisualByType(type, profileOrVisual);
 }
 
-const _getVisualByType = (type: VisualName, profileOrVisual?: unknown): Visual | undefined => {
+const _getVisualByType = (type: VisualName, profileOrVisual?: unknown): VisualModel | undefined => {
   if (!profileOrVisual) {
     return undefined;
   }

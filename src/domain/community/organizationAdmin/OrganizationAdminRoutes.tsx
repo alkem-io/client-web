@@ -6,7 +6,7 @@ import OrganizationAccountPage from './tabs/OrganizationAdminAccountPage';
 import OrganizationAdminCommunityPage from './tabs/OrganizationAdminCommunityPage';
 import OrganizationAdminAuthorizationPage from './tabs/OrganizationAdminAuthorizationPage';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
-import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganizationContext';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';

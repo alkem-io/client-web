@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganizationContext';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';

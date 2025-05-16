@@ -7,20 +7,22 @@ import {
   useUpdateOrganizationMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { CreateOrganizationInput, Organization, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
+import { CreateOrganizationInput, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
+import { formatLocation } from '@/domain/common/location/LocationUtils';
+import { EmptyProfileModel } from '@/domain/common/profile/ProfileModel';
 
 type Props = {
-  title?: string;
   mode: EditMode;
 };
 
-const OrganizationPage = ({ title, mode }: Props) => {
+const OrganizationPage = ({ mode }: Props) => {
   const { t } = useTranslation();
   const { organizationId } = useUrlResolver();
 
@@ -30,7 +32,14 @@ const OrganizationPage = ({ title, mode }: Props) => {
     skip: !organizationId,
   });
 
-  const organization = data?.lookup.organization;
+  const organizationData = data?.lookup.organization;
+  const organization: OrganizationModel = {
+    ...(organizationData ?? EmptyOrganizationModel),
+    profile: {
+      ...(organizationData?.profile ?? EmptyProfileModel),
+      location: formatLocation(organizationData?.profile.location),
+    },
+  };
 
   const notify = useNotification();
   const navigate = useNavigate();
@@ -133,10 +142,9 @@ const OrganizationPage = ({ title, mode }: Props) => {
   return (
     <StorageConfigContextProvider locationType="organization" organizationId={organizationId}>
       <OrganizationForm
-        organization={organization as Organization}
+        organization={organization}
         onSave={handleSubmit}
         editMode={mode}
-        title={title}
       />
     </StorageConfigContextProvider>
   );

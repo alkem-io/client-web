@@ -1,6 +1,7 @@
 import { CountryType } from '@/domain/common/location/countries.constants';
 import { Organization } from '@/core/apollo/generated/graphql-schema';
-import { Reference, Tagset } from '@/domain/common/profile/Profile';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface UserModel {
   id: string;
@@ -18,8 +19,8 @@ export interface UserModel {
       city?: string;
       country?: string;
     };
-    tagsets?: Tagset[];
-    references?: Reference[];
+    tagsets?: TagsetModel[];
+    references?: ReferenceModel[];
     url?: string;
     avatar?: {
       uri: string;
@@ -72,8 +73,8 @@ export interface UserFormGenerated {
   github: string;
   displayName: string;
   tagline: string;
-  tagsets: Tagset[];
-  references: Reference[];
+  tagsets: TagsetModel[];
+  references: ReferenceModel[];
   country: CountryType | null;
   phone: string;
   lastName: string;

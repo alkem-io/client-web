@@ -21,7 +21,8 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-        const latestMessageAuthor = latestMessage?.sender?.id ? buildAuthorFromUser(latestMessage.sender) : undefined;
+        const sender = latestMessage?.sender;
+        const latestMessageAuthor = sender?.id ? buildAuthorFromUser(sender) : undefined;
 
         return entities.messages.length ? (
           <PageContentBlock>

@@ -1,0 +1,45 @@
+import { CreateProfileInput, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
+import { ProfileModel } from './ProfileModel';
+import { mapTagsetModelsToUpdateTagsetInputs } from '../tagset/TagsetUtils';
+import { formatDatabaseLocation } from '../location/LocationUtils';
+import { mapReferenceModelsToUpdateReferenceInputs } from '../reference/ReferenceUtils';
+
+export const mapProfileModelToUpdateProfileInput = (profileModel: ProfileModel | undefined): UpdateProfileInput => {
+  if (!profileModel)
+    return {
+      displayName: '',
+      description: '',
+      tagline: '',
+      references: undefined,
+      tagsets: undefined,
+      location: undefined,
+    };
+  const result: UpdateProfileInput = {
+    displayName: profileModel.displayName,
+    description: profileModel.description,
+    tagline: profileModel.tagline,
+    references: mapReferenceModelsToUpdateReferenceInputs(profileModel.references),
+    tagsets: mapTagsetModelsToUpdateTagsetInputs(profileModel.tagsets),
+    location: formatDatabaseLocation(profileModel.location),
+  };
+  return result;
+};
+
+export const mapProfileModelToCreateProfileInput = (profileModel: ProfileModel | undefined): CreateProfileInput => {
+  if (!profileModel)
+    return {
+      displayName: '',
+      description: '',
+      tagline: '',
+      referencesData: undefined,
+      location: undefined,
+    };
+  const result: CreateProfileInput = {
+    displayName: profileModel.displayName,
+    description: profileModel.description,
+    tagline: profileModel.tagline,
+    referencesData: profileModel.references,
+    location: formatDatabaseLocation(profileModel.location),
+  };
+  return result;
+};

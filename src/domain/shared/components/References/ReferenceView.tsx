@@ -1,5 +1,4 @@
 import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
-import { Reference } from '@/domain/common/profile/Profile';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import { RoundedIconProps } from '@/core/ui/icon/RoundedIcon';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
@@ -11,9 +10,10 @@ import { isFileAttachmentUrl } from '@/core/utils/links';
 import { Attachment as AttachmentIcon } from '@mui/icons-material';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface ReferenceViewProps {
-  reference: Reference;
+  reference: ReferenceModel;
   icon?: RoundedIconProps['component'];
   canEdit?: boolean;
   onClickEdit?: () => void;

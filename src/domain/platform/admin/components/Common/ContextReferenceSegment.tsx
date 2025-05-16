@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
-import { Reference } from '@/domain/common/profile/Profile';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 import { useTranslation } from 'react-i18next';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
   fieldName?: string;
@@ -31,7 +31,7 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({
     }
   };
 
-  const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
+  const handleRemove = async (ref: ReferenceModel, removeFn: RemoveFunc) => {
     setRemove(removeFn);
     if (ref.id) {
       deleteReference(ref.id);

@@ -18,7 +18,7 @@ import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
-import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import ContributingOrganizationCard from '@/domain/community/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchSpaceCard from '@/domain/shared/components/search-cards/base/SearchSpaceCard';

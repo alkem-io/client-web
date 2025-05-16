@@ -12,13 +12,13 @@ import {
 import {
   AuthorizationPrivilege,
   CalloutType,
-  Tagset,
   UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
@@ -42,7 +42,7 @@ export interface GroupedCallout {
     | undefined;
 }
 
-const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] => {
+const mapFlowState = (tagset: TagsetModel | undefined): GroupedCallout['flowState'] => {
   return tagset
     ? {
         tagsetId: tagset.id,

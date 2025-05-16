@@ -1,15 +1,15 @@
 import { Box, DialogContent } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Reference } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface CommunityGuidelinesInfo {
   displayName?: string;
   description?: string;
-  references?: Reference[];
+  references?: ReferenceModel[];
 }
 
 export interface CommunityGuidelinesInfoDialogProps {

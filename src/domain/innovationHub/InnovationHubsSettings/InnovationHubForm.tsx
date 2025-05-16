@@ -2,7 +2,7 @@ import { Box, FormGroup } from '@mui/material';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Tagset, TagsetType, Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { TagsetType, Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -14,6 +14,7 @@ import { subdomainValidator } from '@/core/ui/forms/validator/subdomainValidator
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
+import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface InnovationHubFormValues {
   subdomain: string;
@@ -21,7 +22,7 @@ export interface InnovationHubFormValues {
     displayName: string;
     description: string;
     tagline: string;
-    tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
+    tagsets: TagsetModel[];
   };
 }
 
@@ -33,7 +34,7 @@ type InnovationHubFormProps = {
     displayName?: string;
     description?: string;
     tagline?: string;
-    tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
+    tagset?: TagsetModel;
     visual?: Visual;
   };
 
@@ -53,14 +54,14 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
       tagline: profile?.tagline ?? '',
-      tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [], allowedValues: [], type: TagsetType.Freeform }],
+      tagsets: [profile?.tagset ?? EmptyTagset],
     },
   };
 
   const validationSchema = yup.object().shape({
     subdomain: subdomainValidator,
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.name ?? yup.string(),
+      displayName: nameSegmentSchema.fields?.displayName ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagline: yup.string().max(MID_TEXT_LENGTH),
       tagsets: tagsetsSegmentSchema,

@@ -5,7 +5,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import References from '@/domain/shared/components/References/References';
 import { Skeleton } from '@mui/material';
-import { ReferenceWithAuthorization } from '@/domain/common/profile/Profile';
+import { ReferenceModelWithAuthorization } from '@/domain/common/reference/ReferenceModel';
 
 type CommunityGuidelinesTemplatePreviewProps = {
   loading?: boolean;
@@ -14,7 +14,7 @@ type CommunityGuidelinesTemplatePreviewProps = {
       profile: {
         displayName: string;
         description?: string;
-        references?: ReferenceWithAuthorization[];
+        references?: ReferenceModelWithAuthorization[];
       };
     };
   };

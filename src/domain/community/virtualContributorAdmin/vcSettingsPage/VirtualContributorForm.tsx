@@ -3,12 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
-import {
-  Tagset,
-  TagsetReservedName,
-  UpdateVirtualContributorInput,
-  Visual,
-} from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName, UpdateVirtualContributorInput } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -16,7 +11,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Actions } from '@/core/ui/actions/Actions';
 import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { UpdateTagset } from '@/domain/common/profile/Profile';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { theme } from '@/core/ui/themes/default/Theme';
 import GridContainer from '@/core/ui/grid/GridContainer';
@@ -24,9 +18,14 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { ProfileModel } from '@/domain/common/profile/ProfileModel';
+import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/TagsetUtils';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 
 type VirtualContributorProps = {
   id: string;
@@ -37,32 +36,23 @@ type VirtualContributorProps = {
       };
     };
   };
-  profile: {
-    id: string;
-    displayName: string;
-    description?: string;
-    tagline?: string;
-    tagsets?: Tagset[] | undefined;
-    url: string;
-    avatar?: Visual | undefined;
-    references?: Reference[];
-  };
+  profile: ProfileModel;
 };
 
-type VirtualContributorFromProps = {
+type VirtualContributorFormValues = {
   name: string;
   description: string;
   tagline?: string;
-  tagsets?: Tagset[];
+  tagsets?: TagsetModel[];
   hostDisplayName: string;
   subSpaceName: string;
-  references?: Reference[];
+  references?: ReferenceModel[];
 };
 
-type Props = {
+type VirtualContributorFormProps = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: BasicSpaceProps;
-  avatar: Visual | undefined;
+  avatar: VisualModel | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
   hasBackNavigation?: boolean;
 };
@@ -73,9 +63,9 @@ export const VirtualContributorForm = ({
   avatar,
   onSave,
   hasBackNavigation = true,
-}: Props) => {
+}: VirtualContributorFormProps) => {
   const { t } = useTranslation();
-  const handleBack = useBackToStaticPath(virtualContributor.profile.url);
+  const handleBack = useBackToStaticPath(virtualContributor.profile.url || '');
   const cols = useColumns();
   const isMobile = cols < 5;
 
@@ -86,7 +76,7 @@ export const VirtualContributorForm = ({
 
   const { displayName: subSpaceName } = bokProfile ?? {};
 
-  const initialValues: VirtualContributorFromProps = useMemo(
+  const initialValues: VirtualContributorFormValues = useMemo(
     () => ({
       name: displayName,
       description: description ?? '',
@@ -100,21 +90,9 @@ export const VirtualContributorForm = ({
   );
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
     description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
-
-  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
-    const result: UpdateTagset[] = [];
-    updatedTagsets.forEach(updatedTagset => {
-      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
-      if (originalTagset) {
-        result.push({ ...originalTagset, tags: updatedTagset.tags });
-      }
-    });
-
-    return result;
-  };
 
   // use keywords tagset (existing after creation of VC) as tags
   const keywordsTagsetWrapped = useMemo(() => {
@@ -122,9 +100,8 @@ export const VirtualContributorForm = ({
     return tagset && [tagset];
   }, [tagsets]);
 
-  const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
-    const { tagsets, description, tagline, name, ...otherData } = values;
-    const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
+  const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
+    const { tagsets, references, description, tagline, name, ...otherData } = values;
 
     const updatedVirtualContributor = {
       ID: virtualContributor.id,
@@ -132,16 +109,8 @@ export const VirtualContributorForm = ({
         displayName: name,
         description,
         tagline,
-        tagsets: updatedTagsets.map(r => ({
-          ID: r.id,
-          tags: r.tags ?? [],
-        })),
-        references: otherData?.references?.map(r => ({
-          ID: r.id,
-          name: r.name,
-          uri: r.uri,
-          description: r.description,
-        })),
+        tagsets: mapTagsetModelsToUpdateTagsetInputs(tagsets),
+        references: mapReferenceModelsToUpdateReferenceInputs(references),
       },
       ...otherData,
     };
@@ -181,7 +150,7 @@ export const VirtualContributorForm = ({
                         visual={avatar}
                         altText={t('visuals-alt-text.avatar.contributor.text', {
                           displayName,
-                          altText: virtualContributor.profile.avatar?.alternativeText,
+                          altText: avatar?.alternativeText,
                         })}
                       />
                     </Box>
