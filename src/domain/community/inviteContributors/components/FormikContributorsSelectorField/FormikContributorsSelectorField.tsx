@@ -52,17 +52,11 @@ const FormikContributorsSelectorField = ({
   );
 
   const setFieldValue = (newValue: SelectedContributor[]) => {
-    /*    const uniqueValues = uniqWith(
-          newValue,
-          (a, b) =>
-            (a.type === ContributorSelectorType.Email && b.type === ContributorSelectorType.Email && a.email === b.email) ||
-            (a.type === ContributorSelectorType.User && b.type === ContributorSelectorType.User && a.id === b.id)
-        );
-        */
-
-    helpers.setValue(newValue); /*uniqueValues*/
+    helpers.setValue(newValue);
     helpers.setTouched(true);
+
     window.setTimeout(() => {
+      // Need to give time for the formik state to get updated before validating
       validateForm();
     }, 10);
   };
@@ -80,7 +74,7 @@ const FormikContributorsSelectorField = ({
       ? meta.error.map(
           error =>
             error?.email
-              ? translateEmailError(error.email) // The only validation error really handled at the moment is about emails
+              ? translateEmailError(error.email) // The only validation errors really handled at the moment are about emails
               : JSON.stringify(error) // For the rest of validation errors, we'll show whatever yup returns stringified
         )
       : [];
@@ -154,7 +148,7 @@ const FormikContributorsSelectorField = ({
 
   const onTextFieldKeyDown = (event: React.KeyboardEvent) => {
     helpers.setTouched(true);
-    if (event.key === 'Enter' || event.key === ';' || event.key === ',') {
+    if (event.key === 'Enter') {
       event.preventDefault();
       onAddContributorEmail();
     }
@@ -239,7 +233,7 @@ const FormikContributorsSelectorField = ({
                 endAdornment: params.inputProps.value ? ( // Only if there's some text in the input
                   <>
                     <Button onClick={onAddContributorEmail} variant="contained">
-                      {t('community.invitations.inviteContributorsDialog.users.buttonAdd')}
+                      {t('common.add')}
                     </Button>
                     {params.InputProps.endAdornment}
                   </>
