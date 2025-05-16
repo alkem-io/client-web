@@ -9,9 +9,13 @@ import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventInfoFragment,
-  Profile,
 } from '@/core/apollo/generated/graphql-schema';
 import { isSameDay } from '@/core/utils/time/utils';
+import { ProfileModel } from '@/domain/common/profile/ProfileModel';
+import {
+  mapProfileModelToCreateProfileInput,
+  mapProfileModelToUpdateProfileInput,
+} from '@/domain/common/profile/ProfileModelUtils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 import React, { useCallback } from 'react';
@@ -22,11 +26,7 @@ export interface CalendarEventFormData
     'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay' | 'visibleOnParentCalendar'
   > {
   endDate: number | Date;
-  displayName: Profile['displayName'];
-  description: Profile['description'];
-  location: Profile['location'];
-  references: Profile['references'];
-  tags: string[];
+  profile: ProfileModel;
 }
 
 export interface CalendarEventsContainerProps {
@@ -43,11 +43,7 @@ export interface CalendarEventsContainerProps {
 export interface CalendarEventsActions {
   // loadMore: () => void; // TODO: pagination?
   createEvent: (event: CalendarEventFormData) => Promise<string | undefined>;
-  updateEvent: (
-    eventId: string,
-    tagsetid: string | undefined,
-    event: CalendarEventFormData
-  ) => Promise<string | undefined>;
+  updateEvent: (eventId: string, event: CalendarEventFormData) => Promise<string | undefined>;
   deleteEvent: (eventId: string) => Promise<void>;
 }
 
@@ -102,7 +98,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
-      const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
+      const { profile, startDate, endDate, wholeDay, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
       let durationMinutes = rest.durationMinutes;
       let durationDays = 0;
@@ -115,6 +111,9 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
         multipleDays = durationDays > 0;
       }
 
+      const tagsetModel = profile.tagsets?.[0];
+      const tags = tagsetModel?.tags ?? [];
+
       return createCalendarEvent({
         variables: {
           eventData: {
@@ -126,13 +125,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
             durationDays,
             multipleDays,
             wholeDay,
-            profileData: {
-              description: description,
-              displayName: displayName,
-              location: {
-                city: location?.city,
-              },
-            },
+            profileData: mapProfileModelToCreateProfileInput(profile),
           },
         },
         refetchQueries: refetchQueriesList,
@@ -143,8 +136,8 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
   );
 
   const updateEvent = useCallback(
-    (eventId: string, tagsetId: string | undefined, event: CalendarEventFormData) => {
-      const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
+    (eventId: string, event: CalendarEventFormData) => {
+      const { profile, startDate, endDate, wholeDay, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
       // todo:b reuse
@@ -169,20 +162,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
             durationDays,
             multipleDays,
             wholeDay,
-            profileData: {
-              displayName: displayName,
-              description: description,
-              // references: ...references  // TODO...
-              tagsets: [
-                {
-                  ID: tagsetId ?? '',
-                  tags: tags,
-                },
-              ],
-              location: {
-                city: location?.city,
-              },
-            },
+            profileData: mapProfileModelToUpdateProfileInput(profile),
           },
         },
         refetchQueries: refetchQueriesList,

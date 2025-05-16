@@ -3,7 +3,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-import { findDefaultTagset } from '@/domain/common/tagset/utils';
+import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface CalloutTemplatePreviewProps {

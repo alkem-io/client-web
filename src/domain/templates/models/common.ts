@@ -6,7 +6,7 @@ import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CollaborationTemplate } from './CollaborationTemplate';
-import { findDefaultTagset } from '@/domain/common/tagset/utils';
+import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
 
 export const getNewTemplate = (
   templateType: TemplateType,

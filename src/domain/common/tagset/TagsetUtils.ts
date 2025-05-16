@@ -17,7 +17,9 @@ export const findDefaultTagset = <T extends Tagset>(tagsets: T[] | undefined): T
   }
 };
 
-export const mapTagsetModelsToUpdateTagsets = (tagsets: TagsetModel[] | undefined): UpdateTagsetInput[] | undefined => {
+export const mapTagsetModelsToUpdateTagsetInputs = (
+  tagsets: TagsetModel[] | undefined
+): UpdateTagsetInput[] | undefined => {
   if (!tagsets) return undefined;
   return tagsets
     .filter(tagset => tagset.id) // remove all tagsets that don't have an ID

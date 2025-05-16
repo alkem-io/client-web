@@ -3,10 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
-import {
-  TagsetReservedName,
-  UpdateVirtualContributorInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName, UpdateVirtualContributorInput } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -26,9 +23,9 @@ import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/P
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { ProfileModel } from '@/domain/common/profile/ProfileModel';
-import { mapReferencesToUpdateReferences } from '@/domain/templates/components/Forms/common/mappings';
-import { mapTagsetModelsToUpdateTagsets } from '@/domain/common/tagset/utils';
+import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/TagsetUtils';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 
 type VirtualContributorProps = {
   id: string;
@@ -97,7 +94,6 @@ export const VirtualContributorForm = ({
     description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
 
-
   // use keywords tagset (existing after creation of VC) as tags
   const keywordsTagsetWrapped = useMemo(() => {
     const tagset = tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase());
@@ -113,8 +109,8 @@ export const VirtualContributorForm = ({
         displayName: name,
         description,
         tagline,
-        tagsets: mapTagsetModelsToUpdateTagsets(tagsets),
-        references: mapReferencesToUpdateReferences(references),
+        tagsets: mapTagsetModelsToUpdateTagsetInputs(tagsets),
+        references: mapReferenceModelsToUpdateReferenceInputs(references),
       },
       ...otherData,
     };

@@ -158,12 +158,8 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
               return;
             }
 
-            const handleEditEventSubmit = async (
-              eventId: string,
-              tagsetId: string | undefined,
-              calendarEvent: CalendarEventFormData
-            ) => {
-              await updateEvent(eventId, tagsetId, calendarEvent);
+            const handleEditEventSubmit = async (eventId: string, calendarEvent: CalendarEventFormData) => {
+              await updateEvent(eventId, calendarEvent);
               setEditingEventId(undefined);
             };
 
@@ -173,9 +169,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                   <CalendarEventForm
                     dialogTitle={t('calendar.edit-event')}
                     event={eventDetail}
-                    onSubmit={(calendarEvent: CalendarEventFormData) =>
-                      handleEditEventSubmit(event.id, event.profile.tagset?.id, calendarEvent)
-                    }
+                    onSubmit={(calendarEvent: CalendarEventFormData) => handleEditEventSubmit(event.id, calendarEvent)}
                     onClose={handleClose}
                     isSubmitting={updatingCalendarEvent}
                     actions={

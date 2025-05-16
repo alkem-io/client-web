@@ -9,7 +9,6 @@ import { EditMode } from '@/core/ui/forms/editMode';
 import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
 import { OrganizationInputModel } from '@/domain/community/organization/model/OrganizationInputModel';
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
@@ -29,8 +28,10 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
 import { EmptyProfileModel } from '@/domain/common/profile/ProfileModel';
-import { mapReferencesToUpdateReferences } from '@/domain/templates/components/Forms/common/mappings';
-import { mapTagsetModelsToUpdateTagsets } from '@/domain/common/tagset/utils';
+import {
+  mapProfileModelToCreateProfileInput,
+  mapProfileModelToUpdateProfileInput,
+} from '@/domain/common/profile/ProfileModelUtils';
 
 interface Props {
   organization?: OrganizationModel;
@@ -95,36 +96,21 @@ export const OrganizationForm: FC<Props> = ({
   const handleSubmit = useCallback(
     (orgData: OrganizationInputModel) => {
       const { profile, ...otherData } = orgData;
-      const { displayName, tagline, description, location, references, tagsets } = profile;
 
       if (isCreateMode) {
         const organization: CreateOrganizationInput = {
           ...otherData,
-          profileData: {
-            description,
-            tagline,
-            displayName,
-            referencesData: references,
-            location: formatDatabaseLocation(location),
-          },
+          profileData: mapProfileModelToCreateProfileInput(profile),
         };
 
         onSave?.(organization);
       }
 
       if (isEditMode) {
-        const updatedTagsets = mapTagsetModelsToUpdateTagsets(tagsets);
         const organization: UpdateOrganizationInput = {
           ID: currentOrganization.id,
           ...otherData,
-          profileData: {
-            displayName,
-            description,
-            tagline,
-            references: mapReferencesToUpdateReferences(references),
-            tagsets: updatedTagsets,
-            location: formatDatabaseLocation(location),
-          },
+          profileData: mapProfileModelToUpdateProfileInput(profile),
         };
 
         onSave?.(organization);
@@ -157,12 +143,7 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={handleSubmit}
         >
-          {({
-            values: {
-              profile,
-            },
-            handleSubmit,
-          }) => {
+          {({ values: { profile }, handleSubmit }) => {
             const tagsets = profile.tagsets || [];
             const references = profile.references || [];
             const displayName = profile.displayName || '';

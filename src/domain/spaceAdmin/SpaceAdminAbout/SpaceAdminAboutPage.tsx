@@ -6,7 +6,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { formatDatabaseLocation, formatLocation } from '@/domain/common/location/LocationUtils';
+import { formatLocation } from '@/domain/common/location/LocationUtils';
 import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
@@ -18,6 +18,7 @@ import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import SpaceAboutView from './components/SpaceAboutView';
 import { EmptyProfileModel, ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { EmptyLocationMapped } from '@/domain/common/location/LocationModelMapped';
+import { mapProfileModelToUpdateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
 
 export interface SpaceAdminAboutPageProps extends SettingsPageProps {
   spaceId: string;
@@ -42,23 +43,14 @@ const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceI
   };
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { displayName: displayName, tagline, tagsets, references } = values;
     updateSpace({
       variables: {
         input: {
           about: {
-            profile: {
-              displayName,
-              tagline,
-              location: formatDatabaseLocation(values.location),
-              references: references?.map(reference => ({
-                ID: reference.id ?? '',
-                name: reference.name,
-                description: reference.description,
-                uri: reference.uri,
-              })),
-              tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
-            },
+            profile: mapProfileModelToUpdateProfileInput({
+              ...values,
+              id: space?.about.profile.id || '',
+            }),
           },
           ID: spaceId,
         },

@@ -7,7 +7,7 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { PostTemplate } from '@/domain/templates/models/PostTemplate';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { mapTemplateProfileToUpdateProfile } from './common/mappings';
+import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 
 export interface PostTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   postDefaultDescription?: string;
@@ -28,7 +28,7 @@ const PostTemplateForm = ({ template, onSubmit, actions, temporaryLocation = fal
   const { t } = useTranslation();
 
   const initialValues: PostTemplateFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfile(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     postDefaultDescription: template?.postDefaultDescription ?? '',
   };
 
