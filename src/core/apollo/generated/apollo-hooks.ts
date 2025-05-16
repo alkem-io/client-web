@@ -1423,42 +1423,6 @@ export const EntitlementDetailsFragmentDoc = gql`
     enabled
   }
 `;
-export const VirtualContributorFullFragmentDoc = gql`
-  fragment VirtualContributorFull on VirtualContributor {
-    id
-    profile {
-      id
-      displayName
-      description
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-    aiPersona {
-      bodyOfKnowledge
-      bodyOfKnowledgeType
-      bodyOfKnowledgeID
-      engine
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const InnovationHubProfileFragmentDoc = gql`
   fragment InnovationHubProfile on Profile {
     id
@@ -2006,6 +1970,54 @@ export const SpacePageFragmentDoc = gql`
   ${ContributorDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
+`;
+export const VirtualContributorFullFragmentDoc = gql`
+  fragment VirtualContributorFull on VirtualContributor {
+    id
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+    aiPersona {
+      bodyOfKnowledge
+      bodyOfKnowledgeType
+      bodyOfKnowledgeID
+      engine
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc = gql`
+  fragment AvailableVirtualContributorsForRoleSetPaginated on PaginatedVirtualContributor {
+    virtualContributors {
+      ...VirtualContributorFull
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+  ${VirtualContributorFullFragmentDoc}
 `;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
@@ -18343,15 +18355,15 @@ export const AvailableVirtualContributorsInSpaceL0Document = gql`
           id
           roleSet {
             id
-            virtualContributorsInRole(role: MEMBER) {
-              ...VirtualContributorFull
+            availableVirtualContributorsForEntryRole {
+              ...AvailableVirtualContributorsForRoleSetPaginated
             }
           }
         }
       }
     }
   }
-  ${VirtualContributorFullFragmentDoc}
+  ${AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc}
 `;
 
 /**

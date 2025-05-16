@@ -81,6 +81,7 @@ const useVirtualContributorsAdmin = ({
 
     return mockPaginatedResponse(virtualContributors, refetch);
   };
+
   const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
     const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
     return virtualContributors;
@@ -98,11 +99,9 @@ const useVirtualContributorsAdmin = ({
           spaceId: spaceL0Id!,
         },
       });
+      // data?.lookup?.space?.account.virtualContributors is always an array
       const virtualContributors = data?.lookup?.space?.account.virtualContributors ?? [];
-      const filteredVCs = virtualContributors.filter(
-        vc =>
-          virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter) && filterExistingVcs(vc)
-      );
+      const filteredVCs = virtualContributors.filter(vc => filterByName(vc, filter) && filterExistingVcs(vc));
       return mockPaginatedResponse(filteredVCs, refetch);
     }
 
@@ -112,12 +111,15 @@ const useVirtualContributorsAdmin = ({
         spaceId: spaceL0Id!,
       },
     });
-    const virtualContributors = data?.lookup?.space?.community.roleSet.virtualContributorsInRole ?? [];
-    const filteredVCs = virtualContributors.filter(
-      vc => virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter) && filterExistingVcs(vc)
-    );
-    return mockPaginatedResponse(filteredVCs, refetch);
+    // TODO: when move over to paginated handling of VCs fully then this can be removed
+    // For now convert to the mockPaginatedResponse. Note: the filtering is done on the server to remove
+    // VCs from the list that are already a member.
+    const virtualContributorsPaginated =
+      data?.lookup?.space?.community.roleSet.availableVirtualContributorsForEntryRole;
+    const virtualContributors = virtualContributorsPaginated?.virtualContributors ?? [];
+    return mockPaginatedResponse(virtualContributors, refetch);
   };
+
   const getAvailableVirtualContributors = async (filter: string | undefined) => {
     const { virtualContributors } = await findAvailableVirtualContributors(filter);
     return virtualContributors;
