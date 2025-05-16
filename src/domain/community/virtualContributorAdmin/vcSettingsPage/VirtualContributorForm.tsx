@@ -16,7 +16,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Actions } from '@/core/ui/actions/Actions';
 import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { UpdateTagset } from '@/domain/common/profile/Profile';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { theme } from '@/core/ui/themes/default/Theme';
 import GridContainer from '@/core/ui/grid/GridContainer';
@@ -28,6 +27,9 @@ import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { ProfileModel } from '@/domain/common/profile/ProfileModel';
+import { mapReferencesToUpdateReferences } from '@/domain/templates/components/Forms/common/mappings';
+import { mapTagsetModelsToUpdateTagsets } from '@/domain/common/tagset/utils';
 
 type VirtualContributorProps = {
   id: string;
@@ -38,19 +40,10 @@ type VirtualContributorProps = {
       };
     };
   };
-  profile: {
-    id: string;
-    displayName: string;
-    description?: string;
-    tagline?: string;
-    tagsets?: Tagset[] | undefined;
-    url: string;
-    avatar?: Visual | undefined;
-    references?: ReferenceModel[];
-  };
+  profile: ProfileModel;
 };
 
-type VirtualContributorFromProps = {
+type VirtualContributorFormValues = {
   name: string;
   description: string;
   tagline?: string;
@@ -60,7 +53,7 @@ type VirtualContributorFromProps = {
   references?: ReferenceModel[];
 };
 
-type Props = {
+type VirtualContributorFormProps = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: BasicSpaceProps;
   avatar: VisualModel | undefined;
@@ -74,9 +67,9 @@ export const VirtualContributorForm = ({
   avatar,
   onSave,
   hasBackNavigation = true,
-}: Props) => {
+}: VirtualContributorFormProps) => {
   const { t } = useTranslation();
-  const handleBack = useBackToStaticPath(virtualContributor.profile.url);
+  const handleBack = useBackToStaticPath(virtualContributor.profile.url || '');
   const cols = useColumns();
   const isMobile = cols < 5;
 
@@ -87,7 +80,7 @@ export const VirtualContributorForm = ({
 
   const { displayName: subSpaceName } = bokProfile ?? {};
 
-  const initialValues: VirtualContributorFromProps = useMemo(
+  const initialValues: VirtualContributorFormValues = useMemo(
     () => ({
       name: displayName,
       description: description ?? '',
@@ -101,21 +94,10 @@ export const VirtualContributorForm = ({
   );
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
     description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
 
-  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
-    const result: UpdateTagset[] = [];
-    updatedTagsets.forEach(updatedTagset => {
-      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
-      if (originalTagset) {
-        result.push({ ...originalTagset, tags: updatedTagset.tags });
-      }
-    });
-
-    return result;
-  };
 
   // use keywords tagset (existing after creation of VC) as tags
   const keywordsTagsetWrapped = useMemo(() => {
@@ -123,9 +105,8 @@ export const VirtualContributorForm = ({
     return tagset && [tagset];
   }, [tagsets]);
 
-  const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
-    const { tagsets, description, tagline, name, ...otherData } = values;
-    const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
+  const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
+    const { tagsets, references, description, tagline, name, ...otherData } = values;
 
     const updatedVirtualContributor = {
       ID: virtualContributor.id,
@@ -133,16 +114,8 @@ export const VirtualContributorForm = ({
         displayName: name,
         description,
         tagline,
-        tagsets: updatedTagsets.map(r => ({
-          ID: r.id,
-          tags: r.tags ?? [],
-        })),
-        references: otherData?.references?.map(r => ({
-          ID: r.id,
-          name: r.name,
-          uri: r.uri,
-          description: r.description,
-        })),
+        tagsets: mapTagsetModelsToUpdateTagsets(tagsets),
+        references: mapReferencesToUpdateReferences(references),
       },
       ...otherData,
     };

@@ -117,7 +117,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetsSegmentSchema,

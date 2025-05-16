@@ -86,7 +86,7 @@ const InnovationPackForm = ({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.name ?? yup.string(),
+      displayName: nameSegmentSchema.fields?.displayName ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       references: referenceSegmentSchema,
       tagsets: tagsetsSegmentSchema,

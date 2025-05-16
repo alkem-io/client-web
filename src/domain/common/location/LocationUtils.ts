@@ -1,4 +1,3 @@
-import { Maybe } from '@/core/apollo/generated/graphql-schema';
 import { LocationModel as LocationModel } from './LocationModel';
 import { COUNTRIES } from './countries.constants';
 import { LocationModelMapped } from './LocationModelMapped';
@@ -11,19 +10,20 @@ import { LocationModelMapped } from './LocationModelMapped';
  * @param data Location from a GraphQL query
  * @returns A Location that contains the full CountryType object
  */
-export const formatLocation = (data: Maybe<LocationModel>): Partial<LocationModelMapped> | undefined => {
+export const formatLocation = (data: LocationModel | undefined): LocationModelMapped | undefined => {
   if (!data) {
     return undefined;
   }
 
   return {
-    city: data?.city ?? '',
-    country: data?.country ? COUNTRIES.find(x => x.code === data.country) : COUNTRIES.find(x => x.code === ''),
+    id: data.id ?? '',
+    city: data.city ?? '',
+    country: data.country ? COUNTRIES.find(x => x.code === data.country) : COUNTRIES.find(x => x.code === ''),
   };
 };
 
 export const formatDatabaseLocation = (
-  data: Partial<LocationModelMapped> | undefined
+  data: LocationModelMapped | undefined
 ): LocationModel | undefined => {
   if (!data) {
     return undefined;

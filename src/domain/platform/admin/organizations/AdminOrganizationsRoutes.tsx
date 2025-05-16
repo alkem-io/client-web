@@ -19,7 +19,7 @@ const AdminOrganizationsRoutes: FC = () => {
           path="new"
           element={
             <AdminLayout currentTab={AdminSection.Organization}>
-              <OrganizationPage title={t('pages.admin.organization.create-organization')} mode={EditMode.new} />
+              <OrganizationPage mode={EditMode.new} />
             </AdminLayout>
           }
         />

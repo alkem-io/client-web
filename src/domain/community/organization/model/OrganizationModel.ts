@@ -1,5 +1,7 @@
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
+import { EmptyLocationMapped } from '@/domain/common/location/LocationModelMapped';
 import { ProfileModel } from '@/domain/common/profile/ProfileModel';
+import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { OrgVerificationLifecycleEvents } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
 
 export interface OrganizationModel {
@@ -11,14 +13,14 @@ export interface OrganizationModel {
   legalEntityName?: string;
   website?: string;
   verification?: {
-    id: string;
-    lifecycle: {
+    id?: string;
+    lifecycle?: {
       id: string;
     };
-    status: OrganizationVerificationEnum;
-    isFinalized: boolean;
-    nextEvents: OrgVerificationLifecycleEvents[];
-    state: string;
+    status?: OrganizationVerificationEnum;
+    isFinalized?: boolean;
+    nextEvents?: OrgVerificationLifecycleEvents[];
+    state?: string;
   };
   settings?: {
     privacy: {
@@ -30,7 +32,7 @@ export interface OrganizationModel {
   };
 }
 
-export const EmptyOrganization: OrganizationModel = {
+export const EmptyOrganizationModel: OrganizationModel = {
   id: '',
   nameID: '',
   contactEmail: undefined,
@@ -53,13 +55,9 @@ export const EmptyOrganization: OrganizationModel = {
     tagline: '',
     description: '',
     url: '',
-    tagsets: undefined,
+    tagsets: [EmptyTagset],
     references: [],
-    location: {
-      id: '',
-      city: '',
-      country: '',
-    },
+    location: EmptyLocationMapped,
   },
   settings: {
     privacy: {

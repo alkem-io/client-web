@@ -1,3 +1,6 @@
+import { UpdateTagsetInput } from '@/core/apollo/generated/graphql-schema';
+import { TagsetModel } from './TagsetModel';
+
 type Tagset = {
   id?: string;
   name?: string;
@@ -12,4 +15,15 @@ export const findDefaultTagset = <T extends Tagset>(tagsets: T[] | undefined): T
   } else if (tagsets.length > 0 && !tagsets[0].name) {
     return tagsets[0];
   }
+};
+
+export const mapTagsetModelsToUpdateTagsets = (tagsets: TagsetModel[] | undefined): UpdateTagsetInput[] | undefined => {
+  if (!tagsets) return undefined;
+  return tagsets
+    .filter(tagset => tagset.id) // remove all tagsets that don't have an ID
+    .map(tagset => ({
+      ID: tagset.id, // ensured by the filter
+      name: tagset.name,
+      tags: tagset.tags ?? [],
+    }));
 };

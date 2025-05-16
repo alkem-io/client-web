@@ -1,19 +1,16 @@
 import {
   CreateOrganizationInput,
   OrganizationVerificationEnum,
-  TagsetType,
   UpdateOrganizationInput,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { EditMode } from '@/core/ui/forms/editMode';
 import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import { EmptyLocation } from '@/domain/common/location/LocationModel';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import { formatLocation } from '@/domain/common/location/LocationUtils';
-import { UpdateTagset } from '@/domain/common/profile/Profile';
-import { OrganizationInput } from '@/domain/community/organization/model/OrganizationInput';
-import { OrgVerificationLifecycleEvents } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
+import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
+import { OrganizationInputModel } from '@/domain/community/organization/model/OrganizationInputModel';
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { FC, useCallback } from 'react';
@@ -23,28 +20,28 @@ import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationSegment, organizationSegmentSchema } from '../Common/OrganizationSegment';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
-import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
+import { TagsetSegment } from '../Common/TagsetSegment';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { EmptyOrganization, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
+import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
+import { EmptyProfileModel } from '@/domain/common/profile/ProfileModel';
+import { mapReferencesToUpdateReferences } from '@/domain/templates/components/Forms/common/mappings';
+import { mapTagsetModelsToUpdateTagsets } from '@/domain/common/tagset/utils';
 
 interface Props {
   organization?: OrganizationModel;
   editMode?: EditMode;
   onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
-  title?: string;
 }
 
 export const OrganizationForm: FC<Props> = ({
-  organization: currentOrganization = EmptyOrganization,
+  organization: currentOrganization = EmptyOrganizationModel,
   editMode = EditMode.readOnly,
   onSave,
-  title = 'Organization',
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -53,58 +50,40 @@ export const OrganizationForm: FC<Props> = ({
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
-  const {
-    nameID,
-    contactEmail,
-    domain,
-    legalEntityName,
-    website,
-    profile: { id: profileId, displayName, description, tagline, references, tagsets, visuals, location },
-  } = currentOrganization;
+  const { nameID, contactEmail, domain, legalEntityName, website, profile } = currentOrganization;
 
   const verificationStatus = currentOrganization.verification?.status || OrganizationVerificationEnum.NotVerified;
   const getUpdatedTagsets = useCallback(
     (updatedTagsets: TagsetModel[]) => {
-      const result: UpdateTagset[] = [];
+      const result: UpdateTagsetModel[] = [];
       updatedTagsets.forEach(updatedTagset => {
-        const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+        const originalTagset = profile.tagsets?.find(value => value.name === updatedTagset.name);
         if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
       });
 
       return result;
     },
-    [tagsets]
+    [profile.tagsets]
   );
 
-  const initialValues: OrganizationInput = {
-    name: displayName || EmptyOrganization.profile.displayName,
+  const initialValues: OrganizationInputModel = {
+    profile: profile ?? EmptyProfileModel,
     nameID: nameID || '',
-    description: description || EmptyOrganization.profile.description || '',
-    tagline: tagline || EmptyOrganization.profile.tagline || '',
-    location: {
-      ...EmptyLocation,
-      ...formatLocation(location),
-    },
-    tagsets: tagsets ?? [],
-    contactEmail: contactEmail || EmptyOrganization.contactEmail,
-    domain: domain || EmptyOrganization.domain || '',
-    legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
-    website: website || EmptyOrganization.website || '',
+    contactEmail: contactEmail || EmptyOrganizationModel.contactEmail,
+    domain: domain || EmptyOrganizationModel.domain || '',
+    legalEntityName: legalEntityName || EmptyOrganizationModel.legalEntityName || '',
+    website: website || EmptyOrganizationModel.website || '',
     verified: verificationStatus,
-    references: references || EmptyOrganization.profile.references || [],
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name || yup.string(),
+    profile: profileSegmentSchema,
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
-    description: profileSegmentSchema.fields?.description || yup.string(),
     contactEmail: organizationSegmentSchema.fields?.contactEmail || yup.string(),
     domain: organizationSegmentSchema.fields?.domain || yup.string(),
     legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
     website: organizationSegmentSchema.fields?.website || yup.string(),
     verified: organizationSegmentSchema.fields?.verified || yup.string(),
-    tagsets: tagsetsSegmentSchema,
-    references: referenceSegmentSchema,
   });
 
   /**
@@ -114,8 +93,9 @@ export const OrganizationForm: FC<Props> = ({
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = useCallback(
-    (orgData: OrganizationInput) => {
-      const { tagsets, references, description, tagline, location, ...otherData } = orgData;
+    (orgData: OrganizationInputModel) => {
+      const { profile, ...otherData } = orgData;
+      const { displayName, tagline, description, location, references, tagsets } = profile;
 
       if (isCreateMode) {
         const organization: CreateOrganizationInput = {
@@ -123,12 +103,9 @@ export const OrganizationForm: FC<Props> = ({
           profileData: {
             description,
             tagline,
-            displayName: otherData.name!, // ensured by yup
+            displayName,
             referencesData: references,
-            location: {
-              city: location.city,
-              country: location.country?.code,
-            },
+            location: formatDatabaseLocation(location),
           },
         };
 
@@ -136,27 +113,17 @@ export const OrganizationForm: FC<Props> = ({
       }
 
       if (isEditMode) {
-        const updatedTagsets = getUpdatedTagsets(tagsets);
+        const updatedTagsets = mapTagsetModelsToUpdateTagsets(tagsets);
         const organization: UpdateOrganizationInput = {
           ID: currentOrganization.id,
           ...otherData,
           profileData: {
-            displayName: otherData.name,
+            displayName,
             description,
             tagline,
-            references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
-            tagsets: updatedTagsets.map(r => ({
-              ...r,
-              ID: r.id,
-              id: undefined,
-              allowedValues: [],
-              type: TagsetType.Freeform,
-              tags: r.tags ?? [],
-            })),
-            location: {
-              city: location.city,
-              country: location.country?.code,
-            },
+            references: mapReferencesToUpdateReferences(references),
+            tagsets: updatedTagsets,
+            location: formatDatabaseLocation(location),
           },
         };
 
@@ -190,7 +157,16 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={handleSubmit}
         >
-          {({ values: { references, tagsets }, handleSubmit }) => {
+          {({
+            values: {
+              profile,
+            },
+            handleSubmit,
+          }) => {
+            const tagsets = profile.tagsets || [];
+            const references = profile.references || [];
+            const displayName = profile.displayName || '';
+            const visual = profile.visuals?.find(visual => visual?.type === VisualType.Avatar);
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
@@ -205,7 +181,7 @@ export const OrganizationForm: FC<Props> = ({
                   </PageContentColumn>
                   <PageContentColumn columns={6}>
                     <Gutters disablePadding>
-                      <PageContentBlockHeader title={title} />
+                      <PageContentBlockHeader title={t('common.organization')} />
                       <NameSegment disabled={isEditMode} required={!isEditMode} />
                       {!isCreateMode && (
                         <>
@@ -222,7 +198,7 @@ export const OrganizationForm: FC<Props> = ({
                             <ProfileReferenceSegment
                               references={references}
                               readOnly={isReadOnlyMode}
-                              profileId={profileId}
+                              profileId={profile.id}
                             />
                           )}
                         </>

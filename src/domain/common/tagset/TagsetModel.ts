@@ -8,13 +8,17 @@ export interface TagsetModel {
   type: TagsetType;
 }
 
-// Example factory for a default TagsetModel
-export function createDefaultTagset(tags: string[] = []): TagsetModel {
-  return {
-    id: '-1',
-    name: TagsetReservedName.Default,
-    tags,
-    allowedValues: [],
-    type: TagsetType.Freeform,
-  };
+export interface UpdateTagsetModel {
+  id: string;
+  name?: string;
+  tags?: string[];
 }
+
+
+export const EmptyTagset: TagsetModel = {
+  id: '',
+  name: TagsetReservedName.Default,
+  tags: [],
+  allowedValues: [],
+  type: TagsetType.Freeform,
+};

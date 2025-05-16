@@ -8,6 +8,8 @@ import {
 import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import { useApolloClient } from '@apollo/client';
+import { mapReferencesToUpdateReferences } from '@/domain/templates/components/Forms/common/mappings';
+import { mapTagsetModelsToUpdateTagsets } from '@/domain/common/tagset/utils';
 
 type UseCalloutEditReturnType = {
   handleVisibilityChange: (
@@ -60,17 +62,8 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               profile: {
                 description: callout.profile.description,
                 displayName: callout.profile.displayName,
-                references: callout.profile.references?.map(reference => ({
-                  ID: reference.id,
-                  name: reference.name,
-                  description: reference.description,
-                  uri: reference.uri,
-                })),
-                tagsets: callout.profile.tagsets?.map(tagset => ({
-                  ID: tagset.id || '',
-                  name: tagset.name,
-                  tags: tagset.tags ?? [],
-                })),
+                references: mapReferencesToUpdateReferences(callout.profile.references),
+                tagsets: mapTagsetModelsToUpdateTagsets(callout.profile.tagsets),
               },
             },
             contributionPolicy: {
