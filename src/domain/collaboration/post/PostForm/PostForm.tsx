@@ -1,4 +1,4 @@
-import { Post, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Post, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 type FormValue = {
   name: string;
@@ -67,15 +67,7 @@ const PostForm = ({
 }: PostFormProps) => {
   const { t } = useTranslation();
 
-  const tagsets: Tagset[] = [
-    {
-      id: '-1',
-      name: TagsetReservedName.Default,
-      tags: tags ?? [],
-      allowedValues: [],
-      type: TagsetType.Freeform,
-    },
-  ];
+  const tagsets: TagsetModel[] = [EmptyTagset];
 
   const getDescriptionValue = () => {
     if (!post) {

@@ -3,11 +3,7 @@ import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
-  Reference,
   SearchVisibility,
-  Tagset,
-  TagsetReservedName,
-  TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -22,13 +18,15 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface InnovationPackFormValues {
   profile: {
     displayName: string;
     description: string;
-    tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
-    references: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
+    tagsets: TagsetModel[];
+    references: ReferenceModel[];
   };
   listedInStore: boolean;
   searchVisibility: SearchVisibility;
@@ -40,8 +38,8 @@ type InnovationPackFormProps = {
     id?: string;
     displayName?: string;
     description?: string;
-    tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
-    references?: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
+    tagset?: TagsetModel;
+    references?: ReferenceModel[];
   };
   provider?: { id: string; profile: { displayName: string } };
   listedInStore?: boolean;
@@ -64,20 +62,13 @@ const InnovationPackForm = ({
   const { t } = useTranslation();
 
   const profileId = profile?.id ?? '';
+  const tagset = profile?.tagset ?? EmptyTagset;
 
   const initialValues: InnovationPackFormValues = {
     profile: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
-      tagsets: [
-        profile?.tagset ?? {
-          id: '',
-          name: TagsetReservedName.Default,
-          tags: [],
-          allowedValues: [],
-          type: TagsetType.Freeform,
-        },
-      ],
+      tagsets: [tagset],
       references: profile?.references ?? [],
     },
     listedInStore: listedInStore ?? false,

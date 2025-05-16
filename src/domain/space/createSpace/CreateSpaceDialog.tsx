@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
-import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
@@ -40,11 +40,7 @@ interface FormValues {
   name: string;
   nameID: string;
   tagline: string;
-  tagsets: {
-    id: string;
-    name: string;
-    tags: string[];
-  }[];
+  tagsets: TagsetModel[];
   licensePlanId: string;
 }
 

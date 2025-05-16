@@ -4,10 +4,8 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
 import {
-  Tagset,
   TagsetReservedName,
   UpdateVirtualContributorInput,
-  Visual,
 } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
@@ -30,6 +28,7 @@ import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { mapReferencesToUpdateReferences } from '@/domain/templates/components/Forms/common/mappings';
 import { mapTagsetModelsToUpdateTagsets } from '@/domain/common/tagset/utils';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 type VirtualContributorProps = {
   id: string;
@@ -47,7 +46,7 @@ type VirtualContributorFormValues = {
   name: string;
   description: string;
   tagline?: string;
-  tagsets?: Tagset[];
+  tagsets?: TagsetModel[];
   hostDisplayName: string;
   subSpaceName: string;
   references?: ReferenceModel[];
