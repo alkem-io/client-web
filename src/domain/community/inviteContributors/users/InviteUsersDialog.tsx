@@ -22,6 +22,7 @@ import InvitationsResultDialogContent from './InvitationsResultDialogContent';
 import InviteUsersFormDialogContent from './InviteUsersFormDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Caption } from '@/core/ui/typography';
 
 export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -107,43 +108,59 @@ const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContribu
         validateOnChange
         onSubmit={onSubmit}
       >
-        {({ handleSubmit, isValid, setFieldValue }) => (
-          <>
-            {!invitationsResults && (
-              <>
-                <InviteUsersFormDialogContent filterUsers={filterContributors} />
-                <DialogActions>
-                  <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
-                </DialogActions>
-              </>
-            )}
-            {invitationsResults && (
-              <>
-                <InvitationsResultDialogContent invitationsResults={invitationsResults} />
-                <DialogActions>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setFieldValue('selectedContributors', []);
-                      setInvitationSent(undefined);
-                    }}
-                  >
-                    {t('community.invitations.inviteContributorsDialog.users.back')}
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      setFieldValue('selectedContributors', []);
-                      handleClose();
-                    }}
-                  >
-                    {t('buttons.close')}
-                  </Button>
-                </DialogActions>
-              </>
-            )}
-          </>
-        )}
+        {({ handleSubmit, isValid, setFieldValue, getFieldMeta, getFieldProps }) => {
+          const invalidSelectedContributors =
+            !isValid && getFieldMeta('selectedContributors').error && getFieldMeta('selectedContributors').touched;
+          const selectedContributorsValue = getFieldProps('selectedContributors').value;
+
+          return (
+            <>
+              {!invitationsResults && (
+                <>
+                  <InviteUsersFormDialogContent filterUsers={filterContributors} />
+                  <DialogActions>
+                    {invalidSelectedContributors && selectedContributorsValue.length === 0 && (
+                      <Caption color="error">
+                        {t('community.invitations.inviteContributorsDialog.users.validationErrors.required')}
+                      </Caption>
+                    )}
+                    {invalidSelectedContributors && selectedContributorsValue.length > 0 && (
+                      <Caption color="error">
+                        {t('community.invitations.inviteContributorsDialog.users.validationErrors.invalidAddress')}
+                      </Caption>
+                    )}
+                    <SendButton loading={loading} disabled={!isValid} onClick={() => handleSubmit()} />
+                  </DialogActions>
+                </>
+              )}
+              {invitationsResults && (
+                <>
+                  <InvitationsResultDialogContent invitationsResults={invitationsResults} />
+                  <DialogActions>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setFieldValue('selectedContributors', []);
+                        setInvitationSent(undefined);
+                      }}
+                    >
+                      {t('community.invitations.inviteContributorsDialog.users.back')}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setFieldValue('selectedContributors', []);
+                        handleClose();
+                      }}
+                    >
+                      {t('buttons.close')}
+                    </Button>
+                  </DialogActions>
+                </>
+              )}
+            </>
+          );
+        }}
       </Formik>
     </DialogWithGrid>
   );

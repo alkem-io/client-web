@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import { compact } from 'lodash';
 
-export const DUPLICATE_EMAIL_ERROR = 'Duplicate email address';
+export const DUPLICATED_EMAIL_ERROR = 'DUPLICATED_EMAIL_ERROR';
 
 const SelectedContributorSchema = yup.object().shape({
   type: yup
@@ -18,7 +18,7 @@ const SelectedContributorSchema = yup.object().shape({
 });
 
 export const SelectedContributorsArraySchema = yup.array().of(
-  SelectedContributorSchema.test('unique-emails', DUPLICATE_EMAIL_ERROR, function (value) {
+  SelectedContributorSchema.test('unique-emails', DUPLICATED_EMAIL_ERROR, function (value) {
     if (!value || !value.email) return true;
     const email = value.email.toLowerCase();
     const emails = compact(
@@ -31,7 +31,7 @@ export const SelectedContributorsArraySchema = yup.array().of(
     if (firstIndex !== lastIndex) {
       return this.createError({
         path: `${this.path}.email`,
-        message: DUPLICATE_EMAIL_ERROR,
+        message: DUPLICATED_EMAIL_ERROR,
       });
     }
     return true;

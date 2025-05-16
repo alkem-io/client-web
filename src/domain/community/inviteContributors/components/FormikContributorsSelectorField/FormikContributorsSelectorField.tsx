@@ -15,7 +15,7 @@ import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContex
 import ContributorChip from '../ContributorChip/ContributorChip';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import emailParser from './emailParser';
-import { DUPLICATE_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
+import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
 
 const MAX_USERS_SHOWN = 20;
 
@@ -62,7 +62,7 @@ const FormikContributorsSelectorField = ({
   };
 
   const translateEmailError = (error: string) => {
-    if (error === DUPLICATE_EMAIL_ERROR) {
+    if (error === DUPLICATED_EMAIL_ERROR) {
       return t('forms.validations.duplicateEmail');
     }
     return t('forms.validations.invalidEmail');
