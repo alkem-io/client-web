@@ -16,10 +16,10 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
 import { cloneDeep } from 'lodash';
-import { Tagset } from '@/domain/common/profile/Profile';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   authorization:
@@ -55,7 +55,7 @@ export type TypedCalloutDetails = TypedCallout &
         id: string;
         displayName: string;
         description?: string;
-        tagset?: Tagset;
+        tagset?: TagsetModel;
         storageBucket: {
           id: string;
         };

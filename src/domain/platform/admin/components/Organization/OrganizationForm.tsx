@@ -1,6 +1,5 @@
 import {
   CreateOrganizationInput,
-  Organization,
   OrganizationVerificationEnum,
   TagsetType,
   UpdateOrganizationInput,
@@ -9,11 +8,11 @@ import useNavigate from '@/core/routing/useNavigate';
 import { EditMode } from '@/core/ui/forms/editMode';
 import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import { EmptyLocation } from '@/domain/common/location/Location';
+import { EmptyLocation } from '@/domain/common/location/LocationModel';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
 import { formatLocation } from '@/domain/common/location/LocationUtils';
-import { Tagset, UpdateTagset } from '@/domain/common/profile/Profile';
-import { OrganizationInput } from '@/domain/community/contributor/organization/OrganizationInput';
+import { UpdateTagset } from '@/domain/common/profile/Profile';
+import { OrganizationInput } from '@/domain/community/organization/model/OrganizationInput';
 import { OrgVerificationLifecycleEvents } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
@@ -31,63 +30,11 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-
-const EmptyOrganization: Omit<Organization, 'authorization' | 'agent' | 'roleSet'> = {
-  id: '',
-  nameID: '',
-  contactEmail: undefined,
-  domain: '',
-  legalEntityName: '',
-  website: '',
-  verification: {
-    id: '',
-    lifecycle: {
-      id: '',
-    },
-    status: OrganizationVerificationEnum.NotVerified,
-    isFinalized: false,
-    nextEvents: [OrgVerificationLifecycleEvents.VERIFICATION_REQUEST],
-    state: 'notVerified',
-  },
-  account: undefined,
-  profile: {
-    id: '',
-    displayName: '',
-    tagline: '',
-    visuals: [],
-    description: '',
-    url: '',
-    tagsets: undefined,
-    references: [],
-    location: {
-      id: '',
-      city: '',
-      country: '',
-      addressLine1: '',
-      addressLine2: '',
-      stateOrProvince: '',
-      postalCode: '',
-    },
-    storageBucket: {
-      id: '',
-      allowedMimeTypes: [],
-      documents: [],
-      maxFileSize: -1,
-      size: -1,
-    },
-  },
-  settings: {
-    privacy: {
-      contributionRolesPubliclyVisible: false,
-    },
-    membership: {
-      allowUsersMatchingDomainToJoin: false,
-    },
-  },
-};
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { EmptyOrganization, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
 
 interface Props {
-  organization?: Organization;
+  organization?: OrganizationModel;
   editMode?: EditMode;
   onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
   title?: string;
@@ -112,12 +59,12 @@ export const OrganizationForm: FC<Props> = ({
     domain,
     legalEntityName,
     website,
-    verification: { status: verificationStatus },
-    profile: { id: profileId, displayName, description, tagline, references, tagsets, visual, location },
+    profile: { id: profileId, displayName, description, tagline, references, tagsets, visuals, location },
   } = currentOrganization;
 
+  const verificationStatus = currentOrganization.verification?.status || OrganizationVerificationEnum.NotVerified;
   const getUpdatedTagsets = useCallback(
-    (updatedTagsets: Tagset[]) => {
+    (updatedTagsets: TagsetModel[]) => {
       const result: UpdateTagset[] = [];
       updatedTagsets.forEach(updatedTagset => {
         const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
@@ -131,7 +78,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const initialValues: OrganizationInput = {
     name: displayName || EmptyOrganization.profile.displayName,
-    nameID: nameID || EmptyOrganization.nameID,
+    nameID: nameID || '',
     description: description || EmptyOrganization.profile.description || '',
     tagline: tagline || EmptyOrganization.profile.tagline || '',
     location: {
@@ -143,7 +90,7 @@ export const OrganizationForm: FC<Props> = ({
     domain: domain || EmptyOrganization.domain || '',
     legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
     website: website || EmptyOrganization.website || '',
-    verified: verificationStatus || EmptyOrganization.verification.status,
+    verified: verificationStatus,
     references: references || EmptyOrganization.profile.references || [],
   };
 

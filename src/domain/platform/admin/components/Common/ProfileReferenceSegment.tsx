@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
-import { Reference } from '@/domain/common/profile/Profile';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 import { useTranslation } from 'react-i18next';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
   profileId?: string;
@@ -27,7 +27,7 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
   };
 
   // TODO REMOVE CALLBACK FROM SIGNATURE!
-  const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
+  const handleRemove = async (ref: ReferenceModel, removeFn: RemoveFunc) => {
     setRemove(removeFn);
     if (ref.id) {
       deleteReference(ref.id);

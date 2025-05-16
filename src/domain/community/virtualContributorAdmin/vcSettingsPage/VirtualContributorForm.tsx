@@ -24,9 +24,10 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 type VirtualContributorProps = {
   id: string;
@@ -45,7 +46,7 @@ type VirtualContributorProps = {
     tagsets?: Tagset[] | undefined;
     url: string;
     avatar?: Visual | undefined;
-    references?: Reference[];
+    references?: ReferenceModel[];
   };
 };
 
@@ -56,13 +57,13 @@ type VirtualContributorFromProps = {
   tagsets?: Tagset[];
   hostDisplayName: string;
   subSpaceName: string;
-  references?: Reference[];
+  references?: ReferenceModel[];
 };
 
 type Props = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: BasicSpaceProps;
-  avatar: Visual | undefined;
+  avatar: VisualModel | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
   hasBackNavigation?: boolean;
 };
@@ -181,7 +182,7 @@ export const VirtualContributorForm = ({
                         visual={avatar}
                         altText={t('visuals-alt-text.avatar.contributor.text', {
                           displayName,
-                          altText: virtualContributor.profile.avatar?.alternativeText,
+                          altText: avatar?.alternativeText,
                         })}
                       />
                     </Box>

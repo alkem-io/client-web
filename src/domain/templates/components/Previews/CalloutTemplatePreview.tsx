@@ -3,8 +3,8 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-import { findDefaultTagset } from '@/domain/common/tags/utils';
-import { Tagset } from '@/domain/common/profile/Profile';
+import { findDefaultTagset } from '@/domain/common/tagset/utils';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface CalloutTemplatePreviewProps {
   template?: {
@@ -13,7 +13,7 @@ interface CalloutTemplatePreviewProps {
         profile: {
           displayName: string;
           description?: string;
-          tagsets?: Tagset[];
+          tagsets?: TagsetModel[];
         };
         whiteboard?: {
           profile: {

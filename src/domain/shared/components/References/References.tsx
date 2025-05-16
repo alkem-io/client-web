@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import { Reference, ReferenceWithAuthorization } from '@/domain/common/profile/Profile';
+import { ReferenceWithAuthorization } from '@/domain/common/profile/Profile';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
 import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
@@ -7,13 +7,14 @@ import { OpenInNew } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Text } from '@/core/ui/typography';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface ReferencesProps {
   references: ReferenceWithAuthorization[] | undefined;
   noItemsView?: ReactNode;
   icon?: ReferenceViewProps['icon'];
   compact?: boolean;
-  onEdit?: (reference: Reference) => void;
+  onEdit?: (reference: ReferenceModel) => void;
 }
 
 const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact }) => {

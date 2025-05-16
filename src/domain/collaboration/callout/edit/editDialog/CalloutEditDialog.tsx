@@ -72,9 +72,9 @@ const CalloutEditDialog = ({
         references: newCallout.references,
         tagsets: [
           {
-            id: callout.framing.profile.tagset?.id,
+            id: callout.framing.profile.tagset?.id!,
             name: TagsetReservedName.Default,
-            tags: newCallout.tags,
+            tags: newCallout.tags!,
             allowedValues: [],
             type: TagsetType.Freeform,
           },

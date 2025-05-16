@@ -1,14 +1,14 @@
-import { Tagset } from '@/domain/common/profile/Profile';
 import { OrganizationVerificationEnum, Reference } from '@/core/apollo/generated/graphql-schema';
-import { Location } from '@/domain/common/location/Location';
+import { LocationModel } from '@/domain/common/location/LocationModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface OrganizationInput {
   name: string | undefined;
   nameID: string;
   description: string | undefined;
   tagline: string | undefined;
-  location: Location;
-  tagsets: Tagset[];
+  location: LocationModel;
+  tagsets: TagsetModel[];
   contactEmail: string | undefined;
   domain: string | undefined;
   legalEntityName: string | undefined;

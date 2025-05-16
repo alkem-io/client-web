@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganizationContext';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import Loading from '@/core/ui/loading/Loading';
 import { Trans, useTranslation } from 'react-i18next';
 import {

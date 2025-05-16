@@ -1,6 +1,7 @@
 import { TemplateBase } from './TemplateBase';
-import { Reference, UpdateTagset } from '@/domain/common/profile/Profile';
+import { UpdateTagset } from '@/domain/common/profile/Profile';
 import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface CalloutTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Callout
@@ -11,7 +12,7 @@ export interface CalloutTemplate extends TemplateBase {
       profile: {
         displayName: string;
         description?: string;
-        references?: Reference[];
+        references?: ReferenceModel[];
         tagsets?: UpdateTagset[];
       };
       whiteboard?: {

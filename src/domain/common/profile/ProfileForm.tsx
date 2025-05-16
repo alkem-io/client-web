@@ -2,39 +2,33 @@ import { Formik } from 'formik';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { LocationSegment } from '../location/LocationSegment';
-import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { Reference } from './Profile';
+import { TagsetModel } from '../tagset/TagsetModel';
+import { ReferenceModel } from '../reference/ReferenceModel';
+import { ProfileModel } from './ProfileModel';
+import { EmptyLocationMapped, LocationModelMapped } from '../location/LocationModelMapped';
 
 export interface ProfileFormValues {
   name: string;
   tagline: string;
-  location: Partial<Location>;
-  references: Reference[];
-  tagsets: Tagset[];
+  location: Partial<LocationModelMapped>;
+  references: ReferenceModel[];
+  tagsets: TagsetModel[];
 }
 
 type ProfileFormProps = {
-  profile?: {
-    description?: string; // Maybe<Scalars['Markdown']>;
-    displayName: string;
-    id: string;
-    location?: { id: string; city?: string; country?: string };
-    references?: Reference[];
-    tagline?: string;
-    tagsets?: Tagset[];
-  };
+  profile?: ProfileModel;
   name?: string;
-  tagset?: Tagset;
+  tagset?: TagsetModel;
   onSubmit: (formData: ProfileFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
@@ -61,13 +55,14 @@ const ProfileForm = ({
         allowedValues: [],
         type: TagsetType.Freeform,
       },
-    ] as Tagset[];
+    ] as TagsetModel[];
   }, [tagset]);
+
 
   const initialValues: ProfileFormValues = {
     name: name || '',
     tagline: profile?.tagline || '',
-    location: formatLocation(profile?.location) || EmptyLocation,
+    location: formatLocation(profile?.location) || EmptyLocationMapped,
     references: profile?.references || [],
     tagsets,
   };

@@ -8,6 +8,7 @@ import Image from '@/core/ui/image/Image';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from './CropDialog';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 const DEFAULT_SIZE = 128;
 
@@ -17,17 +18,7 @@ const ImagePlaceholder = ({ src, alt, ...props }: BoxProps<'img'>) => {
 };
 
 export interface VisualUploadProps {
-  visual?: {
-    id: string;
-    allowedTypes: string[];
-    alternativeText?: string;
-    aspectRatio: number;
-    maxHeight: number;
-    maxWidth: number;
-    minHeight: number;
-    minWidth: number;
-    uri: string;
-  };
+  visual?: VisualModel;
   height?: number;
   altText?: string;
 }
@@ -39,9 +30,10 @@ export interface VisualUploadProps {
  * @param width
  * @constructor
  */
-const VisualUpload = ({ visual, height = DEFAULT_SIZE, altText }: VisualUploadProps) => {
+const VisualUpload = ({ visual, height = DEFAULT_SIZE }: VisualUploadProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const altText = visual?.alternativeText || t('components.visual-upload.no-data');
 
   const [uploadVisual, { loading }] = useUploadVisualMutation({
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),

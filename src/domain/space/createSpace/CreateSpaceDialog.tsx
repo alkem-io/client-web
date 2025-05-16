@@ -34,6 +34,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface FormValues {
   name: string;
@@ -104,7 +105,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         allowedValues: [],
         type: TagsetType.Freeform,
       },
-    ] as Tagset[];
+    ] as TagsetModel[];
   }, []);
 
   const initialValues: Partial<FormValues> = {

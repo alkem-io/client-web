@@ -6,7 +6,6 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Reference } from '@/domain/common/profile/Profile';
 import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
@@ -15,18 +14,20 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 type FormValue = {
   name: string;
   description: string;
-  tagsets: Tagset[];
+  tagsets: TagsetModel[];
   postNames: string[];
-  references: Reference[];
+  references: ReferenceModel[];
 };
 
 const FormikEffect = FormikEffectFactory<FormValue>();
 
-type PostEditFields = Partial<Pick<Post, 'profile'>> & { references?: Reference[] } & {
+type PostEditFields = Partial<Pick<Post, 'profile'>> & { references?: ReferenceModel[] } & {
   id?: string;
 };
 export type PostFormOutput = {
@@ -45,7 +46,7 @@ export interface PostFormProps {
   onChange?: (post: PostFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   onAddReference?: (push: PushFunc, referencesLength: number) => void;
-  onRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
+  onRemoveReference?: (ref: ReferenceModel, remove: RemoveFunc) => void;
   children?: FormikConfig<FormValue>['children'];
   disableRichMedia?: boolean;
 }
