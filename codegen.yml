@@ -9,6 +9,8 @@ hooks:
 generates:
   src/core/apollo/generated/graphql-schema.ts:
     plugins:
+      - add:
+          content: "// eslint-disable @typescript-eslint/no-explicit-any"
       - typescript
       - typescript-operations
     config:
@@ -36,6 +38,8 @@ generates:
       typesPath: ./graphql-schema
       importTypesNamespace: SchemaTypes
     plugins:
+      - add:
+          content: "// eslint-disable @typescript-eslint/no-explicit-any"
       - typescript-react-apollo
     config:
       withHooks: true
