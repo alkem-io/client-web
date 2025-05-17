@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type APMKeySpecifier = ('endpoint' | 'rumEnabled' | APMKeySpecifier)[];
 export type APMFieldPolicy = {

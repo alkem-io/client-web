@@ -126,7 +126,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       setDemoCalloutCreationLoading(false);
       setCalloutId(callout?.id);
       removeVCCreationCache();
-    } catch (e) {
+    } catch (_error) {
       setHasError(true);
     }
   };

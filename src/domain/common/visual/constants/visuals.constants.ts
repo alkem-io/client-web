@@ -8,5 +8,4 @@ export const VisualName: Record<VisualType, string> = {
   [VisualType.Card]: camelCase(VisualType.Card),
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export type VisualName = typeof VisualName[keyof typeof VisualName];
+export type VisualName = (typeof VisualName)[keyof typeof VisualName];

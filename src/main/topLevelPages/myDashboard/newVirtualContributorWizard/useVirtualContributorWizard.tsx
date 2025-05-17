@@ -266,7 +266,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       }
 
       return data?.createVirtualContributor;
-    } catch (error) {
+    } catch (_error) {
       return;
     }
   };
