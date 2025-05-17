@@ -1,4 +1,4 @@
-import js from '@eslint/js';
+//import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
@@ -37,6 +37,7 @@ export default [
         'error',
         { blankLine: 'always', prev: ['interface'], next: '*' },
         { blankLine: 'always', next: ['interface'], prev: '*' },
+        { blankLine: 'any', prev: 'export', next: 'export' },
       ],
     },
   },
@@ -71,6 +72,7 @@ export default [
       'padding-line-between-statements': [
         'error',
         { blankLine: 'always', prev: ['block-like', 'class', 'function'], next: 'export' },
+        { blankLine: 'any', prev: 'export', next: 'export' },
       ],
       // react rules
       'react-hooks/exhaustive-deps': 'off',
