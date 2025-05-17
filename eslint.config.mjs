@@ -1,12 +1,11 @@
-//import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import js from '@eslint/js';
 
 export default [
-  //js, // somehow importing this is causing an error "Unexpected key meta found", might be due to mix of config setup
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -24,6 +23,7 @@ export default [
       '@typescript-eslint': tsPlugin,
     },
     rules: {
+      ...js.rules,
       '@typescript-eslint/no-unused-vars': [
         process.env.NODE_ENV === 'production' ? 2 : 1,
         {
@@ -64,6 +64,7 @@ export default [
       'jsx-a11y': jsxA11yPlugin,
     },
     rules: {
+      ...js.rules,
       quotes: ['error', 'single', { avoidEscape: true }],
       'no-multiple-empty-lines': 'error',
       'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
