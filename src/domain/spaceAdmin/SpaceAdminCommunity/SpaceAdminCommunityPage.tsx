@@ -112,7 +112,7 @@ const SpaceAdminCommunityPage = ({
   const onAddVirtualContributor = async (vcId: string) => {
     try {
       await onAddVC(vcId);
-    } catch (error) {
+    } catch (_error) {
       setError(true);
 
       return;

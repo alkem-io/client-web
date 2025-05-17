@@ -200,7 +200,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
 
         setOnAccount(accountVCs);
         setInLibrary(filteredLibraryVCs);
-      } catch (error) {
+      } catch (_error) {
+        // TODO: should we not be showing the error message?
         notify(t('community.invitations.inviteContributorsDialog.vcs.vcFetchErrorMessage'), 'error');
       }
     };

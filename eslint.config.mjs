@@ -29,6 +29,7 @@ export default [
         {
           argsIgnorePattern: '^_',
           ignoreRestSiblings: true,
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',
