@@ -1423,6 +1423,37 @@ export const EntitlementDetailsFragmentDoc = gql`
     enabled
   }
 `;
+export const AiPersonaWithModelCardFragmentDoc = gql`
+  fragment AiPersonaWithModelCard on AiPersona {
+    id
+    bodyOfKnowledgeID
+    bodyOfKnowledgeType
+    bodyOfKnowledge
+    engine
+    aiPersonaServiceID
+    modelCard {
+      spaceUsage {
+        modelCardEntry
+        flags {
+          name
+          enabled
+        }
+      }
+      aiEngine {
+        isExternal
+        hostingLocation
+        isUsingOpenWeightsModel
+        isInteractionDataUsedForTraining
+        canAccessWebWhenAnswering
+        areAnswersRestrictedToBodyOfKnowledge
+        additionalTechnicalDetails
+      }
+      monitoring {
+        isUsageMonitoredByAlkemio
+      }
+    }
+  }
+`;
 export const VirtualContributorFullFragmentDoc = gql`
   fragment VirtualContributorFull on VirtualContributor {
     id
@@ -1450,14 +1481,12 @@ export const VirtualContributorFullFragmentDoc = gql`
       }
     }
     aiPersona {
-      bodyOfKnowledge
-      bodyOfKnowledgeType
-      bodyOfKnowledgeID
-      engine
+      ...AiPersonaWithModelCard
     }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${AiPersonaWithModelCardFragmentDoc}
 `;
 export const InnovationHubProfileFragmentDoc = gql`
   fragment InnovationHubProfile on Profile {
@@ -13709,33 +13738,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
         listedInStore
         status
         aiPersona {
-          id
-          bodyOfKnowledgeID
-          bodyOfKnowledgeType
-          bodyOfKnowledge
-          engine
-          aiPersonaServiceID
-          modelCard {
-            spaceUsage {
-              modelCardEntry
-              flags {
-                name
-                enabled
-              }
-            }
-            aiEngine {
-              isExternal
-              hostingLocation
-              isUsingOpenWeightsModel
-              isInteractionDataUsedForTraining
-              canAccessWebWhenAnswering
-              areAnswersRestrictedToBodyOfKnowledge
-              additionalTechnicalDetails
-            }
-            monitoring {
-              isUsageMonitoredByAlkemio
-            }
-          }
+          ...AiPersonaWithModelCard
         }
         profile {
           id
@@ -13759,6 +13762,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
       }
     }
   }
+  ${AiPersonaWithModelCardFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;

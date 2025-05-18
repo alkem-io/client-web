@@ -17791,6 +17791,43 @@ export type VirtualContributorProfileWithModelCardQuery = {
   };
 };
 
+export type AiPersonaWithModelCardFragment = {
+  __typename?: 'AiPersona';
+  id: string;
+  bodyOfKnowledgeID?: string | undefined;
+  bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+  bodyOfKnowledge?: string | undefined;
+  engine: AiPersonaEngine;
+  aiPersonaServiceID?: string | undefined;
+  modelCard: {
+    __typename?: 'AiPersonaModelCard';
+    spaceUsage?:
+      | Array<{
+          __typename?: 'ModelCardSpaceUsageResult';
+          modelCardEntry: AiPersonaModelCardEntry;
+          flags: Array<{
+            __typename?: 'AiPersonaModelCardFlag';
+            name: AiPersonaModelCardEntryFlagName;
+            enabled: boolean;
+          }>;
+        }>
+      | undefined;
+    aiEngine?:
+      | {
+          __typename?: 'ModelCardAiEngineResult';
+          isExternal: boolean;
+          hostingLocation: string;
+          isUsingOpenWeightsModel: boolean;
+          isInteractionDataUsedForTraining?: boolean | undefined;
+          canAccessWebWhenAnswering: boolean;
+          areAnswersRestrictedToBodyOfKnowledge: string;
+          additionalTechnicalDetails: string;
+        }
+      | undefined;
+    monitoring?: { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean } | undefined;
+  };
+};
+
 export type VirtualContributorFullFragment = {
   __typename?: 'VirtualContributor';
   id: string;
@@ -17821,10 +17858,39 @@ export type VirtualContributorFullFragment = {
   aiPersona?:
     | {
         __typename?: 'AiPersona';
-        bodyOfKnowledge?: string | undefined;
-        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+        id: string;
         bodyOfKnowledgeID?: string | undefined;
+        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+        bodyOfKnowledge?: string | undefined;
         engine: AiPersonaEngine;
+        aiPersonaServiceID?: string | undefined;
+        modelCard: {
+          __typename?: 'AiPersonaModelCard';
+          spaceUsage?:
+            | Array<{
+                __typename?: 'ModelCardSpaceUsageResult';
+                modelCardEntry: AiPersonaModelCardEntry;
+                flags: Array<{
+                  __typename?: 'AiPersonaModelCardFlag';
+                  name: AiPersonaModelCardEntryFlagName;
+                  enabled: boolean;
+                }>;
+              }>
+            | undefined;
+          aiEngine?:
+            | {
+                __typename?: 'ModelCardAiEngineResult';
+                isExternal: boolean;
+                hostingLocation: string;
+                isUsingOpenWeightsModel: boolean;
+                isInteractionDataUsedForTraining?: boolean | undefined;
+                canAccessWebWhenAnswering: boolean;
+                areAnswersRestrictedToBodyOfKnowledge: string;
+                additionalTechnicalDetails: string;
+              }
+            | undefined;
+          monitoring?: { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean } | undefined;
+        };
       }
     | undefined;
 };
@@ -22160,10 +22226,41 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         aiPersona?:
           | {
               __typename?: 'AiPersona';
-              bodyOfKnowledge?: string | undefined;
-              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              id: string;
               bodyOfKnowledgeID?: string | undefined;
+              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              bodyOfKnowledge?: string | undefined;
               engine: AiPersonaEngine;
+              aiPersonaServiceID?: string | undefined;
+              modelCard: {
+                __typename?: 'AiPersonaModelCard';
+                spaceUsage?:
+                  | Array<{
+                      __typename?: 'ModelCardSpaceUsageResult';
+                      modelCardEntry: AiPersonaModelCardEntry;
+                      flags: Array<{
+                        __typename?: 'AiPersonaModelCardFlag';
+                        name: AiPersonaModelCardEntryFlagName;
+                        enabled: boolean;
+                      }>;
+                    }>
+                  | undefined;
+                aiEngine?:
+                  | {
+                      __typename?: 'ModelCardAiEngineResult';
+                      isExternal: boolean;
+                      hostingLocation: string;
+                      isUsingOpenWeightsModel: boolean;
+                      isInteractionDataUsedForTraining?: boolean | undefined;
+                      canAccessWebWhenAnswering: boolean;
+                      areAnswersRestrictedToBodyOfKnowledge: string;
+                      additionalTechnicalDetails: string;
+                    }
+                  | undefined;
+                monitoring?:
+                  | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                  | undefined;
+              };
             }
           | undefined;
       }>;
@@ -22222,10 +22319,41 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
               aiPersona?:
                 | {
                     __typename?: 'AiPersona';
-                    bodyOfKnowledge?: string | undefined;
-                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    id: string;
                     bodyOfKnowledgeID?: string | undefined;
+                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    bodyOfKnowledge?: string | undefined;
                     engine: AiPersonaEngine;
+                    aiPersonaServiceID?: string | undefined;
+                    modelCard: {
+                      __typename?: 'AiPersonaModelCard';
+                      spaceUsage?:
+                        | Array<{
+                            __typename?: 'ModelCardSpaceUsageResult';
+                            modelCardEntry: AiPersonaModelCardEntry;
+                            flags: Array<{
+                              __typename?: 'AiPersonaModelCardFlag';
+                              name: AiPersonaModelCardEntryFlagName;
+                              enabled: boolean;
+                            }>;
+                          }>
+                        | undefined;
+                      aiEngine?:
+                        | {
+                            __typename?: 'ModelCardAiEngineResult';
+                            isExternal: boolean;
+                            hostingLocation: string;
+                            isUsingOpenWeightsModel: boolean;
+                            isInteractionDataUsedForTraining?: boolean | undefined;
+                            canAccessWebWhenAnswering: boolean;
+                            areAnswersRestrictedToBodyOfKnowledge: string;
+                            additionalTechnicalDetails: string;
+                          }
+                        | undefined;
+                      monitoring?:
+                        | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                        | undefined;
+                    };
                   }
                 | undefined;
             }>;
@@ -22289,10 +22417,41 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                 aiPersona?:
                   | {
                       __typename?: 'AiPersona';
-                      bodyOfKnowledge?: string | undefined;
-                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      id: string;
                       bodyOfKnowledgeID?: string | undefined;
+                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      bodyOfKnowledge?: string | undefined;
                       engine: AiPersonaEngine;
+                      aiPersonaServiceID?: string | undefined;
+                      modelCard: {
+                        __typename?: 'AiPersonaModelCard';
+                        spaceUsage?:
+                          | Array<{
+                              __typename?: 'ModelCardSpaceUsageResult';
+                              modelCardEntry: AiPersonaModelCardEntry;
+                              flags: Array<{
+                                __typename?: 'AiPersonaModelCardFlag';
+                                name: AiPersonaModelCardEntryFlagName;
+                                enabled: boolean;
+                              }>;
+                            }>
+                          | undefined;
+                        aiEngine?:
+                          | {
+                              __typename?: 'ModelCardAiEngineResult';
+                              isExternal: boolean;
+                              hostingLocation: string;
+                              isUsingOpenWeightsModel: boolean;
+                              isInteractionDataUsedForTraining?: boolean | undefined;
+                              canAccessWebWhenAnswering: boolean;
+                              areAnswersRestrictedToBodyOfKnowledge: string;
+                              additionalTechnicalDetails: string;
+                            }
+                          | undefined;
+                        monitoring?:
+                          | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                          | undefined;
+                      };
                     }
                   | undefined;
               }>;

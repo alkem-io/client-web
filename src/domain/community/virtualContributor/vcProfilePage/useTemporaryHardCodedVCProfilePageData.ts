@@ -1,4 +1,5 @@
 import { AiPersonaModelCardModel } from '../model/AiPersonaModelCardModel';
+import { AiPersonaModelCardEntry, AiPersonaModelCardEntryFlagName } from '@/core/apollo/generated/graphql-schema';
 
 export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModelCardModel) => {
   // TODO: the logic here should be isGeneric, isAssistant and isExternal = isGeneric || isAssistant;
@@ -10,49 +11,56 @@ export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModel
     sections: {
       functionality: {
         title: 'Functionality',
-        cells: [
-          {
-            icon: 'functionalCapabilities',
-            title: 'Functional Capabilities',
-            bullets: [
-              {
-                icon: 'check',
-                text: 'Answer questions in comments',
-              },
-              {
-                icon: '',
-                text: 'Create new posts',
-              },
-              {
-                icon: '',
-                text: 'Invite other contributors',
-              },
-            ],
-          },
-          {
-            icon: 'cloudUpload',
-            title: 'Data access from the Space where it’s a member',
-            bullets: [
-              {
-                icon: 'check',
-                text: 'About page',
-              },
-              {
-                icon: '',
-                text: 'Posts & Contributions',
-              },
-              {
-                icon: '',
-                text: 'Subspaces',
-              },
-            ],
-          },
-          {
-            icon: 'shieldPerson',
-            title: 'Role Requirements',
-            description: 'This VC needs to be granted <strong>member rights</strong> to function correctly',
-          },
-        ],
+        cells: modelCard.spaceUsage
+          .map(usage => {
+            switch (usage.modelCardEntry) {
+              case AiPersonaModelCardEntry.SpaceCapabilities:
+                return {
+                  icon: 'functionalCapabilities',
+                  title: 'Functional Capabilities',
+                  bullets: usage.flags.map(flag => ({
+                    icon: flag.enabled ? 'check' : '',
+                    text:
+                      flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityTagging
+                        ? 'Answer questions in comments'
+                        : flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityCreateContent
+                          ? 'Create new posts'
+                          : flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityCommunityManagement
+                            ? 'Invite other contributors'
+                            : flag.name,
+                  })),
+                };
+              case AiPersonaModelCardEntry.SpaceDataAccess:
+                return {
+                  icon: 'cloudUpload',
+                  title: 'Data access from the Space where it is a member',
+                  bullets: usage.flags.map(flag => ({
+                    icon: flag.enabled ? 'check' : '',
+                    text:
+                      flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessAbout
+                        ? 'About page'
+                        : flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessContent
+                          ? 'Posts & Contributions'
+                          : flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessSubspaces
+                            ? 'Subspaces'
+                            : flag.name,
+                  })),
+                };
+              case AiPersonaModelCardEntry.SpaceRoleRequired:
+                return {
+                  icon: 'shieldPerson',
+                  title: 'Role Requirements',
+                  description: usage.flags.some(
+                    flag => flag.name === AiPersonaModelCardEntryFlagName.SpaceRoleMember && flag.enabled
+                  )
+                    ? 'This VC needs to be granted <strong>member rights</strong> to function correctly'
+                    : 'No special member rights required',
+                };
+              default:
+                return null;
+            }
+          })
+          .filter(Boolean),
       },
 
       aiEngine: {

@@ -15,33 +15,7 @@ query VirtualContributorProfileWithModelCard($id: UUID!) {
       listedInStore
       status
       aiPersona {
-        id
-        bodyOfKnowledgeID
-        bodyOfKnowledgeType
-        bodyOfKnowledge
-        engine
-        aiPersonaServiceID
-        modelCard {
-          spaceUsage {
-            modelCardEntry
-            flags {
-              name
-              enabled
-            }
-          }
-          aiEngine {
-            isExternal
-            hostingLocation
-            isUsingOpenWeightsModel
-            isInteractionDataUsedForTraining
-            canAccessWebWhenAnswering
-            areAnswersRestrictedToBodyOfKnowledge
-            additionalTechnicalDetails
-          }
-          monitoring {
-            isUsageMonitoredByAlkemio
-          }
-        }
+        ...AiPersonaWithModelCard
       }
       profile {
         id

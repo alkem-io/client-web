@@ -88,46 +88,48 @@ const VCProfileContentView = ({ virtualContributor, modelCard, openKnowledgeBase
           <SectionTitle>{sections.functionality.title}</SectionTitle>
 
           <SectionWrapper>
-            {sections.functionality.cells.map((cell, idx) => (
-              <SectionItem key={idx}>
-                <Gutters disablePadding alignItems="center" paddingBottom={gutters(1)}>
-                  {renderCellIcon(cell.icon)}
-                </Gutters>
+            {sections.functionality.cells.map((cell, idx) =>
+              cell ? (
+                <SectionItem key={idx}>
+                  <Gutters disablePadding alignItems="center" paddingBottom={gutters(1)}>
+                    {renderCellIcon(cell.icon)}
+                  </Gutters>
 
-                <Caption fontWeight={700} textAlign="center" sx={{ marginBottom: gutters(1) }}>
-                  {cell.title}
-                </Caption>
+                  <Caption fontWeight={700} textAlign="center" sx={{ marginBottom: gutters(1) }}>
+                    {cell.title}
+                  </Caption>
 
-                {cell?.bullets?.map((bullet, idx) => (
-                  <Gutters key={idx} disablePadding paddingLeft={gutters(1.2)}>
-                    <Gutters
-                      disablePadding
-                      position="relative"
-                      flexDirection="row"
-                      alignItems="start"
-                      marginTop={gutters(0.5)}
-                    >
-                      {bullet.icon ? (
-                        <CheckIcon fontSize="small" sx={{ position: 'absolute', left: -24 }} />
-                      ) : (
-                        <RemoveIcon fontSize="small" sx={{ position: 'absolute', left: -24 }} />
-                      )}
+                  {cell?.bullets?.map((bullet, idx) => (
+                    <Gutters key={idx} disablePadding paddingLeft={gutters(1.2)}>
+                      <Gutters
+                        disablePadding
+                        position="relative"
+                        flexDirection="row"
+                        alignItems="start"
+                        marginTop={gutters(0.5)}
+                      >
+                        {bullet.icon ? (
+                          <CheckIcon fontSize="small" sx={{ position: 'absolute', left: -24 }} />
+                        ) : (
+                          <RemoveIcon fontSize="small" sx={{ position: 'absolute', left: -24 }} />
+                        )}
 
-                      <Caption>{bullet.text}</Caption>
+                        <Caption>{bullet.text}</Caption>
+                      </Gutters>
                     </Gutters>
-                  </Gutters>
-                ))}
+                  ))}
 
-                {cell.description && (
-                  <Gutters disableGap disablePadding>
-                    <Caption sx={{ textAlign: 'center' }}>
-                      {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server and use Trans! */}
-                      <span dangerouslySetInnerHTML={{ __html: cell.description }} />
-                    </Caption>
-                  </Gutters>
-                )}
-              </SectionItem>
-            ))}
+                  {cell.description && (
+                    <Gutters disableGap disablePadding>
+                      <Caption sx={{ textAlign: 'center' }}>
+                        {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server and use Trans! */}
+                        <span dangerouslySetInnerHTML={{ __html: cell.description }} />
+                      </Caption>
+                    </Gutters>
+                  )}
+                </SectionItem>
+              ) : null
+            )}
           </SectionWrapper>
         </Gutters>
       </PageContentBlock>
