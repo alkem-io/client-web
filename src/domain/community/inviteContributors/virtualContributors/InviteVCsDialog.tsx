@@ -13,7 +13,6 @@ import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from './InviteVirtualContributorDialog';
 import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
 import VCProfileContentView from '../../virtualContributor/vcProfilePage/VCProfileContentView';
-import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -26,6 +25,7 @@ import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
@@ -65,7 +65,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const [action, setAction] = useState<'add' | 'invite'>();
   const [selectedVirtualContributor, setSelectedVirtualContributor] = useState<ContributorProps>();
   const [selectedVcProvider, setSelectedVcProvider] = useState<ProviderProfile>();
-  const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
+  const [bokProfile, setBoKProfile] = useState<SpaceBodyOfKnowledgeModel>();
 
   const getContributorsBoKProfile = async (vcId: string) => {
     const vc = getContributorById(vcId);

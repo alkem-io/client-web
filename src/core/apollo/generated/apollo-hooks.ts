@@ -13209,25 +13209,6 @@ export const VirtualContributorDocument = gql`
             knowledgeBaseContentVisible
           }
         }
-        provider {
-          id
-          profile {
-            id
-            displayName
-            url
-            location {
-              country
-              city
-            }
-            avatar: visual(type: AVATAR) {
-              ...VisualFull
-            }
-            tagsets {
-              id
-              tags
-            }
-          }
-        }
         searchVisibility
         listedInStore
         status
@@ -13261,8 +13242,8 @@ export const VirtualContributorDocument = gql`
       }
     }
   }
-  ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -13953,6 +13934,151 @@ export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAiPersonaServiceMutation,
   SchemaTypes.UpdateAiPersonaServiceMutationVariables
 >;
+export const VirtualContributorWithModelCardDocument = gql`
+  query VirtualContributorWithModelCard($id: UUID!) {
+    lookup {
+      virtualContributor(ID: $id) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        settings {
+          privacy {
+            knowledgeBaseContentVisible
+          }
+        }
+        searchVisibility
+        listedInStore
+        status
+        aiPersona {
+          id
+          bodyOfKnowledgeID
+          bodyOfKnowledgeType
+          bodyOfKnowledge
+          engine
+          aiPersonaServiceID
+          modelCard {
+            spaceUsage {
+              modelCardEntry
+              flags {
+                name
+                enabled
+              }
+            }
+            aiEngine {
+              isExternal
+              hostingLocation
+              isUsingOpenWeightsModel
+              isInteractionDataUsedForTraining
+              canAccessWebWhenAnswering
+            }
+            monitoring {
+              isUsageMonitoredByAlkemio
+            }
+          }
+        }
+        profile {
+          id
+          displayName
+          description
+          tagline
+          tagsets {
+            ...TagsetDetails
+          }
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          references {
+            id
+            name
+            uri
+            description
+          }
+        }
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorWithModelCardQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorWithModelCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorWithModelCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorWithModelCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorWithModelCardQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorWithModelCardQuery,
+    SchemaTypes.VirtualContributorWithModelCardQueryVariables
+  > &
+    ({ variables: SchemaTypes.VirtualContributorWithModelCardQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorWithModelCardQuery,
+    SchemaTypes.VirtualContributorWithModelCardQueryVariables
+  >(VirtualContributorWithModelCardDocument, options);
+}
+
+export function useVirtualContributorWithModelCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorWithModelCardQuery,
+    SchemaTypes.VirtualContributorWithModelCardQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorWithModelCardQuery,
+    SchemaTypes.VirtualContributorWithModelCardQueryVariables
+  >(VirtualContributorWithModelCardDocument, options);
+}
+
+export function useVirtualContributorWithModelCardSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VirtualContributorWithModelCardQuery,
+        SchemaTypes.VirtualContributorWithModelCardQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.VirtualContributorWithModelCardQuery,
+    SchemaTypes.VirtualContributorWithModelCardQueryVariables
+  >(VirtualContributorWithModelCardDocument, options);
+}
+
+export type VirtualContributorWithModelCardQueryHookResult = ReturnType<typeof useVirtualContributorWithModelCardQuery>;
+export type VirtualContributorWithModelCardLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorWithModelCardLazyQuery
+>;
+export type VirtualContributorWithModelCardSuspenseQueryHookResult = ReturnType<
+  typeof useVirtualContributorWithModelCardSuspenseQuery
+>;
+export type VirtualContributorWithModelCardQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorWithModelCardQuery,
+  SchemaTypes.VirtualContributorWithModelCardQueryVariables
+>;
+export function refetchVirtualContributorWithModelCardQuery(
+  variables: SchemaTypes.VirtualContributorWithModelCardQueryVariables
+) {
+  return { query: VirtualContributorWithModelCardDocument, variables: variables };
+}
+
 export const VirtualContributorUpdatesDocument = gql`
   subscription virtualContributorUpdates($virtualContributorID: UUID!) {
     virtualContributorUpdated(virtualContributorID: $virtualContributorID) {

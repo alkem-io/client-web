@@ -8,7 +8,6 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { type VCProfilePageViewProps } from './model';
 import VCProfileContentView from './VCProfileContentView';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, CardText } from '@/core/ui/typography';
@@ -20,10 +19,19 @@ import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
+import { VirtualContributorModel } from '../model/VirtualContributorModelFull';
+import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
 const bokVisitButtonStyles = { width: 'fit-content', marginTop: gutters(1) };
+
+export type VCProfilePageViewProps = {
+  bokProfile?: SpaceBodyOfKnowledgeModel;
+  virtualContributor?: VirtualContributorModel;
+  navigateToKnowledgeBase?: boolean;
+  openKnowledgeBaseDialog?: boolean;
+};
 
 export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePageViewProps) => {
   const navigate = useNavigate();

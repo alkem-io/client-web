@@ -19,11 +19,11 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { type VCProfilePageViewProps } from './model';
 import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
 import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
+import { VCProfilePageViewProps } from './VCProfilePageView';
 
 const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: VCProfilePageViewProps) => {
   const { t } = useTranslation();
