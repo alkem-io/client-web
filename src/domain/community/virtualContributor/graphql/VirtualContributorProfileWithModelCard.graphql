@@ -1,4 +1,4 @@
-query VirtualContributorWithModelCard($id: UUID!) {
+query VirtualContributorProfileWithModelCard($id: UUID!) {
   lookup {
     virtualContributor(ID: $id) {
       id
@@ -35,6 +35,8 @@ query VirtualContributorWithModelCard($id: UUID!) {
             isUsingOpenWeightsModel
             isInteractionDataUsedForTraining
             canAccessWebWhenAnswering
+            areAnswersRestrictedToBodyOfKnowledge
+            additionalTechnicalDetails
           }
           monitoring {
             isUsageMonitoredByAlkemio

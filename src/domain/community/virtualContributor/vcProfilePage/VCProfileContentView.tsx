@@ -25,7 +25,7 @@ import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedV
 import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
 import { VCProfilePageViewProps } from './VCProfilePageView';
 
-const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: VCProfilePageViewProps) => {
+const VCProfileContentView = ({ virtualContributor, modelCard, openKnowledgeBaseDialog }: VCProfilePageViewProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
     }
   };
 
-  const { sections } = useTemporaryHardCodedVCProfilePageData(virtualContributor?.aiPersona?.engine);
+  const { sections } = useTemporaryHardCodedVCProfilePageData(modelCard);
 
   const renderCellIcon = (iconName: string) => {
     switch (iconName) {

@@ -1,7 +1,7 @@
 import { Reference } from '@/domain/common/profile/Profile';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 
-export type VirtualContributorModel = {
+export type VirtualContributorModelFull = {
   id: string;
   profile: {
     displayName: string;

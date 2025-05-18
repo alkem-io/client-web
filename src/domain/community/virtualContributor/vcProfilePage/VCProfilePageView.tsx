@@ -19,8 +19,9 @@ import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
-import { VirtualContributorModel } from '../model/VirtualContributorModelFull';
+import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
+import { AiPersonaModelCardModel } from '../model/AiPersonaModelCardModel';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -28,12 +29,13 @@ const bokVisitButtonStyles = { width: 'fit-content', marginTop: gutters(1) };
 
 export type VCProfilePageViewProps = {
   bokProfile?: SpaceBodyOfKnowledgeModel;
-  virtualContributor?: VirtualContributorModel;
+  virtualContributor?: VirtualContributorModelFull;
+  modelCard: AiPersonaModelCardModel;
   navigateToKnowledgeBase?: boolean;
   openKnowledgeBaseDialog?: boolean;
 };
 
-export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePageViewProps) => {
+export const VCProfilePageView = ({ virtualContributor, modelCard, ...rest }: VCProfilePageViewProps) => {
   const navigate = useNavigate();
 
   const { t } = useTranslation();
@@ -44,11 +46,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
   const bodyOfKnowledgeType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
   const engine = virtualContributor?.aiPersona?.engine;
 
-  const isExternal = [
-    AiPersonaEngine.GenericOpenai,
-    AiPersonaEngine.OpenaiAssistant,
-    AiPersonaEngine.LibraFlow,
-  ].includes(engine!);
+  const isExternal = modelCard.aiEngine.isExternal;
 
   const hasSpaceKnowledge = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const hasKnowledgeBase = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
@@ -183,7 +181,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <VCProfileContentView virtualContributor={virtualContributor} {...rest} />
+        <VCProfileContentView virtualContributor={virtualContributor} modelCard={modelCard} {...rest} />
       </PageContentColumn>
     </PageContent>
   );

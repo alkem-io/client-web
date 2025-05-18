@@ -1,9 +1,9 @@
-import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaModelCardModel } from '../model/AiPersonaModelCardModel';
 
-export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = AiPersonaEngine.GenericOpenai) => {
+export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModelCardModel) => {
   // TODO: the logic here should be isGeneric, isAssistant and isExternal = isGeneric || isAssistant;
-  const isExternal = [AiPersonaEngine.LibraFlow, AiPersonaEngine.GenericOpenai].includes(type);
-  const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
+  const isExternal = modelCard.aiEngine.isExternal;
+  const isAssistant = modelCard.aiEngine.isAssistant;
   const isExternal_OR_Assistant = isExternal || isAssistant;
 
   return {
@@ -62,44 +62,35 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
             icon: 'settingsMotion',
             title: ' Open Model Transparency',
             description: 'Does the VC use an open-weight model?',
-            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
-            answer: isExternal_OR_Assistant ? 'No' : 'Yes',
+            answerIcon: modelCard.aiEngine.isUsingOpenWeightsModel ? 'exclamation' : 'check',
+            answer: modelCard.aiEngine.isUsingOpenWeightsModel ? 'No' : 'Yes',
           },
           {
             icon: 'database',
             title: 'Data Usage Disclosure',
             description: 'Is interaction data used in any way for model training?',
-            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
-            answer: isExternal_OR_Assistant ? 'Unknown' : 'No',
+            answerIcon: modelCard.aiEngine.isInteractionDataUsedForTraining ? 'exclamation' : 'check',
+            answer: modelCard.aiEngine.isInteractionDataUsedForTraining ? 'Unknown' : 'No',
           },
           {
             icon: 'knowledge',
             title: 'Knowledge Restriction',
             description: 'Is the VC prompted to limit the responses to a specific body of knowledge?',
             answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
-            answer: (() => {
-              switch (type) {
-                case AiPersonaEngine.GenericOpenai:
-                  return 'No';
-                case AiPersonaEngine.OpenaiAssistant:
-                  return 'Yes, when provided';
-                default:
-                  return 'Yes';
-              }
-            })(),
+            answer: modelCard.aiEngine.areAnswersRestrictedToBodyOfKnowledge,
           },
           {
             icon: 'globe',
             title: 'Web Access',
             description: 'Can the VC access or search the web?',
-            answerIcon: isExternal ? 'check' : 'exclamation',
-            answer: isExternal ? 'Yes' : 'No',
+            answerIcon: modelCard.aiEngine.canAccessWebWhenAnswering ? 'check' : 'exclamation',
+            answer: modelCard.aiEngine.canAccessWebWhenAnswering ? 'Yes' : 'No',
           },
           {
             icon: 'location',
             title: 'Physical Location',
             description: 'Where is the AI service hosted?',
-            answer: isExternal_OR_Assistant ? 'Unknown' : 'Sweden, EU',
+            answer: modelCard.aiEngine.hostingLocation,
           },
           {
             icon: 'techReferences',
@@ -107,11 +98,7 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
             description: 'Access to detailed information on the underlying models specifications',
             buttonIcon: 'launch',
             buttonText: 'SEE DOCUMENTATION',
-            to: isExternal
-              ? 'https://platform.openai.com/docs/overview'
-              : isAssistant
-              ? 'https://platform.openai.com/docs/assistants/overview'
-              : 'https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/tree/main',
+            to: modelCard.aiEngine.additionalTechnicalDetails,
           },
         ],
       },

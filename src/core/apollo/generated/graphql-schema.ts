@@ -17682,107 +17682,11 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
   };
 };
 
-export type UpdateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: UpdateVirtualContributorInput;
-}>;
-
-export type UpdateVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  updateVirtualContributor: {
-    __typename?: 'VirtualContributor';
-    id: string;
-    listedInStore: boolean;
-    status: VirtualContributorStatus;
-    searchVisibility: SearchVisibility;
-    settings: {
-      __typename?: 'VirtualContributorSettings';
-      privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
-    };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      tagline?: string | undefined;
-      displayName: string;
-      description?: string | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-    };
-  };
-};
-
-export type UpdateVirtualContributorSettingsMutationVariables = Exact<{
-  settingsData: UpdateVirtualContributorSettingsInput;
-}>;
-
-export type UpdateVirtualContributorSettingsMutation = {
-  __typename?: 'Mutation';
-  updateVirtualContributorSettings: {
-    __typename?: 'VirtualContributor';
-    id: string;
-    listedInStore: boolean;
-    status: VirtualContributorStatus;
-    searchVisibility: SearchVisibility;
-    settings: {
-      __typename?: 'VirtualContributorSettings';
-      privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
-    };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      tagline?: string | undefined;
-      displayName: string;
-      description?: string | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-    };
-  };
-};
-
-export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
-  refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
-}>;
-
-export type RefreshBodyOfKnowledgeMutation = {
-  __typename?: 'Mutation';
-  refreshVirtualContributorBodyOfKnowledge: boolean;
-};
-
-export type UpdateAiPersonaServiceMutationVariables = Exact<{
-  aiPersonaServiceData: UpdateAiPersonaServiceInput;
-}>;
-
-export type UpdateAiPersonaServiceMutation = {
-  __typename?: 'Mutation';
-  aiServerUpdateAiPersonaService: { __typename?: 'AiPersonaService'; id: string; prompt: Array<string> };
-};
-
-export type VirtualContributorWithModelCardQueryVariables = Exact<{
+export type VirtualContributorProfileWithModelCardQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
 
-export type VirtualContributorWithModelCardQuery = {
+export type VirtualContributorProfileWithModelCardQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -17830,6 +17734,8 @@ export type VirtualContributorWithModelCardQuery = {
                         isUsingOpenWeightsModel: boolean;
                         isInteractionDataUsedForTraining?: boolean | undefined;
                         canAccessWebWhenAnswering: boolean;
+                        areAnswersRestrictedToBodyOfKnowledge: string;
+                        additionalTechnicalDetails: string;
                       }
                     | undefined;
                   monitoring?:
@@ -17921,6 +17827,102 @@ export type VirtualContributorFullFragment = {
         engine: AiPersonaEngine;
       }
     | undefined;
+};
+
+export type UpdateAiPersonaServiceMutationVariables = Exact<{
+  aiPersonaServiceData: UpdateAiPersonaServiceInput;
+}>;
+
+export type UpdateAiPersonaServiceMutation = {
+  __typename?: 'Mutation';
+  aiServerUpdateAiPersonaService: { __typename?: 'AiPersonaService'; id: string; prompt: Array<string> };
+};
+
+export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
+  refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
+}>;
+
+export type RefreshBodyOfKnowledgeMutation = {
+  __typename?: 'Mutation';
+  refreshVirtualContributorBodyOfKnowledge: boolean;
+};
+
+export type UpdateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: UpdateVirtualContributorInput;
+}>;
+
+export type UpdateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    listedInStore: boolean;
+    status: VirtualContributorStatus;
+    searchVisibility: SearchVisibility;
+    settings: {
+      __typename?: 'VirtualContributorSettings';
+      privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagline?: string | undefined;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+  };
+};
+
+export type UpdateVirtualContributorSettingsMutationVariables = Exact<{
+  settingsData: UpdateVirtualContributorSettingsInput;
+}>;
+
+export type UpdateVirtualContributorSettingsMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributorSettings: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    listedInStore: boolean;
+    status: VirtualContributorStatus;
+    searchVisibility: SearchVisibility;
+    settings: {
+      __typename?: 'VirtualContributorSettings';
+      privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagline?: string | undefined;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+  };
 };
 
 export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
