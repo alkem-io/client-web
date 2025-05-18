@@ -21,7 +21,7 @@ import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/cor
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
-import { AiPersonaModelCardModel } from '../model/AiPersonaModelCardModel';
+import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -30,17 +30,18 @@ const bokVisitButtonStyles = { width: 'fit-content', marginTop: gutters(1) };
 export type VCProfilePageViewProps = {
   bokProfile?: SpaceBodyOfKnowledgeModel;
   virtualContributor?: VirtualContributorModelFull;
-  modelCard: AiPersonaModelCardModel;
   navigateToKnowledgeBase?: boolean;
   openKnowledgeBaseDialog?: boolean;
 };
 
-export const VCProfilePageView = ({ virtualContributor, modelCard, ...rest }: VCProfilePageViewProps) => {
+export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePageViewProps) => {
   const navigate = useNavigate();
 
   const { t } = useTranslation();
 
   const { hasReadAccess, knowledgeBaseDescription } = useKnowledgeBase({ id: virtualContributor?.id });
+
+  const modelCard = virtualContributor?.aiPersona.modelCard || EMPTY_MODEL_CARD;
 
   const references = virtualContributor?.profile?.references;
   const bodyOfKnowledgeType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
@@ -181,7 +182,7 @@ export const VCProfilePageView = ({ virtualContributor, modelCard, ...rest }: VC
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <VCProfileContentView virtualContributor={virtualContributor} modelCard={modelCard} {...rest} />
+        <VCProfileContentView virtualContributor={virtualContributor} {...rest} />
       </PageContentColumn>
     </PageContent>
   );

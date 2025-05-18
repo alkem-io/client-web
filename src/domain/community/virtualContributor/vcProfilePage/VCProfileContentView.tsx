@@ -23,9 +23,15 @@ import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledge
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
 import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
-import { VCProfilePageViewProps } from './VCProfilePageView';
+import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
 
-const VCProfileContentView = ({ virtualContributor, modelCard, openKnowledgeBaseDialog }: VCProfilePageViewProps) => {
+export type VCProfileContentViewProps = {
+  virtualContributor?: VirtualContributorModelFull;
+  openKnowledgeBaseDialog?: boolean;
+};
+
+const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: VCProfileContentViewProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -34,10 +40,11 @@ const VCProfileContentView = ({ virtualContributor, modelCard, openKnowledgeBase
 
   const onCloseKnowledgeBase = () => {
     if (virtualContributor) {
-      navigate(virtualContributor.profile.url);
+      navigate(virtualContributor?.profile.url);
     }
   };
 
+  const modelCard = virtualContributor?.aiPersona.modelCard ?? EMPTY_MODEL_CARD;
   const { sections } = useTemporaryHardCodedVCProfilePageData(modelCard);
 
   const renderCellIcon = (iconName: string) => {

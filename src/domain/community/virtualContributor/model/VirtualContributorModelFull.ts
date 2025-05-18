@@ -1,5 +1,6 @@
 import { Reference } from '@/domain/common/profile/Profile';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaModelCardModel } from './AiPersonaModelCardModel';
 
 export type VirtualContributorModelFull = {
   id: string;
@@ -34,10 +35,12 @@ export type VirtualContributorModelFull = {
       url: string;
     };
   };
-  aiPersona?: {
+  aiPersona: {
+    id: string;
     bodyOfKnowledge?: string;
     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
     bodyOfKnowledgeID?: string;
     engine?: AiPersonaEngine;
+    modelCard: AiPersonaModelCardModel;
   };
 };
