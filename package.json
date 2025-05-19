@@ -2,6 +2,7 @@
   "name": "@alkemio/client-web",
   "version": "0.91.2",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/alkem-io/client-web.git"
