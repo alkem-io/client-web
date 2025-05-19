@@ -1,11 +1,18 @@
-import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
-import AuthenticationLayout from '@/main/ui/layout/AuthenticationLayout';
-import ErrorOutline from '@mui/icons-material/ErrorOutline';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { gutters } from '@/core/ui/grid/utils';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
+import PageContent from '@/core/ui/content/PageContent';
+import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 export const AuthRequiredPage = () => {
   const returnUrl = useQueryParams().get('returnUrl') ?? undefined;
@@ -20,29 +27,58 @@ export const AuthRequiredPage = () => {
    * For Login/SignUp redirection to work this component receives the full returnUrl with origin already baked in.
    */
   const returnUrlParam = buildReturnUrlParam(returnUrl, '');
-  const loginUrl = `${_AUTH_LOGIN_PATH}${returnUrlParam}`;
   const signUpUrl = `${AUTH_SIGN_UP_PATH}${returnUrlParam}`;
+  const homeUrl = `/${TopLevelRoutePath.Home}`;
 
   return (
-    <AuthenticationLayout>
-      <Box textAlign="center">
-        <ErrorOutline color="primary" fontSize="large" sx={{ mb: 1 }} />
-        <Typography variant="h2" mb={1} fontWeight="medium" textTransform="uppercase">
-          {t('pages.authentication-required.header')}
-        </Typography>
-        <Typography variant="h3" fontWeight="medium">
-          {t('pages.authentication-required.subheader')}
-        </Typography>
-      </Box>
-      <Box display="flex" marginTop={4} gap={2} justifyContent="center">
-        <Button component={Link} to={loginUrl} variant="outlined" color="primary">
-          {t('authentication.sign-in')}
-        </Button>
-        <Button component={Link} to={signUpUrl} variant="outlined">
-          {t('authentication.sign-up')}
-        </Button>
-      </Box>
-    </AuthenticationLayout>
+    <TopLevelLayout>
+      <PageContent gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}>
+        <PageContentColumn columns={12}>
+          <PageContentBlock>
+            <Container>
+              <LeftArea>
+                <PageTitle component="h1" sx={theme => ({ [theme.breakpoints.down('md')]: { textAlign: 'center' } })}>
+                  {t('pages.authentication-required.header')}
+                </PageTitle>
+                <Picture
+                  src="/required.svg"
+                  sx={theme => ({
+                    marginTop: theme.spacing(2),
+                    marginBottom: theme.spacing(2),
+                    marginRight: '20px!important',
+                    display: 'block',
+                    [theme.breakpoints.up('md')]: { display: 'none' },
+                  })}
+                />
+                <Tagline sx={{ marginTop: gutters(2) }}>{t('pages.authentication-required.subheader')}</Tagline>
+                <Tagline sx={{ marginTop: gutters(0.5) }}>{t('pages.authentication-required.subheader2')}</Tagline>
+                <Box display="flex" flexDirection="column" alignItems="center" marginTop={gutters(2)} gap={2}>
+                  <Button component={Link} to={signUpUrl} variant="contained" color="primary" sx={{ minWidth: '70%' }}>
+                    {`${t('authentication.sign-in')} / ${t('authentication.sign-up')}`}
+                  </Button>
+                  <Caption>{t('common.or')}</Caption>
+                  <Button component={Link} to={homeUrl} variant="outlined" color="primary" sx={{ minWidth: '70%' }}>
+                    {t('buttons.returnToDashboard')}
+                  </Button>
+                </Box>
+              </LeftArea>
+              <RightArea>
+                <Picture
+                  src="/required.svg"
+                  sx={theme => ({
+                    display: 'none',
+                    [theme.breakpoints.up('md')]: {
+                      display: 'block',
+                      marginTop: theme.spacing(4),
+                    },
+                  })}
+                />
+              </RightArea>
+            </Container>
+          </PageContentBlock>
+        </PageContentColumn>
+      </PageContent>
+    </TopLevelLayout>
   );
 };
 

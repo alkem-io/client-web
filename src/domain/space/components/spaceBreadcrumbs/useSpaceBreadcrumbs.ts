@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { JourneyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { useSpaceBreadcrumbsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
 
@@ -14,22 +14,22 @@ export interface BreadcrumbsItem {
 }
 
 export interface UseSpaceBreadcrumbsParams {
-  journeyPath: JourneyPath | undefined;
+  spaceHierarchyPath: SpaceHierarchyPath | undefined;
   loading?: boolean;
 }
 
-export const useSpaceBreadcrumbs = ({ journeyPath = [], loading = false }: UseSpaceBreadcrumbsParams) => {
-  const currentJourneyIndex = journeyPath.length - 1;
+export const useSpaceBreadcrumbs = ({ spaceHierarchyPath = [], loading = false }: UseSpaceBreadcrumbsParams) => {
+  const currentSpaceIndex = spaceHierarchyPath.length - 1;
 
-  const { data, loading: isLoadingBreadcrumbs } = useJourneyBreadcrumbsSpaceQuery({
+  const { data, loading: isLoadingBreadcrumbs } = useSpaceBreadcrumbsQuery({
     variables: {
-      spaceId: journeyPath[0]!,
-      subspaceL1Id: journeyPath[1],
-      subspaceL2Id: journeyPath[2],
-      includeSubspaceL1: journeyPath.length > 1,
-      includeSubspaceL2: journeyPath.length > 2,
+      spaceId: spaceHierarchyPath[0]!,
+      subspaceL1Id: spaceHierarchyPath[1],
+      subspaceL2Id: spaceHierarchyPath[2],
+      includeSubspaceL1: spaceHierarchyPath.length > 1,
+      includeSubspaceL2: spaceHierarchyPath.length > 2,
     },
-    skip: !journeyPath || journeyPath.length === 0 || loading,
+    skip: !spaceHierarchyPath || spaceHierarchyPath.length === 0 || loading,
   });
 
   const pathSpaces = compact([data?.lookup.space, data?.lookup.subspaceL1, data?.lookup.subspaceL2]);
@@ -39,18 +39,18 @@ export const useSpaceBreadcrumbs = ({ journeyPath = [], loading = false }: UseSp
       return [];
     }
 
-    return pathSpaces.slice(0, currentJourneyIndex + 1).map(space => {
+    return pathSpaces.slice(0, currentSpaceIndex + 1).map(space => {
       const profile = space.about.profile;
       const displayName = profile.displayName!;
-      const journeyUri = profile.url!;
+      const spaceUri = profile.url!;
       return {
         displayName,
-        uri: journeyUri,
+        uri: spaceUri,
         level: space.level,
         avatar: profile?.avatar,
       };
     });
-  }, [isLoadingBreadcrumbs, currentJourneyIndex, data]);
+  }, [isLoadingBreadcrumbs, currentSpaceIndex, data]);
 
   return {
     loading: isLoadingBreadcrumbs,

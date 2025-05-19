@@ -33,5 +33,3 @@ const Tick = (precision = 1000) => {
 };
 
 export const useTick = Tick();
-
-export default Tick;

@@ -10,15 +10,17 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SubspaceCard from './cards/SubspaceCard';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
   onClose?: () => void;
-  spaceId: string;
 }
 
-const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDialogProps) => {
+const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps) => {
   const { t } = useTranslation();
+  const { spaceId } = useUrlResolver();
+
   const { visibility } = useSpace();
 
   const { data, loading } = useSpaceSubspaceCardsQuery({
@@ -56,7 +58,7 @@ const SubspacesListDialog = ({ open = false, spaceId, onClose }: SubspacesListDi
                         tags={subspace.about.profile.tagset?.tags!}
                         tagline={subspace.about.profile.tagline!}
                         vision={subspace.about.why!}
-                        journeyUri={subspace.about.profile.url}
+                        spaceUri={subspace.about.profile.url}
                         locked={!subspace.about.isContentPublic}
                         spaceVisibility={visibility}
                         level={subspace.level}

@@ -37,11 +37,11 @@ const CalendarSkeleton = () => {
 };
 
 export interface DashboardCalendarSectionProps {
-  journeyId: string | undefined;
+  spaceId: string | undefined;
   level: SpaceLevel | undefined;
 }
 
-const DashboardCalendarSection = ({ journeyId, level }: DashboardCalendarSectionProps) => {
+const DashboardCalendarSection = ({ spaceId, level }: DashboardCalendarSectionProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
@@ -49,13 +49,13 @@ const DashboardCalendarSection = ({ journeyId, level }: DashboardCalendarSection
   const [isCalendarView, setCalendarView] = useState(false);
 
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId! },
-    skip: !journeyId || level !== SpaceLevel.L0,
+    variables: { spaceId: spaceId! },
+    skip: !spaceId || level !== SpaceLevel.L0,
   });
 
   const collaboration = spaceData?.lookup.space?.collaboration;
 
-  // TODO: Move this to serverside
+  // TODO: Move this to server side
   const allEvents = useMemo(
     () => sortBy(collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
     [collaboration]

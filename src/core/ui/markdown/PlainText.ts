@@ -1,6 +1,6 @@
 import { Plugin } from 'unified';
-import { paragraph, root, text } from 'mdast-builder';
 import { Literal, Node, Parent } from 'unist';
+import { paragraph, root, text } from './utils/unist-builders';
 
 type HandledNode = Parent | Literal;
 
@@ -13,16 +13,16 @@ const getTextFromHTML = (html: string) => {
 
 const collect = (node: HandledNode): Node[] => {
   if (node.type === 'html') {
-    const { value } = node as Literal<string>;
-    const textContent = getTextFromHTML(value);
+    const { value } = node as Literal;
+    const textContent = getTextFromHTML(`${value}`);
     if (!textContent) {
       return [];
     }
     return pad(text(textContent));
   }
   if (node.type === 'code') {
-    const { value } = node as Literal<string>;
-    return pad(text(value));
+    const { value } = node as Literal;
+    return pad(text(`${value}`));
   }
   if ('children' in node) {
     return pad(...(node.children as HandledNode[]).flatMap(collect));
@@ -42,7 +42,7 @@ const PlainText: Plugin =
       return tree;
     }
 
-    return root(paragraph(collect(tree as Parent)));
+    return root([paragraph(collect(tree as Parent))]);
   };
 
 export default PlainText;

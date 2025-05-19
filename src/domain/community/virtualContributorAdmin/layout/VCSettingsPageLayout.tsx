@@ -5,7 +5,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
-import VCPageBanner from '../../virtualContributor/layout/VCPageBanner';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
@@ -59,7 +58,6 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
       }
       entityTypeName="user"
       subheaderTabs={tabs}
-      pageBannerComponent={VCPageBanner}
       {...props}
     />
   );

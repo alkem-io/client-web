@@ -1,5 +1,5 @@
-import { Box, BoxProps, Link, Skeleton, styled, useTheme } from '@mui/material';
 import { ReactNode, useState } from 'react';
+import { Box, BoxProps, Link, Skeleton, styled, useTheme } from '@mui/material';
 import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
@@ -11,8 +11,10 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
-import { BasePageBannerProps } from '@/domain/space/layout/EntityPageLayout/EntityPageLayoutTypes';
 import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
 
 export const TITLE_HEIGHT = 6;
 
@@ -46,8 +48,8 @@ const TopNotices = styled(Box)(() => ({
 }));
 
 interface PageNoticeProps extends BoxProps {
-  level: JourneyPageBannerProps['level'];
-  isAdmin: JourneyPageBannerProps['isAdmin'];
+  level: SpacePageBannerProps['level'];
+  isAdmin: SpacePageBannerProps['isAdmin'];
 }
 
 const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
@@ -67,12 +69,12 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
   switch (level) {
     case SpaceLevel.L0: {
       if (visibility === SpaceVisibility.Archived) {
-        message = tLinks('pages.generic.archived-notice.archived-space', {
+        message = tLinks('pages.generic.archivedNotice.archivedSpace', {
           contact: { href: locations?.feedback, target: '_blank' },
         });
       }
       if (visibility === SpaceVisibility.Demo) {
-        message = tLinks('pages.generic.demo-notice.demo-space', {
+        message = tLinks('pages.generic.demoNotice.demoSpace', {
           alkemio: { href: ALKEMIO_DOMAIN, target: '_blank' },
         });
       }
@@ -81,20 +83,20 @@ const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
     default: {
       if (visibility === SpaceVisibility.Archived) {
         message = tLinks(
-          'pages.generic.archived-notice.archived-journey',
+          'pages.generic.archivedNotice.archivedSubspace',
           {
             contact: { href: locations?.feedback, target: '_blank' },
           },
-          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
+          { space: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       if (visibility === SpaceVisibility.Demo) {
         message = tLinks(
-          'pages.generic.demo-notice.demo-journey',
+          'pages.generic.demoNotice.demoSubspace',
           {
             alkemio: { href: '/', target: '_blank' },
           },
-          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
+          { space: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       break;
@@ -126,36 +128,47 @@ const WatermarkContainer = (props: BoxProps) => (
   <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
 );
 
-export interface JourneyPageBannerProps extends BasePageBannerProps {
-  title?: string;
-  tagline?: string;
-  bannerUrl?: string;
-  bannerAltText?: string;
-  ribbon?: ReactNode;
+export interface SpacePageBannerProps {
   loading?: boolean;
   level?: SpaceLevel;
   isAdmin?: boolean;
+  watermark?: ReactNode;
+  title?: string;
 }
 
-const SpacePageBanner = ({
-  title,
-  tagline,
-  bannerUrl,
-  bannerAltText,
-  ribbon,
-  level,
-  isAdmin,
-  loading: dataLoading = false,
-  watermark,
-}: JourneyPageBannerProps) => {
+const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, watermark, title }: SpacePageBannerProps) => {
+  const { spaceLevel } = useUrlResolver();
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
-
   const [imageLoading, setImageLoading] = useState(true);
+
+  const {
+    space: { id: spaceId },
+  } = useSpace();
+
+  const { data, loading } = useSpaceAboutDetailsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId || dataLoading,
+  });
+
+  const profile = data?.lookup.space?.about.profile;
+
+  const bannerTitle = title ?? profile?.displayName;
+  const ribbon = useInnovationHubSpaceBannerRibbon({
+    spaceId,
+  });
 
   const imageLoadError = () => {
     setImageLoading(false);
   };
+
+  // when current space is not L0 hide the L0 space banner
+  // space page banner is used by global administration as well - it's layout is raising the flag and then the banner needs to be displayed always
+  if (!isAdmin && spaceLevel !== SpaceLevel.L0) {
+    return null;
+  }
 
   return (
     <Root ref={containerReference}>
@@ -166,8 +179,8 @@ const SpacePageBanner = ({
       </TopNotices>
       <Box>
         <ImageBlurredSides
-          src={bannerUrl || defaultVisualUrls[VisualType.Banner]}
-          alt={t('visuals-alt-text.banner.page.text', { altText: bannerAltText })}
+          src={profile?.banner?.uri || defaultVisualUrls[VisualType.Banner]}
+          alt={t('visuals-alt-text.banner.page.text', { altText: profile?.banner?.alternativeText })}
           onLoad={() => setImageLoading(false)}
           onError={imageLoadError}
           blurRadius={2}
@@ -179,11 +192,11 @@ const SpacePageBanner = ({
       </Box>
       <Title>
         <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
-          {title}
-          {!title && dataLoading && <Skeleton variant="text" animation="wave" />}
+          {bannerTitle}
+          {!bannerTitle && (dataLoading || loading) && <Skeleton variant="text" animation="wave" />}
         </PageTitle>
         <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
-          {tagline}
+          {profile?.tagline}
         </Tagline>
       </Title>
     </Root>

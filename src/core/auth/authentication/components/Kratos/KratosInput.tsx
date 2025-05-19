@@ -1,4 +1,4 @@
-import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@mui/material';
+import { GridLegacy, InputAdornment, OutlinedInputProps, TextField } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -52,7 +52,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
   }
 
   return (
-    <Grid item xs={12}>
+    <GridLegacy xs={12}>
       <TextField
         name={name}
         label={getNodeTitle(node, t)}
@@ -70,7 +70,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
         InputProps={{ ...InputProps }}
         InputLabelProps={{ shrink: true }}
       />
-    </Grid>
+    </GridLegacy>
   );
 };
 

@@ -1,4 +1,4 @@
-import { TFunction } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import dayjs from 'dayjs';
 
 // Note: In this file some dates are recreated with
@@ -120,7 +120,7 @@ const timeFormatOptions: Intl.DateTimeFormatOptions = {
 
 export const formatTimeAndDuration = (
   event: { startDate?: Date; durationMinutes?: number; wholeDay?: boolean; durationDays?: number },
-  t: TFunction<'translation', undefined>
+  t: TFunction
 ) => {
   if (!event.startDate) return '';
   if (event.wholeDay) {

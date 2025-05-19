@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ButtonBase } from '@mui/material';
+import { Box, ButtonBase } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -18,6 +18,8 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import Gutters from '@/core/ui/grid/Gutters';
+import InviteContributorsWizard from '../../inviteContributors/InviteContributorsWizard';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
@@ -54,6 +56,12 @@ const RoleSetContributorTypesBlockWide = ({
   const [contributorType, setContributorType] = useState(RoleSetContributorType.User);
   const [filter, onFilterChange] = useState<string[]>([]);
 
+  // People that can be invited to the community
+  const filterInviteeContributors = useCallback(
+    (contributor: Identifiable) => !(users ?? []).some(user => user.id === contributor.id),
+    [users]
+  );
+
   const contributorTypeToggleOptions = config.map(configItem => ({
     label: t(configItem.label),
     value: configItem.value,
@@ -77,33 +85,41 @@ const RoleSetContributorTypesBlockWide = ({
 
   if (isDialogView) {
     return (
-      <PageContentBlock>
-        <PageContentBlockHeader
-          title={''}
-          actions={
-            <MultipleSelect
-              onChange={onFilterChange}
-              value={filter}
-              minLength={2}
-              containerProps={{
-                marginLeft: theme => theme.spacing(2),
-              }}
-              size="xsmall"
-              inlineTerms
-            />
-          }
-        >
-          {contributorTypeToggle()}
-        </PageContentBlockHeader>
-        <RoleSetContributorsBlockWideContent
-          users={users}
-          organizations={organizations}
-          contributorType={contributorType}
-          filter={filter}
-          nested
-          compactView
-        />
-      </PageContentBlock>
+      <>
+        <Box textAlign="right">
+          <InviteContributorsWizard
+            contributorType={RoleSetContributorType.User}
+            filterContributors={filterInviteeContributors}
+          />
+        </Box>
+        <PageContentBlock>
+          <PageContentBlockHeader
+            title={''}
+            actions={
+              <MultipleSelect
+                onChange={onFilterChange}
+                value={filter}
+                minLength={2}
+                containerProps={{
+                  marginLeft: theme => theme.spacing(2),
+                }}
+                size="xsmall"
+                inlineTerms
+              />
+            }
+          >
+            {contributorTypeToggle()}
+          </PageContentBlockHeader>
+          <RoleSetContributorsBlockWideContent
+            users={users}
+            organizations={organizations}
+            contributorType={contributorType}
+            filter={filter}
+            nested
+            compactView
+          />
+        </PageContentBlock>
+      </>
     );
   }
 

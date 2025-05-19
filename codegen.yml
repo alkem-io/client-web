@@ -10,7 +10,7 @@ generates:
   src/core/apollo/generated/graphql-schema.ts:
     plugins:
       - typescript
-      - 'typescript-operations'
+      - typescript-operations
     config:
       maybeValue: T | undefined
       preResolveTypes: true
@@ -36,7 +36,7 @@ generates:
       typesPath: ./graphql-schema
       importTypesNamespace: SchemaTypes
     plugins:
-      - 'typescript-react-apollo'
+      - typescript-react-apollo
     config:
       withHooks: true
       withRefetchFn: true
