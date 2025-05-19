@@ -609,6 +609,10 @@
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Uitnodiging tot de bovenliggende community was niet toegestaan",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Uitgenodigd voor het platform",
             "INVITED_TO_ROLE_SET": "Uitgenodigd voor de community"
+          },
+          "validationErrors": {
+            "required": "Voeg ten minste één bijdrager toe om uit te nodigen",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
           }
         },
         "vcs": {
@@ -924,7 +928,8 @@
       "atLeastOne": "Selecteer ten minste één item.",
       "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
       "invalidUrl": "Ongeldige URL",
-      "invalidEmail": "Invalid Email address"
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address"
     }
   },
   "templateDialog": {
