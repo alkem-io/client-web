@@ -16,7 +16,6 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
-import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
@@ -26,6 +25,7 @@ import { ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/TagsetUtils';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
+import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
 
 type VirtualContributorProps = {
   id: string;
@@ -51,7 +51,7 @@ type VirtualContributorFormValues = {
 
 type VirtualContributorFormProps = {
   virtualContributor: VirtualContributorProps;
-  bokProfile?: BasicSpaceProps;
+  bokProfile?: SpaceBodyOfKnowledgeModel;
   avatar: VisualModel | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
   hasBackNavigation?: boolean;

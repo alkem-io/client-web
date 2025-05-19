@@ -20,7 +20,7 @@ import ContributorCardSquare, {
   ContributorCardSkeleton,
   ContributorCardSquareProps,
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
-import { VirtualContributorModelBase } from '../virtualContributor/model/virtual.contributor.base.model';
+import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
 import { PaginatedResult, VirtualContributors } from './ContributorsPage';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';

@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -13,19 +12,18 @@ import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from './InviteVirtualContributorDialog';
 import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
 import VCProfileContentView from '../../virtualContributor/vcProfilePage/VCProfileContentView';
-import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import SearchField from '@/core/ui/search/SearchField';
-import useVirtualContributorSpaceBoK from '@/domain/community/virtualContributor/useVirtualContributorSpaceBoK';
 import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { createVirtualContributorModelFull } from '../../virtualContributor/utils/createVirtualContributorModelFull';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
@@ -50,8 +48,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     },
   } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceL0Id: space.id });
 
-  const { getBoKProfile } = useVirtualContributorSpaceBoK();
-
   const [filter, setFilter] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [isFilterPristine, setIsFilterPristine] = useState(true);
@@ -65,19 +61,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const [action, setAction] = useState<'add' | 'invite'>();
   const [selectedVirtualContributor, setSelectedVirtualContributor] = useState<ContributorProps>();
   const [selectedVcProvider, setSelectedVcProvider] = useState<ProviderProfile>();
-  const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
-
-  const getContributorsBoKProfile = async (vcId: string) => {
-    const vc = getContributorById(vcId);
-    const isBoKSpace = vc?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
-    const bodyOfKnowledgeID = vc?.aiPersona?.bodyOfKnowledgeID;
-
-    if (!isBoKSpace || !bodyOfKnowledgeID) {
-      return undefined;
-    }
-
-    return await getBoKProfile(bodyOfKnowledgeID);
-  };
 
   const getProvider = async (vcId: string) => {
     const providerData = await getVcProvider({
@@ -110,9 +93,6 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     setSelectedVirtualContributor(getContributorById(id));
     setActionButtonDisabled(false);
     setOpenPreviewDialog(true);
-
-    const vcBoK = await getContributorsBoKProfile(id);
-    setBoKProfile(vcBoK);
   };
 
   const onAddClick = async () => {
@@ -329,7 +309,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
               />
             </PageContentBlock>
           )}
-          <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedVirtualContributor} />
+          <VCProfileContentView virtualContributor={createVirtualContributorModelFull(selectedVirtualContributor)} />
         </PreviewContributorDialog>
       )}
     </DialogWithGrid>
