@@ -14,14 +14,6 @@ export type InvitationModel = {
       displayName: string;
       email?: string;
       url: string;
-      avatar?: {
-        id: string;
-        uri: string;
-      };
-      location?: {
-        city?: string | undefined;
-        country?: string | undefined;
-      };
     };
   };
 };

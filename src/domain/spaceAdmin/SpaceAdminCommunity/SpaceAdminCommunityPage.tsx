@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -10,8 +10,6 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
 import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
 import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import InvitationOptionsBlock from '@/domain/community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
@@ -23,8 +21,14 @@ import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  LicenseEntitlementType,
+  RoleSetContributorType,
+  SpaceLevel,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
@@ -34,6 +38,8 @@ import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -127,22 +133,6 @@ const SpaceAdminCommunityPage = ({
     spaceVirtualContributorEntitlementEnabled &&
     (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
 
-  const currentApplicationsUserIds = useMemo(
-    () =>
-      applications?.filter(application => application.state === 'new').map(application => application.contributor.id) ??
-      [],
-    [applications]
-  );
-
-  const currentInvitationsUserIds = useMemo(
-    () =>
-      invitations?.filter(invitation => invitation.state === 'invited').map(invitation => invitation.contributor.id) ??
-      [],
-    [invitations]
-  );
-
-  const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
-
   const currentCommunityGuidelines = useRef<CommunityGuidelines>();
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -171,31 +161,28 @@ const SpaceAdminCommunityPage = ({
     <LayoutSwitcher currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <PageContent background="transparent">
         {pendingMembershipsEnabled && (
-          <PageContentColumn columns={12}>
-            <PageContentBlock columns={8}>
-              <CommunityMemberships
-                applications={applications}
-                onApplicationStateChange={onApplicationStateChange}
-                canHandleInvitations
-                invitations={invitations}
-                platformInvitations={platformInvitations}
-                onInvitationStateChange={onInvitationStateChange}
-                onDeleteInvitation={onDeleteInvitation}
-                onDeletePlatformInvitation={onDeletePlatformInvitation}
-                loading={loading}
-              />
-            </PageContentBlock>
-            <PageContentBlockSeamless columns={4} disablePadding>
-              <InvitationOptionsBlock
-                spaceDisplayName={about.profile.displayName}
-                inviteUsers={inviteUsers}
-                currentApplicationsUserIds={currentApplicationsUserIds}
-                currentInvitationsUserIds={currentInvitationsUserIds}
-                currentMembersIds={currentMembersIds}
-                parentSpaceId={undefined}
-              />
-            </PageContentBlockSeamless>
-          </PageContentColumn>
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('community.pendingMemberships')}>
+              <InviteContributorsWizard contributorType={RoleSetContributorType.User}>
+                {t('buttons.invite')}
+              </InviteContributorsWizard>
+              <Tooltip title={t('community.applicationsHelp')} arrow>
+                <IconButton aria-label={t('common.help')} sx={{ marginLeft: gutters() }}>
+                  <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
+                </IconButton>
+              </Tooltip>
+            </PageContentBlockHeader>
+            <CommunityMemberships
+              applications={applications}
+              onApplicationStateChange={onApplicationStateChange}
+              invitations={invitations}
+              platformInvitations={platformInvitations}
+              onInvitationStateChange={onInvitationStateChange}
+              onDeleteInvitation={onDeleteInvitation}
+              onDeletePlatformInvitation={onDeletePlatformInvitation}
+              loading={loading}
+            />
+          </PageContentBlock>
         )}
         <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
           <Text marginBottom={gutters(2)}>

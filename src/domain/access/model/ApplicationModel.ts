@@ -13,21 +13,6 @@ export type ApplicationModel = {
       displayName: string;
       email?: string;
       url: string;
-      avatar?: {
-        id: string;
-        uri: string;
-        name: string;
-      };
-      location?: {
-        id: string;
-        city?: string | undefined;
-        country?: string | undefined;
-      };
     };
   };
-  questions: {
-    id: string;
-    name: string;
-    value: string;
-  }[];
 };

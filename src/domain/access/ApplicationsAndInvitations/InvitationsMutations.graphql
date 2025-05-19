@@ -18,9 +18,19 @@ mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedContributorIds: 
     type
     invitation {
       id
+      contributor{
+        id
+        profile {
+          id
+          displayName
+        }
+      }
     }
     platformInvitation {
       id
+      email
+      firstName
+      lastName
     }
   }
 }

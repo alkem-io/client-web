@@ -78,6 +78,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
+        flowState={flowStateForNewCallouts?.displayName}
         loading={loadingCalloutCreation}
       />
     </>
