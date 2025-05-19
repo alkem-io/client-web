@@ -181,8 +181,8 @@
     "invite": "Nodig uit",
     "visit": "Bezoek",
     "returnToDashboard": "Terug naar het dashboard als gast",
-    "approveApplication": "Approve application",
-    "rejectApplication": "Reject application"
+    "approveApplication": "Aanmelding goedkeuren",
+    "rejectApplication": "Aanmelding afwijzen"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -220,7 +220,7 @@
       "L1": "Subspace",
       "L2": "Subspace"
     },
-    "actions": "Actions",
+    "actions": "Acties",
     "account": "Account",
     "all": "Alles",
     "knowledge-base": "Kennisbank",
@@ -465,16 +465,16 @@
         "WHITEBOARD_COLLECTION": "Oproepen voor Whiteboards"
       },
       "invitationStatus": {
-        "invited": "Invited",
-        "accepted": "Invitation Accepted",
-        "rejected": "Invitation Rejected"
+        "invited": "Uitgenodigd",
+        "accepted": "Uitnodiging geaccepteerd",
+        "rejected": "Uitnodiging afgewezen"
       },
       "invitationExternalStatus": {
-        "invited": "Invited to join Alkemio & this Space"
+        "invited": "Uitgenodigd om lid te worden van Alkemio & deze Space"
       },
       "roleSetContributorType": {
-        "USER": "User",
-        "ORGANIZATION": "Organization",
+        "USER": "Gebruiker",
+        "ORGANIZATION": "Organisatie",
         "VIRTUAL": "Virtual Contributor"
       }
     },
@@ -586,70 +586,70 @@
     },
     "invitations": {
       "inviteButton": {
-        "USER": "Invite people to this Space",
-        "ORGANIZATION": "Invite people to this Space",
-        "VIRTUAL": "Invite Virtual Contributor"
+        "USER": "Mensen uitnodigen voor deze Space",
+        "ORGANIZATION": "Mensen uitnodigen voor deze Space",
+        "VIRTUAL": "Virtual Contributor Uitnodigen"
       },
-      "inviteToRole": "Invite to be a: ",
+      "inviteToRole": "Uitgenodigen als: ",
       "inviteContributorsDialog": {
         "users": {
-          "title": "Invite others to join '{{spaceName}}'",
-          "description": "Search for people below or directly add their email address",
-          "note": "Keep in mind that your personal email address will be visible to anyone you message.",
-          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-          "placeholder": "Username or email...",
-          "success": "Your invitation was successfully sent to the following recipients:",
-          "failure": "We couldn’t send the invitation to the following recipients:",
-          "back": "Send another invitation",
-          "invitationsSent": "{{count}} invitations will be sent.",
-          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this Space",
+          "title": "Nodig anderen uit voor '{{spaceName}}'",
+          "description": "Zoek naar gebruikers hieronder of voeg hun e-mailadres direct toe",
+          "note": "Houd er rekening mee dat je persoonlijke e-mailadres zichtbaar is voor iedereen die je een bericht stuurt.",
+          "defaultWelcomeMessage": "Hallo, ik wil je graag uitnodigen voor {{spaceName}}. Klik op de link hieronder om een kijkje te nemen of de uitnodiging direct te accepteren.",
+          "placeholder": "Gebruikersnaam of e-mail...",
+          "success": "Je uitnodiging is succesvol verzonden naar de volgende ontvangers:",
+          "failure": "We konden de uitnodiging niet naar de volgende ontvangers sturen:",
+          "back": "Stuur een andere uitnodiging",
+          "invitationsSent": "{{count}} uitnodigingen worden verstuurd.",
+          "invitationByEmailTooltip": "{{email}} wordt uitgenodigd om aan te melden voor Alkemio en voor deze Space",
           "results": {
-            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
-            "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
-            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
-            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
-            "INVITED_TO_ROLE_SET": "Invited to join the community"
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Er is al een open uitnodiging/aanmelding",
+            "ALREADY_INVITED_TO_ROLE_SET": "Heeft al een open uitnodiging/aanmelding",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Uitnodiging tot de bovenliggende community was niet toegestaan",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Uitgenodigd voor het platform",
+            "INVITED_TO_ROLE_SET": "Uitgenodigd voor de community"
           }
         },
         "vcs": {
-          "title": "Virtual Contributors Store",
-          "dialogTitle": "Invite Virtual Contributor to join this Space",
-          "invitationSent": "Invitation sent successfully",
-          "inviteExternalVC": "Invite External VC",
-          "inviteBtn": "Invite Virtual Contributor",
-          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "title": "Virtual Contributors Bibliotheek",
+          "dialogTitle": "Virtual Contributor uitnodigen om deel te nemen aan deze Space",
+          "invitationSent": "Uitnodiging succesvol verzonden",
+          "inviteExternalVC": "Externe VC uitnodigen",
+          "inviteBtn": "Virtual Contributor uitnodigen",
+          "defaultVCInvitationMessage": "Hallo, ik wil je Virtual Contributor {{name}} uitnodigen voor {{space}}. Neem een kijkje in de Space of klik op de knop hieronder om de uitnodiging rechtstreeks te accepteren of weigeren.",
           "onAccount": {
-            "title": "Virtual Contributors linked to this Space's account"
+            "title": "Virtual Contributors gekoppeld aan het account van deze Space"
           },
           "inLibrary": {
-            "title": "Other Virtual Contributors"
+            "title": "Andere Virtual Contributors"
           },
-          "emptyMessage": "No available Virtual Contributors",
-          "successfullyAdded": "{{contributor}} added successfully",
-          "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
+          "emptyMessage": "Geen beschikbare Virtual Contributors",
+          "successfullyAdded": "{{contributor}} succesvol toegevoegd",
+          "vcFetchErrorMessage": "Er is een fout opgetreden bij het ophalen van de Virtual Contributors"
         },
-        "welcomeMessage": "Invitation Message"
+        "welcomeMessage": "Uitnodigingsbericht"
       }
     },
     "confirmationDialogs": {
       "delete": {
         "application": {
-          "title": "Deleting application from '{{user}}'",
-          "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+          "title": "Aanmelding van '{{user}}' verwijderen",
+          "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als dat nog niet gebeurd was."
         },
         "invitation": {
-          "title": "Deleting invitation to '{{user}}'",
-          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+          "title": "Uitnodiging voor '{{user}}' verwijderen",
+          "content": "Weet je zeker dat je deze uitnodiging wilt verwijderen? De uitnodiging wordt verwijderd als dat nog niet gebeurd was."
         },
         "platformInvitation": {
-          "title": "Deleting invitation to '{{user}}'",
-          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+          "title": "Uitnodiging voor '{{user}}' verwijderen",
+          "content": "Weet je zeker dat je deze uitnodiging wilt verwijderen? De uitnodiging wordt verwijderd als dat nog niet gebeurd was."
         }
       },
       "approve": {
-        "title": "Approve application from {{user}}",
-        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
-        "confirmButton": "Yes, approve"
+        "title": "Aanmelding van {{user}} goedkeuren",
+        "content": "Weet je zeker dat je deze aanmelding wilt goedkeuren? De gebruiker zal worden toegevoegd aan de Space en zal er toegang toe hebben.",
+        "confirmButton": "Ja, goedkeuren"
       },
       "reject": {
         "title": "Reject application from {{user}}",
