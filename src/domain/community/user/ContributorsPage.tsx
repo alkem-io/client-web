@@ -29,7 +29,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { arrayShuffle } from '@/core/utils/array.shuffle';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
-import { VirtualContributorModelBase } from '../virtualContributor/model/virtual.contributor.base.model';
+import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
 import { ApolloError } from '@apollo/client';
 
 export interface VirtualContributors {

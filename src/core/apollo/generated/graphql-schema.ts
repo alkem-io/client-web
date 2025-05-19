@@ -533,6 +533,8 @@ export type AiPersona = {
   id: Scalars['UUID']['output'];
   /** The type of interactions that are supported by this AI Persona when used. */
   interactionModes: Array<AiPersonaInteractionMode>;
+  /** The model card information about this AI Persona. */
+  modelCard: AiPersonaModelCard;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -563,6 +565,41 @@ export enum AiPersonaEngine {
 export enum AiPersonaInteractionMode {
   DiscussionTagging = 'DISCUSSION_TAGGING',
 }
+
+export type AiPersonaModelCard = {
+  __typename?: 'AiPersonaModelCard';
+  /** The model card information about the AI Engine behind the AI Persona. */
+  aiEngine?: Maybe<ModelCardAiEngineResult>;
+  /** The model card information about the monitoring that is done on usage. */
+  monitoring?: Maybe<ModelCardMonitoringResult>;
+  /** The Model Card details related to usage of the Ai Persona within a Space. */
+  spaceUsage?: Maybe<Array<ModelCardSpaceUsageResult>>;
+};
+
+export enum AiPersonaModelCardEntry {
+  SpaceCapabilities = 'SPACE_CAPABILITIES',
+  SpaceDataAccess = 'SPACE_DATA_ACCESS',
+  SpaceRoleRequired = 'SPACE_ROLE_REQUIRED',
+}
+
+export enum AiPersonaModelCardEntryFlagName {
+  SpaceCapabilityCommunityManagement = 'SPACE_CAPABILITY_COMMUNITY_MANAGEMENT',
+  SpaceCapabilityCreateContent = 'SPACE_CAPABILITY_CREATE_CONTENT',
+  SpaceCapabilityTagging = 'SPACE_CAPABILITY_TAGGING',
+  SpaceDataAccessAbout = 'SPACE_DATA_ACCESS_ABOUT',
+  SpaceDataAccessContent = 'SPACE_DATA_ACCESS_CONTENT',
+  SpaceDataAccessSubspaces = 'SPACE_DATA_ACCESS_SUBSPACES',
+  SpaceRoleAdmin = 'SPACE_ROLE_ADMIN',
+  SpaceRoleMember = 'SPACE_ROLE_MEMBER',
+}
+
+export type AiPersonaModelCardFlag = {
+  __typename?: 'AiPersonaModelCardFlag';
+  /** Is this model card entry flag enabled? */
+  enabled: Scalars['Boolean']['output'];
+  /** The name of the Model Card Entry flag */
+  name: AiPersonaModelCardEntryFlagName;
+};
 
 export type AiPersonaService = {
   __typename?: 'AiPersonaService';
@@ -3540,6 +3577,38 @@ export enum MimeType {
   Xlsx = 'XLSX',
   Xpng = 'XPNG',
 }
+
+export type ModelCardAiEngineResult = {
+  __typename?: 'ModelCardAiEngineResult';
+  /** Access to detailed information on the underlying models specifications */
+  additionalTechnicalDetails: Scalars['String']['output'];
+  /** Is the VC prompted to limit the responses to a specific body of knowledge? */
+  areAnswersRestrictedToBodyOfKnowledge: Scalars['String']['output'];
+  /** Can the VC access or search the web? */
+  canAccessWebWhenAnswering: Scalars['Boolean']['output'];
+  /** Where is the AI service hosted? */
+  hostingLocation: Scalars['String']['output'];
+  /** Is the AI Persona using an AI Engine not provided by Alkemio? */
+  isExternal: Scalars['Boolean']['output'];
+  /** Is interaction data used in any way for model training? Null means Unknown. */
+  isInteractionDataUsedForTraining?: Maybe<Scalars['Boolean']['output']>;
+  /** Does the VC use an open-weight model? */
+  isUsingOpenWeightsModel: Scalars['Boolean']['output'];
+};
+
+export type ModelCardMonitoringResult = {
+  __typename?: 'ModelCardMonitoringResult';
+  /** Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a href="https://welcome.alkem.io/legal/#tc" target="_blank" ref="noreferer">Terms & Conditions</a>. */
+  isUsageMonitoredByAlkemio: Scalars['Boolean']['output'];
+};
+
+export type ModelCardSpaceUsageResult = {
+  __typename?: 'ModelCardSpaceUsageResult';
+  /** The Flags for this Model Card Entry. */
+  flags: Array<AiPersonaModelCardFlag>;
+  /** The Model Card Entry type. */
+  modelCardEntry: AiPersonaModelCardEntry;
+};
 
 export type MoveCalloutContributionInput = {
   /** ID of the Callout to move the Contribution to. */
@@ -17337,94 +17406,6 @@ export type VirtualContributorQuery = {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
           };
-          provider:
-            | {
-                __typename?: 'Organization';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  location?:
-                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                  avatar?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                };
-              }
-            | {
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  location?:
-                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                  avatar?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                };
-              }
-            | {
-                __typename?: 'VirtualContributor';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  location?:
-                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                  avatar?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                };
-              };
           aiPersona?:
             | {
                 __typename?: 'AiPersona';
@@ -17701,6 +17682,319 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
   };
 };
 
+export type VirtualContributorProfileWithModelCardQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type VirtualContributorProfileWithModelCardQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    virtualContributor?:
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          searchVisibility: SearchVisibility;
+          listedInStore: boolean;
+          status: VirtualContributorStatus;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          settings: {
+            __typename?: 'VirtualContributorSettings';
+            privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
+          };
+          aiPersona?:
+            | {
+                __typename?: 'AiPersona';
+                id: string;
+                bodyOfKnowledgeID?: string | undefined;
+                bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                bodyOfKnowledge?: string | undefined;
+                engine: AiPersonaEngine;
+                aiPersonaServiceID?: string | undefined;
+                modelCard: {
+                  __typename?: 'AiPersonaModelCard';
+                  spaceUsage?:
+                    | Array<{
+                        __typename?: 'ModelCardSpaceUsageResult';
+                        modelCardEntry: AiPersonaModelCardEntry;
+                        flags: Array<{
+                          __typename?: 'AiPersonaModelCardFlag';
+                          name: AiPersonaModelCardEntryFlagName;
+                          enabled: boolean;
+                        }>;
+                      }>
+                    | undefined;
+                  aiEngine?:
+                    | {
+                        __typename?: 'ModelCardAiEngineResult';
+                        isExternal: boolean;
+                        hostingLocation: string;
+                        isUsingOpenWeightsModel: boolean;
+                        isInteractionDataUsedForTraining?: boolean | undefined;
+                        canAccessWebWhenAnswering: boolean;
+                        areAnswersRestrictedToBodyOfKnowledge: string;
+                        additionalTechnicalDetails: string;
+                      }
+                    | undefined;
+                  monitoring?:
+                    | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                    | undefined;
+                };
+              }
+            | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagline?: string | undefined;
+            url: string;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+          };
+          provider:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagline?: string | undefined;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagline?: string | undefined;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagline?: string | undefined;
+                  url: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+        }
+      | undefined;
+  };
+};
+
+export type AiPersonaWithModelCardFragment = {
+  __typename?: 'AiPersona';
+  id: string;
+  bodyOfKnowledgeID?: string | undefined;
+  bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+  bodyOfKnowledge?: string | undefined;
+  engine: AiPersonaEngine;
+  aiPersonaServiceID?: string | undefined;
+  modelCard: {
+    __typename?: 'AiPersonaModelCard';
+    spaceUsage?:
+      | Array<{
+          __typename?: 'ModelCardSpaceUsageResult';
+          modelCardEntry: AiPersonaModelCardEntry;
+          flags: Array<{
+            __typename?: 'AiPersonaModelCardFlag';
+            name: AiPersonaModelCardEntryFlagName;
+            enabled: boolean;
+          }>;
+        }>
+      | undefined;
+    aiEngine?:
+      | {
+          __typename?: 'ModelCardAiEngineResult';
+          isExternal: boolean;
+          hostingLocation: string;
+          isUsingOpenWeightsModel: boolean;
+          isInteractionDataUsedForTraining?: boolean | undefined;
+          canAccessWebWhenAnswering: boolean;
+          areAnswersRestrictedToBodyOfKnowledge: string;
+          additionalTechnicalDetails: string;
+        }
+      | undefined;
+    monitoring?: { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean } | undefined;
+  };
+};
+
+export type VirtualContributorFullFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
+  aiPersona?:
+    | {
+        __typename?: 'AiPersona';
+        id: string;
+        bodyOfKnowledgeID?: string | undefined;
+        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+        bodyOfKnowledge?: string | undefined;
+        engine: AiPersonaEngine;
+        aiPersonaServiceID?: string | undefined;
+        modelCard: {
+          __typename?: 'AiPersonaModelCard';
+          spaceUsage?:
+            | Array<{
+                __typename?: 'ModelCardSpaceUsageResult';
+                modelCardEntry: AiPersonaModelCardEntry;
+                flags: Array<{
+                  __typename?: 'AiPersonaModelCardFlag';
+                  name: AiPersonaModelCardEntryFlagName;
+                  enabled: boolean;
+                }>;
+              }>
+            | undefined;
+          aiEngine?:
+            | {
+                __typename?: 'ModelCardAiEngineResult';
+                isExternal: boolean;
+                hostingLocation: string;
+                isUsingOpenWeightsModel: boolean;
+                isInteractionDataUsedForTraining?: boolean | undefined;
+                canAccessWebWhenAnswering: boolean;
+                areAnswersRestrictedToBodyOfKnowledge: string;
+                additionalTechnicalDetails: string;
+              }
+            | undefined;
+          monitoring?: { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type UpdateAiPersonaServiceMutationVariables = Exact<{
+  aiPersonaServiceData: UpdateAiPersonaServiceInput;
+}>;
+
+export type UpdateAiPersonaServiceMutation = {
+  __typename?: 'Mutation';
+  aiServerUpdateAiPersonaService: { __typename?: 'AiPersonaService'; id: string; prompt: Array<string> };
+};
+
+export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
+  refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
+}>;
+
+export type RefreshBodyOfKnowledgeMutation = {
+  __typename?: 'Mutation';
+  refreshVirtualContributorBodyOfKnowledge: boolean;
+};
+
 export type UpdateVirtualContributorMutationVariables = Exact<{
   virtualContributorData: UpdateVirtualContributorInput;
 }>;
@@ -17777,62 +18071,6 @@ export type UpdateVirtualContributorSettingsMutation = {
         | undefined;
     };
   };
-};
-
-export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
-  refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
-}>;
-
-export type RefreshBodyOfKnowledgeMutation = {
-  __typename?: 'Mutation';
-  refreshVirtualContributorBodyOfKnowledge: boolean;
-};
-
-export type UpdateAiPersonaServiceMutationVariables = Exact<{
-  aiPersonaServiceData: UpdateAiPersonaServiceInput;
-}>;
-
-export type UpdateAiPersonaServiceMutation = {
-  __typename?: 'Mutation';
-  aiServerUpdateAiPersonaService: { __typename?: 'AiPersonaService'; id: string; prompt: Array<string> };
-};
-
-export type VirtualContributorFullFragment = {
-  __typename?: 'VirtualContributor';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-    references?:
-      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-      | undefined;
-  };
-  aiPersona?:
-    | {
-        __typename?: 'AiPersona';
-        bodyOfKnowledge?: string | undefined;
-        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-        bodyOfKnowledgeID?: string | undefined;
-        engine: AiPersonaEngine;
-      }
-    | undefined;
 };
 
 export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
@@ -22070,10 +22308,41 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         aiPersona?:
           | {
               __typename?: 'AiPersona';
-              bodyOfKnowledge?: string | undefined;
-              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              id: string;
               bodyOfKnowledgeID?: string | undefined;
+              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              bodyOfKnowledge?: string | undefined;
               engine: AiPersonaEngine;
+              aiPersonaServiceID?: string | undefined;
+              modelCard: {
+                __typename?: 'AiPersonaModelCard';
+                spaceUsage?:
+                  | Array<{
+                      __typename?: 'ModelCardSpaceUsageResult';
+                      modelCardEntry: AiPersonaModelCardEntry;
+                      flags: Array<{
+                        __typename?: 'AiPersonaModelCardFlag';
+                        name: AiPersonaModelCardEntryFlagName;
+                        enabled: boolean;
+                      }>;
+                    }>
+                  | undefined;
+                aiEngine?:
+                  | {
+                      __typename?: 'ModelCardAiEngineResult';
+                      isExternal: boolean;
+                      hostingLocation: string;
+                      isUsingOpenWeightsModel: boolean;
+                      isInteractionDataUsedForTraining?: boolean | undefined;
+                      canAccessWebWhenAnswering: boolean;
+                      areAnswersRestrictedToBodyOfKnowledge: string;
+                      additionalTechnicalDetails: string;
+                    }
+                  | undefined;
+                monitoring?:
+                  | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                  | undefined;
+              };
             }
           | undefined;
       }>;
@@ -22132,10 +22401,41 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
               aiPersona?:
                 | {
                     __typename?: 'AiPersona';
-                    bodyOfKnowledge?: string | undefined;
-                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    id: string;
                     bodyOfKnowledgeID?: string | undefined;
+                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    bodyOfKnowledge?: string | undefined;
                     engine: AiPersonaEngine;
+                    aiPersonaServiceID?: string | undefined;
+                    modelCard: {
+                      __typename?: 'AiPersonaModelCard';
+                      spaceUsage?:
+                        | Array<{
+                            __typename?: 'ModelCardSpaceUsageResult';
+                            modelCardEntry: AiPersonaModelCardEntry;
+                            flags: Array<{
+                              __typename?: 'AiPersonaModelCardFlag';
+                              name: AiPersonaModelCardEntryFlagName;
+                              enabled: boolean;
+                            }>;
+                          }>
+                        | undefined;
+                      aiEngine?:
+                        | {
+                            __typename?: 'ModelCardAiEngineResult';
+                            isExternal: boolean;
+                            hostingLocation: string;
+                            isUsingOpenWeightsModel: boolean;
+                            isInteractionDataUsedForTraining?: boolean | undefined;
+                            canAccessWebWhenAnswering: boolean;
+                            areAnswersRestrictedToBodyOfKnowledge: string;
+                            additionalTechnicalDetails: string;
+                          }
+                        | undefined;
+                      monitoring?:
+                        | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                        | undefined;
+                    };
                   }
                 | undefined;
             }>;
@@ -22199,10 +22499,41 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
                 aiPersona?:
                   | {
                       __typename?: 'AiPersona';
-                      bodyOfKnowledge?: string | undefined;
-                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      id: string;
                       bodyOfKnowledgeID?: string | undefined;
+                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      bodyOfKnowledge?: string | undefined;
                       engine: AiPersonaEngine;
+                      aiPersonaServiceID?: string | undefined;
+                      modelCard: {
+                        __typename?: 'AiPersonaModelCard';
+                        spaceUsage?:
+                          | Array<{
+                              __typename?: 'ModelCardSpaceUsageResult';
+                              modelCardEntry: AiPersonaModelCardEntry;
+                              flags: Array<{
+                                __typename?: 'AiPersonaModelCardFlag';
+                                name: AiPersonaModelCardEntryFlagName;
+                                enabled: boolean;
+                              }>;
+                            }>
+                          | undefined;
+                        aiEngine?:
+                          | {
+                              __typename?: 'ModelCardAiEngineResult';
+                              isExternal: boolean;
+                              hostingLocation: string;
+                              isUsingOpenWeightsModel: boolean;
+                              isInteractionDataUsedForTraining?: boolean | undefined;
+                              canAccessWebWhenAnswering: boolean;
+                              areAnswersRestrictedToBodyOfKnowledge: string;
+                              additionalTechnicalDetails: string;
+                            }
+                          | undefined;
+                        monitoring?:
+                          | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                          | undefined;
+                      };
                     }
                   | undefined;
               }>;
