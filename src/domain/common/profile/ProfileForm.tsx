@@ -1,8 +1,8 @@
 import { Formik } from 'formik';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { SpaceLevel, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
@@ -28,29 +28,22 @@ type ProfileFormProps = {
   profile: ProfileModel;
   onSubmit: (formData: ProfileFormValues) => void;
   wireSubmit: (setter: () => void) => void;
-  contextOnly?: boolean;
   spaceLevel?: SpaceLevel;
 };
 
-const ProfileForm = ({
-  profile,
-  onSubmit,
-  wireSubmit,
-  contextOnly = false,
-  spaceLevel = SpaceLevel.L0,
-}: ProfileFormProps) => {
+const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0 }: ProfileFormProps) => {
   const { t } = useTranslation();
 
   const initialValues: ProfileFormValues = {
-    displayName: profile?.displayName || '',
-    tagline: profile?.tagline || '',
-    location: profile.location || EmptyLocationMapped,
-    references: profile?.references || [],
-    tagsets: profile?.tagsets || [EmptyTagset],
+    displayName: profile?.displayName ?? '',
+    tagline: profile?.tagline ?? '',
+    location: profile.location ?? EmptyLocationMapped,
+    references: profile?.references ?? [],
+    tagsets: profile?.tagsets ?? [EmptyTagset],
   };
 
   const validationSchema = yup.object().shape({
-    displayName: contextOnly ? yup.string() : nameSegmentSchema.fields?.displayName || yup.string(),
+    displayName: nameSegmentSchema.fields.displayName,
     tagline: spaceAboutSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,

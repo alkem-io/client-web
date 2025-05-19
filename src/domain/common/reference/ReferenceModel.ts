@@ -7,7 +7,7 @@ export interface ReferenceModel {
   description?: string;
 }
 
-export interface ReferenceModelWithAuthorization extends ReferenceModel {
+export interface ReferenceModelWithOptionalAuthorization extends ReferenceModel {
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
   };

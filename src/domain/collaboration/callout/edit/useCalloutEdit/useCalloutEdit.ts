@@ -58,11 +58,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
           calloutData: {
             ID: callout.id,
             framing: {
-              profile: mapProfileModelToUpdateProfileInput({
-                id: '',
-                displayName: callout.profile.displayName || '',
-                ...callout.profile,
-              }),
+              profile: mapProfileModelToUpdateProfileInput(callout.profile),
             },
             contributionPolicy: {
               state: callout.state,
