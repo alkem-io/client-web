@@ -1159,6 +1159,17 @@ export const UserContributorPaginatedFragmentDoc = gql`
   ${UserContributorFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
+export const AccountResourceProfileFragmentDoc = gql`
+  fragment AccountResourceProfile on Profile {
+    id
+    displayName
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const FullLocationFragmentDoc = gql`
   fragment fullLocation on Location {
     id
@@ -1258,17 +1269,6 @@ export const OrganizationProfileInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-`;
-export const AccountResourceProfileFragmentDoc = gql`
-  fragment AccountResourceProfile on Profile {
-    id
-    displayName
-    url
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
 `;
 export const PendingMembershipInvitationFragmentDoc = gql`
   fragment PendingMembershipInvitation on Invitation {
@@ -10472,6 +10472,134 @@ export function refetchContributorsVirtualInLibraryQuery(
 ) {
   return { query: ContributorsVirtualInLibraryDocument, variables: variables };
 }
+export const AccountResourcesInfoDocument = gql`
+  query AccountResourcesInfo($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
+        id
+        spaces {
+          id
+          about {
+            id
+            profile {
+              ...AccountResourceProfile
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
+            }
+          }
+        }
+        virtualContributors {
+          id
+          profile {
+            ...AccountResourceProfile
+            tagline
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...AccountResourceProfile
+          }
+          templatesSet {
+            id
+            calloutTemplatesCount
+            collaborationTemplatesCount
+            communityGuidelinesTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...AccountResourceProfile
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualUri
+            }
+          }
+          spaceVisibilityFilter
+          spaceListFilter {
+            id
+            about {
+              ...SpaceAboutLight
+            }
+          }
+          subdomain
+        }
+      }
+    }
+  }
+  ${AccountResourceProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
+  ${SpaceAboutLightFragmentDoc}
+`;
+
+/**
+ * __useAccountResourcesInfoQuery__
+ *
+ * To run a query within a React component, call `useAccountResourcesInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountResourcesInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountResourcesInfoQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAccountResourcesInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountResourcesInfoQuery,
+    SchemaTypes.AccountResourcesInfoQueryVariables
+  > &
+    ({ variables: SchemaTypes.AccountResourcesInfoQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+export function useAccountResourcesInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountResourcesInfoQuery,
+    SchemaTypes.AccountResourcesInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+export function useAccountResourcesInfoSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.AccountResourcesInfoQuery,
+        SchemaTypes.AccountResourcesInfoQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+export type AccountResourcesInfoQueryHookResult = ReturnType<typeof useAccountResourcesInfoQuery>;
+export type AccountResourcesInfoLazyQueryHookResult = ReturnType<typeof useAccountResourcesInfoLazyQuery>;
+export type AccountResourcesInfoSuspenseQueryHookResult = ReturnType<typeof useAccountResourcesInfoSuspenseQuery>;
+export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountResourcesInfoQuery,
+  SchemaTypes.AccountResourcesInfoQueryVariables
+>;
+export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
+  return { query: AccountResourcesInfoDocument, variables: variables };
+}
 export const AssociatedOrganizationDocument = gql`
   query associatedOrganization($organizationId: UUID!) {
     lookup {
@@ -10987,134 +11115,6 @@ export type RolesOrganizationQueryResult = Apollo.QueryResult<
 >;
 export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
   return { query: RolesOrganizationDocument, variables: variables };
-}
-export const AccountResourcesInfoDocument = gql`
-  query AccountResourcesInfo($accountId: UUID!) {
-    lookup {
-      account(ID: $accountId) {
-        id
-        spaces {
-          id
-          about {
-            id
-            profile {
-              ...AccountResourceProfile
-              cardBanner: visual(type: CARD) {
-                ...VisualUri
-              }
-            }
-          }
-        }
-        virtualContributors {
-          id
-          profile {
-            ...AccountResourceProfile
-            tagline
-          }
-        }
-        innovationPacks {
-          id
-          profile {
-            ...AccountResourceProfile
-          }
-          templatesSet {
-            id
-            calloutTemplatesCount
-            collaborationTemplatesCount
-            communityGuidelinesTemplatesCount
-            postTemplatesCount
-            whiteboardTemplatesCount
-          }
-        }
-        innovationHubs {
-          id
-          profile {
-            ...AccountResourceProfile
-            banner: visual(type: BANNER_WIDE) {
-              ...VisualUri
-            }
-          }
-          spaceVisibilityFilter
-          spaceListFilter {
-            id
-            about {
-              ...SpaceAboutLight
-            }
-          }
-          subdomain
-        }
-      }
-    }
-  }
-  ${AccountResourceProfileFragmentDoc}
-  ${VisualUriFragmentDoc}
-  ${SpaceAboutLightFragmentDoc}
-`;
-
-/**
- * __useAccountResourcesInfoQuery__
- *
- * To run a query within a React component, call `useAccountResourcesInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountResourcesInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAccountResourcesInfoQuery({
- *   variables: {
- *      accountId: // value for 'accountId'
- *   },
- * });
- */
-export function useAccountResourcesInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AccountResourcesInfoQuery,
-    SchemaTypes.AccountResourcesInfoQueryVariables
-  > &
-    ({ variables: SchemaTypes.AccountResourcesInfoQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
-    AccountResourcesInfoDocument,
-    options
-  );
-}
-export function useAccountResourcesInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AccountResourcesInfoQuery,
-    SchemaTypes.AccountResourcesInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
-    AccountResourcesInfoDocument,
-    options
-  );
-}
-export function useAccountResourcesInfoSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.AccountResourcesInfoQuery,
-        SchemaTypes.AccountResourcesInfoQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
-    AccountResourcesInfoDocument,
-    options
-  );
-}
-export type AccountResourcesInfoQueryHookResult = ReturnType<typeof useAccountResourcesInfoQuery>;
-export type AccountResourcesInfoLazyQueryHookResult = ReturnType<typeof useAccountResourcesInfoLazyQuery>;
-export type AccountResourcesInfoSuspenseQueryHookResult = ReturnType<typeof useAccountResourcesInfoSuspenseQuery>;
-export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.AccountResourcesInfoQuery,
-  SchemaTypes.AccountResourcesInfoQueryVariables
->;
-export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
-  return { query: AccountResourcesInfoDocument, variables: variables };
 }
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {

@@ -533,6 +533,8 @@ export type AiPersona = {
   id: Scalars['UUID']['output'];
   /** The type of interactions that are supported by this AI Persona when used. */
   interactionModes: Array<AiPersonaInteractionMode>;
+  /** The model card information about this AI Persona. */
+  modelCard: AiPersonaModelCard;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -563,6 +565,41 @@ export enum AiPersonaEngine {
 export enum AiPersonaInteractionMode {
   DiscussionTagging = 'DISCUSSION_TAGGING',
 }
+
+export type AiPersonaModelCard = {
+  __typename?: 'AiPersonaModelCard';
+  /** The model card information about the AI Engine behind the AI Persona. */
+  aiEngine?: Maybe<ModelCardAiEngineResult>;
+  /** The model card information about the monitoring that is done on usage. */
+  monitoring?: Maybe<ModelCardMonitoringResult>;
+  /** The Model Card details related to usage of the Ai Persona within a Space. */
+  spaceUsage?: Maybe<Array<ModelCardSpaceUsageResult>>;
+};
+
+export enum AiPersonaModelCardEntry {
+  SpaceCapabilities = 'SPACE_CAPABILITIES',
+  SpaceDataAccess = 'SPACE_DATA_ACCESS',
+  SpaceRoleRequired = 'SPACE_ROLE_REQUIRED',
+}
+
+export enum AiPersonaModelCardEntryFlagName {
+  SpaceCapabilityCommunityManagement = 'SPACE_CAPABILITY_COMMUNITY_MANAGEMENT',
+  SpaceCapabilityCreateContent = 'SPACE_CAPABILITY_CREATE_CONTENT',
+  SpaceCapabilityTagging = 'SPACE_CAPABILITY_TAGGING',
+  SpaceDataAccessAbout = 'SPACE_DATA_ACCESS_ABOUT',
+  SpaceDataAccessContent = 'SPACE_DATA_ACCESS_CONTENT',
+  SpaceDataAccessSubspaces = 'SPACE_DATA_ACCESS_SUBSPACES',
+  SpaceRoleAdmin = 'SPACE_ROLE_ADMIN',
+  SpaceRoleMember = 'SPACE_ROLE_MEMBER',
+}
+
+export type AiPersonaModelCardFlag = {
+  __typename?: 'AiPersonaModelCardFlag';
+  /** Is this model card entry flag enabled? */
+  enabled: Scalars['Boolean']['output'];
+  /** The name of the Model Card Entry flag */
+  name: AiPersonaModelCardEntryFlagName;
+};
 
 export type AiPersonaService = {
   __typename?: 'AiPersonaService';
@@ -1930,7 +1967,8 @@ export type CreateSpaceOnAccountInput = {
   licensePlanID?: InputMaybe<Scalars['UUID']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  type?: InputMaybe<SpaceType>;
+  /** Pick up a different platform template. */
+  platformTemplate?: InputMaybe<TemplateDefaultType>;
 };
 
 export type CreateSubspaceInput = {
@@ -1938,8 +1976,9 @@ export type CreateSubspaceInput = {
   collaborationData: CreateCollaborationOnSpaceInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
+  /** Pick up a different platform template. */
+  platformTemplate?: InputMaybe<TemplateDefaultType>;
   spaceID: Scalars['UUID']['input'];
-  type?: InputMaybe<SpaceType>;
 };
 
 export type CreateTagsetData = {
@@ -3540,6 +3579,38 @@ export enum MimeType {
   Xlsx = 'XLSX',
   Xpng = 'XPNG',
 }
+
+export type ModelCardAiEngineResult = {
+  __typename?: 'ModelCardAiEngineResult';
+  /** Access to detailed information on the underlying models specifications */
+  additionalTechnicalDetails: Scalars['String']['output'];
+  /** Is the VC prompted to limit the responses to a specific body of knowledge? */
+  areAnswersRestrictedToBodyOfKnowledge: Scalars['String']['output'];
+  /** Can the VC access or search the web? */
+  canAccessWebWhenAnswering: Scalars['Boolean']['output'];
+  /** Where is the AI service hosted? */
+  hostingLocation: Scalars['String']['output'];
+  /** Is the AI Persona using an AI Engine not provided by Alkemio? */
+  isExternal: Scalars['Boolean']['output'];
+  /** Is interaction data used in any way for model training? Null means Unknown. */
+  isInteractionDataUsedForTraining?: Maybe<Scalars['Boolean']['output']>;
+  /** Does the VC use an open-weight model? */
+  isUsingOpenWeightsModel: Scalars['Boolean']['output'];
+};
+
+export type ModelCardMonitoringResult = {
+  __typename?: 'ModelCardMonitoringResult';
+  /** Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a href="https://welcome.alkem.io/legal/#tc" target="_blank" ref="noreferer">Terms & Conditions</a>. */
+  isUsageMonitoredByAlkemio: Scalars['Boolean']['output'];
+};
+
+export type ModelCardSpaceUsageResult = {
+  __typename?: 'ModelCardSpaceUsageResult';
+  /** The Flags for this Model Card Entry. */
+  flags: Array<AiPersonaModelCardFlag>;
+  /** The Model Card Entry type. */
+  modelCardEntry: AiPersonaModelCardEntry;
+};
 
 export type MoveCalloutContributionInput = {
   /** ID of the Callout to move the Contribution to. */
@@ -6133,14 +6204,6 @@ export type SpaceSubscription = {
   /** The name of the Subscription. */
   name: LicensingCredentialBasedCredentialType;
 };
-
-export enum SpaceType {
-  BlankSlate = 'BLANK_SLATE',
-  Challenge = 'CHALLENGE',
-  Knowledge = 'KNOWLEDGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
-}
 
 export enum SpaceVisibility {
   Active = 'ACTIVE',
@@ -15948,6 +16011,125 @@ export type ContributorDetailsFragment =
   | ContributorDetails_User_Fragment
   | ContributorDetails_VirtualContributor_Fragment;
 
+export type AccountResourcesInfoQueryVariables = Exact<{
+  accountId: Scalars['UUID']['input'];
+}>;
+
+export type AccountResourcesInfoQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          spaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            };
+          }>;
+          virtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              tagline?: string | undefined;
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          innovationPacks: Array<{
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            templatesSet?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  calloutTemplatesCount: number;
+                  collaborationTemplatesCount: number;
+                  communityGuidelinesTemplatesCount: number;
+                  postTemplatesCount: number;
+                  whiteboardTemplatesCount: number;
+                }
+              | undefined;
+          }>;
+          innovationHubs: Array<{
+            __typename?: 'InnovationHub';
+            id: string;
+            spaceVisibilityFilter?: SpaceVisibility | undefined;
+            subdomain: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            spaceListFilter?:
+              | Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    isContentPublic: boolean;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      description?: string | undefined;
+                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    };
+                    membership: {
+                      __typename?: 'SpaceAboutMembership';
+                      myMembershipStatus?: CommunityMembershipStatus | undefined;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      communityID: string;
+                      roleSetID: string;
+                    };
+                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+                  };
+                }>
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type AccountResourceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  url: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type AssociatedOrganizationQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
 }>;
@@ -16279,125 +16461,6 @@ export type RolesOrganizationQuery = {
       }>;
     }>;
   };
-};
-
-export type AccountResourcesInfoQueryVariables = Exact<{
-  accountId: Scalars['UUID']['input'];
-}>;
-
-export type AccountResourcesInfoQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    account?:
-      | {
-          __typename?: 'Account';
-          id: string;
-          spaces: Array<{
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            };
-          }>;
-          virtualContributors: Array<{
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              tagline?: string | undefined;
-              id: string;
-              displayName: string;
-              url: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-          }>;
-          innovationPacks: Array<{
-            __typename?: 'InnovationPack';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-            templatesSet?:
-              | {
-                  __typename?: 'TemplatesSet';
-                  id: string;
-                  calloutTemplatesCount: number;
-                  collaborationTemplatesCount: number;
-                  communityGuidelinesTemplatesCount: number;
-                  postTemplatesCount: number;
-                  whiteboardTemplatesCount: number;
-                }
-              | undefined;
-          }>;
-          innovationHubs: Array<{
-            __typename?: 'InnovationHub';
-            id: string;
-            spaceVisibilityFilter?: SpaceVisibility | undefined;
-            subdomain: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-            spaceListFilter?:
-              | Array<{
-                  __typename?: 'Space';
-                  id: string;
-                  about: {
-                    __typename?: 'SpaceAbout';
-                    id: string;
-                    isContentPublic: boolean;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      url: string;
-                      tagline?: string | undefined;
-                      description?: string | undefined;
-                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    };
-                    membership: {
-                      __typename?: 'SpaceAboutMembership';
-                      myMembershipStatus?: CommunityMembershipStatus | undefined;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      communityID: string;
-                      roleSetID: string;
-                    };
-                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
-                  };
-                }>
-              | undefined;
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type AccountResourceProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  url: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
 export type OrganizationAccountQueryVariables = Exact<{
