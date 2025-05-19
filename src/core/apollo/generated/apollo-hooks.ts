@@ -13759,6 +13759,19 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
             description
           }
         }
+        provider {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualFull
+            }
+          }
+        }
       }
     }
   }

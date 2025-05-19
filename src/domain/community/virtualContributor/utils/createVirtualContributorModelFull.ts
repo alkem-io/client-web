@@ -15,5 +15,6 @@ export function createVirtualContributorModelFull(virtualContributor: any): Virt
       modelCard: createAiPersonaModelCardModelFromFragment(virtualContributor?.aiPersona),
     },
     profile: virtualContributor?.profile ?? { displayName: '', url: '' },
+    provider: virtualContributor?.provider ?? undefined,
   };
 }
