@@ -15,8 +15,9 @@ import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
-import { Tagset } from './Profile';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { TagsetModel } from '../tagset/TagsetModel';
+import { LocationModel } from '../location/LocationModel';
 
 export interface ProfilePageBannerProps {
   entityId: string | undefined;
@@ -25,11 +26,11 @@ export interface ProfilePageBannerProps {
         displayName: string;
         tagline?: string;
         avatar?: Visual;
-        location?: Location;
+        location?: LocationModel;
         tagset?: {
           tags: string[];
         };
-        tagsets?: Tagset[];
+        tagsets?: TagsetModel[];
         url?: string;
       }
     | undefined;

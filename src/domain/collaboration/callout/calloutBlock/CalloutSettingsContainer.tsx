@@ -32,7 +32,6 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -52,6 +51,8 @@ import { CalloutTemplateFormSubmittedValues } from '@/domain/templates/component
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -71,8 +72,8 @@ export interface CalloutSettingsContainerProps
         url: string;
         displayName: string;
         description?: string;
-        references?: Reference[];
-        tagset?: Tagset;
+        references?: ReferenceModel[];
+        tagset?: TagsetModel;
         storageBucket: {
           id: string;
         };

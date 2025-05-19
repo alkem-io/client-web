@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
-import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
@@ -34,16 +34,13 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface FormValues {
   name: string;
   nameID: string;
   tagline: string;
-  tagsets: {
-    id: string;
-    name: string;
-    tags: string[];
-  }[];
+  tagsets: TagsetModel[];
   licensePlanId: string;
 }
 
@@ -104,7 +101,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         allowedValues: [],
         type: TagsetType.Freeform,
       },
-    ] as Tagset[];
+    ] as TagsetModel[];
   }, []);
 
   const initialValues: Partial<FormValues> = {
@@ -116,7 +113,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetsSegmentSchema,

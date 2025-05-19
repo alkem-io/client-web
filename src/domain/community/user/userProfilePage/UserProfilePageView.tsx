@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
-import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import AssociatedOrganizationsLazilyFetched from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';

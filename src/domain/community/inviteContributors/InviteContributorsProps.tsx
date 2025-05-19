@@ -4,7 +4,8 @@ import {
   RoleSetContributorType,
 } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { Reference, Tagset } from '@/domain/common/profile/Profile';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface InviteContributorsDialogProps {
   type: RoleSetContributorType;
@@ -20,13 +21,13 @@ export interface ContributorProps extends Identifiable {
     avatar?: {
       uri: string;
     };
-    tagsets?: Tagset[];
+    tagsets?: TagsetModel[];
     location?: {
       city?: string;
       country?: string;
     };
     url: string;
-    references?: Reference[];
+    references?: ReferenceModel[];
   };
   aiPersona?: {
     bodyOfKnowledge?: string;
