@@ -1,6 +1,5 @@
-
 export interface LocationModel {
-  id?: string;
+  id: string;
   city?: string;
   country?: string;
 }

@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege } from "@/core/apollo/generated/graphql-schema";
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export interface ReferenceModel {
   id: string;
@@ -12,4 +12,3 @@ export interface ReferenceModelWithAuthorization extends ReferenceModel {
     myPrivileges?: AuthorizationPrivilege[];
   };
 }
-

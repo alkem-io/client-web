@@ -19,6 +19,7 @@ fragment OrganizationProfileInfo on Organization {
     description
     tagline
     location {
+      id
       country
       city
     }
