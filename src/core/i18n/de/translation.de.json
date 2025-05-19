@@ -609,6 +609,10 @@
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
             "INVITED_TO_ROLE_SET": "Invited to join the community"
+          },
+          "validationErrors": {
+            "required": "Please add at least one contributor to invite",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
           }
         },
         "vcs": {
@@ -924,7 +928,8 @@
       "atLeastOne": "Mindestens ein {{item}} muss ausgewählt sein.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
       "invalidUrl": "Invalid URL",
-      "invalidEmail": "Invalid Email address"
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address"
     }
   },
   "templateDialog": {
