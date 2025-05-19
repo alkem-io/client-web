@@ -14,7 +14,7 @@ type ModelCardAiEngine = {
   isExternal: boolean;
   hostingLocation: string;
   isUsingOpenWeightsModel: boolean;
-  isInteractionDataUsedForTraining: boolean;
+  isInteractionDataUsedForTraining: boolean | null; // null means unknown
   canAccessWebWhenAnswering: boolean;
   areAnswersRestrictedToBodyOfKnowledge: string;
   additionalTechnicalDetails: string;
@@ -63,7 +63,7 @@ export const EMPTY_MODEL_CARD: AiPersonaModelCardModel = {
     hostingLocation: 'unkown',
     areAnswersRestrictedToBodyOfKnowledge: 'unknown',
     isUsingOpenWeightsModel: false,
-    isInteractionDataUsedForTraining: false,
+    isInteractionDataUsedForTraining: null,
     canAccessWebWhenAnswering: false,
     additionalTechnicalDetails: '',
     isAssistant: false,

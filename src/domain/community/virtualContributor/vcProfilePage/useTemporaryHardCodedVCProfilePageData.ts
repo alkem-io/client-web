@@ -77,8 +77,8 @@ export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModel
             icon: 'database',
             title: 'Data Usage Disclosure',
             description: 'Is interaction data used in any way for model training?',
-            answerIcon: modelCard.aiEngine.isInteractionDataUsedForTraining ? 'exclamation' : 'check',
-            answer: modelCard.aiEngine.isInteractionDataUsedForTraining ? 'Unknown' : 'No',
+            answerIcon: modelCard.aiEngine.isInteractionDataUsedForTraining === false ? 'check' : 'exclamation', // making sure null evaluates to exclamation
+            answer: modelCard.aiEngine.isInteractionDataUsedForTraining === false ? 'No' : 'Unknown', // making sure null evaluates to Unknown
           },
           {
             icon: 'knowledge',
