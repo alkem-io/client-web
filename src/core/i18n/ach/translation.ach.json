@@ -609,6 +609,10 @@
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "crwdns36992:0crwdne36992:0",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "crwdns36994:0crwdne36994:0",
             "INVITED_TO_ROLE_SET": "crwdns36996:0crwdne36996:0"
+          },
+          "validationErrors": {
+            "required": "crwdns37048:0crwdne37048:0",
+            "invalidAddress": "crwdns37050:0crwdne37050:0"
           }
         },
         "vcs": {
@@ -924,7 +928,8 @@
       "atLeastOne": "crwdns18600:0{{item}}crwdne18600:0",
       "reservedTopLevelRoute": "crwdns18602:0crwdne18602:0",
       "invalidUrl": "crwdns36854:0crwdne36854:0",
-      "invalidEmail": "crwdns37046:0crwdne37046:0"
+      "invalidEmail": "crwdns37046:0crwdne37046:0",
+      "duplicateEmail": "crwdns37052:0crwdne37052:0"
     }
   },
   "templateDialog": {
