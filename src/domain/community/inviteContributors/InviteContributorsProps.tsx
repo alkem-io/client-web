@@ -8,6 +8,7 @@ import { Reference, Tagset } from '@/domain/common/profile/Profile';
 
 export interface InviteContributorsDialogProps {
   type: RoleSetContributorType;
+  filterContributors?: (contributor: Identifiable) => boolean;
   open: boolean;
   onClose: () => void;
 }

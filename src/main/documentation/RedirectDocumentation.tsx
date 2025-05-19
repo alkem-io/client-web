@@ -8,6 +8,11 @@ const RedirectDocumentation = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Prevent redirecting if the page is in an iframe
+    if (window.self !== window.top) {
+      return;
+    }
+
     if (pathname.startsWith('/documentation')) {
       const newPath = pathname.replace('/documentation', '/docs');
       navigate(`${newPath}${search}`, { replace: true });

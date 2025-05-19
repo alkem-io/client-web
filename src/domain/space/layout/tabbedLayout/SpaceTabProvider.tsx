@@ -6,6 +6,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
 import { SpaceTabQueryModel } from './spaceTabQuery.model';
+import { useSpace } from '../../context/useSpace';
 
 type InnovationFlowState = {
   displayName: string;
@@ -33,10 +34,11 @@ type useSpaceTabProviderParams = {
 
 const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): SpaceTabProvided => {
   const urlInfo = useUrlResolver();
-  const { spaceId } = urlInfo;
+  const {
+    space: { id: spaceId },
+  } = useSpace();
   const lastQueriedIdRef = useRef<string>();
   const lastSpaceTabDataRef = useRef<SpaceTabQueryModel>();
-
   const shouldSkip = skip || !spaceId || lastQueriedIdRef.current === spaceId;
 
   const {
