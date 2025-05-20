@@ -2275,6 +2275,10 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
     profile {
       id
       displayName
+      preview: visual(type: BANNER) {
+        name
+        uri
+      }
     }
     content
   }
@@ -6615,6 +6619,13 @@ export const UpdateCalloutTemplateDocument = gql`
         whiteboard {
           id
           content
+          nameID
+          profile {
+            id
+            previewVisual: visual(type: BANNER) {
+              id
+            }
+          }
         }
       }
       contributionDefaults {
