@@ -1,6 +1,12 @@
 import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutState, CalloutType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutState,
+  CalloutType,
+  CalloutVisibility,
+  TemplateType,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -193,6 +199,12 @@ const CalloutCreationDialog = ({
         content: whiteboard.content,
         profile: {
           displayName: 'Whiteboard',
+          visuals: [
+            {
+              name: VisualType.Banner,
+              uri: whiteboard.profile.preview?.uri ?? '',
+            },
+          ],
         },
         previewImages: [],
       },
