@@ -5603,13 +5603,6 @@ export const AccountInformationDocument = gql`
               ...VisualUri
             }
           }
-          spaceVisibilityFilter
-          spaceListFilter {
-            id
-            about {
-              ...SpaceAboutLight
-            }
-          }
           subdomain
         }
       }
@@ -5617,7 +5610,6 @@ export const AccountInformationDocument = gql`
   }
   ${VisualUriFragmentDoc}
   ${AccountItemProfileFragmentDoc}
-  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -11337,13 +11329,6 @@ export const AccountResourcesInfoDocument = gql`
               ...VisualUri
             }
           }
-          spaceVisibilityFilter
-          spaceListFilter {
-            id
-            about {
-              ...SpaceAboutLight
-            }
-          }
           subdomain
         }
       }
@@ -11351,7 +11336,6 @@ export const AccountResourcesInfoDocument = gql`
   }
   ${AccountResourceProfileFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**

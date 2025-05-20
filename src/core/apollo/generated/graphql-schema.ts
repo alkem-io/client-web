@@ -9001,7 +9001,6 @@ export type AccountInformationQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
-            spaceVisibilityFilter?: SpaceVisibility | undefined;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -9012,36 +9011,6 @@ export type AccountInformationQuery = {
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            spaceListFilter?:
-              | Array<{
-                  __typename?: 'Space';
-                  id: string;
-                  about: {
-                    __typename?: 'SpaceAbout';
-                    id: string;
-                    isContentPublic: boolean;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      url: string;
-                      tagline?: string | undefined;
-                      description?: string | undefined;
-                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    };
-                    membership: {
-                      __typename?: 'SpaceAboutMembership';
-                      myMembershipStatus?: CommunityMembershipStatus | undefined;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      communityID: string;
-                      roleSetID: string;
-                    };
-                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
-                  };
-                }>
-              | undefined;
           }>;
         }
       | undefined;
@@ -16427,7 +16396,6 @@ export type AccountResourcesInfoQuery = {
           innovationHubs: Array<{
             __typename?: 'InnovationHub';
             id: string;
-            spaceVisibilityFilter?: SpaceVisibility | undefined;
             subdomain: string;
             profile: {
               __typename?: 'Profile';
@@ -16437,36 +16405,6 @@ export type AccountResourcesInfoQuery = {
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            spaceListFilter?:
-              | Array<{
-                  __typename?: 'Space';
-                  id: string;
-                  about: {
-                    __typename?: 'SpaceAbout';
-                    id: string;
-                    isContentPublic: boolean;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      url: string;
-                      tagline?: string | undefined;
-                      description?: string | undefined;
-                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    };
-                    membership: {
-                      __typename?: 'SpaceAboutMembership';
-                      myMembershipStatus?: CommunityMembershipStatus | undefined;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      communityID: string;
-                      roleSetID: string;
-                    };
-                    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
-                  };
-                }>
-              | undefined;
           }>;
         }
       | undefined;
