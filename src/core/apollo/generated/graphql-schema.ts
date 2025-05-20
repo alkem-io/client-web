@@ -11248,7 +11248,19 @@ export type UpdateCalloutTemplateMutation = {
           | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       };
-      whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            content: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
+            };
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -24338,7 +24350,12 @@ export type TemplateContentQuery = {
                 __typename?: 'Whiteboard';
                 id: string;
                 content: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  preview?: { __typename?: 'Visual'; name: string; uri: string } | undefined;
+                };
               }
             | undefined;
           collaboration?:
@@ -24700,7 +24717,12 @@ export type WhiteboardTemplateContentFragment = {
   __typename?: 'Whiteboard';
   id: string;
   content: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    preview?: { __typename?: 'Visual'; name: string; uri: string } | undefined;
+  };
 };
 
 export type TemplateProfileInfoFragment = {
