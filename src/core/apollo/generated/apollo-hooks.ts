@@ -13436,9 +13436,6 @@ export type SpaceBodyOfKnowledgeAboutQueryResult = Apollo.QueryResult<
 export function refetchSpaceBodyOfKnowledgeAboutQuery(variables: SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables) {
   return { query: SpaceBodyOfKnowledgeAboutDocument, variables: variables };
 }
-<<<<<<< HEAD
-=======
-
 export const VirtualContributorProfileWithModelCardDocument = gql`
   query VirtualContributorProfileWithModelCard($id: UUID!) {
     lookup {
@@ -13531,7 +13528,6 @@ export function useVirtualContributorProfileWithModelCardQuery(
     SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
   >(VirtualContributorProfileWithModelCardDocument, options);
 }
-
 export function useVirtualContributorProfileWithModelCardLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorProfileWithModelCardQuery,
@@ -13544,7 +13540,6 @@ export function useVirtualContributorProfileWithModelCardLazyQuery(
     SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
   >(VirtualContributorProfileWithModelCardDocument, options);
 }
-
 export function useVirtualContributorProfileWithModelCardSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13559,7 +13554,6 @@ export function useVirtualContributorProfileWithModelCardSuspenseQuery(
     SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
   >(VirtualContributorProfileWithModelCardDocument, options);
 }
-
 export type VirtualContributorProfileWithModelCardQueryHookResult = ReturnType<
   typeof useVirtualContributorProfileWithModelCardQuery
 >;
@@ -13578,7 +13572,6 @@ export function refetchVirtualContributorProfileWithModelCardQuery(
 ) {
   return { query: VirtualContributorProfileWithModelCardDocument, variables: variables };
 }
-
 export const UpdateAiPersonaServiceDocument = gql`
   mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
     aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
@@ -13621,7 +13614,6 @@ export function useUpdateAiPersonaServiceMutation(
     SchemaTypes.UpdateAiPersonaServiceMutationVariables
   >(UpdateAiPersonaServiceDocument, options);
 }
-
 export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
 export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
 export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
@@ -13667,14 +13659,12 @@ export function useRefreshBodyOfKnowledgeMutation(
     SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
   >(RefreshBodyOfKnowledgeDocument, options);
 }
-
 export type RefreshBodyOfKnowledgeMutationHookResult = ReturnType<typeof useRefreshBodyOfKnowledgeMutation>;
 export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaTypes.RefreshBodyOfKnowledgeMutation>;
 export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RefreshBodyOfKnowledgeMutation,
   SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
 >;
->>>>>>> c5b634d56 (VC Profile page updated to pick up model card information from server (#8222))
 export const UpdateVirtualContributorDocument = gql`
   mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
@@ -13821,102 +13811,6 @@ export type UpdateVirtualContributorSettingsMutationOptions = Apollo.BaseMutatio
   SchemaTypes.UpdateVirtualContributorSettingsMutation,
   SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
 >;
-<<<<<<< HEAD
-export const RefreshBodyOfKnowledgeDocument = gql`
-  mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
-    refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
-  }
-`;
-export type RefreshBodyOfKnowledgeMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RefreshBodyOfKnowledgeMutation,
-  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
->;
-
-/**
- * __useRefreshBodyOfKnowledgeMutation__
- *
- * To run a mutation, you first call `useRefreshBodyOfKnowledgeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRefreshBodyOfKnowledgeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [refreshBodyOfKnowledgeMutation, { data, loading, error }] = useRefreshBodyOfKnowledgeMutation({
- *   variables: {
- *      refreshData: // value for 'refreshData'
- *   },
- * });
- */
-export function useRefreshBodyOfKnowledgeMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RefreshBodyOfKnowledgeMutation,
-    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RefreshBodyOfKnowledgeMutation,
-    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
-  >(RefreshBodyOfKnowledgeDocument, options);
-}
-export type RefreshBodyOfKnowledgeMutationHookResult = ReturnType<typeof useRefreshBodyOfKnowledgeMutation>;
-export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaTypes.RefreshBodyOfKnowledgeMutation>;
-export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RefreshBodyOfKnowledgeMutation,
-  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
->;
-export const UpdateAiPersonaServiceDocument = gql`
-  mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
-    aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
-      id
-      prompt
-    }
-  }
-`;
-export type UpdateAiPersonaServiceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
->;
-
-/**
- * __useUpdateAiPersonaServiceMutation__
- *
- * To run a mutation, you first call `useUpdateAiPersonaServiceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAiPersonaServiceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAiPersonaServiceMutation, { data, loading, error }] = useUpdateAiPersonaServiceMutation({
- *   variables: {
- *      aiPersonaServiceData: // value for 'aiPersonaServiceData'
- *   },
- * });
- */
-export function useUpdateAiPersonaServiceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
-  >(UpdateAiPersonaServiceDocument, options);
-}
-export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
->;
-=======
->>>>>>> c5b634d56 (VC Profile page updated to pick up model card information from server (#8222))
 export const VirtualContributorUpdatesDocument = gql`
   subscription virtualContributorUpdates($virtualContributorID: UUID!) {
     virtualContributorUpdated(virtualContributorID: $virtualContributorID) {
