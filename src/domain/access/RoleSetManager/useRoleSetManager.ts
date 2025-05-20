@@ -243,7 +243,7 @@ const useRoleSetManager = ({
     assignRoleToVirtualContributor,
     removeRoleFromVirtualContributor,
     loading: updatingRoleSet,
-  } = useRoleSetManagerRolesAssignment({ roleSetId });
+  } = useRoleSetManagerRolesAssignment({ roleSetId, refetchRoleSetOnMutation: true });
 
   return {
     myPrivileges,
