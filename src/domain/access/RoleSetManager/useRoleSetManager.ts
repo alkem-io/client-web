@@ -90,11 +90,7 @@ const useRoleSetManager = ({
   }
 
   // TODO: Additional Auth Check
-  const {
-    data: roleSetDetails,
-    loading: loadingRoleSet,
-    //refetch: refetchRoleSet,
-  } = useRoleSetAuthorizationQuery({
+  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -117,11 +113,7 @@ const useRoleSetManager = ({
     }
   }
 
-  const {
-    data: roleSetData,
-    loading: loadingRoleSetData,
-    //refetch: refetchRoleSetData,
-  } = useRoleSetRoleAssignmentQuery({
+  const { data: roleSetData, loading: loadingRoleSetData } = useRoleSetRoleAssignmentQuery({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
@@ -218,19 +210,12 @@ const useRoleSetManager = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () =>
-    Promise.all([
-      //refetchRoleSet(),
-      //refetchRoleSetData(),
-      onChange?.(),
-    ]);
-
   // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
   const onMutationCall =
     (mutation: (...args) => Promise<unknown>) =>
     async (...args) => {
       await mutation(...args);
-      refetchAll();
+      onChange?.();
     };
 
   const {
