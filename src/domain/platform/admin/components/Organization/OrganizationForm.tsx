@@ -173,15 +173,20 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                   <PageContentColumn columns={6}>
                     <Gutters disablePadding>
                       <PageContentBlockHeader title={t('common.organization')} />
-                      <NameSegment disabled={isEditMode} required={!isEditMode} />
+                      <NameSegment
+                        disabled={isEditMode}
+                        required={!isEditMode}
+                        nameFieldName="profile.displayName"
+                        nameIdFieldName="nameID"
+                      />
                       {!isCreateMode && (
                         <>
                           <ProfileSegment disabled={isReadOnlyMode} />
                           <OrganizationSegment disabled={isReadOnlyMode} />
                           <LocationSegment
                             disabled={isReadOnlyMode}
-                            cityFieldName="location.city"
-                            countryFieldName="location.country"
+                            cityFieldName="profile.location.city"
+                            countryFieldName="profile.location.country"
                           />
 
                           <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />

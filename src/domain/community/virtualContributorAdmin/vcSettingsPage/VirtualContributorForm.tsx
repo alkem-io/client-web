@@ -40,13 +40,15 @@ type VirtualContributorProps = {
 };
 
 type VirtualContributorFormValues = {
-  name: string;
-  description: string;
-  tagline?: string;
-  tagsets?: TagsetModel[];
+  profile: {
+    displayName: string;
+    description: string;
+    tagline?: string;
+    tagsets?: TagsetModel[];
+    references?: ReferenceModel[];
+  };
   hostDisplayName: string;
   subSpaceName: string;
-  references?: ReferenceModel[];
 };
 
 type VirtualContributorFormProps = {
@@ -78,13 +80,15 @@ export const VirtualContributorForm = ({
 
   const initialValues: VirtualContributorFormValues = useMemo(
     () => ({
-      name: displayName,
-      description: description ?? '',
-      tagline: tagline,
-      tagsets: tagsets,
+      profile: {
+        displayName: displayName,
+        description: description ?? '',
+        tagline: tagline,
+        tagsets: tagsets,
+        references: vcReferences ?? [],
+      },
       hostDisplayName: account?.host?.profile.displayName ?? '',
       subSpaceName: subSpaceName ?? '',
-      references: vcReferences ?? [],
     }),
     [displayName, description, tagline, tagsets, account, subSpaceName, vcReferences]
   );
@@ -101,12 +105,13 @@ export const VirtualContributorForm = ({
   }, [tagsets]);
 
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
-    const { tagsets, references, description, tagline, name, ...otherData } = values;
+    const { profile, ...otherData } = values;
+    const { displayName, description, tagline, tagsets, references } = profile;
 
     const updatedVirtualContributor = {
       ID: virtualContributor.id,
       profileData: {
-        displayName: name,
+        displayName,
         description,
         tagline,
         tagsets: mapTagsetModelsToUpdateTagsetInputs(tagsets),
@@ -139,7 +144,13 @@ export const VirtualContributorForm = ({
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ values: { references, hostDisplayName }, handleSubmit }) => {
+        {({
+          values: {
+            profile: { references },
+            hostDisplayName,
+          },
+          handleSubmit,
+        }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <GridContainer>
