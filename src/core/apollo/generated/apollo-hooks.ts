@@ -1423,71 +1423,6 @@ export const EntitlementDetailsFragmentDoc = gql`
     enabled
   }
 `;
-export const AiPersonaWithModelCardFragmentDoc = gql`
-  fragment AiPersonaWithModelCard on AiPersona {
-    id
-    bodyOfKnowledgeID
-    bodyOfKnowledgeType
-    bodyOfKnowledge
-    engine
-    aiPersonaServiceID
-    modelCard {
-      spaceUsage {
-        modelCardEntry
-        flags {
-          name
-          enabled
-        }
-      }
-      aiEngine {
-        isExternal
-        hostingLocation
-        isUsingOpenWeightsModel
-        isInteractionDataUsedForTraining
-        canAccessWebWhenAnswering
-        areAnswersRestrictedToBodyOfKnowledge
-        additionalTechnicalDetails
-      }
-      monitoring {
-        isUsageMonitoredByAlkemio
-      }
-    }
-  }
-`;
-export const VirtualContributorFullFragmentDoc = gql`
-  fragment VirtualContributorFull on VirtualContributor {
-    id
-    profile {
-      id
-      displayName
-      description
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-    aiPersona {
-      ...AiPersonaWithModelCard
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${AiPersonaWithModelCardFragmentDoc}
-`;
 export const InnovationHubProfileFragmentDoc = gql`
   fragment InnovationHubProfile on Profile {
     id
@@ -2035,6 +1970,83 @@ export const SpacePageFragmentDoc = gql`
   ${ContributorDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
+`;
+export const AiPersonaWithModelCardFragmentDoc = gql`
+  fragment AiPersonaWithModelCard on AiPersona {
+    id
+    bodyOfKnowledgeID
+    bodyOfKnowledgeType
+    bodyOfKnowledge
+    engine
+    aiPersonaServiceID
+    modelCard {
+      spaceUsage {
+        modelCardEntry
+        flags {
+          name
+          enabled
+        }
+      }
+      aiEngine {
+        isExternal
+        hostingLocation
+        isUsingOpenWeightsModel
+        isInteractionDataUsedForTraining
+        canAccessWebWhenAnswering
+        areAnswersRestrictedToBodyOfKnowledge
+        additionalTechnicalDetails
+      }
+      monitoring {
+        isUsageMonitoredByAlkemio
+      }
+    }
+  }
+`;
+export const VirtualContributorFullFragmentDoc = gql`
+  fragment VirtualContributorFull on VirtualContributor {
+    id
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+    aiPersona {
+      ...AiPersonaWithModelCard
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${AiPersonaWithModelCardFragmentDoc}
+`;
+export const AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc = gql`
+  fragment AvailableVirtualContributorsForRoleSetPaginated on PaginatedVirtualContributor {
+    virtualContributors {
+      ...VirtualContributorFull
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+  ${VirtualContributorFullFragmentDoc}
 `;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
@@ -18016,15 +18028,15 @@ export const AvailableVirtualContributorsInSpaceL0Document = gql`
           id
           roleSet {
             id
-            virtualContributorsInRole(role: MEMBER) {
-              ...VirtualContributorFull
+            availableVirtualContributorsForEntryRole {
+              ...AvailableVirtualContributorsForRoleSetPaginated
             }
           }
         }
       }
     }
   }
-  ${VirtualContributorFullFragmentDoc}
+  ${AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc}
 `;
 
 /**
