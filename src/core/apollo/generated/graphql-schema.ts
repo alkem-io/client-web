@@ -5183,6 +5183,8 @@ export type Query = {
   organizationsPaginated: PaginatedOrganization;
   /** Alkemio Platform */
   platform: Platform;
+  /** Get the list of restricted space names. */
+  restrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The roles that the specified Organization has. */
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
@@ -27629,6 +27631,10 @@ export type InAppNotificationUserMentionedFragment = {
       }
     | undefined;
 };
+
+export type RestrictedSpaceNamesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RestrictedSpaceNamesQuery = { __typename?: 'Query'; restrictedSpaceNames: Array<string> };
 
 export type UrlResolverQueryVariables = Exact<{
   url: Scalars['String']['input'];
