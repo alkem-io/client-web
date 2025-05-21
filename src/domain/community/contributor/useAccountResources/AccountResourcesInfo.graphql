@@ -43,13 +43,6 @@ query AccountResourcesInfo($accountId: UUID!) {
             ...VisualUri
           }
         }
-        spaceVisibilityFilter
-        spaceListFilter {
-          id
-          about {
-            ...SpaceAboutLight
-          }
-        }
         subdomain
       }
     }

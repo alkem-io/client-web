@@ -9,10 +9,12 @@ import {
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { useMemo } from 'react';
 
 type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;
+  refetchRoleSetOnMutation?: boolean;
 };
 
 export type useRoleSetManagerRolesAssignmentProvided = {
@@ -32,7 +34,14 @@ export type useRoleSetManagerRolesAssignmentProvided = {
  */
 const useRoleSetManagerRolesAssignment = ({
   roleSetId,
+  refetchRoleSetOnMutation = false,
 }: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
+  const refetchQueries = (cache: Parameters<typeof evictFromCache>[0]) => {
+    if (refetchRoleSetOnMutation && roleSetId) {
+      evictFromCache(cache, roleSetId, 'RoleSet');
+    }
+  };
+
   // Platform Roles:
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
     useAssignPlatformRoleToUserMutation();
@@ -44,6 +53,7 @@ const useRoleSetManagerRolesAssignment = ({
         contributorId: userId,
         role,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -53,6 +63,7 @@ const useRoleSetManagerRolesAssignment = ({
         contributorId: userId,
         role,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -66,6 +77,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
         roleSetId: roleSetId!,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -76,6 +88,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
         roleSetId: roleSetId!,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -90,6 +103,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
         roleSetId: roleSetId!,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -100,6 +114,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
         roleSetId: roleSetId!,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -114,6 +129,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
         roleSetId: roleSetId!,
       },
+      update: cache => refetchQueries(cache),
     });
   };
 
@@ -124,6 +140,7 @@ const useRoleSetManagerRolesAssignment = ({
         role,
         roleSetId: roleSetId!,
       },
+      update: cache => refetchQueries(cache),
     });
   };
   const loading =
