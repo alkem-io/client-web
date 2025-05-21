@@ -24,9 +24,6 @@ fragment VirtualContributorFull on VirtualContributor {
     }
   }
   aiPersona {
-    bodyOfKnowledge
-    bodyOfKnowledgeType
-    bodyOfKnowledgeID
-    engine
+    ...AiPersonaWithModelCard
   }
 }

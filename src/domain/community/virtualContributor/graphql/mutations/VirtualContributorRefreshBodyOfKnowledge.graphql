@@ -1,0 +1,3 @@
+mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+  refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
+}

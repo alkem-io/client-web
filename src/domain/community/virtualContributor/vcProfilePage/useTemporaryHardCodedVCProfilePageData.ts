@@ -1,58 +1,66 @@
-import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaModelCardModel } from '../model/AiPersonaModelCardModel';
+import { AiPersonaModelCardEntry, AiPersonaModelCardEntryFlagName } from '@/core/apollo/generated/graphql-schema';
 
-export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = AiPersonaEngine.GenericOpenai) => {
+export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModelCardModel) => {
   // TODO: the logic here should be isGeneric, isAssistant and isExternal = isGeneric || isAssistant;
-  const isExternal = [AiPersonaEngine.LibraFlow, AiPersonaEngine.GenericOpenai].includes(type);
-  const isAssistant = type === AiPersonaEngine.OpenaiAssistant;
+  const isExternal = modelCard.aiEngine.isExternal;
+  const isAssistant = modelCard.aiEngine.isAssistant;
   const isExternal_OR_Assistant = isExternal || isAssistant;
 
   return {
     sections: {
       functionality: {
         title: 'Functionality',
-        cells: [
-          {
-            icon: 'functionalCapabilities',
-            title: 'Functional Capabilities',
-            bullets: [
-              {
-                icon: 'check',
-                text: 'Answer questions in comments',
-              },
-              {
-                icon: '',
-                text: 'Create new posts',
-              },
-              {
-                icon: '',
-                text: 'Invite other contributors',
-              },
-            ],
-          },
-          {
-            icon: 'cloudUpload',
-            title: 'Data access from the Space where it’s a member',
-            bullets: [
-              {
-                icon: 'check',
-                text: 'About page',
-              },
-              {
-                icon: '',
-                text: 'Posts & Contributions',
-              },
-              {
-                icon: '',
-                text: 'Subspaces',
-              },
-            ],
-          },
-          {
-            icon: 'shieldPerson',
-            title: 'Role Requirements',
-            description: 'This VC needs to be granted <strong>member rights</strong> to function correctly',
-          },
-        ],
+        cells: modelCard.spaceUsage
+          .map(usage => {
+            switch (usage.modelCardEntry) {
+              case AiPersonaModelCardEntry.SpaceCapabilities:
+                return {
+                  icon: 'functionalCapabilities',
+                  title: 'Functional Capabilities',
+                  bullets: usage.flags.map(flag => ({
+                    icon: flag.enabled ? 'check' : '',
+                    text:
+                      flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityTagging
+                        ? 'Answer questions in comments'
+                        : flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityCreateContent
+                          ? 'Create new posts'
+                          : flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityCommunityManagement
+                            ? 'Invite other contributors'
+                            : flag.name,
+                  })),
+                };
+              case AiPersonaModelCardEntry.SpaceDataAccess:
+                return {
+                  icon: 'cloudUpload',
+                  title: 'Data access from the Space where it is a member',
+                  bullets: usage.flags.map(flag => ({
+                    icon: flag.enabled ? 'check' : '',
+                    text:
+                      flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessAbout
+                        ? 'About page'
+                        : flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessContent
+                          ? 'Posts & Contributions'
+                          : flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessSubspaces
+                            ? 'Subspaces'
+                            : flag.name,
+                  })),
+                };
+              case AiPersonaModelCardEntry.SpaceRoleRequired:
+                return {
+                  icon: 'shieldPerson',
+                  title: 'Role Requirements',
+                  description: usage.flags.some(
+                    flag => flag.name === AiPersonaModelCardEntryFlagName.SpaceRoleMember && flag.enabled
+                  )
+                    ? 'This VC needs to be granted <strong>member rights</strong> to function correctly'
+                    : 'No special member rights required',
+                };
+              default:
+                return null;
+            }
+          })
+          .filter(Boolean),
       },
 
       aiEngine: {
@@ -62,44 +70,35 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
             icon: 'settingsMotion',
             title: ' Open Model Transparency',
             description: 'Does the VC use an open-weight model?',
-            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
-            answer: isExternal_OR_Assistant ? 'No' : 'Yes',
+            answerIcon: modelCard.aiEngine.isUsingOpenWeightsModel ? 'exclamation' : 'check',
+            answer: modelCard.aiEngine.isUsingOpenWeightsModel ? 'No' : 'Yes',
           },
           {
             icon: 'database',
             title: 'Data Usage Disclosure',
             description: 'Is interaction data used in any way for model training?',
-            answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
-            answer: isExternal_OR_Assistant ? 'Unknown' : 'No',
+            answerIcon: modelCard.aiEngine.isInteractionDataUsedForTraining === false ? 'check' : 'exclamation', // making sure null evaluates to exclamation
+            answer: modelCard.aiEngine.isInteractionDataUsedForTraining === false ? 'No' : 'Unknown', // making sure null evaluates to Unknown
           },
           {
             icon: 'knowledge',
             title: 'Knowledge Restriction',
             description: 'Is the VC prompted to limit the responses to a specific body of knowledge?',
             answerIcon: isExternal_OR_Assistant ? 'exclamation' : 'check',
-            answer: (() => {
-              switch (type) {
-                case AiPersonaEngine.GenericOpenai:
-                  return 'No';
-                case AiPersonaEngine.OpenaiAssistant:
-                  return 'Yes, when provided';
-                default:
-                  return 'Yes';
-              }
-            })(),
+            answer: modelCard.aiEngine.areAnswersRestrictedToBodyOfKnowledge,
           },
           {
             icon: 'globe',
             title: 'Web Access',
             description: 'Can the VC access or search the web?',
-            answerIcon: isExternal ? 'check' : 'exclamation',
-            answer: isExternal ? 'Yes' : 'No',
+            answerIcon: modelCard.aiEngine.canAccessWebWhenAnswering ? 'check' : 'exclamation',
+            answer: modelCard.aiEngine.canAccessWebWhenAnswering ? 'Yes' : 'No',
           },
           {
             icon: 'location',
             title: 'Physical Location',
             description: 'Where is the AI service hosted?',
-            answer: isExternal_OR_Assistant ? 'Unknown' : 'Sweden, EU',
+            answer: modelCard.aiEngine.hostingLocation,
           },
           {
             icon: 'techReferences',
@@ -107,11 +106,7 @@ export const useTemporaryHardCodedVCProfilePageData = (type: AiPersonaEngine = A
             description: 'Access to detailed information on the underlying models specifications',
             buttonIcon: 'launch',
             buttonText: 'SEE DOCUMENTATION',
-            to: isExternal
-              ? 'https://platform.openai.com/docs/overview'
-              : isAssistant
-              ? 'https://platform.openai.com/docs/assistants/overview'
-              : 'https://huggingface.co/mistralai/Mistral-Small-Instruct-2409/tree/main',
+            to: modelCard.aiEngine.additionalTechnicalDetails,
           },
         ],
       },

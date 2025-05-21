@@ -141,6 +141,10 @@ fragment WhiteboardTemplateContent on Whiteboard {
   profile {
     id
     displayName
+    preview: visual(type: BANNER) {
+      name
+      uri
+    }
   }
   content
 }

@@ -75,13 +75,6 @@ query AccountInformation($accountId: UUID!) {
             ...VisualModel
           }
         }
-        spaceVisibilityFilter
-        spaceListFilter {
-          id
-          about {
-            ...SpaceAboutLight
-          }
-        }
         subdomain
       }
     }

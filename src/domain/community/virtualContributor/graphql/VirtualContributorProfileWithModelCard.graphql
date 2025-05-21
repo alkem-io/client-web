@@ -1,0 +1,54 @@
+query VirtualContributorProfileWithModelCard($id: UUID!) {
+  lookup {
+    virtualContributor(ID: $id) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      settings {
+        privacy {
+          knowledgeBaseContentVisible
+        }
+      }
+      searchVisibility
+      listedInStore
+      status
+      aiPersona {
+        ...AiPersonaWithModelCard
+      }
+      profile {
+        id
+        displayName
+        description
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+      provider {
+        id
+        profile {
+          id
+          displayName
+          description
+          tagline
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}

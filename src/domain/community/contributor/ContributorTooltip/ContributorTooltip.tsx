@@ -59,6 +59,7 @@ const ContributorTooltip = ({
               url={user.profile.url}
               city={user.profile.location?.city}
               country={user.profile.location?.country}
+              isContactable={false}
             />
           </GridProvider>
         </RootThemeProvider>

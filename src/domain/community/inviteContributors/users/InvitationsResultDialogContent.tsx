@@ -33,49 +33,57 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
   return (
     <DialogContent>
       <Gutters disablePadding>
-        <Caption>{t('community.invitations.inviteContributorsDialog.users.success')}</Caption>
-        <Box display="flex" flexDirection="row" flexWrap="wrap" gap={gutters()}>
-          {successfulInvitations.map(invite =>
-            invite.invitation ? (
-              <ContributorChip
-                key={invite.invitation.id}
-                contributor={{
-                  type: ContributorSelectorType.User,
-                  id: invite.invitation.contributor.id,
-                  displayName: invite.invitation.contributor.profile.displayName,
-                }}
-              />
-            ) : invite.platformInvitation ? (
-              <ContributorChip
-                key={invite.platformInvitation.id}
-                contributor={{
-                  type: ContributorSelectorType.Email,
-                  email: invite.platformInvitation.email,
-                }}
-              />
-            ) : undefined
-          )}
-        </Box>
-        <Caption>{t('community.invitations.inviteContributorsDialog.users.failure')}</Caption>
-        <ul>
-          {failedInvitations.map(invite =>
-            invite.invitation ? (
-              <li key={invite.invitation.id}>
-                <Caption display="inline">{invite.invitation.contributor.profile.displayName}</Caption>
-                <CaptionSmall marginLeft={gutters()} display="inline">
-                  {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
-                </CaptionSmall>
-              </li>
-            ) : invite.platformInvitation ? (
-              <li key={invite.platformInvitation.id}>
-                <Caption display="inline">{invite.platformInvitation.email}</Caption>
-                <CaptionSmall marginLeft={gutters()} display="inline">
-                  {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
-                </CaptionSmall>
-              </li>
-            ) : undefined
-          )}
-        </ul>
+        {successfulInvitations.length > 0 && (
+          <>
+            <Caption>{t('community.invitations.inviteContributorsDialog.users.success')}</Caption>
+            <Box display="flex" flexDirection="row" flexWrap="wrap" gap={gutters()}>
+              {successfulInvitations.map(invite =>
+                invite.invitation ? (
+                  <ContributorChip
+                    key={invite.invitation.id}
+                    contributor={{
+                      type: ContributorSelectorType.User,
+                      id: invite.invitation.contributor.id,
+                      displayName: invite.invitation.contributor.profile.displayName,
+                    }}
+                  />
+                ) : invite.platformInvitation ? (
+                  <ContributorChip
+                    key={invite.platformInvitation.id}
+                    contributor={{
+                      type: ContributorSelectorType.Email,
+                      email: invite.platformInvitation.email,
+                    }}
+                  />
+                ) : undefined
+              )}
+            </Box>
+          </>
+        )}
+        {failedInvitations.length > 0 && (
+          <>
+            <Caption>{t('community.invitations.inviteContributorsDialog.users.failure')}</Caption>
+            <ul>
+              {failedInvitations.map(invite =>
+                invite.invitation ? (
+                  <li key={invite.invitation.id}>
+                    <Caption display="inline">{invite.invitation.contributor.profile.displayName}</Caption>
+                    <CaptionSmall marginLeft={gutters()} display="inline">
+                      {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
+                    </CaptionSmall>
+                  </li>
+                ) : invite.platformInvitation ? (
+                  <li key={invite.platformInvitation.id}>
+                    <Caption display="inline">{invite.platformInvitation.email}</Caption>
+                    <CaptionSmall marginLeft={gutters()} display="inline">
+                      {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
+                    </CaptionSmall>
+                  </li>
+                ) : undefined
+              )}
+            </ul>
+          </>
+        )}
       </Gutters>
     </DialogContent>
   );
