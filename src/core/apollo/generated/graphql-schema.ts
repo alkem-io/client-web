@@ -1967,7 +1967,8 @@ export type CreateSpaceOnAccountInput = {
   licensePlanID?: InputMaybe<Scalars['UUID']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  type?: InputMaybe<SpaceType>;
+  /** Pick up a different platform template. */
+  platformTemplate?: InputMaybe<TemplateDefaultType>;
 };
 
 export type CreateSubspaceInput = {
@@ -1975,8 +1976,9 @@ export type CreateSubspaceInput = {
   collaborationData: CreateCollaborationOnSpaceInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
+  /** Pick up a different platform template. */
+  platformTemplate?: InputMaybe<TemplateDefaultType>;
   spaceID: Scalars['UUID']['input'];
-  type?: InputMaybe<SpaceType>;
 };
 
 export type CreateTagsetData = {
@@ -4817,6 +4819,13 @@ export type PaginatedUsers = {
   users: Array<User>;
 };
 
+export type PaginatedVirtualContributor = {
+  __typename?: 'PaginatedVirtualContributor';
+  pageInfo: PageInfo;
+  total: Scalars['Float']['output'];
+  virtualContributors: Array<VirtualContributor>;
+};
+
 export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
@@ -5573,6 +5582,8 @@ export type RoleSet = {
   availableUsersForElevatedRole: PaginatedUsers;
   /** All available users that are could join this RoleSet in the entry role. */
   availableUsersForEntryRole: PaginatedUsers;
+  /** All available VirtualContributors that are eligible to invite to this RoleSet in the entry role. */
+  availableVirtualContributorsForEntryRole: PaginatedVirtualContributor;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']['output']>;
   /** The Role that acts as the entry Role for the RoleSet, so other roles potentially require it. */
@@ -5628,6 +5639,13 @@ export type RoleSetAvailableUsersForEntryRoleArgs = {
   after?: InputMaybe<Scalars['UUID']['input']>;
   before?: InputMaybe<Scalars['UUID']['input']>;
   filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type RoleSetAvailableVirtualContributorsForEntryRoleArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -6202,14 +6220,6 @@ export type SpaceSubscription = {
   /** The name of the Subscription. */
   name: LicensingCredentialBasedCredentialType;
 };
-
-export enum SpaceType {
-  BlankSlate = 'BLANK_SLATE',
-  Challenge = 'CHALLENGE',
-  Knowledge = 'KNOWLEDGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
-}
 
 export enum SpaceVisibility {
   Active = 'ACTIVE',
@@ -22436,85 +22446,160 @@ export type AvailableVirtualContributorsInSpaceL0Query = {
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
-              virtualContributorsInRole: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
+              availableVirtualContributorsForEntryRole: {
+                __typename?: 'PaginatedVirtualContributor';
+                virtualContributors: Array<{
+                  __typename?: 'VirtualContributor';
                   id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
+                  aiPersona?:
+                    | {
+                        __typename?: 'AiPersona';
                         id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
+                        bodyOfKnowledgeID?: string | undefined;
+                        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                        bodyOfKnowledge?: string | undefined;
+                        engine: AiPersonaEngine;
+                        aiPersonaServiceID?: string | undefined;
+                        modelCard: {
+                          __typename?: 'AiPersonaModelCard';
+                          spaceUsage?:
+                            | Array<{
+                                __typename?: 'ModelCardSpaceUsageResult';
+                                modelCardEntry: AiPersonaModelCardEntry;
+                                flags: Array<{
+                                  __typename?: 'AiPersonaModelCardFlag';
+                                  name: AiPersonaModelCardEntryFlagName;
+                                  enabled: boolean;
+                                }>;
+                              }>
+                            | undefined;
+                          aiEngine?:
+                            | {
+                                __typename?: 'ModelCardAiEngineResult';
+                                isExternal: boolean;
+                                hostingLocation: string;
+                                isUsingOpenWeightsModel: boolean;
+                                isInteractionDataUsedForTraining?: boolean | undefined;
+                                canAccessWebWhenAnswering: boolean;
+                                areAnswersRestrictedToBodyOfKnowledge: string;
+                                additionalTechnicalDetails: string;
+                              }
+                            | undefined;
+                          monitoring?:
+                            | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
+                            | undefined;
+                        };
+                      }
                     | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                  references?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
-                        description?: string | undefined;
-                      }>
-                    | undefined;
-                };
-                aiPersona?:
-                  | {
-                      __typename?: 'AiPersona';
-                      id: string;
-                      bodyOfKnowledgeID?: string | undefined;
-                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-                      bodyOfKnowledge?: string | undefined;
-                      engine: AiPersonaEngine;
-                      aiPersonaServiceID?: string | undefined;
-                      modelCard: {
-                        __typename?: 'AiPersonaModelCard';
-                        spaceUsage?:
-                          | Array<{
-                              __typename?: 'ModelCardSpaceUsageResult';
-                              modelCardEntry: AiPersonaModelCardEntry;
-                              flags: Array<{
-                                __typename?: 'AiPersonaModelCardFlag';
-                                name: AiPersonaModelCardEntryFlagName;
-                                enabled: boolean;
-                              }>;
-                            }>
-                          | undefined;
-                        aiEngine?:
-                          | {
-                              __typename?: 'ModelCardAiEngineResult';
-                              isExternal: boolean;
-                              hostingLocation: string;
-                              isUsingOpenWeightsModel: boolean;
-                              isInteractionDataUsedForTraining?: boolean | undefined;
-                              canAccessWebWhenAnswering: boolean;
-                              areAnswersRestrictedToBodyOfKnowledge: string;
-                              additionalTechnicalDetails: string;
-                            }
-                          | undefined;
-                        monitoring?:
-                          | { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean }
-                          | undefined;
-                      };
-                    }
-                  | undefined;
-              }>;
+                }>;
+                pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+              };
             };
           };
         }
       | undefined;
   };
+};
+
+export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
+  __typename?: 'PaginatedVirtualContributor';
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          id: string;
+          bodyOfKnowledgeID?: string | undefined;
+          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+          bodyOfKnowledge?: string | undefined;
+          engine: AiPersonaEngine;
+          aiPersonaServiceID?: string | undefined;
+          modelCard: {
+            __typename?: 'AiPersonaModelCard';
+            spaceUsage?:
+              | Array<{
+                  __typename?: 'ModelCardSpaceUsageResult';
+                  modelCardEntry: AiPersonaModelCardEntry;
+                  flags: Array<{
+                    __typename?: 'AiPersonaModelCardFlag';
+                    name: AiPersonaModelCardEntryFlagName;
+                    enabled: boolean;
+                  }>;
+                }>
+              | undefined;
+            aiEngine?:
+              | {
+                  __typename?: 'ModelCardAiEngineResult';
+                  isExternal: boolean;
+                  hostingLocation: string;
+                  isUsingOpenWeightsModel: boolean;
+                  isInteractionDataUsedForTraining?: boolean | undefined;
+                  canAccessWebWhenAnswering: boolean;
+                  areAnswersRestrictedToBodyOfKnowledge: string;
+                  additionalTechnicalDetails: string;
+                }
+              | undefined;
+            monitoring?: { __typename?: 'ModelCardMonitoringResult'; isUsageMonitoredByAlkemio: boolean } | undefined;
+          };
+        }
+      | undefined;
+  }>;
+  pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
 };
 
 export type SpaceSettingsQueryVariables = Exact<{
