@@ -147,9 +147,11 @@ const TemplatesAdmin = ({
       variables: updateTemplateVariables,
     });
     if (updateCalloutVariables) {
-      await updateCallout({
+      const result = await updateCallout({
         variables: updateCalloutVariables,
       });
+      // update whiteboard (framing) visuals
+      await handlePreviewTemplates(values, result.data?.updateCallout.framing.whiteboard);
     }
     if (updateCommunityGuidelinesVariables) {
       await updateCommunityGuidelines({
@@ -161,8 +163,8 @@ const TemplatesAdmin = ({
         variables: updateCollaborationTemplateVariables,
       });
     }
-
-    if (updateTemplateVariables.includeProfileVisuals) {
+    // include preview for other template type other than callout
+    if (updateTemplateVariables.includeProfileVisuals && !updateCalloutVariables) {
       // Handle the visual in a special way with the preview images
       await handlePreviewTemplates(values, result.data?.updateTemplate);
     }
