@@ -2864,6 +2864,7 @@ export type ProfileCredentialVerifiedFieldPolicy = {
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
+  | 'RestrictedSpaceNames'
   | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
@@ -2872,7 +2873,6 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
   | 'exploreSpaces'
-  | 'getRestrictedSpaceNames'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
   | 'lookup'
@@ -2902,6 +2902,7 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
+  RestrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2910,7 +2911,6 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  getRestrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;

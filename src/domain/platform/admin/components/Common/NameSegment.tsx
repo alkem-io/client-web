@@ -4,16 +4,10 @@ import * as yup from 'yup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import nonReservedNameIdValidator from '@/main/routing/nonReservedNameIdValidator';
-import nonReservedSpaceNameIdValidator from '@/main/routing/nonReservedSpaceNameIdValidator';
 
 export const nameSegmentSchema = yup.object().shape({
   name: displayNameValidator,
   nameID: nonReservedNameIdValidator,
-});
-
-export const spaceNameSegmentSchema = yup.object().shape({
-  name: displayNameValidator,
-  nameID: nonReservedSpaceNameIdValidator,
 });
 
 interface NameSegmentProps {

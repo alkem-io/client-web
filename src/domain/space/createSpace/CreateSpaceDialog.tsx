@@ -9,7 +9,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
-import { spaceNameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -25,7 +24,7 @@ import NameIdField from '@/core/utils/nameId/NameIdField';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation, useRestrictedSpaceNamesQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -34,6 +33,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 
 interface FormValues {
   name: string;
@@ -115,9 +116,18 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     licensePlanId: '',
   };
 
+  const { data } = useRestrictedSpaceNamesQuery();
+  const restrictedSpaceNamesValues = data?.RestrictedSpaceNames ?? [];
+
+  const nonReservedSpaceNameIdValidator = nameIdValidator.test({
+    name: 'nonReservedSpaceNameIdValidator',
+    message: 'forms.validations.reservedTopLevelRoute',
+    test: value => !value || !restrictedSpaceNamesValues.includes(value.toLowerCase()),
+  });
+
   const validationSchema = yup.object().shape({
-    name: spaceNameSegmentSchema.fields?.name ?? yup.string(),
-    nameID: spaceNameSegmentSchema.fields?.nameID ?? yup.string(),
+    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    nameID: nonReservedSpaceNameIdValidator ?? yup.string(),
     tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetsSegmentSchema,
   });
