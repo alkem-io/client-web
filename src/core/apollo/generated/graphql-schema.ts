@@ -5147,8 +5147,6 @@ export enum ProfileType {
 
 export type Query = {
   __typename?: 'Query';
-  /** Get the list of restricted space names. */
-  RestrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The Accounts on this platform; If accessed through an Innovation Hub will return ONLY the Accounts defined in it. */
   accounts: Array<Account>;
   /** Activity events related to the current user. */
@@ -5185,6 +5183,8 @@ export type Query = {
   organizationsPaginated: PaginatedOrganization;
   /** Alkemio Platform */
   platform: Platform;
+  /** Get the list of restricted space names. */
+  restrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The roles that the specified Organization has. */
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
@@ -27634,7 +27634,7 @@ export type InAppNotificationUserMentionedFragment = {
 
 export type RestrictedSpaceNamesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type RestrictedSpaceNamesQuery = { __typename?: 'Query'; RestrictedSpaceNames: Array<string> };
+export type RestrictedSpaceNamesQuery = { __typename?: 'Query'; restrictedSpaceNames: Array<string> };
 
 export type UrlResolverQueryVariables = Exact<{
   url: Scalars['String']['input'];

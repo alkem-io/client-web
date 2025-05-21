@@ -117,7 +117,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   };
 
   const { data } = useRestrictedSpaceNamesQuery();
-  const restrictedSpaceNamesValues = data?.RestrictedSpaceNames ?? [];
+  const restrictedSpaceNamesValues = data?.restrictedSpaceNames ?? [];
 
   const nonReservedSpaceNameIdValidator = nameIdValidator.test({
     name: 'nonReservedSpaceNameIdValidator',

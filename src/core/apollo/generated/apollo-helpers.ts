@@ -2864,7 +2864,6 @@ export type ProfileCredentialVerifiedFieldPolicy = {
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
-  | 'RestrictedSpaceNames'
   | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
@@ -2883,6 +2882,7 @@ export type QueryKeySpecifier = (
   | 'organizations'
   | 'organizationsPaginated'
   | 'platform'
+  | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
   | 'rolesVirtualContributor'
@@ -2902,7 +2902,6 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
-  RestrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2921,6 +2920,7 @@ export type QueryFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -22520,7 +22520,7 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RestrictedSpaceNamesDocument = gql`
   query RestrictedSpaceNames {
-    RestrictedSpaceNames
+    restrictedSpaceNames
   }
 `;
 
