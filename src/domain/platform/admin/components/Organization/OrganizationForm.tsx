@@ -31,6 +31,7 @@ import {
   mapProfileModelToCreateProfileInput,
   mapProfileModelToUpdateProfileInput,
 } from '@/domain/common/profile/ProfileModelUtils';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -156,7 +157,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
             const tagsets = profile.tagsets || [];
             const references = profile.references || [];
             const displayName = profile.displayName || '';
-            const visual = profile.visuals?.find(visual => visual?.type === VisualType.Avatar);
+            const visual = getVisualByType(VisualType.Avatar, profile.visuals);
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
