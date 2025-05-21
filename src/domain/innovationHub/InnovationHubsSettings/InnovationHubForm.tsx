@@ -15,7 +15,7 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 
 export interface InnovationHubFormValues {
   subdomain: string;
@@ -36,7 +36,7 @@ type InnovationHubFormProps = {
     description?: string;
     tagline?: string;
     tagset?: TagsetModel;
-    visual?: VisualModel;
+    visual?: VisualModelFull;
   };
 
   loading?: boolean;

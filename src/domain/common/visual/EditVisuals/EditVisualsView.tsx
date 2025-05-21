@@ -4,10 +4,10 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { getVisualByType } from '../utils/visuals.utils';
 import { useTranslation } from 'react-i18next';
 import VisualDescription from './VisualDescription';
-import { VisualModel } from '../model/VisualModel';
+import { VisualModelFull } from '../model/VisualModel';
 
 export interface EditVisualsViewProps {
-  visuals?: VisualModel[];
+  visuals?: VisualModelFull[];
   visualTypes?: VisualType[];
 }
 

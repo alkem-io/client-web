@@ -1,9 +1,13 @@
 export interface VisualModel {
   id: string;
-  allowedTypes: string[];
   uri: string;
-  alternativeText?: string;
   name: string; // VisualType
+  alternativeText?: string;
+}
+
+export interface VisualModelFull extends VisualModel {
+  allowedTypes: string[];
+  alternativeText?: string;
   aspectRatio: number;
   maxHeight: number;
   maxWidth: number;

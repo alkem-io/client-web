@@ -426,6 +426,7 @@ export type AiPersonaKeySpecifier = (
   | 'engine'
   | 'id'
   | 'interactionModes'
+  | 'modelCard'
   | 'updatedDate'
   | AiPersonaKeySpecifier
 )[];
@@ -441,7 +442,24 @@ export type AiPersonaFieldPolicy = {
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
+  modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AiPersonaModelCardKeySpecifier = (
+  | 'aiEngine'
+  | 'monitoring'
+  | 'spaceUsage'
+  | AiPersonaModelCardKeySpecifier
+)[];
+export type AiPersonaModelCardFieldPolicy = {
+  aiEngine?: FieldPolicy<any> | FieldReadFunction<any>;
+  monitoring?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AiPersonaModelCardFlagKeySpecifier = ('enabled' | 'name' | AiPersonaModelCardFlagKeySpecifier)[];
+export type AiPersonaModelCardFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaServiceKeySpecifier = (
   | 'authorization'
@@ -2079,6 +2097,41 @@ export type MigrateEmbeddingsKeySpecifier = ('success' | MigrateEmbeddingsKeySpe
 export type MigrateEmbeddingsFieldPolicy = {
   success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ModelCardAiEngineResultKeySpecifier = (
+  | 'additionalTechnicalDetails'
+  | 'areAnswersRestrictedToBodyOfKnowledge'
+  | 'canAccessWebWhenAnswering'
+  | 'hostingLocation'
+  | 'isExternal'
+  | 'isInteractionDataUsedForTraining'
+  | 'isUsingOpenWeightsModel'
+  | ModelCardAiEngineResultKeySpecifier
+)[];
+export type ModelCardAiEngineResultFieldPolicy = {
+  additionalTechnicalDetails?: FieldPolicy<any> | FieldReadFunction<any>;
+  areAnswersRestrictedToBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  canAccessWebWhenAnswering?: FieldPolicy<any> | FieldReadFunction<any>;
+  hostingLocation?: FieldPolicy<any> | FieldReadFunction<any>;
+  isExternal?: FieldPolicy<any> | FieldReadFunction<any>;
+  isInteractionDataUsedForTraining?: FieldPolicy<any> | FieldReadFunction<any>;
+  isUsingOpenWeightsModel?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ModelCardMonitoringResultKeySpecifier = (
+  | 'isUsageMonitoredByAlkemio'
+  | ModelCardMonitoringResultKeySpecifier
+)[];
+export type ModelCardMonitoringResultFieldPolicy = {
+  isUsageMonitoredByAlkemio?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ModelCardSpaceUsageResultKeySpecifier = (
+  | 'flags'
+  | 'modelCardEntry'
+  | ModelCardSpaceUsageResultKeySpecifier
+)[];
+export type ModelCardSpaceUsageResultFieldPolicy = {
+  flags?: FieldPolicy<any> | FieldReadFunction<any>;
+  modelCardEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
   | 'addReactionToMessageInRoom'
@@ -2566,6 +2619,17 @@ export type PaginatedUsersFieldPolicy = {
   total?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedVirtualContributorKeySpecifier = (
+  | 'pageInfo'
+  | 'total'
+  | 'virtualContributors'
+  | PaginatedVirtualContributorKeySpecifier
+)[];
+export type PaginatedVirtualContributorFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformKeySpecifier = (
   | 'authorization'
   | 'chatGuidanceVirtualContributor'
@@ -3007,6 +3071,7 @@ export type RoleSetKeySpecifier = (
   | 'authorization'
   | 'availableUsersForElevatedRole'
   | 'availableUsersForEntryRole'
+  | 'availableVirtualContributorsForEntryRole'
   | 'createdDate'
   | 'entryRoleName'
   | 'id'
@@ -3035,6 +3100,7 @@ export type RoleSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForElevatedRole?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableVirtualContributorsForEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   entryRoleName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4231,6 +4297,14 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
     fields?: AiPersonaFieldPolicy;
   };
+  AiPersonaModelCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiPersonaModelCardKeySpecifier | (() => undefined | AiPersonaModelCardKeySpecifier);
+    fields?: AiPersonaModelCardFieldPolicy;
+  };
+  AiPersonaModelCardFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiPersonaModelCardFlagKeySpecifier | (() => undefined | AiPersonaModelCardFlagKeySpecifier);
+    fields?: AiPersonaModelCardFlagFieldPolicy;
+  };
   AiPersonaService?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaServiceKeySpecifier | (() => undefined | AiPersonaServiceKeySpecifier);
     fields?: AiPersonaServiceFieldPolicy;
@@ -4709,6 +4783,24 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MigrateEmbeddingsKeySpecifier | (() => undefined | MigrateEmbeddingsKeySpecifier);
     fields?: MigrateEmbeddingsFieldPolicy;
   };
+  ModelCardAiEngineResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ModelCardAiEngineResultKeySpecifier | (() => undefined | ModelCardAiEngineResultKeySpecifier);
+    fields?: ModelCardAiEngineResultFieldPolicy;
+  };
+  ModelCardMonitoringResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ModelCardMonitoringResultKeySpecifier
+      | (() => undefined | ModelCardMonitoringResultKeySpecifier);
+    fields?: ModelCardMonitoringResultFieldPolicy;
+  };
+  ModelCardSpaceUsageResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ModelCardSpaceUsageResultKeySpecifier
+      | (() => undefined | ModelCardSpaceUsageResultKeySpecifier);
+    fields?: ModelCardSpaceUsageResultFieldPolicy;
+  };
   Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
     fields?: MutationFieldPolicy;
@@ -4773,6 +4865,13 @@ export type StrictTypedTypePolicies = {
   PaginatedUsers?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedUsersKeySpecifier | (() => undefined | PaginatedUsersKeySpecifier);
     fields?: PaginatedUsersFieldPolicy;
+  };
+  PaginatedVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedVirtualContributorKeySpecifier
+      | (() => undefined | PaginatedVirtualContributorKeySpecifier);
+    fields?: PaginatedVirtualContributorFieldPolicy;
   };
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);

@@ -37,7 +37,7 @@ query AccountInformation($accountId: UUID!) {
             displayName
             url
             cardBanner: visual(type: CARD) {
-              ...VisualUri
+              ...VisualModel
             }
             tagline
           }
@@ -72,7 +72,7 @@ query AccountInformation($accountId: UUID!) {
         profile {
           ...AccountItemProfile
           banner: visual(type: BANNER_WIDE) {
-            ...VisualUri
+            ...VisualModel
           }
         }
         spaceVisibilityFilter
@@ -93,7 +93,7 @@ fragment AccountItemProfile on Profile {
   displayName
   description
   avatar: visual(type: AVATAR) {
-    ...VisualUri
+    ...VisualModel
   }
   url
 }

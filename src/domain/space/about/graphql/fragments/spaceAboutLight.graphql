@@ -11,10 +11,10 @@ fragment SpaceAboutLight on SpaceAbout {
       tags
     }
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     cardBanner: visual(type: CARD) {
-      ...VisualUri
+      ...VisualModel
     }
   }
   isContentPublic

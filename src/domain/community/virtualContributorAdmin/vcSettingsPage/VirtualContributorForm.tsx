@@ -20,7 +20,7 @@ import { BasicSpaceProps } from '../../virtualContributor/vcProfilePage/model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/TagsetUtils';
@@ -52,7 +52,7 @@ type VirtualContributorFormValues = {
 type VirtualContributorFormProps = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: BasicSpaceProps;
-  avatar: VisualModel | undefined;
+  avatar: VisualModelFull | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
   hasBackNavigation?: boolean;
 };

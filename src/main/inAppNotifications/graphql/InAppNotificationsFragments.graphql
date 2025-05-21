@@ -26,7 +26,7 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
         displayName
         url
         visual(type: CARD) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
@@ -45,7 +45,7 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
       displayName
       url
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
@@ -59,7 +59,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
       displayName
       url
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
@@ -78,7 +78,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
       displayName
       url
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
@@ -92,7 +92,7 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
       displayName
       url
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }

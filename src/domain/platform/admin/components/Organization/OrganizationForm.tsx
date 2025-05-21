@@ -26,7 +26,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
-import { EmptyProfileModel, ProfileModel } from '@/domain/common/profile/ProfileModel';
+import { EmptyProfileModel, ProfileModelFull } from '@/domain/common/profile/ProfileModel';
 import {
   mapProfileModelToCreateProfileInput,
   mapProfileModelToUpdateProfileInput,
@@ -35,7 +35,7 @@ import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 
 interface OrganizationFormValues {
   nameID: string;
-  profile: ProfileModel;
+  profile: ProfileModelFull;
   contactEmail: string | undefined;
   domain: string | undefined;
   legalEntityName: string | undefined;

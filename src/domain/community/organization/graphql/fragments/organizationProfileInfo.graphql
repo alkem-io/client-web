@@ -14,7 +14,7 @@ fragment OrganizationProfileInfo on Organization {
     url
     displayName
     visual(type: AVATAR) {
-      ...VisualFull
+      ...VisualModel
     }
     description
     tagline

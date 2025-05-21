@@ -180,7 +180,7 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
       <Box>
         <ImageBlurredSides
           src={profile?.banner?.uri || defaultVisualUrls[VisualType.Banner]}
-          alt={t('visuals-alt-text.banner.page.text', { altText: profile?.banner?.alternativeText })}
+          alt={t('visuals-alt-text.banner.page.text', { altText: profile?.displayName })}
           onLoad={() => setImageLoading(false)}
           onError={imageLoadError}
           blurRadius={2}
