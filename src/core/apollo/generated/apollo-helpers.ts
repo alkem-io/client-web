@@ -2872,6 +2872,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
   | 'exploreSpaces'
+  | 'getRestrictedSpaceNames'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
   | 'lookup'
@@ -2909,6 +2910,7 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  getRestrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;

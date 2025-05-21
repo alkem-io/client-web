@@ -9,7 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
-import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { spaceNameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -116,8 +116,8 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
-    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
+    name: spaceNameSegmentSchema.fields?.name ?? yup.string(),
+    nameID: spaceNameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetsSegmentSchema,
   });
