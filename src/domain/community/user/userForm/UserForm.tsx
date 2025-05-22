@@ -28,7 +28,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 const socialNames = [
   SocialNetworkEnum.github.toString(),
   SocialNetworkEnum.linkedin.toString(),
-  SocialNetworkEnum.twitter.toString(),
+  SocialNetworkEnum.blueSky.toString(),
 ];
 
 const referenceSegmentWithSocialSchema = yup.array().of(
@@ -75,8 +75,8 @@ export const UserForm = ({
     },
   } = currentUser;
 
-  const twitterRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.twitter),
+  const blueSkyRef = useMemo(
+    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.blueSky),
     [references]
   );
   const githubRef = useMemo(
@@ -95,7 +95,7 @@ export const UserForm = ({
     lastName: lastName || '',
     email: email || '',
     linkedin: linkedinRef?.uri || '',
-    twitter: twitterRef?.uri || '',
+    bsky: blueSkyRef?.uri || '',
     github: githubRef?.uri || '',
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
@@ -118,7 +118,7 @@ export const UserForm = ({
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
     linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    twitter: yup.string().url('Twitter url must be a valid URL'),
+    bsky: yup.string().url('BlueSky url must be a valid URL'),
     github: yup.string().url('github url must be a valid URL'),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
@@ -142,18 +142,20 @@ export const UserForm = ({
         city,
         country,
         linkedin,
-        twitter,
+        bsky,
         github,
         displayName,
         tagline,
         ...otherData
       } = userData;
+
       const finalReferences = [
         ...newReferences,
         { ...linkedinRef, uri: linkedin } as Reference,
-        { ...twitterRef, uri: twitter } as Reference,
+        { ...blueSkyRef, uri: bsky } as Reference,
         { ...githubRef, uri: github } as Reference,
       ];
+
       const user: UserModel = {
         ...currentUser,
         ...otherData,
@@ -172,7 +174,7 @@ export const UserForm = ({
       };
       onSave && (await onSave(user));
     },
-    [linkedinRef, twitterRef, githubRef, currentUser, onSave]
+    [linkedinRef, blueSkyRef, githubRef, currentUser, onSave]
   );
 
   return (

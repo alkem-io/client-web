@@ -4,6 +4,7 @@ export enum SocialNetworkEnum {
   linkedin = 'linkedin',
   github = 'github',
   twitter = 'twitter',
+  blueSky = 'bsky',
   email = 'email',
 }
 
