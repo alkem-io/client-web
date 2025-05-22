@@ -7,7 +7,6 @@ export interface VisualModel {
 
 export interface VisualModelFull extends VisualModel {
   allowedTypes: string[];
-  alternativeText?: string;
   aspectRatio: number;
   maxHeight: number;
   maxWidth: number;
