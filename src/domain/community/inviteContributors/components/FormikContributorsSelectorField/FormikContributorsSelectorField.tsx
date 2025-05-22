@@ -14,7 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { compact, isArray } from 'lodash';
+import { compact, debounce, isArray } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContext';
 import ContributorChip from '../ContributorChip/ContributorChip';
@@ -97,7 +97,7 @@ const FormikContributorsSelectorField = ({
   // Filter users for the Autocomplete
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const { data, hasMore, fetchMore } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
+  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
     useQuery: useUserSelectorQuery,
     getPageInfo: data => data.usersPaginated.pageInfo,
     options: {
@@ -115,7 +115,7 @@ const FormikContributorsSelectorField = ({
   });
 
   useEffect(() => {
-    if (loadMoreInView && hasMore) {
+    if (loadMoreInView && hasMore && !loading) {
       fetchMore();
     }
   }, [loadMoreInView, hasMore, fetchMore]);
@@ -182,9 +182,21 @@ const FormikContributorsSelectorField = ({
     ]);
   };
 
+  // Debounce avoids firing a query on every keystroke
+  const debouncedSetFilter = useMemo(
+    () =>
+      debounce((val: string) => {
+        setFilter(val ? { email: val, displayName: val } : undefined);
+      }, 300),
+    []
+  );
+
   const onTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(value ? { email: value, displayName: value } : undefined); // If no value, the full filter is undefined
+    debouncedSetFilter(value);
   };
+
+  // Clean up debounce on unmount
+  useEffect(() => () => debouncedSetFilter.cancel(), [debouncedSetFilter]);
 
   const onTextFieldKeyDown = (event: React.KeyboardEvent) => {
     helpers.setTouched(true);
