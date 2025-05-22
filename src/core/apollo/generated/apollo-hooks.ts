@@ -21843,7 +21843,6 @@ export function useRestrictedSpaceNamesQuery(
     options
   );
 }
-
 export function useRestrictedSpaceNamesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.RestrictedSpaceNamesQuery,
@@ -21856,7 +21855,6 @@ export function useRestrictedSpaceNamesLazyQuery(
     options
   );
 }
-
 export function useRestrictedSpaceNamesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -21871,7 +21869,6 @@ export function useRestrictedSpaceNamesSuspenseQuery(
     options
   );
 }
-
 export type RestrictedSpaceNamesQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesQuery>;
 export type RestrictedSpaceNamesLazyQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesLazyQuery>;
 export type RestrictedSpaceNamesSuspenseQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesSuspenseQuery>;
@@ -21882,7 +21879,6 @@ export type RestrictedSpaceNamesQueryResult = Apollo.QueryResult<
 export function refetchRestrictedSpaceNamesQuery(variables?: SchemaTypes.RestrictedSpaceNamesQueryVariables) {
   return { query: RestrictedSpaceNamesDocument, variables: variables };
 }
-
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {
