@@ -41,7 +41,7 @@ export type Account = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The external subscription ID for this Account. */
   externalSubscriptionID?: Maybe<Scalars['String']['output']>;
   /** The Account host. */
@@ -63,7 +63,7 @@ export type Account = {
   /** A type of entity that this Account is being used with. */
   type?: Maybe<AccountType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The virtual contributors for this Account. */
   virtualContributors: Array<VirtualContributor>;
 };
@@ -470,7 +470,7 @@ export type Agent = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The Credentials held by this Agent. */
   credentials?: Maybe<Array<Credential>>;
   /** The Decentralized Identifier (DID) for this Agent. */
@@ -480,7 +480,7 @@ export type Agent = {
   /** A type of entity that this Agent is being used with. */
   type: AgentType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The Verfied Credentials for this Agent. */
   verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
 };
@@ -522,7 +522,7 @@ export type AiPersona = {
   /** The body of knowledge type used for the AI Persona. */
   bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The type of context sharing that are supported by this AI Persona when used. */
   dataAccessMode: AiPersonaDataAccessMode;
   /** The description for this AI Persona. */
@@ -536,7 +536,7 @@ export type AiPersona = {
   /** The model card information about this AI Persona. */
   modelCard: AiPersonaModelCard;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum AiPersonaBodyOfKnowledgeType {
@@ -612,7 +612,7 @@ export type AiPersonaService = {
   /** The body of knowledge type used for the AI Persona Service */
   bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The required data access by the Virtual Persona */
   dataAccessMode: AiPersonaDataAccessMode;
   /** The AI Persona Engine being used by this AI Persona. */
@@ -624,7 +624,7 @@ export type AiPersonaService = {
   /** The prompt used by this Virtual Persona */
   prompt: Array<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type AiServer = {
@@ -636,13 +636,13 @@ export type AiServer = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The default AiPersonaService in use on the aiServer. */
   defaultAiPersonaService: AiPersonaService;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type AiServerAiPersonaServiceArgs = {
@@ -655,6 +655,7 @@ export type Application = {
   authorization?: Maybe<Authorization>;
   /** The User for this Application. */
   contributor: Contributor;
+  /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
@@ -667,6 +668,7 @@ export type Application = {
   questions: Array<Question>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
+  /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
 
@@ -758,7 +760,7 @@ export enum AuthenticationType {
 export type Authorization = {
   __typename?: 'Authorization';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The set of credential rules that are contained by this Authorization Policy. */
   credentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
   /** The ID of the entity */
@@ -770,7 +772,7 @@ export type Authorization = {
   /** A type of entity that this Authorization Policy is being used with. */
   type?: Maybe<AuthorizationPolicyType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The set of verified credential rules that are contained by this Authorization Policy. */
   verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
 };
@@ -936,7 +938,7 @@ export type Calendar = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** A single CalendarEvent */
   event?: Maybe<CalendarEvent>;
   /** The list of CalendarEvents for this Calendar. */
@@ -944,7 +946,7 @@ export type Calendar = {
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type CalendarEventArgs = {
@@ -960,7 +962,7 @@ export type CalendarEvent = {
   /** The user that created this CalendarEvent */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The length of the event in days. */
   durationDays?: Maybe<Scalars['Float']['output']>;
   /** The length of the event in minutes. */
@@ -980,7 +982,7 @@ export type CalendarEvent = {
   /** The event type, e.g. webinar, meetup etc. */
   type: CalendarEventType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Is the event visible on the parent calendar. */
   visibleOnParentCalendar: Scalars['Boolean']['output'];
   /** Flag to indicate if this event is for a whole day. */
@@ -1013,7 +1015,7 @@ export type Callout = {
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The Callout Framing associated with this Callout. */
   framing: CalloutFraming;
   /** The ID of the entity */
@@ -1033,7 +1035,7 @@ export type Callout = {
   /** The Callout type, e.g. Post, Whiteboard, Discussion */
   type: CalloutType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
 };
@@ -1051,7 +1053,7 @@ export type CalloutContribution = {
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Link that was contributed. */
@@ -1061,7 +1063,7 @@ export type CalloutContribution = {
   /** The sorting order for this Contribution. */
   sortOrder: Scalars['Float']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The Whiteboard that was contributed. */
   whiteboard?: Maybe<Whiteboard>;
 };
@@ -1069,13 +1071,13 @@ export type CalloutContribution = {
 export type CalloutContributionDefaults = {
   __typename?: 'CalloutContributionDefaults';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The default description to use for new contributions. */
   postDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The default whiteboard content for whiteboard responses. */
   whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
 };
@@ -1085,13 +1087,13 @@ export type CalloutContributionPolicy = {
   /** The allowed contribution types for this callout. */
   allowedContributionTypes: Array<CalloutContributionType>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** State of the Callout. */
   state: CalloutState;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum CalloutContributionType {
@@ -1105,13 +1107,13 @@ export type CalloutFraming = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Profile for framing the associated Callout. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The Whiteboard for framing the associated Callout. */
   whiteboard?: Maybe<Whiteboard>;
 };
@@ -1154,7 +1156,7 @@ export type CalloutsSet = {
   /** The list of Callouts for this CalloutsSet object. */
   callouts: Array<Callout>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The tagset templates on this CalloutsSet. */
@@ -1162,7 +1164,7 @@ export type CalloutsSet = {
   /** The set of CalloutGroups in use in this CalloutsSet. */
   type: CalloutsSetType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type CalloutsSetCalloutsArgs = {
@@ -1198,7 +1200,7 @@ export type Classification = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The default or named tagset. */
@@ -1206,7 +1208,7 @@ export type Classification = {
   /** The classification tagsets. */
   tagsets?: Maybe<Array<Tagset>>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type ClassificationTagsetArgs = {
@@ -1220,7 +1222,7 @@ export type Collaboration = {
   /** The calloutsSet with Callouts in use by this Space */
   calloutsSet: CalloutsSet;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The InnovationFlow for the Collaboration. */
@@ -1232,7 +1234,7 @@ export type Collaboration = {
   /** The timeline with events in use by this Space */
   timeline: Timeline;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type Communication = {
@@ -1240,11 +1242,11 @@ export type Communication = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The updates on this Communication. */
   updates: Room;
 };
@@ -1349,7 +1351,7 @@ export type Community = Groupable & {
   /** The Communications for this Community. */
   communication: Communication;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The user group with the specified id anywhere in the space */
   group: UserGroup;
   /** Groups of users related to a Community. */
@@ -1359,7 +1361,7 @@ export type Community = Groupable & {
   /** The RoleSet for this Community. */
   roleSet: RoleSet;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type CommunityGroupArgs = {
@@ -1401,13 +1403,13 @@ export type CommunityGuidelines = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The details of the guidelilnes */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type CommunityInvitationForRoleResult = {
@@ -1506,12 +1508,16 @@ export type Contributor = {
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the Contributor */
   id: Scalars['UUID']['output'];
   /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
   /** The profile for the Contributor. */
   profile: Profile;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type ContributorFilterInput = {
@@ -2092,7 +2098,7 @@ export type CreateWhiteboardInput = {
 export type Credential = {
   __typename?: 'Credential';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The timestamp for the expiry of this credential. */
   expires?: Maybe<Scalars['Float']['output']>;
   /** The ID of the entity */
@@ -2102,7 +2108,7 @@ export type Credential = {
   resourceID: Scalars['String']['output'];
   type: CredentialType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type CredentialDefinition = {
@@ -2255,11 +2261,11 @@ export type DirectRoom = {
   __typename?: 'DirectRoom';
   /** The display name of the room */
   displayName: Scalars['String']['output'];
-  /** The identifier of the direct room */
+  /** The identifier of the room */
   id: Scalars['String']['output'];
-  /** The messages that have been sent to the Direct Room. */
+  /** The messages that have been sent to the Room. */
   messages: Array<Message>;
-  /** The recepient userID */
+  /** The recipient userID */
   receiverID?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2274,7 +2280,7 @@ export type Discussion = {
   /** The id of the user that created this discussion */
   createdBy?: Maybe<Scalars['UUID']['output']>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -2286,7 +2292,7 @@ export type Discussion = {
   /** The timestamp for the creation of this Discussion. */
   timestamp?: Maybe<Scalars['Float']['output']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type DiscussionsInput = {
@@ -2308,7 +2314,7 @@ export type Document = {
   /** The user that created this Document */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The display name. */
   displayName: Scalars['String']['output'];
   /** The ID of the entity */
@@ -2322,7 +2328,7 @@ export type Document = {
   /** Whether this Document is in its end location or not. */
   temporaryLocation: Scalars['Boolean']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The uploaded date of this Document */
   uploadedDate: Scalars['DateTime']['output'];
   /** The URL to be used to retrieve the Document */
@@ -2364,7 +2370,7 @@ export type FileStorageConfig = {
 export type Form = {
   __typename?: 'Form';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** A description of the purpose of this Form. */
   description?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the entity */
@@ -2372,7 +2378,7 @@ export type Form = {
   /** The set of Questions in this Form. */
   questions: Array<FormQuestion>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type FormQuestion = {
@@ -2394,7 +2400,7 @@ export type Forum = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** A particular Discussions active in this Forum. */
   discussion?: Maybe<Discussion>;
   discussionCategories: Array<ForumDiscussionCategory>;
@@ -2403,7 +2409,7 @@ export type Forum = {
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type ForumDiscussionArgs = {
@@ -2591,7 +2597,7 @@ export type InnovationFlow = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The currently selected State in this Flow. */
   currentState: InnovationFlowState;
   /** The ID of the entity */
@@ -2603,7 +2609,7 @@ export type InnovationFlow = {
   /** The set of States in use in this Flow. */
   states: Array<InnovationFlowState>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type InnovationFlowSettings = {
@@ -2629,7 +2635,7 @@ export type InnovationHub = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Flag to control if this InnovationHub is listed in the platform store. */
@@ -2650,7 +2656,7 @@ export type InnovationHub = {
   /** Type of Innovation Hub */
   type: InnovationHubType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum InnovationHubType {
@@ -2663,7 +2669,7 @@ export type InnovationPack = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Flag to control if this InnovationPack is listed in the platform store. */
@@ -2679,7 +2685,7 @@ export type InnovationPack = {
   /** The templatesSet in use by this InnovationPack */
   templatesSet?: Maybe<TemplatesSet>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type InnovationPacksInput = {
@@ -2739,6 +2745,7 @@ export type Invitation = {
   contributorType: RoleSetContributorType;
   /** The User who triggered the invitation. */
   createdBy?: Maybe<User>;
+  /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
   extraRole?: Maybe<RoleName>;
@@ -2753,6 +2760,7 @@ export type Invitation = {
   nextEvents: Array<Scalars['String']['output']>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
+  /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
 };
@@ -2784,13 +2792,13 @@ export type KnowledgeBase = {
   /** The calloutsSet with Callouts in use by this KnowledgeBase */
   calloutsSet: CalloutsSet;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Profile for describing this KnowledgeBase. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type LatestReleaseDiscussion = {
@@ -2806,7 +2814,7 @@ export type Library = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The InnovationHub listed on this platform */
@@ -2816,7 +2824,7 @@ export type Library = {
   /** The Templates in the Innovation Library, together with information about the InnovationPack. */
   templates: Array<TemplateResult>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The VirtualContributors listed on this platform */
   virtualContributors: Array<VirtualContributor>;
 };
@@ -2841,7 +2849,7 @@ export type License = {
   /** The set of License Entitlement Types on that entity. */
   availableEntitlements?: Maybe<Array<LicenseEntitlementType>>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The set of Entitlements associated with the License applicable to this entity. */
   entitlements: Array<LicenseEntitlement>;
   /** The ID of the entity */
@@ -2849,13 +2857,13 @@ export type License = {
   /** The type of entity that this License is being used with. */
   type?: Maybe<LicenseType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type LicenseEntitlement = {
   __typename?: 'LicenseEntitlement';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** Data type of the entitlement, e.g. Limit, Feature flag etc. */
   dataType: LicenseEntitlementDataType;
   /** If the Entitlement is enabled */
@@ -2869,7 +2877,7 @@ export type LicenseEntitlement = {
   /** Type of the entitlement, e.g. Space, Whiteboard contributors etc. */
   type: LicenseEntitlementType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The amount of the spcified entitlement used. */
   usage: Scalars['Float']['output'];
 };
@@ -2901,7 +2909,7 @@ export type LicensePlan = {
   /** Assign this plan to all new User accounts */
   assignToNewUserAccounts: Scalars['Boolean']['output'];
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** Is this plan enabled? */
   enabled: Scalars['Boolean']['output'];
   /** The ID of the entity */
@@ -2925,7 +2933,7 @@ export type LicensePlan = {
   /** The type of this License Plan. */
   type: LicensingCredentialBasedPlanType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type LicensePolicy = {
@@ -2933,13 +2941,13 @@ export type LicensePolicy = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The set of credential rules that are contained by this License Policy. */
   credentialRules: Array<LicensingCredentialBasedPolicyCredentialRule>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum LicenseType {
@@ -2955,7 +2963,7 @@ export type Licensing = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The License Plans in use on the platform. */
@@ -2963,7 +2971,7 @@ export type Licensing = {
   /** The LicensePolicy in use by the Licensing setup. */
   policy: LicensePolicy;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum LicensingCredentialBasedCredentialType {
@@ -3001,11 +3009,11 @@ export type LicensingGrantedEntitlement = {
 export type Lifecycle = {
   __typename?: 'Lifecycle';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type Link = {
@@ -3013,13 +3021,13 @@ export type Link = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Profile for framing the associated Link Contribution. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** URI of the Link */
   uri: Scalars['String']['output'];
 };
@@ -3032,13 +3040,13 @@ export type Location = {
   city?: Maybe<Scalars['String']['output']>;
   country?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   postalCode?: Maybe<Scalars['String']['output']>;
   stateOrProvince?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type LookupByNameQueryResults = {
@@ -4596,12 +4604,12 @@ export type MySpaceResults = {
 export type Nvp = {
   __typename?: 'NVP';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
 };
 
@@ -4674,7 +4682,7 @@ export type Organization = Contributor &
     /** Organization contact email */
     contactEmail?: Maybe<Scalars['String']['output']>;
     /** The date at which the entity was created. */
-    createdDate?: Maybe<Scalars['DateTime']['output']>;
+    createdDate: Scalars['DateTime']['output'];
     /** Domain name; what is verified, eg. alkem.io */
     domain?: Maybe<Scalars['String']['output']>;
     /** Group defined on this organization. */
@@ -4698,7 +4706,7 @@ export type Organization = Contributor &
     /** The StorageAggregator for managing storage buckets in use by this Organization */
     storageAggregator?: Maybe<StorageAggregator>;
     /** The date at which the entity was last updated. */
-    updatedDate?: Maybe<Scalars['DateTime']['output']>;
+    updatedDate: Scalars['DateTime']['output'];
     verification: OrganizationVerification;
     /** Organization website */
     website?: Maybe<Scalars['String']['output']>;
@@ -4746,7 +4754,7 @@ export type OrganizationVerification = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Is this lifecycle in a final state (done). */
@@ -4759,7 +4767,7 @@ export type OrganizationVerification = {
   /** Organization verification type */
   status: OrganizationVerificationEnum;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum OrganizationVerificationEnum {
@@ -4835,7 +4843,7 @@ export type Platform = {
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The Forum for the platform */
   forum: Forum;
   /** The ID of the entity */
@@ -4859,7 +4867,7 @@ export type Platform = {
   /** The TemplatesManager in use by the Platform */
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type PlatformInnovationHubArgs = {
@@ -4899,7 +4907,7 @@ export type PlatformInvitation = {
   /** The User who created the platformInvitation. */
   createdBy: User;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The email address of the external user being invited */
   email: Scalars['String']['output'];
   firstName?: Maybe<Scalars['String']['output']>;
@@ -4915,7 +4923,7 @@ export type PlatformInvitation = {
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
 };
 
@@ -4996,7 +5004,7 @@ export type Post = {
   /** The Profile for this Post. */
   profile: Profile;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type Preference = {
@@ -5004,13 +5012,13 @@ export type Preference = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The definition for the Preference */
   definition: PreferenceDefinition;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Value of the preference */
   value: Scalars['String']['output'];
 };
@@ -5018,7 +5026,7 @@ export type Preference = {
 export type PreferenceDefinition = {
   __typename?: 'PreferenceDefinition';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** Preference description */
   description: Scalars['String']['output'];
   /** The name */
@@ -5030,7 +5038,7 @@ export type PreferenceDefinition = {
   /** The type of the Preference, specific to the Entity it is on. */
   type: PreferenceType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Preference value type */
   valueType: PreferenceValueType;
 };
@@ -5077,7 +5085,7 @@ export type Profile = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** A description of the entity associated with this profile. */
   description?: Maybe<Scalars['Markdown']['output']>;
   /** The display name. */
@@ -5099,7 +5107,7 @@ export type Profile = {
   /** A type of entity that this Profile is being used with. */
   type?: Maybe<ProfileType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The URL at which this profile can be viewed. */
   url: Scalars['String']['output'];
   /** A particular type of visual for this Profile. */
@@ -5344,12 +5352,12 @@ export type QueryVirtualContributorsArgs = {
 export type Question = {
   __typename?: 'Question';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
 };
 
@@ -5371,7 +5379,7 @@ export type Reference = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** Description of this reference */
   description?: Maybe<Scalars['String']['output']>;
   /** The ID of the entity */
@@ -5379,7 +5387,7 @@ export type Reference = {
   /** Name of the reference, e.g. Linkedin, Twitter etc. */
   name: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** URI of the reference */
   uri: Scalars['String']['output'];
 };
@@ -5406,7 +5414,7 @@ export type RelayPaginatedSpace = {
   /** Get the Community for the Space.  */
   community: Community;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The level of this Space, representing the number of Spaces above this one. */
@@ -5430,7 +5438,7 @@ export type RelayPaginatedSpace = {
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -5532,7 +5540,7 @@ export type RevokeOrganizationAuthorizationCredentialInput = {
 export type Role = {
   __typename?: 'Role';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The Credential associated with this Role. */
   credential: CredentialDefinition;
   /** The ID of the entity */
@@ -5548,7 +5556,7 @@ export type Role = {
   /** Flag to indicate if this Role requires having the same role in the Parent RoleSet. */
   requiresSameRoleInParentRoleSet: Scalars['Boolean']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The role policy that applies for Users in this Role. */
   userPolicy: ContributorRolePolicy;
   /** The role policy that applies for VirtualContributors in this Role. */
@@ -5587,7 +5595,7 @@ export type RoleSet = {
   /** All available VirtualContributors that are eligible to invite to this RoleSet in the entry role. */
   availableVirtualContributorsForEntryRole: PaginatedVirtualContributor;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The Role that acts as the entry Role for the RoleSet, so other roles potentially require it. */
   entryRoleName: RoleName;
   /** The ID of the entity */
@@ -5617,7 +5625,7 @@ export type RoleSet = {
   /** A type of entity that this RoleSet is being used with. */
   type?: Maybe<RoleSetType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** All users that are contributing to this Community in the specified Role. */
   usersInRole: Array<User>;
   /** All users that have a Role in this RoleSet in the specified Roles. */
@@ -5804,7 +5812,7 @@ export type Room = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Messages in this Room. */
@@ -5812,7 +5820,7 @@ export type Room = {
   /** The number of messages in the Room. */
   messagesCount: Scalars['Float']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Virtual Contributor Interactions in this Room. */
   vcInteractions: Array<VcInteraction>;
 };
@@ -6062,7 +6070,7 @@ export type Space = {
   /** Get the Community for the Space.  */
   community: Community;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The level of this Space, representing the number of Spaces above this one. */
@@ -6086,7 +6094,7 @@ export type Space = {
   /** The TemplatesManager in use by this Space */
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -6106,7 +6114,7 @@ export type SpaceAbout = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The guidelines for members of this Community. */
   guidelines: CommunityGuidelines;
   /** The ID of the entity */
@@ -6122,7 +6130,7 @@ export type SpaceAbout = {
   /** The Space provider (host). */
   provider: Contributor;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** Who should get involved in this challenge */
   who?: Maybe<Scalars['Markdown']['output']>;
   /** The goal that is being pursued */
@@ -6234,7 +6242,7 @@ export type StorageAggregator = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The Storage Bucket for files directly on this Storage Aggregator (legacy). */
   directStorageBucket: StorageBucket;
   /** The ID of the entity */
@@ -6250,7 +6258,7 @@ export type StorageAggregator = {
   /** A type of entity that this StorageAggregator is being used with. */
   type?: Maybe<StorageAggregatorType>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 /** Valid parent is Account, Space, User, Organization, Platform */
@@ -6281,7 +6289,7 @@ export type StorageBucket = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** A single Document */
   document?: Maybe<Document>;
   /** The list of Documents for this StorageBucket. */
@@ -6295,7 +6303,7 @@ export type StorageBucket = {
   /** The aggregate size of all Documents for this StorageBucket. */
   size: Scalars['Float']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type StorageBucketDocumentArgs = {
@@ -6397,14 +6405,14 @@ export type Tagset = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   tags: Array<Scalars['String']['output']>;
   type: TagsetType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type TagsetArgs = {
@@ -6426,7 +6434,7 @@ export type TagsetTemplate = {
   __typename?: 'TagsetTemplate';
   allowedValues: Array<Scalars['String']['output']>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** For Tagsets of type SELECT_ONE, the default selected value. */
   defaultSelectedValue?: Maybe<Scalars['String']['output']>;
   /** The ID of the entity */
@@ -6434,7 +6442,7 @@ export type TagsetTemplate = {
   name: Scalars['String']['output'];
   type: TagsetType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum TagsetType {
@@ -6487,7 +6495,7 @@ export type Template = {
   /** The Community Guidelines for this Template. */
   communityGuidelines?: Maybe<CommunityGuidelines>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -6499,7 +6507,7 @@ export type Template = {
   /** The type for this Template. */
   type: TemplateType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The Whiteboard for this Template. */
   whiteboard?: Maybe<Whiteboard>;
 };
@@ -6511,7 +6519,7 @@ export type TemplateDefault = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The template accessible via this TemplateDefault, if any. */
@@ -6519,7 +6527,7 @@ export type TemplateDefault = {
   /** The type of this TemplateDefault. */
   type: TemplateDefaultType;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export enum TemplateDefaultType {
@@ -6551,7 +6559,7 @@ export type TemplatesManager = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The TemplateDefaults in this TemplatesManager. */
@@ -6559,7 +6567,7 @@ export type TemplatesManager = {
   /** The templatesSet in use by this TemplatesManager. */
   templatesSet?: Maybe<TemplatesSet>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type TemplatesSet = {
@@ -6579,7 +6587,7 @@ export type TemplatesSet = {
   /** The total number of CommunityGuidelinesTemplates in this TemplatesSet. */
   communityGuidelinesTemplatesCount: Scalars['Float']['output'];
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Post Templates in this TemplatesSet. */
@@ -6591,7 +6599,7 @@ export type TemplatesSet = {
   /** The total number of Templates in this TemplatesSet. */
   templatesCount: Scalars['Float']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   /** The WhiteboardTemplates in this TemplatesSet. */
   whiteboardTemplates: Array<Template>;
   /** The total number of WhiteboardTemplates in this TemplatesSet. */
@@ -6605,11 +6613,11 @@ export type Timeline = {
   /** The Innovation Library for the timeline */
   calendar: Calendar;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type TransferAccountInnovationHubInput = {
@@ -6921,7 +6929,6 @@ export type UpdateNotificationStateInput = {
 };
 
 export type UpdateOrganizationInput = {
-  /** The ID of the Organization to update. */
   ID: Scalars['UUID']['input'];
   contactEmail?: InputMaybe<Scalars['String']['input']>;
   domain?: InputMaybe<Scalars['String']['input']>;
@@ -7162,7 +7169,6 @@ export type UpdateUserSettingsPrivacyInput = {
 };
 
 export type UpdateVirtualContributorInput = {
-  /** The ID of the Virtual Contributor to update. */
   ID: Scalars['UUID']['input'];
   /** The KnowledgeBase to use for this Collaboration. */
   knowledgeBaseData?: InputMaybe<UpdateKnowledgeBaseInput>;
@@ -7309,7 +7315,7 @@ export type User = Contributor & {
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The direct rooms this user is a member of */
   directRooms?: Maybe<Array<DirectRoom>>;
   /** The email address for this User. */
@@ -7335,7 +7341,7 @@ export type User = Contributor & {
   /** The StorageAggregator for managing storage buckets in use by this User */
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type UserAuthenticationResult = {
@@ -7372,7 +7378,7 @@ export type UserGroup = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Users that are members of this User Group. */
@@ -7382,7 +7388,7 @@ export type UserGroup = {
   /** The profile for the user group */
   profile?: Maybe<Profile>;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type UserSendMessageInput = {
@@ -7428,13 +7434,13 @@ export type UsersWithAuthorizationCredentialInput = {
 export type VcInteraction = {
   __typename?: 'VcInteraction';
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   room: Room;
   threadID: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   virtualContributorID: Scalars['UUID']['output'];
 };
 
@@ -7475,7 +7481,7 @@ export type VirtualContributor = Contributor & {
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the Contributor */
   id: Scalars['UUID']['output'];
   /** The KnowledgeBase being used by this virtual contributor */
@@ -7495,7 +7501,7 @@ export type VirtualContributor = Contributor & {
   /** The status of the virtual contributor */
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type VirtualContributorSettings = {
@@ -7537,7 +7543,7 @@ export type Visual = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']['output']>;
+  createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Maximum height resolution. */
@@ -7550,7 +7556,7 @@ export type Visual = {
   minWidth: Scalars['Float']['output'];
   name: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  updatedDate: Scalars['DateTime']['output'];
   uri: Scalars['String']['output'];
 };
 
@@ -7588,11 +7594,11 @@ export type Whiteboard = {
   authorization?: Maybe<Authorization>;
   /** The visual content of the Whiteboard. */
   content: Scalars['WhiteboardContent']['output'];
-  /** The policy governing who can update the Whiteboard contet. */
+  /** The policy governing who can update the Whiteboard content. */
   contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this Whiteboard */
   createdBy?: Maybe<User>;
-  /** The date at which the Whiteboard was created. */
+  /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
@@ -7602,8 +7608,8 @@ export type Whiteboard = {
   nameID: Scalars['NameID']['output'];
   /** The Profile for this Whiteboard. */
   profile: Profile;
-  /** The date at which the Whiteboard was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']['output']>;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type UploadFileOnReferenceMutationVariables = Exact<{
@@ -8286,7 +8292,7 @@ export type CommunityApplicationsInvitationsQuery = {
           platformInvitations: Array<{
             __typename?: 'PlatformInvitation';
             id: string;
-            createdDate?: Date | undefined;
+            createdDate: Date;
             email: string;
           }>;
         }
@@ -8350,7 +8356,7 @@ export type AdminCommunityInvitationFragment = {
 export type AdminPlatformInvitationCommunityFragment = {
   __typename?: 'PlatformInvitation';
   id: string;
-  createdDate?: Date | undefined;
+  createdDate: Date;
   email: string;
 };
 
@@ -14290,7 +14296,7 @@ export type WhiteboardLastUpdatedDateQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    whiteboard?: { __typename?: 'Whiteboard'; id: string; updatedDate?: Date | undefined } | undefined;
+    whiteboard?: { __typename?: 'Whiteboard'; id: string; updatedDate: Date } | undefined;
   };
 };
 
@@ -22565,8 +22571,8 @@ export type CommunityInvitationQuery = {
       | {
           __typename?: 'PlatformInvitation';
           id: string;
-          createdDate?: Date | undefined;
-          updatedDate?: Date | undefined;
+          createdDate: Date;
+          updatedDate: Date;
           email: string;
           welcomeMessage?: string | undefined;
         }
@@ -25801,7 +25807,7 @@ export type CalendarEventDetailsQuery = {
       | {
           __typename?: 'CalendarEvent';
           type: CalendarEventType;
-          createdDate?: Date | undefined;
+          createdDate: Date;
           id: string;
           startDate?: Date | undefined;
           durationDays?: number | undefined;
@@ -26065,7 +26071,7 @@ export type CalendarEventDetailsQuery = {
 export type CalendarEventDetailsFragment = {
   __typename?: 'CalendarEvent';
   type: CalendarEventType;
-  createdDate?: Date | undefined;
+  createdDate: Date;
   id: string;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
@@ -26295,7 +26301,7 @@ export type CreateCalendarEventMutation = {
   createEventOnCalendar: {
     __typename?: 'CalendarEvent';
     type: CalendarEventType;
-    createdDate?: Date | undefined;
+    createdDate: Date;
     id: string;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
@@ -26527,7 +26533,7 @@ export type UpdateCalendarEventMutation = {
   updateCalendarEvent: {
     __typename?: 'CalendarEvent';
     type: CalendarEventType;
-    createdDate?: Date | undefined;
+    createdDate: Date;
     id: string;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
