@@ -62,7 +62,6 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
    * fetchRoleDefinitions param should be true for this to be available
    */
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
-  refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
 }
@@ -91,11 +90,7 @@ const useRoleSetManager = ({
   }
 
   // TODO: Additional Auth Check
-  const {
-    data: roleSetDetails,
-    loading: loadingRoleSet,
-    refetch: refetchRoleSet,
-  } = useRoleSetAuthorizationQuery({
+  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -118,11 +113,7 @@ const useRoleSetManager = ({
     }
   }
 
-  const {
-    data: roleSetData,
-    loading: loadingRoleSetData,
-    refetch: refetchRoleSetData,
-  } = useRoleSetRoleAssignmentQuery({
+  const { data: roleSetData, loading: loadingRoleSetData } = useRoleSetRoleAssignmentQuery({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
@@ -219,14 +210,12 @@ const useRoleSetManager = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData(), onChange?.()]);
-
   // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
   const onMutationCall =
     (mutation: (...args) => Promise<unknown>) =>
     async (...args) => {
       await mutation(...args);
-      refetchAll();
+      onChange?.();
     };
 
   const {
@@ -239,7 +228,7 @@ const useRoleSetManager = ({
     assignRoleToVirtualContributor,
     removeRoleFromVirtualContributor,
     loading: updatingRoleSet,
-  } = useRoleSetManagerRolesAssignment({ roleSetId });
+  } = useRoleSetManagerRolesAssignment({ roleSetId, refetchRoleSetOnMutation: true });
 
   return {
     myPrivileges,
@@ -263,7 +252,6 @@ const useRoleSetManager = ({
     removeRoleFromOrganization: onMutationCall(removeRoleFromOrganization),
     removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
-    refetch: refetchAll,
   };
 };
 

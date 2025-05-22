@@ -20,7 +20,7 @@ interface EntityDashboardLeadsProps {
   leadUsers: ContributorViewModel[] | undefined;
   leadOrganizations: ContributorViewModel[] | undefined;
   provider?: ContributorViewModel;
-  organizationsHeader: string;
+  organizationsHeader?: string;
   organizationsHeaderIcon?: ReactElement<SvgIconProps>;
   usersHeader?: string;
 }
@@ -87,9 +87,11 @@ const EntityDashboardLeadsSection = ({
       {leadUsersSectionVisible && usersHeader && (
         <DashboardLeads headerText={usersHeader} contributors={leadUsersMapped} CardComponent={ContributorCard} />
       )}
-      {leadOrganizationsSectionVisible && organizationsHeader && (
+      {leadOrganizationsSectionVisible && (
         <>
-          <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
+          {organizationsHeader && (
+            <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
+          )}
           <AssociatedOrganizationsView
             organizations={leadOrganizationsMapped}
             organizationCardComponent={OrganizationCardTransparent}

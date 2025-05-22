@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -235,6 +235,13 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
+                  {/* Redirects */}
+                  <Route path={`/${TopLevelRoutePath.Help}`} element={<Navigate to={`/${TopLevelRoutePath.Docs}`} />} />
+                  <Route
+                    path={`/${TopLevelRoutePath.About}`}
+                    element={<Navigate to={`/${TopLevelRoutePath.Docs}`} />}
+                  />
+
                   <Route
                     path="*"
                     element={

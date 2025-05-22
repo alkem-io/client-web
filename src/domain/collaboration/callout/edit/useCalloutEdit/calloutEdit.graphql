@@ -25,6 +25,13 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
       whiteboard {
         id
         content
+        nameID # Used to set an altImage to the visual
+        profile {
+          id
+          previewVisual: visual(type: BANNER) {
+            id
+          }
+        }
       }
     }
     contributionDefaults {

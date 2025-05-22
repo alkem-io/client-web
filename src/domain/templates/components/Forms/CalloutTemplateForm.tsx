@@ -167,7 +167,11 @@ const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = 
               tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
             />
             {values.callout?.type === CalloutType.Whiteboard && (
-              <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
+              <FormikWhiteboardPreview
+                name="callout.framing.whiteboard.content"
+                previewImagesName="whiteboardPreviewImages"
+                canEdit
+              />
             )}
             {values.callout?.type === CalloutType.WhiteboardCollection && (
               <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />

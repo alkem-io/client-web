@@ -1,7 +1,8 @@
 import { Reference } from '@/domain/common/profile/Profile';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaModelCardModel } from './AiPersonaModelCardModel';
 
-export type VirtualContributorProfileProps = {
+export type VirtualContributorModelFull = {
   id: string;
   profile: {
     displayName: string;
@@ -34,27 +35,12 @@ export type VirtualContributorProfileProps = {
       url: string;
     };
   };
-  aiPersona?: {
+  aiPersona: {
+    id: string;
     bodyOfKnowledge?: string;
     bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
     bodyOfKnowledgeID?: string;
     engine?: AiPersonaEngine;
+    modelCard: AiPersonaModelCardModel;
   };
 };
-
-export type VCProfilePageViewProps = {
-  bokProfile?: BasicSpaceProps;
-  virtualContributor?: VirtualContributorProfileProps;
-  navigateToKnowledgeBase?: boolean;
-  openKnowledgeBaseDialog?: boolean;
-};
-
-export interface BasicSpaceProps {
-  // TODO: avatar is for subspaces, add cardBanner if we want support of Spaces as BOK
-  avatar?: {
-    uri: string;
-  };
-  displayName: string;
-  tagline?: string;
-  url: string;
-}

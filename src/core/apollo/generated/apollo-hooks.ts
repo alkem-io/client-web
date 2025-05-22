@@ -1423,42 +1423,6 @@ export const EntitlementDetailsFragmentDoc = gql`
     enabled
   }
 `;
-export const VirtualContributorFullFragmentDoc = gql`
-  fragment VirtualContributorFull on VirtualContributor {
-    id
-    profile {
-      id
-      displayName
-      description
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-    aiPersona {
-      bodyOfKnowledge
-      bodyOfKnowledgeType
-      bodyOfKnowledgeID
-      engine
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const InnovationHubProfileFragmentDoc = gql`
   fragment InnovationHubProfile on Profile {
     id
@@ -2007,6 +1971,83 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
 `;
+export const AiPersonaWithModelCardFragmentDoc = gql`
+  fragment AiPersonaWithModelCard on AiPersona {
+    id
+    bodyOfKnowledgeID
+    bodyOfKnowledgeType
+    bodyOfKnowledge
+    engine
+    aiPersonaServiceID
+    modelCard {
+      spaceUsage {
+        modelCardEntry
+        flags {
+          name
+          enabled
+        }
+      }
+      aiEngine {
+        isExternal
+        hostingLocation
+        isUsingOpenWeightsModel
+        isInteractionDataUsedForTraining
+        canAccessWebWhenAnswering
+        areAnswersRestrictedToBodyOfKnowledge
+        additionalTechnicalDetails
+      }
+      monitoring {
+        isUsageMonitoredByAlkemio
+      }
+    }
+  }
+`;
+export const VirtualContributorFullFragmentDoc = gql`
+  fragment VirtualContributorFull on VirtualContributor {
+    id
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+    aiPersona {
+      ...AiPersonaWithModelCard
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${AiPersonaWithModelCardFragmentDoc}
+`;
+export const AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc = gql`
+  fragment AvailableVirtualContributorsForRoleSetPaginated on PaginatedVirtualContributor {
+    virtualContributors {
+      ...VirtualContributorFull
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+  ${VirtualContributorFullFragmentDoc}
+`;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
     privacy {
@@ -2246,6 +2287,10 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
     profile {
       id
       displayName
+      preview: visual(type: BANNER) {
+        name
+        uri
+      }
     }
     content
   }
@@ -5570,13 +5615,6 @@ export const AccountInformationDocument = gql`
               ...VisualUri
             }
           }
-          spaceVisibilityFilter
-          spaceListFilter {
-            id
-            about {
-              ...SpaceAboutLight
-            }
-          }
           subdomain
         }
       }
@@ -5584,7 +5622,6 @@ export const AccountInformationDocument = gql`
   }
   ${VisualUriFragmentDoc}
   ${AccountItemProfileFragmentDoc}
-  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -6586,6 +6623,13 @@ export const UpdateCalloutTemplateDocument = gql`
         whiteboard {
           id
           content
+          nameID
+          profile {
+            id
+            previewVisual: visual(type: BANNER) {
+              id
+            }
+          }
         }
       }
       contributionDefaults {
@@ -11297,13 +11341,6 @@ export const AccountResourcesInfoDocument = gql`
               ...VisualUri
             }
           }
-          spaceVisibilityFilter
-          spaceListFilter {
-            id
-            about {
-              ...SpaceAboutLight
-            }
-          }
           subdomain
         }
       }
@@ -11311,7 +11348,6 @@ export const AccountResourcesInfoDocument = gql`
   }
   ${AccountResourceProfileFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${SpaceAboutLightFragmentDoc}
 `;
 
 /**
@@ -13295,25 +13331,6 @@ export const VirtualContributorDocument = gql`
             knowledgeBaseContentVisible
           }
         }
-        provider {
-          id
-          profile {
-            id
-            displayName
-            url
-            location {
-              country
-              city
-            }
-            avatar: visual(type: AVATAR) {
-              ...VisualFull
-            }
-            tagsets {
-              id
-              tags
-            }
-          }
-        }
         searchVisibility
         listedInStore
         status
@@ -13347,8 +13364,8 @@ export const VirtualContributorDocument = gql`
       }
     }
   }
-  ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -13796,6 +13813,241 @@ export function refetchSpaceBodyOfKnowledgeAboutQuery(variables: SchemaTypes.Spa
   return { query: SpaceBodyOfKnowledgeAboutDocument, variables: variables };
 }
 
+export const VirtualContributorProfileWithModelCardDocument = gql`
+  query VirtualContributorProfileWithModelCard($id: UUID!) {
+    lookup {
+      virtualContributor(ID: $id) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        settings {
+          privacy {
+            knowledgeBaseContentVisible
+          }
+        }
+        searchVisibility
+        listedInStore
+        status
+        aiPersona {
+          ...AiPersonaWithModelCard
+        }
+        profile {
+          id
+          displayName
+          description
+          tagline
+          tagsets {
+            ...TagsetDetails
+          }
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          references {
+            id
+            name
+            uri
+            description
+          }
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualFull
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AiPersonaWithModelCardFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorProfileWithModelCardQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorProfileWithModelCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorProfileWithModelCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorProfileWithModelCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorProfileWithModelCardQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+    SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+  > &
+    (
+      | { variables: SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    )
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+    SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+  >(VirtualContributorProfileWithModelCardDocument, options);
+}
+
+export function useVirtualContributorProfileWithModelCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+    SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+    SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+  >(VirtualContributorProfileWithModelCardDocument, options);
+}
+
+export function useVirtualContributorProfileWithModelCardSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+        SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+    SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+  >(VirtualContributorProfileWithModelCardDocument, options);
+}
+
+export type VirtualContributorProfileWithModelCardQueryHookResult = ReturnType<
+  typeof useVirtualContributorProfileWithModelCardQuery
+>;
+export type VirtualContributorProfileWithModelCardLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorProfileWithModelCardLazyQuery
+>;
+export type VirtualContributorProfileWithModelCardSuspenseQueryHookResult = ReturnType<
+  typeof useVirtualContributorProfileWithModelCardSuspenseQuery
+>;
+export type VirtualContributorProfileWithModelCardQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorProfileWithModelCardQuery,
+  SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+>;
+export function refetchVirtualContributorProfileWithModelCardQuery(
+  variables: SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
+) {
+  return { query: VirtualContributorProfileWithModelCardDocument, variables: variables };
+}
+
+export const UpdateAiPersonaServiceDocument = gql`
+  mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
+    aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
+      id
+      prompt
+    }
+  }
+`;
+export type UpdateAiPersonaServiceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAiPersonaServiceMutation,
+  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+>;
+
+/**
+ * __useUpdateAiPersonaServiceMutation__
+ *
+ * To run a mutation, you first call `useUpdateAiPersonaServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAiPersonaServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAiPersonaServiceMutation, { data, loading, error }] = useUpdateAiPersonaServiceMutation({
+ *   variables: {
+ *      aiPersonaServiceData: // value for 'aiPersonaServiceData'
+ *   },
+ * });
+ */
+export function useUpdateAiPersonaServiceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateAiPersonaServiceMutation,
+    SchemaTypes.UpdateAiPersonaServiceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateAiPersonaServiceMutation,
+    SchemaTypes.UpdateAiPersonaServiceMutationVariables
+  >(UpdateAiPersonaServiceDocument, options);
+}
+
+export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
+export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
+export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAiPersonaServiceMutation,
+  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+>;
+export const RefreshBodyOfKnowledgeDocument = gql`
+  mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+    refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
+  }
+`;
+export type RefreshBodyOfKnowledgeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RefreshBodyOfKnowledgeMutation,
+  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+>;
+
+/**
+ * __useRefreshBodyOfKnowledgeMutation__
+ *
+ * To run a mutation, you first call `useRefreshBodyOfKnowledgeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRefreshBodyOfKnowledgeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [refreshBodyOfKnowledgeMutation, { data, loading, error }] = useRefreshBodyOfKnowledgeMutation({
+ *   variables: {
+ *      refreshData: // value for 'refreshData'
+ *   },
+ * });
+ */
+export function useRefreshBodyOfKnowledgeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RefreshBodyOfKnowledgeMutation,
+    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RefreshBodyOfKnowledgeMutation,
+    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+  >(RefreshBodyOfKnowledgeDocument, options);
+}
+
+export type RefreshBodyOfKnowledgeMutationHookResult = ReturnType<typeof useRefreshBodyOfKnowledgeMutation>;
+export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaTypes.RefreshBodyOfKnowledgeMutation>;
+export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RefreshBodyOfKnowledgeMutation,
+  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+>;
 export const UpdateVirtualContributorDocument = gql`
   mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
@@ -13943,101 +14195,6 @@ export type UpdateVirtualContributorSettingsMutationResult =
 export type UpdateVirtualContributorSettingsMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateVirtualContributorSettingsMutation,
   SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
->;
-export const RefreshBodyOfKnowledgeDocument = gql`
-  mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
-    refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
-  }
-`;
-export type RefreshBodyOfKnowledgeMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RefreshBodyOfKnowledgeMutation,
-  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
->;
-
-/**
- * __useRefreshBodyOfKnowledgeMutation__
- *
- * To run a mutation, you first call `useRefreshBodyOfKnowledgeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRefreshBodyOfKnowledgeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [refreshBodyOfKnowledgeMutation, { data, loading, error }] = useRefreshBodyOfKnowledgeMutation({
- *   variables: {
- *      refreshData: // value for 'refreshData'
- *   },
- * });
- */
-export function useRefreshBodyOfKnowledgeMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RefreshBodyOfKnowledgeMutation,
-    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RefreshBodyOfKnowledgeMutation,
-    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
-  >(RefreshBodyOfKnowledgeDocument, options);
-}
-
-export type RefreshBodyOfKnowledgeMutationHookResult = ReturnType<typeof useRefreshBodyOfKnowledgeMutation>;
-export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaTypes.RefreshBodyOfKnowledgeMutation>;
-export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RefreshBodyOfKnowledgeMutation,
-  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
->;
-export const UpdateAiPersonaServiceDocument = gql`
-  mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
-    aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
-      id
-      prompt
-    }
-  }
-`;
-export type UpdateAiPersonaServiceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
->;
-
-/**
- * __useUpdateAiPersonaServiceMutation__
- *
- * To run a mutation, you first call `useUpdateAiPersonaServiceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAiPersonaServiceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAiPersonaServiceMutation, { data, loading, error }] = useUpdateAiPersonaServiceMutation({
- *   variables: {
- *      aiPersonaServiceData: // value for 'aiPersonaServiceData'
- *   },
- * });
- */
-export function useUpdateAiPersonaServiceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
-  >(UpdateAiPersonaServiceDocument, options);
-}
-
-export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
 >;
 export const VirtualContributorUpdatesDocument = gql`
   subscription virtualContributorUpdates($virtualContributorID: UUID!) {
@@ -18429,15 +18586,15 @@ export const AvailableVirtualContributorsInSpaceL0Document = gql`
           id
           roleSet {
             id
-            virtualContributorsInRole(role: MEMBER) {
-              ...VirtualContributorFull
+            availableVirtualContributorsForEntryRole {
+              ...AvailableVirtualContributorsForRoleSetPaginated
             }
           }
         }
       }
     }
   }
-  ${VirtualContributorFullFragmentDoc}
+  ${AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc}
 `;
 
 /**
@@ -22361,6 +22518,79 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutation,
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
+export const RestrictedSpaceNamesDocument = gql`
+  query RestrictedSpaceNames {
+    restrictedSpaceNames
+  }
+`;
+
+/**
+ * __useRestrictedSpaceNamesQuery__
+ *
+ * To run a query within a React component, call `useRestrictedSpaceNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRestrictedSpaceNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRestrictedSpaceNamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRestrictedSpaceNamesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.RestrictedSpaceNamesQuery,
+    SchemaTypes.RestrictedSpaceNamesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RestrictedSpaceNamesQuery, SchemaTypes.RestrictedSpaceNamesQueryVariables>(
+    RestrictedSpaceNamesDocument,
+    options
+  );
+}
+
+export function useRestrictedSpaceNamesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RestrictedSpaceNamesQuery,
+    SchemaTypes.RestrictedSpaceNamesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RestrictedSpaceNamesQuery, SchemaTypes.RestrictedSpaceNamesQueryVariables>(
+    RestrictedSpaceNamesDocument,
+    options
+  );
+}
+
+export function useRestrictedSpaceNamesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.RestrictedSpaceNamesQuery,
+        SchemaTypes.RestrictedSpaceNamesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.RestrictedSpaceNamesQuery, SchemaTypes.RestrictedSpaceNamesQueryVariables>(
+    RestrictedSpaceNamesDocument,
+    options
+  );
+}
+
+export type RestrictedSpaceNamesQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesQuery>;
+export type RestrictedSpaceNamesLazyQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesLazyQuery>;
+export type RestrictedSpaceNamesSuspenseQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesSuspenseQuery>;
+export type RestrictedSpaceNamesQueryResult = Apollo.QueryResult<
+  SchemaTypes.RestrictedSpaceNamesQuery,
+  SchemaTypes.RestrictedSpaceNamesQueryVariables
+>;
+export function refetchRestrictedSpaceNamesQuery(variables?: SchemaTypes.RestrictedSpaceNamesQueryVariables) {
+  return { query: RestrictedSpaceNamesDocument, variables: variables };
+}
+
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {

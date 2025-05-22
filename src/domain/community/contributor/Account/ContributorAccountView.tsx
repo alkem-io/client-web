@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -18,7 +18,6 @@ import {
   LicenseEntitlement,
   LicenseEntitlementType,
   SpaceLevel,
-  SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline, SettingsOutlined } from '@mui/icons-material';
@@ -43,7 +42,6 @@ import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { Button, IconButton } from '@mui/material';
 import useNavigate from '@/core/routing/useNavigate';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 const enum Entities {
   Space = 'Space',
@@ -107,11 +105,6 @@ export interface AccountTabResourcesProps {
     profile: AccountProfile & {
       banner?: { uri: string };
     };
-    spaceVisibilityFilter?: SpaceVisibility;
-    spaceListFilter?: {
-      id: string;
-      about: SpaceAboutMinimalUrlModel;
-    }[];
     subdomain: string;
   }[];
 }

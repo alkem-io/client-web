@@ -4,7 +4,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceTile from '@/domain/space/components/cards/SpaceTile';
-import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,6 @@ import { Button } from '@mui/material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 const VISIBLE_SPACE_LIMIT = 6;
@@ -58,11 +57,6 @@ export interface AccountResourcesProps {
     profile: AccountProfile & {
       banner?: { uri: string };
     };
-    spaceVisibilityFilter?: SpaceVisibility;
-    spaceListFilter?: {
-      id: string;
-      about: SpaceAboutMinimalUrlModel;
-    }[];
     subdomain: string;
   }[];
 }
@@ -145,9 +139,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
             <Gutters>
               <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
               <Gutters disablePadding>
-                {accountResources?.innovationHubs?.map(hub => (
-                  <InnovationHubCardHorizontal key={hub.id} {...hub} />
-                ))}
+                {accountResources?.innovationHubs?.map(hub => <InnovationHubCardHorizontal key={hub.id} {...hub} />)}
               </Gutters>
             </Gutters>
           </GridItem>
