@@ -68,7 +68,7 @@ const CalloutCreationDialog = ({
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
-  const [sendNotification, setSendNotification] = useState(true);
+  const [sendNotification, setSendNotification] = useState(false);
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
 
   useLayoutEffect(() => {
