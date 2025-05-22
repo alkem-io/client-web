@@ -2882,6 +2882,7 @@ export type QueryKeySpecifier = (
   | 'organizations'
   | 'organizationsPaginated'
   | 'platform'
+  | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
   | 'rolesVirtualContributor'
@@ -2919,6 +2920,7 @@ export type QueryFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;

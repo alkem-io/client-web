@@ -22518,6 +22518,79 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutation,
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
+export const RestrictedSpaceNamesDocument = gql`
+  query RestrictedSpaceNames {
+    restrictedSpaceNames
+  }
+`;
+
+/**
+ * __useRestrictedSpaceNamesQuery__
+ *
+ * To run a query within a React component, call `useRestrictedSpaceNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRestrictedSpaceNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRestrictedSpaceNamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRestrictedSpaceNamesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.RestrictedSpaceNamesQuery,
+    SchemaTypes.RestrictedSpaceNamesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RestrictedSpaceNamesQuery, SchemaTypes.RestrictedSpaceNamesQueryVariables>(
+    RestrictedSpaceNamesDocument,
+    options
+  );
+}
+
+export function useRestrictedSpaceNamesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RestrictedSpaceNamesQuery,
+    SchemaTypes.RestrictedSpaceNamesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RestrictedSpaceNamesQuery, SchemaTypes.RestrictedSpaceNamesQueryVariables>(
+    RestrictedSpaceNamesDocument,
+    options
+  );
+}
+
+export function useRestrictedSpaceNamesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.RestrictedSpaceNamesQuery,
+        SchemaTypes.RestrictedSpaceNamesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.RestrictedSpaceNamesQuery, SchemaTypes.RestrictedSpaceNamesQueryVariables>(
+    RestrictedSpaceNamesDocument,
+    options
+  );
+}
+
+export type RestrictedSpaceNamesQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesQuery>;
+export type RestrictedSpaceNamesLazyQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesLazyQuery>;
+export type RestrictedSpaceNamesSuspenseQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesSuspenseQuery>;
+export type RestrictedSpaceNamesQueryResult = Apollo.QueryResult<
+  SchemaTypes.RestrictedSpaceNamesQuery,
+  SchemaTypes.RestrictedSpaceNamesQueryVariables
+>;
+export function refetchRestrictedSpaceNamesQuery(variables?: SchemaTypes.RestrictedSpaceNamesQueryVariables) {
+  return { query: RestrictedSpaceNamesDocument, variables: variables };
+}
+
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {
