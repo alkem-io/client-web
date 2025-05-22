@@ -1,3 +1,11 @@
+query OrganizationProfileInfo($id: UUID!) {
+  lookup {
+    organization(ID: $id) {
+      ...OrganizationProfileInfo
+    }
+  }
+}
+
 fragment OrganizationProfileInfo on Organization {
   id
   nameID  # Used in the Organization profile form
@@ -13,8 +21,8 @@ fragment OrganizationProfileInfo on Organization {
     id
     url
     displayName
-    visual(type: AVATAR) {
-      ...VisualModel
+    visuals {
+      ...VisualModelFull
     }
     description
     tagline

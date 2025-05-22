@@ -1,4 +1,4 @@
-mutation updateOrganization($input: UpdateOrganizationInput!) {
+mutation UpdateOrganization($input: UpdateOrganizationInput!) {
   updateOrganization(organizationData: $input) {
     ...OrganizationProfileInfo
   }
