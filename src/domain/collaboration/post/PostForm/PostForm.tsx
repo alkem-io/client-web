@@ -1,4 +1,4 @@
-import { Post, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Post } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -55,7 +55,6 @@ const PostForm = ({
   post,
   postNames,
   descriptionTemplate,
-  tags,
   edit = false,
   loading,
   onChange,

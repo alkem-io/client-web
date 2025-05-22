@@ -9,7 +9,6 @@ import { EditMode } from '@/core/ui/forms/editMode';
 import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import { OrganizationInputModel } from '@/domain/community/organization/model/OrganizationInputModel';
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { FC, useCallback } from 'react';
@@ -27,19 +26,30 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
-import { EmptyProfileModel } from '@/domain/common/profile/ProfileModel';
+import { EmptyProfileModel, ProfileModelFull } from '@/domain/common/profile/ProfileModel';
 import {
   mapProfileModelToCreateProfileInput,
   mapProfileModelToUpdateProfileInput,
 } from '@/domain/common/profile/ProfileModelUtils';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 
-interface Props {
+interface OrganizationFormValues {
+  nameID: string;
+  profile: ProfileModelFull;
+  contactEmail: string | undefined;
+  domain: string | undefined;
+  legalEntityName: string | undefined;
+  website: string | undefined;
+  verified: OrganizationVerificationEnum;
+}
+
+interface OrganizationFormProps {
   organization?: OrganizationModel;
   editMode?: EditMode;
   onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
 }
 
-export const OrganizationForm: FC<Props> = ({
+export const OrganizationForm: FC<OrganizationFormProps> = ({
   organization: currentOrganization = EmptyOrganizationModel,
   editMode = EditMode.readOnly,
   onSave,
@@ -67,7 +77,7 @@ export const OrganizationForm: FC<Props> = ({
     [profile.tagsets]
   );
 
-  const initialValues: OrganizationInputModel = {
+  const initialValues: OrganizationFormValues = {
     profile: profile ?? EmptyProfileModel,
     nameID: nameID || '',
     contactEmail: contactEmail || EmptyOrganizationModel.contactEmail,
@@ -94,7 +104,7 @@ export const OrganizationForm: FC<Props> = ({
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = useCallback(
-    (orgData: OrganizationInputModel) => {
+    (orgData: OrganizationFormValues) => {
       const { profile, ...otherData } = orgData;
 
       if (isCreateMode) {
@@ -147,7 +157,7 @@ export const OrganizationForm: FC<Props> = ({
             const tagsets = profile.tagsets || [];
             const references = profile.references || [];
             const displayName = profile.displayName || '';
-            const visual = profile.visuals?.find(visual => visual?.type === VisualType.Avatar);
+            const visual = getVisualByType(VisualType.Avatar, profile.visuals);
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
@@ -163,15 +173,20 @@ export const OrganizationForm: FC<Props> = ({
                   <PageContentColumn columns={6}>
                     <Gutters disablePadding>
                       <PageContentBlockHeader title={t('common.organization')} />
-                      <NameSegment disabled={isEditMode} required={!isEditMode} />
+                      <NameSegment
+                        disabled={isEditMode}
+                        required={!isEditMode}
+                        nameFieldName="profile.displayName"
+                        nameIdFieldName="nameID"
+                      />
                       {!isCreateMode && (
                         <>
                           <ProfileSegment disabled={isReadOnlyMode} />
                           <OrganizationSegment disabled={isReadOnlyMode} />
                           <LocationSegment
                             disabled={isReadOnlyMode}
-                            cityFieldName="location.city"
-                            countryFieldName="location.country"
+                            cityFieldName="profile.location.city"
+                            countryFieldName="profile.location.country"
                           />
 
                           <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />

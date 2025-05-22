@@ -8,7 +8,7 @@ import Image from '@/core/ui/image/Image';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from './CropDialog';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 
 const DEFAULT_SIZE = 128;
 
@@ -18,7 +18,7 @@ const ImagePlaceholder = ({ src, alt, ...props }: BoxProps<'img'>) => {
 };
 
 export interface VisualUploadProps {
-  visual?: VisualModel;
+  visual?: VisualModelFull;
   height?: number;
   altText?: string;
 }

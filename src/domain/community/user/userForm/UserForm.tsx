@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { Visual } from '@/core/apollo/generated/graphql-schema';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '@/domain/platform/admin/components/Common/ReferenceSegment';
@@ -41,7 +41,7 @@ const referenceSegmentWithSocialSchema = yup.array().of(
 
 type UserProps = {
   user?: UserModel;
-  avatar?: Visual;
+  avatar?: VisualModelFull;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
@@ -164,6 +164,7 @@ export const UserForm = ({
           description: bio,
           references: finalReferences,
           location: {
+            id: '',
             country: country?.code || '',
             city: city ?? '',
           },

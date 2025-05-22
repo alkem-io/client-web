@@ -1,7 +1,0 @@
-query organizationProfileInfo($id: UUID!) {
-  lookup {
-    organization(ID: $id) {
-      ...OrganizationProfileInfo
-    }
-  }
-}

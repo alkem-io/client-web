@@ -6,10 +6,10 @@ import { OpenInNew } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Text } from '@/core/ui/typography';
-import { ReferenceModel, ReferenceModelWithAuthorization } from '@/domain/common/reference/ReferenceModel';
+import { ReferenceModel, ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
 
 interface ReferencesProps {
-  references: ReferenceModelWithAuthorization[] | undefined;
+  references: ReferenceModelWithOptionalAuthorization[] | undefined;
   noItemsView?: ReactNode;
   icon?: ReferenceViewProps['icon'];
   compact?: boolean;

@@ -25,7 +25,7 @@ fragment UserSelectorUserInformation on User {
       country
     }
     visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
   }
 }

@@ -5,7 +5,6 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  Callout,
   CalloutType,
   CalloutVisibility,
   WhiteboardDetailsFragment,
@@ -21,7 +20,10 @@ import { ClassificationTagsetModel } from '../ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
-export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
+export type TypedCallout = {
+  id: string;
+  activity: number;
+  sortOrder: number;
   authorization:
     | {
         myPrivileges?: AuthorizationPrivilege[];
@@ -48,31 +50,34 @@ export type TypedCallout = Pick<Callout, 'id' | 'activity' | 'sortOrder'> & {
   classificationTagsets: ClassificationTagsetModel[];
 };
 
-export type TypedCalloutDetails = TypedCallout &
-  Pick<Callout, 'contributionDefaults'> & {
-    framing: {
-      profile: {
+export type TypedCalloutDetails = TypedCallout & {
+  framing: {
+    profile: {
+      id: string;
+      displayName: string;
+      description?: string;
+      tagset?: TagsetModel;
+      storageBucket: {
         id: string;
-        displayName: string;
-        description?: string;
-        tagset?: TagsetModel;
-        storageBucket: {
-          id: string;
-        };
-      };
-      whiteboard?: WhiteboardDetailsFragment;
-    };
-    classification?: {
-      flowState?: {
-        tags: string[];
-        allowedValues: string[];
       };
     };
-    contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
-    contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
-    comments?: CommentsWithMessagesFragment | undefined;
-    classificationTagsets: ClassificationTagsetModel[];
+    whiteboard?: WhiteboardDetailsFragment;
   };
+  classification?: {
+    flowState?: {
+      tags: string[];
+      allowedValues: string[];
+    };
+  };
+  contributionDefaults: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
+  contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
+  contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
+  comments?: CommentsWithMessagesFragment | undefined;
+  classificationTagsets: ClassificationTagsetModel[];
+};
 
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;

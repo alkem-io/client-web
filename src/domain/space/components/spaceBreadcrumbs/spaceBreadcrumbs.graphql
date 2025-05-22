@@ -28,7 +28,7 @@ fragment BreadcrumbsSpaceL0 on Space {
       url
       displayName
       avatar: visual(type: BANNER) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
@@ -43,7 +43,7 @@ fragment BreadcrumbsSubspace on Space {
       url
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }

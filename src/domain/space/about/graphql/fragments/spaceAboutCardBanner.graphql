@@ -6,7 +6,7 @@ fragment SpaceAboutCardBanner on SpaceAbout {
     url
     tagline
     cardBanner: visual(type: CARD) {
-      ...VisualUri
+      ...VisualModel
     }
     tagset {
       id

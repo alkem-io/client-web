@@ -49,7 +49,6 @@ const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceI
           about: {
             profile: mapProfileModelToUpdateProfileInput({
               ...values,
-              id: space?.about.profile.id || '',
             }),
           },
           ID: spaceId,

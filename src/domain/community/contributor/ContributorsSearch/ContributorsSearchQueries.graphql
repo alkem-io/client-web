@@ -30,7 +30,7 @@ query ContributorsVirtualInLibrary {
             ...TagsetDetails
           }
           avatar: visual(type: AVATAR) {
-            ...VisualUri
+            ...VisualModel
           }
         }
       }
@@ -58,7 +58,7 @@ fragment OrganizationContributor on Organization {
     id
     displayName
     visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     description
     url
@@ -89,7 +89,7 @@ fragment UserContributor on User {
       country
     }
     visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     tagsets {
       ...TagsetDetails

@@ -84,7 +84,7 @@ fragment SpaceExplorerSubspace on Space {
     why
     profile {
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
     membership {

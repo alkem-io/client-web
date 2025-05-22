@@ -31,11 +31,12 @@ export const InnovationPackProfileFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
+export const VisualModelFragmentDoc = gql`
+  fragment VisualModel on Visual {
     id
     uri
     name
+    alternativeText
   }
 `;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
@@ -45,12 +46,12 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
       id
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       url
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const InnovationPackCardFragmentDoc = gql`
   fragment InnovationPackCard on InnovationPack {
@@ -180,7 +181,7 @@ export const RoleSetMemberUserFragmentDoc = gql`
       id
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       location {
         id
@@ -196,7 +197,7 @@ export const RoleSetMemberUserFragmentDoc = gql`
     firstName
     lastName
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const RoleSetMemberOrganizationFragmentDoc = gql`
@@ -206,7 +207,7 @@ export const RoleSetMemberOrganizationFragmentDoc = gql`
       id
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       description
       tagsets {
@@ -224,7 +225,7 @@ export const RoleSetMemberOrganizationFragmentDoc = gql`
       status
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const RoleSetMemberVirtualContributorFragmentDoc = gql`
@@ -235,7 +236,7 @@ export const RoleSetMemberVirtualContributorFragmentDoc = gql`
       id
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       tagsets {
         ...TagsetDetails
@@ -248,7 +249,7 @@ export const RoleSetMemberVirtualContributorFragmentDoc = gql`
       url
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const AccountItemProfileFragmentDoc = gql`
@@ -257,25 +258,11 @@ export const AccountItemProfileFragmentDoc = gql`
     displayName
     description
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     url
   }
-  ${VisualUriFragmentDoc}
-`;
-export const VisualFullFragmentDoc = gql`
-  fragment VisualFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
-    alternativeText
-  }
+  ${VisualModelFragmentDoc}
 `;
 export const InnovationFlowProfileFragmentDoc = gql`
   fragment InnovationFlowProfile on Profile {
@@ -292,11 +279,11 @@ export const InnovationFlowProfileFragmentDoc = gql`
       uri
     }
     bannerNarrow: visual(type: CARD) {
-      ...VisualFull
+      ...VisualModel
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const InnovationFlowDetailsFragmentDoc = gql`
   fragment InnovationFlowDetails on InnovationFlow {
@@ -583,7 +570,7 @@ export const PostCardFragmentDoc = gql`
       displayName
       description
       visuals {
-        ...VisualFull
+        ...VisualModel
       }
       tagset {
         ...TagsetDetails
@@ -596,7 +583,7 @@ export const PostCardFragmentDoc = gql`
       }
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const ContributeTabPostFragmentDoc = gql`
@@ -617,12 +604,12 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
       url
       displayName
       visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
     }
     createdDate
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -664,6 +651,20 @@ export const ReferenceDetailsFragmentDoc = gql`
     description
   }
 `;
+export const VisualModelFullFragmentDoc = gql`
+  fragment VisualModelFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+    alternativeText
+  }
+`;
 export const WhiteboardProfileFragmentDoc = gql`
   fragment WhiteboardProfile on Profile {
     id
@@ -671,10 +672,10 @@ export const WhiteboardProfileFragmentDoc = gql`
     displayName
     description
     visual(type: CARD) {
-      ...VisualFull
+      ...VisualModelFull
     }
     preview: visual(type: BANNER) {
-      ...VisualFull
+      ...VisualModelFull
     }
     tagset {
       ...TagsetDetails
@@ -683,7 +684,7 @@ export const WhiteboardProfileFragmentDoc = gql`
       id
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const WhiteboardDetailsFragmentDoc = gql`
@@ -711,13 +712,13 @@ export const WhiteboardDetailsFragmentDoc = gql`
           city
         }
         avatar: visual(type: AVATAR) {
-          id
-          uri
+          ...VisualModel
         }
       }
     }
   }
   ${WhiteboardProfileFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
   fragment LinkDetailsWithAuthorization on Link {
@@ -755,7 +756,7 @@ export const ContributorDetailsFragmentDoc = gql`
       displayName
       url
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       description
       tagsets {
@@ -768,7 +769,7 @@ export const ContributorDetailsFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -890,12 +891,12 @@ export const PostSettingsFragmentDoc = gql`
         description
       }
       visuals {
-        ...VisualFull
+        ...VisualModel
       }
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
@@ -928,14 +929,14 @@ export const PostSettingsCalloutFragmentDoc = gql`
             description
           }
           visuals {
-            ...VisualFull
+            ...VisualModel
           }
         }
       }
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
@@ -1014,7 +1015,7 @@ export const DiscussionCardFragmentDoc = gql`
       description
       tagline
       visual(type: AVATAR) {
-        ...VisualFull
+        ...VisualModel
       }
     }
     category
@@ -1032,7 +1033,7 @@ export const DiscussionCardFragmentDoc = gql`
       myPrivileges
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const ApplicationFormFragmentDoc = gql`
   fragment ApplicationForm on Form {
@@ -1075,11 +1076,11 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
       url
       displayName
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
@@ -1093,7 +1094,7 @@ export const OrganizationContributorFragmentDoc = gql`
       id
       displayName
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       description
       url
@@ -1103,7 +1104,7 @@ export const OrganizationContributorFragmentDoc = gql`
       status
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const PageInfoFragmentDoc = gql`
   fragment PageInfo on PageInfo {
@@ -1136,7 +1137,7 @@ export const UserContributorFragmentDoc = gql`
         country
       }
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       tagsets {
         ...TagsetDetails
@@ -1144,7 +1145,7 @@ export const UserContributorFragmentDoc = gql`
       url
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const UserContributorPaginatedFragmentDoc = gql`
@@ -1165,10 +1166,10 @@ export const AccountResourceProfileFragmentDoc = gql`
     displayName
     url
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const FullLocationFragmentDoc = gql`
   fragment fullLocation on Location {
@@ -1205,7 +1206,7 @@ export const OrganizationInfoFragmentDoc = gql`
       description
       tagline
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
         alternativeText
       }
       tagsets {
@@ -1227,7 +1228,7 @@ export const OrganizationInfoFragmentDoc = gql`
       value
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${FullLocationFragmentDoc}
 `;
@@ -1247,12 +1248,13 @@ export const OrganizationProfileInfoFragmentDoc = gql`
       id
       url
       displayName
-      visual(type: AVATAR) {
-        ...VisualFull
+      visuals {
+        ...VisualModelFull
       }
       description
       tagline
       location {
+        id
         country
         city
       }
@@ -1267,7 +1269,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
       }
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const PendingMembershipInvitationFragmentDoc = gql`
@@ -1325,11 +1327,11 @@ export const UserSelectorUserInformationFragmentDoc = gql`
         country
       }
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
@@ -1349,7 +1351,7 @@ export const UserDetailsFragmentDoc = gql`
       }
       description
       avatar: visual(type: AVATAR) {
-        ...VisualFull
+        ...VisualModelFull
       }
       references {
         id
@@ -1363,7 +1365,7 @@ export const UserDetailsFragmentDoc = gql`
       url
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const UserDisplayNameFragmentDoc = gql`
@@ -1433,12 +1435,12 @@ export const InnovationHubProfileFragmentDoc = gql`
       ...TagsetDetails
     }
     visual(type: BANNER_WIDE) {
-      ...VisualFull
+      ...VisualModelFull
     }
     url
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFullFragmentDoc}
 `;
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
@@ -1502,10 +1504,10 @@ export const SpaceAboutLightFragmentDoc = gql`
         tags
       }
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       cardBanner: visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
     }
     isContentPublic
@@ -1519,7 +1521,7 @@ export const SpaceAboutLightFragmentDoc = gql`
       id
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -1615,11 +1617,11 @@ export const SpaceAboutCardAvatarFragmentDoc = gql`
       displayName
       url
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceAboutMinimalFragmentDoc = gql`
   fragment SpaceAboutMinimal on SpaceAbout {
@@ -1640,7 +1642,7 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
       url
       tagline
       cardBanner: visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
       tagset {
         id
@@ -1648,7 +1650,7 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceCardFragmentDoc = gql`
   fragment SpaceCard on Space {
@@ -1680,12 +1682,12 @@ export const BreadcrumbsSpaceL0FragmentDoc = gql`
         url
         displayName
         avatar: visual(type: BANNER) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const BreadcrumbsSubspaceFragmentDoc = gql`
   fragment BreadcrumbsSubspace on Space {
@@ -1698,12 +1700,12 @@ export const BreadcrumbsSubspaceFragmentDoc = gql`
         url
         displayName
         avatar: visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
@@ -1755,7 +1757,7 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           url
           displayName
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModel
           }
           location {
             id
@@ -1771,7 +1773,7 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           url
           displayName
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModel
           }
           location {
             id
@@ -1789,7 +1791,7 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         url
         displayName
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModel
         }
         location {
           id
@@ -1808,13 +1810,13 @@ export const SpaceAboutDetailsFragmentDoc = gql`
         ...TagsetDetails
       }
       avatar: visual(type: AVATAR) {
-        ...VisualFull
+        ...VisualModelFull
       }
       cardBanner: visual(type: CARD) {
-        ...VisualFull
+        ...VisualModelFull
       }
       banner: visual(type: BANNER) {
-        ...VisualFull
+        ...VisualModelFull
       }
       references {
         ...ReferenceDetails
@@ -1834,8 +1836,9 @@ export const SpaceAboutDetailsFragmentDoc = gql`
       value
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${VisualModelFullFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
 `;
 export const SpaceInfoFragmentDoc = gql`
@@ -2010,7 +2013,7 @@ export const VirtualContributorFullFragmentDoc = gql`
       displayName
       description
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       tagsets {
         ...TagsetDetails
@@ -2032,7 +2035,7 @@ export const VirtualContributorFullFragmentDoc = gql`
       ...AiPersonaWithModelCard
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${AiPersonaWithModelCardFragmentDoc}
 `;
@@ -2269,7 +2272,7 @@ export const CollaborationTemplateContentFragmentDoc = gql`
             id
             profile {
               preview: visual(type: BANNER) {
-                ...VisualFull
+                ...VisualModel
               }
             }
           }
@@ -2279,7 +2282,7 @@ export const CollaborationTemplateContentFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const WhiteboardTemplateContentFragmentDoc = gql`
   fragment WhiteboardTemplateContent on Whiteboard {
@@ -2306,14 +2309,14 @@ export const TemplateProfileInfoFragmentDoc = gql`
         ...TagsetDetails
       }
       visual(type: CARD) {
-        ...VisualFull
+        ...VisualModel
       }
       url
     }
     type
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const CalloutTemplateFragmentDoc = gql`
   fragment CalloutTemplate on Template {
@@ -2511,7 +2514,7 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
           displayName
           url
           visual(type: CARD) {
-            ...VisualUri
+            ...VisualModel
           }
         }
       }
@@ -2530,12 +2533,12 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
         displayName
         url
         visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
@@ -2547,7 +2550,7 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
         displayName
         url
         visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
@@ -2566,12 +2569,12 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
         displayName
         url
         visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`
@@ -2583,7 +2586,7 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
         displayName
         url
         visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
@@ -2592,7 +2595,7 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
     commentOriginName
     contributorType
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
@@ -2658,7 +2661,7 @@ export const SearchResultPostFragmentDoc = gql`
         url
         displayName
         visual(type: CARD) {
-          ...VisualUri
+          ...VisualModel
         }
         ...SearchResultPostProfile
       }
@@ -2677,7 +2680,7 @@ export const SearchResultPostFragmentDoc = gql`
     }
     ...PostParent
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${SearchResultPostProfileFragmentDoc}
   ${PostParentFragmentDoc}
 `;
@@ -2694,12 +2697,12 @@ export const SearchResultProfileFragmentDoc = gql`
       ...TagsetDetails
     }
     visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     url
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SearchResultUserFragmentDoc = gql`
   fragment SearchResultUser on SearchResultUser {
@@ -2807,7 +2810,7 @@ export const SearchResultSpaceFragmentDoc = gql`
           }
           tagline
           visuals {
-            ...VisualUri
+            ...VisualModel
           }
         }
         isContentPublic
@@ -2820,7 +2823,7 @@ export const SearchResultSpaceFragmentDoc = gql`
   }
   ${SpaceAboutLightFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const TemplateCardProfileInfoFragmentDoc = gql`
   fragment TemplateCardProfileInfo on Profile {
@@ -2853,7 +2856,7 @@ export const LibraryTemplatesFragmentDoc = gql`
         displayName
         description
         visual(type: CARD) {
-          ...VisualUri
+          ...VisualModel
         }
         tagset {
           ...TagsetDetails
@@ -2869,7 +2872,7 @@ export const LibraryTemplatesFragmentDoc = gql`
         displayName
         description
         visual(type: CARD) {
-          ...VisualUri
+          ...VisualModel
         }
         tagset {
           ...TagsetDetails
@@ -2965,7 +2968,7 @@ export const LibraryTemplatesFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${TemplateCardProfileInfoFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
@@ -2981,7 +2984,7 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
       isContentPublic
       profile {
         spaceBanner: visual(type: BANNER) {
-          ...VisualUri
+          ...VisualModel
         }
       }
       isContentPublic
@@ -2995,7 +2998,7 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const ExploreSpacesFragmentDoc = gql`
   fragment ExploreSpaces on Space {
@@ -3009,12 +3012,12 @@ export const ExploreSpacesFragmentDoc = gql`
         url
         displayName
         cardBanner: visual(type: CARD) {
-          ...VisualUri
+          ...VisualModel
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const ExploreSpacesSearchFragmentDoc = gql`
   fragment ExploreSpacesSearch on SearchResultSpace {
@@ -3054,10 +3057,10 @@ export const ShortAccountItemFragmentDoc = gql`
     displayName
     url
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceProfileCommunityDetailsFragmentDoc = gql`
   fragment spaceProfileCommunityDetails on Space {
@@ -3119,7 +3122,7 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
       why
       profile {
         avatar: visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
       }
       membership {
@@ -3129,7 +3132,7 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const UploadFileOnReferenceDocument = gql`
   mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
@@ -5500,7 +5503,7 @@ export const AccountInformationDocument = gql`
               displayName
               url
               cardBanner: visual(type: CARD) {
-                ...VisualUri
+                ...VisualModel
               }
               tagline
             }
@@ -5535,7 +5538,7 @@ export const AccountInformationDocument = gql`
           profile {
             ...AccountItemProfile
             banner: visual(type: BANNER_WIDE) {
-              ...VisualUri
+              ...VisualModel
             }
           }
           subdomain
@@ -5543,7 +5546,7 @@ export const AccountInformationDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${AccountItemProfileFragmentDoc}
 `;
 
@@ -7583,7 +7586,7 @@ export const PostDocument = gql`
             ...ReferenceDetails
           }
           banner: visual(type: BANNER) {
-            ...VisualUri
+            ...VisualModel
           }
         }
         createdBy {
@@ -7592,7 +7595,7 @@ export const PostDocument = gql`
             id
             displayName
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
             tagsets {
               ...TagsetDetails
@@ -7619,7 +7622,7 @@ export const PostDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${MessageDetailsFragmentDoc}
 `;
 
@@ -9025,7 +9028,7 @@ export const ForumDiscussionUpdatedDocument = gql`
         description
         tagline
         visuals {
-          ...VisualFull
+          ...VisualModel
         }
       }
       createdBy
@@ -9037,7 +9040,7 @@ export const ForumDiscussionUpdatedDocument = gql`
       }
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -9386,7 +9389,7 @@ export const MentionableUsersDocument = gql`
             country
           }
           avatar: visual(type: AVATAR) {
-            ...VisualUri
+            ...VisualModel
           }
         }
       }
@@ -9400,14 +9403,14 @@ export const MentionableUsersDocument = gql`
             url
             displayName
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
           }
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -10169,7 +10172,7 @@ export const ContributorTooltipDocument = gql`
         id
         displayName
         avatar: visual(type: AVATAR) {
-          ...VisualUri
+          ...VisualModel
         }
         location {
           id
@@ -10185,7 +10188,7 @@ export const ContributorTooltipDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -10436,7 +10439,7 @@ export const ContributorsVirtualInLibraryDocument = gql`
               ...TagsetDetails
             }
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
           }
         }
@@ -10444,7 +10447,7 @@ export const ContributorsVirtualInLibraryDocument = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -10528,7 +10531,7 @@ export const AccountResourcesInfoDocument = gql`
             profile {
               ...AccountResourceProfile
               cardBanner: visual(type: CARD) {
-                ...VisualUri
+                ...VisualModel
               }
             }
           }
@@ -10559,7 +10562,7 @@ export const AccountResourcesInfoDocument = gql`
           profile {
             ...AccountResourceProfile
             banner: visual(type: BANNER_WIDE) {
-              ...VisualUri
+              ...VisualModel
             }
           }
           subdomain
@@ -10568,7 +10571,7 @@ export const AccountResourcesInfoDocument = gql`
     }
   }
   ${AccountResourceProfileFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -10739,7 +10742,7 @@ export const AssociatedOrganizationDocument = gql`
             country
           }
           avatar: visual(type: AVATAR) {
-            ...VisualUri
+            ...VisualModel
           }
           tagsets {
             id
@@ -10758,7 +10761,7 @@ export const AssociatedOrganizationDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -10895,6 +10898,82 @@ export type OrganizationInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
   return { query: OrganizationInfoDocument, variables: variables };
+}
+export const OrganizationProfileInfoDocument = gql`
+  query OrganizationProfileInfo($id: UUID!) {
+    lookup {
+      organization(ID: $id) {
+        ...OrganizationProfileInfo
+      }
+    }
+  }
+  ${OrganizationProfileInfoFragmentDoc}
+`;
+
+/**
+ * __useOrganizationProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganizationProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  > &
+    ({ variables: SchemaTypes.OrganizationProfileInfoQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
+    OrganizationProfileInfoDocument,
+    options
+  );
+}
+export function useOrganizationProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >(OrganizationProfileInfoDocument, options);
+}
+export function useOrganizationProfileInfoSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.OrganizationProfileInfoQuery,
+        SchemaTypes.OrganizationProfileInfoQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >(OrganizationProfileInfoDocument, options);
+}
+export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
+export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
+export type OrganizationProfileInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationProfileInfoSuspenseQuery>;
+export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationProfileInfoQuery,
+  SchemaTypes.OrganizationProfileInfoQueryVariables
+>;
+export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
+  return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganizationInput!) {
@@ -11075,82 +11154,6 @@ export type OrganizationAuthorizationQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.OrganizationAuthorizationQueryVariables) {
   return { query: OrganizationAuthorizationDocument, variables: variables };
-}
-export const OrganizationProfileInfoDocument = gql`
-  query organizationProfileInfo($id: UUID!) {
-    lookup {
-      organization(ID: $id) {
-        ...OrganizationProfileInfo
-      }
-    }
-  }
-  ${OrganizationProfileInfoFragmentDoc}
-`;
-
-/**
- * __useOrganizationProfileInfoQuery__
- *
- * To run a query within a React component, call `useOrganizationProfileInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationProfileInfoQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOrganizationProfileInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  > &
-    ({ variables: SchemaTypes.OrganizationProfileInfoQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
-    OrganizationProfileInfoDocument,
-    options
-  );
-}
-export function useOrganizationProfileInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, options);
-}
-export function useOrganizationProfileInfoSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.OrganizationProfileInfoQuery,
-        SchemaTypes.OrganizationProfileInfoQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, options);
-}
-export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
-export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
-export type OrganizationProfileInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationProfileInfoSuspenseQuery>;
-export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationProfileInfoQuery,
-  SchemaTypes.OrganizationProfileInfoQueryVariables
->;
-export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
-  return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const RolesOrganizationDocument = gql`
   query rolesOrganization($organizationId: UUID!) {
@@ -11400,7 +11403,7 @@ export function refetchOrganizationSettingsQuery(variables: SchemaTypes.Organiza
   return { query: OrganizationSettingsDocument, variables: variables };
 }
 export const UpdateOrganizationDocument = gql`
-  mutation updateOrganization($input: UpdateOrganizationInput!) {
+  mutation UpdateOrganization($input: UpdateOrganizationInput!) {
     updateOrganization(organizationData: $input) {
       ...OrganizationProfileInfo
     }
@@ -11448,7 +11451,7 @@ export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOrganizationMutationVariables
 >;
 export const UpdateOrganizationSettingsDocument = gql`
-  mutation updateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
+  mutation UpdateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
     updateOrganizationSettings(settingsData: $settingsData) {
       id
       settings {
@@ -11580,7 +11583,7 @@ export const PendingMembershipsSpaceDocument = gql`
           ...SpaceAboutCardBanner
           profile {
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
           }
           guidelines @include(if: $includeCommunityGuidelines) {
@@ -11591,7 +11594,7 @@ export const PendingMembershipsSpaceDocument = gql`
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
@@ -11754,7 +11757,7 @@ export const SpaceContributionDetailsDocument = gql`
             displayName
             tagline
             cardBanner: visual(type: CARD) {
-              ...VisualUri
+              ...VisualModel
             }
             tagset {
               id
@@ -11770,7 +11773,7 @@ export const SpaceContributionDetailsDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -13002,7 +13005,7 @@ export const VirtualContributorDocument = gql`
           }
           url
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModelFull
           }
           references {
             id
@@ -13015,7 +13018,7 @@ export const VirtualContributorDocument = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFullFragmentDoc}
 `;
 
 /**
@@ -13094,7 +13097,7 @@ export const VirtualContributorProfileDocument = gql`
           }
           url
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModel
           }
           references {
             id
@@ -13107,7 +13110,7 @@ export const VirtualContributorProfileDocument = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -13193,7 +13196,7 @@ export const VirtualContributorProviderDocument = gql`
               city
             }
             avatar: visual(type: AVATAR) {
-              ...VisualFull
+              ...VisualModel
             }
             tagsets {
               id
@@ -13204,7 +13207,7 @@ export const VirtualContributorProviderDocument = gql`
       }
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -13473,7 +13476,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
           }
           url
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModel
           }
           references {
             id
@@ -13491,7 +13494,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
             tagline
             url
             avatar: visual(type: AVATAR) {
-              ...VisualFull
+              ...VisualModel
             }
           }
         }
@@ -13500,7 +13503,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
   }
   ${AiPersonaWithModelCardFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -14223,13 +14226,13 @@ export const InnovationHubBannerWideDocument = gql`
           displayName
           bannerWide: visual(type: BANNER_WIDE) {
             id
-            ...VisualUri
+            ...VisualModel
           }
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -15523,12 +15526,12 @@ export const AdminVirtualContributorsDocument = gql`
         description
         url
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModel
         }
       }
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -17529,7 +17532,7 @@ export const SpaceAccountDocument = gql`
               id
               displayName
               avatar: visual(type: AVATAR) {
-                ...VisualUri
+                ...VisualModel
               }
               location {
                 id
@@ -17575,7 +17578,7 @@ export const SpaceAccountDocument = gql`
     }
   }
   ${SpaceAboutLightFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -17647,7 +17650,7 @@ export const CommunityApplicationDocument = gql`
             id
             displayName
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
             location {
               id
@@ -17667,7 +17670,7 @@ export const CommunityApplicationDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -17750,7 +17753,7 @@ export const CommunityInvitationDocument = gql`
             id
             displayName
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
             location {
               id
@@ -17770,7 +17773,7 @@ export const CommunityInvitationDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 
 /**
@@ -23423,7 +23426,7 @@ export const MyResourcesDocument = gql`
             ...SpaceAboutCardBanner
             profile {
               avatar: visual(type: AVATAR) {
-                ...VisualUri
+                ...VisualModel
               }
             }
             isContentPublic
@@ -23446,7 +23449,7 @@ export const MyResourcesDocument = gql`
           profile {
             ...ShortAccountItem
             banner: visual(type: BANNER_WIDE) {
-              ...VisualUri
+              ...VisualModel
             }
           }
           subdomain
@@ -23455,7 +23458,7 @@ export const MyResourcesDocument = gql`
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${ShortAccountItemFragmentDoc}
 `;
 

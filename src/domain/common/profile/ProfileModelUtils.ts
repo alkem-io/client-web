@@ -4,7 +4,13 @@ import { mapTagsetModelsToUpdateTagsetInputs } from '../tagset/TagsetUtils';
 import { formatDatabaseLocation } from '../location/LocationUtils';
 import { mapReferenceModelsToUpdateReferenceInputs } from '../reference/ReferenceUtils';
 
-export const mapProfileModelToUpdateProfileInput = (profileModel: ProfileModel | undefined): UpdateProfileInput => {
+type ProfileModelWithoutId = {
+  [K in keyof ProfileModel as K extends 'id' ? never : K]: ProfileModel[K];
+};
+
+export const mapProfileModelToUpdateProfileInput = (
+  profileModel: ProfileModelWithoutId | undefined
+): UpdateProfileInput => {
   if (!profileModel)
     return {
       displayName: '',

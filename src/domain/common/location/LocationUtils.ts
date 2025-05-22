@@ -1,4 +1,4 @@
-import { LocationModel as LocationModel } from './LocationModel';
+import { LocationModel } from './LocationModel';
 import { COUNTRIES } from './countries.constants';
 import { LocationModelMapped } from './LocationModelMapped';
 
@@ -22,14 +22,13 @@ export const formatLocation = (data: LocationModel | undefined): LocationModelMa
   };
 };
 
-export const formatDatabaseLocation = (
-  data: LocationModelMapped | undefined
-): LocationModel | undefined => {
+export const formatDatabaseLocation = (data: LocationModelMapped | undefined): LocationModel | undefined => {
   if (!data) {
     return undefined;
   }
 
   return {
+    id: data.id,
     city: data.city!,
     country: data.country?.code || '',
   };

@@ -327,7 +327,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const notifyErrorOnAddToCommunity = () => {
     // No need to spam the user with error messages, the VC was created successfully
-    console.log('Try your VC flow was skipped. Unable to add to community.');
+    console.warn('Try your VC flow was skipped. Unable to add to community.');
   };
 
   // post creation navigation

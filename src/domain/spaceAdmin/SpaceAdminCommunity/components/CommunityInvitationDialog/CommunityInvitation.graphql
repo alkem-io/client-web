@@ -12,7 +12,7 @@ query CommunityInvitation($invitationId: UUID!, $isPlatformInvitation: Boolean!)
           id
           displayName
           avatar: visual(type: AVATAR){
-            ...VisualUri
+            ...VisualModel
           }
           location {
             id

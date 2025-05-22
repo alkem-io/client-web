@@ -6,8 +6,8 @@ import { Button, Checkbox, DialogContent, FormControlLabel, Link } from '@mui/ma
 import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMemo, useState } from 'react';
-import { SpaceLevel, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { useState } from 'react';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
@@ -33,7 +33,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 
@@ -93,23 +93,11 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     withRedirectOnClose && redirectToHome();
   };
 
-  const tagsets = useMemo(() => {
-    return [
-      {
-        id: '',
-        name: TagsetReservedName.Default,
-        tags: [],
-        allowedValues: [],
-        type: TagsetType.Freeform,
-      },
-    ] as TagsetModel[];
-  }, []);
-
-  const initialValues: Partial<FormValues> = {
+  const initialValues: FormValues = {
     name: '',
     nameID: '',
     tagline: '',
-    tagsets,
+    tagsets: [EmptyTagset],
     licensePlanId: '',
   };
 
@@ -207,7 +195,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, errors }) => {
+        {({ handleSubmit, values: { tagsets }, errors }) => {
           return (
             <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
               <DialogHeader title={t('createSpace.title')} onClose={handleClose} />

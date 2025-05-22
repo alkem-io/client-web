@@ -2,7 +2,7 @@ import { Box, FormGroup } from '@mui/material';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { TagsetType, Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -15,6 +15,7 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 
 export interface InnovationHubFormValues {
   subdomain: string;
@@ -35,7 +36,7 @@ type InnovationHubFormProps = {
     description?: string;
     tagline?: string;
     tagset?: TagsetModel;
-    visual?: Visual;
+    visual?: VisualModelFull;
   };
 
   loading?: boolean;
