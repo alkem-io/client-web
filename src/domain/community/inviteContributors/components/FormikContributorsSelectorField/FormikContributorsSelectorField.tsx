@@ -1,11 +1,16 @@
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput, UserSelectorQuery } from '@/core/apollo/generated/graphql-schema';
+import {
+  User,
+  UserFilterInput,
+  UserSelectorQuery,
+  UserSelectorQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { Box, SxProps, TextField, Theme, Button } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField, useFormikContext } from 'formik';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -16,10 +21,20 @@ import ContributorChip from '../ContributorChip/ContributorChip';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import emailParser from './emailParser';
 import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { useInView } from 'react-intersection-observer';
+import Loading from '@/core/ui/loading/Loading';
 
 const MAX_USERS_SHOWN = 20;
+const FETCH_MORE_OPTION_ID = '__LOAD_MORE__';
+const LOAD_MORE_OPTION = { id: FETCH_MORE_OPTION_ID, profile: { displayName: 'Load More' }, disabled: true };
 
-type HydratorFn = <U extends Identifiable>(users: U[]) => (U & { message?: string; disabled?: boolean })[];
+type SelectableUser = UserSelectorQuery['usersPaginated']['users'][0];
+
+// We hydrate users returned by the query with this extra data: disabled, and the reason why they are,
+// so we can avoid inviting ourselves, or users already selected
+type Hydration<T extends Identifiable> = T & { message?: string; disabled?: boolean };
+type HydratorFn = <U extends Identifiable>(users: U[]) => Hydration<U>[];
 
 export interface FormikContributorsSelectorFieldProps {
   name: string;
@@ -81,22 +96,41 @@ const FormikContributorsSelectorField = ({
 
   // Filter users for the Autocomplete
   const [filter, setFilter] = useState<UserFilterInput>();
-  const { data } = useUserSelectorQuery({
-    variables: { filter, first: MAX_USERS_SHOWN },
-    skip: !filter,
+
+  const { data, hasMore, fetchMore } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
+    useQuery: useUserSelectorQuery,
+    getPageInfo: data => data.usersPaginated.pageInfo,
+    options: {
+      skip: !filter,
+    },
+    pageSize: MAX_USERS_SHOWN,
+    variables: {
+      filter,
+    },
   });
+
+  const { ref: intersectionObserverRef, inView: loadMoreInView } = useInView({
+    delay: 500,
+    trackVisibility: true,
+  });
+
+  useEffect(() => {
+    if (loadMoreInView && hasMore) {
+      fetchMore();
+    }
+  }, [loadMoreInView, hasMore, fetchMore]);
 
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
   const [inputValue, setInputValue] = useState('');
 
   // Filter out users that are already selected, and myself
-  const listedUsers = useMemo(() => {
+  const listedUsers = useMemo<(Hydration<SelectableUser> | typeof LOAD_MORE_OPTION)[]>(() => {
     if (!inputValue) {
       return [];
     }
     const users = data?.usersPaginated.users ?? [];
 
-    const filterFunction = (user: UserSelectorQuery['usersPaginated']['users'][0]) => {
+    const filterFunction = (user: SelectableUser) => {
       if (user.id === currentUser?.id) {
         return false;
       }
@@ -106,7 +140,12 @@ const FormikContributorsSelectorField = ({
       return filterUsers(user);
     };
 
-    return hydrateUsers(sortUsers(users.filter(filterFunction)));
+    const listedUsers = hydrateUsers(sortUsers(users.filter(filterFunction)));
+    if (hasMore) {
+      return [...listedUsers, LOAD_MORE_OPTION];
+    } else {
+      return listedUsers;
+    }
   }, [
     currentUser?.id,
     selectedUserIds,
@@ -116,6 +155,7 @@ const FormikContributorsSelectorField = ({
     hydrateUsers,
     sortUsers,
     filterUsers,
+    loadMoreInView,
   ]);
 
   const handleSelect = (value: (Identifiable & { profile: { displayName: string } }) | string | null) => {
@@ -204,20 +244,36 @@ const FormikContributorsSelectorField = ({
           ...sx,
         }}
         onChange={(_, value) => handleSelect(value)}
-        renderOption={(props, user) => (
-          <li {...props} key={user.id}>
-            <ProfileChipView
-              displayName={user.profile.displayName}
-              avatarUrl={user.profile.visual?.uri}
-              city={user.profile.location?.city}
-              country={user.profile.location?.country}
-              width="100%"
-            >
-              <FlexSpacer />
-              <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
-            </ProfileChipView>
-          </li>
-        )}
+        renderOption={(props, row) => {
+          if (row.id === FETCH_MORE_OPTION_ID) {
+            if (loadMoreInView) {
+              return null; // If it's inView at the moment, don't show it, to avoid loading multiple times in the same scroll
+            } else {
+              return (
+                <li {...props} ref={intersectionObserverRef} key={row.id}>
+                  <Loading />
+                </li>
+              );
+            }
+          } else {
+            // Print user row
+            const user = row as Hydration<SelectableUser>;
+            return (
+              <li {...props} key={user.id}>
+                <ProfileChipView
+                  displayName={user.profile.displayName}
+                  avatarUrl={user.profile.visual?.uri}
+                  city={user.profile.location?.city}
+                  country={user.profile.location?.country}
+                  width="100%"
+                >
+                  <FlexSpacer />
+                  <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
+                </ProfileChipView>
+              </li>
+            );
+          }
+        }}
         renderInput={params => (
           <TextField
             {...params}

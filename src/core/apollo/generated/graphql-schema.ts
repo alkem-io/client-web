@@ -17274,8 +17274,9 @@ export type SpaceContributionDetailsQuery = {
 };
 
 export type UserSelectorQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['UUID']['input']>;
   filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 export type UserSelectorQuery = {
@@ -17297,6 +17298,12 @@ export type UserSelectorQuery = {
           | undefined;
       };
     }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
   };
 };
 

@@ -12141,14 +12141,18 @@ export function refetchSpaceContributionDetailsQuery(variables: SchemaTypes.Spac
 }
 
 export const UserSelectorDocument = gql`
-  query UserSelector($filter: UserFilterInput, $first: Int) {
-    usersPaginated(filter: $filter, first: $first) {
+  query UserSelector($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
       users {
         ...UserSelectorUserInformation
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }
   ${UserSelectorUserInformationFragmentDoc}
+  ${PageInfoFragmentDoc}
 `;
 
 /**
@@ -12163,13 +12167,15 @@ export const UserSelectorDocument = gql`
  * @example
  * const { data, loading, error } = useUserSelectorQuery({
  *   variables: {
- *      filter: // value for 'filter'
  *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
 export function useUserSelectorQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables> &
+    ({ variables: SchemaTypes.UserSelectorQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>(
@@ -12207,7 +12213,7 @@ export type UserSelectorQueryResult = Apollo.QueryResult<
   SchemaTypes.UserSelectorQuery,
   SchemaTypes.UserSelectorQueryVariables
 >;
-export function refetchUserSelectorQuery(variables?: SchemaTypes.UserSelectorQueryVariables) {
+export function refetchUserSelectorQuery(variables: SchemaTypes.UserSelectorQueryVariables) {
   return { query: UserSelectorDocument, variables: variables };
 }
 
