@@ -5,7 +5,7 @@ query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
       id
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualModel
       }
       location {
         id

@@ -1,21 +1,20 @@
-import { Callout } from '@/core/apollo/generated/graphql-schema';
-import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { Identifiable } from '@/core/utils/Identifiable';
 
-export type CalloutEditType = Omit<CalloutFormInput, 'type' | 'sortOrder'> & {
-  id: Callout['id'];
-  profile: {
-    displayName?: string;
-    description?: string;
-    references?: Reference[];
-    tagsets?: Tagset[];
+export type CalloutEditType = Omit<CalloutFormInput, 'type' | 'sortOrder'> &
+  Identifiable & {
+    profile: {
+      displayName: string;
+      description?: string;
+      references?: ReferenceModel[];
+      tagsets?: TagsetModel[];
+    };
+    contributionDefaults?: {
+      postDescription?: string;
+      whiteboardContent?: string;
+    };
   };
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
-};
 
-export type CalloutDeleteType = Omit<CalloutFormInput, 'type'> & {
-  id: Callout['id'];
-};
+export type CalloutDeleteType = Omit<CalloutFormInput, 'type'> & Identifiable;

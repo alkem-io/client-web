@@ -1,0 +1,6 @@
+fragment VisualModel on Visual {
+  id
+  uri
+  name
+  alternativeText
+}

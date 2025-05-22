@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { FormControl, FormControlLabel, FormGroup, Paper, Skeleton, Switch } from '@mui/material';
-import { Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { PreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { PreferenceModel } from '@/domain/preferences/Preference.model';
 import SectionHeader from '@/domain/shared/components/Section/SectionHeader';
 import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
@@ -8,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 export interface PreferenceSectionProps {
   headerText: string;
   subHeaderText: string;
-  preferences: Preference[];
+  preferences: PreferenceModel[];
   loading?: boolean;
   submitting?: boolean;
   onUpdate: (id: string, type: PreferenceType, value: boolean) => void;

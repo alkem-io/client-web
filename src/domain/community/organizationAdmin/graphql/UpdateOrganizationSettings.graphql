@@ -1,4 +1,4 @@
-mutation updateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
+mutation UpdateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
   updateOrganizationSettings(settingsData: $settingsData) {
     id
     settings {

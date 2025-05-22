@@ -9,7 +9,7 @@ fragment TemplateProfileInfo on Template {
       ...TagsetDetails
     }
     visual(type: CARD) {
-      ...VisualFull
+      ...VisualModel
     }
     url
   }

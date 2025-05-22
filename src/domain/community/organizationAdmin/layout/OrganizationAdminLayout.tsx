@@ -1,5 +1,5 @@
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { useOrganizationContext } from '@/domain/community/contributor/organization/hooks/useOrganizationContext';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined, Settings } from '@mui/icons-material';
 import { FC, PropsWithChildren } from 'react';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { organizationAdminTabs } from '../OrganizationAdminTabs';
-import useOrganizationProvider from '../../contributor/organization/useOrganization/useOrganization';
+import useOrganizationProvider from '../../organization/useOrganization/useOrganization';
 
 interface OrganizationAdminLayoutProps extends PropsWithChildren {
   currentTab: SettingsSection;

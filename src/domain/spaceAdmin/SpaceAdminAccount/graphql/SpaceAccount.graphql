@@ -14,7 +14,7 @@ query SpaceAccount($spaceId: UUID!) {
             id
             displayName
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
             location {
               id

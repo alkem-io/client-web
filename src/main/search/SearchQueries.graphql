@@ -60,7 +60,7 @@ fragment SearchResultPost on SearchResultPost {
       url
       displayName
       visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
       ...SearchResultPostProfile
     }
@@ -186,7 +186,7 @@ fragment SearchResultProfile on Profile {
     ...TagsetDetails
   }
   visual(type: AVATAR) {
-    ...VisualUri
+    ...VisualModel
   }
   url
 }
@@ -222,7 +222,7 @@ fragment SearchResultSpace on SearchResultSpace {
         }
         tagline
         visuals {
-          ...VisualUri
+          ...VisualModel
         }
       }
       isContentPublic

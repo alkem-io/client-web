@@ -8,7 +8,7 @@ fragment InnovationHubProfile on Profile {
     ...TagsetDetails
   }
   visual(type: BANNER_WIDE) {
-    ...VisualFull
+    ...VisualModelFull
   }
   url
 }

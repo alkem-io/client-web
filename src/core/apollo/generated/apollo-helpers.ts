@@ -1060,17 +1060,21 @@ export type ConfigFieldPolicy = {
 export type ContributorKeySpecifier = (
   | 'agent'
   | 'authorization'
+  | 'createdDate'
   | 'id'
   | 'nameID'
   | 'profile'
+  | 'updatedDate'
   | ContributorKeySpecifier
 )[];
 export type ContributorFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContributorRolePolicyKeySpecifier = ('maximum' | 'minimum' | ContributorRolePolicyKeySpecifier)[];
 export type ContributorRolePolicyFieldPolicy = {

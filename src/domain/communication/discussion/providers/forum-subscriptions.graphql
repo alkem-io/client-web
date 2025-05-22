@@ -7,7 +7,7 @@ subscription forumDiscussionUpdated($forumID: UUID!) {
       description
       tagline
       visuals {
-        ...VisualFull
+        ...VisualModel
       }
     }
     createdBy
