@@ -5,7 +5,7 @@ import VCProfilePageView from './VCProfilePageView';
 import {
   useSpaceBodyOfKnowledgeAboutQuery,
   useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
-  useVirtualContributorQuery,
+  useVirtualContributorProfileWithModelCardQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -13,6 +13,8 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
 
 /**
  * children will have the virtual contributor data available if it is loaded
@@ -34,7 +36,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
   const { t } = useTranslation();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { data, loading, error } = useVirtualContributorQuery({
+  const { data, loading, error } = useVirtualContributorProfileWithModelCardQuery({
     variables: {
       id: vcId!, // ensured by skip
     },
@@ -85,11 +87,14 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     );
   }
 
+  const virtualContributor = data?.lookup.virtualContributor;
+  const virtualContributorModel: VirtualContributorModelFull = createVirtualContributorModelFull(virtualContributor);
+
   return (
     <>
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
-        virtualContributor={data?.lookup.virtualContributor}
+        virtualContributor={virtualContributorModel}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
       {children?.(data?.lookup.virtualContributor)}

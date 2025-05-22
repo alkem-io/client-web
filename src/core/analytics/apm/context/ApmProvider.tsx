@@ -20,7 +20,9 @@ export const ApmProvider = ({ children }: PropsWithChildren) => {
 
   const initFn = useApmInit(user);
 
-  useEffect(() => setApm(initFn), [initFn]);
+  useEffect(() => {
+    setApm(initFn);
+  }, [initFn]);
 
   const value = useMemo(() => ({ apm, setUser }), [apm]);
 
