@@ -43,7 +43,7 @@ export const SpaceAdminL2Route = () => {
     level: subspace?.level,
     membershipsEnabled: false,
     subspacesEnabled: false,
-    privateSettingsEnabled: false,
+    privateSettingsEnabled: true,
     parentSpaceUrl: space.about.profile?.url, // Should be L1
   };
 
