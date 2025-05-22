@@ -10,7 +10,6 @@ import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import { Visual } from '../visual/Visual';
-import { Location } from '@/core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
