@@ -151,7 +151,6 @@ const CalloutCreationDialog = ({
         setCallout({});
         scrollToTop();
       } catch (ex) {
-        // eslint-disable-next-line no-console
         console.error(ex);
       } finally {
         closePublishDialog();

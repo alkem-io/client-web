@@ -47,7 +47,7 @@ type CollabState = {
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;
   username: string;
-  onRemoteSave: (error?: string) => void; // The client has received a room saved event
+  onRemoteSave: (_error?: string) => void; // The client has received a room saved event
   filesManager: WhiteboardFilesManager;
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
@@ -207,8 +207,8 @@ class Collab {
 
               try {
                 data = JSON.parse(strData) as IncomingClientBroadcastData;
-              } catch (e) {
-                logError('Unable to parse incoming broadcast');
+              } catch (e: unknown) {
+                logError(`Unable to parse incoming broadcast: ${e}`);
                 return;
               }
 
@@ -249,7 +249,7 @@ class Collab {
         );
       } catch (error) {
         const err = error as Error;
-        // eslint-disable-next-line no-console
+
         logError(err?.message ?? JSON.stringify(err), {
           category: TagCategoryValues.WHITEBOARD,
           label: 'Collab',
