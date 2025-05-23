@@ -3,12 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
-import {
-  Tagset,
-  TagsetReservedName,
-  UpdateVirtualContributorInput,
-  Visual,
-} from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName, UpdateVirtualContributorInput } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -16,16 +11,20 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Actions } from '@/core/ui/actions/Actions';
 import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { UpdateTagset } from '@/domain/common/profile/Profile';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { theme } from '@/core/ui/themes/default/Theme';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { Reference } from '@/domain/common/profile/Profile';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { ProfileModel } from '@/domain/common/profile/ProfileModel';
+import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/TagsetUtils';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
 
 type VirtualContributorProps = {
@@ -37,32 +36,25 @@ type VirtualContributorProps = {
       };
     };
   };
-  profile: {
-    id: string;
-    displayName: string;
-    description?: string;
-    tagline?: string;
-    tagsets?: Tagset[] | undefined;
-    url: string;
-    avatar?: Visual | undefined;
-    references?: Reference[];
-  };
+  profile: ProfileModel;
 };
 
-type VirtualContributorFromProps = {
-  name: string;
-  description: string;
-  tagline?: string;
-  tagsets?: Tagset[];
+type VirtualContributorFormValues = {
+  profile: {
+    displayName: string;
+    description: string;
+    tagline?: string;
+    tagsets?: TagsetModel[];
+    references?: ReferenceModel[];
+  };
   hostDisplayName: string;
   subSpaceName: string;
-  references?: Reference[];
 };
 
-type Props = {
+type VirtualContributorFormProps = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: SpaceBodyOfKnowledgeModel;
-  avatar: Visual | undefined;
+  avatar: VisualModelFull | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
   hasBackNavigation?: boolean;
 };
@@ -73,9 +65,9 @@ export const VirtualContributorForm = ({
   avatar,
   onSave,
   hasBackNavigation = true,
-}: Props) => {
+}: VirtualContributorFormProps) => {
   const { t } = useTranslation();
-  const handleBack = useBackToStaticPath(virtualContributor.profile.url);
+  const handleBack = useBackToStaticPath(virtualContributor.profile.url || '');
   const cols = useColumns();
   const isMobile = cols < 5;
 
@@ -86,35 +78,25 @@ export const VirtualContributorForm = ({
 
   const { displayName: subSpaceName } = bokProfile ?? {};
 
-  const initialValues: VirtualContributorFromProps = useMemo(
+  const initialValues: VirtualContributorFormValues = useMemo(
     () => ({
-      name: displayName,
-      description: description ?? '',
-      tagline: tagline,
-      tagsets: tagsets,
+      profile: {
+        displayName: displayName,
+        description: description ?? '',
+        tagline: tagline,
+        tagsets: tagsets,
+        references: vcReferences ?? [],
+      },
       hostDisplayName: account?.host?.profile.displayName ?? '',
       subSpaceName: subSpaceName ?? '',
-      references: vcReferences ?? [],
     }),
     [displayName, description, tagline, tagsets, account, subSpaceName, vcReferences]
   );
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
     description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
-
-  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
-    const result: UpdateTagset[] = [];
-    updatedTagsets.forEach(updatedTagset => {
-      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
-      if (originalTagset) {
-        result.push({ ...originalTagset, tags: updatedTagset.tags });
-      }
-    });
-
-    return result;
-  };
 
   // use keywords tagset (existing after creation of VC) as tags
   const keywordsTagsetWrapped = useMemo(() => {
@@ -122,26 +104,18 @@ export const VirtualContributorForm = ({
     return tagset && [tagset];
   }, [tagsets]);
 
-  const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
-    const { tagsets, description, tagline, name, ...otherData } = values;
-    const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
+  const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
+    const { profile, ...otherData } = values;
+    const { displayName, description, tagline, tagsets, references } = profile;
 
     const updatedVirtualContributor = {
       ID: virtualContributor.id,
       profileData: {
-        displayName: name,
+        displayName,
         description,
         tagline,
-        tagsets: updatedTagsets.map(r => ({
-          ID: r.id,
-          tags: r.tags ?? [],
-        })),
-        references: otherData?.references?.map(r => ({
-          ID: r.id,
-          name: r.name,
-          uri: r.uri,
-          description: r.description,
-        })),
+        tagsets: mapTagsetModelsToUpdateTagsetInputs(tagsets),
+        references: mapReferenceModelsToUpdateReferenceInputs(references),
       },
       ...otherData,
     };
@@ -170,7 +144,13 @@ export const VirtualContributorForm = ({
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ values: { references, hostDisplayName }, handleSubmit }) => {
+        {({
+          values: {
+            profile: { references },
+            hostDisplayName,
+          },
+          handleSubmit,
+        }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <GridContainer>
@@ -181,7 +161,7 @@ export const VirtualContributorForm = ({
                         visual={avatar}
                         altText={t('visuals-alt-text.avatar.contributor.text', {
                           displayName,
-                          altText: virtualContributor.profile.avatar?.alternativeText,
+                          altText: avatar?.alternativeText,
                         })}
                       />
                     </Box>

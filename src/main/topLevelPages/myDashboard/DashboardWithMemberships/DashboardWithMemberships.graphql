@@ -23,7 +23,7 @@ fragment DashboardSpaceMembership on Space {
     isContentPublic
     profile {
       spaceBanner: visual(type: BANNER) {
-        ...VisualUri
+        ...VisualModel
       }
     }
     isContentPublic

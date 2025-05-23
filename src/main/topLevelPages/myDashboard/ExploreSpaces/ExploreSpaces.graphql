@@ -44,7 +44,7 @@ fragment ExploreSpaces on Space {
       url
       displayName
       cardBanner: visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
     }
   }

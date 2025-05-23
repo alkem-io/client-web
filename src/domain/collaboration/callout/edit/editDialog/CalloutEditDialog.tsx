@@ -1,4 +1,4 @@
-import { CalloutType, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
@@ -20,7 +20,7 @@ export interface CalloutEditDialogProps {
   callout: CalloutLayoutProps['callout'];
   onClose: () => void;
   onDelete: (callout: CalloutDeleteType) => void;
-  onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
+  onCalloutEdit: (callout: CalloutEditType) => Promise<unknown>;
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }
@@ -64,21 +64,18 @@ const CalloutEditDialog = ({
   const handleSave = useCallback(async () => {
     setLoading(true);
 
+    // if there were tags, include them in the update object
+    const tagset = callout.framing.profile.tagset
+      ? { ...callout.framing.profile.tagset, tags: newCallout.tags ?? [] }
+      : undefined;
+
     await onCalloutEdit({
       id: callout.id,
       profile: {
-        displayName: newCallout.displayName,
+        displayName: newCallout.displayName ?? '',
         description: newCallout.description,
         references: newCallout.references,
-        tagsets: [
-          {
-            id: callout.framing.profile.tagset?.id,
-            name: TagsetReservedName.Default,
-            tags: newCallout.tags,
-            allowedValues: [],
-            type: TagsetType.Freeform,
-          },
-        ],
+        ...(tagset ? { tagsets: [tagset] } : {}),
       },
       contributionDefaults: {
         postDescription: callout.type === CalloutType.PostCollection ? newCallout.postDescription : undefined,

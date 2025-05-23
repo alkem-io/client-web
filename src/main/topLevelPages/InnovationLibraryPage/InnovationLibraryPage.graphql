@@ -68,7 +68,7 @@ fragment LibraryTemplates on TemplatesSet {
       displayName
       description
       visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
       tagset {
         ...TagsetDetails
@@ -84,7 +84,7 @@ fragment LibraryTemplates on TemplatesSet {
       displayName
       description
       visual(type: CARD) {
-        ...VisualUri
+        ...VisualModel
       }
       tagset {
         ...TagsetDetails

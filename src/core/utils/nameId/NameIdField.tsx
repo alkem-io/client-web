@@ -16,7 +16,7 @@ const NameIdField = ({
   ...props
 }: FormikInputFieldProps & NameIdFieldProps) => {
   const [{ value: sourceFieldValue = '' }, { touched: isSourceFieldTouched }] = useField(sourceFieldName);
-  const [{}, { error }, { setValue, setTouched }] = useField(name);
+  const [, { error }, { setValue, setTouched }] = useField(name);
 
   const [isTouchedByUser, setIsTouchedByUser] = useState(false);
 

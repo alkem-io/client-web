@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { Visual } from '@/core/apollo/generated/graphql-schema';
-import { Reference } from '@/domain/common/profile/Profile';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '@/domain/platform/admin/components/Common/ReferenceSegment';
@@ -24,6 +23,7 @@ import GridItem from '@/core/ui/grid/GridItem';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -41,7 +41,7 @@ const referenceSegmentWithSocialSchema = yup.array().of(
 
 type UserProps = {
   user?: UserModel;
-  avatar?: Visual;
+  avatar?: VisualModelFull;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
@@ -150,9 +150,9 @@ export const UserForm = ({
       } = userData;
       const finalReferences = [
         ...newReferences,
-        { ...linkedinRef, uri: linkedin } as Reference,
-        { ...twitterRef, uri: twitter } as Reference,
-        { ...githubRef, uri: github } as Reference,
+        { ...linkedinRef, uri: linkedin } as ReferenceModel,
+        { ...twitterRef, uri: twitter } as ReferenceModel,
+        { ...githubRef, uri: github } as ReferenceModel,
       ];
       const user: UserModel = {
         ...currentUser,
@@ -164,6 +164,7 @@ export const UserForm = ({
           description: bio,
           references: finalReferences,
           location: {
+            id: '',
             country: country?.code || '',
             city: city ?? '',
           },

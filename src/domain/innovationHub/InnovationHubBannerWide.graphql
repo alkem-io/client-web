@@ -7,7 +7,7 @@ query InnovationHubBannerWide {
         displayName
         bannerWide: visual(type: BANNER_WIDE) {
           id
-          ...VisualUri
+          ...VisualModel
         }
       }
     }

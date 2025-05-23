@@ -1,11 +1,11 @@
-import { Tagset } from '@/core/apollo/generated/graphql-schema';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export type VirtualContributorModelBase = {
   id: string;
   profile: {
     displayName: string;
     url: string;
-    tagsets?: Tagset[];
+    tagsets?: TagsetModel[];
     location?: {
       city?: string;
       country?: string;

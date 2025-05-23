@@ -29,7 +29,7 @@ fragment PostSettings on Post {
       description
     }
     visuals {
-      ...VisualFull
+      ...VisualModel
     }
   }
 }
@@ -65,7 +65,7 @@ fragment PostSettingsCallout on Callout {
           description
         }
         visuals {
-          ...VisualFull
+          ...VisualModel
         }
       }
     }

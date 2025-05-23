@@ -19,7 +19,7 @@ fragment PostCard on Post {
     displayName
     description
     visuals {
-      ...VisualFull
+      ...VisualModel
     }
     tagset {
       ...TagsetDetails

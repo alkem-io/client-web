@@ -27,7 +27,7 @@ query VirtualContributorProfileWithModelCard($id: UUID!) {
         }
         url
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModel
         }
         references {
           id
@@ -45,7 +45,7 @@ query VirtualContributorProfileWithModelCard($id: UUID!) {
           tagline
           url
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModel
           }
         }
       }
