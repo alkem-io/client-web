@@ -13,9 +13,10 @@ import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/P
 import FormikReferenceSegment from '@/domain/platform/admin/components/Common/FormikReferenceSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { mapReferencesToUpdateReferences, mapTemplateProfileToUpdateProfile } from './common/mappings';
+import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { gutters } from '@/core/ui/grid/utils';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   communityGuidelines?: {
@@ -63,12 +64,12 @@ const CommunityGuidelinesTemplateForm = ({
   const profileId = template?.communityGuidelines?.profile.id;
 
   const initialValues: CommunityGuidelinesTemplateFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfile(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     communityGuidelines: {
       profile: {
         displayName: template?.communityGuidelines?.profile.displayName ?? '',
         description: template?.communityGuidelines?.profile.description ?? '',
-        references: mapReferencesToUpdateReferences(template?.communityGuidelines?.profile.references) ?? [],
+        references: mapReferenceModelsToUpdateReferenceInputs(template?.communityGuidelines?.profile.references) ?? [],
       },
     },
   };

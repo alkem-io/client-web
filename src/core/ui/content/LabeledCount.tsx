@@ -1,4 +1,4 @@
-import OrganizationVerifiedStatus from '@/domain/community/contributor/organization/OrganizationVerifiedStatus';
+import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
 import { Box, Skeleton } from '@mui/material';
 import CircleTag from '../tags/CircleTag';
 import { Caption } from '../typography';

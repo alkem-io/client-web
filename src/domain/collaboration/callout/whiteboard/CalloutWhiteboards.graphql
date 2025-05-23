@@ -20,7 +20,7 @@ fragment WhiteboardCollectionCalloutCard on Whiteboard {
     url
     displayName
     visual(type: CARD) {
-      ...VisualUri
+      ...VisualModel
     }
   }
   createdDate

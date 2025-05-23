@@ -1,5 +1,5 @@
-import { TagsetType } from '@/core/apollo/generated/graphql-schema';
-import { Reference } from '@/domain/common/profile/Profile';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { Visual } from '@/domain/common/visual/Visual';
 
 export interface InnovationFlowProfileModel {
@@ -10,12 +10,6 @@ export interface InnovationFlowProfileModel {
   tags?: {
     tags: string[];
   };
-  tagsets?: {
-    id: string;
-    name: string;
-    tags: string[];
-    allowedValues: string[];
-    type: TagsetType;
-  }[];
-  references?: Reference[];
+  tagsets?: TagsetModel[];
+  references?: ReferenceModel[];
 }

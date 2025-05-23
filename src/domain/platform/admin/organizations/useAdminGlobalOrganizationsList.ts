@@ -93,7 +93,7 @@ export const useAdminGlobalOrganizationsList = () => {
             },
           },
         });
-      } catch (e) {
+      } catch (_error) {
         // ignore errors if the verification_request fails we still try to manually verify
       }
 

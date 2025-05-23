@@ -56,7 +56,7 @@ fragment InnovationFlowProfile on Profile {
     uri
   }
   bannerNarrow: visual(type: CARD) {
-    ...VisualFull
+    ...VisualModel
   }
 }
 

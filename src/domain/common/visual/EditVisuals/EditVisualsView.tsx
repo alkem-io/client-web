@@ -1,21 +1,21 @@
 import { Box } from '@mui/material';
-import { Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { getVisualByType } from '../utils/visuals.utils';
-import { VisualName } from '../constants/visuals.constants';
 import { useTranslation } from 'react-i18next';
 import VisualDescription from './VisualDescription';
+import { VisualModelFull } from '../model/VisualModel';
 
 export interface EditVisualsViewProps {
-  visuals?: Visual[];
+  visuals?: VisualModelFull[];
   visualTypes?: VisualType[];
 }
 
 const EditVisualsView = ({ visuals, visualTypes }: EditVisualsViewProps) => {
   const { t } = useTranslation();
-  const avatar = getVisualByType(VisualName.AVATAR, visuals);
-  const banner = getVisualByType(VisualName.BANNER, visuals);
-  const cardBanner = getVisualByType(VisualName.CARD, visuals);
+  const avatar = getVisualByType(VisualType.Avatar, visuals);
+  const banner = getVisualByType(VisualType.Banner, visuals);
+  const cardBanner = getVisualByType(VisualType.Card, visuals);
 
   return (
     <>

@@ -48,7 +48,7 @@ export const remarkVerifyIframe: Plugin<[{ allowedIFrameOrigins?: string[] }]> =
                 }
               }
             }
-          } catch (ex) {
+          } catch (_error) {
             // If we can't parse the HTML, just remove the node
             node.value = '';
           }
