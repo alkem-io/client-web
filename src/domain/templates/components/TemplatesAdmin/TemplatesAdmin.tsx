@@ -207,6 +207,9 @@ const TemplatesAdmin = ({
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.createTemplate);
+    } else if (creatingTemplateType === TemplateType.Callout) {
+      // update whiteboard (framing) visuals
+      await handlePreviewTemplates(values, result.data?.createTemplate.callout?.framing.whiteboard);
     }
     setCreatingTemplateType(undefined);
   };

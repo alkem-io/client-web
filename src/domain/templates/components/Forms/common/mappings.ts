@@ -11,6 +11,7 @@ import {
   UpdateProfileInput,
   UpdateTagsetInput,
   UpdateTemplateFromCollaborationMutationVariables,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -106,6 +107,10 @@ const handleCreateWhiteboard = (data?: {
   content?: string;
   profile?: {
     displayName?: string;
+    preview?: {
+      name: VisualType.Banner;
+      uri: string;
+    };
   };
 }): CreateWhiteboardInput | undefined => {
   if (!data) {
@@ -115,6 +120,14 @@ const handleCreateWhiteboard = (data?: {
     content: data.content,
     profile: {
       displayName: data.profile?.displayName ? data.profile?.displayName : 'Whiteboard Template',
+      visuals: data.profile?.preview
+        ? [
+            {
+              name: VisualType.Banner,
+              uri: data.profile.preview.uri,
+            },
+          ]
+        : undefined,
     },
   };
 };
@@ -187,6 +200,10 @@ export const toCreateTemplateMutationVariables = (
         }
         case CalloutType.Whiteboard: {
           delete callout.contributionDefaults;
+          // if there are preview images for upload, do not use the existing preview
+          if (calloutTemplateData.whiteboardPreviewImages) {
+            delete callout.framing.whiteboard?.profile?.visuals;
+          }
           break;
         }
         case CalloutType.WhiteboardCollection: {

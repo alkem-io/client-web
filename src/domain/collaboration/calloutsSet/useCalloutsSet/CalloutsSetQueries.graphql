@@ -130,6 +130,11 @@ query CalloutContent($calloutId: UUID!) {
           profile {
             id
             displayName
+            preview: visual(type: BANNER) {
+              id
+              name
+              uri
+            }
           }
           content
         }
