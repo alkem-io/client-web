@@ -13,12 +13,13 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Ribbon } from '@/core/ui/card/Ribbon';
-import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { LinkDetails } from '../links/LinkCollectionCallout';
 import CalloutHeader from './CalloutHeader';
 import CalloutClosedMarginal from './CalloutClosedMarginal';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface CalloutLayoutProps {
   callout: {
@@ -29,8 +30,8 @@ export interface CalloutLayoutProps {
         url: string;
         displayName: string;
         description?: string;
-        references?: Reference[];
-        tagset?: Tagset;
+        references?: ReferenceModel[];
+        tagset?: TagsetModel;
         storageBucket: {
           id: string;
         };

@@ -19,6 +19,7 @@ import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
+import { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
 import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
@@ -85,6 +86,9 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
     [hasReadAccess, t, onClickHandleKnowledgeBase]
   );
 
+  const otherLinkReference = links[OTHER_LINK_GROUP];
+  const referencesWithAuth: ReferenceModelWithOptionalAuthorization[] = [...otherLinkReference];
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
@@ -108,7 +112,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
             </Gutters>
 
             <References
-              references={links[OTHER_LINK_GROUP]}
+              references={referencesWithAuth}
               noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
             />
           </Gutters>
