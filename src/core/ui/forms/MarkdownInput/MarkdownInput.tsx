@@ -295,6 +295,7 @@ export const MarkdownInput = memo(
             shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
           } catch (error) {
             // In some states the "shadow" editor fails to update, but this doesn't break the highlight
+            console.error('Failed to update shadow editor state:', error);
           }
 
           const end = Selection.atEnd(shadowEditor.state.doc).from;

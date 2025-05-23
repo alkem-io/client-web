@@ -53,7 +53,7 @@ const createAxiosClient = () => {
     value => {
       try {
         logFlowErrors(value);
-      } catch (e) {}
+      } catch (_error) {}
       return value;
     },
     error => {

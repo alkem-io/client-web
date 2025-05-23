@@ -30,7 +30,6 @@ function replaceSpecialCharacters(text: string): string {
 
   function replace(refinedText: string): string {
     if (refinedText) {
-      // eslint-disable-next-line no-control-regex
       return refinedText.replace(/[^\u0000-\u007E]/g, function (a) {
         return diacriticsMap[a] || a;
       });

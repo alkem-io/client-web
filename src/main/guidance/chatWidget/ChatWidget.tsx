@@ -122,7 +122,7 @@ const Feedback = ({ answerId }: FeedbackProps) => {
           },
         },
       });
-    } catch (error) {
+    } catch (_error) {
       setLastFeedbackType(lastFeedbackType);
     }
   };

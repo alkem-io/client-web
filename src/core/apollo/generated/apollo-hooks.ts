@@ -3177,7 +3177,6 @@ export function useUploadFileOnReferenceMutation(
     SchemaTypes.UploadFileOnReferenceMutationVariables
   >(UploadFileOnReferenceDocument, options);
 }
-
 export type UploadFileOnReferenceMutationHookResult = ReturnType<typeof useUploadFileOnReferenceMutation>;
 export type UploadFileOnReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnReferenceMutation>;
 export type UploadFileOnReferenceMutationOptions = Apollo.BaseMutationOptions<
@@ -3227,7 +3226,6 @@ export function useUploadFileOnLinkMutation(
     options
   );
 }
-
 export type UploadFileOnLinkMutationHookResult = ReturnType<typeof useUploadFileOnLinkMutation>;
 export type UploadFileOnLinkMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnLinkMutation>;
 export type UploadFileOnLinkMutationOptions = Apollo.BaseMutationOptions<
@@ -3271,7 +3269,6 @@ export function useUploadFileMutation(
     options
   );
 }
-
 export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
 export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
 export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
@@ -3325,7 +3322,6 @@ export function useDefaultVisualTypeConstraintsQuery(
     SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
   >(DefaultVisualTypeConstraintsDocument, options);
 }
-
 export function useDefaultVisualTypeConstraintsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.DefaultVisualTypeConstraintsQuery,
@@ -3338,7 +3334,6 @@ export function useDefaultVisualTypeConstraintsLazyQuery(
     SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
   >(DefaultVisualTypeConstraintsDocument, options);
 }
-
 export function useDefaultVisualTypeConstraintsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -3353,7 +3348,6 @@ export function useDefaultVisualTypeConstraintsSuspenseQuery(
     SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
   >(DefaultVisualTypeConstraintsDocument, options);
 }
-
 export type DefaultVisualTypeConstraintsQueryHookResult = ReturnType<typeof useDefaultVisualTypeConstraintsQuery>;
 export type DefaultVisualTypeConstraintsLazyQueryHookResult = ReturnType<
   typeof useDefaultVisualTypeConstraintsLazyQuery
@@ -3370,7 +3364,6 @@ export function refetchDefaultVisualTypeConstraintsQuery(
 ) {
   return { query: DefaultVisualTypeConstraintsDocument, variables: variables };
 }
-
 export const InnovationPackProfilePageDocument = gql`
   query InnovationPackProfilePage($innovationPackId: UUID!) {
     lookup {
@@ -3426,7 +3419,6 @@ export function useInnovationPackProfilePageQuery(
     SchemaTypes.InnovationPackProfilePageQueryVariables
   >(InnovationPackProfilePageDocument, options);
 }
-
 export function useInnovationPackProfilePageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationPackProfilePageQuery,
@@ -3439,7 +3431,6 @@ export function useInnovationPackProfilePageLazyQuery(
     SchemaTypes.InnovationPackProfilePageQueryVariables
   >(InnovationPackProfilePageDocument, options);
 }
-
 export function useInnovationPackProfilePageSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -3454,7 +3445,6 @@ export function useInnovationPackProfilePageSuspenseQuery(
     SchemaTypes.InnovationPackProfilePageQueryVariables
   >(InnovationPackProfilePageDocument, options);
 }
-
 export type InnovationPackProfilePageQueryHookResult = ReturnType<typeof useInnovationPackProfilePageQuery>;
 export type InnovationPackProfilePageLazyQueryHookResult = ReturnType<typeof useInnovationPackProfilePageLazyQuery>;
 export type InnovationPackProfilePageSuspenseQueryHookResult = ReturnType<
@@ -3467,7 +3457,6 @@ export type InnovationPackProfilePageQueryResult = Apollo.QueryResult<
 export function refetchInnovationPackProfilePageQuery(variables: SchemaTypes.InnovationPackProfilePageQueryVariables) {
   return { query: InnovationPackProfilePageDocument, variables: variables };
 }
-
 export const AdminInnovationPacksListDocument = gql`
   query AdminInnovationPacksList {
     platform {
@@ -3514,7 +3503,6 @@ export function useAdminInnovationPacksListQuery(
     options
   );
 }
-
 export function useAdminInnovationPacksListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AdminInnovationPacksListQuery,
@@ -3527,7 +3515,6 @@ export function useAdminInnovationPacksListLazyQuery(
     SchemaTypes.AdminInnovationPacksListQueryVariables
   >(AdminInnovationPacksListDocument, options);
 }
-
 export function useAdminInnovationPacksListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -3542,7 +3529,6 @@ export function useAdminInnovationPacksListSuspenseQuery(
     SchemaTypes.AdminInnovationPacksListQueryVariables
   >(AdminInnovationPacksListDocument, options);
 }
-
 export type AdminInnovationPacksListQueryHookResult = ReturnType<typeof useAdminInnovationPacksListQuery>;
 export type AdminInnovationPacksListLazyQueryHookResult = ReturnType<typeof useAdminInnovationPacksListLazyQuery>;
 export type AdminInnovationPacksListSuspenseQueryHookResult = ReturnType<
@@ -3555,7 +3541,6 @@ export type AdminInnovationPacksListQueryResult = Apollo.QueryResult<
 export function refetchAdminInnovationPacksListQuery(variables?: SchemaTypes.AdminInnovationPacksListQueryVariables) {
   return { query: AdminInnovationPacksListDocument, variables: variables };
 }
-
 export const DeleteInnovationPackDocument = gql`
   mutation deleteInnovationPack($innovationPackId: UUID!) {
     deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
@@ -3597,7 +3582,6 @@ export function useDeleteInnovationPackMutation(
     SchemaTypes.DeleteInnovationPackMutationVariables
   >(DeleteInnovationPackDocument, options);
 }
-
 export type DeleteInnovationPackMutationHookResult = ReturnType<typeof useDeleteInnovationPackMutation>;
 export type DeleteInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInnovationPackMutation>;
 export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
@@ -3656,7 +3640,6 @@ export function useAdminInnovationPackQuery(
     options
   );
 }
-
 export function useAdminInnovationPackLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AdminInnovationPackQuery,
@@ -3669,7 +3652,6 @@ export function useAdminInnovationPackLazyQuery(
     options
   );
 }
-
 export function useAdminInnovationPackSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -3684,7 +3666,6 @@ export function useAdminInnovationPackSuspenseQuery(
     options
   );
 }
-
 export type AdminInnovationPackQueryHookResult = ReturnType<typeof useAdminInnovationPackQuery>;
 export type AdminInnovationPackLazyQueryHookResult = ReturnType<typeof useAdminInnovationPackLazyQuery>;
 export type AdminInnovationPackSuspenseQueryHookResult = ReturnType<typeof useAdminInnovationPackSuspenseQuery>;
@@ -3695,7 +3676,6 @@ export type AdminInnovationPackQueryResult = Apollo.QueryResult<
 export function refetchAdminInnovationPackQuery(variables: SchemaTypes.AdminInnovationPackQueryVariables) {
   return { query: AdminInnovationPackDocument, variables: variables };
 }
-
 export const CreateInnovationPackDocument = gql`
   mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
     createInnovationPack(innovationPackData: $packData) {
@@ -3737,7 +3717,6 @@ export function useCreateInnovationPackMutation(
     SchemaTypes.CreateInnovationPackMutationVariables
   >(CreateInnovationPackDocument, options);
 }
-
 export type CreateInnovationPackMutationHookResult = ReturnType<typeof useCreateInnovationPackMutation>;
 export type CreateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationPackMutation>;
 export type CreateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
@@ -3785,7 +3764,6 @@ export function useUpdateInnovationPackMutation(
     SchemaTypes.UpdateInnovationPackMutationVariables
   >(UpdateInnovationPackDocument, options);
 }
-
 export type UpdateInnovationPackMutationHookResult = ReturnType<typeof useUpdateInnovationPackMutation>;
 export type UpdateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationPackMutation>;
 export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
@@ -3862,7 +3840,6 @@ export function useApplicationButtonQuery(
     options
   );
 }
-
 export function useApplicationButtonLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ApplicationButtonQuery,
@@ -3875,7 +3852,6 @@ export function useApplicationButtonLazyQuery(
     options
   );
 }
-
 export function useApplicationButtonSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -3887,7 +3863,6 @@ export function useApplicationButtonSuspenseQuery(
     options
   );
 }
-
 export type ApplicationButtonQueryHookResult = ReturnType<typeof useApplicationButtonQuery>;
 export type ApplicationButtonLazyQueryHookResult = ReturnType<typeof useApplicationButtonLazyQuery>;
 export type ApplicationButtonSuspenseQueryHookResult = ReturnType<typeof useApplicationButtonSuspenseQuery>;
@@ -3898,7 +3873,6 @@ export type ApplicationButtonQueryResult = Apollo.QueryResult<
 export function refetchApplicationButtonQuery(variables: SchemaTypes.ApplicationButtonQueryVariables) {
   return { query: ApplicationButtonDocument, variables: variables };
 }
-
 export const ApplyForEntryRoleOnRoleSetDocument = gql`
   mutation ApplyForEntryRoleOnRoleSet($roleSetId: UUID!, $questions: [CreateNVPInput!]!) {
     applyForEntryRoleOnRoleSet(applicationData: { roleSetID: $roleSetId, questions: $questions }) {
@@ -3941,7 +3915,6 @@ export function useApplyForEntryRoleOnRoleSetMutation(
     SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
   >(ApplyForEntryRoleOnRoleSetDocument, options);
 }
-
 export type ApplyForEntryRoleOnRoleSetMutationHookResult = ReturnType<typeof useApplyForEntryRoleOnRoleSetMutation>;
 export type ApplyForEntryRoleOnRoleSetMutationResult =
   Apollo.MutationResult<SchemaTypes.ApplyForEntryRoleOnRoleSetMutation>;
@@ -3992,7 +3965,6 @@ export function useEventOnApplicationMutation(
     options
   );
 }
-
 export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
 export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
 export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
@@ -4037,7 +4009,6 @@ export function useJoinRoleSetMutation(
     options
   );
 }
-
 export type JoinRoleSetMutationHookResult = ReturnType<typeof useJoinRoleSetMutation>;
 export type JoinRoleSetMutationResult = Apollo.MutationResult<SchemaTypes.JoinRoleSetMutation>;
 export type JoinRoleSetMutationOptions = Apollo.BaseMutationOptions<
@@ -4088,7 +4059,6 @@ export function useInvitationStateEventMutation(
     SchemaTypes.InvitationStateEventMutationVariables
   >(InvitationStateEventDocument, options);
 }
-
 export type InvitationStateEventMutationHookResult = ReturnType<typeof useInvitationStateEventMutation>;
 export type InvitationStateEventMutationResult = Apollo.MutationResult<SchemaTypes.InvitationStateEventMutation>;
 export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
@@ -4170,7 +4140,6 @@ export function useInviteForEntryRoleOnRoleSetMutation(
     SchemaTypes.InviteForEntryRoleOnRoleSetMutationVariables
   >(InviteForEntryRoleOnRoleSetDocument, options);
 }
-
 export type InviteForEntryRoleOnRoleSetMutationHookResult = ReturnType<typeof useInviteForEntryRoleOnRoleSetMutation>;
 export type InviteForEntryRoleOnRoleSetMutationResult =
   Apollo.MutationResult<SchemaTypes.InviteForEntryRoleOnRoleSetMutation>;
@@ -4219,7 +4188,6 @@ export function useDeleteInvitationMutation(
     options
   );
 }
-
 export type DeleteInvitationMutationHookResult = ReturnType<typeof useDeleteInvitationMutation>;
 export type DeleteInvitationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInvitationMutation>;
 export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
@@ -4267,7 +4235,6 @@ export function useDeletePlatformInvitationMutation(
     SchemaTypes.DeletePlatformInvitationMutationVariables
   >(DeletePlatformInvitationDocument, options);
 }
-
 export type DeletePlatformInvitationMutationHookResult = ReturnType<typeof useDeletePlatformInvitationMutation>;
 export type DeletePlatformInvitationMutationResult =
   Apollo.MutationResult<SchemaTypes.DeletePlatformInvitationMutation>;
@@ -4329,7 +4296,6 @@ export function useCommunityApplicationsInvitationsQuery(
     SchemaTypes.CommunityApplicationsInvitationsQueryVariables
   >(CommunityApplicationsInvitationsDocument, options);
 }
-
 export function useCommunityApplicationsInvitationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CommunityApplicationsInvitationsQuery,
@@ -4342,7 +4308,6 @@ export function useCommunityApplicationsInvitationsLazyQuery(
     SchemaTypes.CommunityApplicationsInvitationsQueryVariables
   >(CommunityApplicationsInvitationsDocument, options);
 }
-
 export function useCommunityApplicationsInvitationsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -4357,7 +4322,6 @@ export function useCommunityApplicationsInvitationsSuspenseQuery(
     SchemaTypes.CommunityApplicationsInvitationsQueryVariables
   >(CommunityApplicationsInvitationsDocument, options);
 }
-
 export type CommunityApplicationsInvitationsQueryHookResult = ReturnType<
   typeof useCommunityApplicationsInvitationsQuery
 >;
@@ -4376,7 +4340,6 @@ export function refetchCommunityApplicationsInvitationsQuery(
 ) {
   return { query: CommunityApplicationsInvitationsDocument, variables: variables };
 }
-
 export const UserPendingMembershipsDocument = gql`
   query UserPendingMemberships {
     me {
@@ -4435,7 +4398,6 @@ export function useUserPendingMembershipsQuery(
     options
   );
 }
-
 export function useUserPendingMembershipsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserPendingMembershipsQuery,
@@ -4448,7 +4410,6 @@ export function useUserPendingMembershipsLazyQuery(
     options
   );
 }
-
 export function useUserPendingMembershipsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -4463,7 +4424,6 @@ export function useUserPendingMembershipsSuspenseQuery(
     SchemaTypes.UserPendingMembershipsQueryVariables
   >(UserPendingMembershipsDocument, options);
 }
-
 export type UserPendingMembershipsQueryHookResult = ReturnType<typeof useUserPendingMembershipsQuery>;
 export type UserPendingMembershipsLazyQueryHookResult = ReturnType<typeof useUserPendingMembershipsLazyQuery>;
 export type UserPendingMembershipsSuspenseQueryHookResult = ReturnType<typeof useUserPendingMembershipsSuspenseQuery>;
@@ -4474,7 +4434,6 @@ export type UserPendingMembershipsQueryResult = Apollo.QueryResult<
 export function refetchUserPendingMembershipsQuery(variables?: SchemaTypes.UserPendingMembershipsQueryVariables) {
   return { query: UserPendingMembershipsDocument, variables: variables };
 }
-
 export const PlatformRoleAvailableUsersDocument = gql`
   query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
@@ -4515,7 +4474,6 @@ export function usePlatformRoleAvailableUsersQuery(
     SchemaTypes.PlatformRoleAvailableUsersQueryVariables
   >(PlatformRoleAvailableUsersDocument, options);
 }
-
 export function usePlatformRoleAvailableUsersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PlatformRoleAvailableUsersQuery,
@@ -4528,7 +4486,6 @@ export function usePlatformRoleAvailableUsersLazyQuery(
     SchemaTypes.PlatformRoleAvailableUsersQueryVariables
   >(PlatformRoleAvailableUsersDocument, options);
 }
-
 export function usePlatformRoleAvailableUsersSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -4543,7 +4500,6 @@ export function usePlatformRoleAvailableUsersSuspenseQuery(
     SchemaTypes.PlatformRoleAvailableUsersQueryVariables
   >(PlatformRoleAvailableUsersDocument, options);
 }
-
 export type PlatformRoleAvailableUsersQueryHookResult = ReturnType<typeof usePlatformRoleAvailableUsersQuery>;
 export type PlatformRoleAvailableUsersLazyQueryHookResult = ReturnType<typeof usePlatformRoleAvailableUsersLazyQuery>;
 export type PlatformRoleAvailableUsersSuspenseQueryHookResult = ReturnType<
@@ -4558,7 +4514,6 @@ export function refetchPlatformRoleAvailableUsersQuery(
 ) {
   return { query: PlatformRoleAvailableUsersDocument, variables: variables };
 }
-
 export const AvailableUsersForEntryRoleDocument = gql`
   query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
     lookup {
@@ -4604,7 +4559,6 @@ export function useAvailableUsersForEntryRoleQuery(
     SchemaTypes.AvailableUsersForEntryRoleQueryVariables
   >(AvailableUsersForEntryRoleDocument, options);
 }
-
 export function useAvailableUsersForEntryRoleLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AvailableUsersForEntryRoleQuery,
@@ -4617,7 +4571,6 @@ export function useAvailableUsersForEntryRoleLazyQuery(
     SchemaTypes.AvailableUsersForEntryRoleQueryVariables
   >(AvailableUsersForEntryRoleDocument, options);
 }
-
 export function useAvailableUsersForEntryRoleSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -4632,7 +4585,6 @@ export function useAvailableUsersForEntryRoleSuspenseQuery(
     SchemaTypes.AvailableUsersForEntryRoleQueryVariables
   >(AvailableUsersForEntryRoleDocument, options);
 }
-
 export type AvailableUsersForEntryRoleQueryHookResult = ReturnType<typeof useAvailableUsersForEntryRoleQuery>;
 export type AvailableUsersForEntryRoleLazyQueryHookResult = ReturnType<typeof useAvailableUsersForEntryRoleLazyQuery>;
 export type AvailableUsersForEntryRoleSuspenseQueryHookResult = ReturnType<
@@ -4647,7 +4599,6 @@ export function refetchAvailableUsersForEntryRoleQuery(
 ) {
   return { query: AvailableUsersForEntryRoleDocument, variables: variables };
 }
-
 export const AvailableUsersForElevatedRoleDocument = gql`
   query AvailableUsersForElevatedRole(
     $roleSetId: UUID!
@@ -4700,7 +4651,6 @@ export function useAvailableUsersForElevatedRoleQuery(
     SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
   >(AvailableUsersForElevatedRoleDocument, options);
 }
-
 export function useAvailableUsersForElevatedRoleLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AvailableUsersForElevatedRoleQuery,
@@ -4713,7 +4663,6 @@ export function useAvailableUsersForElevatedRoleLazyQuery(
     SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
   >(AvailableUsersForElevatedRoleDocument, options);
 }
-
 export function useAvailableUsersForElevatedRoleSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -4728,7 +4677,6 @@ export function useAvailableUsersForElevatedRoleSuspenseQuery(
     SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
   >(AvailableUsersForElevatedRoleDocument, options);
 }
-
 export type AvailableUsersForElevatedRoleQueryHookResult = ReturnType<typeof useAvailableUsersForElevatedRoleQuery>;
 export type AvailableUsersForElevatedRoleLazyQueryHookResult = ReturnType<
   typeof useAvailableUsersForElevatedRoleLazyQuery
@@ -4745,7 +4693,6 @@ export function refetchAvailableUsersForElevatedRoleQuery(
 ) {
   return { query: AvailableUsersForElevatedRoleDocument, variables: variables };
 }
-
 export const AvailableOrganizationsDocument = gql`
   query AvailableOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -4792,7 +4739,6 @@ export function useAvailableOrganizationsQuery(
     options
   );
 }
-
 export function useAvailableOrganizationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AvailableOrganizationsQuery,
@@ -4805,7 +4751,6 @@ export function useAvailableOrganizationsLazyQuery(
     options
   );
 }
-
 export function useAvailableOrganizationsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -4820,7 +4765,6 @@ export function useAvailableOrganizationsSuspenseQuery(
     SchemaTypes.AvailableOrganizationsQueryVariables
   >(AvailableOrganizationsDocument, options);
 }
-
 export type AvailableOrganizationsQueryHookResult = ReturnType<typeof useAvailableOrganizationsQuery>;
 export type AvailableOrganizationsLazyQueryHookResult = ReturnType<typeof useAvailableOrganizationsLazyQuery>;
 export type AvailableOrganizationsSuspenseQueryHookResult = ReturnType<typeof useAvailableOrganizationsSuspenseQuery>;
@@ -4831,7 +4775,6 @@ export type AvailableOrganizationsQueryResult = Apollo.QueryResult<
 export function refetchAvailableOrganizationsQuery(variables: SchemaTypes.AvailableOrganizationsQueryVariables) {
   return { query: AvailableOrganizationsDocument, variables: variables };
 }
-
 export const AssignPlatformRoleToUserDocument = gql`
   mutation AssignPlatformRoleToUser($role: RoleName!, $contributorId: UUID!) {
     assignPlatformRoleToUser(roleData: { role: $role, contributorID: $contributorId }) {
@@ -4874,7 +4817,6 @@ export function useAssignPlatformRoleToUserMutation(
     SchemaTypes.AssignPlatformRoleToUserMutationVariables
   >(AssignPlatformRoleToUserDocument, options);
 }
-
 export type AssignPlatformRoleToUserMutationHookResult = ReturnType<typeof useAssignPlatformRoleToUserMutation>;
 export type AssignPlatformRoleToUserMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignPlatformRoleToUserMutation>;
@@ -4925,7 +4867,6 @@ export function useAssignRoleToUserMutation(
     options
   );
 }
-
 export type AssignRoleToUserMutationHookResult = ReturnType<typeof useAssignRoleToUserMutation>;
 export type AssignRoleToUserMutationResult = Apollo.MutationResult<SchemaTypes.AssignRoleToUserMutation>;
 export type AssignRoleToUserMutationOptions = Apollo.BaseMutationOptions<
@@ -4975,7 +4916,6 @@ export function useAssignRoleToOrganizationMutation(
     SchemaTypes.AssignRoleToOrganizationMutationVariables
   >(AssignRoleToOrganizationDocument, options);
 }
-
 export type AssignRoleToOrganizationMutationHookResult = ReturnType<typeof useAssignRoleToOrganizationMutation>;
 export type AssignRoleToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignRoleToOrganizationMutation>;
@@ -5026,7 +4966,6 @@ export function useAssignRoleToVirtualContributorMutation(
     SchemaTypes.AssignRoleToVirtualContributorMutationVariables
   >(AssignRoleToVirtualContributorDocument, options);
 }
-
 export type AssignRoleToVirtualContributorMutationHookResult = ReturnType<
   typeof useAssignRoleToVirtualContributorMutation
 >;
@@ -5082,7 +5021,6 @@ export function useRemovePlatformRoleFromUserMutation(
     SchemaTypes.RemovePlatformRoleFromUserMutationVariables
   >(RemovePlatformRoleFromUserDocument, options);
 }
-
 export type RemovePlatformRoleFromUserMutationHookResult = ReturnType<typeof useRemovePlatformRoleFromUserMutation>;
 export type RemovePlatformRoleFromUserMutationResult =
   Apollo.MutationResult<SchemaTypes.RemovePlatformRoleFromUserMutation>;
@@ -5133,7 +5071,6 @@ export function useRemoveRoleFromUserMutation(
     options
   );
 }
-
 export type RemoveRoleFromUserMutationHookResult = ReturnType<typeof useRemoveRoleFromUserMutation>;
 export type RemoveRoleFromUserMutationResult = Apollo.MutationResult<SchemaTypes.RemoveRoleFromUserMutation>;
 export type RemoveRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
@@ -5183,7 +5120,6 @@ export function useRemoveRoleFromOrganizationMutation(
     SchemaTypes.RemoveRoleFromOrganizationMutationVariables
   >(RemoveRoleFromOrganizationDocument, options);
 }
-
 export type RemoveRoleFromOrganizationMutationHookResult = ReturnType<typeof useRemoveRoleFromOrganizationMutation>;
 export type RemoveRoleFromOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveRoleFromOrganizationMutation>;
@@ -5234,7 +5170,6 @@ export function useRemoveRoleFromVirtualContributorMutation(
     SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
   >(RemoveRoleFromVirtualContributorDocument, options);
 }
-
 export type RemoveRoleFromVirtualContributorMutationHookResult = ReturnType<
   typeof useRemoveRoleFromVirtualContributorMutation
 >;
@@ -5293,7 +5228,6 @@ export function useRoleSetAuthorizationQuery(
     options
   );
 }
-
 export function useRoleSetAuthorizationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.RoleSetAuthorizationQuery,
@@ -5306,7 +5240,6 @@ export function useRoleSetAuthorizationLazyQuery(
     options
   );
 }
-
 export function useRoleSetAuthorizationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5321,7 +5254,6 @@ export function useRoleSetAuthorizationSuspenseQuery(
     options
   );
 }
-
 export type RoleSetAuthorizationQueryHookResult = ReturnType<typeof useRoleSetAuthorizationQuery>;
 export type RoleSetAuthorizationLazyQueryHookResult = ReturnType<typeof useRoleSetAuthorizationLazyQuery>;
 export type RoleSetAuthorizationSuspenseQueryHookResult = ReturnType<typeof useRoleSetAuthorizationSuspenseQuery>;
@@ -5332,7 +5264,6 @@ export type RoleSetAuthorizationQueryResult = Apollo.QueryResult<
 export function refetchRoleSetAuthorizationQuery(variables: SchemaTypes.RoleSetAuthorizationQueryVariables) {
   return { query: RoleSetAuthorizationDocument, variables: variables };
 }
-
 export const RoleSetRoleAssignmentDocument = gql`
   query RoleSetRoleAssignment(
     $roleSetId: UUID!
@@ -5409,7 +5340,6 @@ export function useRoleSetRoleAssignmentQuery(
     options
   );
 }
-
 export function useRoleSetRoleAssignmentLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.RoleSetRoleAssignmentQuery,
@@ -5422,7 +5352,6 @@ export function useRoleSetRoleAssignmentLazyQuery(
     options
   );
 }
-
 export function useRoleSetRoleAssignmentSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5437,7 +5366,6 @@ export function useRoleSetRoleAssignmentSuspenseQuery(
     SchemaTypes.RoleSetRoleAssignmentQueryVariables
   >(RoleSetRoleAssignmentDocument, options);
 }
-
 export type RoleSetRoleAssignmentQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentQuery>;
 export type RoleSetRoleAssignmentLazyQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentLazyQuery>;
 export type RoleSetRoleAssignmentSuspenseQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentSuspenseQuery>;
@@ -5448,7 +5376,6 @@ export type RoleSetRoleAssignmentQueryResult = Apollo.QueryResult<
 export function refetchRoleSetRoleAssignmentQuery(variables: SchemaTypes.RoleSetRoleAssignmentQueryVariables) {
   return { query: RoleSetRoleAssignmentDocument, variables: variables };
 }
-
 export const SubspaceCommunityAndRoleSetIdDocument = gql`
   query SubspaceCommunityAndRoleSetId($spaceId: UUID!) {
     lookup {
@@ -5494,7 +5421,6 @@ export function useSubspaceCommunityAndRoleSetIdQuery(
     SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
   >(SubspaceCommunityAndRoleSetIdDocument, options);
 }
-
 export function useSubspaceCommunityAndRoleSetIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SubspaceCommunityAndRoleSetIdQuery,
@@ -5507,7 +5433,6 @@ export function useSubspaceCommunityAndRoleSetIdLazyQuery(
     SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
   >(SubspaceCommunityAndRoleSetIdDocument, options);
 }
-
 export function useSubspaceCommunityAndRoleSetIdSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5522,7 +5447,6 @@ export function useSubspaceCommunityAndRoleSetIdSuspenseQuery(
     SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
   >(SubspaceCommunityAndRoleSetIdDocument, options);
 }
-
 export type SubspaceCommunityAndRoleSetIdQueryHookResult = ReturnType<typeof useSubspaceCommunityAndRoleSetIdQuery>;
 export type SubspaceCommunityAndRoleSetIdLazyQueryHookResult = ReturnType<
   typeof useSubspaceCommunityAndRoleSetIdLazyQuery
@@ -5539,7 +5463,6 @@ export function refetchSubspaceCommunityAndRoleSetIdQuery(
 ) {
   return { query: SubspaceCommunityAndRoleSetIdDocument, variables: variables };
 }
-
 export const AccountInformationDocument = gql`
   query AccountInformation($accountId: UUID!) {
     lookup {
@@ -5656,7 +5579,6 @@ export function useAccountInformationQuery(
     options
   );
 }
-
 export function useAccountInformationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AccountInformationQuery,
@@ -5669,7 +5591,6 @@ export function useAccountInformationLazyQuery(
     options
   );
 }
-
 export function useAccountInformationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5681,7 +5602,6 @@ export function useAccountInformationSuspenseQuery(
     options
   );
 }
-
 export type AccountInformationQueryHookResult = ReturnType<typeof useAccountInformationQuery>;
 export type AccountInformationLazyQueryHookResult = ReturnType<typeof useAccountInformationLazyQuery>;
 export type AccountInformationSuspenseQueryHookResult = ReturnType<typeof useAccountInformationSuspenseQuery>;
@@ -5692,7 +5612,6 @@ export type AccountInformationQueryResult = Apollo.QueryResult<
 export function refetchAccountInformationQuery(variables: SchemaTypes.AccountInformationQueryVariables) {
   return { query: AccountInformationDocument, variables: variables };
 }
-
 export const CalloutPageCalloutDocument = gql`
   query CalloutPageCallout($calloutId: UUID!, $includeClassification: Boolean = false) {
     lookup {
@@ -5736,7 +5655,6 @@ export function useCalloutPageCalloutQuery(
     options
   );
 }
-
 export function useCalloutPageCalloutLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalloutPageCalloutQuery,
@@ -5749,7 +5667,6 @@ export function useCalloutPageCalloutLazyQuery(
     options
   );
 }
-
 export function useCalloutPageCalloutSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5761,7 +5678,6 @@ export function useCalloutPageCalloutSuspenseQuery(
     options
   );
 }
-
 export type CalloutPageCalloutQueryHookResult = ReturnType<typeof useCalloutPageCalloutQuery>;
 export type CalloutPageCalloutLazyQueryHookResult = ReturnType<typeof useCalloutPageCalloutLazyQuery>;
 export type CalloutPageCalloutSuspenseQueryHookResult = ReturnType<typeof useCalloutPageCalloutSuspenseQuery>;
@@ -5772,7 +5688,6 @@ export type CalloutPageCalloutQueryResult = Apollo.QueryResult<
 export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPageCalloutQueryVariables) {
   return { query: CalloutPageCalloutDocument, variables: variables };
 }
-
 export const InnovationFlowSettingsDocument = gql`
   query InnovationFlowSettings($collaborationId: UUID!) {
     lookup {
@@ -5821,7 +5736,6 @@ export function useInnovationFlowSettingsQuery(
     options
   );
 }
-
 export function useInnovationFlowSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationFlowSettingsQuery,
@@ -5834,7 +5748,6 @@ export function useInnovationFlowSettingsLazyQuery(
     options
   );
 }
-
 export function useInnovationFlowSettingsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5849,7 +5762,6 @@ export function useInnovationFlowSettingsSuspenseQuery(
     SchemaTypes.InnovationFlowSettingsQueryVariables
   >(InnovationFlowSettingsDocument, options);
 }
-
 export type InnovationFlowSettingsQueryHookResult = ReturnType<typeof useInnovationFlowSettingsQuery>;
 export type InnovationFlowSettingsLazyQueryHookResult = ReturnType<typeof useInnovationFlowSettingsLazyQuery>;
 export type InnovationFlowSettingsSuspenseQueryHookResult = ReturnType<typeof useInnovationFlowSettingsSuspenseQuery>;
@@ -5860,7 +5772,6 @@ export type InnovationFlowSettingsQueryResult = Apollo.QueryResult<
 export function refetchInnovationFlowSettingsQuery(variables: SchemaTypes.InnovationFlowSettingsQueryVariables) {
   return { query: InnovationFlowSettingsDocument, variables: variables };
 }
-
 export const InnovationFlowDetailsDocument = gql`
   query InnovationFlowDetails($collaborationId: UUID!) {
     lookup {
@@ -5904,7 +5815,6 @@ export function useInnovationFlowDetailsQuery(
     options
   );
 }
-
 export function useInnovationFlowDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationFlowDetailsQuery,
@@ -5917,7 +5827,6 @@ export function useInnovationFlowDetailsLazyQuery(
     options
   );
 }
-
 export function useInnovationFlowDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -5932,7 +5841,6 @@ export function useInnovationFlowDetailsSuspenseQuery(
     SchemaTypes.InnovationFlowDetailsQueryVariables
   >(InnovationFlowDetailsDocument, options);
 }
-
 export type InnovationFlowDetailsQueryHookResult = ReturnType<typeof useInnovationFlowDetailsQuery>;
 export type InnovationFlowDetailsLazyQueryHookResult = ReturnType<typeof useInnovationFlowDetailsLazyQuery>;
 export type InnovationFlowDetailsSuspenseQueryHookResult = ReturnType<typeof useInnovationFlowDetailsSuspenseQuery>;
@@ -5943,7 +5851,6 @@ export type InnovationFlowDetailsQueryResult = Apollo.QueryResult<
 export function refetchInnovationFlowDetailsQuery(variables: SchemaTypes.InnovationFlowDetailsQueryVariables) {
   return { query: InnovationFlowDetailsDocument, variables: variables };
 }
-
 export const UpdateCalloutFlowStateDocument = gql`
   mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
     updateCallout(
@@ -5997,7 +5904,6 @@ export function useUpdateCalloutFlowStateMutation(
     SchemaTypes.UpdateCalloutFlowStateMutationVariables
   >(UpdateCalloutFlowStateDocument, options);
 }
-
 export type UpdateCalloutFlowStateMutationHookResult = ReturnType<typeof useUpdateCalloutFlowStateMutation>;
 export type UpdateCalloutFlowStateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutFlowStateMutation>;
 export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
@@ -6051,7 +5957,6 @@ export function useUpdateInnovationFlowCurrentStateMutation(
     SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
   >(UpdateInnovationFlowCurrentStateDocument, options);
 }
-
 export type UpdateInnovationFlowCurrentStateMutationHookResult = ReturnType<
   typeof useUpdateInnovationFlowCurrentStateMutation
 >;
@@ -6107,7 +6012,6 @@ export function useUpdateInnovationFlowStatesMutation(
     SchemaTypes.UpdateInnovationFlowStatesMutationVariables
   >(UpdateInnovationFlowStatesDocument, options);
 }
-
 export type UpdateInnovationFlowStatesMutationHookResult = ReturnType<typeof useUpdateInnovationFlowStatesMutation>;
 export type UpdateInnovationFlowStatesMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStatesMutation>;
@@ -6179,7 +6083,6 @@ export function useUpdateCollaborationFromTemplateMutation(
     SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
   >(UpdateCollaborationFromTemplateDocument, options);
 }
-
 export type UpdateCollaborationFromTemplateMutationHookResult = ReturnType<
   typeof useUpdateCollaborationFromTemplateMutation
 >;
@@ -6250,7 +6153,6 @@ export function useUpdateInnovationFlowSingleStateMutation(
     SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
   >(UpdateInnovationFlowSingleStateDocument, options);
 }
-
 export type UpdateInnovationFlowSingleStateMutationHookResult = ReturnType<
   typeof useUpdateInnovationFlowSingleStateMutation
 >;
@@ -6305,7 +6207,6 @@ export function useUpdateInnovationFlowMutation(
     SchemaTypes.UpdateInnovationFlowMutationVariables
   >(UpdateInnovationFlowDocument, options);
 }
-
 export type UpdateInnovationFlowMutationHookResult = ReturnType<typeof useUpdateInnovationFlowMutation>;
 export type UpdateInnovationFlowMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowMutation>;
 export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
@@ -6352,7 +6253,6 @@ export function useActivityCreatedSubscription(
     SchemaTypes.ActivityCreatedSubscriptionVariables
   >(ActivityCreatedDocument, options);
 }
-
 export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
 export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
 export const ActivityLogOnCollaborationDocument = gql`
@@ -6464,7 +6364,6 @@ export function useActivityLogOnCollaborationQuery(
     SchemaTypes.ActivityLogOnCollaborationQueryVariables
   >(ActivityLogOnCollaborationDocument, options);
 }
-
 export function useActivityLogOnCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ActivityLogOnCollaborationQuery,
@@ -6477,7 +6376,6 @@ export function useActivityLogOnCollaborationLazyQuery(
     SchemaTypes.ActivityLogOnCollaborationQueryVariables
   >(ActivityLogOnCollaborationDocument, options);
 }
-
 export function useActivityLogOnCollaborationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -6492,7 +6390,6 @@ export function useActivityLogOnCollaborationSuspenseQuery(
     SchemaTypes.ActivityLogOnCollaborationQueryVariables
   >(ActivityLogOnCollaborationDocument, options);
 }
-
 export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
 export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
 export type ActivityLogOnCollaborationSuspenseQueryHookResult = ReturnType<
@@ -6507,7 +6404,6 @@ export function refetchActivityLogOnCollaborationQuery(
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
-
 export const RemoveCommentFromCalloutDocument = gql`
   mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
     removeMessageOnRoom(messageData: $messageData)
@@ -6547,7 +6443,6 @@ export function useRemoveCommentFromCalloutMutation(
     SchemaTypes.RemoveCommentFromCalloutMutationVariables
   >(RemoveCommentFromCalloutDocument, options);
 }
-
 export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
 export type RemoveCommentFromCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
@@ -6597,7 +6492,6 @@ export function useUpdateCalloutMutation(
     options
   );
 }
-
 export type UpdateCalloutMutationHookResult = ReturnType<typeof useUpdateCalloutMutation>;
 export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutMutation>;
 export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -6684,7 +6578,6 @@ export function useUpdateCalloutTemplateMutation(
     SchemaTypes.UpdateCalloutTemplateMutationVariables
   >(UpdateCalloutTemplateDocument, options);
 }
-
 export type UpdateCalloutTemplateMutationHookResult = ReturnType<typeof useUpdateCalloutTemplateMutation>;
 export type UpdateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutTemplateMutation>;
 export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -6733,7 +6626,6 @@ export function useUpdateCalloutVisibilityMutation(
     SchemaTypes.UpdateCalloutVisibilityMutationVariables
   >(UpdateCalloutVisibilityDocument, options);
 }
-
 export type UpdateCalloutVisibilityMutationHookResult = ReturnType<typeof useUpdateCalloutVisibilityMutation>;
 export type UpdateCalloutVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutVisibilityMutation>;
 export type UpdateCalloutVisibilityMutationOptions = Apollo.BaseMutationOptions<
@@ -6781,7 +6673,6 @@ export function useDeleteCalloutMutation(
     options
   );
 }
-
 export type DeleteCalloutMutationHookResult = ReturnType<typeof useDeleteCalloutMutation>;
 export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutMutation>;
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -6832,7 +6723,6 @@ export function useCreateLinkOnCalloutMutation(
     options
   );
 }
-
 export type CreateLinkOnCalloutMutationHookResult = ReturnType<typeof useCreateLinkOnCalloutMutation>;
 export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateLinkOnCalloutMutation>;
 export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -6877,7 +6767,6 @@ export function useDeleteLinkMutation(
     options
   );
 }
-
 export type DeleteLinkMutationHookResult = ReturnType<typeof useDeleteLinkMutation>;
 export type DeleteLinkMutationResult = Apollo.MutationResult<SchemaTypes.DeleteLinkMutation>;
 export type DeleteLinkMutationOptions = Apollo.BaseMutationOptions<
@@ -6923,7 +6812,6 @@ export function useUpdateLinkMutation(
     options
   );
 }
-
 export type UpdateLinkMutationHookResult = ReturnType<typeof useUpdateLinkMutation>;
 export type UpdateLinkMutationResult = Apollo.MutationResult<SchemaTypes.UpdateLinkMutation>;
 export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
@@ -6972,7 +6860,6 @@ export function useCalloutPostCreatedSubscription(
     SchemaTypes.CalloutPostCreatedSubscriptionVariables
   >(CalloutPostCreatedDocument, options);
 }
-
 export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
 export type CalloutPostCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
@@ -7020,7 +6907,6 @@ export function useCalloutPostsQuery(
     options
   );
 }
-
 export function useCalloutPostsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>
 ) {
@@ -7030,7 +6916,6 @@ export function useCalloutPostsLazyQuery(
     options
   );
 }
-
 export function useCalloutPostsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7042,7 +6927,6 @@ export function useCalloutPostsSuspenseQuery(
     options
   );
 }
-
 export type CalloutPostsQueryHookResult = ReturnType<typeof useCalloutPostsQuery>;
 export type CalloutPostsLazyQueryHookResult = ReturnType<typeof useCalloutPostsLazyQuery>;
 export type CalloutPostsSuspenseQueryHookResult = ReturnType<typeof useCalloutPostsSuspenseQuery>;
@@ -7053,7 +6937,6 @@ export type CalloutPostsQueryResult = Apollo.QueryResult<
 export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQueryVariables) {
   return { query: CalloutPostsDocument, variables: variables };
 }
-
 export const CreatePostFromContributeTabDocument = gql`
   mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $postData) {
@@ -7097,7 +6980,6 @@ export function useCreatePostFromContributeTabMutation(
     SchemaTypes.CreatePostFromContributeTabMutationVariables
   >(CreatePostFromContributeTabDocument, options);
 }
-
 export type CreatePostFromContributeTabMutationHookResult = ReturnType<typeof useCreatePostFromContributeTabMutation>;
 export type CreatePostFromContributeTabMutationResult =
   Apollo.MutationResult<SchemaTypes.CreatePostFromContributeTabMutation>;
@@ -7152,7 +7034,6 @@ export function useCalloutWhiteboardsQuery(
     options
   );
 }
-
 export function useCalloutWhiteboardsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalloutWhiteboardsQuery,
@@ -7165,7 +7046,6 @@ export function useCalloutWhiteboardsLazyQuery(
     options
   );
 }
-
 export function useCalloutWhiteboardsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7177,7 +7057,6 @@ export function useCalloutWhiteboardsSuspenseQuery(
     options
   );
 }
-
 export type CalloutWhiteboardsQueryHookResult = ReturnType<typeof useCalloutWhiteboardsQuery>;
 export type CalloutWhiteboardsLazyQueryHookResult = ReturnType<typeof useCalloutWhiteboardsLazyQuery>;
 export type CalloutWhiteboardsSuspenseQueryHookResult = ReturnType<typeof useCalloutWhiteboardsSuspenseQuery>;
@@ -7188,7 +7067,6 @@ export type CalloutWhiteboardsQueryResult = Apollo.QueryResult<
 export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhiteboardsQueryVariables) {
   return { query: CalloutWhiteboardsDocument, variables: variables };
 }
-
 export const UpdateCalloutsSortOrderDocument = gql`
   mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
     updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
@@ -7232,7 +7110,6 @@ export function useUpdateCalloutsSortOrderMutation(
     SchemaTypes.UpdateCalloutsSortOrderMutationVariables
   >(UpdateCalloutsSortOrderDocument, options);
 }
-
 export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
 export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
 export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
@@ -7282,7 +7159,6 @@ export function useUpdateContributionsSortOrderMutation(
     SchemaTypes.UpdateContributionsSortOrderMutationVariables
   >(UpdateContributionsSortOrderDocument, options);
 }
-
 export type UpdateContributionsSortOrderMutationHookResult = ReturnType<typeof useUpdateContributionsSortOrderMutation>;
 export type UpdateContributionsSortOrderMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateContributionsSortOrderMutation>;
@@ -7333,7 +7209,6 @@ export function useCalloutsSetAuthorizationQuery(
     options
   );
 }
-
 export function useCalloutsSetAuthorizationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalloutsSetAuthorizationQuery,
@@ -7346,7 +7221,6 @@ export function useCalloutsSetAuthorizationLazyQuery(
     SchemaTypes.CalloutsSetAuthorizationQueryVariables
   >(CalloutsSetAuthorizationDocument, options);
 }
-
 export function useCalloutsSetAuthorizationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7361,7 +7235,6 @@ export function useCalloutsSetAuthorizationSuspenseQuery(
     SchemaTypes.CalloutsSetAuthorizationQueryVariables
   >(CalloutsSetAuthorizationDocument, options);
 }
-
 export type CalloutsSetAuthorizationQueryHookResult = ReturnType<typeof useCalloutsSetAuthorizationQuery>;
 export type CalloutsSetAuthorizationLazyQueryHookResult = ReturnType<typeof useCalloutsSetAuthorizationLazyQuery>;
 export type CalloutsSetAuthorizationSuspenseQueryHookResult = ReturnType<
@@ -7374,7 +7247,6 @@ export type CalloutsSetAuthorizationQueryResult = Apollo.QueryResult<
 export function refetchCalloutsSetAuthorizationQuery(variables: SchemaTypes.CalloutsSetAuthorizationQueryVariables) {
   return { query: CalloutsSetAuthorizationDocument, variables: variables };
 }
-
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
     createCalloutOnCalloutsSet(calloutData: $calloutData) {
@@ -7418,7 +7290,6 @@ export function useCreateCalloutMutation(
     options
   );
 }
-
 export type CreateCalloutMutationHookResult = ReturnType<typeof useCreateCalloutMutation>;
 export type CreateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalloutMutation>;
 export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
@@ -7483,7 +7354,6 @@ export function useCalloutsOnCalloutsSetUsingClassificationQuery(
     SchemaTypes.CalloutsOnCalloutsSetUsingClassificationQueryVariables
   >(CalloutsOnCalloutsSetUsingClassificationDocument, options);
 }
-
 export function useCalloutsOnCalloutsSetUsingClassificationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalloutsOnCalloutsSetUsingClassificationQuery,
@@ -7496,7 +7366,6 @@ export function useCalloutsOnCalloutsSetUsingClassificationLazyQuery(
     SchemaTypes.CalloutsOnCalloutsSetUsingClassificationQueryVariables
   >(CalloutsOnCalloutsSetUsingClassificationDocument, options);
 }
-
 export function useCalloutsOnCalloutsSetUsingClassificationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7511,7 +7380,6 @@ export function useCalloutsOnCalloutsSetUsingClassificationSuspenseQuery(
     SchemaTypes.CalloutsOnCalloutsSetUsingClassificationQueryVariables
   >(CalloutsOnCalloutsSetUsingClassificationDocument, options);
 }
-
 export type CalloutsOnCalloutsSetUsingClassificationQueryHookResult = ReturnType<
   typeof useCalloutsOnCalloutsSetUsingClassificationQuery
 >;
@@ -7530,7 +7398,6 @@ export function refetchCalloutsOnCalloutsSetUsingClassificationQuery(
 ) {
   return { query: CalloutsOnCalloutsSetUsingClassificationDocument, variables: variables };
 }
-
 export const CalloutDetailsDocument = gql`
   query CalloutDetails($calloutId: UUID!, $withClassification: Boolean = true) {
     lookup {
@@ -7571,7 +7438,6 @@ export function useCalloutDetailsQuery(
     options
   );
 }
-
 export function useCalloutDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutDetailsQuery, SchemaTypes.CalloutDetailsQueryVariables>
 ) {
@@ -7581,7 +7447,6 @@ export function useCalloutDetailsLazyQuery(
     options
   );
 }
-
 export function useCalloutDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7593,7 +7458,6 @@ export function useCalloutDetailsSuspenseQuery(
     options
   );
 }
-
 export type CalloutDetailsQueryHookResult = ReturnType<typeof useCalloutDetailsQuery>;
 export type CalloutDetailsLazyQueryHookResult = ReturnType<typeof useCalloutDetailsLazyQuery>;
 export type CalloutDetailsSuspenseQueryHookResult = ReturnType<typeof useCalloutDetailsSuspenseQuery>;
@@ -7604,7 +7468,6 @@ export type CalloutDetailsQueryResult = Apollo.QueryResult<
 export function refetchCalloutDetailsQuery(variables: SchemaTypes.CalloutDetailsQueryVariables) {
   return { query: CalloutDetailsDocument, variables: variables };
 }
-
 export const CalloutContentDocument = gql`
   query CalloutContent($calloutId: UUID!) {
     lookup {
@@ -7671,7 +7534,6 @@ export function useCalloutContentQuery(
     options
   );
 }
-
 export function useCalloutContentLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutContentQuery, SchemaTypes.CalloutContentQueryVariables>
 ) {
@@ -7681,7 +7543,6 @@ export function useCalloutContentLazyQuery(
     options
   );
 }
-
 export function useCalloutContentSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7693,7 +7554,6 @@ export function useCalloutContentSuspenseQuery(
     options
   );
 }
-
 export type CalloutContentQueryHookResult = ReturnType<typeof useCalloutContentQuery>;
 export type CalloutContentLazyQueryHookResult = ReturnType<typeof useCalloutContentLazyQuery>;
 export type CalloutContentSuspenseQueryHookResult = ReturnType<typeof useCalloutContentSuspenseQuery>;
@@ -7704,7 +7564,6 @@ export type CalloutContentQueryResult = Apollo.QueryResult<
 export function refetchCalloutContentQuery(variables: SchemaTypes.CalloutContentQueryVariables) {
   return { query: CalloutContentDocument, variables: variables };
 }
-
 export const PostDocument = gql`
   query Post($postId: UUID!) {
     lookup {
@@ -7790,14 +7649,12 @@ export function usePostQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>(PostDocument, options);
 }
-
 export function usePostLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>(PostDocument, options);
 }
-
 export function usePostSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -7806,7 +7663,6 @@ export function usePostSuspenseQuery(
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>(PostDocument, options);
 }
-
 export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostSuspenseQueryHookResult = ReturnType<typeof usePostSuspenseQuery>;
@@ -7814,7 +7670,6 @@ export type PostQueryResult = Apollo.QueryResult<SchemaTypes.PostQuery, SchemaTy
 export function refetchPostQuery(variables: SchemaTypes.PostQueryVariables) {
   return { query: PostDocument, variables: variables };
 }
-
 export const UpdatePostDocument = gql`
   mutation UpdatePost($input: UpdatePostInput!) {
     updatePost(postData: $input) {
@@ -7868,7 +7723,6 @@ export function useUpdatePostMutation(
     options
   );
 }
-
 export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
 export type UpdatePostMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
@@ -7913,7 +7767,6 @@ export function useDeletePostMutation(
     options
   );
 }
-
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
@@ -7969,7 +7822,6 @@ export function useMoveContributionToCalloutMutation(
     SchemaTypes.MoveContributionToCalloutMutationVariables
   >(MoveContributionToCalloutDocument, options);
 }
-
 export type MoveContributionToCalloutMutationHookResult = ReturnType<typeof useMoveContributionToCalloutMutation>;
 export type MoveContributionToCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.MoveContributionToCalloutMutation>;
@@ -8019,7 +7871,6 @@ export function usePostSettingsQuery(
     options
   );
 }
-
 export function usePostSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>
 ) {
@@ -8029,7 +7880,6 @@ export function usePostSettingsLazyQuery(
     options
   );
 }
-
 export function usePostSettingsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -8041,7 +7891,6 @@ export function usePostSettingsSuspenseQuery(
     options
   );
 }
-
 export type PostSettingsQueryHookResult = ReturnType<typeof usePostSettingsQuery>;
 export type PostSettingsLazyQueryHookResult = ReturnType<typeof usePostSettingsLazyQuery>;
 export type PostSettingsSuspenseQueryHookResult = ReturnType<typeof usePostSettingsSuspenseQuery>;
@@ -8052,7 +7901,6 @@ export type PostSettingsQueryResult = Apollo.QueryResult<
 export function refetchPostSettingsQuery(variables: SchemaTypes.PostSettingsQueryVariables) {
   return { query: PostSettingsDocument, variables: variables };
 }
-
 export const PostCalloutsInCalloutSetDocument = gql`
   query PostCalloutsInCalloutSet($calloutsSetId: UUID!) {
     lookup {
@@ -8102,7 +7950,6 @@ export function usePostCalloutsInCalloutSetQuery(
     options
   );
 }
-
 export function usePostCalloutsInCalloutSetLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PostCalloutsInCalloutSetQuery,
@@ -8115,7 +7962,6 @@ export function usePostCalloutsInCalloutSetLazyQuery(
     SchemaTypes.PostCalloutsInCalloutSetQueryVariables
   >(PostCalloutsInCalloutSetDocument, options);
 }
-
 export function usePostCalloutsInCalloutSetSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -8130,7 +7976,6 @@ export function usePostCalloutsInCalloutSetSuspenseQuery(
     SchemaTypes.PostCalloutsInCalloutSetQueryVariables
   >(PostCalloutsInCalloutSetDocument, options);
 }
-
 export type PostCalloutsInCalloutSetQueryHookResult = ReturnType<typeof usePostCalloutsInCalloutSetQuery>;
 export type PostCalloutsInCalloutSetLazyQueryHookResult = ReturnType<typeof usePostCalloutsInCalloutSetLazyQuery>;
 export type PostCalloutsInCalloutSetSuspenseQueryHookResult = ReturnType<
@@ -8143,7 +7988,6 @@ export type PostCalloutsInCalloutSetQueryResult = Apollo.QueryResult<
 export function refetchPostCalloutsInCalloutSetQuery(variables: SchemaTypes.PostCalloutsInCalloutSetQueryVariables) {
   return { query: PostCalloutsInCalloutSetDocument, variables: variables };
 }
-
 export const WhiteboardFromCalloutDocument = gql`
   query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
     lookup {
@@ -8202,7 +8046,6 @@ export function useWhiteboardFromCalloutQuery(
     options
   );
 }
-
 export function useWhiteboardFromCalloutLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.WhiteboardFromCalloutQuery,
@@ -8215,7 +8058,6 @@ export function useWhiteboardFromCalloutLazyQuery(
     options
   );
 }
-
 export function useWhiteboardFromCalloutSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -8230,7 +8072,6 @@ export function useWhiteboardFromCalloutSuspenseQuery(
     SchemaTypes.WhiteboardFromCalloutQueryVariables
   >(WhiteboardFromCalloutDocument, options);
 }
-
 export type WhiteboardFromCalloutQueryHookResult = ReturnType<typeof useWhiteboardFromCalloutQuery>;
 export type WhiteboardFromCalloutLazyQueryHookResult = ReturnType<typeof useWhiteboardFromCalloutLazyQuery>;
 export type WhiteboardFromCalloutSuspenseQueryHookResult = ReturnType<typeof useWhiteboardFromCalloutSuspenseQuery>;
@@ -8241,7 +8082,6 @@ export type WhiteboardFromCalloutQueryResult = Apollo.QueryResult<
 export function refetchWhiteboardFromCalloutQuery(variables: SchemaTypes.WhiteboardFromCalloutQueryVariables) {
   return { query: WhiteboardFromCalloutDocument, variables: variables };
 }
-
 export const WhiteboardLastUpdatedDateDocument = gql`
   query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
     lookup {
@@ -8282,7 +8122,6 @@ export function useWhiteboardLastUpdatedDateQuery(
     SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
   >(WhiteboardLastUpdatedDateDocument, options);
 }
-
 export function useWhiteboardLastUpdatedDateLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.WhiteboardLastUpdatedDateQuery,
@@ -8295,7 +8134,6 @@ export function useWhiteboardLastUpdatedDateLazyQuery(
     SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
   >(WhiteboardLastUpdatedDateDocument, options);
 }
-
 export function useWhiteboardLastUpdatedDateSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -8310,7 +8148,6 @@ export function useWhiteboardLastUpdatedDateSuspenseQuery(
     SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
   >(WhiteboardLastUpdatedDateDocument, options);
 }
-
 export type WhiteboardLastUpdatedDateQueryHookResult = ReturnType<typeof useWhiteboardLastUpdatedDateQuery>;
 export type WhiteboardLastUpdatedDateLazyQueryHookResult = ReturnType<typeof useWhiteboardLastUpdatedDateLazyQuery>;
 export type WhiteboardLastUpdatedDateSuspenseQueryHookResult = ReturnType<
@@ -8323,7 +8160,6 @@ export type WhiteboardLastUpdatedDateQueryResult = Apollo.QueryResult<
 export function refetchWhiteboardLastUpdatedDateQuery(variables: SchemaTypes.WhiteboardLastUpdatedDateQueryVariables) {
   return { query: WhiteboardLastUpdatedDateDocument, variables: variables };
 }
-
 export const CreateWhiteboardOnCalloutDocument = gql`
   mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $input) {
@@ -8371,7 +8207,6 @@ export function useCreateWhiteboardOnCalloutMutation(
     SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
   >(CreateWhiteboardOnCalloutDocument, options);
 }
-
 export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
 export type CreateWhiteboardOnCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
@@ -8420,7 +8255,6 @@ export function useDeleteWhiteboardMutation(
     options
   );
 }
-
 export type DeleteWhiteboardMutationHookResult = ReturnType<typeof useDeleteWhiteboardMutation>;
 export type DeleteWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.DeleteWhiteboardMutation>;
 export type DeleteWhiteboardMutationOptions = Apollo.BaseMutationOptions<
@@ -8472,7 +8306,6 @@ export function useUpdateWhiteboardMutation(
     options
   );
 }
-
 export type UpdateWhiteboardMutationHookResult = ReturnType<typeof useUpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardMutation>;
 export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
@@ -8519,7 +8352,6 @@ export function useWhiteboardContentUpdatePolicyQuery(
     SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
   >(WhiteboardContentUpdatePolicyDocument, options);
 }
-
 export function useWhiteboardContentUpdatePolicyLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.WhiteboardContentUpdatePolicyQuery,
@@ -8532,7 +8364,6 @@ export function useWhiteboardContentUpdatePolicyLazyQuery(
     SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
   >(WhiteboardContentUpdatePolicyDocument, options);
 }
-
 export function useWhiteboardContentUpdatePolicySuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -8547,7 +8378,6 @@ export function useWhiteboardContentUpdatePolicySuspenseQuery(
     SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
   >(WhiteboardContentUpdatePolicyDocument, options);
 }
-
 export type WhiteboardContentUpdatePolicyQueryHookResult = ReturnType<typeof useWhiteboardContentUpdatePolicyQuery>;
 export type WhiteboardContentUpdatePolicyLazyQueryHookResult = ReturnType<
   typeof useWhiteboardContentUpdatePolicyLazyQuery
@@ -8564,7 +8394,6 @@ export function refetchWhiteboardContentUpdatePolicyQuery(
 ) {
   return { query: WhiteboardContentUpdatePolicyDocument, variables: variables };
 }
-
 export const UpdateWhiteboardContentUpdatePolicyDocument = gql`
   mutation UpdateWhiteboardContentUpdatePolicy($whiteboardId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
     updateWhiteboard(whiteboardData: { ID: $whiteboardId, contentUpdatePolicy: $contentUpdatePolicy }) {
@@ -8608,7 +8437,6 @@ export function useUpdateWhiteboardContentUpdatePolicyMutation(
     SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutationVariables
   >(UpdateWhiteboardContentUpdatePolicyDocument, options);
 }
-
 export type UpdateWhiteboardContentUpdatePolicyMutationHookResult = ReturnType<
   typeof useUpdateWhiteboardContentUpdatePolicyMutation
 >;
@@ -8660,7 +8488,6 @@ export function useCreateReferenceOnProfileMutation(
     SchemaTypes.CreateReferenceOnProfileMutationVariables
   >(CreateReferenceOnProfileDocument, options);
 }
-
 export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
 export type CreateReferenceOnProfileMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
@@ -8709,7 +8536,6 @@ export function useDeleteReferenceMutation(
     options
   );
 }
-
 export type DeleteReferenceMutationHookResult = ReturnType<typeof useDeleteReferenceMutation>;
 export type DeleteReferenceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteReferenceMutation>;
 export type DeleteReferenceMutationOptions = Apollo.BaseMutationOptions<
@@ -8758,7 +8584,6 @@ export function useCreateTagsetOnProfileMutation(
     SchemaTypes.CreateTagsetOnProfileMutationVariables
   >(CreateTagsetOnProfileDocument, options);
 }
-
 export type CreateTagsetOnProfileMutationHookResult = ReturnType<typeof useCreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateTagsetOnProfileMutation>;
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
@@ -8806,7 +8631,6 @@ export function useUploadVisualMutation(
     options
   );
 }
-
 export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
 export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
 export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
@@ -8851,7 +8675,6 @@ export function useLatestReleaseDiscussionQuery(
     options
   );
 }
-
 export function useLatestReleaseDiscussionLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.LatestReleaseDiscussionQuery,
@@ -8864,7 +8687,6 @@ export function useLatestReleaseDiscussionLazyQuery(
     SchemaTypes.LatestReleaseDiscussionQueryVariables
   >(LatestReleaseDiscussionDocument, options);
 }
-
 export function useLatestReleaseDiscussionSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -8879,7 +8701,6 @@ export function useLatestReleaseDiscussionSuspenseQuery(
     SchemaTypes.LatestReleaseDiscussionQueryVariables
   >(LatestReleaseDiscussionDocument, options);
 }
-
 export type LatestReleaseDiscussionQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionQuery>;
 export type LatestReleaseDiscussionLazyQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionLazyQuery>;
 export type LatestReleaseDiscussionSuspenseQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionSuspenseQuery>;
@@ -8890,7 +8711,6 @@ export type LatestReleaseDiscussionQueryResult = Apollo.QueryResult<
 export function refetchLatestReleaseDiscussionQuery(variables?: SchemaTypes.LatestReleaseDiscussionQueryVariables) {
   return { query: LatestReleaseDiscussionDocument, variables: variables };
 }
-
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: ForumCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
@@ -8933,7 +8753,6 @@ export function useCreateDiscussionMutation(
     options
   );
 }
-
 export type CreateDiscussionMutationHookResult = ReturnType<typeof useCreateDiscussionMutation>;
 export type CreateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.CreateDiscussionMutation>;
 export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
@@ -8982,7 +8801,6 @@ export function useUpdateDiscussionMutation(
     options
   );
 }
-
 export type UpdateDiscussionMutationHookResult = ReturnType<typeof useUpdateDiscussionMutation>;
 export type UpdateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.UpdateDiscussionMutation>;
 export type UpdateDiscussionMutationOptions = Apollo.BaseMutationOptions<
@@ -9030,7 +8848,6 @@ export function useDeleteDiscussionMutation(
     options
   );
 }
-
 export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
 export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
 export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
@@ -9084,7 +8901,6 @@ export function usePlatformDiscussionsQuery(
     options
   );
 }
-
 export function usePlatformDiscussionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PlatformDiscussionsQuery,
@@ -9097,7 +8913,6 @@ export function usePlatformDiscussionsLazyQuery(
     options
   );
 }
-
 export function usePlatformDiscussionsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -9112,7 +8927,6 @@ export function usePlatformDiscussionsSuspenseQuery(
     options
   );
 }
-
 export type PlatformDiscussionsQueryHookResult = ReturnType<typeof usePlatformDiscussionsQuery>;
 export type PlatformDiscussionsLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionsLazyQuery>;
 export type PlatformDiscussionsSuspenseQueryHookResult = ReturnType<typeof usePlatformDiscussionsSuspenseQuery>;
@@ -9123,7 +8937,6 @@ export type PlatformDiscussionsQueryResult = Apollo.QueryResult<
 export function refetchPlatformDiscussionsQuery(variables?: SchemaTypes.PlatformDiscussionsQueryVariables) {
   return { query: PlatformDiscussionsDocument, variables: variables };
 }
-
 export const PlatformDiscussionDocument = gql`
   query platformDiscussion($discussionId: UUID!) {
     platform {
@@ -9172,7 +8985,6 @@ export function usePlatformDiscussionQuery(
     options
   );
 }
-
 export function usePlatformDiscussionLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PlatformDiscussionQuery,
@@ -9185,7 +8997,6 @@ export function usePlatformDiscussionLazyQuery(
     options
   );
 }
-
 export function usePlatformDiscussionSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -9197,7 +9008,6 @@ export function usePlatformDiscussionSuspenseQuery(
     options
   );
 }
-
 export type PlatformDiscussionQueryHookResult = ReturnType<typeof usePlatformDiscussionQuery>;
 export type PlatformDiscussionLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionLazyQuery>;
 export type PlatformDiscussionSuspenseQueryHookResult = ReturnType<typeof usePlatformDiscussionSuspenseQuery>;
@@ -9208,7 +9018,6 @@ export type PlatformDiscussionQueryResult = Apollo.QueryResult<
 export function refetchPlatformDiscussionQuery(variables: SchemaTypes.PlatformDiscussionQueryVariables) {
   return { query: PlatformDiscussionDocument, variables: variables };
 }
-
 export const ForumDiscussionUpdatedDocument = gql`
   subscription forumDiscussionUpdated($forumID: UUID!) {
     forumDiscussionUpdated(forumID: $forumID) {
@@ -9263,7 +9072,6 @@ export function useForumDiscussionUpdatedSubscription(
     SchemaTypes.ForumDiscussionUpdatedSubscriptionVariables
   >(ForumDiscussionUpdatedDocument, options);
 }
-
 export type ForumDiscussionUpdatedSubscriptionHookResult = ReturnType<typeof useForumDiscussionUpdatedSubscription>;
 export type ForumDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ForumDiscussionUpdatedSubscription>;
@@ -9306,7 +9114,6 @@ export function useSendMessageToUserMutation(
     options
   );
 }
-
 export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
 export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
 export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
@@ -9352,7 +9159,6 @@ export function useSendMessageToOrganizationMutation(
     SchemaTypes.SendMessageToOrganizationMutationVariables
   >(SendMessageToOrganizationDocument, options);
 }
-
 export type SendMessageToOrganizationMutationHookResult = ReturnType<typeof useSendMessageToOrganizationMutation>;
 export type SendMessageToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.SendMessageToOrganizationMutation>;
@@ -9399,7 +9205,6 @@ export function useSendMessageToCommunityLeadsMutation(
     SchemaTypes.SendMessageToCommunityLeadsMutationVariables
   >(SendMessageToCommunityLeadsDocument, options);
 }
-
 export type SendMessageToCommunityLeadsMutationHookResult = ReturnType<typeof useSendMessageToCommunityLeadsMutation>;
 export type SendMessageToCommunityLeadsMutationResult =
   Apollo.MutationResult<SchemaTypes.SendMessageToCommunityLeadsMutation>;
@@ -9453,7 +9258,6 @@ export function useAddReactionMutation(
     options
   );
 }
-
 export type AddReactionMutationHookResult = ReturnType<typeof useAddReactionMutation>;
 export type AddReactionMutationResult = Apollo.MutationResult<SchemaTypes.AddReactionMutation>;
 export type AddReactionMutationOptions = Apollo.BaseMutationOptions<
@@ -9500,7 +9304,6 @@ export function useRemoveReactionMutation(
     options
   );
 }
-
 export type RemoveReactionMutationHookResult = ReturnType<typeof useRemoveReactionMutation>;
 export type RemoveReactionMutationResult = Apollo.MutationResult<SchemaTypes.RemoveReactionMutation>;
 export type RemoveReactionMutationOptions = Apollo.BaseMutationOptions<
@@ -9560,7 +9363,6 @@ export function useReplyToMessageMutation(
     options
   );
 }
-
 export type ReplyToMessageMutationHookResult = ReturnType<typeof useReplyToMessageMutation>;
 export type ReplyToMessageMutationResult = Apollo.MutationResult<SchemaTypes.ReplyToMessageMutation>;
 export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
@@ -9640,7 +9442,6 @@ export function useMentionableUsersQuery(
     options
   );
 }
-
 export function useMentionableUsersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.MentionableUsersQuery,
@@ -9653,7 +9454,6 @@ export function useMentionableUsersLazyQuery(
     options
   );
 }
-
 export function useMentionableUsersSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -9665,7 +9465,6 @@ export function useMentionableUsersSuspenseQuery(
     options
   );
 }
-
 export type MentionableUsersQueryHookResult = ReturnType<typeof useMentionableUsersQuery>;
 export type MentionableUsersLazyQueryHookResult = ReturnType<typeof useMentionableUsersLazyQuery>;
 export type MentionableUsersSuspenseQueryHookResult = ReturnType<typeof useMentionableUsersSuspenseQuery>;
@@ -9676,7 +9475,6 @@ export type MentionableUsersQueryResult = Apollo.QueryResult<
 export function refetchMentionableUsersQuery(variables: SchemaTypes.MentionableUsersQueryVariables) {
   return { query: MentionableUsersDocument, variables: variables };
 }
-
 export const SendMessageToRoomDocument = gql`
   mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
     sendMessageToRoom(messageData: $messageData) {
@@ -9728,7 +9526,6 @@ export function useSendMessageToRoomMutation(
     options
   );
 }
-
 export type SendMessageToRoomMutationHookResult = ReturnType<typeof useSendMessageToRoomMutation>;
 export type SendMessageToRoomMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToRoomMutation>;
 export type SendMessageToRoomMutationOptions = Apollo.BaseMutationOptions<
@@ -9774,7 +9571,6 @@ export function useRemoveMessageOnRoomMutation(
     options
   );
 }
-
 export type RemoveMessageOnRoomMutationHookResult = ReturnType<typeof useRemoveMessageOnRoomMutation>;
 export type RemoveMessageOnRoomMutationResult = Apollo.MutationResult<SchemaTypes.RemoveMessageOnRoomMutation>;
 export type RemoveMessageOnRoomMutationOptions = Apollo.BaseMutationOptions<
@@ -9839,7 +9635,6 @@ export function useRoomEventsSubscription(
     options
   );
 }
-
 export type RoomEventsSubscriptionHookResult = ReturnType<typeof useRoomEventsSubscription>;
 export type RoomEventsSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.RoomEventsSubscription>;
 export const CommunityUpdatesDocument = gql`
@@ -9890,7 +9685,6 @@ export function useCommunityUpdatesQuery(
     options
   );
 }
-
 export function useCommunityUpdatesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CommunityUpdatesQuery,
@@ -9903,7 +9697,6 @@ export function useCommunityUpdatesLazyQuery(
     options
   );
 }
-
 export function useCommunityUpdatesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -9915,7 +9708,6 @@ export function useCommunityUpdatesSuspenseQuery(
     options
   );
 }
-
 export type CommunityUpdatesQueryHookResult = ReturnType<typeof useCommunityUpdatesQuery>;
 export type CommunityUpdatesLazyQueryHookResult = ReturnType<typeof useCommunityUpdatesLazyQuery>;
 export type CommunityUpdatesSuspenseQueryHookResult = ReturnType<typeof useCommunityUpdatesSuspenseQuery>;
@@ -9926,7 +9718,6 @@ export type CommunityUpdatesQueryResult = Apollo.QueryResult<
 export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpdatesQueryVariables) {
   return { query: CommunityUpdatesDocument, variables: variables };
 }
-
 export const ApplicationDialogDocument = gql`
   query ApplicationDialog($spaceId: UUID!) {
     lookup {
@@ -9989,7 +9780,6 @@ export function useApplicationDialogQuery(
     options
   );
 }
-
 export function useApplicationDialogLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ApplicationDialogQuery,
@@ -10002,7 +9792,6 @@ export function useApplicationDialogLazyQuery(
     options
   );
 }
-
 export function useApplicationDialogSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10014,7 +9803,6 @@ export function useApplicationDialogSuspenseQuery(
     options
   );
 }
-
 export type ApplicationDialogQueryHookResult = ReturnType<typeof useApplicationDialogQuery>;
 export type ApplicationDialogLazyQueryHookResult = ReturnType<typeof useApplicationDialogLazyQuery>;
 export type ApplicationDialogSuspenseQueryHookResult = ReturnType<typeof useApplicationDialogSuspenseQuery>;
@@ -10025,7 +9813,6 @@ export type ApplicationDialogQueryResult = Apollo.QueryResult<
 export function refetchApplicationDialogQuery(variables: SchemaTypes.ApplicationDialogQueryVariables) {
   return { query: ApplicationDialogDocument, variables: variables };
 }
-
 export const RoleSetApplicationFormDocument = gql`
   query RoleSetApplicationForm($roleSetId: UUID!) {
     lookup {
@@ -10069,7 +9856,6 @@ export function useRoleSetApplicationFormQuery(
     options
   );
 }
-
 export function useRoleSetApplicationFormLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.RoleSetApplicationFormQuery,
@@ -10082,7 +9868,6 @@ export function useRoleSetApplicationFormLazyQuery(
     options
   );
 }
-
 export function useRoleSetApplicationFormSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10097,7 +9882,6 @@ export function useRoleSetApplicationFormSuspenseQuery(
     SchemaTypes.RoleSetApplicationFormQueryVariables
   >(RoleSetApplicationFormDocument, options);
 }
-
 export type RoleSetApplicationFormQueryHookResult = ReturnType<typeof useRoleSetApplicationFormQuery>;
 export type RoleSetApplicationFormLazyQueryHookResult = ReturnType<typeof useRoleSetApplicationFormLazyQuery>;
 export type RoleSetApplicationFormSuspenseQueryHookResult = ReturnType<typeof useRoleSetApplicationFormSuspenseQuery>;
@@ -10108,7 +9892,6 @@ export type RoleSetApplicationFormQueryResult = Apollo.QueryResult<
 export function refetchRoleSetApplicationFormQuery(variables: SchemaTypes.RoleSetApplicationFormQueryVariables) {
   return { query: RoleSetApplicationFormDocument, variables: variables };
 }
-
 export const UpdateApplicationFormOnRoleSetDocument = gql`
   mutation updateApplicationFormOnRoleSet($roleSetId: UUID!, $formData: UpdateFormInput!) {
     updateApplicationFormOnRoleSet(applicationFormData: { roleSetID: $roleSetId, formData: $formData }) {
@@ -10151,7 +9934,6 @@ export function useUpdateApplicationFormOnRoleSetMutation(
     SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
   >(UpdateApplicationFormOnRoleSetDocument, options);
 }
-
 export type UpdateApplicationFormOnRoleSetMutationHookResult = ReturnType<
   typeof useUpdateApplicationFormOnRoleSetMutation
 >;
@@ -10201,7 +9983,6 @@ export function useCommunityGuidelinesQuery(
     options
   );
 }
-
 export function useCommunityGuidelinesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CommunityGuidelinesQuery,
@@ -10214,7 +9995,6 @@ export function useCommunityGuidelinesLazyQuery(
     options
   );
 }
-
 export function useCommunityGuidelinesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10229,7 +10009,6 @@ export function useCommunityGuidelinesSuspenseQuery(
     options
   );
 }
-
 export type CommunityGuidelinesQueryHookResult = ReturnType<typeof useCommunityGuidelinesQuery>;
 export type CommunityGuidelinesLazyQueryHookResult = ReturnType<typeof useCommunityGuidelinesLazyQuery>;
 export type CommunityGuidelinesSuspenseQueryHookResult = ReturnType<typeof useCommunityGuidelinesSuspenseQuery>;
@@ -10240,7 +10019,6 @@ export type CommunityGuidelinesQueryResult = Apollo.QueryResult<
 export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.CommunityGuidelinesQueryVariables) {
   return { query: CommunityGuidelinesDocument, variables: variables };
 }
-
 export const UpdateCommunityGuidelinesDocument = gql`
   mutation UpdateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesEntityInput!) {
     updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
@@ -10283,7 +10061,6 @@ export function useUpdateCommunityGuidelinesMutation(
     SchemaTypes.UpdateCommunityGuidelinesMutationVariables
   >(UpdateCommunityGuidelinesDocument, options);
 }
-
 export type UpdateCommunityGuidelinesMutationHookResult = ReturnType<typeof useUpdateCommunityGuidelinesMutation>;
 export type UpdateCommunityGuidelinesMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateCommunityGuidelinesMutation>;
@@ -10333,7 +10110,6 @@ export function useRemoveCommunityGuidelinesContentMutation(
     SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
   >(RemoveCommunityGuidelinesContentDocument, options);
 }
-
 export type RemoveCommunityGuidelinesContentMutationHookResult = ReturnType<
   typeof useRemoveCommunityGuidelinesContentMutation
 >;
@@ -10382,7 +10158,6 @@ export function useCreateWingbackAccountMutation(
     SchemaTypes.CreateWingbackAccountMutationVariables
   >(CreateWingbackAccountDocument, options);
 }
-
 export type CreateWingbackAccountMutationHookResult = ReturnType<typeof useCreateWingbackAccountMutation>;
 export type CreateWingbackAccountMutationResult = Apollo.MutationResult<SchemaTypes.CreateWingbackAccountMutation>;
 export type CreateWingbackAccountMutationOptions = Apollo.BaseMutationOptions<
@@ -10446,7 +10221,6 @@ export function useContributorTooltipQuery(
     options
   );
 }
-
 export function useContributorTooltipLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ContributorTooltipQuery,
@@ -10459,7 +10233,6 @@ export function useContributorTooltipLazyQuery(
     options
   );
 }
-
 export function useContributorTooltipSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10471,7 +10244,6 @@ export function useContributorTooltipSuspenseQuery(
     options
   );
 }
-
 export type ContributorTooltipQueryHookResult = ReturnType<typeof useContributorTooltipQuery>;
 export type ContributorTooltipLazyQueryHookResult = ReturnType<typeof useContributorTooltipLazyQuery>;
 export type ContributorTooltipSuspenseQueryHookResult = ReturnType<typeof useContributorTooltipSuspenseQuery>;
@@ -10482,7 +10254,6 @@ export type ContributorTooltipQueryResult = Apollo.QueryResult<
 export function refetchContributorTooltipQuery(variables: SchemaTypes.ContributorTooltipQueryVariables) {
   return { query: ContributorTooltipDocument, variables: variables };
 }
-
 export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations(
     $first: Int!
@@ -10529,7 +10300,6 @@ export function useContributorsPageOrganizationsQuery(
     SchemaTypes.ContributorsPageOrganizationsQueryVariables
   >(ContributorsPageOrganizationsDocument, options);
 }
-
 export function useContributorsPageOrganizationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ContributorsPageOrganizationsQuery,
@@ -10542,7 +10312,6 @@ export function useContributorsPageOrganizationsLazyQuery(
     SchemaTypes.ContributorsPageOrganizationsQueryVariables
   >(ContributorsPageOrganizationsDocument, options);
 }
-
 export function useContributorsPageOrganizationsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10557,7 +10326,6 @@ export function useContributorsPageOrganizationsSuspenseQuery(
     SchemaTypes.ContributorsPageOrganizationsQueryVariables
   >(ContributorsPageOrganizationsDocument, options);
 }
-
 export type ContributorsPageOrganizationsQueryHookResult = ReturnType<typeof useContributorsPageOrganizationsQuery>;
 export type ContributorsPageOrganizationsLazyQueryHookResult = ReturnType<
   typeof useContributorsPageOrganizationsLazyQuery
@@ -10574,7 +10342,6 @@ export function refetchContributorsPageOrganizationsQuery(
 ) {
   return { query: ContributorsPageOrganizationsDocument, variables: variables };
 }
-
 export const ContributorsPageUsersDocument = gql`
   query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput, $withTags: Boolean) {
     usersPaginated(first: $first, after: $after, filter: $filter, withTags: $withTags) {
@@ -10616,7 +10383,6 @@ export function useContributorsPageUsersQuery(
     options
   );
 }
-
 export function useContributorsPageUsersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ContributorsPageUsersQuery,
@@ -10629,7 +10395,6 @@ export function useContributorsPageUsersLazyQuery(
     options
   );
 }
-
 export function useContributorsPageUsersSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10644,7 +10409,6 @@ export function useContributorsPageUsersSuspenseQuery(
     SchemaTypes.ContributorsPageUsersQueryVariables
   >(ContributorsPageUsersDocument, options);
 }
-
 export type ContributorsPageUsersQueryHookResult = ReturnType<typeof useContributorsPageUsersQuery>;
 export type ContributorsPageUsersLazyQueryHookResult = ReturnType<typeof useContributorsPageUsersLazyQuery>;
 export type ContributorsPageUsersSuspenseQueryHookResult = ReturnType<typeof useContributorsPageUsersSuspenseQuery>;
@@ -10655,7 +10419,6 @@ export type ContributorsPageUsersQueryResult = Apollo.QueryResult<
 export function refetchContributorsPageUsersQuery(variables: SchemaTypes.ContributorsPageUsersQueryVariables) {
   return { query: ContributorsPageUsersDocument, variables: variables };
 }
-
 export const ContributorsVirtualInLibraryDocument = gql`
   query ContributorsVirtualInLibrary {
     platform {
@@ -10714,7 +10477,6 @@ export function useContributorsVirtualInLibraryQuery(
     SchemaTypes.ContributorsVirtualInLibraryQueryVariables
   >(ContributorsVirtualInLibraryDocument, options);
 }
-
 export function useContributorsVirtualInLibraryLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ContributorsVirtualInLibraryQuery,
@@ -10727,7 +10489,6 @@ export function useContributorsVirtualInLibraryLazyQuery(
     SchemaTypes.ContributorsVirtualInLibraryQueryVariables
   >(ContributorsVirtualInLibraryDocument, options);
 }
-
 export function useContributorsVirtualInLibrarySuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10742,7 +10503,6 @@ export function useContributorsVirtualInLibrarySuspenseQuery(
     SchemaTypes.ContributorsVirtualInLibraryQueryVariables
   >(ContributorsVirtualInLibraryDocument, options);
 }
-
 export type ContributorsVirtualInLibraryQueryHookResult = ReturnType<typeof useContributorsVirtualInLibraryQuery>;
 export type ContributorsVirtualInLibraryLazyQueryHookResult = ReturnType<
   typeof useContributorsVirtualInLibraryLazyQuery
@@ -10759,7 +10519,6 @@ export function refetchContributorsVirtualInLibraryQuery(
 ) {
   return { query: ContributorsVirtualInLibraryDocument, variables: variables };
 }
-
 export const AccountResourcesInfoDocument = gql`
   query AccountResourcesInfo($accountId: UUID!) {
     lookup {
@@ -10844,7 +10603,6 @@ export function useAccountResourcesInfoQuery(
     options
   );
 }
-
 export function useAccountResourcesInfoLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AccountResourcesInfoQuery,
@@ -10857,7 +10615,6 @@ export function useAccountResourcesInfoLazyQuery(
     options
   );
 }
-
 export function useAccountResourcesInfoSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10872,7 +10629,6 @@ export function useAccountResourcesInfoSuspenseQuery(
     options
   );
 }
-
 export type AccountResourcesInfoQueryHookResult = ReturnType<typeof useAccountResourcesInfoQuery>;
 export type AccountResourcesInfoLazyQueryHookResult = ReturnType<typeof useAccountResourcesInfoLazyQuery>;
 export type AccountResourcesInfoSuspenseQueryHookResult = ReturnType<typeof useAccountResourcesInfoSuspenseQuery>;
@@ -10883,7 +10639,6 @@ export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
 export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
   return { query: AccountResourcesInfoDocument, variables: variables };
 }
-
 export const InviteUsersDialogDocument = gql`
   query InviteUsersDialog($spaceId: UUID!) {
     lookup {
@@ -10933,7 +10688,6 @@ export function useInviteUsersDialogQuery(
     options
   );
 }
-
 export function useInviteUsersDialogLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InviteUsersDialogQuery,
@@ -10946,7 +10700,6 @@ export function useInviteUsersDialogLazyQuery(
     options
   );
 }
-
 export function useInviteUsersDialogSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -10958,7 +10711,6 @@ export function useInviteUsersDialogSuspenseQuery(
     options
   );
 }
-
 export type InviteUsersDialogQueryHookResult = ReturnType<typeof useInviteUsersDialogQuery>;
 export type InviteUsersDialogLazyQueryHookResult = ReturnType<typeof useInviteUsersDialogLazyQuery>;
 export type InviteUsersDialogSuspenseQueryHookResult = ReturnType<typeof useInviteUsersDialogSuspenseQuery>;
@@ -10969,7 +10721,6 @@ export type InviteUsersDialogQueryResult = Apollo.QueryResult<
 export function refetchInviteUsersDialogQuery(variables: SchemaTypes.InviteUsersDialogQueryVariables) {
   return { query: InviteUsersDialogDocument, variables: variables };
 }
-
 export const AssociatedOrganizationDocument = gql`
   query associatedOrganization($organizationId: UUID!) {
     lookup {
@@ -11042,7 +10793,6 @@ export function useAssociatedOrganizationQuery(
     options
   );
 }
-
 export function useAssociatedOrganizationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AssociatedOrganizationQuery,
@@ -11055,7 +10805,6 @@ export function useAssociatedOrganizationLazyQuery(
     options
   );
 }
-
 export function useAssociatedOrganizationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11070,7 +10819,6 @@ export function useAssociatedOrganizationSuspenseQuery(
     SchemaTypes.AssociatedOrganizationQueryVariables
   >(AssociatedOrganizationDocument, options);
 }
-
 export type AssociatedOrganizationQueryHookResult = ReturnType<typeof useAssociatedOrganizationQuery>;
 export type AssociatedOrganizationLazyQueryHookResult = ReturnType<typeof useAssociatedOrganizationLazyQuery>;
 export type AssociatedOrganizationSuspenseQueryHookResult = ReturnType<typeof useAssociatedOrganizationSuspenseQuery>;
@@ -11081,7 +10829,6 @@ export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
 export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
   return { query: AssociatedOrganizationDocument, variables: variables };
 }
-
 export const OrganizationInfoDocument = gql`
   query organizationInfo($organizationId: UUID!) {
     lookup {
@@ -11119,7 +10866,6 @@ export function useOrganizationInfoQuery(
     options
   );
 }
-
 export function useOrganizationInfoLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.OrganizationInfoQuery,
@@ -11132,7 +10878,6 @@ export function useOrganizationInfoLazyQuery(
     options
   );
 }
-
 export function useOrganizationInfoSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11144,7 +10889,6 @@ export function useOrganizationInfoSuspenseQuery(
     options
   );
 }
-
 export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
 export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
 export type OrganizationInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationInfoSuspenseQuery>;
@@ -11155,7 +10899,82 @@ export type OrganizationInfoQueryResult = Apollo.QueryResult<
 export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
   return { query: OrganizationInfoDocument, variables: variables };
 }
+export const OrganizationProfileInfoDocument = gql`
+  query OrganizationProfileInfo($id: UUID!) {
+    lookup {
+      organization(ID: $id) {
+        ...OrganizationProfileInfo
+      }
+    }
+  }
+  ${OrganizationProfileInfoFragmentDoc}
+`;
 
+/**
+ * __useOrganizationProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganizationProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  > &
+    ({ variables: SchemaTypes.OrganizationProfileInfoQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
+    OrganizationProfileInfoDocument,
+    options
+  );
+}
+export function useOrganizationProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >(OrganizationProfileInfoDocument, options);
+}
+export function useOrganizationProfileInfoSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.OrganizationProfileInfoQuery,
+        SchemaTypes.OrganizationProfileInfoQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >(OrganizationProfileInfoDocument, options);
+}
+export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
+export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
+export type OrganizationProfileInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationProfileInfoSuspenseQuery>;
+export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationProfileInfoQuery,
+  SchemaTypes.OrganizationProfileInfoQueryVariables
+>;
+export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
+  return { query: OrganizationProfileInfoDocument, variables: variables };
+}
 export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganizationInput!) {
     createOrganization(organizationData: $input) {
@@ -11202,7 +11021,6 @@ export function useCreateOrganizationMutation(
     options
   );
 }
-
 export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
 export type CreateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.CreateOrganizationMutation>;
 export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -11250,7 +11068,6 @@ export function useDeleteOrganizationMutation(
     options
   );
 }
-
 export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
 export type DeleteOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOrganizationMutation>;
 export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -11300,7 +11117,6 @@ export function useOrganizationAuthorizationQuery(
     SchemaTypes.OrganizationAuthorizationQueryVariables
   >(OrganizationAuthorizationDocument, options);
 }
-
 export function useOrganizationAuthorizationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.OrganizationAuthorizationQuery,
@@ -11313,7 +11129,6 @@ export function useOrganizationAuthorizationLazyQuery(
     SchemaTypes.OrganizationAuthorizationQueryVariables
   >(OrganizationAuthorizationDocument, options);
 }
-
 export function useOrganizationAuthorizationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11328,7 +11143,6 @@ export function useOrganizationAuthorizationSuspenseQuery(
     SchemaTypes.OrganizationAuthorizationQueryVariables
   >(OrganizationAuthorizationDocument, options);
 }
-
 export type OrganizationAuthorizationQueryHookResult = ReturnType<typeof useOrganizationAuthorizationQuery>;
 export type OrganizationAuthorizationLazyQueryHookResult = ReturnType<typeof useOrganizationAuthorizationLazyQuery>;
 export type OrganizationAuthorizationSuspenseQueryHookResult = ReturnType<
@@ -11341,7 +11155,6 @@ export type OrganizationAuthorizationQueryResult = Apollo.QueryResult<
 export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.OrganizationAuthorizationQueryVariables) {
   return { query: OrganizationAuthorizationDocument, variables: variables };
 }
-
 export const RolesOrganizationDocument = gql`
   query rolesOrganization($organizationId: UUID!) {
     rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
@@ -11391,7 +11204,6 @@ export function useRolesOrganizationQuery(
     options
   );
 }
-
 export function useRolesOrganizationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.RolesOrganizationQuery,
@@ -11404,7 +11216,6 @@ export function useRolesOrganizationLazyQuery(
     options
   );
 }
-
 export function useRolesOrganizationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11416,7 +11227,6 @@ export function useRolesOrganizationSuspenseQuery(
     options
   );
 }
-
 export type RolesOrganizationQueryHookResult = ReturnType<typeof useRolesOrganizationQuery>;
 export type RolesOrganizationLazyQueryHookResult = ReturnType<typeof useRolesOrganizationLazyQuery>;
 export type RolesOrganizationSuspenseQueryHookResult = ReturnType<typeof useRolesOrganizationSuspenseQuery>;
@@ -11427,7 +11237,6 @@ export type RolesOrganizationQueryResult = Apollo.QueryResult<
 export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
   return { query: RolesOrganizationDocument, variables: variables };
 }
-
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {
     lookup {
@@ -11474,7 +11283,6 @@ export function useOrganizationAccountQuery(
     options
   );
 }
-
 export function useOrganizationAccountLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.OrganizationAccountQuery,
@@ -11487,7 +11295,6 @@ export function useOrganizationAccountLazyQuery(
     options
   );
 }
-
 export function useOrganizationAccountSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11502,7 +11309,6 @@ export function useOrganizationAccountSuspenseQuery(
     options
   );
 }
-
 export type OrganizationAccountQueryHookResult = ReturnType<typeof useOrganizationAccountQuery>;
 export type OrganizationAccountLazyQueryHookResult = ReturnType<typeof useOrganizationAccountLazyQuery>;
 export type OrganizationAccountSuspenseQueryHookResult = ReturnType<typeof useOrganizationAccountSuspenseQuery>;
@@ -11513,87 +11319,6 @@ export type OrganizationAccountQueryResult = Apollo.QueryResult<
 export function refetchOrganizationAccountQuery(variables: SchemaTypes.OrganizationAccountQueryVariables) {
   return { query: OrganizationAccountDocument, variables: variables };
 }
-
-export const OrganizationProfileInfoDocument = gql`
-  query OrganizationProfileInfo($id: UUID!) {
-    lookup {
-      organization(ID: $id) {
-        ...OrganizationProfileInfo
-      }
-    }
-  }
-  ${OrganizationProfileInfoFragmentDoc}
-`;
-
-/**
- * __useOrganizationProfileInfoQuery__
- *
- * To run a query within a React component, call `useOrganizationProfileInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationProfileInfoQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOrganizationProfileInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  > &
-    ({ variables: SchemaTypes.OrganizationProfileInfoQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
-    OrganizationProfileInfoDocument,
-    options
-  );
-}
-
-export function useOrganizationProfileInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, options);
-}
-
-export function useOrganizationProfileInfoSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.OrganizationProfileInfoQuery,
-        SchemaTypes.OrganizationProfileInfoQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, options);
-}
-
-export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
-export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
-export type OrganizationProfileInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationProfileInfoSuspenseQuery>;
-export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationProfileInfoQuery,
-  SchemaTypes.OrganizationProfileInfoQueryVariables
->;
-export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
-  return { query: OrganizationProfileInfoDocument, variables: variables };
-}
-
 export const OrganizationSettingsDocument = gql`
   query OrganizationSettings($orgId: UUID!) {
     lookup {
@@ -11641,7 +11366,6 @@ export function useOrganizationSettingsQuery(
     options
   );
 }
-
 export function useOrganizationSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.OrganizationSettingsQuery,
@@ -11654,7 +11378,6 @@ export function useOrganizationSettingsLazyQuery(
     options
   );
 }
-
 export function useOrganizationSettingsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11669,7 +11392,6 @@ export function useOrganizationSettingsSuspenseQuery(
     options
   );
 }
-
 export type OrganizationSettingsQueryHookResult = ReturnType<typeof useOrganizationSettingsQuery>;
 export type OrganizationSettingsLazyQueryHookResult = ReturnType<typeof useOrganizationSettingsLazyQuery>;
 export type OrganizationSettingsSuspenseQueryHookResult = ReturnType<typeof useOrganizationSettingsSuspenseQuery>;
@@ -11680,7 +11402,6 @@ export type OrganizationSettingsQueryResult = Apollo.QueryResult<
 export function refetchOrganizationSettingsQuery(variables: SchemaTypes.OrganizationSettingsQueryVariables) {
   return { query: OrganizationSettingsDocument, variables: variables };
 }
-
 export const UpdateOrganizationDocument = gql`
   mutation UpdateOrganization($input: UpdateOrganizationInput!) {
     updateOrganization(organizationData: $input) {
@@ -11723,7 +11444,6 @@ export function useUpdateOrganizationMutation(
     options
   );
 }
-
 export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
 export type UpdateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOrganizationMutation>;
 export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
@@ -11776,7 +11496,6 @@ export function useUpdateOrganizationSettingsMutation(
     SchemaTypes.UpdateOrganizationSettingsMutationVariables
   >(UpdateOrganizationSettingsDocument, options);
 }
-
 export type UpdateOrganizationSettingsMutationHookResult = ReturnType<typeof useUpdateOrganizationSettingsMutation>;
 export type UpdateOrganizationSettingsMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateOrganizationSettingsMutation>;
@@ -11819,7 +11538,6 @@ export function usePendingInvitationsCountQuery(
     options
   );
 }
-
 export function usePendingInvitationsCountLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PendingInvitationsCountQuery,
@@ -11832,7 +11550,6 @@ export function usePendingInvitationsCountLazyQuery(
     SchemaTypes.PendingInvitationsCountQueryVariables
   >(PendingInvitationsCountDocument, options);
 }
-
 export function usePendingInvitationsCountSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11847,7 +11564,6 @@ export function usePendingInvitationsCountSuspenseQuery(
     SchemaTypes.PendingInvitationsCountQueryVariables
   >(PendingInvitationsCountDocument, options);
 }
-
 export type PendingInvitationsCountQueryHookResult = ReturnType<typeof usePendingInvitationsCountQuery>;
 export type PendingInvitationsCountLazyQueryHookResult = ReturnType<typeof usePendingInvitationsCountLazyQuery>;
 export type PendingInvitationsCountSuspenseQueryHookResult = ReturnType<typeof usePendingInvitationsCountSuspenseQuery>;
@@ -11858,7 +11574,6 @@ export type PendingInvitationsCountQueryResult = Apollo.QueryResult<
 export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.PendingInvitationsCountQueryVariables) {
   return { query: PendingInvitationsCountDocument, variables: variables };
 }
-
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace($spaceId: UUID!, $includeCommunityGuidelines: Boolean! = false) {
     lookup {
@@ -11913,7 +11628,6 @@ export function usePendingMembershipsSpaceQuery(
     options
   );
 }
-
 export function usePendingMembershipsSpaceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PendingMembershipsSpaceQuery,
@@ -11926,7 +11640,6 @@ export function usePendingMembershipsSpaceLazyQuery(
     SchemaTypes.PendingMembershipsSpaceQueryVariables
   >(PendingMembershipsSpaceDocument, options);
 }
-
 export function usePendingMembershipsSpaceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -11941,7 +11654,6 @@ export function usePendingMembershipsSpaceSuspenseQuery(
     SchemaTypes.PendingMembershipsSpaceQueryVariables
   >(PendingMembershipsSpaceDocument, options);
 }
-
 export type PendingMembershipsSpaceQueryHookResult = ReturnType<typeof usePendingMembershipsSpaceQuery>;
 export type PendingMembershipsSpaceLazyQueryHookResult = ReturnType<typeof usePendingMembershipsSpaceLazyQuery>;
 export type PendingMembershipsSpaceSuspenseQueryHookResult = ReturnType<typeof usePendingMembershipsSpaceSuspenseQuery>;
@@ -11952,7 +11664,6 @@ export type PendingMembershipsSpaceQueryResult = Apollo.QueryResult<
 export function refetchPendingMembershipsSpaceQuery(variables: SchemaTypes.PendingMembershipsSpaceQueryVariables) {
   return { query: PendingMembershipsSpaceDocument, variables: variables };
 }
-
 export const PendingMembershipsUserDocument = gql`
   query PendingMembershipsUser($userId: UUID!) {
     lookup {
@@ -11996,7 +11707,6 @@ export function usePendingMembershipsUserQuery(
     options
   );
 }
-
 export function usePendingMembershipsUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PendingMembershipsUserQuery,
@@ -12009,7 +11719,6 @@ export function usePendingMembershipsUserLazyQuery(
     options
   );
 }
-
 export function usePendingMembershipsUserSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12024,7 +11733,6 @@ export function usePendingMembershipsUserSuspenseQuery(
     SchemaTypes.PendingMembershipsUserQueryVariables
   >(PendingMembershipsUserDocument, options);
 }
-
 export type PendingMembershipsUserQueryHookResult = ReturnType<typeof usePendingMembershipsUserQuery>;
 export type PendingMembershipsUserLazyQueryHookResult = ReturnType<typeof usePendingMembershipsUserLazyQuery>;
 export type PendingMembershipsUserSuspenseQueryHookResult = ReturnType<typeof usePendingMembershipsUserSuspenseQuery>;
@@ -12035,7 +11743,6 @@ export type PendingMembershipsUserQueryResult = Apollo.QueryResult<
 export function refetchPendingMembershipsUserQuery(variables: SchemaTypes.PendingMembershipsUserQueryVariables) {
   return { query: PendingMembershipsUserDocument, variables: variables };
 }
-
 export const SpaceContributionDetailsDocument = gql`
   query SpaceContributionDetails($spaceId: UUID!) {
     lookup {
@@ -12098,7 +11805,6 @@ export function useSpaceContributionDetailsQuery(
     options
   );
 }
-
 export function useSpaceContributionDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceContributionDetailsQuery,
@@ -12111,7 +11817,6 @@ export function useSpaceContributionDetailsLazyQuery(
     SchemaTypes.SpaceContributionDetailsQueryVariables
   >(SpaceContributionDetailsDocument, options);
 }
-
 export function useSpaceContributionDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12126,7 +11831,6 @@ export function useSpaceContributionDetailsSuspenseQuery(
     SchemaTypes.SpaceContributionDetailsQueryVariables
   >(SpaceContributionDetailsDocument, options);
 }
-
 export type SpaceContributionDetailsQueryHookResult = ReturnType<typeof useSpaceContributionDetailsQuery>;
 export type SpaceContributionDetailsLazyQueryHookResult = ReturnType<typeof useSpaceContributionDetailsLazyQuery>;
 export type SpaceContributionDetailsSuspenseQueryHookResult = ReturnType<
@@ -12139,7 +11843,6 @@ export type SpaceContributionDetailsQueryResult = Apollo.QueryResult<
 export function refetchSpaceContributionDetailsQuery(variables: SchemaTypes.SpaceContributionDetailsQueryVariables) {
   return { query: SpaceContributionDetailsDocument, variables: variables };
 }
-
 export const UserSelectorDocument = gql`
   query UserSelector($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
@@ -12183,7 +11886,6 @@ export function useUserSelectorQuery(
     options
   );
 }
-
 export function useUserSelectorLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserSelectorQuery, SchemaTypes.UserSelectorQueryVariables>
 ) {
@@ -12193,7 +11895,6 @@ export function useUserSelectorLazyQuery(
     options
   );
 }
-
 export function useUserSelectorSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12205,7 +11906,6 @@ export function useUserSelectorSuspenseQuery(
     options
   );
 }
-
 export type UserSelectorQueryHookResult = ReturnType<typeof useUserSelectorQuery>;
 export type UserSelectorLazyQueryHookResult = ReturnType<typeof useUserSelectorLazyQuery>;
 export type UserSelectorSuspenseQueryHookResult = ReturnType<typeof useUserSelectorSuspenseQuery>;
@@ -12216,7 +11916,6 @@ export type UserSelectorQueryResult = Apollo.QueryResult<
 export function refetchUserSelectorQuery(variables: SchemaTypes.UserSelectorQueryVariables) {
   return { query: UserSelectorDocument, variables: variables };
 }
-
 export const UserSelectorUserDetailsDocument = gql`
   query UserSelectorUserDetails($id: UUID!) {
     lookup {
@@ -12257,7 +11956,6 @@ export function useUserSelectorUserDetailsQuery(
     options
   );
 }
-
 export function useUserSelectorUserDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserSelectorUserDetailsQuery,
@@ -12270,7 +11968,6 @@ export function useUserSelectorUserDetailsLazyQuery(
     SchemaTypes.UserSelectorUserDetailsQueryVariables
   >(UserSelectorUserDetailsDocument, options);
 }
-
 export function useUserSelectorUserDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12285,7 +11982,6 @@ export function useUserSelectorUserDetailsSuspenseQuery(
     SchemaTypes.UserSelectorUserDetailsQueryVariables
   >(UserSelectorUserDetailsDocument, options);
 }
-
 export type UserSelectorUserDetailsQueryHookResult = ReturnType<typeof useUserSelectorUserDetailsQuery>;
 export type UserSelectorUserDetailsLazyQueryHookResult = ReturnType<typeof useUserSelectorUserDetailsLazyQuery>;
 export type UserSelectorUserDetailsSuspenseQueryHookResult = ReturnType<typeof useUserSelectorUserDetailsSuspenseQuery>;
@@ -12296,7 +11992,6 @@ export type UserSelectorUserDetailsQueryResult = Apollo.QueryResult<
 export function refetchUserSelectorUserDetailsQuery(variables: SchemaTypes.UserSelectorUserDetailsQueryVariables) {
   return { query: UserSelectorUserDetailsDocument, variables: variables };
 }
-
 export const CreateUserNewRegistrationDocument = gql`
   mutation createUserNewRegistration {
     createUserNewRegistration {
@@ -12337,7 +12032,6 @@ export function useCreateUserNewRegistrationMutation(
     SchemaTypes.CreateUserNewRegistrationMutationVariables
   >(CreateUserNewRegistrationDocument, options);
 }
-
 export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
 export type CreateUserNewRegistrationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
@@ -12383,7 +12077,6 @@ export function useDeleteUserMutation(
     options
   );
 }
-
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
@@ -12434,7 +12127,6 @@ export function useUpdatePreferenceOnUserMutation(
     SchemaTypes.UpdatePreferenceOnUserMutationVariables
   >(UpdatePreferenceOnUserDocument, options);
 }
-
 export type UpdatePreferenceOnUserMutationHookResult = ReturnType<typeof useUpdatePreferenceOnUserMutation>;
 export type UpdatePreferenceOnUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnUserMutation>;
 export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
@@ -12491,7 +12183,6 @@ export function useUserAccountQuery(
     options
   );
 }
-
 export function useUserAccountLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserAccountQuery, SchemaTypes.UserAccountQueryVariables>
 ) {
@@ -12501,7 +12192,6 @@ export function useUserAccountLazyQuery(
     options
   );
 }
-
 export function useUserAccountSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12513,7 +12203,6 @@ export function useUserAccountSuspenseQuery(
     options
   );
 }
-
 export type UserAccountQueryHookResult = ReturnType<typeof useUserAccountQuery>;
 export type UserAccountLazyQueryHookResult = ReturnType<typeof useUserAccountLazyQuery>;
 export type UserAccountSuspenseQueryHookResult = ReturnType<typeof useUserAccountSuspenseQuery>;
@@ -12524,7 +12213,6 @@ export type UserAccountQueryResult = Apollo.QueryResult<
 export function refetchUserAccountQuery(variables: SchemaTypes.UserAccountQueryVariables) {
   return { query: UserAccountDocument, variables: variables };
 }
-
 export const UserDocument = gql`
   query user($id: UUID!) {
     lookup {
@@ -12559,14 +12247,12 @@ export function useUserQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, options);
 }
-
 export function useUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, options);
 }
-
 export function useUserSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12575,7 +12261,6 @@ export function useUserSuspenseQuery(
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>(UserDocument, options);
 }
-
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery>;
@@ -12583,7 +12268,6 @@ export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTy
 export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
-
 export const UserNotificationsPreferencesDocument = gql`
   query userNotificationsPreferences($userId: UUID!) {
     lookup {
@@ -12635,7 +12319,6 @@ export function useUserNotificationsPreferencesQuery(
     SchemaTypes.UserNotificationsPreferencesQueryVariables
   >(UserNotificationsPreferencesDocument, options);
 }
-
 export function useUserNotificationsPreferencesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserNotificationsPreferencesQuery,
@@ -12648,7 +12331,6 @@ export function useUserNotificationsPreferencesLazyQuery(
     SchemaTypes.UserNotificationsPreferencesQueryVariables
   >(UserNotificationsPreferencesDocument, options);
 }
-
 export function useUserNotificationsPreferencesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12663,7 +12345,6 @@ export function useUserNotificationsPreferencesSuspenseQuery(
     SchemaTypes.UserNotificationsPreferencesQueryVariables
   >(UserNotificationsPreferencesDocument, options);
 }
-
 export type UserNotificationsPreferencesQueryHookResult = ReturnType<typeof useUserNotificationsPreferencesQuery>;
 export type UserNotificationsPreferencesLazyQueryHookResult = ReturnType<
   typeof useUserNotificationsPreferencesLazyQuery
@@ -12680,7 +12361,6 @@ export function refetchUserNotificationsPreferencesQuery(
 ) {
   return { query: UserNotificationsPreferencesDocument, variables: variables };
 }
-
 export const UserModelFullDocument = gql`
   query UserModelFull($userId: UUID!) {
     lookup {
@@ -12719,7 +12399,6 @@ export function useUserModelFullQuery(
     options
   );
 }
-
 export function useUserModelFullLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserModelFullQuery, SchemaTypes.UserModelFullQueryVariables>
 ) {
@@ -12729,7 +12408,6 @@ export function useUserModelFullLazyQuery(
     options
   );
 }
-
 export function useUserModelFullSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12741,7 +12419,6 @@ export function useUserModelFullSuspenseQuery(
     options
   );
 }
-
 export type UserModelFullQueryHookResult = ReturnType<typeof useUserModelFullQuery>;
 export type UserModelFullLazyQueryHookResult = ReturnType<typeof useUserModelFullLazyQuery>;
 export type UserModelFullSuspenseQueryHookResult = ReturnType<typeof useUserModelFullSuspenseQuery>;
@@ -12752,7 +12429,6 @@ export type UserModelFullQueryResult = Apollo.QueryResult<
 export function refetchUserModelFullQuery(variables: SchemaTypes.UserModelFullQueryVariables) {
   return { query: UserModelFullDocument, variables: variables };
 }
-
 export const UsersModelFullDocument = gql`
   query UsersModelFull($ids: [UUID!]!) {
     users(IDs: $ids) {
@@ -12789,7 +12465,6 @@ export function useUsersModelFullQuery(
     options
   );
 }
-
 export function useUsersModelFullLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UsersModelFullQuery, SchemaTypes.UsersModelFullQueryVariables>
 ) {
@@ -12799,7 +12474,6 @@ export function useUsersModelFullLazyQuery(
     options
   );
 }
-
 export function useUsersModelFullSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12811,7 +12485,6 @@ export function useUsersModelFullSuspenseQuery(
     options
   );
 }
-
 export type UsersModelFullQueryHookResult = ReturnType<typeof useUsersModelFullQuery>;
 export type UsersModelFullLazyQueryHookResult = ReturnType<typeof useUsersModelFullLazyQuery>;
 export type UsersModelFullSuspenseQueryHookResult = ReturnType<typeof useUsersModelFullSuspenseQuery>;
@@ -12822,7 +12495,6 @@ export type UsersModelFullQueryResult = Apollo.QueryResult<
 export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFullQueryVariables) {
   return { query: UsersModelFullDocument, variables: variables };
 }
-
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
@@ -12869,7 +12541,6 @@ export function useUserContributionsQuery(
     options
   );
 }
-
 export function useUserContributionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserContributionsQuery,
@@ -12882,7 +12553,6 @@ export function useUserContributionsLazyQuery(
     options
   );
 }
-
 export function useUserContributionsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12894,7 +12564,6 @@ export function useUserContributionsSuspenseQuery(
     options
   );
 }
-
 export type UserContributionsQueryHookResult = ReturnType<typeof useUserContributionsQuery>;
 export type UserContributionsLazyQueryHookResult = ReturnType<typeof useUserContributionsLazyQuery>;
 export type UserContributionsSuspenseQueryHookResult = ReturnType<typeof useUserContributionsSuspenseQuery>;
@@ -12905,7 +12574,6 @@ export type UserContributionsQueryResult = Apollo.QueryResult<
 export function refetchUserContributionsQuery(variables: SchemaTypes.UserContributionsQueryVariables) {
   return { query: UserContributionsDocument, variables: variables };
 }
-
 export const UserOrganizationIdsDocument = gql`
   query UserOrganizationIds($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId }) {
@@ -12946,7 +12614,6 @@ export function useUserOrganizationIdsQuery(
     options
   );
 }
-
 export function useUserOrganizationIdsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserOrganizationIdsQuery,
@@ -12959,7 +12626,6 @@ export function useUserOrganizationIdsLazyQuery(
     options
   );
 }
-
 export function useUserOrganizationIdsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -12974,7 +12640,6 @@ export function useUserOrganizationIdsSuspenseQuery(
     options
   );
 }
-
 export type UserOrganizationIdsQueryHookResult = ReturnType<typeof useUserOrganizationIdsQuery>;
 export type UserOrganizationIdsLazyQueryHookResult = ReturnType<typeof useUserOrganizationIdsLazyQuery>;
 export type UserOrganizationIdsSuspenseQueryHookResult = ReturnType<typeof useUserOrganizationIdsSuspenseQuery>;
@@ -12985,7 +12650,6 @@ export type UserOrganizationIdsQueryResult = Apollo.QueryResult<
 export function refetchUserOrganizationIdsQuery(variables: SchemaTypes.UserOrganizationIdsQueryVariables) {
   return { query: UserOrganizationIdsDocument, variables: variables };
 }
-
 export const UpdateUserDocument = gql`
   mutation updateUser($input: UpdateUserInput!) {
     updateUser(userData: $input) {
@@ -13025,7 +12689,6 @@ export function useUpdateUserMutation(
     options
   );
 }
-
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
@@ -13081,7 +12744,6 @@ export function useUpdateUserSettingsMutation(
     options
   );
 }
-
 export type UpdateUserSettingsMutationHookResult = ReturnType<typeof useUpdateUserSettingsMutation>;
 export type UpdateUserSettingsMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserSettingsMutation>;
 export type UpdateUserSettingsMutationOptions = Apollo.BaseMutationOptions<
@@ -13132,7 +12794,6 @@ export function useUserSettingsQuery(
     options
   );
 }
-
 export function useUserSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>
 ) {
@@ -13142,7 +12803,6 @@ export function useUserSettingsLazyQuery(
     options
   );
 }
-
 export function useUserSettingsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13154,7 +12814,6 @@ export function useUserSettingsSuspenseQuery(
     options
   );
 }
-
 export type UserSettingsQueryHookResult = ReturnType<typeof useUserSettingsQuery>;
 export type UserSettingsLazyQueryHookResult = ReturnType<typeof useUserSettingsLazyQuery>;
 export type UserSettingsSuspenseQueryHookResult = ReturnType<typeof useUserSettingsSuspenseQuery>;
@@ -13165,7 +12824,6 @@ export type UserSettingsQueryResult = Apollo.QueryResult<
 export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQueryVariables) {
   return { query: UserSettingsDocument, variables: variables };
 }
-
 export const CurrentUserFullDocument = gql`
   query CurrentUserFull {
     me {
@@ -13212,7 +12870,6 @@ export function useCurrentUserFullQuery(
     options
   );
 }
-
 export function useCurrentUserFullLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CurrentUserFullQuery, SchemaTypes.CurrentUserFullQueryVariables>
 ) {
@@ -13222,7 +12879,6 @@ export function useCurrentUserFullLazyQuery(
     options
   );
 }
-
 export function useCurrentUserFullSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13234,7 +12890,6 @@ export function useCurrentUserFullSuspenseQuery(
     options
   );
 }
-
 export type CurrentUserFullQueryHookResult = ReturnType<typeof useCurrentUserFullQuery>;
 export type CurrentUserFullLazyQueryHookResult = ReturnType<typeof useCurrentUserFullLazyQuery>;
 export type CurrentUserFullSuspenseQueryHookResult = ReturnType<typeof useCurrentUserFullSuspenseQuery>;
@@ -13245,7 +12900,6 @@ export type CurrentUserFullQueryResult = Apollo.QueryResult<
 export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
   return { query: CurrentUserFullDocument, variables: variables };
 }
-
 export const AiPersonaServiceDocument = gql`
   query AiPersonaService($id: UUID!) {
     aiServer {
@@ -13289,7 +12943,6 @@ export function useAiPersonaServiceQuery(
     options
   );
 }
-
 export function useAiPersonaServiceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AiPersonaServiceQuery,
@@ -13302,7 +12955,6 @@ export function useAiPersonaServiceLazyQuery(
     options
   );
 }
-
 export function useAiPersonaServiceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13314,7 +12966,6 @@ export function useAiPersonaServiceSuspenseQuery(
     options
   );
 }
-
 export type AiPersonaServiceQueryHookResult = ReturnType<typeof useAiPersonaServiceQuery>;
 export type AiPersonaServiceLazyQueryHookResult = ReturnType<typeof useAiPersonaServiceLazyQuery>;
 export type AiPersonaServiceSuspenseQueryHookResult = ReturnType<typeof useAiPersonaServiceSuspenseQuery>;
@@ -13325,7 +12976,6 @@ export type AiPersonaServiceQueryResult = Apollo.QueryResult<
 export function refetchAiPersonaServiceQuery(variables: SchemaTypes.AiPersonaServiceQueryVariables) {
   return { query: AiPersonaServiceDocument, variables: variables };
 }
-
 export const VirtualContributorDocument = gql`
   query VirtualContributor($id: UUID!) {
     lookup {
@@ -13406,7 +13056,6 @@ export function useVirtualContributorQuery(
     options
   );
 }
-
 export function useVirtualContributorLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorQuery,
@@ -13419,7 +13068,6 @@ export function useVirtualContributorLazyQuery(
     options
   );
 }
-
 export function useVirtualContributorSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13431,7 +13079,6 @@ export function useVirtualContributorSuspenseQuery(
     options
   );
 }
-
 export type VirtualContributorQueryHookResult = ReturnType<typeof useVirtualContributorQuery>;
 export type VirtualContributorLazyQueryHookResult = ReturnType<typeof useVirtualContributorLazyQuery>;
 export type VirtualContributorSuspenseQueryHookResult = ReturnType<typeof useVirtualContributorSuspenseQuery>;
@@ -13442,7 +13089,6 @@ export type VirtualContributorQueryResult = Apollo.QueryResult<
 export function refetchVirtualContributorQuery(variables: SchemaTypes.VirtualContributorQueryVariables) {
   return { query: VirtualContributorDocument, variables: variables };
 }
-
 export const VirtualContributorProfileDocument = gql`
   query VirtualContributorProfile($id: UUID!) {
     lookup {
@@ -13502,7 +13148,6 @@ export function useVirtualContributorProfileQuery(
     SchemaTypes.VirtualContributorProfileQueryVariables
   >(VirtualContributorProfileDocument, options);
 }
-
 export function useVirtualContributorProfileLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorProfileQuery,
@@ -13515,7 +13160,6 @@ export function useVirtualContributorProfileLazyQuery(
     SchemaTypes.VirtualContributorProfileQueryVariables
   >(VirtualContributorProfileDocument, options);
 }
-
 export function useVirtualContributorProfileSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13530,7 +13174,6 @@ export function useVirtualContributorProfileSuspenseQuery(
     SchemaTypes.VirtualContributorProfileQueryVariables
   >(VirtualContributorProfileDocument, options);
 }
-
 export type VirtualContributorProfileQueryHookResult = ReturnType<typeof useVirtualContributorProfileQuery>;
 export type VirtualContributorProfileLazyQueryHookResult = ReturnType<typeof useVirtualContributorProfileLazyQuery>;
 export type VirtualContributorProfileSuspenseQueryHookResult = ReturnType<
@@ -13543,7 +13186,6 @@ export type VirtualContributorProfileQueryResult = Apollo.QueryResult<
 export function refetchVirtualContributorProfileQuery(variables: SchemaTypes.VirtualContributorProfileQueryVariables) {
   return { query: VirtualContributorProfileDocument, variables: variables };
 }
-
 export const VirtualContributorProviderDocument = gql`
   query VirtualContributorProvider($id: UUID!) {
     lookup {
@@ -13603,7 +13245,6 @@ export function useVirtualContributorProviderQuery(
     SchemaTypes.VirtualContributorProviderQueryVariables
   >(VirtualContributorProviderDocument, options);
 }
-
 export function useVirtualContributorProviderLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorProviderQuery,
@@ -13616,7 +13257,6 @@ export function useVirtualContributorProviderLazyQuery(
     SchemaTypes.VirtualContributorProviderQueryVariables
   >(VirtualContributorProviderDocument, options);
 }
-
 export function useVirtualContributorProviderSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13631,7 +13271,6 @@ export function useVirtualContributorProviderSuspenseQuery(
     SchemaTypes.VirtualContributorProviderQueryVariables
   >(VirtualContributorProviderDocument, options);
 }
-
 export type VirtualContributorProviderQueryHookResult = ReturnType<typeof useVirtualContributorProviderQuery>;
 export type VirtualContributorProviderLazyQueryHookResult = ReturnType<typeof useVirtualContributorProviderLazyQuery>;
 export type VirtualContributorProviderSuspenseQueryHookResult = ReturnType<
@@ -13646,7 +13285,6 @@ export function refetchVirtualContributorProviderQuery(
 ) {
   return { query: VirtualContributorProviderDocument, variables: variables };
 }
-
 export const SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument = gql`
   query SpaceBodyOfKnowledgeAuthorizationPrivileges($spaceId: UUID!) {
     lookup {
@@ -13689,7 +13327,6 @@ export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery(
     SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
   >(SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, options);
 }
-
 export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
@@ -13702,7 +13339,6 @@ export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesLazyQuery(
     SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
   >(SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, options);
 }
-
 export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13717,7 +13353,6 @@ export function useSpaceBodyOfKnowledgeAuthorizationPrivilegesSuspenseQuery(
     SchemaTypes.SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryVariables
   >(SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, options);
 }
-
 export type SpaceBodyOfKnowledgeAuthorizationPrivilegesQueryHookResult = ReturnType<
   typeof useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery
 >;
@@ -13736,7 +13371,6 @@ export function refetchSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery(
 ) {
   return { query: SpaceBodyOfKnowledgeAuthorizationPrivilegesDocument, variables: variables };
 }
-
 export const SpaceBodyOfKnowledgeAboutDocument = gql`
   query SpaceBodyOfKnowledgeAbout($spaceId: UUID!) {
     lookup {
@@ -13780,7 +13414,6 @@ export function useSpaceBodyOfKnowledgeAboutQuery(
     SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
   >(SpaceBodyOfKnowledgeAboutDocument, options);
 }
-
 export function useSpaceBodyOfKnowledgeAboutLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceBodyOfKnowledgeAboutQuery,
@@ -13793,7 +13426,6 @@ export function useSpaceBodyOfKnowledgeAboutLazyQuery(
     SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
   >(SpaceBodyOfKnowledgeAboutDocument, options);
 }
-
 export function useSpaceBodyOfKnowledgeAboutSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13808,7 +13440,6 @@ export function useSpaceBodyOfKnowledgeAboutSuspenseQuery(
     SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables
   >(SpaceBodyOfKnowledgeAboutDocument, options);
 }
-
 export type SpaceBodyOfKnowledgeAboutQueryHookResult = ReturnType<typeof useSpaceBodyOfKnowledgeAboutQuery>;
 export type SpaceBodyOfKnowledgeAboutLazyQueryHookResult = ReturnType<typeof useSpaceBodyOfKnowledgeAboutLazyQuery>;
 export type SpaceBodyOfKnowledgeAboutSuspenseQueryHookResult = ReturnType<
@@ -13821,7 +13452,6 @@ export type SpaceBodyOfKnowledgeAboutQueryResult = Apollo.QueryResult<
 export function refetchSpaceBodyOfKnowledgeAboutQuery(variables: SchemaTypes.SpaceBodyOfKnowledgeAboutQueryVariables) {
   return { query: SpaceBodyOfKnowledgeAboutDocument, variables: variables };
 }
-
 export const VirtualContributorProfileWithModelCardDocument = gql`
   query VirtualContributorProfileWithModelCard($id: UUID!) {
     lookup {
@@ -13914,7 +13544,6 @@ export function useVirtualContributorProfileWithModelCardQuery(
     SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
   >(VirtualContributorProfileWithModelCardDocument, options);
 }
-
 export function useVirtualContributorProfileWithModelCardLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorProfileWithModelCardQuery,
@@ -13927,7 +13556,6 @@ export function useVirtualContributorProfileWithModelCardLazyQuery(
     SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
   >(VirtualContributorProfileWithModelCardDocument, options);
 }
-
 export function useVirtualContributorProfileWithModelCardSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -13942,7 +13570,6 @@ export function useVirtualContributorProfileWithModelCardSuspenseQuery(
     SchemaTypes.VirtualContributorProfileWithModelCardQueryVariables
   >(VirtualContributorProfileWithModelCardDocument, options);
 }
-
 export type VirtualContributorProfileWithModelCardQueryHookResult = ReturnType<
   typeof useVirtualContributorProfileWithModelCardQuery
 >;
@@ -13961,7 +13588,6 @@ export function refetchVirtualContributorProfileWithModelCardQuery(
 ) {
   return { query: VirtualContributorProfileWithModelCardDocument, variables: variables };
 }
-
 export const UpdateAiPersonaServiceDocument = gql`
   mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
     aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
@@ -14004,7 +13630,6 @@ export function useUpdateAiPersonaServiceMutation(
     SchemaTypes.UpdateAiPersonaServiceMutationVariables
   >(UpdateAiPersonaServiceDocument, options);
 }
-
 export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
 export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
 export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
@@ -14050,7 +13675,6 @@ export function useRefreshBodyOfKnowledgeMutation(
     SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
   >(RefreshBodyOfKnowledgeDocument, options);
 }
-
 export type RefreshBodyOfKnowledgeMutationHookResult = ReturnType<typeof useRefreshBodyOfKnowledgeMutation>;
 export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaTypes.RefreshBodyOfKnowledgeMutation>;
 export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
@@ -14122,7 +13746,6 @@ export function useUpdateVirtualContributorMutation(
     SchemaTypes.UpdateVirtualContributorMutationVariables
   >(UpdateVirtualContributorDocument, options);
 }
-
 export type UpdateVirtualContributorMutationHookResult = ReturnType<typeof useUpdateVirtualContributorMutation>;
 export type UpdateVirtualContributorMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateVirtualContributorMutation>;
@@ -14195,7 +13818,6 @@ export function useUpdateVirtualContributorSettingsMutation(
     SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
   >(UpdateVirtualContributorSettingsDocument, options);
 }
-
 export type UpdateVirtualContributorSettingsMutationHookResult = ReturnType<
   typeof useUpdateVirtualContributorSettingsMutation
 >;
@@ -14245,7 +13867,6 @@ export function useVirtualContributorUpdatesSubscription(
     SchemaTypes.VirtualContributorUpdatesSubscriptionVariables
   >(VirtualContributorUpdatesDocument, options);
 }
-
 export type VirtualContributorUpdatesSubscriptionHookResult = ReturnType<
   typeof useVirtualContributorUpdatesSubscription
 >;
@@ -14303,7 +13924,6 @@ export function useVirtualContributorKnowledgeBaseQuery(
     SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
   >(VirtualContributorKnowledgeBaseDocument, options);
 }
-
 export function useVirtualContributorKnowledgeBaseLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorKnowledgeBaseQuery,
@@ -14316,7 +13936,6 @@ export function useVirtualContributorKnowledgeBaseLazyQuery(
     SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
   >(VirtualContributorKnowledgeBaseDocument, options);
 }
-
 export function useVirtualContributorKnowledgeBaseSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14331,7 +13950,6 @@ export function useVirtualContributorKnowledgeBaseSuspenseQuery(
     SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
   >(VirtualContributorKnowledgeBaseDocument, options);
 }
-
 export type VirtualContributorKnowledgeBaseQueryHookResult = ReturnType<typeof useVirtualContributorKnowledgeBaseQuery>;
 export type VirtualContributorKnowledgeBaseLazyQueryHookResult = ReturnType<
   typeof useVirtualContributorKnowledgeBaseLazyQuery
@@ -14348,7 +13966,6 @@ export function refetchVirtualContributorKnowledgeBaseQuery(
 ) {
   return { query: VirtualContributorKnowledgeBaseDocument, variables: variables };
 }
-
 export const VirtualContributorKnowledgePrivilegesDocument = gql`
   query VirtualContributorKnowledgePrivileges($id: UUID!) {
     virtualContributor(ID: $id) {
@@ -14393,7 +14010,6 @@ export function useVirtualContributorKnowledgePrivilegesQuery(
     SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
   >(VirtualContributorKnowledgePrivilegesDocument, options);
 }
-
 export function useVirtualContributorKnowledgePrivilegesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
@@ -14406,7 +14022,6 @@ export function useVirtualContributorKnowledgePrivilegesLazyQuery(
     SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
   >(VirtualContributorKnowledgePrivilegesDocument, options);
 }
-
 export function useVirtualContributorKnowledgePrivilegesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14421,7 +14036,6 @@ export function useVirtualContributorKnowledgePrivilegesSuspenseQuery(
     SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
   >(VirtualContributorKnowledgePrivilegesDocument, options);
 }
-
 export type VirtualContributorKnowledgePrivilegesQueryHookResult = ReturnType<
   typeof useVirtualContributorKnowledgePrivilegesQuery
 >;
@@ -14440,7 +14054,6 @@ export function refetchVirtualContributorKnowledgePrivilegesQuery(
 ) {
   return { query: VirtualContributorKnowledgePrivilegesDocument, variables: variables };
 }
-
 export const VcMembershipsDocument = gql`
   query VCMemberships($virtualContributorId: UUID!) {
     lookup {
@@ -14497,7 +14110,6 @@ export function useVcMembershipsQuery(
     options
   );
 }
-
 export function useVcMembershipsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.VcMembershipsQuery, SchemaTypes.VcMembershipsQueryVariables>
 ) {
@@ -14507,7 +14119,6 @@ export function useVcMembershipsLazyQuery(
     options
   );
 }
-
 export function useVcMembershipsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14519,7 +14130,6 @@ export function useVcMembershipsSuspenseQuery(
     options
   );
 }
-
 export type VcMembershipsQueryHookResult = ReturnType<typeof useVcMembershipsQuery>;
 export type VcMembershipsLazyQueryHookResult = ReturnType<typeof useVcMembershipsLazyQuery>;
 export type VcMembershipsSuspenseQueryHookResult = ReturnType<typeof useVcMembershipsSuspenseQuery>;
@@ -14530,7 +14140,6 @@ export type VcMembershipsQueryResult = Apollo.QueryResult<
 export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQueryVariables) {
   return { query: VcMembershipsDocument, variables: variables };
 }
-
 export const BannerInnovationHubDocument = gql`
   query BannerInnovationHub($subdomain: String) {
     platform {
@@ -14577,7 +14186,6 @@ export function useBannerInnovationHubQuery(
     options
   );
 }
-
 export function useBannerInnovationHubLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.BannerInnovationHubQuery,
@@ -14590,7 +14198,6 @@ export function useBannerInnovationHubLazyQuery(
     options
   );
 }
-
 export function useBannerInnovationHubSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14605,7 +14212,6 @@ export function useBannerInnovationHubSuspenseQuery(
     options
   );
 }
-
 export type BannerInnovationHubQueryHookResult = ReturnType<typeof useBannerInnovationHubQuery>;
 export type BannerInnovationHubLazyQueryHookResult = ReturnType<typeof useBannerInnovationHubLazyQuery>;
 export type BannerInnovationHubSuspenseQueryHookResult = ReturnType<typeof useBannerInnovationHubSuspenseQuery>;
@@ -14616,7 +14222,6 @@ export type BannerInnovationHubQueryResult = Apollo.QueryResult<
 export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerInnovationHubQueryVariables) {
   return { query: BannerInnovationHubDocument, variables: variables };
 }
-
 export const InnovationHubBannerWideDocument = gql`
   query InnovationHubBannerWide {
     platform {
@@ -14663,7 +14268,6 @@ export function useInnovationHubBannerWideQuery(
     options
   );
 }
-
 export function useInnovationHubBannerWideLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationHubBannerWideQuery,
@@ -14676,7 +14280,6 @@ export function useInnovationHubBannerWideLazyQuery(
     SchemaTypes.InnovationHubBannerWideQueryVariables
   >(InnovationHubBannerWideDocument, options);
 }
-
 export function useInnovationHubBannerWideSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14691,7 +14294,6 @@ export function useInnovationHubBannerWideSuspenseQuery(
     SchemaTypes.InnovationHubBannerWideQueryVariables
   >(InnovationHubBannerWideDocument, options);
 }
-
 export type InnovationHubBannerWideQueryHookResult = ReturnType<typeof useInnovationHubBannerWideQuery>;
 export type InnovationHubBannerWideLazyQueryHookResult = ReturnType<typeof useInnovationHubBannerWideLazyQuery>;
 export type InnovationHubBannerWideSuspenseQueryHookResult = ReturnType<typeof useInnovationHubBannerWideSuspenseQuery>;
@@ -14702,7 +14304,6 @@ export type InnovationHubBannerWideQueryResult = Apollo.QueryResult<
 export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.InnovationHubBannerWideQueryVariables) {
   return { query: InnovationHubBannerWideDocument, variables: variables };
 }
-
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
@@ -14737,7 +14338,6 @@ export function useDashboardSpacesQuery(
     options
   );
 }
-
 export function useDashboardSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.DashboardSpacesQuery, SchemaTypes.DashboardSpacesQueryVariables>
 ) {
@@ -14747,7 +14347,6 @@ export function useDashboardSpacesLazyQuery(
     options
   );
 }
-
 export function useDashboardSpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14759,7 +14358,6 @@ export function useDashboardSpacesSuspenseQuery(
     options
   );
 }
-
 export type DashboardSpacesQueryHookResult = ReturnType<typeof useDashboardSpacesQuery>;
 export type DashboardSpacesLazyQueryHookResult = ReturnType<typeof useDashboardSpacesLazyQuery>;
 export type DashboardSpacesSuspenseQueryHookResult = ReturnType<typeof useDashboardSpacesSuspenseQuery>;
@@ -14770,7 +14368,6 @@ export type DashboardSpacesQueryResult = Apollo.QueryResult<
 export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpacesQueryVariables) {
   return { query: DashboardSpacesDocument, variables: variables };
 }
-
 export const AdminInnovationHubsListDocument = gql`
   query AdminInnovationHubsList {
     platform {
@@ -14817,7 +14414,6 @@ export function useAdminInnovationHubsListQuery(
     options
   );
 }
-
 export function useAdminInnovationHubsListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AdminInnovationHubsListQuery,
@@ -14830,7 +14426,6 @@ export function useAdminInnovationHubsListLazyQuery(
     SchemaTypes.AdminInnovationHubsListQueryVariables
   >(AdminInnovationHubsListDocument, options);
 }
-
 export function useAdminInnovationHubsListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -14845,7 +14440,6 @@ export function useAdminInnovationHubsListSuspenseQuery(
     SchemaTypes.AdminInnovationHubsListQueryVariables
   >(AdminInnovationHubsListDocument, options);
 }
-
 export type AdminInnovationHubsListQueryHookResult = ReturnType<typeof useAdminInnovationHubsListQuery>;
 export type AdminInnovationHubsListLazyQueryHookResult = ReturnType<typeof useAdminInnovationHubsListLazyQuery>;
 export type AdminInnovationHubsListSuspenseQueryHookResult = ReturnType<typeof useAdminInnovationHubsListSuspenseQuery>;
@@ -14856,7 +14450,6 @@ export type AdminInnovationHubsListQueryResult = Apollo.QueryResult<
 export function refetchAdminInnovationHubsListQuery(variables?: SchemaTypes.AdminInnovationHubsListQueryVariables) {
   return { query: AdminInnovationHubsListDocument, variables: variables };
 }
-
 export const DeleteInnovationHubDocument = gql`
   mutation deleteInnovationHub($innovationHubId: UUID!) {
     deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
@@ -14898,7 +14491,6 @@ export function useDeleteInnovationHubMutation(
     options
   );
 }
-
 export type DeleteInnovationHubMutationHookResult = ReturnType<typeof useDeleteInnovationHubMutation>;
 export type DeleteInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInnovationHubMutation>;
 export type DeleteInnovationHubMutationOptions = Apollo.BaseMutationOptions<
@@ -14947,7 +14539,6 @@ export function useCreateInnovationHubMutation(
     options
   );
 }
-
 export type CreateInnovationHubMutationHookResult = ReturnType<typeof useCreateInnovationHubMutation>;
 export type CreateInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationHubMutation>;
 export type CreateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
@@ -14996,7 +14587,6 @@ export function useUpdateInnovationHubMutation(
     options
   );
 }
-
 export type UpdateInnovationHubMutationHookResult = ReturnType<typeof useUpdateInnovationHubMutation>;
 export type UpdateInnovationHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationHubMutation>;
 export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
@@ -15039,7 +14629,6 @@ export function useInnovationHubAvailableSpacesQuery(
     SchemaTypes.InnovationHubAvailableSpacesQueryVariables
   >(InnovationHubAvailableSpacesDocument, options);
 }
-
 export function useInnovationHubAvailableSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationHubAvailableSpacesQuery,
@@ -15052,7 +14641,6 @@ export function useInnovationHubAvailableSpacesLazyQuery(
     SchemaTypes.InnovationHubAvailableSpacesQueryVariables
   >(InnovationHubAvailableSpacesDocument, options);
 }
-
 export function useInnovationHubAvailableSpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15067,7 +14655,6 @@ export function useInnovationHubAvailableSpacesSuspenseQuery(
     SchemaTypes.InnovationHubAvailableSpacesQueryVariables
   >(InnovationHubAvailableSpacesDocument, options);
 }
-
 export type InnovationHubAvailableSpacesQueryHookResult = ReturnType<typeof useInnovationHubAvailableSpacesQuery>;
 export type InnovationHubAvailableSpacesLazyQueryHookResult = ReturnType<
   typeof useInnovationHubAvailableSpacesLazyQuery
@@ -15084,7 +14671,6 @@ export function refetchInnovationHubAvailableSpacesQuery(
 ) {
   return { query: InnovationHubAvailableSpacesDocument, variables: variables };
 }
-
 export const InnovationHubSettingsDocument = gql`
   query InnovationHubSettings($innovationHubId: UUID!) {
     platform {
@@ -15126,7 +14712,6 @@ export function useInnovationHubSettingsQuery(
     options
   );
 }
-
 export function useInnovationHubSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationHubSettingsQuery,
@@ -15139,7 +14724,6 @@ export function useInnovationHubSettingsLazyQuery(
     options
   );
 }
-
 export function useInnovationHubSettingsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15154,7 +14738,6 @@ export function useInnovationHubSettingsSuspenseQuery(
     SchemaTypes.InnovationHubSettingsQueryVariables
   >(InnovationHubSettingsDocument, options);
 }
-
 export type InnovationHubSettingsQueryHookResult = ReturnType<typeof useInnovationHubSettingsQuery>;
 export type InnovationHubSettingsLazyQueryHookResult = ReturnType<typeof useInnovationHubSettingsLazyQuery>;
 export type InnovationHubSettingsSuspenseQueryHookResult = ReturnType<typeof useInnovationHubSettingsSuspenseQuery>;
@@ -15165,7 +14748,6 @@ export type InnovationHubSettingsQueryResult = Apollo.QueryResult<
 export function refetchInnovationHubSettingsQuery(variables: SchemaTypes.InnovationHubSettingsQueryVariables) {
   return { query: InnovationHubSettingsDocument, variables: variables };
 }
-
 export const InnovationHubDocument = gql`
   query InnovationHub($subdomain: String) {
     platform {
@@ -15203,7 +14785,6 @@ export function useInnovationHubQuery(
     options
   );
 }
-
 export function useInnovationHubLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationHubQuery, SchemaTypes.InnovationHubQueryVariables>
 ) {
@@ -15213,7 +14794,6 @@ export function useInnovationHubLazyQuery(
     options
   );
 }
-
 export function useInnovationHubSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15225,7 +14805,6 @@ export function useInnovationHubSuspenseQuery(
     options
   );
 }
-
 export type InnovationHubQueryHookResult = ReturnType<typeof useInnovationHubQuery>;
 export type InnovationHubLazyQueryHookResult = ReturnType<typeof useInnovationHubLazyQuery>;
 export type InnovationHubSuspenseQueryHookResult = ReturnType<typeof useInnovationHubSuspenseQuery>;
@@ -15236,7 +14815,6 @@ export type InnovationHubQueryResult = Apollo.QueryResult<
 export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQueryVariables) {
   return { query: InnovationHubDocument, variables: variables };
 }
-
 export const PlatformLevelAuthorizationDocument = gql`
   query PlatformLevelAuthorization {
     platform {
@@ -15279,7 +14857,6 @@ export function usePlatformLevelAuthorizationQuery(
     SchemaTypes.PlatformLevelAuthorizationQueryVariables
   >(PlatformLevelAuthorizationDocument, options);
 }
-
 export function usePlatformLevelAuthorizationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PlatformLevelAuthorizationQuery,
@@ -15292,7 +14869,6 @@ export function usePlatformLevelAuthorizationLazyQuery(
     SchemaTypes.PlatformLevelAuthorizationQueryVariables
   >(PlatformLevelAuthorizationDocument, options);
 }
-
 export function usePlatformLevelAuthorizationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15307,7 +14883,6 @@ export function usePlatformLevelAuthorizationSuspenseQuery(
     SchemaTypes.PlatformLevelAuthorizationQueryVariables
   >(PlatformLevelAuthorizationDocument, options);
 }
-
 export type PlatformLevelAuthorizationQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationQuery>;
 export type PlatformLevelAuthorizationLazyQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationLazyQuery>;
 export type PlatformLevelAuthorizationSuspenseQueryHookResult = ReturnType<
@@ -15322,7 +14897,6 @@ export function refetchPlatformLevelAuthorizationQuery(
 ) {
   return { query: PlatformLevelAuthorizationDocument, variables: variables };
 }
-
 export const PlatformRoleSetDocument = gql`
   query PlatformRoleSet {
     platform {
@@ -15357,7 +14931,6 @@ export function usePlatformRoleSetQuery(
     options
   );
 }
-
 export function usePlatformRoleSetLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlatformRoleSetQuery, SchemaTypes.PlatformRoleSetQueryVariables>
 ) {
@@ -15367,7 +14940,6 @@ export function usePlatformRoleSetLazyQuery(
     options
   );
 }
-
 export function usePlatformRoleSetSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15379,7 +14951,6 @@ export function usePlatformRoleSetSuspenseQuery(
     options
   );
 }
-
 export type PlatformRoleSetQueryHookResult = ReturnType<typeof usePlatformRoleSetQuery>;
 export type PlatformRoleSetLazyQueryHookResult = ReturnType<typeof usePlatformRoleSetLazyQuery>;
 export type PlatformRoleSetSuspenseQueryHookResult = ReturnType<typeof usePlatformRoleSetSuspenseQuery>;
@@ -15390,7 +14961,6 @@ export type PlatformRoleSetQueryResult = Apollo.QueryResult<
 export function refetchPlatformRoleSetQuery(variables?: SchemaTypes.PlatformRoleSetQueryVariables) {
   return { query: PlatformRoleSetDocument, variables: variables };
 }
-
 export const AssignLicensePlanToAccountDocument = gql`
   mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
     assignLicensePlanToAccount(
@@ -15436,7 +15006,6 @@ export function useAssignLicensePlanToAccountMutation(
     SchemaTypes.AssignLicensePlanToAccountMutationVariables
   >(AssignLicensePlanToAccountDocument, options);
 }
-
 export type AssignLicensePlanToAccountMutationHookResult = ReturnType<typeof useAssignLicensePlanToAccountMutation>;
 export type AssignLicensePlanToAccountMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignLicensePlanToAccountMutation>;
@@ -15489,7 +15058,6 @@ export function useRevokeLicensePlanFromAccountMutation(
     SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
   >(RevokeLicensePlanFromAccountDocument, options);
 }
-
 export type RevokeLicensePlanFromAccountMutationHookResult = ReturnType<typeof useRevokeLicensePlanFromAccountMutation>;
 export type RevokeLicensePlanFromAccountMutationResult =
   Apollo.MutationResult<SchemaTypes.RevokeLicensePlanFromAccountMutation>;
@@ -15561,7 +15129,6 @@ export function useAdminGlobalOrganizationsListQuery(
     SchemaTypes.AdminGlobalOrganizationsListQueryVariables
   >(AdminGlobalOrganizationsListDocument, options);
 }
-
 export function useAdminGlobalOrganizationsListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AdminGlobalOrganizationsListQuery,
@@ -15574,7 +15141,6 @@ export function useAdminGlobalOrganizationsListLazyQuery(
     SchemaTypes.AdminGlobalOrganizationsListQueryVariables
   >(AdminGlobalOrganizationsListDocument, options);
 }
-
 export function useAdminGlobalOrganizationsListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15589,7 +15155,6 @@ export function useAdminGlobalOrganizationsListSuspenseQuery(
     SchemaTypes.AdminGlobalOrganizationsListQueryVariables
   >(AdminGlobalOrganizationsListDocument, options);
 }
-
 export type AdminGlobalOrganizationsListQueryHookResult = ReturnType<typeof useAdminGlobalOrganizationsListQuery>;
 export type AdminGlobalOrganizationsListLazyQueryHookResult = ReturnType<
   typeof useAdminGlobalOrganizationsListLazyQuery
@@ -15606,7 +15171,6 @@ export function refetchAdminGlobalOrganizationsListQuery(
 ) {
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
-
 export const AdminOrganizationVerifyDocument = gql`
   mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
     eventOnOrganizationVerification(eventData: $input) {
@@ -15650,7 +15214,6 @@ export function useAdminOrganizationVerifyMutation(
     SchemaTypes.AdminOrganizationVerifyMutationVariables
   >(AdminOrganizationVerifyDocument, options);
 }
-
 export type AdminOrganizationVerifyMutationHookResult = ReturnType<typeof useAdminOrganizationVerifyMutation>;
 export type AdminOrganizationVerifyMutationResult = Apollo.MutationResult<SchemaTypes.AdminOrganizationVerifyMutation>;
 export type AdminOrganizationVerifyMutationOptions = Apollo.BaseMutationOptions<
@@ -15702,7 +15265,6 @@ export function useAssignLicensePlanToSpaceMutation(
     SchemaTypes.AssignLicensePlanToSpaceMutationVariables
   >(AssignLicensePlanToSpaceDocument, options);
 }
-
 export type AssignLicensePlanToSpaceMutationHookResult = ReturnType<typeof useAssignLicensePlanToSpaceMutation>;
 export type AssignLicensePlanToSpaceMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignLicensePlanToSpaceMutation>;
@@ -15755,7 +15317,6 @@ export function useRevokeLicensePlanFromSpaceMutation(
     SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
   >(RevokeLicensePlanFromSpaceDocument, options);
 }
-
 export type RevokeLicensePlanFromSpaceMutationHookResult = ReturnType<typeof useRevokeLicensePlanFromSpaceMutation>;
 export type RevokeLicensePlanFromSpaceMutationResult =
   Apollo.MutationResult<SchemaTypes.RevokeLicensePlanFromSpaceMutation>;
@@ -15808,7 +15369,6 @@ export function useUpdateSpacePlatformSettingsMutation(
     SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
   >(UpdateSpacePlatformSettingsDocument, options);
 }
-
 export type UpdateSpacePlatformSettingsMutationHookResult = ReturnType<typeof useUpdateSpacePlatformSettingsMutation>;
 export type UpdateSpacePlatformSettingsMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateSpacePlatformSettingsMutation>;
@@ -15849,7 +15409,6 @@ export function useAdminSpacesListQuery(
     options
   );
 }
-
 export function useAdminSpacesListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>
 ) {
@@ -15859,7 +15418,6 @@ export function useAdminSpacesListLazyQuery(
     options
   );
 }
-
 export function useAdminSpacesListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15871,7 +15429,6 @@ export function useAdminSpacesListSuspenseQuery(
     options
   );
 }
-
 export type AdminSpacesListQueryHookResult = ReturnType<typeof useAdminSpacesListQuery>;
 export type AdminSpacesListLazyQueryHookResult = ReturnType<typeof useAdminSpacesListLazyQuery>;
 export type AdminSpacesListSuspenseQueryHookResult = ReturnType<typeof useAdminSpacesListSuspenseQuery>;
@@ -15882,7 +15439,6 @@ export type AdminSpacesListQueryResult = Apollo.QueryResult<
 export function refetchAdminSpacesListQuery(variables?: SchemaTypes.AdminSpacesListQueryVariables) {
   return { query: AdminSpacesListDocument, variables: variables };
 }
-
 export const UserListDocument = gql`
   query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
@@ -15938,14 +15494,12 @@ export function useUserListQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
 }
-
 export function useUserListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
 }
-
 export function useUserListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -15957,7 +15511,6 @@ export function useUserListSuspenseQuery(
     options
   );
 }
-
 export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
 export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
 export type UserListSuspenseQueryHookResult = ReturnType<typeof useUserListSuspenseQuery>;
@@ -15965,7 +15518,6 @@ export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, 
 export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
   return { query: UserListDocument, variables: variables };
 }
-
 export const AdminVirtualContributorsDocument = gql`
   query AdminVirtualContributors {
     virtualContributors {
@@ -16015,7 +15567,6 @@ export function useAdminVirtualContributorsQuery(
     options
   );
 }
-
 export function useAdminVirtualContributorsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AdminVirtualContributorsQuery,
@@ -16028,7 +15579,6 @@ export function useAdminVirtualContributorsLazyQuery(
     SchemaTypes.AdminVirtualContributorsQueryVariables
   >(AdminVirtualContributorsDocument, options);
 }
-
 export function useAdminVirtualContributorsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16043,7 +15593,6 @@ export function useAdminVirtualContributorsSuspenseQuery(
     SchemaTypes.AdminVirtualContributorsQueryVariables
   >(AdminVirtualContributorsDocument, options);
 }
-
 export type AdminVirtualContributorsQueryHookResult = ReturnType<typeof useAdminVirtualContributorsQuery>;
 export type AdminVirtualContributorsLazyQueryHookResult = ReturnType<typeof useAdminVirtualContributorsLazyQuery>;
 export type AdminVirtualContributorsSuspenseQueryHookResult = ReturnType<
@@ -16056,7 +15605,6 @@ export type AdminVirtualContributorsQueryResult = Apollo.QueryResult<
 export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.AdminVirtualContributorsQueryVariables) {
   return { query: AdminVirtualContributorsDocument, variables: variables };
 }
-
 export const ConfigurationDocument = gql`
   query configuration {
     platform {
@@ -16103,7 +15651,6 @@ export function useConfigurationQuery(
     options
   );
 }
-
 export function useConfigurationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ConfigurationQuery, SchemaTypes.ConfigurationQueryVariables>
 ) {
@@ -16113,7 +15660,6 @@ export function useConfigurationLazyQuery(
     options
   );
 }
-
 export function useConfigurationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16125,7 +15671,6 @@ export function useConfigurationSuspenseQuery(
     options
   );
 }
-
 export type ConfigurationQueryHookResult = ReturnType<typeof useConfigurationQuery>;
 export type ConfigurationLazyQueryHookResult = ReturnType<typeof useConfigurationLazyQuery>;
 export type ConfigurationSuspenseQueryHookResult = ReturnType<typeof useConfigurationSuspenseQuery>;
@@ -16136,7 +15681,6 @@ export type ConfigurationQueryResult = Apollo.QueryResult<
 export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
   return { query: ConfigurationDocument, variables: variables };
 }
-
 export const PlatformLicensingPlansDocument = gql`
   query platformLicensingPlans {
     platform {
@@ -16180,7 +15724,6 @@ export function usePlatformLicensingPlansQuery(
     options
   );
 }
-
 export function usePlatformLicensingPlansLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PlatformLicensingPlansQuery,
@@ -16193,7 +15736,6 @@ export function usePlatformLicensingPlansLazyQuery(
     options
   );
 }
-
 export function usePlatformLicensingPlansSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16208,7 +15750,6 @@ export function usePlatformLicensingPlansSuspenseQuery(
     SchemaTypes.PlatformLicensingPlansQueryVariables
   >(PlatformLicensingPlansDocument, options);
 }
-
 export type PlatformLicensingPlansQueryHookResult = ReturnType<typeof usePlatformLicensingPlansQuery>;
 export type PlatformLicensingPlansLazyQueryHookResult = ReturnType<typeof usePlatformLicensingPlansLazyQuery>;
 export type PlatformLicensingPlansSuspenseQueryHookResult = ReturnType<typeof usePlatformLicensingPlansSuspenseQuery>;
@@ -16219,7 +15760,6 @@ export type PlatformLicensingPlansQueryResult = Apollo.QueryResult<
 export function refetchPlatformLicensingPlansQuery(variables?: SchemaTypes.PlatformLicensingPlansQueryVariables) {
   return { query: PlatformLicensingPlansDocument, variables: variables };
 }
-
 export const ShareLinkWithUserDocument = gql`
   mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)
@@ -16259,7 +15799,6 @@ export function useShareLinkWithUserMutation(
     options
   );
 }
-
 export type ShareLinkWithUserMutationHookResult = ReturnType<typeof useShareLinkWithUserMutation>;
 export type ShareLinkWithUserMutationResult = Apollo.MutationResult<SchemaTypes.ShareLinkWithUserMutation>;
 export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
@@ -16313,7 +15852,6 @@ export function useSpaceAboutBaseQuery(
     options
   );
 }
-
 export function useSpaceAboutBaseLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceAboutBaseQuery, SchemaTypes.SpaceAboutBaseQueryVariables>
 ) {
@@ -16323,7 +15861,6 @@ export function useSpaceAboutBaseLazyQuery(
     options
   );
 }
-
 export function useSpaceAboutBaseSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16335,7 +15872,6 @@ export function useSpaceAboutBaseSuspenseQuery(
     options
   );
 }
-
 export type SpaceAboutBaseQueryHookResult = ReturnType<typeof useSpaceAboutBaseQuery>;
 export type SpaceAboutBaseLazyQueryHookResult = ReturnType<typeof useSpaceAboutBaseLazyQuery>;
 export type SpaceAboutBaseSuspenseQueryHookResult = ReturnType<typeof useSpaceAboutBaseSuspenseQuery>;
@@ -16346,7 +15882,6 @@ export type SpaceAboutBaseQueryResult = Apollo.QueryResult<
 export function refetchSpaceAboutBaseQuery(variables: SchemaTypes.SpaceAboutBaseQueryVariables) {
   return { query: SpaceAboutBaseDocument, variables: variables };
 }
-
 export const SpaceAboutDetailsDocument = gql`
   query SpaceAboutDetails($spaceId: UUID!) {
     lookup {
@@ -16396,7 +15931,6 @@ export function useSpaceAboutDetailsQuery(
     options
   );
 }
-
 export function useSpaceAboutDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceAboutDetailsQuery,
@@ -16409,7 +15943,6 @@ export function useSpaceAboutDetailsLazyQuery(
     options
   );
 }
-
 export function useSpaceAboutDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16421,7 +15954,6 @@ export function useSpaceAboutDetailsSuspenseQuery(
     options
   );
 }
-
 export type SpaceAboutDetailsQueryHookResult = ReturnType<typeof useSpaceAboutDetailsQuery>;
 export type SpaceAboutDetailsLazyQueryHookResult = ReturnType<typeof useSpaceAboutDetailsLazyQuery>;
 export type SpaceAboutDetailsSuspenseQueryHookResult = ReturnType<typeof useSpaceAboutDetailsSuspenseQuery>;
@@ -16432,7 +15964,6 @@ export type SpaceAboutDetailsQueryResult = Apollo.QueryResult<
 export function refetchSpaceAboutDetailsQuery(variables: SchemaTypes.SpaceAboutDetailsQueryVariables) {
   return { query: SpaceAboutDetailsDocument, variables: variables };
 }
-
 export const SpaceAboutFullDocument = gql`
   query SpaceAboutFull($spaceId: UUID!) {
     lookup {
@@ -16479,7 +16010,6 @@ export function useSpaceAboutFullQuery(
     options
   );
 }
-
 export function useSpaceAboutFullLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceAboutFullQuery, SchemaTypes.SpaceAboutFullQueryVariables>
 ) {
@@ -16489,7 +16019,6 @@ export function useSpaceAboutFullLazyQuery(
     options
   );
 }
-
 export function useSpaceAboutFullSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16501,7 +16030,6 @@ export function useSpaceAboutFullSuspenseQuery(
     options
   );
 }
-
 export type SpaceAboutFullQueryHookResult = ReturnType<typeof useSpaceAboutFullQuery>;
 export type SpaceAboutFullLazyQueryHookResult = ReturnType<typeof useSpaceAboutFullLazyQuery>;
 export type SpaceAboutFullSuspenseQueryHookResult = ReturnType<typeof useSpaceAboutFullSuspenseQuery>;
@@ -16512,7 +16040,6 @@ export type SpaceAboutFullQueryResult = Apollo.QueryResult<
 export function refetchSpaceAboutFullQuery(variables: SchemaTypes.SpaceAboutFullQueryVariables) {
   return { query: SpaceAboutFullDocument, variables: variables };
 }
-
 export const SubspacePageBannerDocument = gql`
   query SubspacePageBanner($level0Space: UUID!, $spaceId: UUID!) {
     lookup {
@@ -16585,7 +16112,6 @@ export function useSubspacePageBannerQuery(
     options
   );
 }
-
 export function useSubspacePageBannerLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SubspacePageBannerQuery,
@@ -16598,7 +16124,6 @@ export function useSubspacePageBannerLazyQuery(
     options
   );
 }
-
 export function useSubspacePageBannerSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16610,7 +16135,6 @@ export function useSubspacePageBannerSuspenseQuery(
     options
   );
 }
-
 export type SubspacePageBannerQueryHookResult = ReturnType<typeof useSubspacePageBannerQuery>;
 export type SubspacePageBannerLazyQueryHookResult = ReturnType<typeof useSubspacePageBannerLazyQuery>;
 export type SubspacePageBannerSuspenseQueryHookResult = ReturnType<typeof useSubspacePageBannerSuspenseQuery>;
@@ -16621,7 +16145,6 @@ export type SubspacePageBannerQueryResult = Apollo.QueryResult<
 export function refetchSubspacePageBannerQuery(variables: SchemaTypes.SubspacePageBannerQueryVariables) {
   return { query: SubspacePageBannerDocument, variables: variables };
 }
-
 export const SpaceBreadcrumbsDocument = gql`
   query SpaceBreadcrumbs(
     $spaceId: UUID!
@@ -16676,7 +16199,6 @@ export function useSpaceBreadcrumbsQuery(
     options
   );
 }
-
 export function useSpaceBreadcrumbsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceBreadcrumbsQuery,
@@ -16689,7 +16211,6 @@ export function useSpaceBreadcrumbsLazyQuery(
     options
   );
 }
-
 export function useSpaceBreadcrumbsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16701,7 +16222,6 @@ export function useSpaceBreadcrumbsSuspenseQuery(
     options
   );
 }
-
 export type SpaceBreadcrumbsQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsQuery>;
 export type SpaceBreadcrumbsLazyQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsLazyQuery>;
 export type SpaceBreadcrumbsSuspenseQueryHookResult = ReturnType<typeof useSpaceBreadcrumbsSuspenseQuery>;
@@ -16712,7 +16232,6 @@ export type SpaceBreadcrumbsQueryResult = Apollo.QueryResult<
 export function refetchSpaceBreadcrumbsQuery(variables: SchemaTypes.SpaceBreadcrumbsQueryVariables) {
   return { query: SpaceBreadcrumbsDocument, variables: variables };
 }
-
 export const SpaceDashboardNavigationSubspacesDocument = gql`
   query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
     lookup {
@@ -16774,7 +16293,6 @@ export function useSpaceDashboardNavigationSubspacesQuery(
     SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >(SpaceDashboardNavigationSubspacesDocument, options);
 }
-
 export function useSpaceDashboardNavigationSubspacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceDashboardNavigationSubspacesQuery,
@@ -16787,7 +16305,6 @@ export function useSpaceDashboardNavigationSubspacesLazyQuery(
     SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >(SpaceDashboardNavigationSubspacesDocument, options);
 }
-
 export function useSpaceDashboardNavigationSubspacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16802,7 +16319,6 @@ export function useSpaceDashboardNavigationSubspacesSuspenseQuery(
     SchemaTypes.SpaceDashboardNavigationSubspacesQueryVariables
   >(SpaceDashboardNavigationSubspacesDocument, options);
 }
-
 export type SpaceDashboardNavigationSubspacesQueryHookResult = ReturnType<
   typeof useSpaceDashboardNavigationSubspacesQuery
 >;
@@ -16821,7 +16337,6 @@ export function refetchSpaceDashboardNavigationSubspacesQuery(
 ) {
   return { query: SpaceDashboardNavigationSubspacesDocument, variables: variables };
 }
-
 export const SpaceEntitlementsDocument = gql`
   query SpaceEntitlements($spaceId: UUID!) {
     lookup {
@@ -16865,7 +16380,6 @@ export function useSpaceEntitlementsQuery(
     options
   );
 }
-
 export function useSpaceEntitlementsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceEntitlementsQuery,
@@ -16878,7 +16392,6 @@ export function useSpaceEntitlementsLazyQuery(
     options
   );
 }
-
 export function useSpaceEntitlementsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -16890,7 +16403,6 @@ export function useSpaceEntitlementsSuspenseQuery(
     options
   );
 }
-
 export type SpaceEntitlementsQueryHookResult = ReturnType<typeof useSpaceEntitlementsQuery>;
 export type SpaceEntitlementsLazyQueryHookResult = ReturnType<typeof useSpaceEntitlementsLazyQuery>;
 export type SpaceEntitlementsSuspenseQueryHookResult = ReturnType<typeof useSpaceEntitlementsSuspenseQuery>;
@@ -16901,7 +16413,6 @@ export type SpaceEntitlementsQueryResult = Apollo.QueryResult<
 export function refetchSpaceEntitlementsQuery(variables: SchemaTypes.SpaceEntitlementsQueryVariables) {
   return { query: SpaceEntitlementsDocument, variables: variables };
 }
-
 export const CreateSpaceDocument = gql`
   mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
     createSpace(spaceData: $spaceData) {
@@ -16944,7 +16455,6 @@ export function useCreateSpaceMutation(
     options
   );
 }
-
 export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
 export type CreateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSpaceMutation>;
 export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<
@@ -16998,7 +16508,6 @@ export function usePlansTableQuery(
     options
   );
 }
-
 export function usePlansTableLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
 ) {
@@ -17008,7 +16517,6 @@ export function usePlansTableLazyQuery(
     options
   );
 }
-
 export function usePlansTableSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17020,7 +16528,6 @@ export function usePlansTableSuspenseQuery(
     options
   );
 }
-
 export type PlansTableQueryHookResult = ReturnType<typeof usePlansTableQuery>;
 export type PlansTableLazyQueryHookResult = ReturnType<typeof usePlansTableLazyQuery>;
 export type PlansTableSuspenseQueryHookResult = ReturnType<typeof usePlansTableSuspenseQuery>;
@@ -17031,7 +16538,6 @@ export type PlansTableQueryResult = Apollo.QueryResult<
 export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVariables) {
   return { query: PlansTableDocument, variables: variables };
 }
-
 export const AccountPlanAvailabilityDocument = gql`
   query AccountPlanAvailability($accountId: UUID!) {
     lookup {
@@ -17079,7 +16585,6 @@ export function useAccountPlanAvailabilityQuery(
     options
   );
 }
-
 export function useAccountPlanAvailabilityLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AccountPlanAvailabilityQuery,
@@ -17092,7 +16597,6 @@ export function useAccountPlanAvailabilityLazyQuery(
     SchemaTypes.AccountPlanAvailabilityQueryVariables
   >(AccountPlanAvailabilityDocument, options);
 }
-
 export function useAccountPlanAvailabilitySuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17107,7 +16611,6 @@ export function useAccountPlanAvailabilitySuspenseQuery(
     SchemaTypes.AccountPlanAvailabilityQueryVariables
   >(AccountPlanAvailabilityDocument, options);
 }
-
 export type AccountPlanAvailabilityQueryHookResult = ReturnType<typeof useAccountPlanAvailabilityQuery>;
 export type AccountPlanAvailabilityLazyQueryHookResult = ReturnType<typeof useAccountPlanAvailabilityLazyQuery>;
 export type AccountPlanAvailabilitySuspenseQueryHookResult = ReturnType<typeof useAccountPlanAvailabilitySuspenseQuery>;
@@ -17118,7 +16621,6 @@ export type AccountPlanAvailabilityQueryResult = Apollo.QueryResult<
 export function refetchAccountPlanAvailabilityQuery(variables: SchemaTypes.AccountPlanAvailabilityQueryVariables) {
   return { query: AccountPlanAvailabilityDocument, variables: variables };
 }
-
 export const ContactSupportLocationDocument = gql`
   query ContactSupportLocation {
     platform {
@@ -17158,7 +16660,6 @@ export function useContactSupportLocationQuery(
     options
   );
 }
-
 export function useContactSupportLocationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ContactSupportLocationQuery,
@@ -17171,7 +16672,6 @@ export function useContactSupportLocationLazyQuery(
     options
   );
 }
-
 export function useContactSupportLocationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17186,7 +16686,6 @@ export function useContactSupportLocationSuspenseQuery(
     SchemaTypes.ContactSupportLocationQueryVariables
   >(ContactSupportLocationDocument, options);
 }
-
 export type ContactSupportLocationQueryHookResult = ReturnType<typeof useContactSupportLocationQuery>;
 export type ContactSupportLocationLazyQueryHookResult = ReturnType<typeof useContactSupportLocationLazyQuery>;
 export type ContactSupportLocationSuspenseQueryHookResult = ReturnType<typeof useContactSupportLocationSuspenseQuery>;
@@ -17197,7 +16696,6 @@ export type ContactSupportLocationQueryResult = Apollo.QueryResult<
 export function refetchContactSupportLocationQuery(variables?: SchemaTypes.ContactSupportLocationQueryVariables) {
   return { query: ContactSupportLocationDocument, variables: variables };
 }
-
 export const SpaceTemplatesManagerDocument = gql`
   query SpaceTemplatesManager($spaceId: UUID!) {
     lookup {
@@ -17247,7 +16745,6 @@ export function useSpaceTemplatesManagerQuery(
     options
   );
 }
-
 export function useSpaceTemplatesManagerLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceTemplatesManagerQuery,
@@ -17260,7 +16757,6 @@ export function useSpaceTemplatesManagerLazyQuery(
     options
   );
 }
-
 export function useSpaceTemplatesManagerSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17275,7 +16771,6 @@ export function useSpaceTemplatesManagerSuspenseQuery(
     SchemaTypes.SpaceTemplatesManagerQueryVariables
   >(SpaceTemplatesManagerDocument, options);
 }
-
 export type SpaceTemplatesManagerQueryHookResult = ReturnType<typeof useSpaceTemplatesManagerQuery>;
 export type SpaceTemplatesManagerLazyQueryHookResult = ReturnType<typeof useSpaceTemplatesManagerLazyQuery>;
 export type SpaceTemplatesManagerSuspenseQueryHookResult = ReturnType<typeof useSpaceTemplatesManagerSuspenseQuery>;
@@ -17286,7 +16781,6 @@ export type SpaceTemplatesManagerQueryResult = Apollo.QueryResult<
 export function refetchSpaceTemplatesManagerQuery(variables: SchemaTypes.SpaceTemplatesManagerQueryVariables) {
   return { query: SpaceTemplatesManagerDocument, variables: variables };
 }
-
 export const SpaceSubspaceCardsDocument = gql`
   query SpaceSubspaceCards($spaceId: UUID!) {
     lookup {
@@ -17331,7 +16825,6 @@ export function useSpaceSubspaceCardsQuery(
     options
   );
 }
-
 export function useSpaceSubspaceCardsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceSubspaceCardsQuery,
@@ -17344,7 +16837,6 @@ export function useSpaceSubspaceCardsLazyQuery(
     options
   );
 }
-
 export function useSpaceSubspaceCardsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17356,7 +16848,6 @@ export function useSpaceSubspaceCardsSuspenseQuery(
     options
   );
 }
-
 export type SpaceSubspaceCardsQueryHookResult = ReturnType<typeof useSpaceSubspaceCardsQuery>;
 export type SpaceSubspaceCardsLazyQueryHookResult = ReturnType<typeof useSpaceSubspaceCardsLazyQuery>;
 export type SpaceSubspaceCardsSuspenseQueryHookResult = ReturnType<typeof useSpaceSubspaceCardsSuspenseQuery>;
@@ -17367,7 +16858,6 @@ export type SpaceSubspaceCardsQueryResult = Apollo.QueryResult<
 export function refetchSpaceSubspaceCardsQuery(variables: SchemaTypes.SpaceSubspaceCardsQueryVariables) {
   return { query: SpaceSubspaceCardsDocument, variables: variables };
 }
-
 export const DeleteSpaceDocument = gql`
   mutation deleteSpace($spaceId: UUID!) {
     deleteSpace(deleteData: { ID: $spaceId }) {
@@ -17406,7 +16896,6 @@ export function useDeleteSpaceMutation(
     options
   );
 }
-
 export type DeleteSpaceMutationHookResult = ReturnType<typeof useDeleteSpaceMutation>;
 export type DeleteSpaceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteSpaceMutation>;
 export type DeleteSpaceMutationOptions = Apollo.BaseMutationOptions<
@@ -17452,7 +16941,6 @@ export function useUpdateSpaceMutation(
     options
   );
 }
-
 export type UpdateSpaceMutationHookResult = ReturnType<typeof useUpdateSpaceMutation>;
 export type UpdateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateSpaceMutation>;
 export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<
@@ -17503,7 +16991,6 @@ export function useSubspacesInSpaceQuery(
     options
   );
 }
-
 export function useSubspacesInSpaceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SubspacesInSpaceQuery,
@@ -17516,7 +17003,6 @@ export function useSubspacesInSpaceLazyQuery(
     options
   );
 }
-
 export function useSubspacesInSpaceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17528,7 +17014,6 @@ export function useSubspacesInSpaceSuspenseQuery(
     options
   );
 }
-
 export type SubspacesInSpaceQueryHookResult = ReturnType<typeof useSubspacesInSpaceQuery>;
 export type SubspacesInSpaceLazyQueryHookResult = ReturnType<typeof useSubspacesInSpaceLazyQuery>;
 export type SubspacesInSpaceSuspenseQueryHookResult = ReturnType<typeof useSubspacesInSpaceSuspenseQuery>;
@@ -17539,7 +17024,6 @@ export type SubspacesInSpaceQueryResult = Apollo.QueryResult<
 export function refetchSubspacesInSpaceQuery(variables: SchemaTypes.SubspacesInSpaceQueryVariables) {
   return { query: SubspacesInSpaceDocument, variables: variables };
 }
-
 export const SubspaceCreatedDocument = gql`
   subscription subspaceCreated($subspaceId: UUID!) {
     subspaceCreated(spaceID: $subspaceId) {
@@ -17580,7 +17064,6 @@ export function useSubspaceCreatedSubscription(
     SchemaTypes.SubspaceCreatedSubscriptionVariables
   >(SubspaceCreatedDocument, options);
 }
-
 export type SubspaceCreatedSubscriptionHookResult = ReturnType<typeof useSubspaceCreatedSubscription>;
 export type SubspaceCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.SubspaceCreatedSubscription>;
 export const SpacePermissionsAndEntitlementsDocument = gql`
@@ -17644,7 +17127,6 @@ export function useSpacePermissionsAndEntitlementsQuery(
     SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
   >(SpacePermissionsAndEntitlementsDocument, options);
 }
-
 export function useSpacePermissionsAndEntitlementsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpacePermissionsAndEntitlementsQuery,
@@ -17657,7 +17139,6 @@ export function useSpacePermissionsAndEntitlementsLazyQuery(
     SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
   >(SpacePermissionsAndEntitlementsDocument, options);
 }
-
 export function useSpacePermissionsAndEntitlementsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17672,7 +17153,6 @@ export function useSpacePermissionsAndEntitlementsSuspenseQuery(
     SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
   >(SpacePermissionsAndEntitlementsDocument, options);
 }
-
 export type SpacePermissionsAndEntitlementsQueryHookResult = ReturnType<typeof useSpacePermissionsAndEntitlementsQuery>;
 export type SpacePermissionsAndEntitlementsLazyQueryHookResult = ReturnType<
   typeof useSpacePermissionsAndEntitlementsLazyQuery
@@ -17689,7 +17169,6 @@ export function refetchSpacePermissionsAndEntitlementsQuery(
 ) {
   return { query: SpacePermissionsAndEntitlementsDocument, variables: variables };
 }
-
 export const CreateSubspaceDocument = gql`
   mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
     createSubspace(subspaceData: $input) {
@@ -17753,7 +17232,6 @@ export function useCreateSubspaceMutation(
     options
   );
 }
-
 export type CreateSubspaceMutationHookResult = ReturnType<typeof useCreateSubspaceMutation>;
 export type CreateSubspaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSubspaceMutation>;
 export type CreateSubspaceMutationOptions = Apollo.BaseMutationOptions<
@@ -17797,7 +17275,6 @@ export function useSubspacePageQuery(
     options
   );
 }
-
 export function useSubspacePageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SubspacePageQuery, SchemaTypes.SubspacePageQueryVariables>
 ) {
@@ -17807,7 +17284,6 @@ export function useSubspacePageLazyQuery(
     options
   );
 }
-
 export function useSubspacePageSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17819,7 +17295,6 @@ export function useSubspacePageSuspenseQuery(
     options
   );
 }
-
 export type SubspacePageQueryHookResult = ReturnType<typeof useSubspacePageQuery>;
 export type SubspacePageLazyQueryHookResult = ReturnType<typeof useSubspacePageLazyQuery>;
 export type SubspacePageSuspenseQueryHookResult = ReturnType<typeof useSubspacePageSuspenseQuery>;
@@ -17830,7 +17305,6 @@ export type SubspacePageQueryResult = Apollo.QueryResult<
 export function refetchSubspacePageQuery(variables: SchemaTypes.SubspacePageQueryVariables) {
   return { query: SubspacePageDocument, variables: variables };
 }
-
 export const SpaceTabDocument = gql`
   query SpaceTab($spaceId: UUID!) {
     lookup {
@@ -17889,14 +17363,12 @@ export function useSpaceTabQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>(SpaceTabDocument, options);
 }
-
 export function useSpaceTabLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.SpaceTabQuery, SchemaTypes.SpaceTabQueryVariables>(SpaceTabDocument, options);
 }
-
 export function useSpaceTabSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17908,7 +17380,6 @@ export function useSpaceTabSuspenseQuery(
     options
   );
 }
-
 export type SpaceTabQueryHookResult = ReturnType<typeof useSpaceTabQuery>;
 export type SpaceTabLazyQueryHookResult = ReturnType<typeof useSpaceTabLazyQuery>;
 export type SpaceTabSuspenseQueryHookResult = ReturnType<typeof useSpaceTabSuspenseQuery>;
@@ -17916,7 +17387,6 @@ export type SpaceTabQueryResult = Apollo.QueryResult<SchemaTypes.SpaceTabQuery, 
 export function refetchSpaceTabQuery(variables: SchemaTypes.SpaceTabQueryVariables) {
   return { query: SpaceTabDocument, variables: variables };
 }
-
 export const SpacePageDocument = gql`
   query SpacePage($spaceId: UUID!) {
     lookup {
@@ -17951,7 +17421,6 @@ export function useSpacePageQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.SpacePageQuery, SchemaTypes.SpacePageQueryVariables>(SpacePageDocument, options);
 }
-
 export function useSpacePageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpacePageQuery, SchemaTypes.SpacePageQueryVariables>
 ) {
@@ -17961,7 +17430,6 @@ export function useSpacePageLazyQuery(
     options
   );
 }
-
 export function useSpacePageSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -17973,7 +17441,6 @@ export function useSpacePageSuspenseQuery(
     options
   );
 }
-
 export type SpacePageQueryHookResult = ReturnType<typeof useSpacePageQuery>;
 export type SpacePageLazyQueryHookResult = ReturnType<typeof useSpacePageLazyQuery>;
 export type SpacePageSuspenseQueryHookResult = ReturnType<typeof useSpacePageSuspenseQuery>;
@@ -17981,7 +17448,6 @@ export type SpacePageQueryResult = Apollo.QueryResult<SchemaTypes.SpacePageQuery
 export function refetchSpacePageQuery(variables: SchemaTypes.SpacePageQueryVariables) {
   return { query: SpacePageDocument, variables: variables };
 }
-
 export const SpaceTabsDocument = gql`
   query SpaceTabs($spaceId: UUID!) {
     lookup {
@@ -18028,7 +17494,6 @@ export function useSpaceTabsQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>(SpaceTabsDocument, options);
 }
-
 export function useSpaceTabsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceTabsQuery, SchemaTypes.SpaceTabsQueryVariables>
 ) {
@@ -18038,7 +17503,6 @@ export function useSpaceTabsLazyQuery(
     options
   );
 }
-
 export function useSpaceTabsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18050,7 +17514,6 @@ export function useSpaceTabsSuspenseQuery(
     options
   );
 }
-
 export type SpaceTabsQueryHookResult = ReturnType<typeof useSpaceTabsQuery>;
 export type SpaceTabsLazyQueryHookResult = ReturnType<typeof useSpaceTabsLazyQuery>;
 export type SpaceTabsSuspenseQueryHookResult = ReturnType<typeof useSpaceTabsSuspenseQuery>;
@@ -18058,7 +17521,6 @@ export type SpaceTabsQueryResult = Apollo.QueryResult<SchemaTypes.SpaceTabsQuery
 export function refetchSpaceTabsQuery(variables: SchemaTypes.SpaceTabsQueryVariables) {
   return { query: SpaceTabsDocument, variables: variables };
 }
-
 export const SpaceAccountDocument = gql`
   query SpaceAccount($spaceId: UUID!) {
     lookup {
@@ -18151,7 +17613,6 @@ export function useSpaceAccountQuery(
     options
   );
 }
-
 export function useSpaceAccountLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceAccountQuery, SchemaTypes.SpaceAccountQueryVariables>
 ) {
@@ -18161,7 +17622,6 @@ export function useSpaceAccountLazyQuery(
     options
   );
 }
-
 export function useSpaceAccountSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18173,7 +17633,6 @@ export function useSpaceAccountSuspenseQuery(
     options
   );
 }
-
 export type SpaceAccountQueryHookResult = ReturnType<typeof useSpaceAccountQuery>;
 export type SpaceAccountLazyQueryHookResult = ReturnType<typeof useSpaceAccountLazyQuery>;
 export type SpaceAccountSuspenseQueryHookResult = ReturnType<typeof useSpaceAccountSuspenseQuery>;
@@ -18184,7 +17643,6 @@ export type SpaceAccountQueryResult = Apollo.QueryResult<
 export function refetchSpaceAccountQuery(variables: SchemaTypes.SpaceAccountQueryVariables) {
   return { query: SpaceAccountDocument, variables: variables };
 }
-
 export const CommunityApplicationDocument = gql`
   query CommunityApplication($applicationId: UUID!) {
     lookup {
@@ -18250,7 +17708,6 @@ export function useCommunityApplicationQuery(
     options
   );
 }
-
 export function useCommunityApplicationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CommunityApplicationQuery,
@@ -18263,7 +17720,6 @@ export function useCommunityApplicationLazyQuery(
     options
   );
 }
-
 export function useCommunityApplicationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18278,7 +17734,6 @@ export function useCommunityApplicationSuspenseQuery(
     options
   );
 }
-
 export type CommunityApplicationQueryHookResult = ReturnType<typeof useCommunityApplicationQuery>;
 export type CommunityApplicationLazyQueryHookResult = ReturnType<typeof useCommunityApplicationLazyQuery>;
 export type CommunityApplicationSuspenseQueryHookResult = ReturnType<typeof useCommunityApplicationSuspenseQuery>;
@@ -18289,7 +17744,6 @@ export type CommunityApplicationQueryResult = Apollo.QueryResult<
 export function refetchCommunityApplicationQuery(variables: SchemaTypes.CommunityApplicationQueryVariables) {
   return { query: CommunityApplicationDocument, variables: variables };
 }
-
 export const CommunityInvitationDocument = gql`
   query CommunityInvitation($invitationId: UUID!, $isPlatformInvitation: Boolean!) {
     lookup {
@@ -18358,7 +17812,6 @@ export function useCommunityInvitationQuery(
     options
   );
 }
-
 export function useCommunityInvitationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CommunityInvitationQuery,
@@ -18371,7 +17824,6 @@ export function useCommunityInvitationLazyQuery(
     options
   );
 }
-
 export function useCommunityInvitationSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18386,7 +17838,6 @@ export function useCommunityInvitationSuspenseQuery(
     options
   );
 }
-
 export type CommunityInvitationQueryHookResult = ReturnType<typeof useCommunityInvitationQuery>;
 export type CommunityInvitationLazyQueryHookResult = ReturnType<typeof useCommunityInvitationLazyQuery>;
 export type CommunityInvitationSuspenseQueryHookResult = ReturnType<typeof useCommunityInvitationSuspenseQuery>;
@@ -18397,7 +17848,6 @@ export type CommunityInvitationQueryResult = Apollo.QueryResult<
 export function refetchCommunityInvitationQuery(variables: SchemaTypes.CommunityInvitationQueryVariables) {
   return { query: CommunityInvitationDocument, variables: variables };
 }
-
 export const AvailableVirtualContributorsInLibraryDocument = gql`
   query AvailableVirtualContributorsInLibrary {
     platform {
@@ -18441,7 +17891,6 @@ export function useAvailableVirtualContributorsInLibraryQuery(
     SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
   >(AvailableVirtualContributorsInLibraryDocument, options);
 }
-
 export function useAvailableVirtualContributorsInLibraryLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
@@ -18454,7 +17903,6 @@ export function useAvailableVirtualContributorsInLibraryLazyQuery(
     SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
   >(AvailableVirtualContributorsInLibraryDocument, options);
 }
-
 export function useAvailableVirtualContributorsInLibrarySuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18469,7 +17917,6 @@ export function useAvailableVirtualContributorsInLibrarySuspenseQuery(
     SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
   >(AvailableVirtualContributorsInLibraryDocument, options);
 }
-
 export type AvailableVirtualContributorsInLibraryQueryHookResult = ReturnType<
   typeof useAvailableVirtualContributorsInLibraryQuery
 >;
@@ -18488,7 +17935,6 @@ export function refetchAvailableVirtualContributorsInLibraryQuery(
 ) {
   return { query: AvailableVirtualContributorsInLibraryDocument, variables: variables };
 }
-
 export const AvailableVirtualContributorsInSpaceAccountDocument = gql`
   query AvailableVirtualContributorsInSpaceAccount($spaceId: UUID!) {
     lookup {
@@ -18538,7 +17984,6 @@ export function useAvailableVirtualContributorsInSpaceAccountQuery(
     SchemaTypes.AvailableVirtualContributorsInSpaceAccountQueryVariables
   >(AvailableVirtualContributorsInSpaceAccountDocument, options);
 }
-
 export function useAvailableVirtualContributorsInSpaceAccountLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AvailableVirtualContributorsInSpaceAccountQuery,
@@ -18551,7 +17996,6 @@ export function useAvailableVirtualContributorsInSpaceAccountLazyQuery(
     SchemaTypes.AvailableVirtualContributorsInSpaceAccountQueryVariables
   >(AvailableVirtualContributorsInSpaceAccountDocument, options);
 }
-
 export function useAvailableVirtualContributorsInSpaceAccountSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18566,7 +18010,6 @@ export function useAvailableVirtualContributorsInSpaceAccountSuspenseQuery(
     SchemaTypes.AvailableVirtualContributorsInSpaceAccountQueryVariables
   >(AvailableVirtualContributorsInSpaceAccountDocument, options);
 }
-
 export type AvailableVirtualContributorsInSpaceAccountQueryHookResult = ReturnType<
   typeof useAvailableVirtualContributorsInSpaceAccountQuery
 >;
@@ -18585,7 +18028,6 @@ export function refetchAvailableVirtualContributorsInSpaceAccountQuery(
 ) {
   return { query: AvailableVirtualContributorsInSpaceAccountDocument, variables: variables };
 }
-
 export const AvailableVirtualContributorsInSpaceL0Document = gql`
   query AvailableVirtualContributorsInSpaceL0($spaceId: UUID!) {
     lookup {
@@ -18635,7 +18077,6 @@ export function useAvailableVirtualContributorsInSpaceL0Query(
     SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
   >(AvailableVirtualContributorsInSpaceL0Document, options);
 }
-
 export function useAvailableVirtualContributorsInSpaceL0LazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
@@ -18648,7 +18089,6 @@ export function useAvailableVirtualContributorsInSpaceL0LazyQuery(
     SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
   >(AvailableVirtualContributorsInSpaceL0Document, options);
 }
-
 export function useAvailableVirtualContributorsInSpaceL0SuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18663,7 +18103,6 @@ export function useAvailableVirtualContributorsInSpaceL0SuspenseQuery(
     SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
   >(AvailableVirtualContributorsInSpaceL0Document, options);
 }
-
 export type AvailableVirtualContributorsInSpaceL0QueryHookResult = ReturnType<
   typeof useAvailableVirtualContributorsInSpaceL0Query
 >;
@@ -18682,7 +18121,6 @@ export function refetchAvailableVirtualContributorsInSpaceL0Query(
 ) {
   return { query: AvailableVirtualContributorsInSpaceL0Document, variables: variables };
 }
-
 export const SpaceSettingsDocument = gql`
   query SpaceSettings($spaceId: UUID!) {
     lookup {
@@ -18740,7 +18178,6 @@ export function useSpaceSettingsQuery(
     options
   );
 }
-
 export function useSpaceSettingsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceSettingsQuery, SchemaTypes.SpaceSettingsQueryVariables>
 ) {
@@ -18750,7 +18187,6 @@ export function useSpaceSettingsLazyQuery(
     options
   );
 }
-
 export function useSpaceSettingsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18762,7 +18198,6 @@ export function useSpaceSettingsSuspenseQuery(
     options
   );
 }
-
 export type SpaceSettingsQueryHookResult = ReturnType<typeof useSpaceSettingsQuery>;
 export type SpaceSettingsLazyQueryHookResult = ReturnType<typeof useSpaceSettingsLazyQuery>;
 export type SpaceSettingsSuspenseQueryHookResult = ReturnType<typeof useSpaceSettingsSuspenseQuery>;
@@ -18773,7 +18208,6 @@ export type SpaceSettingsQueryResult = Apollo.QueryResult<
 export function refetchSpaceSettingsQuery(variables: SchemaTypes.SpaceSettingsQueryVariables) {
   return { query: SpaceSettingsDocument, variables: variables };
 }
-
 export const UpdateSpaceSettingsDocument = gql`
   mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
     updateSpaceSettings(settingsData: $settingsData) {
@@ -18832,7 +18266,6 @@ export function useUpdateSpaceSettingsMutation(
     options
   );
 }
-
 export type UpdateSpaceSettingsMutationHookResult = ReturnType<typeof useUpdateSpaceSettingsMutation>;
 export type UpdateSpaceSettingsMutationResult = Apollo.MutationResult<SchemaTypes.UpdateSpaceSettingsMutation>;
 export type UpdateSpaceSettingsMutationOptions = Apollo.BaseMutationOptions<
@@ -18886,7 +18319,6 @@ export function useSpaceStorageAdminPageQuery(
     options
   );
 }
-
 export function useSpaceStorageAdminPageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceStorageAdminPageQuery,
@@ -18899,7 +18331,6 @@ export function useSpaceStorageAdminPageLazyQuery(
     options
   );
 }
-
 export function useSpaceStorageAdminPageSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18914,7 +18345,6 @@ export function useSpaceStorageAdminPageSuspenseQuery(
     SchemaTypes.SpaceStorageAdminPageQueryVariables
   >(SpaceStorageAdminPageDocument, options);
 }
-
 export type SpaceStorageAdminPageQueryHookResult = ReturnType<typeof useSpaceStorageAdminPageQuery>;
 export type SpaceStorageAdminPageLazyQueryHookResult = ReturnType<typeof useSpaceStorageAdminPageLazyQuery>;
 export type SpaceStorageAdminPageSuspenseQueryHookResult = ReturnType<typeof useSpaceStorageAdminPageSuspenseQuery>;
@@ -18925,7 +18355,6 @@ export type SpaceStorageAdminPageQueryResult = Apollo.QueryResult<
 export function refetchSpaceStorageAdminPageQuery(variables: SchemaTypes.SpaceStorageAdminPageQueryVariables) {
   return { query: SpaceStorageAdminPageDocument, variables: variables };
 }
-
 export const StorageAggregatorLookupDocument = gql`
   query StorageAggregatorLookup($storageAggregatorId: UUID!) {
     lookup {
@@ -18966,7 +18395,6 @@ export function useStorageAggregatorLookupQuery(
     options
   );
 }
-
 export function useStorageAggregatorLookupLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.StorageAggregatorLookupQuery,
@@ -18979,7 +18407,6 @@ export function useStorageAggregatorLookupLazyQuery(
     SchemaTypes.StorageAggregatorLookupQueryVariables
   >(StorageAggregatorLookupDocument, options);
 }
-
 export function useStorageAggregatorLookupSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -18994,7 +18421,6 @@ export function useStorageAggregatorLookupSuspenseQuery(
     SchemaTypes.StorageAggregatorLookupQueryVariables
   >(StorageAggregatorLookupDocument, options);
 }
-
 export type StorageAggregatorLookupQueryHookResult = ReturnType<typeof useStorageAggregatorLookupQuery>;
 export type StorageAggregatorLookupLazyQueryHookResult = ReturnType<typeof useStorageAggregatorLookupLazyQuery>;
 export type StorageAggregatorLookupSuspenseQueryHookResult = ReturnType<typeof useStorageAggregatorLookupSuspenseQuery>;
@@ -19005,7 +18431,6 @@ export type StorageAggregatorLookupQueryResult = Apollo.QueryResult<
 export function refetchStorageAggregatorLookupQuery(variables: SchemaTypes.StorageAggregatorLookupQueryVariables) {
   return { query: StorageAggregatorLookupDocument, variables: variables };
 }
-
 export const DeleteDocumentDocument = gql`
   mutation DeleteDocument($documentId: UUID!) {
     deleteDocument(deleteData: { ID: $documentId }) {
@@ -19047,7 +18472,6 @@ export function useDeleteDocumentMutation(
     options
   );
 }
-
 export type DeleteDocumentMutationHookResult = ReturnType<typeof useDeleteDocumentMutation>;
 export type DeleteDocumentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDocumentMutation>;
 export type DeleteDocumentMutationOptions = Apollo.BaseMutationOptions<
@@ -19154,7 +18578,6 @@ export function useSpaceAdminDefaultTemplatesCollaborationDetailsQuery(
     SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
   >(SpaceAdminDefaultTemplatesCollaborationDetailsDocument, options);
 }
-
 export function useSpaceAdminDefaultTemplatesCollaborationDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQuery,
@@ -19167,7 +18590,6 @@ export function useSpaceAdminDefaultTemplatesCollaborationDetailsLazyQuery(
     SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
   >(SpaceAdminDefaultTemplatesCollaborationDetailsDocument, options);
 }
-
 export function useSpaceAdminDefaultTemplatesCollaborationDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19182,7 +18604,6 @@ export function useSpaceAdminDefaultTemplatesCollaborationDetailsSuspenseQuery(
     SchemaTypes.SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables
   >(SpaceAdminDefaultTemplatesCollaborationDetailsDocument, options);
 }
-
 export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryHookResult = ReturnType<
   typeof useSpaceAdminDefaultTemplatesCollaborationDetailsQuery
 >;
@@ -19201,7 +18622,6 @@ export function refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery(
 ) {
   return { query: SpaceAdminDefaultTemplatesCollaborationDetailsDocument, variables: variables };
 }
-
 export const SpacePrivilegesDocument = gql`
   query SpacePrivileges($spaceId: UUID!) {
     lookup {
@@ -19242,7 +18662,6 @@ export function useSpacePrivilegesQuery(
     options
   );
 }
-
 export function useSpacePrivilegesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpacePrivilegesQuery, SchemaTypes.SpacePrivilegesQueryVariables>
 ) {
@@ -19252,7 +18671,6 @@ export function useSpacePrivilegesLazyQuery(
     options
   );
 }
-
 export function useSpacePrivilegesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19264,7 +18682,6 @@ export function useSpacePrivilegesSuspenseQuery(
     options
   );
 }
-
 export type SpacePrivilegesQueryHookResult = ReturnType<typeof useSpacePrivilegesQuery>;
 export type SpacePrivilegesLazyQueryHookResult = ReturnType<typeof useSpacePrivilegesLazyQuery>;
 export type SpacePrivilegesSuspenseQueryHookResult = ReturnType<typeof useSpacePrivilegesSuspenseQuery>;
@@ -19275,7 +18692,6 @@ export type SpacePrivilegesQueryResult = Apollo.QueryResult<
 export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivilegesQueryVariables) {
   return { query: SpacePrivilegesDocument, variables: variables };
 }
-
 export const SpaceStorageConfigDocument = gql`
   query SpaceStorageConfig($spaceId: UUID!) {
     lookup {
@@ -19322,7 +18738,6 @@ export function useSpaceStorageConfigQuery(
     options
   );
 }
-
 export function useSpaceStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceStorageConfigQuery,
@@ -19335,7 +18750,6 @@ export function useSpaceStorageConfigLazyQuery(
     options
   );
 }
-
 export function useSpaceStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19347,7 +18761,6 @@ export function useSpaceStorageConfigSuspenseQuery(
     options
   );
 }
-
 export type SpaceStorageConfigQueryHookResult = ReturnType<typeof useSpaceStorageConfigQuery>;
 export type SpaceStorageConfigLazyQueryHookResult = ReturnType<typeof useSpaceStorageConfigLazyQuery>;
 export type SpaceStorageConfigSuspenseQueryHookResult = ReturnType<typeof useSpaceStorageConfigSuspenseQuery>;
@@ -19358,7 +18771,6 @@ export type SpaceStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchSpaceStorageConfigQuery(variables: SchemaTypes.SpaceStorageConfigQueryVariables) {
   return { query: SpaceStorageConfigDocument, variables: variables };
 }
-
 export const CalloutStorageConfigDocument = gql`
   query CalloutStorageConfig($calloutId: UUID!) {
     lookup {
@@ -19405,7 +18817,6 @@ export function useCalloutStorageConfigQuery(
     options
   );
 }
-
 export function useCalloutStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalloutStorageConfigQuery,
@@ -19418,7 +18829,6 @@ export function useCalloutStorageConfigLazyQuery(
     options
   );
 }
-
 export function useCalloutStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19433,7 +18843,6 @@ export function useCalloutStorageConfigSuspenseQuery(
     options
   );
 }
-
 export type CalloutStorageConfigQueryHookResult = ReturnType<typeof useCalloutStorageConfigQuery>;
 export type CalloutStorageConfigLazyQueryHookResult = ReturnType<typeof useCalloutStorageConfigLazyQuery>;
 export type CalloutStorageConfigSuspenseQueryHookResult = ReturnType<typeof useCalloutStorageConfigSuspenseQuery>;
@@ -19444,7 +18853,6 @@ export type CalloutStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchCalloutStorageConfigQuery(variables: SchemaTypes.CalloutStorageConfigQueryVariables) {
   return { query: CalloutStorageConfigDocument, variables: variables };
 }
-
 export const CalloutPostStorageConfigDocument = gql`
   query CalloutPostStorageConfig($postId: UUID!) {
     lookup {
@@ -19488,7 +18896,6 @@ export function useCalloutPostStorageConfigQuery(
     options
   );
 }
-
 export function useCalloutPostStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalloutPostStorageConfigQuery,
@@ -19501,7 +18908,6 @@ export function useCalloutPostStorageConfigLazyQuery(
     SchemaTypes.CalloutPostStorageConfigQueryVariables
   >(CalloutPostStorageConfigDocument, options);
 }
-
 export function useCalloutPostStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19516,7 +18922,6 @@ export function useCalloutPostStorageConfigSuspenseQuery(
     SchemaTypes.CalloutPostStorageConfigQueryVariables
   >(CalloutPostStorageConfigDocument, options);
 }
-
 export type CalloutPostStorageConfigQueryHookResult = ReturnType<typeof useCalloutPostStorageConfigQuery>;
 export type CalloutPostStorageConfigLazyQueryHookResult = ReturnType<typeof useCalloutPostStorageConfigLazyQuery>;
 export type CalloutPostStorageConfigSuspenseQueryHookResult = ReturnType<
@@ -19529,7 +18934,6 @@ export type CalloutPostStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchCalloutPostStorageConfigQuery(variables: SchemaTypes.CalloutPostStorageConfigQueryVariables) {
   return { query: CalloutPostStorageConfigDocument, variables: variables };
 }
-
 export const UserStorageConfigDocument = gql`
   query UserStorageConfig($userId: UUID!) {
     lookup {
@@ -19573,7 +18977,6 @@ export function useUserStorageConfigQuery(
     options
   );
 }
-
 export function useUserStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserStorageConfigQuery,
@@ -19586,7 +18989,6 @@ export function useUserStorageConfigLazyQuery(
     options
   );
 }
-
 export function useUserStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19598,7 +19000,6 @@ export function useUserStorageConfigSuspenseQuery(
     options
   );
 }
-
 export type UserStorageConfigQueryHookResult = ReturnType<typeof useUserStorageConfigQuery>;
 export type UserStorageConfigLazyQueryHookResult = ReturnType<typeof useUserStorageConfigLazyQuery>;
 export type UserStorageConfigSuspenseQueryHookResult = ReturnType<typeof useUserStorageConfigSuspenseQuery>;
@@ -19609,7 +19010,6 @@ export type UserStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchUserStorageConfigQuery(variables: SchemaTypes.UserStorageConfigQueryVariables) {
   return { query: UserStorageConfigDocument, variables: variables };
 }
-
 export const VirtualContributorStorageConfigDocument = gql`
   query VirtualContributorStorageConfig($virtualContributorId: UUID!) {
     lookup {
@@ -19653,7 +19053,6 @@ export function useVirtualContributorStorageConfigQuery(
     SchemaTypes.VirtualContributorStorageConfigQueryVariables
   >(VirtualContributorStorageConfigDocument, options);
 }
-
 export function useVirtualContributorStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.VirtualContributorStorageConfigQuery,
@@ -19666,7 +19065,6 @@ export function useVirtualContributorStorageConfigLazyQuery(
     SchemaTypes.VirtualContributorStorageConfigQueryVariables
   >(VirtualContributorStorageConfigDocument, options);
 }
-
 export function useVirtualContributorStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19681,7 +19079,6 @@ export function useVirtualContributorStorageConfigSuspenseQuery(
     SchemaTypes.VirtualContributorStorageConfigQueryVariables
   >(VirtualContributorStorageConfigDocument, options);
 }
-
 export type VirtualContributorStorageConfigQueryHookResult = ReturnType<typeof useVirtualContributorStorageConfigQuery>;
 export type VirtualContributorStorageConfigLazyQueryHookResult = ReturnType<
   typeof useVirtualContributorStorageConfigLazyQuery
@@ -19698,7 +19095,6 @@ export function refetchVirtualContributorStorageConfigQuery(
 ) {
   return { query: VirtualContributorStorageConfigDocument, variables: variables };
 }
-
 export const OrganizationStorageConfigDocument = gql`
   query OrganizationStorageConfig($organizationId: UUID!) {
     lookup {
@@ -19742,7 +19138,6 @@ export function useOrganizationStorageConfigQuery(
     SchemaTypes.OrganizationStorageConfigQueryVariables
   >(OrganizationStorageConfigDocument, options);
 }
-
 export function useOrganizationStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.OrganizationStorageConfigQuery,
@@ -19755,7 +19150,6 @@ export function useOrganizationStorageConfigLazyQuery(
     SchemaTypes.OrganizationStorageConfigQueryVariables
   >(OrganizationStorageConfigDocument, options);
 }
-
 export function useOrganizationStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19770,7 +19164,6 @@ export function useOrganizationStorageConfigSuspenseQuery(
     SchemaTypes.OrganizationStorageConfigQueryVariables
   >(OrganizationStorageConfigDocument, options);
 }
-
 export type OrganizationStorageConfigQueryHookResult = ReturnType<typeof useOrganizationStorageConfigQuery>;
 export type OrganizationStorageConfigLazyQueryHookResult = ReturnType<typeof useOrganizationStorageConfigLazyQuery>;
 export type OrganizationStorageConfigSuspenseQueryHookResult = ReturnType<
@@ -19783,7 +19176,6 @@ export type OrganizationStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchOrganizationStorageConfigQuery(variables: SchemaTypes.OrganizationStorageConfigQueryVariables) {
   return { query: OrganizationStorageConfigDocument, variables: variables };
 }
-
 export const InnovationPackStorageConfigDocument = gql`
   query InnovationPackStorageConfig($innovationPackId: UUID!) {
     lookup {
@@ -19827,7 +19219,6 @@ export function useInnovationPackStorageConfigQuery(
     SchemaTypes.InnovationPackStorageConfigQueryVariables
   >(InnovationPackStorageConfigDocument, options);
 }
-
 export function useInnovationPackStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationPackStorageConfigQuery,
@@ -19840,7 +19231,6 @@ export function useInnovationPackStorageConfigLazyQuery(
     SchemaTypes.InnovationPackStorageConfigQueryVariables
   >(InnovationPackStorageConfigDocument, options);
 }
-
 export function useInnovationPackStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19855,7 +19245,6 @@ export function useInnovationPackStorageConfigSuspenseQuery(
     SchemaTypes.InnovationPackStorageConfigQueryVariables
   >(InnovationPackStorageConfigDocument, options);
 }
-
 export type InnovationPackStorageConfigQueryHookResult = ReturnType<typeof useInnovationPackStorageConfigQuery>;
 export type InnovationPackStorageConfigLazyQueryHookResult = ReturnType<typeof useInnovationPackStorageConfigLazyQuery>;
 export type InnovationPackStorageConfigSuspenseQueryHookResult = ReturnType<
@@ -19870,7 +19259,6 @@ export function refetchInnovationPackStorageConfigQuery(
 ) {
   return { query: InnovationPackStorageConfigDocument, variables: variables };
 }
-
 export const InnovationHubStorageConfigDocument = gql`
   query InnovationHubStorageConfig($innovationHubId: UUID!) {
     platform {
@@ -19914,7 +19302,6 @@ export function useInnovationHubStorageConfigQuery(
     SchemaTypes.InnovationHubStorageConfigQueryVariables
   >(InnovationHubStorageConfigDocument, options);
 }
-
 export function useInnovationHubStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationHubStorageConfigQuery,
@@ -19927,7 +19314,6 @@ export function useInnovationHubStorageConfigLazyQuery(
     SchemaTypes.InnovationHubStorageConfigQueryVariables
   >(InnovationHubStorageConfigDocument, options);
 }
-
 export function useInnovationHubStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -19942,7 +19328,6 @@ export function useInnovationHubStorageConfigSuspenseQuery(
     SchemaTypes.InnovationHubStorageConfigQueryVariables
   >(InnovationHubStorageConfigDocument, options);
 }
-
 export type InnovationHubStorageConfigQueryHookResult = ReturnType<typeof useInnovationHubStorageConfigQuery>;
 export type InnovationHubStorageConfigLazyQueryHookResult = ReturnType<typeof useInnovationHubStorageConfigLazyQuery>;
 export type InnovationHubStorageConfigSuspenseQueryHookResult = ReturnType<
@@ -19957,7 +19342,6 @@ export function refetchInnovationHubStorageConfigQuery(
 ) {
   return { query: InnovationHubStorageConfigDocument, variables: variables };
 }
-
 export const TemplateStorageConfigDocument = gql`
   query TemplateStorageConfig($templateId: UUID!) {
     lookup {
@@ -20001,7 +19385,6 @@ export function useTemplateStorageConfigQuery(
     options
   );
 }
-
 export function useTemplateStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.TemplateStorageConfigQuery,
@@ -20014,7 +19397,6 @@ export function useTemplateStorageConfigLazyQuery(
     options
   );
 }
-
 export function useTemplateStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20029,7 +19411,6 @@ export function useTemplateStorageConfigSuspenseQuery(
     SchemaTypes.TemplateStorageConfigQueryVariables
   >(TemplateStorageConfigDocument, options);
 }
-
 export type TemplateStorageConfigQueryHookResult = ReturnType<typeof useTemplateStorageConfigQuery>;
 export type TemplateStorageConfigLazyQueryHookResult = ReturnType<typeof useTemplateStorageConfigLazyQuery>;
 export type TemplateStorageConfigSuspenseQueryHookResult = ReturnType<typeof useTemplateStorageConfigSuspenseQuery>;
@@ -20040,7 +19421,6 @@ export type TemplateStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchTemplateStorageConfigQuery(variables: SchemaTypes.TemplateStorageConfigQueryVariables) {
   return { query: TemplateStorageConfigDocument, variables: variables };
 }
-
 export const PlatformStorageConfigDocument = gql`
   query PlatformStorageConfig {
     platform {
@@ -20092,7 +19472,6 @@ export function usePlatformStorageConfigQuery(
     options
   );
 }
-
 export function usePlatformStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PlatformStorageConfigQuery,
@@ -20105,7 +19484,6 @@ export function usePlatformStorageConfigLazyQuery(
     options
   );
 }
-
 export function usePlatformStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20120,7 +19498,6 @@ export function usePlatformStorageConfigSuspenseQuery(
     SchemaTypes.PlatformStorageConfigQueryVariables
   >(PlatformStorageConfigDocument, options);
 }
-
 export type PlatformStorageConfigQueryHookResult = ReturnType<typeof usePlatformStorageConfigQuery>;
 export type PlatformStorageConfigLazyQueryHookResult = ReturnType<typeof usePlatformStorageConfigLazyQuery>;
 export type PlatformStorageConfigSuspenseQueryHookResult = ReturnType<typeof usePlatformStorageConfigSuspenseQuery>;
@@ -20131,7 +19508,6 @@ export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.PlatformStorageConfigQueryVariables) {
   return { query: PlatformStorageConfigDocument, variables: variables };
 }
-
 export const AccountStorageConfigDocument = gql`
   query AccountStorageConfig($accountId: UUID!) {
     lookup {
@@ -20187,7 +19563,6 @@ export function useAccountStorageConfigQuery(
     options
   );
 }
-
 export function useAccountStorageConfigLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AccountStorageConfigQuery,
@@ -20200,7 +19575,6 @@ export function useAccountStorageConfigLazyQuery(
     options
   );
 }
-
 export function useAccountStorageConfigSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20215,7 +19589,6 @@ export function useAccountStorageConfigSuspenseQuery(
     options
   );
 }
-
 export type AccountStorageConfigQueryHookResult = ReturnType<typeof useAccountStorageConfigQuery>;
 export type AccountStorageConfigLazyQueryHookResult = ReturnType<typeof useAccountStorageConfigLazyQuery>;
 export type AccountStorageConfigSuspenseQueryHookResult = ReturnType<typeof useAccountStorageConfigSuspenseQuery>;
@@ -20226,7 +19599,6 @@ export type AccountStorageConfigQueryResult = Apollo.QueryResult<
 export function refetchAccountStorageConfigQuery(variables: SchemaTypes.AccountStorageConfigQueryVariables) {
   return { query: AccountStorageConfigDocument, variables: variables };
 }
-
 export const SpaceCollaborationTemplatesDocument = gql`
   query SpaceCollaborationTemplates($spaceId: UUID!) {
     lookup {
@@ -20278,7 +19650,6 @@ export function useSpaceCollaborationTemplatesQuery(
     SchemaTypes.SpaceCollaborationTemplatesQueryVariables
   >(SpaceCollaborationTemplatesDocument, options);
 }
-
 export function useSpaceCollaborationTemplatesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceCollaborationTemplatesQuery,
@@ -20291,7 +19662,6 @@ export function useSpaceCollaborationTemplatesLazyQuery(
     SchemaTypes.SpaceCollaborationTemplatesQueryVariables
   >(SpaceCollaborationTemplatesDocument, options);
 }
-
 export function useSpaceCollaborationTemplatesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20306,7 +19676,6 @@ export function useSpaceCollaborationTemplatesSuspenseQuery(
     SchemaTypes.SpaceCollaborationTemplatesQueryVariables
   >(SpaceCollaborationTemplatesDocument, options);
 }
-
 export type SpaceCollaborationTemplatesQueryHookResult = ReturnType<typeof useSpaceCollaborationTemplatesQuery>;
 export type SpaceCollaborationTemplatesLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationTemplatesLazyQuery>;
 export type SpaceCollaborationTemplatesSuspenseQueryHookResult = ReturnType<
@@ -20321,7 +19690,6 @@ export function refetchSpaceCollaborationTemplatesQuery(
 ) {
   return { query: SpaceCollaborationTemplatesDocument, variables: variables };
 }
-
 export const SpaceDefaultTemplatesDocument = gql`
   query SpaceDefaultTemplates($spaceId: UUID!) {
     lookup {
@@ -20375,7 +19743,6 @@ export function useSpaceDefaultTemplatesQuery(
     options
   );
 }
-
 export function useSpaceDefaultTemplatesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceDefaultTemplatesQuery,
@@ -20388,7 +19755,6 @@ export function useSpaceDefaultTemplatesLazyQuery(
     options
   );
 }
-
 export function useSpaceDefaultTemplatesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20403,7 +19769,6 @@ export function useSpaceDefaultTemplatesSuspenseQuery(
     SchemaTypes.SpaceDefaultTemplatesQueryVariables
   >(SpaceDefaultTemplatesDocument, options);
 }
-
 export type SpaceDefaultTemplatesQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesQuery>;
 export type SpaceDefaultTemplatesLazyQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesLazyQuery>;
 export type SpaceDefaultTemplatesSuspenseQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesSuspenseQuery>;
@@ -20414,7 +19779,6 @@ export type SpaceDefaultTemplatesQueryResult = Apollo.QueryResult<
 export function refetchSpaceDefaultTemplatesQuery(variables: SchemaTypes.SpaceDefaultTemplatesQueryVariables) {
   return { query: SpaceDefaultTemplatesDocument, variables: variables };
 }
-
 export const ImportTemplateDialogDocument = gql`
   query ImportTemplateDialog(
     $templatesSetId: UUID!
@@ -20476,7 +19840,6 @@ export function useImportTemplateDialogQuery(
     options
   );
 }
-
 export function useImportTemplateDialogLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ImportTemplateDialogQuery,
@@ -20489,7 +19852,6 @@ export function useImportTemplateDialogLazyQuery(
     options
   );
 }
-
 export function useImportTemplateDialogSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20504,7 +19866,6 @@ export function useImportTemplateDialogSuspenseQuery(
     options
   );
 }
-
 export type ImportTemplateDialogQueryHookResult = ReturnType<typeof useImportTemplateDialogQuery>;
 export type ImportTemplateDialogLazyQueryHookResult = ReturnType<typeof useImportTemplateDialogLazyQuery>;
 export type ImportTemplateDialogSuspenseQueryHookResult = ReturnType<typeof useImportTemplateDialogSuspenseQuery>;
@@ -20515,7 +19876,6 @@ export type ImportTemplateDialogQueryResult = Apollo.QueryResult<
 export function refetchImportTemplateDialogQuery(variables: SchemaTypes.ImportTemplateDialogQueryVariables) {
   return { query: ImportTemplateDialogDocument, variables: variables };
 }
-
 export const ImportTemplateDialogPlatformTemplatesDocument = gql`
   query ImportTemplateDialogPlatformTemplates(
     $templateTypes: [TemplateType!]
@@ -20598,7 +19958,6 @@ export function useImportTemplateDialogPlatformTemplatesQuery(
     SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
   >(ImportTemplateDialogPlatformTemplatesDocument, options);
 }
-
 export function useImportTemplateDialogPlatformTemplatesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ImportTemplateDialogPlatformTemplatesQuery,
@@ -20611,7 +19970,6 @@ export function useImportTemplateDialogPlatformTemplatesLazyQuery(
     SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
   >(ImportTemplateDialogPlatformTemplatesDocument, options);
 }
-
 export function useImportTemplateDialogPlatformTemplatesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20626,7 +19984,6 @@ export function useImportTemplateDialogPlatformTemplatesSuspenseQuery(
     SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
   >(ImportTemplateDialogPlatformTemplatesDocument, options);
 }
-
 export type ImportTemplateDialogPlatformTemplatesQueryHookResult = ReturnType<
   typeof useImportTemplateDialogPlatformTemplatesQuery
 >;
@@ -20645,7 +20002,6 @@ export function refetchImportTemplateDialogPlatformTemplatesQuery(
 ) {
   return { query: ImportTemplateDialogPlatformTemplatesDocument, variables: variables };
 }
-
 export const AllTemplatesInTemplatesSetDocument = gql`
   query AllTemplatesInTemplatesSet($templatesSetId: UUID!) {
     lookup {
@@ -20691,7 +20047,6 @@ export function useAllTemplatesInTemplatesSetQuery(
     SchemaTypes.AllTemplatesInTemplatesSetQueryVariables
   >(AllTemplatesInTemplatesSetDocument, options);
 }
-
 export function useAllTemplatesInTemplatesSetLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AllTemplatesInTemplatesSetQuery,
@@ -20704,7 +20059,6 @@ export function useAllTemplatesInTemplatesSetLazyQuery(
     SchemaTypes.AllTemplatesInTemplatesSetQueryVariables
   >(AllTemplatesInTemplatesSetDocument, options);
 }
-
 export function useAllTemplatesInTemplatesSetSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20719,7 +20073,6 @@ export function useAllTemplatesInTemplatesSetSuspenseQuery(
     SchemaTypes.AllTemplatesInTemplatesSetQueryVariables
   >(AllTemplatesInTemplatesSetDocument, options);
 }
-
 export type AllTemplatesInTemplatesSetQueryHookResult = ReturnType<typeof useAllTemplatesInTemplatesSetQuery>;
 export type AllTemplatesInTemplatesSetLazyQueryHookResult = ReturnType<typeof useAllTemplatesInTemplatesSetLazyQuery>;
 export type AllTemplatesInTemplatesSetSuspenseQueryHookResult = ReturnType<
@@ -20734,7 +20087,6 @@ export function refetchAllTemplatesInTemplatesSetQuery(
 ) {
   return { query: AllTemplatesInTemplatesSetDocument, variables: variables };
 }
-
 export const SpaceCollaborationIdDocument = gql`
   query SpaceCollaborationId($spaceId: UUID!) {
     lookup {
@@ -20780,7 +20132,6 @@ export function useSpaceCollaborationIdQuery(
     options
   );
 }
-
 export function useSpaceCollaborationIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceCollaborationIdQuery,
@@ -20793,7 +20144,6 @@ export function useSpaceCollaborationIdLazyQuery(
     options
   );
 }
-
 export function useSpaceCollaborationIdSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20808,7 +20158,6 @@ export function useSpaceCollaborationIdSuspenseQuery(
     options
   );
 }
-
 export type SpaceCollaborationIdQueryHookResult = ReturnType<typeof useSpaceCollaborationIdQuery>;
 export type SpaceCollaborationIdLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationIdLazyQuery>;
 export type SpaceCollaborationIdSuspenseQueryHookResult = ReturnType<typeof useSpaceCollaborationIdSuspenseQuery>;
@@ -20819,7 +20168,6 @@ export type SpaceCollaborationIdQueryResult = Apollo.QueryResult<
 export function refetchSpaceCollaborationIdQuery(variables: SchemaTypes.SpaceCollaborationIdQueryVariables) {
   return { query: SpaceCollaborationIdDocument, variables: variables };
 }
-
 export const TemplateContentDocument = gql`
   query TemplateContent(
     $templateId: UUID!
@@ -20895,7 +20243,6 @@ export function useTemplateContentQuery(
     options
   );
 }
-
 export function useTemplateContentLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TemplateContentQuery, SchemaTypes.TemplateContentQueryVariables>
 ) {
@@ -20905,7 +20252,6 @@ export function useTemplateContentLazyQuery(
     options
   );
 }
-
 export function useTemplateContentSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20917,7 +20263,6 @@ export function useTemplateContentSuspenseQuery(
     options
   );
 }
-
 export type TemplateContentQueryHookResult = ReturnType<typeof useTemplateContentQuery>;
 export type TemplateContentLazyQueryHookResult = ReturnType<typeof useTemplateContentLazyQuery>;
 export type TemplateContentSuspenseQueryHookResult = ReturnType<typeof useTemplateContentSuspenseQuery>;
@@ -20928,7 +20273,6 @@ export type TemplateContentQueryResult = Apollo.QueryResult<
 export function refetchTemplateContentQuery(variables: SchemaTypes.TemplateContentQueryVariables) {
   return { query: TemplateContentDocument, variables: variables };
 }
-
 export const CollaborationTemplateContentDocument = gql`
   query CollaborationTemplateContent($collaborationId: UUID!) {
     lookup {
@@ -20969,7 +20313,6 @@ export function useCollaborationTemplateContentQuery(
     SchemaTypes.CollaborationTemplateContentQueryVariables
   >(CollaborationTemplateContentDocument, options);
 }
-
 export function useCollaborationTemplateContentLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CollaborationTemplateContentQuery,
@@ -20982,7 +20325,6 @@ export function useCollaborationTemplateContentLazyQuery(
     SchemaTypes.CollaborationTemplateContentQueryVariables
   >(CollaborationTemplateContentDocument, options);
 }
-
 export function useCollaborationTemplateContentSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -20997,7 +20339,6 @@ export function useCollaborationTemplateContentSuspenseQuery(
     SchemaTypes.CollaborationTemplateContentQueryVariables
   >(CollaborationTemplateContentDocument, options);
 }
-
 export type CollaborationTemplateContentQueryHookResult = ReturnType<typeof useCollaborationTemplateContentQuery>;
 export type CollaborationTemplateContentLazyQueryHookResult = ReturnType<
   typeof useCollaborationTemplateContentLazyQuery
@@ -21014,7 +20355,6 @@ export function refetchCollaborationTemplateContentQuery(
 ) {
   return { query: CollaborationTemplateContentDocument, variables: variables };
 }
-
 export const CreateTemplateDocument = gql`
   mutation CreateTemplate(
     $templatesSetId: UUID!
@@ -21098,7 +20438,6 @@ export function useCreateTemplateMutation(
     options
   );
 }
-
 export type CreateTemplateMutationHookResult = ReturnType<typeof useCreateTemplateMutation>;
 export type CreateTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreateTemplateMutation>;
 export type CreateTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -21161,7 +20500,6 @@ export function useCreateTemplateFromCollaborationMutation(
     SchemaTypes.CreateTemplateFromCollaborationMutationVariables
   >(CreateTemplateFromCollaborationDocument, options);
 }
-
 export type CreateTemplateFromCollaborationMutationHookResult = ReturnType<
   typeof useCreateTemplateFromCollaborationMutation
 >;
@@ -21243,7 +20581,6 @@ export function useUpdateTemplateMutation(
     options
   );
 }
-
 export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
 export type UpdateTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateTemplateMutation>;
 export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -21292,7 +20629,6 @@ export function useUpdateTemplateFromCollaborationMutation(
     SchemaTypes.UpdateTemplateFromCollaborationMutationVariables
   >(UpdateTemplateFromCollaborationDocument, options);
 }
-
 export type UpdateTemplateFromCollaborationMutationHookResult = ReturnType<
   typeof useUpdateTemplateFromCollaborationMutation
 >;
@@ -21343,7 +20679,6 @@ export function useDeleteTemplateMutation(
     options
   );
 }
-
 export type DeleteTemplateMutationHookResult = ReturnType<typeof useDeleteTemplateMutation>;
 export type DeleteTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteTemplateMutation>;
 export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<
@@ -21390,7 +20725,6 @@ export function useTemplateNameQuery(
     options
   );
 }
-
 export function useTemplateNameLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TemplateNameQuery, SchemaTypes.TemplateNameQueryVariables>
 ) {
@@ -21400,7 +20734,6 @@ export function useTemplateNameLazyQuery(
     options
   );
 }
-
 export function useTemplateNameSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -21412,7 +20745,6 @@ export function useTemplateNameSuspenseQuery(
     options
   );
 }
-
 export type TemplateNameQueryHookResult = ReturnType<typeof useTemplateNameQuery>;
 export type TemplateNameLazyQueryHookResult = ReturnType<typeof useTemplateNameLazyQuery>;
 export type TemplateNameSuspenseQueryHookResult = ReturnType<typeof useTemplateNameSuspenseQuery>;
@@ -21423,7 +20755,6 @@ export type TemplateNameQueryResult = Apollo.QueryResult<
 export function refetchTemplateNameQuery(variables: SchemaTypes.TemplateNameQueryVariables) {
   return { query: TemplateNameDocument, variables: variables };
 }
-
 export const UpdateTemplateDefaultDocument = gql`
   mutation updateTemplateDefault($templateDefaultID: UUID!, $templateID: UUID!) {
     updateTemplateDefault(templateDefaultData: { templateDefaultID: $templateDefaultID, templateID: $templateID }) {
@@ -21466,7 +20797,6 @@ export function useUpdateTemplateDefaultMutation(
     SchemaTypes.UpdateTemplateDefaultMutationVariables
   >(UpdateTemplateDefaultDocument, options);
 }
-
 export type UpdateTemplateDefaultMutationHookResult = ReturnType<typeof useUpdateTemplateDefaultMutation>;
 export type UpdateTemplateDefaultMutationResult = Apollo.MutationResult<SchemaTypes.UpdateTemplateDefaultMutation>;
 export type UpdateTemplateDefaultMutationOptions = Apollo.BaseMutationOptions<
@@ -21517,7 +20847,6 @@ export function useSpaceCalendarEventsQuery(
     options
   );
 }
-
 export function useSpaceCalendarEventsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceCalendarEventsQuery,
@@ -21530,7 +20859,6 @@ export function useSpaceCalendarEventsLazyQuery(
     options
   );
 }
-
 export function useSpaceCalendarEventsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -21545,7 +20873,6 @@ export function useSpaceCalendarEventsSuspenseQuery(
     options
   );
 }
-
 export type SpaceCalendarEventsQueryHookResult = ReturnType<typeof useSpaceCalendarEventsQuery>;
 export type SpaceCalendarEventsLazyQueryHookResult = ReturnType<typeof useSpaceCalendarEventsLazyQuery>;
 export type SpaceCalendarEventsSuspenseQueryHookResult = ReturnType<typeof useSpaceCalendarEventsSuspenseQuery>;
@@ -21556,7 +20883,6 @@ export type SpaceCalendarEventsQueryResult = Apollo.QueryResult<
 export function refetchSpaceCalendarEventsQuery(variables: SchemaTypes.SpaceCalendarEventsQueryVariables) {
   return { query: SpaceCalendarEventsDocument, variables: variables };
 }
-
 export const CalendarEventDetailsDocument = gql`
   query calendarEventDetails($eventId: UUID!, $includeSubspace: Boolean = false) {
     lookup {
@@ -21598,7 +20924,6 @@ export function useCalendarEventDetailsQuery(
     options
   );
 }
-
 export function useCalendarEventDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CalendarEventDetailsQuery,
@@ -21611,7 +20936,6 @@ export function useCalendarEventDetailsLazyQuery(
     options
   );
 }
-
 export function useCalendarEventDetailsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -21626,7 +20950,6 @@ export function useCalendarEventDetailsSuspenseQuery(
     options
   );
 }
-
 export type CalendarEventDetailsQueryHookResult = ReturnType<typeof useCalendarEventDetailsQuery>;
 export type CalendarEventDetailsLazyQueryHookResult = ReturnType<typeof useCalendarEventDetailsLazyQuery>;
 export type CalendarEventDetailsSuspenseQueryHookResult = ReturnType<typeof useCalendarEventDetailsSuspenseQuery>;
@@ -21637,7 +20960,6 @@ export type CalendarEventDetailsQueryResult = Apollo.QueryResult<
 export function refetchCalendarEventDetailsQuery(variables: SchemaTypes.CalendarEventDetailsQueryVariables) {
   return { query: CalendarEventDetailsDocument, variables: variables };
 }
-
 export const CreateCalendarEventDocument = gql`
   mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!, $includeSubspace: Boolean = false) {
     createEventOnCalendar(eventData: $eventData) {
@@ -21681,7 +21003,6 @@ export function useCreateCalendarEventMutation(
     options
   );
 }
-
 export type CreateCalendarEventMutationHookResult = ReturnType<typeof useCreateCalendarEventMutation>;
 export type CreateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalendarEventMutation>;
 export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
@@ -21731,7 +21052,6 @@ export function useUpdateCalendarEventMutation(
     options
   );
 }
-
 export type UpdateCalendarEventMutationHookResult = ReturnType<typeof useUpdateCalendarEventMutation>;
 export type UpdateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalendarEventMutation>;
 export type UpdateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
@@ -21779,7 +21099,6 @@ export function useDeleteCalendarEventMutation(
     options
   );
 }
-
 export type DeleteCalendarEventMutationHookResult = ReturnType<typeof useDeleteCalendarEventMutation>;
 export type DeleteCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalendarEventMutation>;
 export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
@@ -21840,7 +21159,6 @@ export function useAuthorizationPolicyQuery(
     options
   );
 }
-
 export function useAuthorizationPolicyLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AuthorizationPolicyQuery,
@@ -21853,7 +21171,6 @@ export function useAuthorizationPolicyLazyQuery(
     options
   );
 }
-
 export function useAuthorizationPolicySuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -21868,7 +21185,6 @@ export function useAuthorizationPolicySuspenseQuery(
     options
   );
 }
-
 export type AuthorizationPolicyQueryHookResult = ReturnType<typeof useAuthorizationPolicyQuery>;
 export type AuthorizationPolicyLazyQueryHookResult = ReturnType<typeof useAuthorizationPolicyLazyQuery>;
 export type AuthorizationPolicySuspenseQueryHookResult = ReturnType<typeof useAuthorizationPolicySuspenseQuery>;
@@ -21879,7 +21195,6 @@ export type AuthorizationPolicyQueryResult = Apollo.QueryResult<
 export function refetchAuthorizationPolicyQuery(variables: SchemaTypes.AuthorizationPolicyQueryVariables) {
   return { query: AuthorizationPolicyDocument, variables: variables };
 }
-
 export const AuthorizationPrivilegesForUserDocument = gql`
   query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationPolicyId: UUID!) {
     lookup {
@@ -21918,7 +21233,6 @@ export function useAuthorizationPrivilegesForUserQuery(
     SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
   >(AuthorizationPrivilegesForUserDocument, options);
 }
-
 export function useAuthorizationPrivilegesForUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AuthorizationPrivilegesForUserQuery,
@@ -21931,7 +21245,6 @@ export function useAuthorizationPrivilegesForUserLazyQuery(
     SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
   >(AuthorizationPrivilegesForUserDocument, options);
 }
-
 export function useAuthorizationPrivilegesForUserSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -21946,7 +21259,6 @@ export function useAuthorizationPrivilegesForUserSuspenseQuery(
     SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
   >(AuthorizationPrivilegesForUserDocument, options);
 }
-
 export type AuthorizationPrivilegesForUserQueryHookResult = ReturnType<typeof useAuthorizationPrivilegesForUserQuery>;
 export type AuthorizationPrivilegesForUserLazyQueryHookResult = ReturnType<
   typeof useAuthorizationPrivilegesForUserLazyQuery
@@ -21963,7 +21275,6 @@ export function refetchAuthorizationPrivilegesForUserQuery(
 ) {
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
 }
-
 export const UpdateAnswerRelevanceDocument = gql`
   mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
     updateAnswerRelevance(input: $input)
@@ -22003,7 +21314,6 @@ export function useUpdateAnswerRelevanceMutation(
     SchemaTypes.UpdateAnswerRelevanceMutationVariables
   >(UpdateAnswerRelevanceDocument, options);
 }
-
 export type UpdateAnswerRelevanceMutationHookResult = ReturnType<typeof useUpdateAnswerRelevanceMutation>;
 export type UpdateAnswerRelevanceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAnswerRelevanceMutation>;
 export type UpdateAnswerRelevanceMutationOptions = Apollo.BaseMutationOptions<
@@ -22048,7 +21358,6 @@ export function useResetChatGuidanceMutation(
     options
   );
 }
-
 export type ResetChatGuidanceMutationHookResult = ReturnType<typeof useResetChatGuidanceMutation>;
 export type ResetChatGuidanceMutationResult = Apollo.MutationResult<SchemaTypes.ResetChatGuidanceMutation>;
 export type ResetChatGuidanceMutationOptions = Apollo.BaseMutationOptions<
@@ -22095,7 +21404,6 @@ export function useCreateGuidanceRoomMutation(
     options
   );
 }
-
 export type CreateGuidanceRoomMutationHookResult = ReturnType<typeof useCreateGuidanceRoomMutation>;
 export type CreateGuidanceRoomMutationResult = Apollo.MutationResult<SchemaTypes.CreateGuidanceRoomMutation>;
 export type CreateGuidanceRoomMutationOptions = Apollo.BaseMutationOptions<
@@ -22144,7 +21452,6 @@ export function useAskChatGuidanceQuestionMutation(
     SchemaTypes.AskChatGuidanceQuestionMutationVariables
   >(AskChatGuidanceQuestionDocument, options);
 }
-
 export type AskChatGuidanceQuestionMutationHookResult = ReturnType<typeof useAskChatGuidanceQuestionMutation>;
 export type AskChatGuidanceQuestionMutationResult = Apollo.MutationResult<SchemaTypes.AskChatGuidanceQuestionMutation>;
 export type AskChatGuidanceQuestionMutationOptions = Apollo.BaseMutationOptions<
@@ -22188,7 +21495,6 @@ export function useGuidanceRoomIdQuery(
     options
   );
 }
-
 export function useGuidanceRoomIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GuidanceRoomIdQuery, SchemaTypes.GuidanceRoomIdQueryVariables>
 ) {
@@ -22198,7 +21504,6 @@ export function useGuidanceRoomIdLazyQuery(
     options
   );
 }
-
 export function useGuidanceRoomIdSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22210,7 +21515,6 @@ export function useGuidanceRoomIdSuspenseQuery(
     options
   );
 }
-
 export type GuidanceRoomIdQueryHookResult = ReturnType<typeof useGuidanceRoomIdQuery>;
 export type GuidanceRoomIdLazyQueryHookResult = ReturnType<typeof useGuidanceRoomIdLazyQuery>;
 export type GuidanceRoomIdSuspenseQueryHookResult = ReturnType<typeof useGuidanceRoomIdSuspenseQuery>;
@@ -22221,7 +21525,6 @@ export type GuidanceRoomIdQueryResult = Apollo.QueryResult<
 export function refetchGuidanceRoomIdQuery(variables?: SchemaTypes.GuidanceRoomIdQueryVariables) {
   return { query: GuidanceRoomIdDocument, variables: variables };
 }
-
 export const GuidanceRoomMessagesDocument = gql`
   query GuidanceRoomMessages($roomId: UUID!) {
     lookup {
@@ -22262,7 +21565,6 @@ export function useGuidanceRoomMessagesQuery(
     options
   );
 }
-
 export function useGuidanceRoomMessagesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.GuidanceRoomMessagesQuery,
@@ -22275,7 +21577,6 @@ export function useGuidanceRoomMessagesLazyQuery(
     options
   );
 }
-
 export function useGuidanceRoomMessagesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22290,7 +21591,6 @@ export function useGuidanceRoomMessagesSuspenseQuery(
     options
   );
 }
-
 export type GuidanceRoomMessagesQueryHookResult = ReturnType<typeof useGuidanceRoomMessagesQuery>;
 export type GuidanceRoomMessagesLazyQueryHookResult = ReturnType<typeof useGuidanceRoomMessagesLazyQuery>;
 export type GuidanceRoomMessagesSuspenseQueryHookResult = ReturnType<typeof useGuidanceRoomMessagesSuspenseQuery>;
@@ -22301,7 +21601,6 @@ export type GuidanceRoomMessagesQueryResult = Apollo.QueryResult<
 export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.GuidanceRoomMessagesQueryVariables) {
   return { query: GuidanceRoomMessagesDocument, variables: variables };
 }
-
 export const InAppNotificationReceivedDocument = gql`
   subscription InAppNotificationReceived {
     inAppNotificationReceived {
@@ -22340,7 +21639,6 @@ export function useInAppNotificationReceivedSubscription(
     SchemaTypes.InAppNotificationReceivedSubscriptionVariables
   >(InAppNotificationReceivedDocument, options);
 }
-
 export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
   typeof useInAppNotificationReceivedSubscription
 >;
@@ -22397,7 +21695,6 @@ export function useInAppNotificationsQuery(
     options
   );
 }
-
 export function useInAppNotificationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InAppNotificationsQuery,
@@ -22410,7 +21707,6 @@ export function useInAppNotificationsLazyQuery(
     options
   );
 }
-
 export function useInAppNotificationsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22422,7 +21718,6 @@ export function useInAppNotificationsSuspenseQuery(
     options
   );
 }
-
 export type InAppNotificationsQueryHookResult = ReturnType<typeof useInAppNotificationsQuery>;
 export type InAppNotificationsLazyQueryHookResult = ReturnType<typeof useInAppNotificationsLazyQuery>;
 export type InAppNotificationsSuspenseQueryHookResult = ReturnType<typeof useInAppNotificationsSuspenseQuery>;
@@ -22433,7 +21728,6 @@ export type InAppNotificationsQueryResult = Apollo.QueryResult<
 export function refetchInAppNotificationsQuery(variables?: SchemaTypes.InAppNotificationsQueryVariables) {
   return { query: InAppNotificationsDocument, variables: variables };
 }
-
 export const UpdateNotificationStateDocument = gql`
   mutation UpdateNotificationState($ID: UUID!, $state: InAppNotificationState!) {
     updateNotificationState(notificationData: { ID: $ID, state: $state })
@@ -22474,7 +21768,6 @@ export function useUpdateNotificationStateMutation(
     SchemaTypes.UpdateNotificationStateMutationVariables
   >(UpdateNotificationStateDocument, options);
 }
-
 export type UpdateNotificationStateMutationHookResult = ReturnType<typeof useUpdateNotificationStateMutation>;
 export type UpdateNotificationStateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateNotificationStateMutation>;
 export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
@@ -22520,7 +21813,6 @@ export function useMarkNotificationsAsReadMutation(
     SchemaTypes.MarkNotificationsAsReadMutationVariables
   >(MarkNotificationsAsReadDocument, options);
 }
-
 export type MarkNotificationsAsReadMutationHookResult = ReturnType<typeof useMarkNotificationsAsReadMutation>;
 export type MarkNotificationsAsReadMutationResult = Apollo.MutationResult<SchemaTypes.MarkNotificationsAsReadMutation>;
 export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
@@ -22560,7 +21852,6 @@ export function useRestrictedSpaceNamesQuery(
     options
   );
 }
-
 export function useRestrictedSpaceNamesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.RestrictedSpaceNamesQuery,
@@ -22573,7 +21864,6 @@ export function useRestrictedSpaceNamesLazyQuery(
     options
   );
 }
-
 export function useRestrictedSpaceNamesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22588,7 +21878,6 @@ export function useRestrictedSpaceNamesSuspenseQuery(
     options
   );
 }
-
 export type RestrictedSpaceNamesQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesQuery>;
 export type RestrictedSpaceNamesLazyQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesLazyQuery>;
 export type RestrictedSpaceNamesSuspenseQueryHookResult = ReturnType<typeof useRestrictedSpaceNamesSuspenseQuery>;
@@ -22599,7 +21888,6 @@ export type RestrictedSpaceNamesQueryResult = Apollo.QueryResult<
 export function refetchRestrictedSpaceNamesQuery(variables?: SchemaTypes.RestrictedSpaceNamesQueryVariables) {
   return { query: RestrictedSpaceNamesDocument, variables: variables };
 }
-
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {
@@ -22678,7 +21966,6 @@ export function useUrlResolverQuery(
     options
   );
 }
-
 export function useUrlResolverLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UrlResolverQuery, SchemaTypes.UrlResolverQueryVariables>
 ) {
@@ -22688,7 +21975,6 @@ export function useUrlResolverLazyQuery(
     options
   );
 }
-
 export function useUrlResolverSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22700,7 +21986,6 @@ export function useUrlResolverSuspenseQuery(
     options
   );
 }
-
 export type UrlResolverQueryHookResult = ReturnType<typeof useUrlResolverQuery>;
 export type UrlResolverLazyQueryHookResult = ReturnType<typeof useUrlResolverLazyQuery>;
 export type UrlResolverSuspenseQueryHookResult = ReturnType<typeof useUrlResolverSuspenseQuery>;
@@ -22711,7 +21996,6 @@ export type UrlResolverQueryResult = Apollo.QueryResult<
 export function refetchUrlResolverQuery(variables: SchemaTypes.UrlResolverQueryVariables) {
   return { query: UrlResolverDocument, variables: variables };
 }
-
 export const SpaceUrlResolverDocument = gql`
   query SpaceUrlResolver(
     $spaceNameId: NameID!
@@ -22764,7 +22048,6 @@ export function useSpaceUrlResolverQuery(
     options
   );
 }
-
 export function useSpaceUrlResolverLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceUrlResolverQuery,
@@ -22777,7 +22060,6 @@ export function useSpaceUrlResolverLazyQuery(
     options
   );
 }
-
 export function useSpaceUrlResolverSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22789,7 +22071,6 @@ export function useSpaceUrlResolverSuspenseQuery(
     options
   );
 }
-
 export type SpaceUrlResolverQueryHookResult = ReturnType<typeof useSpaceUrlResolverQuery>;
 export type SpaceUrlResolverLazyQueryHookResult = ReturnType<typeof useSpaceUrlResolverLazyQuery>;
 export type SpaceUrlResolverSuspenseQueryHookResult = ReturnType<typeof useSpaceUrlResolverSuspenseQuery>;
@@ -22800,7 +22081,6 @@ export type SpaceUrlResolverQueryResult = Apollo.QueryResult<
 export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlResolverQueryVariables) {
   return { query: SpaceUrlResolverDocument, variables: variables };
 }
-
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -22882,14 +22162,12 @@ export function useSearchQuery(
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
 }
-
 export function useSearchLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
 }
-
 export function useSearchSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22898,7 +22176,6 @@ export function useSearchSuspenseQuery(
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
 }
-
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchSuspenseQueryHookResult = ReturnType<typeof useSearchSuspenseQuery>;
@@ -22906,7 +22183,6 @@ export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, Sche
 export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
   return { query: SearchDocument, variables: variables };
 }
-
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
@@ -22956,7 +22232,6 @@ export function useUserRolesSearchCardsQuery(
     options
   );
 }
-
 export function useUserRolesSearchCardsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.UserRolesSearchCardsQuery,
@@ -22969,7 +22244,6 @@ export function useUserRolesSearchCardsLazyQuery(
     options
   );
 }
-
 export function useUserRolesSearchCardsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -22984,7 +22258,6 @@ export function useUserRolesSearchCardsSuspenseQuery(
     options
   );
 }
-
 export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
 export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
 export type UserRolesSearchCardsSuspenseQueryHookResult = ReturnType<typeof useUserRolesSearchCardsSuspenseQuery>;
@@ -22995,7 +22268,6 @@ export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
 export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
   return { query: UserRolesSearchCardsDocument, variables: variables };
 }
-
 export const SearchScopeDetailsSpaceDocument = gql`
   query SearchScopeDetailsSpace($spaceId: UUID!) {
     lookup {
@@ -23047,7 +22319,6 @@ export function useSearchScopeDetailsSpaceQuery(
     options
   );
 }
-
 export function useSearchScopeDetailsSpaceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SearchScopeDetailsSpaceQuery,
@@ -23060,7 +22331,6 @@ export function useSearchScopeDetailsSpaceLazyQuery(
     SchemaTypes.SearchScopeDetailsSpaceQueryVariables
   >(SearchScopeDetailsSpaceDocument, options);
 }
-
 export function useSearchScopeDetailsSpaceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23075,7 +22345,6 @@ export function useSearchScopeDetailsSpaceSuspenseQuery(
     SchemaTypes.SearchScopeDetailsSpaceQueryVariables
   >(SearchScopeDetailsSpaceDocument, options);
 }
-
 export type SearchScopeDetailsSpaceQueryHookResult = ReturnType<typeof useSearchScopeDetailsSpaceQuery>;
 export type SearchScopeDetailsSpaceLazyQueryHookResult = ReturnType<typeof useSearchScopeDetailsSpaceLazyQuery>;
 export type SearchScopeDetailsSpaceSuspenseQueryHookResult = ReturnType<typeof useSearchScopeDetailsSpaceSuspenseQuery>;
@@ -23086,7 +22355,6 @@ export type SearchScopeDetailsSpaceQueryResult = Apollo.QueryResult<
 export function refetchSearchScopeDetailsSpaceQuery(variables: SchemaTypes.SearchScopeDetailsSpaceQueryVariables) {
   return { query: SearchScopeDetailsSpaceDocument, variables: variables };
 }
-
 export const InnovationLibraryDocument = gql`
   query InnovationLibrary($filterTemplateType: [TemplateType!]) {
     platform {
@@ -23178,7 +22446,6 @@ export function useInnovationLibraryQuery(
     options
   );
 }
-
 export function useInnovationLibraryLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.InnovationLibraryQuery,
@@ -23191,7 +22458,6 @@ export function useInnovationLibraryLazyQuery(
     options
   );
 }
-
 export function useInnovationLibrarySuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23203,7 +22469,6 @@ export function useInnovationLibrarySuspenseQuery(
     options
   );
 }
-
 export type InnovationLibraryQueryHookResult = ReturnType<typeof useInnovationLibraryQuery>;
 export type InnovationLibraryLazyQueryHookResult = ReturnType<typeof useInnovationLibraryLazyQuery>;
 export type InnovationLibrarySuspenseQueryHookResult = ReturnType<typeof useInnovationLibrarySuspenseQuery>;
@@ -23214,7 +22479,6 @@ export type InnovationLibraryQueryResult = Apollo.QueryResult<
 export function refetchInnovationLibraryQuery(variables?: SchemaTypes.InnovationLibraryQueryVariables) {
   return { query: InnovationLibraryDocument, variables: variables };
 }
-
 export const CampaignBlockCredentialsDocument = gql`
   query CampaignBlockCredentials {
     platform {
@@ -23266,7 +22530,6 @@ export function useCampaignBlockCredentialsQuery(
     options
   );
 }
-
 export function useCampaignBlockCredentialsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.CampaignBlockCredentialsQuery,
@@ -23279,7 +22542,6 @@ export function useCampaignBlockCredentialsLazyQuery(
     SchemaTypes.CampaignBlockCredentialsQueryVariables
   >(CampaignBlockCredentialsDocument, options);
 }
-
 export function useCampaignBlockCredentialsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23294,7 +22556,6 @@ export function useCampaignBlockCredentialsSuspenseQuery(
     SchemaTypes.CampaignBlockCredentialsQueryVariables
   >(CampaignBlockCredentialsDocument, options);
 }
-
 export type CampaignBlockCredentialsQueryHookResult = ReturnType<typeof useCampaignBlockCredentialsQuery>;
 export type CampaignBlockCredentialsLazyQueryHookResult = ReturnType<typeof useCampaignBlockCredentialsLazyQuery>;
 export type CampaignBlockCredentialsSuspenseQueryHookResult = ReturnType<
@@ -23307,7 +22568,6 @@ export type CampaignBlockCredentialsQueryResult = Apollo.QueryResult<
 export function refetchCampaignBlockCredentialsQuery(variables?: SchemaTypes.CampaignBlockCredentialsQueryVariables) {
   return { query: CampaignBlockCredentialsDocument, variables: variables };
 }
-
 export const DashboardWithMembershipsDocument = gql`
   query DashboardWithMemberships($limit: Float! = 0) {
     me {
@@ -23356,7 +22616,6 @@ export function useDashboardWithMembershipsQuery(
     options
   );
 }
-
 export function useDashboardWithMembershipsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.DashboardWithMembershipsQuery,
@@ -23369,7 +22628,6 @@ export function useDashboardWithMembershipsLazyQuery(
     SchemaTypes.DashboardWithMembershipsQueryVariables
   >(DashboardWithMembershipsDocument, options);
 }
-
 export function useDashboardWithMembershipsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23384,7 +22642,6 @@ export function useDashboardWithMembershipsSuspenseQuery(
     SchemaTypes.DashboardWithMembershipsQueryVariables
   >(DashboardWithMembershipsDocument, options);
 }
-
 export type DashboardWithMembershipsQueryHookResult = ReturnType<typeof useDashboardWithMembershipsQuery>;
 export type DashboardWithMembershipsLazyQueryHookResult = ReturnType<typeof useDashboardWithMembershipsLazyQuery>;
 export type DashboardWithMembershipsSuspenseQueryHookResult = ReturnType<
@@ -23397,7 +22654,6 @@ export type DashboardWithMembershipsQueryResult = Apollo.QueryResult<
 export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.DashboardWithMembershipsQueryVariables) {
   return { query: DashboardWithMembershipsDocument, variables: variables };
 }
-
 export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -23445,7 +22701,6 @@ export function useExploreSpacesSearchQuery(
     options
   );
 }
-
 export function useExploreSpacesSearchLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ExploreSpacesSearchQuery,
@@ -23458,7 +22713,6 @@ export function useExploreSpacesSearchLazyQuery(
     options
   );
 }
-
 export function useExploreSpacesSearchSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23473,7 +22727,6 @@ export function useExploreSpacesSearchSuspenseQuery(
     options
   );
 }
-
 export type ExploreSpacesSearchQueryHookResult = ReturnType<typeof useExploreSpacesSearchQuery>;
 export type ExploreSpacesSearchLazyQueryHookResult = ReturnType<typeof useExploreSpacesSearchLazyQuery>;
 export type ExploreSpacesSearchSuspenseQueryHookResult = ReturnType<typeof useExploreSpacesSearchSuspenseQuery>;
@@ -23484,7 +22737,6 @@ export type ExploreSpacesSearchQueryResult = Apollo.QueryResult<
 export function refetchExploreSpacesSearchQuery(variables: SchemaTypes.ExploreSpacesSearchQueryVariables) {
   return { query: ExploreSpacesSearchDocument, variables: variables };
 }
-
 export const ExploreAllSpacesDocument = gql`
   query ExploreAllSpaces {
     exploreSpaces {
@@ -23518,7 +22770,6 @@ export function useExploreAllSpacesQuery(
     options
   );
 }
-
 export function useExploreAllSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.ExploreAllSpacesQuery,
@@ -23531,7 +22782,6 @@ export function useExploreAllSpacesLazyQuery(
     options
   );
 }
-
 export function useExploreAllSpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23543,7 +22793,6 @@ export function useExploreAllSpacesSuspenseQuery(
     options
   );
 }
-
 export type ExploreAllSpacesQueryHookResult = ReturnType<typeof useExploreAllSpacesQuery>;
 export type ExploreAllSpacesLazyQueryHookResult = ReturnType<typeof useExploreAllSpacesLazyQuery>;
 export type ExploreAllSpacesSuspenseQueryHookResult = ReturnType<typeof useExploreAllSpacesSuspenseQuery>;
@@ -23554,7 +22803,6 @@ export type ExploreAllSpacesQueryResult = Apollo.QueryResult<
 export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllSpacesQueryVariables) {
   return { query: ExploreAllSpacesDocument, variables: variables };
 }
-
 export const WelcomeSpaceDocument = gql`
   query WelcomeSpace($spaceId: UUID!) {
     lookup {
@@ -23592,7 +22840,6 @@ export function useWelcomeSpaceQuery(
     options
   );
 }
-
 export function useWelcomeSpaceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.WelcomeSpaceQuery, SchemaTypes.WelcomeSpaceQueryVariables>
 ) {
@@ -23602,7 +22849,6 @@ export function useWelcomeSpaceLazyQuery(
     options
   );
 }
-
 export function useWelcomeSpaceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23614,7 +22860,6 @@ export function useWelcomeSpaceSuspenseQuery(
     options
   );
 }
-
 export type WelcomeSpaceQueryHookResult = ReturnType<typeof useWelcomeSpaceQuery>;
 export type WelcomeSpaceLazyQueryHookResult = ReturnType<typeof useWelcomeSpaceLazyQuery>;
 export type WelcomeSpaceSuspenseQueryHookResult = ReturnType<typeof useWelcomeSpaceSuspenseQuery>;
@@ -23625,7 +22870,6 @@ export type WelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchWelcomeSpaceQuery(variables: SchemaTypes.WelcomeSpaceQueryVariables) {
   return { query: WelcomeSpaceDocument, variables: variables };
 }
-
 export const PendingInvitationsDocument = gql`
   query PendingInvitations {
     me {
@@ -23681,7 +22925,6 @@ export function usePendingInvitationsQuery(
     options
   );
 }
-
 export function usePendingInvitationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.PendingInvitationsQuery,
@@ -23694,7 +22937,6 @@ export function usePendingInvitationsLazyQuery(
     options
   );
 }
-
 export function usePendingInvitationsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23706,7 +22948,6 @@ export function usePendingInvitationsSuspenseQuery(
     options
   );
 }
-
 export type PendingInvitationsQueryHookResult = ReturnType<typeof usePendingInvitationsQuery>;
 export type PendingInvitationsLazyQueryHookResult = ReturnType<typeof usePendingInvitationsLazyQuery>;
 export type PendingInvitationsSuspenseQueryHookResult = ReturnType<typeof usePendingInvitationsSuspenseQuery>;
@@ -23717,7 +22958,6 @@ export type PendingInvitationsQueryResult = Apollo.QueryResult<
 export function refetchPendingInvitationsQuery(variables?: SchemaTypes.PendingInvitationsQueryVariables) {
   return { query: PendingInvitationsDocument, variables: variables };
 }
-
 export const LatestContributionsDocument = gql`
   query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQueryArgs) {
     activityFeed(after: $after, first: $first, args: $filter) {
@@ -23839,7 +23079,6 @@ export function useLatestContributionsQuery(
     options
   );
 }
-
 export function useLatestContributionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.LatestContributionsQuery,
@@ -23852,7 +23091,6 @@ export function useLatestContributionsLazyQuery(
     options
   );
 }
-
 export function useLatestContributionsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -23867,7 +23105,6 @@ export function useLatestContributionsSuspenseQuery(
     options
   );
 }
-
 export type LatestContributionsQueryHookResult = ReturnType<typeof useLatestContributionsQuery>;
 export type LatestContributionsLazyQueryHookResult = ReturnType<typeof useLatestContributionsLazyQuery>;
 export type LatestContributionsSuspenseQueryHookResult = ReturnType<typeof useLatestContributionsSuspenseQuery>;
@@ -23878,7 +23115,6 @@ export type LatestContributionsQueryResult = Apollo.QueryResult<
 export function refetchLatestContributionsQuery(variables: SchemaTypes.LatestContributionsQueryVariables) {
   return { query: LatestContributionsDocument, variables: variables };
 }
-
 export const LatestContributionsGroupedDocument = gql`
   query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     activityFeedGrouped(args: $filter) {
@@ -23974,7 +23210,6 @@ export function useLatestContributionsGroupedQuery(
     SchemaTypes.LatestContributionsGroupedQueryVariables
   >(LatestContributionsGroupedDocument, options);
 }
-
 export function useLatestContributionsGroupedLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.LatestContributionsGroupedQuery,
@@ -23987,7 +23222,6 @@ export function useLatestContributionsGroupedLazyQuery(
     SchemaTypes.LatestContributionsGroupedQueryVariables
   >(LatestContributionsGroupedDocument, options);
 }
-
 export function useLatestContributionsGroupedSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24002,7 +23236,6 @@ export function useLatestContributionsGroupedSuspenseQuery(
     SchemaTypes.LatestContributionsGroupedQueryVariables
   >(LatestContributionsGroupedDocument, options);
 }
-
 export type LatestContributionsGroupedQueryHookResult = ReturnType<typeof useLatestContributionsGroupedQuery>;
 export type LatestContributionsGroupedLazyQueryHookResult = ReturnType<typeof useLatestContributionsGroupedLazyQuery>;
 export type LatestContributionsGroupedSuspenseQueryHookResult = ReturnType<
@@ -24017,7 +23250,6 @@ export function refetchLatestContributionsGroupedQuery(
 ) {
   return { query: LatestContributionsGroupedDocument, variables: variables };
 }
-
 export const LatestContributionsSpacesFlatDocument = gql`
   query LatestContributionsSpacesFlat {
     me {
@@ -24065,7 +23297,6 @@ export function useLatestContributionsSpacesFlatQuery(
     SchemaTypes.LatestContributionsSpacesFlatQueryVariables
   >(LatestContributionsSpacesFlatDocument, options);
 }
-
 export function useLatestContributionsSpacesFlatLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.LatestContributionsSpacesFlatQuery,
@@ -24078,7 +23309,6 @@ export function useLatestContributionsSpacesFlatLazyQuery(
     SchemaTypes.LatestContributionsSpacesFlatQueryVariables
   >(LatestContributionsSpacesFlatDocument, options);
 }
-
 export function useLatestContributionsSpacesFlatSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24093,7 +23323,6 @@ export function useLatestContributionsSpacesFlatSuspenseQuery(
     SchemaTypes.LatestContributionsSpacesFlatQueryVariables
   >(LatestContributionsSpacesFlatDocument, options);
 }
-
 export type LatestContributionsSpacesFlatQueryHookResult = ReturnType<typeof useLatestContributionsSpacesFlatQuery>;
 export type LatestContributionsSpacesFlatLazyQueryHookResult = ReturnType<
   typeof useLatestContributionsSpacesFlatLazyQuery
@@ -24110,7 +23339,6 @@ export function refetchLatestContributionsSpacesFlatQuery(
 ) {
   return { query: LatestContributionsSpacesFlatDocument, variables: variables };
 }
-
 export const MyMembershipsDocument = gql`
   query MyMemberships($limit: Float) {
     me {
@@ -24162,7 +23390,6 @@ export function useMyMembershipsQuery(
     options
   );
 }
-
 export function useMyMembershipsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyMembershipsQuery, SchemaTypes.MyMembershipsQueryVariables>
 ) {
@@ -24172,7 +23399,6 @@ export function useMyMembershipsLazyQuery(
     options
   );
 }
-
 export function useMyMembershipsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24184,7 +23410,6 @@ export function useMyMembershipsSuspenseQuery(
     options
   );
 }
-
 export type MyMembershipsQueryHookResult = ReturnType<typeof useMyMembershipsQuery>;
 export type MyMembershipsLazyQueryHookResult = ReturnType<typeof useMyMembershipsLazyQuery>;
 export type MyMembershipsSuspenseQueryHookResult = ReturnType<typeof useMyMembershipsSuspenseQuery>;
@@ -24195,7 +23420,6 @@ export type MyMembershipsQueryResult = Apollo.QueryResult<
 export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQueryVariables) {
   return { query: MyMembershipsDocument, variables: variables };
 }
-
 export const MyResourcesDocument = gql`
   query MyResources($accountId: UUID!) {
     lookup {
@@ -24270,7 +23494,6 @@ export function useMyResourcesQuery(
     options
   );
 }
-
 export function useMyResourcesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>
 ) {
@@ -24280,7 +23503,6 @@ export function useMyResourcesLazyQuery(
     options
   );
 }
-
 export function useMyResourcesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24292,7 +23514,6 @@ export function useMyResourcesSuspenseQuery(
     options
   );
 }
-
 export type MyResourcesQueryHookResult = ReturnType<typeof useMyResourcesQuery>;
 export type MyResourcesLazyQueryHookResult = ReturnType<typeof useMyResourcesLazyQuery>;
 export type MyResourcesSuspenseQueryHookResult = ReturnType<typeof useMyResourcesSuspenseQuery>;
@@ -24303,7 +23524,6 @@ export type MyResourcesQueryResult = Apollo.QueryResult<
 export function refetchMyResourcesQuery(variables: SchemaTypes.MyResourcesQueryVariables) {
   return { query: MyResourcesDocument, variables: variables };
 }
-
 export const CreateVirtualContributorOnAccountDocument = gql`
   mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
@@ -24369,7 +23589,6 @@ export function useCreateVirtualContributorOnAccountMutation(
     SchemaTypes.CreateVirtualContributorOnAccountMutationVariables
   >(CreateVirtualContributorOnAccountDocument, options);
 }
-
 export type CreateVirtualContributorOnAccountMutationHookResult = ReturnType<
   typeof useCreateVirtualContributorOnAccountMutation
 >;
@@ -24420,7 +23639,6 @@ export function useDeleteVirtualContributorOnAccountMutation(
     SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
   >(DeleteVirtualContributorOnAccountDocument, options);
 }
-
 export type DeleteVirtualContributorOnAccountMutationHookResult = ReturnType<
   typeof useDeleteVirtualContributorOnAccountMutation
 >;
@@ -24491,7 +23709,6 @@ export function useNewVirtualContributorMySpacesQuery(
     SchemaTypes.NewVirtualContributorMySpacesQueryVariables
   >(NewVirtualContributorMySpacesDocument, options);
 }
-
 export function useNewVirtualContributorMySpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.NewVirtualContributorMySpacesQuery,
@@ -24504,7 +23721,6 @@ export function useNewVirtualContributorMySpacesLazyQuery(
     SchemaTypes.NewVirtualContributorMySpacesQueryVariables
   >(NewVirtualContributorMySpacesDocument, options);
 }
-
 export function useNewVirtualContributorMySpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24519,7 +23735,6 @@ export function useNewVirtualContributorMySpacesSuspenseQuery(
     SchemaTypes.NewVirtualContributorMySpacesQueryVariables
   >(NewVirtualContributorMySpacesDocument, options);
 }
-
 export type NewVirtualContributorMySpacesQueryHookResult = ReturnType<typeof useNewVirtualContributorMySpacesQuery>;
 export type NewVirtualContributorMySpacesLazyQueryHookResult = ReturnType<
   typeof useNewVirtualContributorMySpacesLazyQuery
@@ -24536,7 +23751,6 @@ export function refetchNewVirtualContributorMySpacesQuery(
 ) {
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
 }
-
 export const AllSpaceSubspacesDocument = gql`
   query AllSpaceSubspaces($spaceId: UUID!) {
     lookup {
@@ -24583,7 +23797,6 @@ export function useAllSpaceSubspacesQuery(
     options
   );
 }
-
 export function useAllSpaceSubspacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.AllSpaceSubspacesQuery,
@@ -24596,7 +23809,6 @@ export function useAllSpaceSubspacesLazyQuery(
     options
   );
 }
-
 export function useAllSpaceSubspacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24608,7 +23820,6 @@ export function useAllSpaceSubspacesSuspenseQuery(
     options
   );
 }
-
 export type AllSpaceSubspacesQueryHookResult = ReturnType<typeof useAllSpaceSubspacesQuery>;
 export type AllSpaceSubspacesLazyQueryHookResult = ReturnType<typeof useAllSpaceSubspacesLazyQuery>;
 export type AllSpaceSubspacesSuspenseQueryHookResult = ReturnType<typeof useAllSpaceSubspacesSuspenseQuery>;
@@ -24619,7 +23830,6 @@ export type AllSpaceSubspacesQueryResult = Apollo.QueryResult<
 export function refetchAllSpaceSubspacesQuery(variables: SchemaTypes.AllSpaceSubspacesQueryVariables) {
   return { query: AllSpaceSubspacesDocument, variables: variables };
 }
-
 export const RecentSpacesDocument = gql`
   query RecentSpaces($limit: Float) {
     me {
@@ -24667,7 +23877,6 @@ export function useRecentSpacesQuery(
     options
   );
 }
-
 export function useRecentSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RecentSpacesQuery, SchemaTypes.RecentSpacesQueryVariables>
 ) {
@@ -24677,7 +23886,6 @@ export function useRecentSpacesLazyQuery(
     options
   );
 }
-
 export function useRecentSpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24689,7 +23897,6 @@ export function useRecentSpacesSuspenseQuery(
     options
   );
 }
-
 export type RecentSpacesQueryHookResult = ReturnType<typeof useRecentSpacesQuery>;
 export type RecentSpacesLazyQueryHookResult = ReturnType<typeof useRecentSpacesLazyQuery>;
 export type RecentSpacesSuspenseQueryHookResult = ReturnType<typeof useRecentSpacesSuspenseQuery>;
@@ -24700,7 +23907,6 @@ export type RecentSpacesQueryResult = Apollo.QueryResult<
 export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQueryVariables) {
   return { query: RecentSpacesDocument, variables: variables };
 }
-
 export const MySpacesExplorerPageDocument = gql`
   query MySpacesExplorerPage {
     me {
@@ -24741,7 +23947,6 @@ export function useMySpacesExplorerPageQuery(
     options
   );
 }
-
 export function useMySpacesExplorerPageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.MySpacesExplorerPageQuery,
@@ -24754,7 +23959,6 @@ export function useMySpacesExplorerPageLazyQuery(
     options
   );
 }
-
 export function useMySpacesExplorerPageSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24769,7 +23973,6 @@ export function useMySpacesExplorerPageSuspenseQuery(
     options
   );
 }
-
 export type MySpacesExplorerPageQueryHookResult = ReturnType<typeof useMySpacesExplorerPageQuery>;
 export type MySpacesExplorerPageLazyQueryHookResult = ReturnType<typeof useMySpacesExplorerPageLazyQuery>;
 export type MySpacesExplorerPageSuspenseQueryHookResult = ReturnType<typeof useMySpacesExplorerPageSuspenseQuery>;
@@ -24780,7 +23983,6 @@ export type MySpacesExplorerPageQueryResult = Apollo.QueryResult<
 export function refetchMySpacesExplorerPageQuery(variables?: SchemaTypes.MySpacesExplorerPageQueryVariables) {
   return { query: MySpacesExplorerPageDocument, variables: variables };
 }
-
 export const SpaceExplorerSearchDocument = gql`
   query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -24828,7 +24030,6 @@ export function useSpaceExplorerSearchQuery(
     options
   );
 }
-
 export function useSpaceExplorerSearchLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceExplorerSearchQuery,
@@ -24841,7 +24042,6 @@ export function useSpaceExplorerSearchLazyQuery(
     options
   );
 }
-
 export function useSpaceExplorerSearchSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24856,7 +24056,6 @@ export function useSpaceExplorerSearchSuspenseQuery(
     options
   );
 }
-
 export type SpaceExplorerSearchQueryHookResult = ReturnType<typeof useSpaceExplorerSearchQuery>;
 export type SpaceExplorerSearchLazyQueryHookResult = ReturnType<typeof useSpaceExplorerSearchLazyQuery>;
 export type SpaceExplorerSearchSuspenseQueryHookResult = ReturnType<typeof useSpaceExplorerSearchSuspenseQuery>;
@@ -24867,7 +24066,6 @@ export type SpaceExplorerSearchQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerSearchQuery(variables: SchemaTypes.SpaceExplorerSearchQueryVariables) {
   return { query: SpaceExplorerSearchDocument, variables: variables };
 }
-
 export const SpaceExplorerMemberSpacesDocument = gql`
   query SpaceExplorerMemberSpaces($spaceIDs: [UUID!]) {
     spaces(IDs: $spaceIDs) {
@@ -24909,7 +24107,6 @@ export function useSpaceExplorerMemberSpacesQuery(
     SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
   >(SpaceExplorerMemberSpacesDocument, options);
 }
-
 export function useSpaceExplorerMemberSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceExplorerMemberSpacesQuery,
@@ -24922,7 +24119,6 @@ export function useSpaceExplorerMemberSpacesLazyQuery(
     SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
   >(SpaceExplorerMemberSpacesDocument, options);
 }
-
 export function useSpaceExplorerMemberSpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -24937,7 +24133,6 @@ export function useSpaceExplorerMemberSpacesSuspenseQuery(
     SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
   >(SpaceExplorerMemberSpacesDocument, options);
 }
-
 export type SpaceExplorerMemberSpacesQueryHookResult = ReturnType<typeof useSpaceExplorerMemberSpacesQuery>;
 export type SpaceExplorerMemberSpacesLazyQueryHookResult = ReturnType<typeof useSpaceExplorerMemberSpacesLazyQuery>;
 export type SpaceExplorerMemberSpacesSuspenseQueryHookResult = ReturnType<
@@ -24950,7 +24145,6 @@ export type SpaceExplorerMemberSpacesQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerMemberSpacesQuery(variables?: SchemaTypes.SpaceExplorerMemberSpacesQueryVariables) {
   return { query: SpaceExplorerMemberSpacesDocument, variables: variables };
 }
-
 export const SpaceExplorerAllSpacesDocument = gql`
   query SpaceExplorerAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
@@ -24997,7 +24191,6 @@ export function useSpaceExplorerAllSpacesQuery(
     options
   );
 }
-
 export function useSpaceExplorerAllSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceExplorerAllSpacesQuery,
@@ -25010,7 +24203,6 @@ export function useSpaceExplorerAllSpacesLazyQuery(
     options
   );
 }
-
 export function useSpaceExplorerAllSpacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -25025,7 +24217,6 @@ export function useSpaceExplorerAllSpacesSuspenseQuery(
     SchemaTypes.SpaceExplorerAllSpacesQueryVariables
   >(SpaceExplorerAllSpacesDocument, options);
 }
-
 export type SpaceExplorerAllSpacesQueryHookResult = ReturnType<typeof useSpaceExplorerAllSpacesQuery>;
 export type SpaceExplorerAllSpacesLazyQueryHookResult = ReturnType<typeof useSpaceExplorerAllSpacesLazyQuery>;
 export type SpaceExplorerAllSpacesSuspenseQueryHookResult = ReturnType<typeof useSpaceExplorerAllSpacesSuspenseQuery>;
@@ -25036,7 +24227,6 @@ export type SpaceExplorerAllSpacesQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerAllSpacesQuery(variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables) {
   return { query: SpaceExplorerAllSpacesDocument, variables: variables };
 }
-
 export const SpaceExplorerSubspacesDocument = gql`
   query SpaceExplorerSubspaces($IDs: [UUID!]) {
     spaces(IDs: $IDs) {
@@ -25077,7 +24267,6 @@ export function useSpaceExplorerSubspacesQuery(
     options
   );
 }
-
 export function useSpaceExplorerSubspacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceExplorerSubspacesQuery,
@@ -25090,7 +24279,6 @@ export function useSpaceExplorerSubspacesLazyQuery(
     options
   );
 }
-
 export function useSpaceExplorerSubspacesSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -25105,7 +24293,6 @@ export function useSpaceExplorerSubspacesSuspenseQuery(
     SchemaTypes.SpaceExplorerSubspacesQueryVariables
   >(SpaceExplorerSubspacesDocument, options);
 }
-
 export type SpaceExplorerSubspacesQueryHookResult = ReturnType<typeof useSpaceExplorerSubspacesQuery>;
 export type SpaceExplorerSubspacesLazyQueryHookResult = ReturnType<typeof useSpaceExplorerSubspacesLazyQuery>;
 export type SpaceExplorerSubspacesSuspenseQueryHookResult = ReturnType<typeof useSpaceExplorerSubspacesSuspenseQuery>;
@@ -25116,7 +24303,6 @@ export type SpaceExplorerSubspacesQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerSubspacesQuery(variables?: SchemaTypes.SpaceExplorerSubspacesQueryVariables) {
   return { query: SpaceExplorerSubspacesDocument, variables: variables };
 }
-
 export const SpaceExplorerWelcomeSpaceDocument = gql`
   query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
     lookup {
@@ -25161,7 +24347,6 @@ export function useSpaceExplorerWelcomeSpaceQuery(
     SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
   >(SpaceExplorerWelcomeSpaceDocument, options);
 }
-
 export function useSpaceExplorerWelcomeSpaceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SchemaTypes.SpaceExplorerWelcomeSpaceQuery,
@@ -25174,7 +24359,6 @@ export function useSpaceExplorerWelcomeSpaceLazyQuery(
     SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
   >(SpaceExplorerWelcomeSpaceDocument, options);
 }
-
 export function useSpaceExplorerWelcomeSpaceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
@@ -25189,7 +24373,6 @@ export function useSpaceExplorerWelcomeSpaceSuspenseQuery(
     SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
   >(SpaceExplorerWelcomeSpaceDocument, options);
 }
-
 export type SpaceExplorerWelcomeSpaceQueryHookResult = ReturnType<typeof useSpaceExplorerWelcomeSpaceQuery>;
 export type SpaceExplorerWelcomeSpaceLazyQueryHookResult = ReturnType<typeof useSpaceExplorerWelcomeSpaceLazyQuery>;
 export type SpaceExplorerWelcomeSpaceSuspenseQueryHookResult = ReturnType<
