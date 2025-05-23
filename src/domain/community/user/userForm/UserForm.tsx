@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
@@ -24,12 +24,6 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-
-const socialNames = [
-  SocialNetworkEnum.github.toString(),
-  SocialNetworkEnum.linkedin.toString(),
-  SocialNetworkEnum.bsky.toString(),
-];
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
