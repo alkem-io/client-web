@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
+import BlueSky from '@/domain/shared/components/SocialLinks/icons/BlueSky';
 import { SocialNetworkEnum, SocialNetworksSortOrder } from './models/SocialNetworks';
 
 interface SocialLinksProps {
@@ -23,6 +24,8 @@ const getSocialIcon = (type: SocialNetworkEnum, fontSize: SvgIconProps['fontSize
       return <LinkedIn fontSize={fontSize} />;
     case SocialNetworkEnum.twitter:
       return <Twitter fontSize={fontSize} />;
+    case SocialNetworkEnum.bsky:
+      return <BlueSky fontSize={fontSize} />;
     case SocialNetworkEnum.website:
       return <Public fontSize={fontSize} />;
     default:

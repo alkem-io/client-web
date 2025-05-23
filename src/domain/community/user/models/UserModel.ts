@@ -68,7 +68,7 @@ export interface UserFormGenerated {
   firstName: string;
   email: string;
   linkedin: string;
-  twitter: string;
+  bsky: string;
   github: string;
   displayName: string;
   tagline: string;
