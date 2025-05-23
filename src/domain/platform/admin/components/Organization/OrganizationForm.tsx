@@ -115,7 +115,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
 
         onSave?.(organization);
       }
-
+      debugger;
       if (isEditMode) {
         const organization: UpdateOrganizationInput = {
           ID: currentOrganization.id,
@@ -155,7 +155,6 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
         >
           {({ values: { profile }, handleSubmit }) => {
             const tagsets = profile.tagsets || [];
-            const references = profile.references || [];
             const displayName = profile.displayName || '';
             const visual = getVisualByType(VisualType.Avatar, profile.visuals);
             return (
@@ -192,7 +191,8 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                           <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                           {isEditMode && (
                             <ProfileReferenceSegment
-                              references={references}
+                              fieldName="profile.references"
+                              references={profile.references || []}
                               readOnly={isReadOnlyMode}
                               profileId={profile.id}
                             />
