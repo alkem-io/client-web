@@ -11,9 +11,12 @@ export interface SocialSegmentProps {
   readOnly?: boolean;
   disabled?: boolean;
   isNew?: boolean;
+  fieldNames?: {
+    email?: string;
+  };
 }
 
-const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew }) => {
+const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew, fieldNames }) => {
   const { t } = useTranslation();
 
   return (
@@ -68,7 +71,7 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew }) =>
       </GridLegacy>
       <GridLegacy item xs={12} md={6}>
         <FormikInputField
-          name={'email'}
+          name={fieldNames?.email ?? 'email'}
           type={'email'}
           title={'Mail'}
           readOnly={readOnly || !isNew}

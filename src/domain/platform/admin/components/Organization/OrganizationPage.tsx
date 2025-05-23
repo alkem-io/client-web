@@ -83,7 +83,7 @@ const OrganizationPage = ({ mode }: Props) => {
         },
       };
 
-      createOrganization({ variables: { input } });
+      await createOrganization({ variables: { input } });
     }
 
     if (mode === EditMode.edit) {
@@ -133,7 +133,7 @@ const OrganizationPage = ({ mode }: Props) => {
         },
       };
 
-      updateOrganization({ variables: { input } });
+      await updateOrganization({ variables: { input } });
     }
   };
 
@@ -141,11 +141,7 @@ const OrganizationPage = ({ mode }: Props) => {
 
   return (
     <StorageConfigContextProvider locationType="organization" organizationId={organizationId}>
-      <OrganizationForm
-        organization={organization}
-        onSave={handleSubmit}
-        editMode={mode}
-      />
+      <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} />
     </StorageConfigContextProvider>
   );
 };
