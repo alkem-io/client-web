@@ -28,7 +28,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 const socialNames = [
   SocialNetworkEnum.github.toString(),
   SocialNetworkEnum.linkedin.toString(),
-  SocialNetworkEnum.blueSky.toString(),
+  SocialNetworkEnum.bsky.toString(),
 ];
 
 const referenceSegmentWithSocialSchema = yup.array().of(
@@ -76,7 +76,7 @@ export const UserForm = ({
   } = currentUser;
 
   const blueSkyRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.blueSky),
+    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
     [references]
   );
   const githubRef = useMemo(
