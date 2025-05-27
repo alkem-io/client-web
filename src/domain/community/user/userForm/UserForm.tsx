@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
@@ -24,12 +24,6 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-
-const socialNames = [
-  SocialNetworkEnum.github.toString(),
-  SocialNetworkEnum.linkedin.toString(),
-  SocialNetworkEnum.bsky.toString(),
-];
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
@@ -75,16 +69,12 @@ export const UserForm = ({
     },
   } = currentUser;
 
-  const blueSkyRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
-    [references]
-  );
-  const githubRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
-    [references]
-  );
-  const linkedinRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
+    () => ({
+      blueSkyRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+      githubRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+      linkedinRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    }),
     [references]
   );
 
@@ -117,9 +107,11 @@ export const UserForm = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    bsky: yup.string().url('BlueSky url must be a valid URL'),
-    github: yup.string().url('github url must be a valid URL'),
+    linkedin: yup
+      .string()
+      .url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.linkedin') })),
+    bsky: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.bsky') })),
+    github: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.github') })),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
