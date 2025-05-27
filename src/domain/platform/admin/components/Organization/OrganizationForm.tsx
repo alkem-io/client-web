@@ -166,7 +166,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
         onSave && (await onSave(organization));
       }
     },
-    [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets]
+    [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets, linkedinRef, blueSkyRef, githubRef]
   );
 
   const handleBack = () => navigate(-1);
