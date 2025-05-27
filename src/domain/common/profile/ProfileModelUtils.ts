@@ -11,7 +11,7 @@ type ProfileModelWithoutId = {
 export const mapProfileModelToUpdateProfileInput = (
   profileModel: ProfileModelWithoutId | undefined
 ): UpdateProfileInput => {
-  if (!profileModel)
+  if (!profileModel) {
     return {
       displayName: '',
       description: '',
@@ -20,7 +20,9 @@ export const mapProfileModelToUpdateProfileInput = (
       tagsets: undefined,
       location: undefined,
     };
-  const result: UpdateProfileInput = {
+  }
+
+  return {
     displayName: profileModel.displayName,
     description: profileModel.description,
     tagline: profileModel.tagline,
@@ -28,7 +30,6 @@ export const mapProfileModelToUpdateProfileInput = (
     tagsets: mapTagsetModelsToUpdateTagsetInputs(profileModel.tagsets),
     location: formatDatabaseLocation(profileModel.location),
   };
-  return result;
 };
 
 export const mapProfileModelToCreateProfileInput = (profileModel: ProfileModel | undefined): CreateProfileInput => {
