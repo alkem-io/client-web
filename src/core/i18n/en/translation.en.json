@@ -930,7 +930,7 @@
       "invalidUrl": "Invalid URL",
       "invalidEmail": "Invalid Email address",
       "duplicateEmail": "Duplicated email address",
-      "url": "{{name}} must be a valid URL"
+      "elementMustBeValidUrl": "{{name}} must be a valid URL"
     }
   },
   "templateDialog": {

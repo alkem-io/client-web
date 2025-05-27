@@ -109,9 +109,13 @@ export const UserForm = ({
     avatar: yup.string(),
     linkedin: yup
       .string()
-      .url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.linkedin') })),
-    bsky: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.bsky') })),
-    github: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.github') })),
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.linkedin') })),
+    bsky: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.bsky') })),
+    github: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.github') })),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
