@@ -52,7 +52,7 @@ interface OrganizationFormValues {
 interface OrganizationFormProps {
   organization?: OrganizationModel;
   editMode?: EditMode;
-  onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => Promise<void>;
+  onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => Promise<unknown>;
 }
 
 export const OrganizationForm: FC<OrganizationFormProps> = ({
