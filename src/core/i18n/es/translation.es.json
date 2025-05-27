@@ -929,7 +929,8 @@
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
       "invalidUrl": "Invalid URL",
       "invalidEmail": "Invalid Email address",
-      "duplicateEmail": "Duplicated email address"
+      "duplicateEmail": "Duplicated email address",
+      "elementMustBeValidUrl": "{{name}} must be a valid URL"
     }
   },
   "templateDialog": {
@@ -1531,6 +1532,11 @@
           "placeholder": "Código postal"
         },
         "noLocation": "No location specified"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
       }
     },
     "organizationSegment": {
