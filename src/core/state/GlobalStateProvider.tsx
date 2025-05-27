@@ -10,7 +10,6 @@ import {
 
 // TODO replace any with correct types below
 interface GlobalStateContextProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notificationsService: Actor<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     StateMachine<NotificationsContext, NotificationsEvent, any, any, any, any, any, any, any, any, any, any, any, any>

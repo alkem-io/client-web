@@ -24,7 +24,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
   return (
     <Gutters disablePadding>
       <FormikInputField
-        name="tagline"
+        name="profile.tagline"
         title={t('components.profileSegment.tagline.name')}
         placeholder={t('components.profileSegment.tagline.placeholder')}
         disabled={disabled}
@@ -32,7 +32,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
         required={required}
       />
       <FormikMarkdownField
-        name="description"
+        name="profile.description"
         title={t('components.profileSegment.description.name')}
         placeholder={t('components.profileSegment.description.placeholder')}
         rows={10}

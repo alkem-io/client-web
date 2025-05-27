@@ -1,7 +1,10 @@
-query UserSelector($filter: UserFilterInput, $first: Int) {
-  usersPaginated(filter: $filter, first: $first) {
+query UserSelector($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  usersPaginated(first: $first, after: $after, filter: $filter) {
     users {
       ...UserSelectorUserInformation
+    }
+    pageInfo {
+      ...PageInfo
     }
   }
 }
@@ -25,7 +28,7 @@ fragment UserSelectorUserInformation on User {
       country
     }
     visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
   }
 }

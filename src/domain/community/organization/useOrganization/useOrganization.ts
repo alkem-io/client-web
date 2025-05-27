@@ -8,7 +8,7 @@ import {
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
-import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
+import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';

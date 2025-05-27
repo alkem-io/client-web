@@ -12,17 +12,17 @@ import {
   PostSettingsFragment,
   Profile,
 } from '@/core/apollo/generated/graphql-schema';
-import { Reference } from '@/domain/common/profile/Profile';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import removeFromCache from '@/core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 type PostUpdateData = Pick<Post, 'id'> & {
   displayName: Profile['displayName'];
   description: Profile['description'];
   tags: string[];
-  references?: Reference[];
+  references?: ReferenceModel[];
 };
 
 export interface PostSettingsContainerEntities {
@@ -35,7 +35,7 @@ export interface PostSettingsContainerEntities {
 export interface PostSettingsContainerActions {
   handleUpdate: (post: PostUpdateData) => Promise<void>;
   handleAddReference: (push: PushFunc, referencesLength: number) => void;
-  handleRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
+  handleRemoveReference?: (ref: ReferenceModel, remove: RemoveFunc) => void;
   handleDelete: (id: string) => Promise<void>;
 }
 
@@ -127,7 +127,7 @@ const usePostSettings = ({
     }
   };
 
-  const handleRemoveReference = (ref: Reference, removeFn: RemoveFunc) => {
+  const handleRemoveReference = (ref: ReferenceModel, removeFn: RemoveFunc) => {
     setRemove(removeFn);
     if (ref.id) {
       deleteReference(ref.id);
