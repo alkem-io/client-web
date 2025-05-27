@@ -116,9 +116,11 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
     legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
     website: organizationSegmentSchema.fields?.website || yup.string(),
     verified: organizationSegmentSchema.fields?.verified || yup.string(),
-    linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    bsky: yup.string().url('BlueSky url must be a valid URL'),
-    github: yup.string().url('github url must be a valid URL'),
+    linkedin: yup
+      .string()
+      .url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.linkedin') })),
+    bsky: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.bsky') })),
+    github: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.github') })),
   });
 
   /**

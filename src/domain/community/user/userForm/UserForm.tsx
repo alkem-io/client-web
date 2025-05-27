@@ -107,9 +107,11 @@ export const UserForm = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    bsky: yup.string().url('BlueSky url must be a valid URL'),
-    github: yup.string().url('github url must be a valid URL'),
+    linkedin: yup
+      .string()
+      .url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.linkedin') })),
+    bsky: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.bsky') })),
+    github: yup.string().url(t('forms.validations.url', { name: t('components.profileSegment.socialLinks.github') })),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
