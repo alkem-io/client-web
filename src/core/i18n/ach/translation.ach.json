@@ -929,7 +929,8 @@
       "reservedTopLevelRoute": "crwdns18602:0crwdne18602:0",
       "invalidUrl": "crwdns36854:0crwdne36854:0",
       "invalidEmail": "crwdns37046:0crwdne37046:0",
-      "duplicateEmail": "crwdns37052:0crwdne37052:0"
+      "duplicateEmail": "crwdns37052:0crwdne37052:0",
+      "elementMustBeValidUrl": "crwdns37054:0{{name}}crwdne37054:0"
     }
   },
   "templateDialog": {
@@ -1531,6 +1532,11 @@
           "placeholder": "crwdns19324:0crwdne19324:0"
         },
         "noLocation": "crwdns19326:0crwdne19326:0"
+      },
+      "socialLinks": {
+        "github": "crwdns37056:0crwdne37056:0",
+        "linkedin": "crwdns37058:0crwdne37058:0",
+        "bsky": "crwdns37060:0crwdne37060:0"
       }
     },
     "organizationSegment": {
