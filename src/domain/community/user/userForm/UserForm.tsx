@@ -69,16 +69,12 @@ export const UserForm = ({
     },
   } = currentUser;
 
-  const blueSkyRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
-    [references]
-  );
-  const githubRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
-    [references]
-  );
-  const linkedinRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
+    () => ({
+      blueSkyRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+      githubRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+      linkedinRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    }),
     [references]
   );
 

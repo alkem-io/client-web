@@ -83,16 +83,12 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
     [profile.tagsets]
   );
 
-  const blueSkyRef = useMemo(
-    () => profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
-    [profile.references]
-  );
-  const githubRef = useMemo(
-    () => profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
-    [profile.references]
-  );
-  const linkedinRef = useMemo(
-    () => profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
+    () => ({
+      blueSkyRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+      githubRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+      linkedinRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    }),
     [profile.references]
   );
 
