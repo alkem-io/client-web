@@ -11,7 +11,7 @@ import type {
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash';
-import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
@@ -50,7 +50,7 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
-  const excalidrawApiRef = useRef<ExcalidrawImperativeAPI | null>(null);
+  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
 
   const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
@@ -71,34 +71,41 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     pushFilesToExcalidraw();
   }, [filesManager]);
 
-  const refreshOnDataChange = useRef(
-    debounce(async (state: RefreshWhiteboardStateParam) => {
-      excalidrawApiRef.current?.updateScene(state);
-      excalidrawApiRef.current?.zoomToFit();
+  const refreshOnDataChange = debounce(async (state: RefreshWhiteboardStateParam) => {
+    excalidrawApi?.updateScene(state);
 
-      // Find the properties present in `state.files` and missing in currentFiles
-      // and put them into missingFiles: BinaryFileData[]
-      const currentFiles = excalidrawApiRef.current?.getFiles() ?? {};
-      const newFiles = state.files ?? {};
-      const missingFiles: BinaryFileData[] = compact(
-        Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
-      );
-      if (excalidrawApiRef.current && missingFiles.length > 0) {
-        excalidrawApiRef.current.addFiles(missingFiles);
-      }
-    }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
-  ).current;
+    if (Array.isArray(state.elements) && state.elements.length > 0) {
+      excalidrawApi?.scrollToContent(state.elements, {
+        animate: false,
+        fitToViewport: true,
+        // both values help with scaling issue when the content is displayed
+        viewportZoomFactor: 0.75, // 75% of the viewport, on preview
+        maxZoom: 1, // 100% zoom, in the whiteboard
+      });
+    }
+
+    // Find the properties present in `state.files` and missing in currentFiles
+    // and put them into missingFiles: BinaryFileData[]
+    const currentFiles = excalidrawApi?.getFiles() ?? {};
+    const newFiles = state.files ?? {};
+    const missingFiles: BinaryFileData[] = compact(
+      Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
+    );
+    if (excalidrawApi && missingFiles.length > 0) {
+      excalidrawApi.addFiles(missingFiles);
+    }
+  }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL);
 
   useEffect(() => {
     // apparently when a whiteboard state is changed too fast
     // it is not reflected by excalidraw (they don't have internal debounce for state change)
     refreshOnDataChange(data);
     return refreshOnDataChange.cancel;
-  }, [refreshOnDataChange, data, excalidrawApiRef.current]);
+  }, [refreshOnDataChange, data, excalidrawApi]);
 
   const handleScroll = useRef(
     debounce(() => {
-      excalidrawApiRef.current?.refresh();
+      excalidrawApi?.refresh();
     }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
   ).current;
 
@@ -161,7 +168,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
 
   const handleInitializeApi = useCallback(
     (excalidrawApi: ExcalidrawImperativeAPI) => {
-      excalidrawApiRef.current = excalidrawApi;
+      setExcalidrawApi(excalidrawApi);
       actions.onInitApi?.(excalidrawApi);
     },
     [actions.onInitApi]
