@@ -4,8 +4,15 @@ export enum SocialNetworkEnum {
   linkedin = 'linkedin',
   github = 'github',
   twitter = 'twitter',
+  bsky = 'bsky', // blueSky
   email = 'email',
 }
+
+export const socialNames = [
+  SocialNetworkEnum.github.toString(),
+  SocialNetworkEnum.linkedin.toString(),
+  SocialNetworkEnum.bsky.toString(),
+];
 
 export const SocialNetworksSortOrder = Object.keys(SocialNetworkEnum).reduce<Record<string, number>>(
   (prev, cur, index) => {

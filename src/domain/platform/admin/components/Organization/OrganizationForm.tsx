@@ -11,13 +11,13 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationSegment, organizationSegmentSchema } from '../Common/OrganizationSegment';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
-import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
+import { ProfileSegment, profileSegmentSchemaWithReferences } from '../Common/ProfileSegment';
 import { TagsetSegment } from '../Common/TagsetSegment';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -32,6 +32,9 @@ import {
   mapProfileModelToUpdateProfileInput,
 } from '@/domain/common/profile/ProfileModelUtils';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
+import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -41,12 +44,15 @@ interface OrganizationFormValues {
   legalEntityName: string | undefined;
   website: string | undefined;
   verified: OrganizationVerificationEnum;
+  linkedin: string | undefined;
+  bsky: string | undefined;
+  github: string | undefined;
 }
 
 interface OrganizationFormProps {
   organization?: OrganizationModel;
   editMode?: EditMode;
-  onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
+  onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => Promise<unknown>;
 }
 
 export const OrganizationForm: FC<OrganizationFormProps> = ({
@@ -77,24 +83,48 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
     [profile.tagsets]
   );
 
+  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
+    () => ({
+      blueSkyRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+      githubRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+      linkedinRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    }),
+    [profile.references]
+  );
+
   const initialValues: OrganizationFormValues = {
-    profile: profile ?? EmptyProfileModel,
+    profile: {
+      ...(profile ?? EmptyProfileModel),
+      references: profile.references?.filter(x => !socialNames.includes(x.name.toLowerCase())) ?? [],
+    },
     nameID: nameID || '',
     contactEmail: contactEmail || EmptyOrganizationModel.contactEmail,
     domain: domain || EmptyOrganizationModel.domain || '',
     legalEntityName: legalEntityName || EmptyOrganizationModel.legalEntityName || '',
     website: website || EmptyOrganizationModel.website || '',
     verified: verificationStatus,
+    linkedin: linkedinRef?.uri || '',
+    bsky: blueSkyRef?.uri || '',
+    github: githubRef?.uri || '',
   };
 
   const validationSchema = yup.object().shape({
-    profile: profileSegmentSchema,
+    profile: profileSegmentSchemaWithReferences,
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     contactEmail: organizationSegmentSchema.fields?.contactEmail || yup.string(),
     domain: organizationSegmentSchema.fields?.domain || yup.string(),
     legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
     website: organizationSegmentSchema.fields?.website || yup.string(),
     verified: organizationSegmentSchema.fields?.verified || yup.string(),
+    linkedin: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.linkedin') })),
+    bsky: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.bsky') })),
+    github: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.github') })),
   });
 
   /**
@@ -104,7 +134,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = useCallback(
-    (orgData: OrganizationFormValues) => {
+    async (orgData: OrganizationFormValues) => {
       const { profile, ...otherData } = orgData;
 
       if (isCreateMode) {
@@ -113,20 +143,30 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
           profileData: mapProfileModelToCreateProfileInput(profile),
         };
 
-        onSave?.(organization);
+        onSave && (await onSave(organization));
       }
 
       if (isEditMode) {
+        const profileData = {
+          ...profile,
+          references: [
+            ...(profile.references ?? []),
+            { ...linkedinRef, uri: orgData.linkedin } as ReferenceModel,
+            { ...blueSkyRef, uri: orgData.bsky } as ReferenceModel,
+            { ...githubRef, uri: orgData.github } as ReferenceModel,
+          ],
+        };
+
         const organization: UpdateOrganizationInput = {
           ID: currentOrganization.id,
           ...otherData,
-          profileData: mapProfileModelToUpdateProfileInput(profile),
+          profileData: mapProfileModelToUpdateProfileInput(profileData),
         };
 
-        onSave?.(organization);
+        onSave && (await onSave(organization));
       }
     },
-    [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets]
+    [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets, linkedinRef, blueSkyRef, githubRef]
   );
 
   const handleBack = () => navigate(-1);
@@ -151,13 +191,19 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={handleSubmit}
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              await handleSubmit(values);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
         >
-          {({ values: { profile }, handleSubmit }) => {
+          {({ values: { profile }, handleSubmit, isSubmitting }) => {
             const tagsets = profile.tagsets || [];
-            const references = profile.references || [];
             const displayName = profile.displayName || '';
             const visual = getVisualByType(VisualType.Avatar, profile.visuals);
+
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
@@ -189,10 +235,19 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                             countryFieldName="profile.location.country"
                           />
 
-                          <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
+                          <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+
+                          <SocialSegment
+                            readOnly={isReadOnlyMode}
+                            fieldNames={{ email: 'contactEmail' }}
+                            disabled={isSubmitting}
+                          />
+
                           {isEditMode && (
                             <ProfileReferenceSegment
-                              references={references}
+                              disabled={isSubmitting}
+                              fieldName="profile.references"
+                              references={profile.references ?? []}
                               readOnly={isReadOnlyMode}
                               profileId={profile.id}
                             />
@@ -201,8 +256,8 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                       )}
                       {!isReadOnlyMode && (
                         <Actions justifyContent="end">
-                          {backButton}
-                          <Button variant="contained" type="submit">
+                          {!isSubmitting && backButton}
+                          <Button variant="contained" type="submit" loading={isSubmitting}>
                             {t('buttons.save')}
                           </Button>
                         </Actions>
