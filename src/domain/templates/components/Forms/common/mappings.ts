@@ -11,6 +11,7 @@ import {
   UpdateProfileInput,
   UpdateTagsetInput,
   UpdateTemplateFromCollaborationMutationVariables,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -106,6 +107,10 @@ const handleCreateWhiteboard = (data?: {
   content?: string;
   profile?: {
     displayName?: string;
+    preview?: {
+      name: VisualType.Banner;
+      uri: string;
+    };
   };
 }): CreateWhiteboardInput | undefined => {
   if (!data) {
@@ -115,13 +120,24 @@ const handleCreateWhiteboard = (data?: {
     content: data.content,
     profile: {
       displayName: data.profile?.displayName ? data.profile?.displayName : 'Whiteboard Template',
+      visuals: data.profile?.preview
+        ? [
+            {
+              name: VisualType.Banner,
+              uri: data.profile.preview.uri,
+            },
+          ]
+        : undefined,
     },
   };
 };
 
-const handlePreviewImages = (data: AnyTemplateFormSubmittedValues): { includeProfileVisuals?: boolean } | undefined => {
-  // We don't do anything from here, preview images are handled and uploaded in WhiteboardPreviewImages
-  // But we need to tell the server that we want it to include the visuals so we can upload the previews to those visuals
+// Preview images are handled and uploaded in WhiteboardPreviewImages
+// But we need to tell the server that we want it to include the visuals ids in the response to the mutation
+// so we can upload the previews to those visuals
+const shouldRequestPreviewVisuals = (
+  data: AnyTemplateFormSubmittedValues
+): { includeProfileVisuals?: boolean } | undefined => {
   if (data && (data as WhiteboardTemplateFormSubmittedValues).whiteboardPreviewImages) {
     return { includeProfileVisuals: true };
   }
@@ -153,7 +169,7 @@ export const toCreateTemplateMutationVariables = (
     templatesSetId,
     type: templateType,
     ...handleCreateProfile(values),
-    ...handlePreviewImages(values),
+    ...shouldRequestPreviewVisuals(values),
   };
 
   switch (templateType) {
@@ -187,6 +203,10 @@ export const toCreateTemplateMutationVariables = (
         }
         case CalloutType.Whiteboard: {
           delete callout.contributionDefaults;
+          // if there are preview images for upload, do not use the existing preview
+          if (calloutTemplateData.whiteboardPreviewImages) {
+            delete callout.framing.whiteboard?.profile?.visuals;
+          }
           break;
         }
         case CalloutType.WhiteboardCollection: {
@@ -317,7 +337,7 @@ export const toUpdateTemplateMutationVariables = (
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
     profile: mapTemplateProfileToUpdateProfileInput(newValues.profile),
-    ...handlePreviewImages(newValues),
+    ...shouldRequestPreviewVisuals(newValues),
   };
   switch (template.type) {
     case TemplateType.Callout: {
