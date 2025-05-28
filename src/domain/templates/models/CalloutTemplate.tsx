@@ -1,5 +1,5 @@
 import { TemplateBase } from './TemplateBase';
-import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType, TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
@@ -19,6 +19,10 @@ export interface CalloutTemplate extends TemplateBase {
         profile: {
           displayName: string;
           description?: string;
+          preview?: {
+            name: VisualType.Banner;
+            uri: string;
+          };
         };
         content?: string;
       };
