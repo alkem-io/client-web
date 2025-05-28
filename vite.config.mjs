@@ -3,12 +3,15 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
+import fs from 'fs';
+import { version } from './package';
 
 /**
  * Vite configuration for the Alkemio client-web project.
  *
  * - Integrates React, TypeScript path resolution, and SVGR plugins.
  * - Adds a custom plugin (`no-cache-index`) to prevent caching of `index.html` and `/home` routes in the dev server by setting aggressive no-cache headers.
+ * - Adds a custom plugin (`generate-meta-json`) to generate `public/meta.json` with version info from `package.json` at build time.
  * - Sets up path aliasing for `@` to `./src`.
  * - Configures the dev server to run on `localhost:3001`.
  * - Customizes build output directory, sourcemaps, and Rollup output filenames.
@@ -67,6 +70,14 @@ export default defineConfig({
           }
           next();
         });
+      }
+    },
+    // Plugin to generate meta.json with version info
+    {
+      name: 'generate-meta-json',
+      apply: 'build',
+      buildStart() {
+        fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
       }
     }
   ],
