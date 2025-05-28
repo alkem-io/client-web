@@ -50,6 +50,7 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
+  const excalidrawApiRef = useRef<ExcalidrawImperativeAPI | null>(null);
 
   const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
@@ -93,7 +94,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     // it is not reflected by excalidraw (they don't have internal debounce for state change)
     refreshOnDataChange(data);
     return refreshOnDataChange.cancel;
-  }, [refreshOnDataChange, data]);
+  }, [refreshOnDataChange, data, excalidrawApiRef.current]);
 
   const handleScroll = useRef(
     debounce(() => {
@@ -111,33 +112,32 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   }, [handleScroll]);
 
   const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
-    () => (exportedElements, appState) =>
-      (
-        <Box className="Card">
-          <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
-            <BackupIcon />
-          </Box>
-          <h2>Save to the Alkemio</h2>
-          <Box className="Card-details">Save the scene in Alkemio and share it with others.</Box>
-          <button
-            className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
-            title="Save to Alkemio"
-            aria-label="Save to Alkemio"
-            type="button"
-            onClick={async () => {
-              if (actions.onUpdate) {
-                await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-                const element = document.body.getElementsByClassName('Modal__close')[0];
-                ReactDOM.findDOMNode(element)?.dispatchEvent(
-                  new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                );
-              }
-            }}
-          >
-            <div className="ToolIcon__label">Save to Alkemio</div>
-          </button>
+    () => (exportedElements, appState) => (
+      <Box className="Card">
+        <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
+          <BackupIcon />
         </Box>
-      ),
+        <h2>Save to the Alkemio</h2>
+        <Box className="Card-details">Save the scene in Alkemio and share it with others.</Box>
+        <button
+          className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
+          title="Save to Alkemio"
+          aria-label="Save to Alkemio"
+          type="button"
+          onClick={async () => {
+            if (actions.onUpdate) {
+              await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
+              const element = document.body.getElementsByClassName('Modal__close')[0];
+              ReactDOM.findDOMNode(element)?.dispatchEvent(
+                new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
+              );
+            }
+          }}
+        >
+          <div className="ToolIcon__label">Save to Alkemio</div>
+        </button>
+      </Box>
+    ),
     [data, actions]
   );
 
@@ -158,8 +158,6 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   const { UIOptions: externalUIOptions, ...restOptions } = options || {};
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
-
-  const excalidrawApiRef = useRef<ExcalidrawImperativeAPI | null>(null);
 
   const handleInitializeApi = useCallback(
     (excalidrawApi: ExcalidrawImperativeAPI) => {
