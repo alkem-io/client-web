@@ -32,7 +32,8 @@ export default defineConfig({
        *
        * @param {import('vite').ViteDevServer} server - The Vite development server instance.
        */
-      name: 'no-cache-index',      configureServer(server) {
+      name: 'no-cache-index',
+      configureServer(server) {
         server.middlewares.use((req, res, next) => {
           if (req.url === '/' || req.url === '/home' || req.url?.endsWith('/home')) {
             // Intercept the response to remove caching headers
