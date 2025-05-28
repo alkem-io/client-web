@@ -27,14 +27,15 @@ import {
   toCreateTemplateMutationVariables,
   toUpdateTemplateMutationVariables,
 } from '../Forms/common/mappings';
-import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
-import { useUploadWhiteboardVisuals } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useHandlePreviewImages from '../../utils/useHandlePreviewImages';
 import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
+import { CalloutTemplateFormSubmittedValues } from '../Forms/CalloutTemplateForm';
+import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -82,26 +83,7 @@ const TemplatesAdmin = ({
 }: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
   const backToTemplates = useBackWithDefaultUrl(baseUrl);
-
-  // Visuals management (for whiteboards)
-  const { uploadVisuals } = useUploadWhiteboardVisuals();
-  const handlePreviewTemplates = async (
-    values: AnyTemplateFormSubmittedValues,
-    mutationResult?: { profile?: { cardVisual?: { id: string }; previewVisual?: { id: string } }; nameID: string }
-  ) => {
-    const whiteboardTemplate = values as WhiteboardTemplateFormSubmittedValues;
-    const previewImages = whiteboardTemplate.whiteboardPreviewImages;
-    if (mutationResult && previewImages) {
-      await uploadVisuals(
-        previewImages,
-        {
-          cardVisualId: mutationResult.profile?.cardVisual?.id,
-          previewVisualId: mutationResult.profile?.previewVisual?.id,
-        },
-        mutationResult.nameID // To upload the screenshots with the whiteboard nameId
-      );
-    }
-  };
+  const { handlePreviewTemplates } = useHandlePreviewImages();
 
   // Read Template
   const { data, loading } = useAllTemplatesInTemplatesSetQuery({
@@ -151,7 +133,10 @@ const TemplatesAdmin = ({
         variables: updateCalloutVariables,
       });
       // update whiteboard (framing) visuals
-      await handlePreviewTemplates(values, result.data?.updateCallout.framing.whiteboard);
+      await handlePreviewTemplates(
+        values as CalloutTemplateFormSubmittedValues,
+        result.data?.updateCallout.framing.whiteboard
+      );
     }
     if (updateCommunityGuidelinesVariables) {
       await updateCommunityGuidelines({
@@ -166,7 +151,7 @@ const TemplatesAdmin = ({
     // include preview for other template type other than callout
     if (updateTemplateVariables.includeProfileVisuals && !updateCalloutVariables) {
       // Handle the visual in a special way with the preview images
-      await handlePreviewTemplates(values, result.data?.updateTemplate);
+      await handlePreviewTemplates(values as WhiteboardTemplateFormSubmittedValues, result.data?.updateTemplate);
     }
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
@@ -206,10 +191,13 @@ const TemplatesAdmin = ({
     });
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(values, result.data?.createTemplate);
+      handlePreviewTemplates(values as WhiteboardTemplateFormSubmittedValues, result.data?.createTemplate);
     } else if (creatingTemplateType === TemplateType.Callout) {
       // update whiteboard (framing) visuals
-      handlePreviewTemplates(values, result.data?.createTemplate.callout?.framing.whiteboard);
+      handlePreviewTemplates(
+        values as CalloutTemplateFormSubmittedValues,
+        result.data?.createTemplate.callout?.framing.whiteboard
+      );
     }
     setCreatingTemplateType(undefined);
   };
