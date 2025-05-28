@@ -39,7 +39,8 @@ export const useCalloutCreationWithPreviewImages = (
   const { uploadVisuals } = useUploadWhiteboardVisuals();
   const parentHook = useCalloutCreation(options);
 
-  const handlePreviewImages = (callout: CalloutCreationTypeWithPreviewImages) => {
+  // Separates the preview images from the callout data because the preview images are sent separately to the server
+  const separatePreviewImages = (callout: CalloutCreationTypeWithPreviewImages) => {
     if (callout.framing.whiteboard) {
       const {
         framing: {
@@ -56,7 +57,7 @@ export const useCalloutCreationWithPreviewImages = (
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationTypeWithPreviewImages) => {
       // Remove the previewImages from the form data if it's present, to handle it separatelly
-      const { callout: cleanCallout, previewImages } = handlePreviewImages(callout);
+      const { callout: cleanCallout, previewImages } = separatePreviewImages(callout);
 
       const result = await parentHook.handleCreateCallout(cleanCallout);
 

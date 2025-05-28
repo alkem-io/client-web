@@ -7492,6 +7492,11 @@ export const CalloutContentDocument = gql`
             profile {
               id
               displayName
+              preview: visual(type: BANNER) {
+                id
+                name
+                uri
+              }
             }
             content
           }
@@ -10899,82 +10904,6 @@ export type OrganizationInfoQueryResult = Apollo.QueryResult<
 export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
   return { query: OrganizationInfoDocument, variables: variables };
 }
-export const OrganizationProfileInfoDocument = gql`
-  query OrganizationProfileInfo($id: UUID!) {
-    lookup {
-      organization(ID: $id) {
-        ...OrganizationProfileInfo
-      }
-    }
-  }
-  ${OrganizationProfileInfoFragmentDoc}
-`;
-
-/**
- * __useOrganizationProfileInfoQuery__
- *
- * To run a query within a React component, call `useOrganizationProfileInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationProfileInfoQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOrganizationProfileInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  > &
-    ({ variables: SchemaTypes.OrganizationProfileInfoQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
-    OrganizationProfileInfoDocument,
-    options
-  );
-}
-export function useOrganizationProfileInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, options);
-}
-export function useOrganizationProfileInfoSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.OrganizationProfileInfoQuery,
-        SchemaTypes.OrganizationProfileInfoQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.OrganizationProfileInfoQuery,
-    SchemaTypes.OrganizationProfileInfoQueryVariables
-  >(OrganizationProfileInfoDocument, options);
-}
-export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
-export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
-export type OrganizationProfileInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationProfileInfoSuspenseQuery>;
-export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationProfileInfoQuery,
-  SchemaTypes.OrganizationProfileInfoQueryVariables
->;
-export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
-  return { query: OrganizationProfileInfoDocument, variables: variables };
-}
 export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganizationInput!) {
     createOrganization(organizationData: $input) {
@@ -11318,6 +11247,82 @@ export type OrganizationAccountQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationAccountQuery(variables: SchemaTypes.OrganizationAccountQueryVariables) {
   return { query: OrganizationAccountDocument, variables: variables };
+}
+export const OrganizationProfileInfoDocument = gql`
+  query OrganizationProfileInfo($id: UUID!) {
+    lookup {
+      organization(ID: $id) {
+        ...OrganizationProfileInfo
+      }
+    }
+  }
+  ${OrganizationProfileInfoFragmentDoc}
+`;
+
+/**
+ * __useOrganizationProfileInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganizationProfileInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationProfileInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationProfileInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrganizationProfileInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  > &
+    ({ variables: SchemaTypes.OrganizationProfileInfoQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationProfileInfoQuery, SchemaTypes.OrganizationProfileInfoQueryVariables>(
+    OrganizationProfileInfoDocument,
+    options
+  );
+}
+export function useOrganizationProfileInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >(OrganizationProfileInfoDocument, options);
+}
+export function useOrganizationProfileInfoSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.OrganizationProfileInfoQuery,
+        SchemaTypes.OrganizationProfileInfoQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.OrganizationProfileInfoQuery,
+    SchemaTypes.OrganizationProfileInfoQueryVariables
+  >(OrganizationProfileInfoDocument, options);
+}
+export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
+export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
+export type OrganizationProfileInfoSuspenseQueryHookResult = ReturnType<typeof useOrganizationProfileInfoSuspenseQuery>;
+export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationProfileInfoQuery,
+  SchemaTypes.OrganizationProfileInfoQueryVariables
+>;
+export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
+  return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const OrganizationSettingsDocument = gql`
   query OrganizationSettings($orgId: UUID!) {
@@ -20390,6 +20395,22 @@ export const CreateTemplateDocument = gql`
         }
         previewVisual: visual(type: BANNER) {
           id
+        }
+      }
+      callout {
+        id
+        framing {
+          id
+          whiteboard {
+            id
+            nameID
+            profile {
+              id
+              previewVisual: visual(type: BANNER) {
+                id
+              }
+            }
+          }
         }
       }
     }

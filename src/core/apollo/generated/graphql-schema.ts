@@ -13218,7 +13218,12 @@ export type CalloutContentQuery = {
                   __typename?: 'Whiteboard';
                   id: string;
                   content: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    preview?: { __typename?: 'Visual'; id: string; name: string; uri: string } | undefined;
+                  };
                 }
               | undefined;
           };
@@ -16828,6 +16833,93 @@ export type OrganizationInfoQuery = {
   };
 };
 
+export type CreateOrganizationMutationVariables = Exact<{
+  input: CreateOrganizationInput;
+}>;
+
+export type CreateOrganizationMutation = {
+  __typename?: 'Mutation';
+  createOrganization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
+export type DeleteOrganizationMutationVariables = Exact<{
+  input: DeleteOrganizationInput;
+}>;
+
+export type DeleteOrganizationMutation = {
+  __typename?: 'Mutation';
+  deleteOrganization: { __typename?: 'Organization'; id: string };
+};
+
+export type OrganizationAuthorizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+export type OrganizationAuthorizationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    organization?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type RolesOrganizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+export type RolesOrganizationQuery = {
+  __typename?: 'Query';
+  rolesOrganization: {
+    __typename?: 'ContributorRoles';
+    id: string;
+    spaces: Array<{
+      __typename?: 'RolesResultSpace';
+      id: string;
+      roles: Array<string>;
+      displayName: string;
+      visibility: SpaceVisibility;
+      subspaces: Array<{
+        __typename?: 'RolesResultCommunity';
+        id: string;
+        displayName: string;
+        roles: Array<string>;
+        level: SpaceLevel;
+      }>;
+    }>;
+  };
+};
+
+export type OrganizationAccountQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+export type OrganizationAccountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    organization?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          account?: { __typename?: 'Account'; id: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type OrganizationProfileInfoQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -16938,93 +17030,6 @@ export type OrganizationProfileInfoFragment = {
           allowedValues: Array<string>;
           type: TagsetType;
         }>
-      | undefined;
-  };
-};
-
-export type CreateOrganizationMutationVariables = Exact<{
-  input: CreateOrganizationInput;
-}>;
-
-export type CreateOrganizationMutation = {
-  __typename?: 'Mutation';
-  createOrganization: {
-    __typename?: 'Organization';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-  };
-};
-
-export type DeleteOrganizationMutationVariables = Exact<{
-  input: DeleteOrganizationInput;
-}>;
-
-export type DeleteOrganizationMutation = {
-  __typename?: 'Mutation';
-  deleteOrganization: { __typename?: 'Organization'; id: string };
-};
-
-export type OrganizationAuthorizationQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
-}>;
-
-export type OrganizationAuthorizationQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    organization?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type RolesOrganizationQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
-}>;
-
-export type RolesOrganizationQuery = {
-  __typename?: 'Query';
-  rolesOrganization: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    spaces: Array<{
-      __typename?: 'RolesResultSpace';
-      id: string;
-      roles: Array<string>;
-      displayName: string;
-      visibility: SpaceVisibility;
-      subspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        displayName: string;
-        roles: Array<string>;
-        level: SpaceLevel;
-      }>;
-    }>;
-  };
-};
-
-export type OrganizationAccountQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
-}>;
-
-export type OrganizationAccountQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    organization?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-          account?: { __typename?: 'Account'; id: string } | undefined;
-        }
       | undefined;
   };
 };
@@ -25247,6 +25252,28 @@ export type CreateTemplateMutation = {
       cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
       previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
     };
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
+                  };
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
