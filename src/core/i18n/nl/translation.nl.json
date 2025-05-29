@@ -862,6 +862,9 @@
         "placeholder": "",
         "tooltip": "Labels"
       },
+      "addCallouts": {
+        "title": "Add default template's collaboration tools:"
+      },
       "addTutorialCallouts": {
         "title": "Voeg tutorials toe"
       },
