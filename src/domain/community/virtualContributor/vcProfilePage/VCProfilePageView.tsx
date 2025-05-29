@@ -86,7 +86,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
     [hasReadAccess, t, onClickHandleKnowledgeBase]
   );
 
-  const otherLinkReference = links[OTHER_LINK_GROUP];
+  const otherLinkReference = links[OTHER_LINK_GROUP] ?? [];
   const referencesWithAuth: ReferenceModelWithOptionalAuthorization[] = [...otherLinkReference];
 
   return (

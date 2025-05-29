@@ -7,7 +7,7 @@ import TemplateFormBase, {
 } from './TemplateFormBase';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
@@ -17,6 +17,10 @@ export interface WhiteboardTemplateFormSubmittedValues
     TemplateFormWithPreviewImages {
   whiteboard?: {
     content: string;
+    preview?: {
+      name: VisualType.Banner;
+      uri: string;
+    };
   };
 }
 

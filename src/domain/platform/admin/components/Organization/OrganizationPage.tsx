@@ -64,7 +64,9 @@ const OrganizationPage = ({ mode }: Props) => {
     },
   });
 
-  const handleSubmit = async (editedOrganization: CreateOrganizationInput | UpdateOrganizationInput) => {
+  const handleSubmit = async (
+    editedOrganization: CreateOrganizationInput | UpdateOrganizationInput
+  ): Promise<unknown> => {
     if (mode === EditMode.new) {
       const { nameID, profileData, contactEmail, domain, legalEntityName, website } =
         editedOrganization as CreateOrganizationInput;
@@ -83,7 +85,7 @@ const OrganizationPage = ({ mode }: Props) => {
         },
       };
 
-      createOrganization({ variables: { input } });
+      return createOrganization({ variables: { input } });
     }
 
     if (mode === EditMode.edit) {
@@ -133,7 +135,7 @@ const OrganizationPage = ({ mode }: Props) => {
         },
       };
 
-      updateOrganization({ variables: { input } });
+      return updateOrganization({ variables: { input } });
     }
   };
 
@@ -141,11 +143,7 @@ const OrganizationPage = ({ mode }: Props) => {
 
   return (
     <StorageConfigContextProvider locationType="organization" organizationId={organizationId}>
-      <OrganizationForm
-        organization={organization}
-        onSave={handleSubmit}
-        editMode={mode}
-      />
+      <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} />
     </StorageConfigContextProvider>
   );
 };

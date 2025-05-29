@@ -862,6 +862,9 @@
         "placeholder": "",
         "tooltip": "Tags"
       },
+      "addCallouts": {
+        "title": "Add default template's collaboration tools:"
+      },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
       },
@@ -929,7 +932,8 @@
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
       "invalidUrl": "Invalid URL",
       "invalidEmail": "Invalid Email address",
-      "duplicateEmail": "Duplicated email address"
+      "duplicateEmail": "Duplicated email address",
+      "elementMustBeValidUrl": "{{name}} must be a valid URL"
     }
   },
   "templateDialog": {
@@ -1531,6 +1535,11 @@
           "placeholder": "Postal code"
         },
         "noLocation": "No location specified"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
       }
     },
     "organizationSegment": {
