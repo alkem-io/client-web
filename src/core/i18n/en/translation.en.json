@@ -3244,7 +3244,7 @@
       "post": {
         "title": "Post title",
         "exampleTitle": "Example: About Alkemio",
-        "exampleDescription": "Tip: Create a structured and specific text, for example:<br/><br/><strong>Background</strong><br/><br/>Alkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.<br/><br/><strong>Governance</strong><br/><br/>To maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...",
+        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
         "addAnotherPost": "Add Post",
         "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
