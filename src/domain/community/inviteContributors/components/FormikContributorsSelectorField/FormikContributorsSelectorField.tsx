@@ -156,6 +156,7 @@ const FormikContributorsSelectorField = ({
     sortUsers,
     filterUsers,
     loadMoreInView,
+    hasMore,
   ]);
 
   const handleSelect = (value: (Identifiable & { profile: { displayName: string } }) | string | null) => {
@@ -248,6 +249,7 @@ const FormikContributorsSelectorField = ({
           }
           return option?.profile.displayName;
         }}
+        filterOptions={options => options}
         sx={{
           marginBottom: gutters(),
           [`& .${autocompleteClasses.popupIndicator}`]: {
