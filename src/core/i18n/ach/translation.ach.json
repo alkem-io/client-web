@@ -862,6 +862,9 @@
         "placeholder": "crwdns28876:0crwdne28876:0",
         "tooltip": "crwdns28878:0crwdne28878:0"
       },
+      "addCallouts": {
+        "title": "crwdns37062:0crwdne37062:0"
+      },
       "addTutorialCallouts": {
         "title": "crwdns28880:0crwdne28880:0"
       },
