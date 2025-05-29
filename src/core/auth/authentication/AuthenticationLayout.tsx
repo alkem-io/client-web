@@ -10,13 +10,18 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageBannerCardWrapper from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import { ReactNode } from 'react';
 
-const AuthenticationLayout = ({ children }) => {
+interface AuthenticationLayoutProps {
+  children: ReactNode;
+}
+
+const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
   const { t } = useTranslation();
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Overlay sx={{ zIndex: 0 }}>
-        <Image src="/alkemio-banner/global-banner.svg" height="464px" />
+        <Image src="/alkemio-banner/global-banner.svg" height="464px" alt={t('visuals-alt-text.alkemio-banner-alt')} />
       </Overlay>
       <Gutters
         row

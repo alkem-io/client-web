@@ -3082,6 +3082,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Page banner: {{altText}}"

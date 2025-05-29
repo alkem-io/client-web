@@ -1,8 +1,9 @@
+import { Link as RouterLink } from 'react-router-dom';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Box, Typography } from '@mui/material';
-import { t } from 'i18next';
 import { Link } from '@mui/material';
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { useTranslation } from 'react-i18next';
 
 export const AuthFormHeader = ({
   title,
@@ -13,6 +14,7 @@ export const AuthFormHeader = ({
   haveAccountMessage?: boolean;
   hideMessage?: boolean;
 }) => {
+  const { t } = useTranslation();
   return (
     <Gutters row justifyContent="space-between" sx={{ paddingBottom: 0 }}>
       <Box>
@@ -27,7 +29,8 @@ export const AuthFormHeader = ({
             {t(haveAccountMessage ? 'authentication.have-account' : 'authentication.no-account')}
           </Typography>
           <Link
-            href={haveAccountMessage ? _AUTH_LOGIN_PATH : AUTH_SIGN_UP_PATH}
+            component={RouterLink}
+            to={haveAccountMessage ? _AUTH_LOGIN_PATH : AUTH_SIGN_UP_PATH}
             sx={{
               '&:hover': { color: theme => theme.palette.highlight.dark },
               color: theme => theme.palette.highlight.dark,

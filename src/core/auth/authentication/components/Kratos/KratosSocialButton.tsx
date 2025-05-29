@@ -62,7 +62,7 @@ const KratosSocialButton = ({ node, disabled = false }: KratosSocialButtonProps)
       <Button
         variant="contained"
         sx={{
-          background: 'white',
+          background: theme => theme.palette.background.paper,
           width: '100%',
           paddingY: 1,
           paddingX: 0,
@@ -72,11 +72,11 @@ const KratosSocialButton = ({ node, disabled = false }: KratosSocialButtonProps)
           },
         }}
         name={node.attributes.name}
-        type={node.attributes.type as AuthActionButtonProps['type']}
+        type={(node.attributes.type || 'button') as AuthActionButtonProps['type']}
         value={node.attributes.value}
         disabled={node.attributes.disabled || disabled}
       >
-        {Icon && <Icon />}
+        {Icon ? <Icon /> : node.meta.label?.text}
       </Button>
     </Tooltip>
   );
