@@ -58,7 +58,7 @@ const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
         <KratosHidden key={node.attributes['name']} node={node} />
       ))}
       {userName && <Greeting userName={userName} />}
-      <PlatformIntroduction label="pages.accept-terms.introduction-short" />
+      <PlatformIntroduction label="pages.registration.introduction-short" />
       {termsCheckbox && (
         <KratosVisibleAcceptTermsCheckbox
           node={termsCheckbox}
