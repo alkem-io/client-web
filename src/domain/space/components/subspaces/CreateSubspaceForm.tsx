@@ -26,7 +26,13 @@ const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
   SpaceFormValues,
-  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+  | 'displayName'
+  | 'tagline'
+  | 'description'
+  | 'tags'
+  | 'addCallouts' /* | 'addTutorialCallouts'*/
+  | 'collaborationTemplateId'
+  | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends SpaceCreationForm {}
@@ -47,7 +53,8 @@ export const CreateSubspaceForm = ({
       tagline: value.tagline,
       description: value.description,
       tags: value.tags,
-      addTutorialCallouts: value.addTutorialCallouts,
+      addCallouts: value.addCallouts,
+      // addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
       visuals: value.visuals,
     });
@@ -57,7 +64,8 @@ export const CreateSubspaceForm = ({
     tagline: '',
     description: '',
     tags: [],
-    addTutorialCallouts: false,
+    addCallouts: true,
+    // addTutorialCallouts: false,
     collaborationTemplateId: undefined,
     visuals: {
       avatar: { file: undefined, altText: '' },
@@ -135,8 +143,8 @@ export const CreateSubspaceForm = ({
             </PageContentBlock>
             <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
             <FormikRadiosSwitch
-              name="addTutorialCallouts"
-              label="Tutorials:"
+              name="addCallouts"
+              label={t('context.L1.addCallouts.title')}
               options={[
                 { label: 'On', value: true },
                 { label: 'Off', value: false },
