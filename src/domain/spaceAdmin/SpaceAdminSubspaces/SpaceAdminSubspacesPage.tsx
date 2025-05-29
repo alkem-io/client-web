@@ -128,7 +128,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           },
           why: value.why ?? '',
         },
-        addTutorialCallouts: value.addTutorialCallouts,
+        // addTutorialCallouts: value.addTutorialCallouts,
+        addCallouts: value.addCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
       });
 
