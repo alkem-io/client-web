@@ -3,7 +3,7 @@ import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
@@ -43,59 +43,14 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
-  const { t } = useKratosT();
-
-  const formatMessage = (text: string) => {
-    // Split by newlines and process each line
-    const lines = text.split('\n');
-    const elements: React.ReactNode[] = [];
-
-    const renderLineWithHtml = (content: string) => {
-      // Handle HTML tags like <strong>, <em>, <i> by using dangerouslySetInnerHTML
-      if (
-        content.includes('<strong>') ||
-        content.includes('</strong>') ||
-        content.includes('<em>') ||
-        content.includes('</em>') ||
-        content.includes('<i>') ||
-        content.includes('</i>')
-      ) {
-        return <span dangerouslySetInnerHTML={{ __html: content }} />;
-      }
-      return content;
-    };
-
-    lines.forEach((line, index) => {
-      if (line.trim() === '') {
-        // Empty line - add spacing
-        if (index > 0) {
-          elements.push(<br key={`br-${index}`} />);
-        }
-      } else if (line.trim().startsWith('•')) {
-        // Bullet point line
-        const bulletText = line.trim().substring(1).trim();
-        elements.push(
-          <div key={`bullet-${index}`} style={{ marginLeft: '16px', marginTop: '4px' }}>
-            • {renderLineWithHtml(bulletText)}
-          </div>
-        );
-      } else {
-        // Regular line
-        if (elements.length > 0) {
-          elements.push(<br key={`br-before-${index}`} />);
-        }
-        elements.push(<div key={`line-${index}`}>{renderLineWithHtml(line)}</div>);
-      }
-    });
-
-    return <>{elements}</>;
-  };
-
   return (
     <>
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
-          {formatMessage(t(message))}
+          <Trans
+            i18nKey="kratos.messages.request-recover-password"
+            components={{ strong: <strong />, li: <li />, br: <br /> }}
+          />
         </Alert>
       ))}
     </>

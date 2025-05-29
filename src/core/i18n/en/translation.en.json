@@ -2941,7 +2941,7 @@
     "loading-error": "Loading error",
     "messages": {
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
-      "request-recover-password": "<strong>An email containing a recovery code has been sent to the email address you provided.</strong>\n\nIf you have not received an email, please check the following:\n\n• <strong>Check the spelling</strong> of the email address.\n• <strong>Ensure you are using the email address</strong> you registered with.\n• <strong>Check your spam or junk folder</strong> in case the email was filtered.\n• <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.\n\n<i>Note: This does not confirm that an account is registered with this email.</i>",
+      "request-recover-password": "<strong>An email containing a recovery code has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li/><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an account is registered with this email.</i>",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
@@ -3244,7 +3244,7 @@
       "post": {
         "title": "Post title",
         "exampleTitle": "Example: About Alkemio",
-        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+        "exampleDescription": "Tip: Create a structured and specific text, for example:<br/><br/><strong>Background</strong><br/><br/>Alkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.<br/><br/><strong>Governance</strong><br/><br/>To maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...",
         "addAnotherPost": "Add Post",
         "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
