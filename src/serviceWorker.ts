@@ -1,16 +1,17 @@
 // in sync with service-worker.js
-export const EventTypes = {
+const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
 };
 
-type Config = {
-  onSuccess?: (registration: ServiceWorkerRegistration) => void;
-  onUpdate?: (registration: ServiceWorkerRegistration) => void;
-  clientVersion?: string;
-};
+type Config =
+  | {
+      onSuccess?: (registration: ServiceWorkerRegistration) => void;
+      onUpdate?: (registration: ServiceWorkerRegistration) => void;
+    }
+  | undefined;
 
-export function register(config: Config): void {
+export function register(config?: Config): void {
   if (import.meta.env.VITE_APP_ALKEMIO_DOMAIN && 'serviceWorker' in navigator) {
     const publicUrl = new URL(import.meta.env.VITE_APP_ALKEMIO_DOMAIN, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -22,17 +23,13 @@ export function register(config: Config): void {
         .register(swUrl)
         .then(registration => {
           if (navigator.serviceWorker.controller) {
-            // pass the current client version to the worker
-            navigator.serviceWorker.controller.postMessage({
-              type: EventTypes.CLIENT_VERSION,
-              version: config.clientVersion,
-            });
+            console.info('[SW] Updated ');
 
             if (config && config.onUpdate) {
               config.onUpdate(registration);
             }
           } else {
-            console.info('[SW] registered');
+            console.info('[SW] Registered');
 
             if (config && config.onSuccess) {
               config.onSuccess(registration);
@@ -55,5 +52,49 @@ export function unregister(): void {
       .catch(error => {
         console.error(error.message);
       });
+  }
+}
+
+type VersionUpdateCallback = (version: string) => void;
+
+let versionUpdateListeners: VersionUpdateCallback[] = [];
+
+export function onVersionUpdate(callback: VersionUpdateCallback) {
+  if ('serviceWorker' in navigator) {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type === EventTypes.NEW_VERSION_AVAILABLE) {
+        callback(event.data.version);
+      }
+    };
+
+    navigator.serviceWorker.addEventListener('message', handler);
+
+    versionUpdateListeners.push(() => {
+      navigator.serviceWorker.removeEventListener('message', handler);
+    });
+  }
+}
+
+export function cleanupVersionUpdateListeners() {
+  versionUpdateListeners.forEach(dispose => dispose(''));
+  versionUpdateListeners = [];
+}
+
+// sends the current client version to the service worker
+export function syncClientVersion(version: string) {
+  if ('serviceWorker' in navigator && version) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.active?.postMessage({
+        type: EventTypes.CLIENT_VERSION,
+        version,
+      });
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      navigator.serviceWorker.controller?.postMessage({
+        type: EventTypes.CLIENT_VERSION,
+        version,
+      });
+    });
   }
 }

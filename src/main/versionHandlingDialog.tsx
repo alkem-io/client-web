@@ -1,26 +1,25 @@
 import { useEffect } from 'react';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { EventTypes } from '@/serviceWorker';
+import { cleanupVersionUpdateListeners, onVersionUpdate, syncClientVersion } from '@/serviceWorker';
 
 /**
  * Listens for service worker messages about new versions and triggers a notification.
  */
 export const VersionHandlingDialog = () => {
+  const appVersion = import.meta.env.VITE_APP_VERSION;
   const notify = useNotification();
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      const handler = (event: MessageEvent) => {
-        if (event.data?.type === EventTypes.NEW_VERSION_AVAILABLE) {
-          notify('A new version of the app is available. Please reload to update.');
-        }
-      };
-      navigator.serviceWorker.addEventListener('message', handler);
+    syncClientVersion(appVersion);
 
-      return () => {
-        navigator.serviceWorker.removeEventListener('message', handler);
-      };
-    }
+    onVersionUpdate(version => {
+      // todo: log in sentry
+      console.info(`New App version available: ${version}, current: ${appVersion}`);
+      // todo: design TBD
+      notify('A new version of the app is available. Please refresh the page to update.');
+    });
+
+    return () => cleanupVersionUpdateListeners();
   }, []);
 
   return null;
