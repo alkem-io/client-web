@@ -164,7 +164,7 @@ const WhiteboardDialogFooter = ({
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
               values={{
-                spaceType: t(`common.space-level.${spaceLevel}`),
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
               }}
               components={{

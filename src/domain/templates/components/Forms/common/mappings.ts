@@ -9,9 +9,9 @@ import {
   UpdateCalloutMutationVariables,
   UpdateCommunityGuidelinesMutationVariables,
   UpdateProfileInput,
-  UpdateReferenceInput,
   UpdateTagsetInput,
   UpdateTemplateFromCollaborationMutationVariables,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -107,6 +107,10 @@ const handleCreateWhiteboard = (data?: {
   content?: string;
   profile?: {
     displayName?: string;
+    preview?: {
+      name: VisualType.Banner;
+      uri: string;
+    };
   };
 }): CreateWhiteboardInput | undefined => {
   if (!data) {
@@ -116,13 +120,24 @@ const handleCreateWhiteboard = (data?: {
     content: data.content,
     profile: {
       displayName: data.profile?.displayName ? data.profile?.displayName : 'Whiteboard Template',
+      visuals: data.profile?.preview
+        ? [
+            {
+              name: VisualType.Banner,
+              uri: data.profile.preview.uri,
+            },
+          ]
+        : undefined,
     },
   };
 };
 
-const handlePreviewImages = (data: AnyTemplateFormSubmittedValues): { includeProfileVisuals?: boolean } | undefined => {
-  // We don't do anything from here, preview images are handled and uploaded in WhiteboardPreviewImages
-  // But we need to tell the server that we want it to include the visuals so we can upload the previews to those visuals
+// Preview images are handled and uploaded in WhiteboardPreviewImages
+// But we need to tell the server that we want it to include the visuals ids in the response to the mutation
+// so we can upload the previews to those visuals
+const shouldRequestPreviewVisuals = (
+  data: AnyTemplateFormSubmittedValues
+): { includeProfileVisuals?: boolean } | undefined => {
   if (data && (data as WhiteboardTemplateFormSubmittedValues).whiteboardPreviewImages) {
     return { includeProfileVisuals: true };
   }
@@ -154,7 +169,7 @@ export const toCreateTemplateMutationVariables = (
     templatesSetId,
     type: templateType,
     ...handleCreateProfile(values),
-    ...handlePreviewImages(values),
+    ...shouldRequestPreviewVisuals(values),
   };
 
   switch (templateType) {
@@ -188,6 +203,10 @@ export const toCreateTemplateMutationVariables = (
         }
         case CalloutType.Whiteboard: {
           delete callout.contributionDefaults;
+          // if there are preview images for upload, do not use the existing preview
+          if (calloutTemplateData.whiteboardPreviewImages) {
+            delete callout.framing.whiteboard?.profile?.visuals;
+          }
           break;
         }
         case CalloutType.WhiteboardCollection: {
@@ -288,25 +307,6 @@ export const mapTagsetsToUpdateTagsets = (
   return undefined;
 };
 
-interface TemplateReference {
-  ID?: string; // TODO: We have some cases where id is lowercase, see ProfileReferenceSegment
-  id?: string;
-  name?: string;
-  uri?: string;
-  description?: string;
-}
-
-export const mapReferencesToUpdateReferences = (
-  references: TemplateReference[] | undefined
-): UpdateReferenceInput[] | undefined => {
-  return references?.map(reference => ({
-    ID: reference.ID ?? reference.id ?? '',
-    description: reference.description,
-    uri: reference.uri,
-    name: reference.name,
-  }));
-};
-
 interface TemplateProfile {
   displayName?: string;
   description?: string;
@@ -314,7 +314,7 @@ interface TemplateProfile {
   defaultTagset?: TemplateTagset;
 }
 
-export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): UpdateProfileInput => {
+export const mapTemplateProfileToUpdateProfileInput = (profile?: TemplateProfile): UpdateProfileInput => {
   return {
     displayName: profile?.displayName,
     description: profile?.description,
@@ -336,8 +336,8 @@ export const toUpdateTemplateMutationVariables = (
 } => {
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
-    profile: mapTemplateProfileToUpdateProfile(newValues.profile),
-    ...handlePreviewImages(newValues),
+    profile: mapTemplateProfileToUpdateProfileInput(newValues.profile),
+    ...shouldRequestPreviewVisuals(newValues),
   };
   switch (template.type) {
     case TemplateType.Callout: {
@@ -346,7 +346,7 @@ export const toUpdateTemplateMutationVariables = (
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
           framing: {
-            profile: mapTemplateProfileToUpdateProfile(calloutTemplateData.callout?.framing.profile),
+            profile: mapTemplateProfileToUpdateProfileInput(calloutTemplateData.callout?.framing.profile),
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
           },
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
@@ -413,7 +413,7 @@ export const toUpdateTemplateMutationVariables = (
       const updateCommunityGuidelinesVariables: UpdateCommunityGuidelinesMutationVariables = {
         communityGuidelinesData: {
           communityGuidelinesID: (template as CommunityGuidelinesTemplate).communityGuidelines?.id!,
-          profile: mapTemplateProfileToUpdateProfile(communityGuidelinesTemplateData.communityGuidelines?.profile),
+          profile: mapTemplateProfileToUpdateProfileInput(communityGuidelinesTemplateData.communityGuidelines?.profile),
         },
       };
       return {

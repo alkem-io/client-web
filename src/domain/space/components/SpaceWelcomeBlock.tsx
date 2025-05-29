@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
 import { gutters } from '@/core/ui/grid/utils';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
@@ -50,11 +49,6 @@ const SpaceWelcomeBlock = ({ spaceAbout }: SpaceWelcomeBlockProps) => {
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const leadOrganizationsUnique = useMemo(
-    () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
-    [leadOrganizations, leadUsers]
-  );
-
   return (
     <>
       <SwapColors swap>{directMessageDialog}</SwapColors>
@@ -71,7 +65,7 @@ const SpaceWelcomeBlock = ({ spaceAbout }: SpaceWelcomeBlockProps) => {
         {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
         {description && <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>}
       </OverflowGradient>
-      {leadUsers && leadUsers.length > 0 && (
+      {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadUsers.slice(0, 2).map(user => (
             <ContributorCardHorizontal
@@ -89,11 +83,7 @@ const SpaceWelcomeBlock = ({ spaceAbout }: SpaceWelcomeBlockProps) => {
               seamless
             />
           ))}
-        </Gutters>
-      )}
-      {leadOrganizationsUnique && leadOrganizationsUnique.length > 0 && (
-        <Gutters flexWrap="wrap" row disablePadding>
-          {leadOrganizationsUnique.slice(0, 2).map(org => (
+          {leadOrganizations.slice(0, 2).map(org => (
             <ContributorCardHorizontal
               key={org.id}
               profile={org.profile}

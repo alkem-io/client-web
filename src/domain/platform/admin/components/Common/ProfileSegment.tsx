@@ -6,11 +6,32 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import Gutters from '@/core/ui/grid/Gutters';
+import { referenceSegmentValidationObject } from './ReferenceSegment';
+import { socialNames } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 
-export const profileSegmentSchema = yup.object().shape({
+const commonProfileValidationProps = {
   avatar: yup.string().max(MID_TEXT_LENGTH),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   tagline: yup.string().max(ALT_TEXT_LENGTH),
+};
+
+export const profileSegmentSchema = yup.object().shape({
+  ...commonProfileValidationProps,
+});
+
+export const profileSegmentSchemaWithReferences = yup.object().shape({
+  ...commonProfileValidationProps,
+  references: yup.array().of(
+    referenceSegmentValidationObject.shape({
+      name: yup
+        .string()
+        .test(
+          'includesSocial',
+          'Use the social section',
+          value => !value || !socialNames.includes(value.toLowerCase())
+        ),
+    })
+  ),
 });
 
 interface ProfileSegmentProps {
@@ -24,7 +45,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
   return (
     <Gutters disablePadding>
       <FormikInputField
-        name="tagline"
+        name="profile.tagline"
         title={t('components.profileSegment.tagline.name')}
         placeholder={t('components.profileSegment.tagline.placeholder')}
         disabled={disabled}
@@ -32,7 +53,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
         required={required}
       />
       <FormikMarkdownField
-        name="description"
+        name="profile.description"
         title={t('components.profileSegment.description.name')}
         placeholder={t('components.profileSegment.description.placeholder')}
         rows={10}

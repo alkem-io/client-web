@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -40,6 +40,7 @@ import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -107,12 +108,18 @@ const SpaceAdminCommunityPage = ({
     loading,
   } = useCommunityAdmin({ roleSetId });
 
+  // People that can be invited to the community
+  const filterInviteeContributors = useCallback(
+    (contributor: Identifiable) => !(users ?? []).some(user => user.id === contributor.id),
+    [users]
+  );
+
   // instead of making the VC filtering logic more complex, we just show all VCs under the account
   // and show an error message if the user is not allowed to add the VC
   const onAddVirtualContributor = async (vcId: string) => {
     try {
       await onAddVC(vcId);
-    } catch (error) {
+    } catch (_error) {
       setError(true);
 
       return;
@@ -163,7 +170,10 @@ const SpaceAdminCommunityPage = ({
         {pendingMembershipsEnabled && (
           <PageContentBlock>
             <PageContentBlockHeader title={t('community.pendingMemberships')}>
-              <InviteContributorsWizard contributorType={RoleSetContributorType.User}>
+              <InviteContributorsWizard
+                contributorType={RoleSetContributorType.User}
+                filterContributors={filterInviteeContributors}
+              >
                 {t('buttons.invite')}
               </InviteContributorsWizard>
               <Tooltip title={t('community.applicationsHelp')} arrow>

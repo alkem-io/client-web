@@ -10,13 +10,13 @@ import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import { Visual } from '../visual/Visual';
-import { Location } from '@/core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
-import { Tagset } from './Profile';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { TagsetModel } from '../tagset/TagsetModel';
+import { LocationModel } from '../location/LocationModel';
 
 export interface ProfilePageBannerProps {
   entityId: string | undefined;
@@ -25,11 +25,11 @@ export interface ProfilePageBannerProps {
         displayName: string;
         tagline?: string;
         avatar?: Visual;
-        location?: Location;
+        location?: LocationModel;
         tagset?: {
           tags: string[];
         };
-        tagsets?: Tagset[];
+        tagsets?: TagsetModel[];
         url?: string;
       }
     | undefined;

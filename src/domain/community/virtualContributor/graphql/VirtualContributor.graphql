@@ -25,25 +25,6 @@ query VirtualContributor($id: UUID!) {
           knowledgeBaseContentVisible
         }
       }
-      provider {
-        id
-        profile {
-          id
-          displayName
-          url
-          location {
-            country
-            city
-          }
-          avatar: visual(type: AVATAR) {
-            ...VisualFull
-          }
-          tagsets {
-            id
-            tags
-          }
-        }
-      }
       searchVisibility
       listedInStore
       status
@@ -65,7 +46,7 @@ query VirtualContributor($id: UUID!) {
         }
         url
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModelFull
         }
         references {
           id
@@ -91,7 +72,7 @@ query VirtualContributorProfile($id: UUID!) {
         }
         url
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModel
         }
         references {
           id
@@ -119,7 +100,7 @@ query VirtualContributorProvider($id: UUID!) {
             city
           }
           avatar: visual(type: AVATAR) {
-            ...VisualFull
+            ...VisualModel
           }
           tagsets {
             id
@@ -150,71 +131,8 @@ query SpaceBodyOfKnowledgeAbout($spaceId: UUID!) {
   }
 }
 
-mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
-  updateVirtualContributor(virtualContributorData: $virtualContributorData) {
-    id
-    listedInStore
-    status
-    searchVisibility
-    settings {
-      privacy {
-        knowledgeBaseContentVisible
-      }
-    }
-    profile {
-      id
-      tagline
-      tagsets {
-        ...TagsetDetails
-      }
-      displayName
-      description
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-  }
-}
 
-mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributorSettingsInput!) {
-  updateVirtualContributorSettings(settingsData: $settingsData) {
-    id
-    listedInStore
-    status
-    searchVisibility
-    settings {
-      privacy {
-        knowledgeBaseContentVisible
-      }
-    }
-    profile {
-      id
-      tagline
-      tagsets {
-        ...TagsetDetails
-      }
-      displayName
-      description
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-  }
-}
 
-mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
-  refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
-}
 
-mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
-  aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
-    id
-    prompt
-  }
-}
+
+

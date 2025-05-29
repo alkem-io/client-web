@@ -5,7 +5,13 @@ import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutType,
+  TemplateType,
+  UpdateReferenceInput,
+  UpdateTagsetInput,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
@@ -18,13 +24,11 @@ import { TagsetField, tagsetsSegmentSchema } from '@/domain/platform/admin/compo
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
-import {
-  mapReferencesToUpdateReferences,
-  mapTagsetsToUpdateTagsets,
-  mapTemplateProfileToUpdateProfile,
-} from './common/mappings';
+import { mapTagsetsToUpdateTagsets, mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { Caption } from '@/core/ui/typography';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   callout?: {
@@ -32,21 +36,17 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
       profile: {
         displayName: string;
         description: string;
-        references?: {
-          ID: string;
-          name?: string;
-          description?: string;
-          uri?: string;
-        }[];
-        tagsets?: {
-          ID: string;
-          tags: string[];
-        }[];
+        references?: UpdateReferenceInput[];
+        tagsets?: UpdateTagsetInput[];
       };
       whiteboard?: {
         profile?: {
           displayName: string;
           description?: string;
+          preview?: {
+            name: VisualType.Banner;
+            uri: string;
+          };
         };
         content: string;
       };
@@ -57,6 +57,8 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
     };
     type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
   };
+  // provided when a whiteboard has been updated before saving as template
+  whiteboardPreviewImages?: WhiteboardPreviewImage[];
 }
 
 interface CalloutTemplateFormProps {
@@ -113,19 +115,20 @@ const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = 
   }, [t]);
 
   const initialValues: CalloutTemplateFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfile(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     callout: {
       framing: {
         profile: {
           displayName: template?.callout?.framing?.profile?.displayName ?? '',
           description: template?.callout?.framing?.profile?.description ?? '',
-          references: mapReferencesToUpdateReferences(template?.callout?.framing?.profile?.references) ?? [],
+          references: mapReferenceModelsToUpdateReferenceInputs(template?.callout?.framing?.profile?.references) ?? [],
           tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile) ?? [{ ID: '', tags: [] }], // ID will be ignored on create
         },
         whiteboard: {
           profile: {
             displayName: template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
             description: template?.callout?.framing?.whiteboard?.profile.description ?? '',
+            preview: template?.callout?.framing?.whiteboard?.profile.preview,
           },
           content: template?.callout?.framing?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
         },
@@ -167,7 +170,11 @@ const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = 
               tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
             />
             {values.callout?.type === CalloutType.Whiteboard && (
-              <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
+              <FormikWhiteboardPreview
+                name="callout.framing.whiteboard.content"
+                previewImagesName="whiteboardPreviewImages"
+                canEdit
+              />
             )}
             {values.callout?.type === CalloutType.WhiteboardCollection && (
               <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />

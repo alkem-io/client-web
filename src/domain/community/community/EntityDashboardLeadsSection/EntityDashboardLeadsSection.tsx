@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationsView from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
+import AssociatedOrganizationsView from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -20,7 +20,7 @@ interface EntityDashboardLeadsProps {
   leadUsers: ContributorViewModel[] | undefined;
   leadOrganizations: ContributorViewModel[] | undefined;
   provider?: ContributorViewModel;
-  organizationsHeader: string;
+  organizationsHeader?: string;
   organizationsHeaderIcon?: ReactElement<SvgIconProps>;
   usersHeader?: string;
 }
@@ -87,9 +87,11 @@ const EntityDashboardLeadsSection = ({
       {leadUsersSectionVisible && usersHeader && (
         <DashboardLeads headerText={usersHeader} contributors={leadUsersMapped} CardComponent={ContributorCard} />
       )}
-      {leadOrganizationsSectionVisible && organizationsHeader && (
+      {leadOrganizationsSectionVisible && (
         <>
-          <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
+          {organizationsHeader && (
+            <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
+          )}
           <AssociatedOrganizationsView
             organizations={leadOrganizationsMapped}
             organizationCardComponent={OrganizationCardTransparent}

@@ -9,7 +9,7 @@ query AccountResourcesInfo($accountId: UUID!) {
           profile {
             ...AccountResourceProfile
             cardBanner: visual(type: CARD) {
-              ...VisualUri
+              ...VisualModel
             }
           }
         }
@@ -40,14 +40,7 @@ query AccountResourcesInfo($accountId: UUID!) {
         profile {
           ...AccountResourceProfile
           banner: visual(type: BANNER_WIDE) {
-            ...VisualUri
-          }
-        }
-        spaceVisibilityFilter
-        spaceListFilter {
-          id
-          about {
-            ...SpaceAboutLight
+            ...VisualModel
           }
         }
         subdomain
@@ -61,6 +54,6 @@ fragment AccountResourceProfile on Profile {
   displayName
   url
   avatar: visual(type: AVATAR) {
-    ...VisualUri
+    ...VisualModel
   }
 }

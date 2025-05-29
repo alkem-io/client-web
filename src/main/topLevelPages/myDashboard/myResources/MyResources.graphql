@@ -9,7 +9,7 @@ query MyResources($accountId: UUID!) {
           ...SpaceAboutCardBanner
           profile {
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualModel
             }
           }
           isContentPublic
@@ -32,7 +32,7 @@ query MyResources($accountId: UUID!) {
         profile {
           ...ShortAccountItem
           banner: visual(type: BANNER_WIDE) {
-            ...VisualUri
+            ...VisualModel
           }
         }
         subdomain
@@ -46,6 +46,6 @@ fragment ShortAccountItem on Profile {
   displayName
   url
   avatar: visual(type: AVATAR) {
-    ...VisualUri
+    ...VisualModel
   }
 }

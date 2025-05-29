@@ -1,37 +1,56 @@
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  User,
+  UserFilterInput,
+  UserSelectorQuery,
+  UserSelectorQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { Box, SxProps, TextField, Theme } from '@mui/material';
+import { Box, SxProps, TextField, Theme, Button } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
-import { useField } from 'formik';
-import { useMemo, useState } from 'react';
+import { useField, useFormikContext } from 'formik';
+import { useEffect, useMemo, useState } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { isArray, uniqWith } from 'lodash';
+import { compact, debounce, isArray } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContext';
 import ContributorChip from '../ContributorChip/ContributorChip';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import emailParser from './emailParser';
+import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { useInView } from 'react-intersection-observer';
+import Loading from '@/core/ui/loading/Loading';
 
 const MAX_USERS_SHOWN = 20;
+const FETCH_MORE_OPTION_ID = '__LOAD_MORE__';
+const LOAD_MORE_OPTION = { id: FETCH_MORE_OPTION_ID, profile: { displayName: 'Load More' }, disabled: true };
 
-type HydratorFn = <U extends Identifiable>(users: U[]) => (U & { message?: string; disabled?: boolean })[];
+type SelectableUser = UserSelectorQuery['usersPaginated']['users'][0];
 
-interface FormikContributorsSelectorFieldProps {
+// We hydrate users returned by the query with this extra data: disabled, and the reason why they are,
+// so we can avoid inviting ourselves, or users already selected
+type Hydration<T extends Identifiable> = T & { message?: string; disabled?: boolean };
+type HydratorFn = <U extends Identifiable>(users: U[]) => Hydration<U>[];
+
+export interface FormikContributorsSelectorFieldProps {
   name: string;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
+  filterUsers?: <U extends Identifiable>(users: U) => boolean;
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
 }
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
+const alwaysTrue = () => true;
 
 const FormikContributorsSelectorField = ({
   name = 'selectedContributors',
   sortUsers = identityFn,
+  filterUsers = alwaysTrue,
   hydrateUsers = identityFn as HydratorFn,
   sx,
 }: FormikContributorsSelectorFieldProps) => {
@@ -40,15 +59,28 @@ const FormikContributorsSelectorField = ({
 
   // This field is the array of the selected Contributors (userIds or emails for the moment)
   const [field, meta, helpers] = useField<SelectedContributor[]>(name);
-  const setFieldValue = (newValue: SelectedContributor[]) => {
-    const uniqueValues = uniqWith(
-      newValue,
-      (a, b) =>
-        (a.type === ContributorSelectorType.Email && b.type === ContributorSelectorType.Email && a.email === b.email) ||
-        (a.type === ContributorSelectorType.User && b.type === ContributorSelectorType.User && a.id === b.id)
-    );
+  const { validateForm } = useFormikContext();
 
-    helpers.setValue(uniqueValues);
+  const selectedUserIds = useMemo(
+    () => compact(field.value.map(user => user.type === ContributorSelectorType.User && user.id)),
+    [field.value]
+  );
+
+  const setFieldValue = (newValue: SelectedContributor[]) => {
+    helpers.setValue(newValue);
+    helpers.setTouched(true);
+
+    window.setTimeout(() => {
+      // Need to give time for the formik state to get updated before validating
+      validateForm();
+    }, 10);
+  };
+
+  const translateEmailError = (error: string) => {
+    if (error === DUPLICATED_EMAIL_ERROR) {
+      return t('forms.validations.duplicateEmail');
+    }
+    return t('forms.validations.invalidEmail');
   };
 
   // This is an array of strings, or undefined, that represent the validation errors of each Contributor selected
@@ -56,40 +88,76 @@ const FormikContributorsSelectorField = ({
     meta.error && isArray(meta.error)
       ? meta.error.map(
           error =>
-            error.email
-              ? t('forms.validations.invalidEmail') // The only validation error handled at the moment is "Invalid email"
+            error?.email
+              ? translateEmailError(error.email) // The only validation errors really handled at the moment are about emails
               : JSON.stringify(error) // For the rest of validation errors, we'll show whatever yup returns stringified
         )
       : [];
 
   // Filter users for the Autocomplete
   const [filter, setFilter] = useState<UserFilterInput>();
-  const { data } = useUserSelectorQuery({
-    variables: { filter, first: MAX_USERS_SHOWN },
-    skip: !filter,
+
+  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
+    useQuery: useUserSelectorQuery,
+    getPageInfo: data => data.usersPaginated.pageInfo,
+    options: {
+      skip: !filter,
+    },
+    pageSize: MAX_USERS_SHOWN,
+    variables: {
+      filter,
+    },
   });
+
+  const { ref: intersectionObserverRef, inView: loadMoreInView } = useInView({
+    delay: 500,
+    trackVisibility: true,
+  });
+
+  useEffect(() => {
+    if (loadMoreInView && hasMore && !loading) {
+      fetchMore();
+    }
+  }, [loadMoreInView, hasMore, fetchMore]);
 
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
   const [inputValue, setInputValue] = useState('');
 
   // Filter out users that are already selected, and myself
-  const listedUsers = useMemo(() => {
+  const listedUsers = useMemo<(Hydration<SelectableUser> | typeof LOAD_MORE_OPTION)[]>(() => {
     if (!inputValue) {
       return [];
     }
     const users = data?.usersPaginated.users ?? [];
-    return hydrateUsers(
-      sortUsers(
-        users
-          .filter(user =>
-            Array.isArray(field.value)
-              ? !field.value.find(c => c.type === ContributorSelectorType.User && c.id === user.id)
-              : true
-          )
-          .filter(user => user.id !== currentUser?.id)
-      )
-    );
-  }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
+
+    const filterFunction = (user: SelectableUser) => {
+      if (user.id === currentUser?.id) {
+        return false;
+      }
+      if (selectedUserIds.includes(user.id)) {
+        return false;
+      }
+      return filterUsers(user);
+    };
+
+    const listedUsers = hydrateUsers(sortUsers(users.filter(filterFunction)));
+    if (hasMore) {
+      return [...listedUsers, LOAD_MORE_OPTION];
+    } else {
+      return listedUsers;
+    }
+  }, [
+    currentUser?.id,
+    selectedUserIds,
+    data?.usersPaginated.users,
+    field.value,
+    inputValue,
+    hydrateUsers,
+    sortUsers,
+    filterUsers,
+    loadMoreInView,
+    hasMore,
+  ]);
 
   const handleSelect = (value: (Identifiable & { profile: { displayName: string } }) | string | null) => {
     helpers.setTouched(true);
@@ -115,49 +183,54 @@ const FormikContributorsSelectorField = ({
     ]);
   };
 
+  // Debounce avoids firing a query on every keystroke
+  const debouncedSetFilter = useMemo(
+    () =>
+      debounce((val: string) => {
+        setFilter(val ? { email: val, displayName: val } : undefined);
+      }, 300),
+    []
+  );
+
   const onTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(value ? { email: value, displayName: value } : undefined); // If no value, the full filter is undefined
+    debouncedSetFilter(value);
   };
+
+  // Clean up debounce on unmount
+  useEffect(() => () => debouncedSetFilter.cancel(), [debouncedSetFilter]);
 
   const onTextFieldKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ';' || event.key === ',') {
+    helpers.setTouched(true);
+    if (event.key === 'Enter') {
       event.preventDefault();
-      if (inputValue) {
-        const emails = emailParser(inputValue);
-
-        const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
-          type: ContributorSelectorType.Email,
-          ...parsedEmail,
-        }));
-
-        const currentFieldValue = Array.isArray(field.value) ? field.value : [];
-        setFieldValue([...currentFieldValue, ...newValues]);
-        setAutocompleteValue(null);
-        setInputValue('');
-      }
+      onAddContributorEmail();
     }
   };
 
-  const handleRemove = (contributor: SelectedContributor) => {
-    helpers.setTouched(true);
+  const onAddContributorEmail = () => {
+    if (inputValue) {
+      const emails = emailParser(inputValue);
 
-    if (contributor.type === ContributorSelectorType.User) {
-      const value = field.value;
-      if (!Array.isArray(value) || !contributor.id) {
-        return;
-      }
+      const newValues: SelectedContributor[] = emails.map(parsedEmail => ({
+        type: ContributorSelectorType.Email,
+        ...parsedEmail,
+      }));
 
-      const nextValue = value.filter(c => !(c.type === ContributorSelectorType.User && c.id === contributor.id));
-      setFieldValue(nextValue);
-    } else if (contributor.type === ContributorSelectorType.Email) {
-      const value = field.value;
-      if (!Array.isArray(value) || !contributor.email) {
-        return;
-      }
-
-      const nextValue = value.filter(c => !(c.type === ContributorSelectorType.Email && c.email === contributor.email));
-      setFieldValue(nextValue);
+      const currentFieldValue = Array.isArray(field.value) ? field.value : [];
+      setFieldValue([...currentFieldValue, ...newValues]);
+      setAutocompleteValue(null);
+      setInputValue('');
     }
+  };
+
+  const handleRemove = (indexToRemove: number) => {
+    const value = field.value;
+    if (!Array.isArray(value)) {
+      return;
+    }
+    // Create a new array without the specific contributor
+    const nextValue = [...value.slice(0, indexToRemove), ...value.slice(indexToRemove + 1)];
+    setFieldValue(nextValue);
   };
 
   return (
@@ -176,6 +249,7 @@ const FormikContributorsSelectorField = ({
           }
           return option?.profile.displayName;
         }}
+        filterOptions={options => options}
         sx={{
           marginBottom: gutters(),
           [`& .${autocompleteClasses.popupIndicator}`]: {
@@ -184,20 +258,36 @@ const FormikContributorsSelectorField = ({
           ...sx,
         }}
         onChange={(_, value) => handleSelect(value)}
-        renderOption={(props, user) => (
-          <li {...props} key={user.id}>
-            <ProfileChipView
-              displayName={user.profile.displayName}
-              avatarUrl={user.profile.visual?.uri}
-              city={user.profile.location?.city}
-              country={user.profile.location?.country}
-              width="100%"
-            >
-              <FlexSpacer />
-              <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
-            </ProfileChipView>
-          </li>
-        )}
+        renderOption={(props, row) => {
+          if (row.id === FETCH_MORE_OPTION_ID) {
+            if (loadMoreInView) {
+              return null; // If it's inView at the moment, don't show it, to avoid loading multiple times in the same scroll
+            } else {
+              return (
+                <li {...props} ref={intersectionObserverRef} key={row.id}>
+                  <Loading />
+                </li>
+              );
+            }
+          } else {
+            // Print user row
+            const user = row as Hydration<SelectableUser>;
+            return (
+              <li {...props} key={user.id}>
+                <ProfileChipView
+                  displayName={user.profile.displayName}
+                  avatarUrl={user.profile.visual?.uri}
+                  city={user.profile.location?.city}
+                  country={user.profile.location?.country}
+                  width="100%"
+                >
+                  <FlexSpacer />
+                  <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
+                </ProfileChipView>
+              </li>
+            );
+          }
+        }}
         renderInput={params => (
           <TextField
             {...params}
@@ -205,6 +295,21 @@ const FormikContributorsSelectorField = ({
             name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
             onChange={onTextFieldChange}
             onKeyDown={onTextFieldKeyDown}
+            onBlur={() => helpers.setTouched(true)}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                // Adds the button Add and the autocomplete X icon to empty the input
+                endAdornment: params.inputProps.value ? ( // Only if there's some text in the input
+                  <>
+                    <Button onClick={onAddContributorEmail} variant="contained">
+                      {t('common.add')}
+                    </Button>
+                    {params.InputProps.endAdornment}
+                  </>
+                ) : null,
+              },
+            }}
             multiline
           />
         )}
@@ -214,7 +319,7 @@ const FormikContributorsSelectorField = ({
           <ContributorChip
             key={index}
             contributor={contributor}
-            onRemove={() => handleRemove(contributor)}
+            onRemove={() => handleRemove(index)}
             validationError={validationErrors[index]}
           />
         ))}

@@ -1,4 +1,3 @@
-import { times } from 'lodash';
 import emailParser from './emailParser';
 import { expect, it, describe } from 'vitest';
 
@@ -13,25 +12,6 @@ describe('emailParser', () => {
     const input = 'john.doe3+test@exam-ple.com';
     const result = emailParser(input);
     expect(result).toEqual([{ displayName: 'john.doe3+test@exam-ple.com', email: 'john.doe3+test@exam-ple.com' }]);
-  });
-
-  it('should reject invalid email addresses', () => {
-    const inputs = [
-      'plain', // Missing @ symbol
-      '@domain.com', // Missing username
-      'username@.com', // Missing domain name
-      'username@domain..com', // Double dot in domain
-      'username@domain', // Missing top-level domain
-      'username@domain.c', // Top-level domain too short
-      'username@-domain.com', // Domain starts with a hyphen
-      'username@domain-.com', // Domain ends with a hyphen
-      'username@domain.com.', // Trailing dot in domain
-      'username@domain,com', // Comma instead of dot
-      'username@domain@domain.com', // Multiple @ symbols
-      'username@@', // Double @ symbol
-    ];
-    const result = inputs.map(input => emailParser(input));
-    expect(result).toEqual(times(inputs.length, () => []));
   });
 
   it('should parse multiple emails separated by commas', () => {
@@ -92,6 +72,9 @@ describe('emailParser', () => {
   it('should ignore empty entries and invalid formats', () => {
     const input = ', , ; ; \n\n john.doe@example.com, <invalid-email>';
     const result = emailParser(input);
-    expect(result).toEqual([{ displayName: 'john.doe@example.com', email: 'john.doe@example.com' }]);
+    expect(result).toEqual([
+      { displayName: 'john.doe@example.com', email: 'john.doe@example.com' },
+      { displayName: '<invalid-email>', email: '<invalid-email>' },
+    ]);
   });
 });

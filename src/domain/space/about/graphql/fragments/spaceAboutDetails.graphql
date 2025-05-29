@@ -17,7 +17,7 @@ fragment SpaceAboutDetails on SpaceAbout {
         url
         displayName
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModel
         }
         location {
           id
@@ -33,7 +33,7 @@ fragment SpaceAboutDetails on SpaceAbout {
         url
         displayName
         avatar: visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualModel
         }
         location {
           id
@@ -51,7 +51,7 @@ fragment SpaceAboutDetails on SpaceAbout {
       url
       displayName
       avatar: visual(type: AVATAR) {
-        ...VisualFull
+        ...VisualModel
       }
       location {
         id
@@ -70,13 +70,13 @@ fragment SpaceAboutDetails on SpaceAbout {
       ...TagsetDetails
     }
     avatar: visual(type: AVATAR) {
-      ...VisualFull
+      ...VisualModelFull
     }
     cardBanner: visual(type: CARD) {
-      ...VisualFull
+      ...VisualModelFull
     }
     banner: visual(type: BANNER) {
-      ...VisualFull
+      ...VisualModelFull
     }
     references {
       ...ReferenceDetails

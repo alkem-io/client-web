@@ -4,9 +4,8 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { Visual } from '@/core/apollo/generated/graphql-schema';
-import { Reference } from '@/domain/common/profile/Profile';
+import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '@/domain/platform/admin/components/Common/ReferenceSegment';
@@ -24,12 +23,7 @@ import GridItem from '@/core/ui/grid/GridItem';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { useScreenSize } from '@/core/ui/grid/constants';
-
-const socialNames = [
-  SocialNetworkEnum.github.toString(),
-  SocialNetworkEnum.linkedin.toString(),
-  SocialNetworkEnum.twitter.toString(),
-];
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
@@ -41,7 +35,7 @@ const referenceSegmentWithSocialSchema = yup.array().of(
 
 type UserProps = {
   user?: UserModel;
-  avatar?: Visual;
+  avatar?: VisualModelFull;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
@@ -75,16 +69,12 @@ export const UserForm = ({
     },
   } = currentUser;
 
-  const twitterRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.twitter),
-    [references]
-  );
-  const githubRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
-    [references]
-  );
-  const linkedinRef = useMemo(
-    () => references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
+    () => ({
+      blueSkyRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+      githubRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+      linkedinRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    }),
     [references]
   );
 
@@ -95,7 +85,7 @@ export const UserForm = ({
     lastName: lastName || '',
     email: email || '',
     linkedin: linkedinRef?.uri || '',
-    twitter: twitterRef?.uri || '',
+    bsky: blueSkyRef?.uri || '',
     github: githubRef?.uri || '',
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
@@ -117,9 +107,15 @@ export const UserForm = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    twitter: yup.string().url('Twitter url must be a valid URL'),
-    github: yup.string().url('github url must be a valid URL'),
+    linkedin: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.linkedin') })),
+    bsky: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.bsky') })),
+    github: yup
+      .string()
+      .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.github') })),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
@@ -142,18 +138,20 @@ export const UserForm = ({
         city,
         country,
         linkedin,
-        twitter,
+        bsky,
         github,
         displayName,
         tagline,
         ...otherData
       } = userData;
+
       const finalReferences = [
         ...newReferences,
-        { ...linkedinRef, uri: linkedin } as Reference,
-        { ...twitterRef, uri: twitter } as Reference,
-        { ...githubRef, uri: github } as Reference,
+        { ...linkedinRef, uri: linkedin } as ReferenceModel,
+        { ...blueSkyRef, uri: bsky } as ReferenceModel,
+        { ...githubRef, uri: github } as ReferenceModel,
       ];
+
       const user: UserModel = {
         ...currentUser,
         ...otherData,
@@ -164,6 +162,7 @@ export const UserForm = ({
           description: bio,
           references: finalReferences,
           location: {
+            id: '',
             country: country?.code || '',
             city: city ?? '',
           },
@@ -172,7 +171,7 @@ export const UserForm = ({
       };
       onSave && (await onSave(user));
     },
-    [linkedinRef, twitterRef, githubRef, currentUser, onSave]
+    [linkedinRef, blueSkyRef, githubRef, currentUser, onSave]
   );
 
   return (

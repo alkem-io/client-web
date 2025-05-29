@@ -34,7 +34,6 @@ export const findCursorPositionInMarkdown = (
   let searchOffset = plainTextPosition;
   let markdownLength = 0;
 
-  // eslint-disable-next-line no-cond-assign
   while ((match = regexp.exec(markdownString))) {
     const mention: MentionMatch = {
       offset: match.index,

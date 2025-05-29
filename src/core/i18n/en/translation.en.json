@@ -615,6 +615,10 @@
             "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
             "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
             "INVITED_TO_ROLE_SET": "Invited to join the community"
+          },
+          "validationErrors": {
+            "required": "Please add at least one contributor to invite",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
           }
         },
         "vcs": {
@@ -864,6 +868,9 @@
         "placeholder": "",
         "tooltip": "Tags"
       },
+      "addCallouts": {
+        "title": "Add default template's collaboration tools:"
+      },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
       },
@@ -930,7 +937,9 @@
       "atLeastOne": "At least one {{item}} must be selected.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
       "invalidUrl": "Invalid URL",
-      "invalidEmail": "Invalid Email address"
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address",
+      "elementMustBeValidUrl": "{{name}} must be a valid URL"
     }
   },
   "templateDialog": {
@@ -1532,6 +1541,11 @@
           "placeholder": "Postal code"
         },
         "noLocation": "No location specified"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
       }
     },
     "organizationSegment": {

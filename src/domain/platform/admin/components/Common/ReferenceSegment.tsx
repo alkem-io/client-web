@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
-import { Reference } from '@/domain/common/profile/Profile';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
@@ -19,16 +18,17 @@ import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
-  references: Reference[];
+  references: ReferenceModel[];
   readOnly?: boolean;
   disabled?: boolean;
   compactMode?: boolean;
   onAdd?: (push: PushFunc) => void;
   // TODO REMOVE CALLBACK FROM SIGNATURE!
-  onRemove?: (ref: Reference, remove: RemoveFunc) => void;
+  onRemove?: (ref: ReferenceModel, remove: RemoveFunc) => void;
   temporaryLocation?: boolean;
   fullWidth?: boolean;
 }

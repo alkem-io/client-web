@@ -4,13 +4,10 @@ import OrganizationPage from '../components/Organization/OrganizationPage';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import AdminOrganizationsPage from '@/domain/platform/admin/organizations/AdminOrganizationsPage';
-import { useTranslation } from 'react-i18next';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 
 const AdminOrganizationsRoutes: FC = () => {
-  const { t } = useTranslation();
-
   return (
     <Routes>
       <Route path="/">
@@ -19,7 +16,7 @@ const AdminOrganizationsRoutes: FC = () => {
           path="new"
           element={
             <AdminLayout currentTab={AdminSection.Organization}>
-              <OrganizationPage title={t('pages.admin.organization.create-organization')} mode={EditMode.new} />
+              <OrganizationPage mode={EditMode.new} />
             </AdminLayout>
           }
         />

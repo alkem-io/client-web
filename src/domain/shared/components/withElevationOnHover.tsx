@@ -33,9 +33,7 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
     if (componentProps['$$typeof']) {
       delete componentProps['$$typeof'];
     }
-    // eslint-disable-next-line react/forbid-foreign-prop-types
     if (componentProps['propTypes']) {
-      // eslint-disable-next-line react/forbid-foreign-prop-types
       delete componentProps['propTypes'];
     }
 

@@ -5,7 +5,7 @@ fragment SpaceAboutCardAvatar on SpaceAbout {
     displayName
     url
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
   }
 }

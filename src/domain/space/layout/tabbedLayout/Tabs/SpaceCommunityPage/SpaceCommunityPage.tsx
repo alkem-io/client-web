@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
@@ -31,6 +31,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useSpace } from '@/domain/space/context/useSpace';
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const SpaceCommunityPage = () => {
   const { space, entitlements } = useSpace();
@@ -87,6 +88,12 @@ const SpaceCommunityPage = () => {
     }
   );
 
+  // People that can be invited to the community
+  const filterInviteeContributors = useCallback(
+    (contributor: Identifiable) => !(memberUsers ?? []).some(user => user.id === contributor.id),
+    [memberUsers]
+  );
+
   const messageReceivers = useMemo(
     () =>
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
@@ -128,7 +135,6 @@ const SpaceCommunityPage = () => {
         )}
         <EntityDashboardLeadsSection
           usersHeader={t('community.leads')}
-          organizationsHeader={t('pages.space.sections.dashboard.organization')}
           leadUsers={leadUsers}
           leadOrganizations={leadOrganizations}
         />
@@ -136,7 +142,11 @@ const SpaceCommunityPage = () => {
           {t('buttons.contact-leads', { contact: t('community.host') })}
         </ContactLeadsButton>
         {hasInvitePrivilege && (
-          <InviteContributorsWizard contributorType={RoleSetContributorType.User} sx={{ width: '100%' }} />
+          <InviteContributorsWizard
+            contributorType={RoleSetContributorType.User}
+            sx={{ width: '100%' }}
+            filterContributors={filterInviteeContributors}
+          />
         )}
         <DirectMessageDialog
           title={t('send-message-dialog.community-message-title', { contact: t('community.host') })}

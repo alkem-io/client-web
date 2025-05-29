@@ -36,7 +36,7 @@ export const UserAdminProfilePage = () => {
   });
   const notify = useNotification();
   const [createTagset] = useCreateTagsetOnProfileMutation({
-    // Just log the error. Do not send it to the notification hanlder.
+    // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
     onError: error => console.error(error.message),
   });
