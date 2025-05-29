@@ -18,7 +18,8 @@ export function register(config?: Config): void {
       return;
     }
     window.addEventListener('load', () => {
-      const swUrl = `${publicUrl}service-worker.js`;
+      const swUrl = new URL('service-worker.js', publicUrl).toString();
+
       navigator.serviceWorker
         .register(swUrl)
         .then(registration => {
