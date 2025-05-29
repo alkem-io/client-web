@@ -8,9 +8,11 @@ import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } fr
 import { KratosInputExtraProps, KratosProps } from './KratosProps';
 import IconButton from '@mui/material/IconButton';
 
-interface KratosInputProps extends KratosProps, KratosInputExtraProps {}
+interface KratosInputProps extends KratosProps, KratosInputExtraProps {
+  disabled?: boolean;
+}
 
-export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete }) => {
+export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete, disabled }) => {
   const { t } = useTranslation();
   const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
   const [value, setValue] = useState(getNodeValue(node));
@@ -64,11 +66,12 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
         error={touched && invalid}
         helperText={helperText}
         required={required}
-        disabled={attributes.disabled}
+        disabled={attributes.disabled || disabled}
         autoComplete={autoComplete}
         fullWidth
         InputProps={{ ...InputProps }}
         InputLabelProps={{ shrink: true }}
+        sx={{ marginY: inputType === 'hidden' ? 0 : 0.5 }}
       />
     </GridLegacy>
   );

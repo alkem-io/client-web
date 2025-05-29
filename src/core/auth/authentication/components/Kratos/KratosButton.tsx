@@ -1,4 +1,4 @@
-import { ButtonProps, GridLegacy } from '@mui/material';
+import { ButtonProps, GridLegacy, SxProps, Theme } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import { FC, useContext } from 'react';
 import { KratosUIContext } from '../KratosUI';
@@ -9,9 +9,11 @@ import { useTranslation } from 'react-i18next';
 
 interface KratosButtonProps extends KratosProps {
   variant?: ButtonProps['variant'];
+  disabled?: boolean;
+  sx?: SxProps<Theme>;
 }
 
-export const KratosButton: FC<KratosButtonProps> = ({ node, variant = 'contained' }) => {
+export const KratosButton: FC<KratosButtonProps> = ({ disabled, node, sx, variant = 'contained' }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   const { onBeforeSubmit } = useContext(KratosUIContext);
   const { t } = useTranslation();
@@ -21,10 +23,11 @@ export const KratosButton: FC<KratosButtonProps> = ({ node, variant = 'contained
       <AuthActionButton
         name={getNodeName(node)}
         type={attributes.type as AuthActionButtonProps['type']}
-        disabled={attributes.disabled}
+        disabled={attributes.disabled || !!disabled}
         value={attributes.value}
         onClick={onBeforeSubmit}
         variant={variant}
+        sx={sx}
       >
         {getNodeTitle(node, t)}
       </AuthActionButton>
