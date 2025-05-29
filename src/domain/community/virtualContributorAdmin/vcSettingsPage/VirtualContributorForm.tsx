@@ -94,8 +94,12 @@ export const VirtualContributorForm = ({
   );
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
-    description: profileSegmentSchema.fields?.description ?? yup.string(),
+    profile: yup.object().shape({
+      displayName: nameSegmentSchema.fields?.displayName ?? yup.string().required(),
+      description: profileSegmentSchema.fields?.description ?? yup.string().required(),
+    }),
+    hostDisplayName: yup.string(),
+    subSpaceName: yup.string(),
   });
 
   // use keywords tagset (existing after creation of VC) as tags
@@ -168,13 +172,18 @@ export const VirtualContributorForm = ({
                   </GridItem>
                   <GridItem columns={isMobile ? cols : 8}>
                     <Gutters>
-                      <FormikInputField name="name" title={t('components.nameSegment.name')} />
+                      <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
                       {keywordsTagsetWrapped ? (
                         <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />
                       ) : null}
 
-                      <ProfileReferenceSegment fullWidth profileId={vcProfileId} references={references ?? []} />
+                      <ProfileReferenceSegment
+                        fullWidth
+                        fieldName="profile.references"
+                        profileId={vcProfileId}
+                        references={references ?? []}
+                      />
 
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
