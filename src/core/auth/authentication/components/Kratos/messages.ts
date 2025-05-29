@@ -11,6 +11,7 @@ import { has } from 'lodash';
 
 const messages: Record<string, string> = {
   '1060001': 'successfully-recovered-password',
+  '1060003': 'request-recover-password',
   '4070005': 'verification-flow-expired',
   '4060005': 'recovery-flow-expired',
   '1070009': 'verification-flow-continue',
