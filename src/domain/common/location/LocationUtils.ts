@@ -23,30 +23,9 @@ export const formatLocation = (data: LocationModel | undefined): LocationModelMa
   };
 };
 
-export const formatDatabaseLocation = (data: LocationModelMapped | undefined): LocationModel | undefined => {
-  if (!data) {
-    return undefined;
-  }
-
-  return {
-    id: data.id,
-    city: data.city!,
-    country: data.country?.code || '',
-  };
-};
-
-export const formatUpdateLocationInput = (data: LocationModelMapped | undefined): UpdateLocationInput | undefined => {
-  if (!data) {
-    return undefined;
-  }
-
-  return {
-    city: data.city,
-    country: data.country?.code || '',
-  };
-};
-
-export const formatCreateLocationInput = (data: LocationModelMapped | undefined): CreateLocationInput | undefined => {
+export const formatLocationInput = (
+  data: LocationModelMapped | undefined
+): UpdateLocationInput | CreateLocationInput | undefined => {
   if (!data) {
     return undefined;
   }
