@@ -14,7 +14,7 @@ npm-debug.log
 
 # production
 /build
-
+/public/meta.json
 /.VsCodeCounter
 
 # ENV

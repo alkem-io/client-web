@@ -27,6 +27,7 @@ import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationSubscriber } from './main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
+import { VersionHandlingDialog } from './main/versionHandlingDialog';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -94,6 +95,7 @@ const Root: FC = () => {
                                     <ApmUserSetter />
                                     <ScrollToTop />
                                     <InAppNotificationsDialog />
+                                    <VersionHandlingDialog />
                                     <NotFoundErrorBoundary
                                       errorComponent={
                                         <TopLevelLayout>
