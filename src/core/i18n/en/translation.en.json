@@ -862,9 +862,6 @@
         "placeholder": "",
         "tooltip": "Tags"
       },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools:"
-      },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
       },

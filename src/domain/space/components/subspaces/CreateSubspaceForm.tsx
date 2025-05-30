@@ -13,7 +13,6 @@ import {
   SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -26,13 +25,7 @@ const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
   SpaceFormValues,
-  | 'displayName'
-  | 'tagline'
-  | 'description'
-  | 'tags'
-  | 'addCallouts' /* | 'addTutorialCallouts'*/
-  | 'collaborationTemplateId'
-  | 'visuals'
+  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends SpaceCreationForm {}
@@ -53,8 +46,7 @@ export const CreateSubspaceForm = ({
       tagline: value.tagline,
       description: value.description,
       tags: value.tags,
-      addCallouts: value.addCallouts,
-      // addTutorialCallouts: value.addTutorialCallouts,
+      addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
       visuals: value.visuals,
     });
@@ -64,8 +56,7 @@ export const CreateSubspaceForm = ({
     tagline: '',
     description: '',
     tags: [],
-    addCallouts: true,
-    // addTutorialCallouts: false,
+    addTutorialCallouts: false,
     collaborationTemplateId: undefined,
     visuals: {
       avatar: { file: undefined, altText: '' },
@@ -142,16 +133,17 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
             <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
-            <FormikRadiosSwitch
-              name="addCallouts"
-              label={t('context.L1.addCallouts.title')}
-              options={[
-                { label: 'On', value: true },
-                { label: 'Off', value: false },
-              ]}
-              row
-              disablePadding
-            />
+            {/* TEMPORARY DISABLE AS THERE ARE NO SUBSPACE TUTORIALS */}
+            {/*<FormikRadiosSwitch*/}
+            {/*  name="addTutorialCallouts"*/}
+            {/*  label="Tutorials:"*/}
+            {/*  options={[*/}
+            {/*    { label: 'On', value: true },*/}
+            {/*    { label: 'Off', value: false },*/}
+            {/*  ]}*/}
+            {/*  row*/}
+            {/*  disablePadding*/}
+            {/*/>*/}
           </Gutters>
         </Form>
       )}
