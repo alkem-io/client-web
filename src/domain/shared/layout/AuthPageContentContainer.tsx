@@ -11,9 +11,7 @@ const AuthPageContentContainer = (props: BoxProps) => {
       flexDirection="column"
       alignItems="center"
       gap={gutters()}
-      paddingX={gutters()}
-      paddingTop={gutters(3)}
-      paddingBottom={gutters(2)}
+      padding={gutters()}
       {...props}
     />
   );

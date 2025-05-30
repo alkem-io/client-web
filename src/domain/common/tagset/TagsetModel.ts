@@ -14,7 +14,6 @@ export interface UpdateTagsetModel {
   tags?: string[];
 }
 
-
 export const EmptyTagset: TagsetModel = {
   id: '',
   name: TagsetReservedName.Default,

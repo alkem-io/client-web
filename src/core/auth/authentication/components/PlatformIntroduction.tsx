@@ -16,13 +16,13 @@ const PlatformIntroduction = ({ label }: PlatformIntroductionProps) => {
   const { locations } = useConfig();
 
   return (
-    <Box>
+    <Box color="neutral.light">
       <Trans
         i18nKey={label}
         components={{
-          p: <Paragraph textAlign="center" />,
-          terms: <Link href={locations?.terms} />,
-          privacy: <Link href={locations?.privacy} />,
+          p: <Paragraph textAlign="left" marginY={0} />,
+          terms: <Link sx={{ color: theme => theme.palette.highlight.dark }} href={locations?.terms} />,
+          privacy: <Link sx={{ color: theme => theme.palette.highlight.dark }} href={locations?.privacy} />,
         }}
       />
     </Box>

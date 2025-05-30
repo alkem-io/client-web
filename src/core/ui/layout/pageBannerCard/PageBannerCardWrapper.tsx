@@ -17,6 +17,7 @@ const PageBannerCardWrapper = (props: PageBannerCardWrapperProps) => (
       backdropFilter: 'blur(10px)',
       borderRadius: theme => `${theme.shape.borderRadius}px`,
       backgroundColor: theme => alpha(theme.palette.background.paper, 0.7),
+      ...props.sx,
     }}
   />
 );

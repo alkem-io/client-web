@@ -6,12 +6,13 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import FixedHeightLogo from '../components/FixedHeightLogo';
-import { BlockTitle, PageTitle } from '@/core/ui/typography';
+import { BlockTitle } from '@/core/ui/typography';
 import { VerificationFlow } from '@ory/kratos-client';
 import { useSignUpReturnUrl } from '../utils/SignUpReturnUrl';
 import { produce } from 'immer';
 import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
+import AuthenticationLayout from '../AuthenticationLayout';
+import { AuthFormHeader } from '../components/AuthFormHeader';
 
 interface RegisterPageProps {
   flow?: string;
@@ -57,14 +58,15 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   }
 
   return (
-    <KratosForm ui={ui} onClick={handleFormClick}>
-      <AuthPageContentContainer>
-        <FixedHeightLogo />
-        <PageTitle>{t('pages.verification.header')}</PageTitle>
-        {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}
-        <KratosUI ui={ui} />
-      </AuthPageContentContainer>
-    </KratosForm>
+    <AuthenticationLayout>
+      <AuthFormHeader title={t('pages.verification.header')} hideMessage />
+      <KratosForm ui={ui} onClick={handleFormClick}>
+        <AuthPageContentContainer>
+          {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}
+          <KratosUI ui={ui} />
+        </AuthPageContentContainer>
+      </KratosForm>
+    </AuthenticationLayout>
   );
 };
 

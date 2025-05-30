@@ -3,10 +3,9 @@ import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans, TransProps, useTranslation } from 'react-i18next';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
-import AuthActionButton, { AuthActionButtonProps } from './Button';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
 import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
@@ -18,13 +17,14 @@ import KratosSocialButton from './Kratos/KratosSocialButton';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import { useKratosT } from './Kratos/messages';
+import Gutters from '@/core/ui/grid/Gutters';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
   resetPasswordElement?: ReactNode;
   acceptTermsComponent?: ComponentType<KratosAcceptTermsProps>;
   renderAcceptTermsCheckbox?: (checkbox: UiNode) => ReactNode;
-  buttonComponent?: ComponentType<AuthActionButtonProps>;
   // TODO Make hidden fields actually consume zero space by changing them into type="hidden" in the UI array
   removedFields?: readonly KratosRemovedFieldAttributes[];
   /**
@@ -32,6 +32,7 @@ interface KratosUIProps extends PropsWithChildren {
    * Remove once we're able to make Kratos keep traits.accepted_terms on error.
    */
   onBeforeSubmit?: () => void;
+  disableInputs?: boolean;
 }
 
 const toAlertVariant = (type: string) => {
@@ -43,17 +44,19 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
+  if (!messages || !messages.length) return null;
+
   return (
-    <>
+    <Box marginBottom={1}>
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
           <Trans
-            i18nKey="kratos.messages.request-recover-password"
+            i18nKey={message.text as unknown as TransProps<TranslationKey>['i18nKey']}
             components={{ strong: <strong />, li: <li />, br: <br /> }}
           />
         </Alert>
       ))}
-    </>
+    </Box>
   );
 };
 
@@ -70,10 +73,10 @@ export const KratosUI: FC<KratosUIProps> = ({
   ui,
   resetPasswordElement,
   acceptTermsComponent: AcceptTerms,
-  buttonComponent = AuthActionButton,
   renderAcceptTermsCheckbox = checkbox => <KratosAcceptTermsCheckbox node={checkbox} />,
   children,
   removedFields = KRATOS_REMOVED_FIELDS_DEFAULT,
+  disableInputs = false,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -101,6 +104,7 @@ export const KratosUI: FC<KratosUIProps> = ({
             return { ...acc, default: [...acc.default, node] };
           case 'oidc':
             return { ...acc, oidc: [...acc.oidc, node] };
+          case 'code':
           case 'password':
             if (isSubmitButton(node)) {
               return { ...acc, submit: [...acc.submit, node] };
@@ -124,7 +128,12 @@ export const KratosUI: FC<KratosUIProps> = ({
   const toUiControl = (node: UiNode, key: number) => {
     if (isAnchorNode(node)) {
       return (
-        <Button href={node.attributes.href} variant="contained" key={key}>
+        <Button
+          href={node.attributes.href}
+          variant="contained"
+          key={key}
+          sx={{ backgroundColor: theme => theme.palette.highlight.dark }}
+        >
           {kratosT(node.attributes.title)}
         </Button>
       );
@@ -156,7 +165,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
 
     if (node.group === 'oidc' && isSubmitButton(node)) {
-      return <KratosSocialButton key={node.attributes.value} node={node} buttonComponent={buttonComponent} />;
+      return <KratosSocialButton key={node.attributes.value} node={node} disabled={disableInputs} />;
     }
 
     switch (node.attributes.type) {
@@ -166,11 +175,18 @@ export const KratosUI: FC<KratosUIProps> = ({
         if (node.attributes.value.includes(':back')) {
           return <KratosButton key={key} node={node} variant="text" />;
         }
-        return <KratosButton key={key} node={node} />;
+        return (
+          <KratosButton
+            sx={{ paddingY: 1, backgroundColor: theme => theme.palette.highlight.dark }}
+            key={key}
+            node={node}
+            disabled={disableInputs}
+          />
+        );
       case 'checkbox':
         return <KratosCheckbox key={key} node={node} />;
       default:
-        return <KratosInput key={key} node={node} {...extraProps} />;
+        return <KratosInput key={key} node={node} disabled={disableInputs} {...extraProps} />;
     }
   };
 
@@ -187,10 +203,12 @@ export const KratosUI: FC<KratosUIProps> = ({
         </Alert>
       )}
       <Box
+        paddingTop={0}
         display="flex"
         flexDirection="column"
         alignItems="stretch"
-        gap={2}
+        gap={1}
+        width="100%"
         minWidth={theme => ({ sm: theme.spacing(36) })}
       >
         <KratosMessages messages={ui.messages} />
@@ -198,16 +216,22 @@ export const KratosUI: FC<KratosUIProps> = ({
         {nodesByGroup.password.map(toUiControl)}
         {resetPasswordElement}
         {nodesByGroup.rest.map(toUiControl)}
-        <Box alignSelf="center" display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
-          {nodesByGroup.submit.map(toUiControl)}
-          {nodesByGroup.submit.length > 0 && nodesByGroup.oidc.length > 0 && (
-            <Text textAlign="center" textTransform="uppercase">
-              {t('common.or')}
-            </Text>
-          )}
-          {nodesByGroup.oidc.map(toUiControl)}
-          {children}
-        </Box>
+        {children}
+        {nodesByGroup.submit.length > 0 && (
+          <Box alignSelf="center" display="flex" flexDirection="column" gap={1} paddingY={1.5} width="100%">
+            {nodesByGroup.submit.map(toUiControl)}
+            {nodesByGroup.oidc.length > 0 && <Text textAlign="center">{t('authentication.or')}</Text>}
+          </Box>
+        )}
+        {nodesByGroup.oidc.length > 0 && (
+          <Gutters
+            row
+            justifyContent="center"
+            sx={{ gap: { xs: 0, md: 0 }, justifyContent: 'space-between', padding: 0 }}
+          >
+            {nodesByGroup.oidc.map(toUiControl)}
+          </Gutters>
+        )}
       </Box>
     </KratosUIProvider>
   );

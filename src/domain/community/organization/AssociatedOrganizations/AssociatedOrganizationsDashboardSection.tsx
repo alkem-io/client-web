@@ -9,7 +9,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface AssociatedOrganizationsDashboardSectionProps<
   Consumed extends {},
-  Organization extends Consumed & Identifiable
+  Organization extends Consumed & Identifiable,
 > extends Omit<AssociatedOrganizationsViewProps<Consumed, Organization>, 'entityName'> {
   canCreateOrganization?: boolean;
   title: string;
@@ -19,7 +19,7 @@ export interface AssociatedOrganizationsDashboardSectionProps<
 
 export const AssociatedOrganizationsDashboardSection = <
   Consumed extends {},
-  Organization extends Consumed & Identifiable
+  Organization extends Consumed & Identifiable,
 >({
   loading,
   canCreateOrganization = false,
