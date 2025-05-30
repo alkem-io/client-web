@@ -1,7 +1,7 @@
 import { CreateProfileInput, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { ProfileModel } from './ProfileModel';
 import { mapTagsetModelsToUpdateTagsetInputs } from '../tagset/TagsetUtils';
-import { formatDatabaseLocation } from '../location/LocationUtils';
+import { formatLocationInput } from '../location/LocationUtils';
 import { mapReferenceModelsToUpdateReferenceInputs } from '../reference/ReferenceUtils';
 
 type ProfileModelWithoutId = {
@@ -28,7 +28,7 @@ export const mapProfileModelToUpdateProfileInput = (
     tagline: profileModel.tagline,
     references: mapReferenceModelsToUpdateReferenceInputs(profileModel.references),
     tagsets: mapTagsetModelsToUpdateTagsetInputs(profileModel.tagsets),
-    location: formatDatabaseLocation(profileModel.location),
+    location: formatLocationInput(profileModel.location),
   };
 };
 
@@ -46,7 +46,7 @@ export const mapProfileModelToCreateProfileInput = (profileModel: ProfileModel |
     description: profileModel.description,
     tagline: profileModel.tagline,
     referencesData: profileModel.references,
-    location: formatDatabaseLocation(profileModel.location),
+    location: formatLocationInput(profileModel.location),
   };
   return result;
 };

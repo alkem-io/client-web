@@ -39,7 +39,7 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
     tagline: profile?.tagline ?? '',
     location: profile.location ?? EmptyLocationMapped,
     references: profile?.references ?? [],
-    tagsets: profile?.tagsets ?? [EmptyTagset],
+    tagsets: profile?.tagsets ? profile.tagsets : profile?.tagset ? [profile.tagset] : [EmptyTagset],
   };
 
   const validationSchema = yup.object().shape({
@@ -69,7 +69,7 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
 
         return (
           <>
-            <FormikInputField name="name" title={t('components.nameSegment.name')} required />
+            <FormikInputField name="displayName" title={t('components.nameSegment.name')} required />
             <FormikInputField
               name={'tagline'}
               title={t(`context.${spaceLevel}.tagline.title` as const)}
