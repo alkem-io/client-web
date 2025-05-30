@@ -10,6 +10,9 @@ interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
   profileId?: string;
 }
 
+/**
+ * @deprecated Use ProfileReferenceSegment instead. This component is kept for backward compatibility and will be removed in a future release.
+ */
 export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({
   fieldName,
   profileId,
