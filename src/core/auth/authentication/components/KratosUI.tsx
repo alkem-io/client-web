@@ -224,7 +224,11 @@ export const KratosUI: FC<KratosUIProps> = ({
           </Box>
         )}
         {nodesByGroup.oidc.length > 0 && (
-          <Gutters row justifyContent="center" sx={{ paddingTop: 0 }}>
+          <Gutters
+            row
+            justifyContent="center"
+            sx={{ gap: { xs: 0, md: 0 }, justifyContent: 'space-between', padding: 0 }}
+          >
             {nodesByGroup.oidc.map(toUiControl)}
           </Gutters>
         )}

@@ -27,7 +27,7 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
         row
         fullHeight
         sx={{
-          p: 6,
+          padding: { xs: 1, sm: 6 },
           zIndex: 999,
           flexDirection: { xs: 'column', sm: 'column', md: 'row' },
           justifyContent: { xs: 'flex-start', sm: 'flex-start', md: 'space-between' },
@@ -49,6 +49,7 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
         <Card
           sx={{
             maxWidth: { xs: '100%', sm: '100%', md: '444px' },
+            minWidth: '375px',
             marginTop: { xs: 1, sm: 1, md: 20 },
             height: 'fit-content',
           }}

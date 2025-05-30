@@ -10,7 +10,7 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 import { useTranslation } from 'react-i18next';
 import { AuthActionButtonProps } from '../Button';
-import { SvgIconTypeMap, Button, Tooltip } from '@mui/material';
+import { SvgIconTypeMap, Button, Tooltip, Box } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
 interface SocialCustomization {
@@ -59,25 +59,33 @@ const KratosSocialButton = ({ node, disabled = false }: KratosSocialButtonProps)
 
   return (
     <Tooltip title={label} placement="top" arrow>
-      <Button
-        variant="contained"
+      <Box
         sx={{
-          background: theme => theme.palette.background.paper,
-          width: '100%',
-          paddingY: 1,
-          paddingX: 0,
-          margin: 0,
-          '&.Mui-disabled': {
-            opacity: 0.6,
-          },
+          height: 55,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
-        name={node.attributes.name}
-        type={(node.attributes.type || 'button') as AuthActionButtonProps['type']}
-        value={node.attributes.value}
-        disabled={node.attributes.disabled || disabled}
       >
-        {Icon ? <Icon /> : node.meta.label?.text}
-      </Button>
+        <Button
+          variant="contained"
+          sx={{
+            background: theme => theme.palette.background.paper,
+            padding: 0,
+            height: '100%',
+            margin: 0,
+            '&.Mui-disabled': {
+              opacity: 0.6,
+            },
+          }}
+          name={node.attributes.name}
+          type={(node.attributes.type || 'button') as AuthActionButtonProps['type']}
+          value={node.attributes.value}
+          disabled={node.attributes.disabled || disabled}
+        >
+          {Icon ? <Icon /> : node.meta.label?.text}
+        </Button>
+      </Box>
     </Tooltip>
   );
 };

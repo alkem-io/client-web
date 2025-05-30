@@ -2705,6 +2705,7 @@
       "introduction": "<p>Alkemio makes it easy to manage Subspaces and have contributors, from anywhere, working together on solutions. Subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Continue to the platform",
+      "next": "Next",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registrationSuccess": {

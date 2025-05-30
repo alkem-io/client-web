@@ -9,6 +9,7 @@ import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosHidden from '../components/Kratos/KratosHidden';
 import { KRATOS_TRAIT_NAME_FIRST_NAME } from '../components/Kratos/constants';
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
+import { Box } from '@mui/material';
 
 interface GreetingProps {
   userName: string;
@@ -53,7 +54,7 @@ const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
   const nonButtonInputs = ui.nodes.filter(node => !isSubmitButton(node));
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}>
       {nonButtonInputs.map(node => (
         <KratosHidden key={node.attributes['name']} node={node} />
       ))}
@@ -67,11 +68,16 @@ const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
         />
       )}
       {buttonNode && (
-        <KratosAcceptTermsButton hasAcceptedTerms={hasAcceptedTerms} node={buttonNode} marginTop={2}>
-          {t('pages.accept-terms.continue')}
+        <KratosAcceptTermsButton
+          hasAcceptedTerms={hasAcceptedTerms}
+          node={buttonNode}
+          marginTop={2}
+          sx={{ backgroundColor: theme => theme.palette.highlight.dark, padding: 1 }}
+        >
+          {t('pages.accept-terms.next')}
         </KratosAcceptTermsButton>
       )}
-    </>
+    </Box>
   );
 };
 

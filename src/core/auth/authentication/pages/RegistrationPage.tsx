@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { produce } from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '@/core/ui/loading/Loading';
@@ -19,14 +19,18 @@ import { AuthFormHeader } from '../components/AuthFormHeader';
 // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
 
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
+const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
+  return typeof flowId === 'string' && sessionStorage.getItem(`kratosFlow:${flowId}:hasAcceptedTerms`) === 'true';
+};
 
 export const RegistrationPage = ({ flow }: { flow?: string }) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const { flow: registrationFlow, loading, error } = useKratosFlow(FlowTypeName.Registration, flow);
 
-  const hasAcceptedTerms = true;
-  // (location.state as { hasAcceptedTerms: boolean } | null)?.hasAcceptedTerms ||
-  // readHasAcceptedTermsFromStorage(registrationFlow?.id);
+  const hasAcceptedTerms =
+    (location.state as { hasAcceptedTerms: boolean } | null)?.hasAcceptedTerms ||
+    readHasAcceptedTermsFromStorage(registrationFlow?.id);
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
@@ -71,6 +75,7 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
       <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
       <KratosForm ui={registrationFlow?.ui}>
         <AuthPageContentContainer>
+          {mustAcceptTerms && <AcceptTerms ui={registrationFlow!.ui} />}
           {!mustAcceptTerms && (
             <>
               <KratosUI
