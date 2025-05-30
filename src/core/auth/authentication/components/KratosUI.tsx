@@ -3,7 +3,7 @@ import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
@@ -43,13 +43,14 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
-  const { t } = useKratosT();
-
   return (
     <>
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
-          {t(message)}
+          <Trans
+            i18nKey="kratos.messages.request-recover-password"
+            components={{ strong: <strong />, li: <li />, br: <br /> }}
+          />
         </Alert>
       ))}
     </>
