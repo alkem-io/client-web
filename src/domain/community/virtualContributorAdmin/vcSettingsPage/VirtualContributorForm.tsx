@@ -102,6 +102,18 @@ export const VirtualContributorForm = ({
     subSpaceName: yup.string(),
   });
 
+  const getUpdatedTagsets = (updatedTagsets: TagsetModel[]) => {
+    const result: TagsetModel[] = [];
+    updatedTagsets.forEach(updatedTagset => {
+      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+      if (originalTagset) {
+        result.push({ ...originalTagset, tags: updatedTagset.tags });
+      }
+    });
+
+    return result;
+  };
+
   // use keywords tagset (existing after creation of VC) as tags
   const keywordsTagsetWrapped = useMemo(() => {
     const tagset = tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase());
@@ -111,6 +123,7 @@ export const VirtualContributorForm = ({
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
     const { profile, ...otherData } = values;
     const { displayName, description, tagline, tagsets, references } = profile;
+    const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
 
     const updatedVirtualContributor = {
       ID: virtualContributor.id,
@@ -118,7 +131,7 @@ export const VirtualContributorForm = ({
         displayName,
         description,
         tagline,
-        tagsets: mapTagsetModelsToUpdateTagsetInputs(tagsets),
+        tagsets: mapTagsetModelsToUpdateTagsetInputs(updatedTagsets),
         references: mapReferenceModelsToUpdateReferenceInputs(references),
       },
       ...otherData,
@@ -175,7 +188,11 @@ export const VirtualContributorForm = ({
                       <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
                       {keywordsTagsetWrapped ? (
-                        <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />
+                        <TagsetSegment
+                          fieldName="profile.tagsets"
+                          tagsets={keywordsTagsetWrapped}
+                          title={t('common.tags')}
+                        />
                       ) : null}
 
                       <ProfileReferenceSegment
