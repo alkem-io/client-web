@@ -11,6 +11,7 @@ export interface ProfileModel {
   references?: ReferenceModel[];
   tagline?: string;
   tagsets?: TagsetModel[];
+  tagset?: TagsetModel;
   visuals?: VisualModel[];
   url?: string;
 }

@@ -1,6 +1,7 @@
 import { LocationModel } from './LocationModel';
 import { COUNTRIES } from './countries.constants';
 import { LocationModelMapped } from './LocationModelMapped';
+import { CreateLocationInput, UpdateLocationInput } from '@/core/apollo/generated/graphql-schema';
 
 /**
  * formatLocation turns a Location coming from a GraphQL query into a Location usable by the UI.
@@ -30,6 +31,28 @@ export const formatDatabaseLocation = (data: LocationModelMapped | undefined): L
   return {
     id: data.id,
     city: data.city!,
+    country: data.country?.code || '',
+  };
+};
+
+export const formatUpdateLocationInput = (data: LocationModelMapped | undefined): UpdateLocationInput | undefined => {
+  if (!data) {
+    return undefined;
+  }
+
+  return {
+    city: data.city,
+    country: data.country?.code || '',
+  };
+};
+
+export const formatCreateLocationInput = (data: LocationModelMapped | undefined): CreateLocationInput | undefined => {
+  if (!data) {
+    return undefined;
+  }
+
+  return {
+    city: data.city,
     country: data.country?.code || '',
   };
 };
