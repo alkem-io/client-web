@@ -36,8 +36,7 @@ export const CreateSubspace = ({ isVisible = false, onClose, parentSpaceId = '' 
           },
           why: value.why,
         },
-        // addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
+        addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
       });
 
