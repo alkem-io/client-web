@@ -13624,6 +13624,12 @@ export type PostSettingsQuery = {
               id: string;
               uri: string;
               name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
               alternativeText?: string | undefined;
             }>;
           };
@@ -13661,6 +13667,12 @@ export type PostSettingsFragment = {
       id: string;
       uri: string;
       name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
       alternativeText?: string | undefined;
     }>;
   };
