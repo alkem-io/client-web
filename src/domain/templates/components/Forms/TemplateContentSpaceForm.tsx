@@ -11,14 +11,14 @@ import SpaceContentTemplatePreview from '../Previews/SpaceContentTemplatePreview
 import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
 
-export interface TemplateSpaceContentFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
 }
 
-interface TemplateSpaceContentFormProps {
+interface TemplateContentSpaceFormProps {
   template?: SpaceContentTemplate;
-  onSubmit: (values: TemplateSpaceContentFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateSpaceContentFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateContentSpaceFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateContentSpaceFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
@@ -37,12 +37,12 @@ const validator = {
  *  - The GraphQL query useCollaborationTemplateContentQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
  *  - We may be able to do this with lazy queries and an Effect but for now this works pretty well.
  */
-const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceContentFormProps) => {
+const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateContentSpaceFormProps) => {
   const { t } = useTranslation();
 
   const [templateContentSpaceId, setTemplateContentSpaceId] = useState<string | undefined>(template?.contentSpace?.id);
 
-  const initialValues: TemplateSpaceContentFormSubmittedValues = useMemo(
+  const initialValues: TemplateContentSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
       collaborationId: template?.contentSpace?.collaboration?.id ?? '',
@@ -67,8 +67,8 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateSpace
     },
   };
   const handleSubmit = (
-    values: TemplateSpaceContentFormSubmittedValues,
-    { setFieldValue }: FormikHelpers<TemplateSpaceContentFormSubmittedValues>
+    values: TemplateContentSpaceFormSubmittedValues,
+    { setFieldValue }: FormikHelpers<TemplateContentSpaceFormSubmittedValues>
   ) => {
     // Special case: For CollaborationTemplates we change collaborationId in the formik values,
     // to mark that this template should reload its content from another collaboration.

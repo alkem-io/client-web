@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { TemplateSpaceContentFormSubmittedValues } from '../components/Forms/TemplateContentSpaceForm';
+import { TemplateContentSpaceFormSubmittedValues } from '../components/Forms/TemplateContentSpaceForm';
 import {
   useCreateTemplateFromSpaceMutation,
   useSpaceTemplatesManagerLazyQuery,
@@ -8,7 +8,7 @@ import { toCreateTemplateFromSpaceContentMutationVariables } from '../components
 
 export interface SpaceContentCreationUtils {
   handleCreateSpaceContentTemplate: (
-    values: TemplateSpaceContentFormSubmittedValues,
+    values: TemplateContentSpaceFormSubmittedValues,
     destinationSpaceId: string
   ) => Promise<unknown>;
 }
@@ -18,7 +18,7 @@ export const useCreateSpaceContentTemplate = (): SpaceContentCreationUtils => {
   const [fetchTemplatesSetId] = useSpaceTemplatesManagerLazyQuery();
 
   const handleCreateCollaborationTemplate = useCallback(
-    async (values: TemplateSpaceContentFormSubmittedValues, destinationSpaceId: string) => {
+    async (values: TemplateContentSpaceFormSubmittedValues, destinationSpaceId: string) => {
       const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceId: destinationSpaceId } });
       const templatesSetId = templatesData?.lookup.space?.templatesManager?.templatesSet?.id;
       if (!templatesSetId) {

@@ -19,11 +19,11 @@ import {
   UpdateTemplateMutationVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../TemplateContentCommunityGuidelinesForm';
+import { TemplateContentCommunityGuidelinesFormSubmittedValues } from '../TemplateContentCommunityGuidelinesForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
-import { CalloutTemplateFormSubmittedValues } from '../TemplateContentCalloutForm';
-import { TemplateSpaceContentFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateContentSpaceForm';
-import { PostTemplateFormSubmittedValues } from '../TemplateContentPostForm';
+import { TemplateContentCalloutFormSubmittedValues } from '../TemplateContentCalloutForm';
+import { TemplateContentSpaceFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateContentSpaceForm';
+import { TemplateContentPostFormSubmittedValues } from '../TemplateContentPostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
@@ -174,7 +174,7 @@ export const toCreateTemplateMutationVariables = (
 
   switch (templateType) {
     case TemplateType.Callout: {
-      const calloutTemplateData = values as CalloutTemplateFormSubmittedValues;
+      const calloutTemplateData = values as TemplateContentCalloutFormSubmittedValues;
       if (!calloutTemplateData.callout || !calloutTemplateData.callout.type) {
         throw new Error('Callout template must have callout data');
       }
@@ -224,7 +224,7 @@ export const toCreateTemplateMutationVariables = (
       throw new Error('Call toCreateTemplateFromCollaborationMutationVariables instead');
     }
     case TemplateType.CommunityGuidelines: {
-      const communityGuidelinesTemplateData = values as CommunityGuidelinesTemplateFormSubmittedValues;
+      const communityGuidelinesTemplateData = values as TemplateContentCommunityGuidelinesFormSubmittedValues;
       const { profileData } = handleCreateProfile(communityGuidelinesTemplateData.communityGuidelines);
       result.communityGuidelinesData = {
         profile: profileData,
@@ -233,7 +233,7 @@ export const toCreateTemplateMutationVariables = (
       break;
     }
     case TemplateType.Post: {
-      const postData = values as PostTemplateFormSubmittedValues;
+      const postData = values as TemplateContentPostFormSubmittedValues;
       result.postDefaultDescription = postData.postDefaultDescription;
       break;
     }
@@ -340,7 +340,7 @@ export const toUpdateTemplateMutationVariables = (
   };
   switch (template.type) {
     case TemplateType.Callout: {
-      const calloutTemplateData = newValues as CalloutTemplateFormSubmittedValues;
+      const calloutTemplateData = newValues as TemplateContentCalloutFormSubmittedValues;
       const updateCalloutVariables: UpdateCalloutMutationVariables = {
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
@@ -408,7 +408,7 @@ export const toUpdateTemplateMutationVariables = (
       }
     }
     case TemplateType.CommunityGuidelines: {
-      const communityGuidelinesTemplateData = newValues as CommunityGuidelinesTemplateFormSubmittedValues;
+      const communityGuidelinesTemplateData = newValues as TemplateContentCommunityGuidelinesFormSubmittedValues;
       const updateCommunityGuidelinesVariables: UpdateCommunityGuidelinesMutationVariables = {
         communityGuidelinesData: {
           communityGuidelinesID: (template as CommunityGuidelinesTemplate).communityGuidelines?.id!,
@@ -422,7 +422,7 @@ export const toUpdateTemplateMutationVariables = (
     }
     case TemplateType.Post: {
       updateTemplateVariables.postDefaultDescription = (
-        newValues as PostTemplateFormSubmittedValues
+        newValues as TemplateContentPostFormSubmittedValues
       ).postDefaultDescription;
       return {
         updateTemplateVariables,

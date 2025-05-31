@@ -9,14 +9,14 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 
-export interface PostTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+export interface TemplateContentPostFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   postDefaultDescription?: string;
 }
 
-interface PostTemplateFormProps {
+interface TemplateContentPostFormProps {
   template?: PostTemplate;
-  onSubmit: (values: PostTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<PostTemplateFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateContentPostFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateContentPostFormSubmittedValues>) => ReactNode);
   temporaryLocation?: boolean;
 }
 
@@ -24,10 +24,10 @@ const validator = {
   postDefaultDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
 };
 
-const PostTemplateForm = ({ template, onSubmit, actions, temporaryLocation = false }: PostTemplateFormProps) => {
+const PostTemplateForm = ({ template, onSubmit, actions, temporaryLocation = false }: TemplateContentPostFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: PostTemplateFormSubmittedValues = {
+  const initialValues: TemplateContentPostFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     postDefaultDescription: template?.postDefaultDescription ?? '',
   };

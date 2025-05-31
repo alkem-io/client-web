@@ -2,12 +2,12 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
-import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './TemplateContentCalloutForm';
-import TemplateContentSpaceForm, { TemplateSpaceContentFormSubmittedValues } from './TemplateContentSpaceForm';
-import CommunityGuidelinesTemplateForm, {
-  CommunityGuidelinesTemplateFormSubmittedValues,
+import TemplateContentCalloutForm, { TemplateContentCalloutFormSubmittedValues } from './TemplateContentCalloutForm';
+import TemplateContentSpaceForm, { TemplateContentSpaceFormSubmittedValues } from './TemplateContentSpaceForm';
+import TemplateContentCommunityGuidelinesForm, {
+  TemplateContentCommunityGuidelinesFormSubmittedValues,
 } from './TemplateContentCommunityGuidelinesForm';
-import PostTemplateForm, { PostTemplateFormSubmittedValues } from './TemplateContentPostForm';
+import PostTemplateForm, { TemplateContentPostFormSubmittedValues } from './TemplateContentPostForm';
 import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 
 interface TemplateFormProps {
@@ -18,20 +18,22 @@ interface TemplateFormProps {
 }
 
 export type AnyTemplateFormSubmittedValues =
-  | CalloutTemplateFormSubmittedValues
-  | TemplateSpaceContentFormSubmittedValues
-  | CommunityGuidelinesTemplateFormSubmittedValues
-  | PostTemplateFormSubmittedValues
+  | TemplateContentCalloutFormSubmittedValues
+  | TemplateContentSpaceFormSubmittedValues
+  | TemplateContentCommunityGuidelinesFormSubmittedValues
+  | TemplateContentPostFormSubmittedValues
   | WhiteboardTemplateFormSubmittedValues;
 
 const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
   switch (template.type) {
     case TemplateType.Callout:
-      return <CalloutTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+      return <TemplateContentCalloutForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Space:
       return <TemplateContentSpaceForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+      return (
+        <TemplateContentCommunityGuidelinesForm template={template} temporaryLocation={temporaryLocation} {...rest} />
+      );
     case TemplateType.Post:
       return <PostTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Whiteboard:

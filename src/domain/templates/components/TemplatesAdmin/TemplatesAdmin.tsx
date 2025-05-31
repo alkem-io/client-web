@@ -32,9 +32,9 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { TemplateSpaceContentFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
+import { TemplateContentSpaceFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
 import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
-import { CalloutTemplateFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
+import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
@@ -134,7 +134,7 @@ const TemplatesAdmin = ({
       });
       // update whiteboard (framing) visuals
       await handlePreviewTemplates(
-        values as CalloutTemplateFormSubmittedValues,
+        values as TemplateContentCalloutFormSubmittedValues,
         result.data?.updateCallout.framing.whiteboard
       );
     }
@@ -171,7 +171,7 @@ const TemplatesAdmin = ({
   const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     const variables = toCreateTemplateFromSpaceContentMutationVariables(
       templatesSetId,
-      values as TemplateSpaceContentFormSubmittedValues
+      values as TemplateContentSpaceFormSubmittedValues
     );
     await createSpaceContentTemplate({
       variables,
@@ -195,7 +195,7 @@ const TemplatesAdmin = ({
     } else if (creatingTemplateType === TemplateType.Callout) {
       // update whiteboard (framing) visuals
       handlePreviewTemplates(
-        values as CalloutTemplateFormSubmittedValues,
+        values as TemplateContentCalloutFormSubmittedValues,
         result.data?.createTemplate.callout?.framing.whiteboard
       );
     }
