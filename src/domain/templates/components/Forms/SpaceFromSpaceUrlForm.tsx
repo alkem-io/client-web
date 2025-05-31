@@ -9,13 +9,13 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { UrlType } from '@/core/apollo/generated/graphql-schema';
 
 interface ContentSpaceFromSpaceUrlFormProps {
-  onUseCollaboration: (url: string) => Promise<unknown>;
+  onUseSpace: (url: string) => Promise<unknown>;
   collapsible?: boolean;
   onCollapse?: () => void;
 }
 
 const ContentSpaceFromSpaceUrlForm: React.FC<ContentSpaceFromSpaceUrlFormProps> = ({
-  onUseCollaboration,
+  onUseSpace,
   collapsible,
   onCollapse,
 }) => {
@@ -42,12 +42,12 @@ const ContentSpaceFromSpaceUrlForm: React.FC<ContentSpaceFromSpaceUrlFormProps> 
       setUrlError(t('templateLibrary.spaceTemplates.findByUrl.invalidUrl'));
       return;
     }
-    const collaborationId = data.urlResolver.space?.collaboration.id;
-    if (!collaborationId) {
-      setUrlError(t('templateLibrary.spaceTemplates.findByUrl.collaborationNotFoundError'));
+    const spaceId = data.urlResolver.space?.id;
+    if (!spaceId) {
+      setUrlError(t('templateLibrary.spaceTemplates.findByUrl.spaceNotFoundError'));
     } else {
-      // Finally, if everything went well, return the collaborationId to the parent component
-      await onUseCollaboration(collaborationId);
+      // Finally, if everything went well, return the spaceId
+      await onUseSpace(spaceId);
     }
   });
 

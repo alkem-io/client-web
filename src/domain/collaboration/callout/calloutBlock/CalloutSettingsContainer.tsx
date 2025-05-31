@@ -47,7 +47,7 @@ import {
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
 import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
-import { CalloutTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CalloutTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateContentCalloutForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useEnsurePresence from '@/core/utils/ensurePresence';

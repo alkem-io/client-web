@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { TemplateSpaceContentFormSubmittedValues } from '../components/Forms/CollaborationTemplateForm';
+import { TemplateSpaceContentFormSubmittedValues } from '../components/Forms/TemplateContentSpaceForm';
 import {
   useCreateTemplateFromSpaceMutation,
   useSpaceTemplatesManagerLazyQuery,

@@ -19,11 +19,11 @@ import {
   UpdateTemplateMutationVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../TemplateContentCommunityGuidelinesForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
-import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
-import { TemplateSpaceContentFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
-import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../TemplateContentCalloutForm';
+import { TemplateSpaceContentFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateContentSpaceForm';
+import { PostTemplateFormSubmittedValues } from '../TemplateContentPostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';

@@ -32,9 +32,9 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { TemplateSpaceContentFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
+import { TemplateSpaceContentFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
 import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
-import { CalloutTemplateFormSubmittedValues } from '../Forms/CalloutTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;

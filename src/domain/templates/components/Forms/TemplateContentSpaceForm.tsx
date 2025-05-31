@@ -9,7 +9,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
 import SpaceContentTemplatePreview from '../Previews/SpaceContentTemplatePreview';
 import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
-import ContentSpaceFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
+import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
 
 export interface TemplateSpaceContentFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -37,7 +37,7 @@ const validator = {
  *  - The GraphQL query useCollaborationTemplateContentQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
  *  - We may be able to do this with lazy queries and an Effect but for now this works pretty well.
  */
-const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceContentFormProps) => {
+const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceContentFormProps) => {
   const { t } = useTranslation();
 
   const [templateContentSpaceId, setTemplateContentSpaceId] = useState<string | undefined>(template?.contentSpace?.id);
@@ -61,7 +61,7 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpac
     },
     skip: !templateContentSpaceId,
   });
-  const collaborationPreview = {
+  const spaceContentPreview = {
     contentSpace: {
       collaboration: data?.lookup.templateContentSpace?.collaboration,
     },
@@ -92,32 +92,32 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpac
       validator={validator}
     >
       {({ setFieldValue }) => {
-        const handleCollaborationIdChange = async (contentSpaceId: string) => {
-          setFieldValue('collaborationId', contentSpaceId); // Change the value in Formik
-          setTemplateContentSpaceId(contentSpaceId); // Refresh the collaboration preview
-          if (contentSpaceId) {
-            await refetchTemplateContent({ templateContentSpaceId: contentSpaceId });
+        const handleSpaceIdChange = async (spaceId: string) => {
+          setFieldValue('spaceId', spaceId); // Change the value in Formik
+          setTemplateContentSpaceId(spaceId); // Refresh the collaboration preview
+          if (spaceId) {
+            await refetchTemplateContent({ templateContentSpaceId: spaceId });
           }
         };
         const handleCancel = () => {
-          const contentSpaceId = template?.contentSpace?.id;
-          if (contentSpaceId) {
-            setFieldValue('contentSpaceId', contentSpaceId); // Change the value in Formik back to the template collaboration
-            setTemplateContentSpaceId(contentSpaceId); // Refresh the collaboration preview
-            if (contentSpaceId) {
-              refetchTemplateContent({ templateContentSpaceId: contentSpaceId });
+          const spaceId = template?.contentSpace?.id;
+          if (spaceId) {
+            setFieldValue('contentSpaceId', spaceId); // Change the value in Formik back to the template collaboration
+            setTemplateContentSpaceId(spaceId); // Refresh the collaboration preview
+            if (spaceId) {
+              refetchTemplateContent({ templateContentSpaceId: spaceId });
             }
           }
         };
         return (
           <>
             <ContentSpaceFromSpaceUrlForm
-              onUseCollaboration={handleCollaborationIdChange}
+              onUseSpace={handleSpaceIdChange}
               collapsible={Boolean(template?.contentSpace?.collaboration?.id)}
               onCollapse={handleCancel}
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <SpaceContentTemplatePreview loading={loading} template={collaborationPreview} />
+            <SpaceContentTemplatePreview loading={loading} template={spaceContentPreview} />
           </>
         );
       }}
@@ -125,4 +125,4 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpac
   );
 };
 
-export default CollaborationTemplateForm;
+export default TemplateContentSpaceForm;

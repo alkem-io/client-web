@@ -900,7 +900,6 @@
         "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
-        "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
       }
     },
@@ -911,7 +910,6 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
-    "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",

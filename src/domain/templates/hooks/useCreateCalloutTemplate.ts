@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { CalloutTemplateFormSubmittedValues } from '../components/Forms/CalloutTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../components/Forms/TemplateContentCalloutForm';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { toCreateTemplateMutationVariables } from '../components/Forms/common/mappings';

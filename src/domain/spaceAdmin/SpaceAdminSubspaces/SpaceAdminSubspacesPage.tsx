@@ -27,7 +27,7 @@ import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/us
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateSpaceContentFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import { TemplateSpaceContentFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateContentSpaceForm';
 import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceContentTemplate';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';

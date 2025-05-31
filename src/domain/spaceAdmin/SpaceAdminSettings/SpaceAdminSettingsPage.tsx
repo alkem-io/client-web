@@ -30,7 +30,7 @@ import CommunityApplicationForm from '@/domain/community/community/CommunityAppl
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateSpaceContentFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import { TemplateSpaceContentFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateContentSpaceForm';
 import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceContentTemplate';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';

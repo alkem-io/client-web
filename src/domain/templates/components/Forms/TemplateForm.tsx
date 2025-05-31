@@ -2,12 +2,12 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
-import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
-import CollaborationTemplateForm, { TemplateSpaceContentFormSubmittedValues } from './CollaborationTemplateForm';
+import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './TemplateContentCalloutForm';
+import TemplateContentSpaceForm, { TemplateSpaceContentFormSubmittedValues } from './TemplateContentSpaceForm';
 import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
-} from './CommunityGuidelinesTemplateForm';
-import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
+} from './TemplateContentCommunityGuidelinesForm';
+import PostTemplateForm, { PostTemplateFormSubmittedValues } from './TemplateContentPostForm';
 import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 
 interface TemplateFormProps {
@@ -29,7 +29,7 @@ const TemplateForm = ({ template, temporaryLocation = false, ...rest }: Template
     case TemplateType.Callout:
       return <CalloutTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Space:
-      return <CollaborationTemplateForm template={template} {...rest} />;
+      return <TemplateContentSpaceForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Post:
