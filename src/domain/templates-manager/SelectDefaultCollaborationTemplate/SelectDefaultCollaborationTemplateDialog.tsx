@@ -55,22 +55,20 @@ const SelectDefaultCollaborationTemplateDialog = ({
 
   const initialValues: FormValues = {
     collaborationTemplateSelectedId:
-      defaultCollaborationTemplateId ??
-      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates[0]?.id ??
-      '',
+      defaultCollaborationTemplateId ?? data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates[0]?.id ?? '',
   };
 
   const validationSchema = yup.object().shape({
     collaborationTemplateSelectedId: yup.string().required(),
   });
 
-  const collaborationTemplates = useMemo(
+  const spaceTemplates = useMemo(
     () =>
-      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates.map(template => ({
+      data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(template => ({
         id: template.id,
         name: template.profile.displayName,
       })),
-    [data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates]
+    [data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates]
   );
 
   return (
@@ -98,11 +96,11 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 />
               </Caption>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
-              {collaborationTemplates && (
+              {spaceTemplates && (
                 <FormikSelect
                   title={t('common.category')}
                   name="collaborationTemplateSelectedId"
-                  values={collaborationTemplates}
+                  values={spaceTemplates}
                 />
               )}
               <Actions justifyContent="end">

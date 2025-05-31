@@ -8,7 +8,7 @@ import {
   useTemplateContentLazyQuery,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
-  useUpdateTemplateFromCollaborationMutation,
+  useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -91,7 +91,7 @@ const TemplatesAdmin = ({
     skip: !templatesSetId,
   });
 
-  const { calloutTemplates, collaborationTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
+  const { calloutTemplates, spaceTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
     data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
@@ -101,7 +101,7 @@ const TemplatesAdmin = ({
       ...(whiteboardTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
-      ...(collaborationTemplates ?? []),
+      ...(spaceTemplates ?? []),
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet]);
 
@@ -112,7 +112,7 @@ const TemplatesAdmin = ({
   const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries });
   const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
-  const [updateTemplateFromCollaboration] = useUpdateTemplateFromCollaborationMutation({ refetchQueries });
+  const [updateTemplateFromCollaboration] = useUpdateTemplateFromSpaceMutation({ refetchQueries });
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
@@ -314,10 +314,10 @@ const TemplatesAdmin = ({
         <TemplatesGallery
           headerText={t('common.entitiesWithCount', {
             entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
-            count: collaborationTemplates?.length ?? 0,
+            count: spaceTemplates?.length ?? 0,
           })}
           actions={<GalleryActions templateType={TemplateType.Collaboration} />}
-          templates={collaborationTemplates}
+          templates={spaceTemplates}
           loading={loading}
           buildTemplateLink={buildTemplateLink}
         />

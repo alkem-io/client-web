@@ -34,9 +34,11 @@ fragment PostTemplate on Template {
   postDefaultDescription
 }
 
-fragment CollaborationTemplate on Template {
+fragment ContentSpaceTemplate on Template {
   ...TemplateProfileInfo
-  collaboration {
+  contentSpace {
+    id
+    collaboration {
     id
     innovationFlow {
       id
@@ -44,6 +46,7 @@ fragment CollaborationTemplate on Template {
         displayName
         description
       }
+    }
     }
   }
 }

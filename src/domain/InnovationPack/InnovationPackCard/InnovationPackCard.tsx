@@ -25,7 +25,7 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   onClick?: () => void;
   whiteboardTemplatesCount?: number;
   postTemplatesCount?: number;
-  collaborationTemplatesCount?: number;
+  spaceTemplatesCount?: number;
   calloutTemplatesCount?: number;
   communityGuidelinesTemplatesCount?: number;
   innovationPackUri: string;
@@ -39,7 +39,7 @@ const InnovationPackCard = ({
   providerAvatarUri,
   whiteboardTemplatesCount,
   postTemplatesCount,
-  collaborationTemplatesCount,
+  spaceTemplatesCount,
   calloutTemplatesCount,
   communityGuidelinesTemplatesCount,
   innovationPackUri,
@@ -82,11 +82,11 @@ const InnovationPackCard = ({
               count={postTemplatesCount}
             />
           )}
-          {!!collaborationTemplatesCount && (
+          {!!spaceTemplatesCount && (
             <CardFooterCountWithBadge
               tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
               iconComponent={SpaceL1Icon2}
-              count={collaborationTemplatesCount}
+              count={spaceTemplatesCount}
             />
           )}
         </Box>

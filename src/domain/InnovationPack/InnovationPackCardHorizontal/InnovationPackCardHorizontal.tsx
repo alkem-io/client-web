@@ -17,7 +17,7 @@ export interface InnovationPackCardHorizontalProps {
   };
   templates?: {
     calloutTemplatesCount?: number;
-    collaborationTemplatesCount?: number;
+    spaceTemplatesCount?: number;
     communityGuidelinesTemplatesCount?: number;
     postTemplatesCount?: number;
     whiteboardTemplatesCount?: number;

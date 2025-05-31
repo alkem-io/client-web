@@ -1,7 +1,7 @@
 query ImportTemplateDialog(
   $templatesSetId: UUID!
   # $templateTypes: [TemplateType!] # todo:  Needs filter by templateTypes server-side
-  $includeCollaboration: Boolean = false
+  $includeSpace: Boolean = false
   $includeCallout: Boolean = false
 ) {
   lookup {
@@ -12,12 +12,15 @@ query ImportTemplateDialog(
           id
           type
         }
-        collaboration @include(if: $includeCollaboration) {
+        contentSpace {
           id
-          innovationFlow {
+          collaboration @include(if: $includeSpace) {
             id
-            states {
-              displayName
+            innovationFlow {
+              id
+              states {
+                displayName
+              }
             }
           }
         }
@@ -28,7 +31,7 @@ query ImportTemplateDialog(
 
 query ImportTemplateDialogPlatformTemplates(
   $templateTypes: [TemplateType!]
-  $includeCollaboration: Boolean = false
+  $includeSpace: Boolean = false
   $includeCallout: Boolean = false
 ) {
   platform {
@@ -40,12 +43,15 @@ query ImportTemplateDialogPlatformTemplates(
             id
             type
           }
-          collaboration @include(if: $includeCollaboration) {
+          contentSpace {
             id
-            innovationFlow {
+            collaboration @include(if: $includeSpace) {
               id
-              states {
-                displayName
+              innovationFlow {
+                id
+                states {
+                  displayName
+                }
               }
             }
           }

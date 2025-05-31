@@ -28,7 +28,7 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
   const [handleUse, loading] = useLoadingState(async () => {
     setUrlError(undefined);
     if (!url) {
-      setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.urlRequired'));
+      setUrlError(t('templateLibrary.spaceTemplates.findByUrl.urlRequired'));
       return;
     }
     const { data, error } = await parseUrl({
@@ -39,12 +39,12 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
       return;
     }
     if (data?.urlResolver.type !== UrlType.Space) {
-      setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.invalidUrl'));
+      setUrlError(t('templateLibrary.spaceTemplates.findByUrl.invalidUrl'));
       return;
     }
     const collaborationId = data.urlResolver.space?.collaboration.id;
     if (!collaborationId) {
-      setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.collaborationNotFoundError'));
+      setUrlError(t('templateLibrary.spaceTemplates.findByUrl.collaborationNotFoundError'));
     } else {
       // Finally, if everything went well, return the collaborationId to the parent component
       await onUseCollaboration(collaborationId);
@@ -56,19 +56,19 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
       {collapsed && (
         <Box textAlign="right">
           <Button variant="outlined" onClick={() => setCollapsed(false)}>
-            {t('templateLibrary.collaborationTemplates.findByUrl.selectAnother')}
+            {t('templateLibrary.spaceTemplates.findByUrl.selectAnother')}
           </Button>
         </Box>
       )}
       {!collapsed && (
         <form onSubmit={e => e.preventDefault()}>
           <PageContentBlock>
-            <Text>{t('templateLibrary.collaborationTemplates.findByUrl.description')}</Text>
+            <Text>{t('templateLibrary.spaceTemplates.findByUrl.description')}</Text>
             <Gutters disablePadding row alignItems="baseline">
               <TextField
                 value={url}
                 onChange={e => setUrl(e.target.value)}
-                placeholder={t('templateLibrary.collaborationTemplates.findByUrl.title')}
+                placeholder={t('templateLibrary.spaceTemplates.findByUrl.title')}
                 sx={{ flexGrow: 1 }}
                 error={Boolean(urlError)}
                 helperText={urlError}
@@ -88,7 +88,7 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
               </Box>
               <Box>
                 <Button variant="contained" loading={loading} onClick={handleUse}>
-                  {t('templateLibrary.collaborationTemplates.findByUrl.use')}
+                  {t('templateLibrary.spaceTemplates.findByUrl.use')}
                 </Button>
               </Box>
             </Gutters>

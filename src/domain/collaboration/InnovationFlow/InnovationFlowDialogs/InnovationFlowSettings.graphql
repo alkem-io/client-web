@@ -128,13 +128,13 @@ mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateIn
 
 mutation UpdateCollaborationFromTemplate(
   $collaborationId: UUID!
-  $collaborationTemplateId: UUID!
+  $spaceTemplateId: UUID!
   $addCallouts: Boolean
 ) {
-  updateCollaborationFromTemplate(
+  updateCollaborationFromSpaceTemplate(
     updateData: {
       collaborationID: $collaborationId
-      collaborationTemplateID: $collaborationTemplateId
+      spaceTemplateID: $spaceTemplateId
       addCallouts: $addCallouts
     }
   ) {

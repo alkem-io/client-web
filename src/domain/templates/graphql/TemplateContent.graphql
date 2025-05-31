@@ -2,7 +2,7 @@ query TemplateContent(
   $templateId: UUID!
   $includeCallout: Boolean = false
   $includeCommunityGuidelines: Boolean = false
-  $includeCollaboration: Boolean = false
+  $includeSpace: Boolean = false
   $includePost: Boolean = false
   $includeWhiteboard: Boolean = false
 ) {
@@ -28,18 +28,18 @@ query TemplateContent(
       whiteboard @include(if: $includeWhiteboard) {
         ...WhiteboardTemplateContent
       }
-      collaboration @include(if: $includeCollaboration) {
-        ...CollaborationTemplateContent
+      contentSpace @include(if: $includeSpace) {
+        ...SpaceTemplateContent
       }
     }
   }
 }
 
 # Used temporarily to preview any collaboration before turning it into a template
-query CollaborationTemplateContent($collaborationId: UUID!) {
+query SpaceTemplateContent($templateContentSpaceId: UUID!) {
   lookup {
-    collaboration(ID: $collaborationId) {
-      ...CollaborationTemplateContent
+    templateContentSpace(ID: $templateContentSpaceId) {
+      ...SpaceTemplateContent
     }
   }
 }
@@ -95,43 +95,46 @@ fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
   }
 }
 
-fragment CollaborationTemplateContent on Collaboration {
+fragment SpaceTemplateContent on TemplateContentSpace {
   id
-  innovationFlow {
+  collaboration {
     id
-    states {
-      displayName
-      description
-    }
-  }
-  calloutsSet {
-    id
-    callouts {
+    innovationFlow {
       id
-      type
-      classification {
-        id
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
+      states {
+        displayName
+        description
       }
-      framing {
+    }
+    calloutsSet {
+      id
+      callouts {
         id
-        profile {
+        type
+        classification {
           id
-          displayName
-          description
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
         }
-        whiteboard {
+        framing {
           id
           profile {
-            preview: visual(type: BANNER) {
-              ...VisualModel
+            id
+            displayName
+            description
+          }
+          whiteboard {
+            id
+            profile {
+              preview: visual(type: BANNER) {
+                ...VisualModel
+              }
             }
           }
         }
+        sortOrder
       }
-      sortOrder
     }
   }
 }
