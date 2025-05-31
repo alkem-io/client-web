@@ -30,7 +30,7 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
-export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+export interface TemplateContentCalloutFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   callout?: {
     framing: {
       profile: {
@@ -61,10 +61,10 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
 }
 
-interface CalloutTemplateFormProps {
+interface TemplateContentCalloutFormProps {
   template?: CalloutTemplate;
-  onSubmit: (values: CalloutTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateContentCalloutFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateContentCalloutFormSubmittedValues>) => ReactNode);
   temporaryLocation?: boolean;
 }
 
@@ -95,7 +95,12 @@ const validator = {
     .required(),
 };
 
-const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = false }: CalloutTemplateFormProps) => {
+const TemplateContentCalloutForm = ({
+  template,
+  onSubmit,
+  actions,
+  temporaryLocation = false,
+}: TemplateContentCalloutFormProps) => {
   const { t } = useTranslation();
   const createMode = !template?.id;
 
@@ -114,7 +119,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = 
     }));
   }, [t]);
 
-  const initialValues: CalloutTemplateFormSubmittedValues = {
+  const initialValues: TemplateContentCalloutFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     callout: {
       framing: {
@@ -196,4 +201,4 @@ const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = 
   );
 };
 
-export default CalloutTemplateForm;
+export default TemplateContentCalloutForm;

@@ -18,7 +18,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 
-export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+export interface TemplateContentCommunityGuidelinesFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   communityGuidelines?: {
     profile: {
       displayName: string;
@@ -33,10 +33,10 @@ export interface CommunityGuidelinesTemplateFormSubmittedValues extends Template
   };
 }
 
-interface CommunityGuidelinesTemplateFormProps {
+interface TemplateContentCommunityGuidelinesFormProps {
   template?: CommunityGuidelinesTemplate;
-  onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateContentCommunityGuidelinesFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateContentCommunityGuidelinesFormSubmittedValues>) => ReactNode);
   temporaryLocation?: boolean;
 }
 
@@ -54,16 +54,16 @@ const validator = {
   }),
 };
 
-const CommunityGuidelinesTemplateForm = ({
+const TemplateContentCommunityGuidelinesForm = ({
   template,
   onSubmit,
   actions,
   temporaryLocation = false,
-}: CommunityGuidelinesTemplateFormProps) => {
+}: TemplateContentCommunityGuidelinesFormProps) => {
   const { t } = useTranslation();
   const profileId = template?.communityGuidelines?.profile.id;
 
-  const initialValues: CommunityGuidelinesTemplateFormSubmittedValues = {
+  const initialValues: TemplateContentCommunityGuidelinesFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     communityGuidelines: {
       profile: {
@@ -123,4 +123,4 @@ const CommunityGuidelinesTemplateForm = ({
   );
 };
 
-export default CommunityGuidelinesTemplateForm;
+export default TemplateContentCommunityGuidelinesForm;

@@ -8,24 +8,27 @@ import InnovationFlowCalloutsPreview, {
   InnovationFlowCalloutsPreviewProps,
 } from '../../../collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
 
-interface CollaborationTemplatePreviewProps {
+interface SpaceContentTemplatePreviewProps {
   loading?: boolean;
   template?: {
-    collaboration?: {
-      innovationFlow?: {
-        states: InnovationFlowStateModel[];
-      };
-      calloutsSet?: {
-        callouts?: InnovationFlowCalloutsPreviewProps['callouts'];
+    contentSpace?: {
+      collaboration?: {
+        innovationFlow?: {
+          states: InnovationFlowStateModel[];
+        };
+        calloutsSet?: {
+          callouts?: InnovationFlowCalloutsPreviewProps['callouts'];
+        };
       };
     };
   };
 }
 
-const CollaborationTemplatePreview = ({ template, loading }: CollaborationTemplatePreviewProps) => {
+const SpaceContentTemplatePreview = ({ template, loading }: SpaceContentTemplatePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
-  const templateStates = template?.collaboration?.innovationFlow?.states ?? [];
-  const callouts = template?.collaboration?.calloutsSet?.callouts ?? [];
+  const collaboration = template?.contentSpace?.collaboration;
+  const templateStates = collaboration?.innovationFlow?.states ?? [];
+  const callouts = collaboration?.calloutsSet?.callouts ?? [];
 
   useEffect(() => {
     if (
@@ -63,4 +66,4 @@ const CollaborationTemplatePreview = ({ template, loading }: CollaborationTempla
   );
 };
 
-export default CollaborationTemplatePreview;
+export default SpaceContentTemplatePreview;

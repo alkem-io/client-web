@@ -2,13 +2,13 @@ import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 import {
   useAllTemplatesInTemplatesSetQuery,
-  useCreateTemplateFromCollaborationMutation,
+  useCreateTemplateFromSpaceMutation,
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useTemplateContentLazyQuery,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
-  useUpdateTemplateFromCollaborationMutation,
+  useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -23,7 +23,7 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import {
-  toCreateTemplateFromCollaborationMutationVariables,
+  toCreateTemplateFromSpaceContentMutationVariables,
   toCreateTemplateMutationVariables,
   toUpdateTemplateMutationVariables,
 } from '../Forms/common/mappings';
@@ -32,9 +32,9 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
-import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
-import { CalloutTemplateFormSubmittedValues } from '../Forms/CalloutTemplateForm';
+import { TemplateContentSpaceFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
+import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
+import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
@@ -91,7 +91,7 @@ const TemplatesAdmin = ({
     skip: !templatesSetId,
   });
 
-  const { calloutTemplates, collaborationTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
+  const { calloutTemplates, spaceTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
     data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
@@ -101,7 +101,7 @@ const TemplatesAdmin = ({
       ...(whiteboardTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
-      ...(collaborationTemplates ?? []),
+      ...(spaceTemplates ?? []),
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet]);
 
@@ -112,7 +112,7 @@ const TemplatesAdmin = ({
   const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries });
   const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
-  const [updateTemplateFromCollaboration] = useUpdateTemplateFromCollaborationMutation({ refetchQueries });
+  const [updateTemplateFromCollaboration] = useUpdateTemplateFromSpaceMutation({ refetchQueries });
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
@@ -122,7 +122,7 @@ const TemplatesAdmin = ({
       updateTemplateVariables,
       updateCalloutVariables,
       updateCommunityGuidelinesVariables,
-      updateCollaborationTemplateVariables,
+      updateSpaceTemplateVariables: updateCollaborationTemplateVariables,
     } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
@@ -134,7 +134,7 @@ const TemplatesAdmin = ({
       });
       // update whiteboard (framing) visuals
       await handlePreviewTemplates(
-        values as CalloutTemplateFormSubmittedValues,
+        values as TemplateContentCalloutFormSubmittedValues,
         result.data?.updateCallout.framing.whiteboard
       );
     }
@@ -163,17 +163,17 @@ const TemplatesAdmin = ({
   const [createTemplate] = useCreateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
-  const [createCollaborationTemplate] = useCreateTemplateFromCollaborationMutation({
+  const [createSpaceContentTemplate] = useCreateTemplateFromSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
 
   // Create a Collaboration template
   const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
-    const variables = toCreateTemplateFromCollaborationMutationVariables(
+    const variables = toCreateTemplateFromSpaceContentMutationVariables(
       templatesSetId,
-      values as CollaborationTemplateFormSubmittedValues
+      values as TemplateContentSpaceFormSubmittedValues
     );
-    await createCollaborationTemplate({
+    await createSpaceContentTemplate({
       variables,
     });
     setCreatingTemplateType(undefined);
@@ -181,7 +181,7 @@ const TemplatesAdmin = ({
 
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration
-    if (creatingTemplateType === TemplateType.Collaboration) {
+    if (creatingTemplateType === TemplateType.Space) {
       return handleCollaborationTemplateCreate(values);
     }
 
@@ -195,7 +195,7 @@ const TemplatesAdmin = ({
     } else if (creatingTemplateType === TemplateType.Callout) {
       // update whiteboard (framing) visuals
       handlePreviewTemplates(
-        values as CalloutTemplateFormSubmittedValues,
+        values as TemplateContentCalloutFormSubmittedValues,
         result.data?.createTemplate.callout?.framing.whiteboard
       );
     }
@@ -226,8 +226,8 @@ const TemplatesAdmin = ({
   const handleImportTemplate = async (importedTemplate: AnyTemplate) => {
     const { id, type: templateType } = importedTemplate;
     // TODO: Special case for collaboration, just for now, until we can import collaborations entirely
-    if (templateType === TemplateType.Collaboration) {
-      return handleImportCollaborationTemplate(importedTemplate as CollaborationTemplate);
+    if (templateType === TemplateType.Space) {
+      return handleImportCollaborationTemplate(importedTemplate as SpaceContentTemplate);
     }
 
     const { data } = await getTemplateContent({
@@ -235,7 +235,7 @@ const TemplatesAdmin = ({
         templateId: id,
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
-        includeCollaboration: false, // templateType === TemplateType.Collaboration,
+        includeSpace: false, // templateType === TemplateType.Space,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
       },
@@ -250,21 +250,21 @@ const TemplatesAdmin = ({
     }
   };
   // Special case for Collaboration templates
-  const handleImportCollaborationTemplate = async (importedTemplate: CollaborationTemplate) => {
+  const handleImportCollaborationTemplate = async (importedTemplate: SpaceContentTemplate) => {
     const { id } = importedTemplate;
     const { data } = await getTemplateContent({
       variables: {
         templateId: id,
-        includeCollaboration: true,
+        includeSpace: true,
       },
     });
     const template = data?.lookup.template;
     if (template) {
-      const variables = toCreateTemplateFromCollaborationMutationVariables(templatesSetId, {
+      const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, {
         ...template,
-        collaborationId: template.collaboration?.id,
+        spaceId: template.contentSpace?.id,
       });
-      await createCollaborationTemplate({
+      await createSpaceContentTemplate({
         variables,
       });
       setImportTemplateType(undefined);
@@ -313,11 +313,11 @@ const TemplatesAdmin = ({
       <PageContentBlockSeamless disablePadding>
         <TemplatesGallery
           headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
-            count: collaborationTemplates?.length ?? 0,
+            entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
+            count: spaceTemplates?.length ?? 0,
           })}
-          actions={<GalleryActions templateType={TemplateType.Collaboration} />}
-          templates={collaborationTemplates}
+          actions={<GalleryActions templateType={TemplateType.Space} />}
+          templates={spaceTemplates}
           loading={loading}
           buildTemplateLink={buildTemplateLink}
         />

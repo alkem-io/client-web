@@ -890,7 +890,7 @@
       "editDialogTitle": "crwdns18634:0crwdne18634:0",
       "errorImporting": "crwdns18636:0crwdne18636:0"
     },
-    "collaborationTemplates": {
+    "spaceTemplates": {
       "name": "crwdns18638:0$t(common.enums.templateType.COLLABORATION)crwdne18638:0",
       "title": "crwdns18640:0$t(common.templateLibrary)crwdnd18640:0$t(common.enums.templateType.COLLABORATION_plural)crwdne18640:0",
       "findByUrl": {

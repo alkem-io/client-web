@@ -32,7 +32,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateContentCommunityGuidelinesForm';
 import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';

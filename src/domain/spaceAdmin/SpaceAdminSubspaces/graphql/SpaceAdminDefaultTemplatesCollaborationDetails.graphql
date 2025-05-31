@@ -18,40 +18,43 @@ query SpaceAdminDefaultTemplatesCollaborationDetails($spaceId: UUID!) {
             profile {
               ...InnovationFlowProfile
             }
-            collaboration {
+            contentSpace {
               id
-              calloutsSet {
+              collaboration {
                 id
-                callouts {
+                calloutsSet {
                   id
-                  type
-                  sortOrder
-                  classification {
+                  callouts {
                     id
-                    flowState: tagset(tagsetName: FLOW_STATE) {
-                      ...TagsetDetails
-                    }
-                  }
-                  framing {
-                    id
-                    profile {
+                    type
+                    sortOrder
+                    classification {
                       id
-                      displayName
-                      description
+                      flowState: tagset(tagsetName: FLOW_STATE) {
+                        ...TagsetDetails
+                      }
+                    }
+                    framing {
+                      id
+                      profile {
+                        id
+                        displayName
+                        description
+                      }
                     }
                   }
                 }
-              }
-              innovationFlow {
-                id
-                profile {
+                innovationFlow {
                   id
-                  displayName
-                  description
-                }
-                states {
-                  displayName
-                  description
+                  profile {
+                    id
+                    displayName
+                    description
+                  }
+                  states {
+                    displayName
+                    description
+                  }
                 }
               }
             }
