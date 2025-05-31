@@ -84,7 +84,7 @@ const InnovationPackCard = ({
           )}
           {!!spaceTemplatesCount && (
             <CardFooterCountWithBadge
-              tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
+              tooltip={t(`common.enums.templateType.${TemplateType.Space}_plural`)}
               iconComponent={SpaceL1Icon2}
               count={spaceTemplatesCount}
             />

@@ -30,8 +30,8 @@ import CommunityApplicationForm from '@/domain/community/community/CommunityAppl
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
-import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
+import { TemplateSpaceContentFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceContentTemplate';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
@@ -117,8 +117,8 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
-  const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
+  const { handleCreateSpaceContentTemplate: handleCreateCollaborationTemplate } = useCreateSpaceContentTemplate();
+  const handleSaveAsTemplate = async (values: TemplateSpaceContentFormSubmittedValues) => {
     await handleCreateCollaborationTemplate(values, spaceId);
     setSaveAsTemplateDialogOpen(false);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
@@ -447,11 +447,11 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   <CreateTemplateDialog
                     open
                     onClose={() => setSaveAsTemplateDialogOpen(false)}
-                    templateType={TemplateType.Collaboration}
+                    templateType={TemplateType.Space}
                     onSubmit={handleSaveAsTemplate}
                     getDefaultValues={async () => {
                       return {
-                        type: TemplateType.Collaboration,
+                        type: TemplateType.Space,
                         collaboration: {
                           id: collaborationId,
                         },

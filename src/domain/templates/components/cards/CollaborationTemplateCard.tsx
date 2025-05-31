@@ -14,14 +14,14 @@ import CardContent from '@/core/ui/card/CardContent';
 import CardTags from '@/core/ui/card/CardTags';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
-import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
+import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
 
 interface CollaborationTemplateCardProps extends TemplateCardProps {
-  template: CollaborationTemplate;
+  template: SpaceContentTemplate;
 }
 
 const CollaborationTemplateCard = ({ template, innovationPack, loading, ...props }: CollaborationTemplateCardProps) => {
-  const innovationFlowStates = template?.collaboration?.innovationFlow?.states;
+  const innovationFlowStates = template?.contentSpace?.collaboration?.innovationFlow?.states;
 
   const hasTags = (template?.profile.defaultTagset?.tags ?? []).length > 0;
   const descriptionHeightGutters = hasTags

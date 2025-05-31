@@ -126,7 +126,7 @@ mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateIn
   }
 }
 
-mutation UpdateCollaborationFromTemplate(
+mutation UpdateCollaborationFromSpaceTemplate(
   $collaborationId: UUID!
   $spaceTemplateId: UUID!
   $addCallouts: Boolean

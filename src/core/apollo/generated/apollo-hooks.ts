@@ -6028,8 +6028,12 @@ export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateInnovationFlowStatesMutation,
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
 >;
-export const UpdateCollaborationFromTemplateDocument = gql`
-  mutation UpdateCollaborationFromTemplate($collaborationId: UUID!, $spaceTemplateId: UUID!, $addCallouts: Boolean) {
+export const UpdateCollaborationFromSpaceTemplateDocument = gql`
+  mutation UpdateCollaborationFromSpaceTemplate(
+    $collaborationId: UUID!
+    $spaceTemplateId: UUID!
+    $addCallouts: Boolean
+  ) {
     updateCollaborationFromSpaceTemplate(
       updateData: { collaborationID: $collaborationId, spaceTemplateID: $spaceTemplateId, addCallouts: $addCallouts }
     ) {
@@ -6048,23 +6052,23 @@ export const UpdateCollaborationFromTemplateDocument = gql`
     }
   }
 `;
-export type UpdateCollaborationFromTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCollaborationFromTemplateMutation,
-  SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
+export type UpdateCollaborationFromSpaceTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCollaborationFromSpaceTemplateMutation,
+  SchemaTypes.UpdateCollaborationFromSpaceTemplateMutationVariables
 >;
 
 /**
- * __useUpdateCollaborationFromTemplateMutation__
+ * __useUpdateCollaborationFromSpaceTemplateMutation__
  *
- * To run a mutation, you first call `useUpdateCollaborationFromTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCollaborationFromTemplateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateCollaborationFromSpaceTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollaborationFromSpaceTemplateMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateCollaborationFromTemplateMutation, { data, loading, error }] = useUpdateCollaborationFromTemplateMutation({
+ * const [updateCollaborationFromSpaceTemplateMutation, { data, loading, error }] = useUpdateCollaborationFromSpaceTemplateMutation({
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
  *      spaceTemplateId: // value for 'spaceTemplateId'
@@ -6072,26 +6076,26 @@ export type UpdateCollaborationFromTemplateMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useUpdateCollaborationFromTemplateMutation(
+export function useUpdateCollaborationFromSpaceTemplateMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCollaborationFromTemplateMutation,
-    SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
+    SchemaTypes.UpdateCollaborationFromSpaceTemplateMutation,
+    SchemaTypes.UpdateCollaborationFromSpaceTemplateMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateCollaborationFromTemplateMutation,
-    SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
-  >(UpdateCollaborationFromTemplateDocument, options);
+    SchemaTypes.UpdateCollaborationFromSpaceTemplateMutation,
+    SchemaTypes.UpdateCollaborationFromSpaceTemplateMutationVariables
+  >(UpdateCollaborationFromSpaceTemplateDocument, options);
 }
-export type UpdateCollaborationFromTemplateMutationHookResult = ReturnType<
-  typeof useUpdateCollaborationFromTemplateMutation
+export type UpdateCollaborationFromSpaceTemplateMutationHookResult = ReturnType<
+  typeof useUpdateCollaborationFromSpaceTemplateMutation
 >;
-export type UpdateCollaborationFromTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateCollaborationFromTemplateMutation>;
-export type UpdateCollaborationFromTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCollaborationFromTemplateMutation,
-  SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
+export type UpdateCollaborationFromSpaceTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateCollaborationFromSpaceTemplateMutation>;
+export type UpdateCollaborationFromSpaceTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCollaborationFromSpaceTemplateMutation,
+  SchemaTypes.UpdateCollaborationFromSpaceTemplateMutationVariables
 >;
 export const UpdateInnovationFlowSingleStateDocument = gql`
   mutation updateInnovationFlowSingleState(

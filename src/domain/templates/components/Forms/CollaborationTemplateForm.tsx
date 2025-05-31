@@ -6,19 +6,19 @@ import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './Template
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
-import CollaborationTemplatePreview from '../Previews/CollaborationTemplatePreview';
-import { useCollaborationTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
-import CollaborationFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
+import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
+import SpaceContentTemplatePreview from '../Previews/SpaceContentTemplatePreview';
+import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
+import ContentSpaceFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
 
-export interface CollaborationTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  collaborationId?: string;
+export interface TemplateSpaceContentFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+  spaceId?: string;
 }
 
-interface CollaborationTemplateFormProps {
-  template?: CollaborationTemplate;
-  onSubmit: (values: CollaborationTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<CollaborationTemplateFormSubmittedValues>) => ReactNode);
+interface TemplateSpaceContentFormProps {
+  template?: SpaceContentTemplate;
+  onSubmit: (values: TemplateSpaceContentFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateSpaceContentFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
@@ -26,6 +26,7 @@ const validator = {
 };
 
 /**
+ * // TODO: FIX THIS DESCRIPTION NOW have content space
  * We have 3 collaborationIds in this component:
  *  - the one coming with the template (template?.collaboration?.id) that never changes (will be undefined if we are creating a new template)
  *  - the one in the formik values (values.collaborationId) we want to change that when the user selects a subspace to serve as template
@@ -36,15 +37,15 @@ const validator = {
  *  - The GraphQL query useCollaborationTemplateContentQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
  *  - We may be able to do this with lazy queries and an Effect but for now this works pretty well.
  */
-const CollaborationTemplateForm = ({ template, onSubmit, actions }: CollaborationTemplateFormProps) => {
+const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceContentFormProps) => {
   const { t } = useTranslation();
 
-  const [collaborationId, setCollaborationId] = useState<string | undefined>(template?.collaboration?.id);
+  const [templateContentSpaceId, setTemplateContentSpaceId] = useState<string | undefined>(template?.contentSpace?.id);
 
-  const initialValues: CollaborationTemplateFormSubmittedValues = useMemo(
+  const initialValues: TemplateSpaceContentFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-      collaborationId: template?.collaboration?.id ?? '',
+      collaborationId: template?.contentSpace?.collaboration?.id ?? '',
     }),
     [template]
   );
@@ -54,18 +55,20 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
     data,
     loading,
     refetch: refetchTemplateContent,
-  } = useCollaborationTemplateContentQuery({
+  } = useSpaceTemplateContentQuery({
     variables: {
-      collaborationId: collaborationId!,
+      templateContentSpaceId: templateContentSpaceId!,
     },
-    skip: !collaborationId,
+    skip: !templateContentSpaceId,
   });
   const collaborationPreview = {
-    collaboration: data?.lookup.collaboration,
+    contentSpace: {
+      collaboration: data?.lookup.templateContentSpace?.collaboration,
+    },
   };
   const handleSubmit = (
-    values: CollaborationTemplateFormSubmittedValues,
-    { setFieldValue }: FormikHelpers<CollaborationTemplateFormSubmittedValues>
+    values: TemplateSpaceContentFormSubmittedValues,
+    { setFieldValue }: FormikHelpers<TemplateSpaceContentFormSubmittedValues>
   ) => {
     // Special case: For CollaborationTemplates we change collaborationId in the formik values,
     // to mark that this template should reload its content from another collaboration.
@@ -73,7 +76,7 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
     // When we submit the form we call the updateTemplateFromCollaboration mutation with the new collaborationId so the template gets updated.
     // We reset it here to the correct value to avoid Formik detecting the form as dirty on the next render.
     // (dirty means that it will enable the button `Update` as if there were pending changes to save)
-    setFieldValue('collaborationId', template?.collaboration?.id); // Set the value back to the original collaborationId
+    setFieldValue('spaceContentId', template?.contentSpace?.id); // Set the value back to the original collaborationId
 
     // With other template types we just pass onSubmit directly to onSubmit
     return onSubmit(values);
@@ -81,7 +84,7 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
 
   return (
     <TemplateFormBase
-      templateType={TemplateType.Collaboration}
+      templateType={TemplateType.Space}
       template={template}
       initialValues={initialValues}
       onSubmit={handleSubmit}
@@ -89,32 +92,32 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
       validator={validator}
     >
       {({ setFieldValue }) => {
-        const handleCollaborationIdChange = async (collaborationId: string) => {
-          setFieldValue('collaborationId', collaborationId); // Change the value in Formik
-          setCollaborationId(collaborationId); // Refresh the collaboration preview
-          if (collaborationId) {
-            await refetchTemplateContent({ collaborationId });
+        const handleCollaborationIdChange = async (contentSpaceId: string) => {
+          setFieldValue('collaborationId', contentSpaceId); // Change the value in Formik
+          setTemplateContentSpaceId(contentSpaceId); // Refresh the collaboration preview
+          if (contentSpaceId) {
+            await refetchTemplateContent({ templateContentSpaceId: contentSpaceId });
           }
         };
         const handleCancel = () => {
-          const collaborationId = template?.collaboration?.id;
-          if (collaborationId) {
-            setFieldValue('collaborationId', collaborationId); // Change the value in Formik back to the template collaboration
-            setCollaborationId(collaborationId); // Refresh the collaboration preview
-            if (collaborationId) {
-              refetchTemplateContent({ collaborationId });
+          const contentSpaceId = template?.contentSpace?.id;
+          if (contentSpaceId) {
+            setFieldValue('contentSpaceId', contentSpaceId); // Change the value in Formik back to the template collaboration
+            setTemplateContentSpaceId(contentSpaceId); // Refresh the collaboration preview
+            if (contentSpaceId) {
+              refetchTemplateContent({ templateContentSpaceId: contentSpaceId });
             }
           }
         };
         return (
           <>
-            <CollaborationFromSpaceUrlForm
+            <ContentSpaceFromSpaceUrlForm
               onUseCollaboration={handleCollaborationIdChange}
-              collapsible={Boolean(template?.collaboration?.id)}
+              collapsible={Boolean(template?.contentSpace?.collaboration?.id)}
               onCollapse={handleCancel}
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <CollaborationTemplatePreview loading={loading} template={collaborationPreview} />
+            <SpaceContentTemplatePreview loading={loading} template={collaborationPreview} />
           </>
         );
       }}

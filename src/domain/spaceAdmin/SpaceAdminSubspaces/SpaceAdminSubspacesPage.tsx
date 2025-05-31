@@ -27,8 +27,8 @@ import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/us
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
-import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
+import { TemplateSpaceContentFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceContentTemplate';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -157,8 +157,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
   );
 
-  const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
-  const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
+  const { handleCreateSpaceContentTemplate: handleCreateCollaborationTemplate } = useCreateSpaceContentTemplate();
+  const handleSaveAsTemplate = async (values: TemplateSpaceContentFormSubmittedValues) => {
     await handleCreateCollaborationTemplate(values, spaceId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedItem(undefined);
@@ -173,7 +173,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         },
       });
       return {
-        type: TemplateType.Collaboration,
+        type: TemplateType.Space,
         collaboration: {
           id: data?.lookup.space?.collaboration.id,
         },
@@ -241,10 +241,10 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
               <>
                 <BlockSectionTitle>{defaultSubspaceTemplate.template.profile.displayName}</BlockSectionTitle>
                 <InnovationFlowProfileView
-                  innovationFlow={defaultSubspaceTemplate.template.collaboration?.innovationFlow}
+                  innovationFlow={defaultSubspaceTemplate.template.contentSpace?.collaboration?.innovationFlow}
                 />
                 <InnovationFlowStates
-                  states={defaultSubspaceTemplate.template.collaboration?.innovationFlow.states}
+                  states={defaultSubspaceTemplate.template.contentSpace?.collaboration?.innovationFlow.states}
                   selectedState={selectedState}
                   onSelectState={state =>
                     setSelectedState(currentState =>
@@ -253,7 +253,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
                   }
                 />
                 <InnovationFlowCalloutsPreview
-                  callouts={defaultSubspaceTemplate.template.collaboration?.calloutsSet.callouts}
+                  callouts={defaultSubspaceTemplate.template.contentSpace?.collaboration?.calloutsSet.callouts}
                   selectedState={selectedState}
                   loading={loading}
                 />
@@ -317,7 +317,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           <CreateTemplateDialog
             open
             onClose={() => setSaveAsTemplateDialogSelectedItem(undefined)}
-            templateType={TemplateType.Collaboration}
+            templateType={TemplateType.Space}
             onSubmit={handleSaveAsTemplate}
             getDefaultValues={getDefaultTemplateValues}
           />

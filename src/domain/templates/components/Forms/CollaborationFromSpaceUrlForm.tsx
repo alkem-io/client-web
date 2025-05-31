@@ -8,13 +8,13 @@ import { useUrlResolverLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
 import { UrlType } from '@/core/apollo/generated/graphql-schema';
 
-interface CollaborationFromSpaceUrlFormProps {
+interface ContentSpaceFromSpaceUrlFormProps {
   onUseCollaboration: (url: string) => Promise<unknown>;
   collapsible?: boolean;
   onCollapse?: () => void;
 }
 
-const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps> = ({
+const ContentSpaceFromSpaceUrlForm: React.FC<ContentSpaceFromSpaceUrlFormProps> = ({
   onUseCollaboration,
   collapsible,
   onCollapse,
@@ -99,4 +99,4 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
   );
 };
 
-export default CollaborationFromSpaceUrlForm;
+export default ContentSpaceFromSpaceUrlForm;

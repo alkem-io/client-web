@@ -4,13 +4,13 @@ import {
   CreateCalloutInput,
   CreateProfileInput,
   CreateReferenceInput,
-  CreateTemplateFromCollaborationMutationVariables,
+  CreateTemplateFromSpaceMutationVariables,
   CreateWhiteboardInput,
   UpdateCalloutMutationVariables,
   UpdateCommunityGuidelinesMutationVariables,
   UpdateProfileInput,
   UpdateTagsetInput,
-  UpdateTemplateFromCollaborationMutationVariables,
+  UpdateTemplateFromSpaceMutationVariables,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
@@ -22,12 +22,12 @@ import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
 import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
-import { CollaborationTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
+import { TemplateSpaceContentFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
 import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
+import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
 
 interface EntityWithProfile {
   profile: {
@@ -219,7 +219,7 @@ export const toCreateTemplateMutationVariables = (
       result.calloutData = callout;
       break;
     }
-    case TemplateType.Collaboration: {
+    case TemplateType.Space: {
       // TODO: Nothing to do here, for now we cannot create CollaborationTemplates with data inside, we can only copy another collaboration
       throw new Error('Call toCreateTemplateFromCollaborationMutationVariables instead');
     }
@@ -247,17 +247,17 @@ export const toCreateTemplateMutationVariables = (
   return result;
 };
 
-export const toCreateTemplateFromCollaborationMutationVariables = (
+export const toCreateTemplateFromSpaceContentMutationVariables = (
   templatesSetId: string,
-  values: CollaborationTemplateFormSubmittedValues
-): CreateTemplateFromCollaborationMutationVariables => {
+  values: SpaceContentTemplateFormSubmittedValues
+): CreateTemplateFromSpaceMutationVariables => {
   // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
-  if (!values.collaborationId) {
+  if (!values.spaceId) {
     throw new Error('Collaboration ID is required to create a template from a collaboration');
   }
 
   return {
-    collaborationId: values.collaborationId,
+    spaceId: values.spaceId,
     templatesSetId: templatesSetId,
     profileData: {
       displayName: values.profile.displayName ?? '',
@@ -331,7 +331,7 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateCalloutVariables?: UpdateCalloutMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
-  updateCollaborationTemplateVariables?: UpdateTemplateFromCollaborationMutationVariables;
+  updateSpaceTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
@@ -384,21 +384,21 @@ export const toUpdateTemplateMutationVariables = (
         updateCalloutVariables,
       };
     }
-    case TemplateType.Collaboration: {
+    case TemplateType.Space: {
       // Special case: In CollaborationTemplates we update the collaborationId in the formik values to
       // mark that this template should load its content from another collaboration.
       // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
       // If the collaborationId remains the same, we just update the template profile.
-      const oldCollaborationId = (template as CollaborationTemplate).collaboration?.id;
-      const newCollaborationId = (newValues as CollaborationTemplateFormSubmittedValues).collaborationId;
+      const oldCollaborationId = (template as SpaceContentTemplate).contentSpace?.collaboration?.id;
+      const newCollaborationId = (newValues as SpaceContentTemplateFormSubmittedValues).spaceId;
       if (oldCollaborationId && newCollaborationId && oldCollaborationId !== newCollaborationId) {
-        const updateCollaborationTemplateVariables: UpdateTemplateFromCollaborationMutationVariables = {
+        const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
-          collaborationId: newCollaborationId,
+          spaceId: newCollaborationId, // TODO: FIX THIS!
         };
         return {
           updateTemplateVariables,
-          updateCollaborationTemplateVariables,
+          updateSpaceTemplateVariables: updateSpaceContentTemplateVariables,
         };
       } else {
         // Collaboration selected didn't change, just update the template values

@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceContentTemplatesOnSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -46,7 +46,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
   const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
     useLoadingState(onSelectInnovationFlow);
 
-  const { data, loading: loadingInnovationFlows } = useSpaceCollaborationTemplatesQuery({
+  const { data, loading: loadingInnovationFlows } = useSpaceContentTemplatesOnSpaceQuery({
     variables: {
       spaceId: spaceId!,
     },

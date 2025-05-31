@@ -2,7 +2,7 @@ import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import CalloutTemplatePreview from './CalloutTemplatePreview';
-import CollaborationTemplatePreview from './CollaborationTemplatePreview';
+import SpaceContentTemplatePreview from './SpaceContentTemplatePreview';
 import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';
 import PostTemplatePreview from './PostTemplatePreview';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
@@ -19,7 +19,7 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
     variables: {
       templateId: template?.id!,
       includeCallout: template?.type === TemplateType.Callout,
-      includeCollaboration: template?.type === TemplateType.Collaboration,
+      includeSpace: template?.type === TemplateType.Space,
       includeCommunityGuidelines: template?.type === TemplateType.CommunityGuidelines,
       includePost: template?.type === TemplateType.Post,
       includeWhiteboard: template?.type === TemplateType.Whiteboard,
@@ -32,8 +32,8 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
   switch (template?.type) {
     case TemplateType.Callout:
       return <CalloutTemplatePreview template={templateData} />;
-    case TemplateType.Collaboration:
-      return <CollaborationTemplatePreview template={templateData} />;
+    case TemplateType.Space:
+      return <SpaceContentTemplatePreview template={templateData} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplatePreview template={templateData} />;
     case TemplateType.Post:

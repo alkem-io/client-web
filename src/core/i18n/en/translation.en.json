@@ -446,8 +446,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "COLLABORATION": "Subspace Template",
-        "COLLABORATION_plural": "Subspace Templates",
+        "SPACE": "Subspace Template",
+        "SPACE_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -987,7 +987,7 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
-    "spaceTemplates": "Templates selected by the host of this community",
+    "spaceTemplatesSelected": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",

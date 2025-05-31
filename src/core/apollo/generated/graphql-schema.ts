@@ -9890,13 +9890,13 @@ export type UpdateInnovationFlowStatesMutation = {
   };
 };
 
-export type UpdateCollaborationFromTemplateMutationVariables = Exact<{
+export type UpdateCollaborationFromSpaceTemplateMutationVariables = Exact<{
   collaborationId: Scalars['UUID']['input'];
   spaceTemplateId: Scalars['UUID']['input'];
   addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
-export type UpdateCollaborationFromTemplateMutation = {
+export type UpdateCollaborationFromSpaceTemplateMutation = {
   __typename?: 'Mutation';
   updateCollaborationFromSpaceTemplate: {
     __typename?: 'Collaboration';
