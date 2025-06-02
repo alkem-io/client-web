@@ -1,6 +1,7 @@
-import { Maybe, Location as GraphQLLocation } from '@/core/apollo/generated/graphql-schema';
-import { Location as LocationModel } from './Location';
+import { LocationModel } from './LocationModel';
 import { COUNTRIES } from './countries.constants';
+import { LocationModelMapped } from './LocationModelMapped';
+import { CreateLocationInput, UpdateLocationInput } from '@/core/apollo/generated/graphql-schema';
 
 /**
  * formatLocation turns a Location coming from a GraphQL query into a Location usable by the UI.
@@ -10,26 +11,27 @@ import { COUNTRIES } from './countries.constants';
  * @param data Location from a GraphQL query
  * @returns A Location that contains the full CountryType object
  */
-export const formatLocation = (data: Maybe<GraphQLLocation>): Partial<LocationModel> | undefined => {
+export const formatLocation = (data: LocationModel | undefined): LocationModelMapped | undefined => {
   if (!data) {
     return undefined;
   }
 
   return {
-    city: data?.city ?? '',
-    country: data?.country ? COUNTRIES.find(x => x.code === data.country) : COUNTRIES.find(x => x.code === ''),
+    id: data.id ?? '',
+    city: data.city ?? '',
+    country: data.country ? COUNTRIES.find(x => x.code === data.country) : COUNTRIES.find(x => x.code === ''),
   };
 };
 
-export const formatDatabaseLocation = (
-  data: Partial<LocationModel> | undefined
-): { __typename?: 'Location'; city: string; country: string } | undefined => {
+export const formatLocationInput = (
+  data: LocationModelMapped | undefined
+): UpdateLocationInput | CreateLocationInput | undefined => {
   if (!data) {
     return undefined;
   }
 
   return {
-    city: data.city!,
+    city: data.city,
     country: data.country?.code || '',
   };
 };

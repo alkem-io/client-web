@@ -13,7 +13,6 @@ import {
   SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -134,16 +133,17 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
             <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
-            <FormikRadiosSwitch
-              name="addTutorialCallouts"
-              label="Tutorials:"
-              options={[
-                { label: 'On', value: true },
-                { label: 'Off', value: false },
-              ]}
-              row
-              disablePadding
-            />
+            {/* TEMPORARY DISABLE AS THERE ARE NO SUBSPACE TUTORIALS */}
+            {/*<FormikRadiosSwitch*/}
+            {/*  name="addTutorialCallouts"*/}
+            {/*  label="Tutorials:"*/}
+            {/*  options={[*/}
+            {/*    { label: 'On', value: true },*/}
+            {/*    { label: 'Off', value: false },*/}
+            {/*  ]}*/}
+            {/*  row*/}
+            {/*  disablePadding*/}
+            {/*/>*/}
           </Gutters>
         </Form>
       )}

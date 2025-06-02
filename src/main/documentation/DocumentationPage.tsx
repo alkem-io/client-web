@@ -37,7 +37,6 @@ const DocumentationPage = () => {
 
   const handleMessage = (event: MessageEvent) => {
     if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {
-      console.log('event.origin: ', event.origin);
       return;
     }
 

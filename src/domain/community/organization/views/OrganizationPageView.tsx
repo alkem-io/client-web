@@ -22,7 +22,7 @@ import AccountResourcesView, {
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import Loading from '@/core/ui/loading/Loading';
-import { UseOrganizationProvided } from '../../contributor/organization/useOrganization/useOrganization';
+import { UseOrganizationProvided } from '../useOrganization/useOrganization';
 
 type OrganizationPageViewProps = {
   organizationProvided: UseOrganizationProvided;
@@ -60,7 +60,7 @@ export const OrganizationPageView = ({
         tagsets,
         references,
         location: organization?.profile.location,
-      } as OrganizationProfileViewEntity),
+      }) as OrganizationProfileViewEntity,
     [organization, tagsets, references, t]
   );
 

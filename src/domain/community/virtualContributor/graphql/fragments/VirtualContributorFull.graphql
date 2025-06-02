@@ -5,7 +5,7 @@ fragment VirtualContributorFull on VirtualContributor {
     displayName
     description
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     tagsets {
       ...TagsetDetails

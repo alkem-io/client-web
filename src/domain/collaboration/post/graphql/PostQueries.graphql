@@ -21,7 +21,7 @@ query Post(
           ...ReferenceDetails
         }
         banner: visual(type: BANNER) {
-          ...VisualUri
+          ...VisualModel
         }
       }
       createdBy {
@@ -30,7 +30,7 @@ query Post(
           id
           displayName
           avatar: visual(type: AVATAR) {
-            ...VisualUri
+            ...VisualModel
           }
           tagsets {
             ...TagsetDetails

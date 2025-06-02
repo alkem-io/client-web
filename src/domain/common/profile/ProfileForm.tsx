@@ -1,79 +1,49 @@
 import { Formik } from 'formik';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { LocationSegment } from '../location/LocationSegment';
-import { EmptyLocation, Location } from '../location/Location';
-import { formatLocation } from '../location/LocationUtils';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { Reference } from './Profile';
+import { EmptyTagset, TagsetModel } from '../tagset/TagsetModel';
+import { ReferenceModel } from '../reference/ReferenceModel';
+import { ProfileModel } from './ProfileModel';
+import { EmptyLocationMapped, LocationModelMapped } from '../location/LocationModelMapped';
 
 export interface ProfileFormValues {
-  name: string;
+  displayName: string;
   tagline: string;
-  location: Partial<Location>;
-  references: Reference[];
-  tagsets: Tagset[];
+  location: LocationModelMapped;
+  references: ReferenceModel[];
+  tagsets: TagsetModel[];
 }
 
 type ProfileFormProps = {
-  profile?: {
-    description?: string; // Maybe<Scalars['Markdown']>;
-    displayName: string;
-    id: string;
-    location?: { id: string; city?: string; country?: string };
-    references?: Reference[];
-    tagline?: string;
-    tagsets?: Tagset[];
-  };
-  name?: string;
-  tagset?: Tagset;
+  profile: ProfileModel;
   onSubmit: (formData: ProfileFormValues) => void;
   wireSubmit: (setter: () => void) => void;
-  contextOnly?: boolean;
   spaceLevel?: SpaceLevel;
 };
 
-const ProfileForm = ({
-  profile,
-  name,
-  tagset,
-  onSubmit,
-  wireSubmit,
-  contextOnly = false,
-  spaceLevel = SpaceLevel.L0,
-}: ProfileFormProps) => {
+const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0 }: ProfileFormProps) => {
   const { t } = useTranslation();
-  const tagsets = useMemo(() => {
-    if (tagset) return [tagset];
-    return [
-      {
-        id: '',
-        name: TagsetReservedName.Default,
-        tags: [],
-        allowedValues: [],
-        type: TagsetType.Freeform,
-      },
-    ] as Tagset[];
-  }, [tagset]);
 
   const initialValues: ProfileFormValues = {
-    name: name || '',
-    tagline: profile?.tagline || '',
-    location: formatLocation(profile?.location) || EmptyLocation,
-    references: profile?.references || [],
-    tagsets,
+    displayName: profile?.displayName ?? '',
+    tagline: profile?.tagline ?? '',
+    location: profile.location ?? EmptyLocationMapped,
+    references: profile?.references ?? [],
+    tagsets: profile?.tagsets ? profile.tagsets : profile?.tagset ? [profile.tagset] : [EmptyTagset],
   };
 
   const validationSchema = yup.object().shape({
-    name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
+    displayName: nameSegmentSchema.fields.displayName,
     tagline: spaceAboutSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
@@ -90,7 +60,7 @@ const ProfileForm = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, handleSubmit }) => {
+      {({ values: { references, tagsets }, handleSubmit }) => {
         // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
@@ -99,7 +69,7 @@ const ProfileForm = ({
 
         return (
           <>
-            <FormikInputField name="name" title={t('components.nameSegment.name')} required />
+            <FormikInputField name="displayName" title={t('components.nameSegment.name')} required />
             <FormikInputField
               name={'tagline'}
               title={t(`context.${spaceLevel}.tagline.title` as const)}
