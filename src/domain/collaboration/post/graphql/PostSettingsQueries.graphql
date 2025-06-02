@@ -29,7 +29,7 @@ fragment PostSettings on Post {
       description
     }
     visuals {
-      ...VisualModel
+      ...VisualModelFull
     }
   }
 }

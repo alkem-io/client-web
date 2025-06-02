@@ -25,6 +25,7 @@ export const DialogActions = () => {
       id: spaceId,
       about: {
         profile: { url },
+        membership: { communityID: communityId },
       },
     },
   } = useSubSpace();
@@ -64,7 +65,14 @@ export const DialogActions = () => {
         url={url}
         entityTypeName="subspace"
       />
-      <CommunityUpdatesDialog open={currentDialog === SubspaceDialog.Updates} onClose={handleClose} loading={false} />
+      {communityId && (
+        <CommunityUpdatesDialog
+          communityId={communityId}
+          open={currentDialog === SubspaceDialog.Updates}
+          onClose={handleClose}
+          loading={false}
+        />
+      )}
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
         open={currentDialog === SubspaceDialog.ManageFlow}
