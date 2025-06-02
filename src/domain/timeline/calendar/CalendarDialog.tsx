@@ -19,6 +19,7 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import EditButton from '@/core/ui/actions/EditButton';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -153,13 +154,17 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
             // Editing an event:
           } else if (editingEventId) {
             const event = events.find(event => event.id === editingEventId);
-            if (!event) {
+            if (!event || !event.profile.tagset) {
               setEditingEventId(undefined);
               return;
             }
 
-            const handleEditEventSubmit = async (eventId: string, calendarEvent: CalendarEventFormData) => {
-              await updateEvent(eventId, calendarEvent);
+            const handleEditEventSubmit = async (
+              eventId: string,
+              calendarEvent: CalendarEventFormData,
+              tagset: TagsetModel
+            ) => {
+              await updateEvent(eventId, calendarEvent, tagset);
               setEditingEventId(undefined);
             };
 
@@ -169,7 +174,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                   <CalendarEventForm
                     dialogTitle={t('calendar.edit-event')}
                     event={eventDetail}
-                    onSubmit={(calendarEvent: CalendarEventFormData) => handleEditEventSubmit(event.id, calendarEvent)}
+                    onSubmit={(calendarEvent: CalendarEventFormData) =>
+                      handleEditEventSubmit(event.id, calendarEvent, event.profile.tagset!)
+                    }
                     onClose={handleClose}
                     isSubmitting={updatingCalendarEvent}
                     actions={
