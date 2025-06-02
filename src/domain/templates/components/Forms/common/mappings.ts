@@ -20,7 +20,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { TemplateContentCommunityGuidelinesFormSubmittedValues } from '../TemplateContentCommunityGuidelinesForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
+import { TemplateContentWhiteboardFormSubmittedValues } from '../TemplateContentWhiteboardForm';
 import { TemplateContentCalloutFormSubmittedValues } from '../TemplateContentCalloutForm';
 import { TemplateContentSpaceFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateContentSpaceForm';
 import { TemplateContentPostFormSubmittedValues } from '../TemplateContentPostForm';
@@ -138,7 +138,7 @@ const handleCreateWhiteboard = (data?: {
 const shouldRequestPreviewVisuals = (
   data: AnyTemplateFormSubmittedValues
 ): { includeProfileVisuals?: boolean } | undefined => {
-  if (data && (data as WhiteboardTemplateFormSubmittedValues).whiteboardPreviewImages) {
+  if (data && (data as TemplateContentWhiteboardFormSubmittedValues).whiteboardPreviewImages) {
     return { includeProfileVisuals: true };
   }
   return undefined;
@@ -238,7 +238,7 @@ export const toCreateTemplateMutationVariables = (
       break;
     }
     case TemplateType.Whiteboard: {
-      const whiteboardTemplateData = values as WhiteboardTemplateFormSubmittedValues;
+      const whiteboardTemplateData = values as TemplateContentWhiteboardFormSubmittedValues;
       result.whiteboard = handleCreateWhiteboard(whiteboardTemplateData.whiteboard);
       break;
     }
@@ -430,7 +430,7 @@ export const toUpdateTemplateMutationVariables = (
     }
     case TemplateType.Whiteboard: {
       updateTemplateVariables.whiteboardContent = (
-        newValues as WhiteboardTemplateFormSubmittedValues
+        newValues as TemplateContentWhiteboardFormSubmittedValues
       ).whiteboard?.content;
       return {
         updateTemplateVariables,

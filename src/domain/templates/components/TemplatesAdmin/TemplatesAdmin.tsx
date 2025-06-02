@@ -35,7 +35,7 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateContentSpaceFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
 import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
 import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
+import { TemplateContentWhiteboardFormSubmittedValues } from '../Forms/TemplateContentWhiteboardForm';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -151,7 +151,7 @@ const TemplatesAdmin = ({
     // include preview for other template type other than callout
     if (updateTemplateVariables.includeProfileVisuals && !updateCalloutVariables) {
       // Handle the visual in a special way with the preview images
-      await handlePreviewTemplates(values as WhiteboardTemplateFormSubmittedValues, result.data?.updateTemplate);
+      await handlePreviewTemplates(values as TemplateContentWhiteboardFormSubmittedValues, result.data?.updateTemplate);
     }
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
@@ -191,7 +191,7 @@ const TemplatesAdmin = ({
     });
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(values as WhiteboardTemplateFormSubmittedValues, result.data?.createTemplate);
+      handlePreviewTemplates(values as TemplateContentWhiteboardFormSubmittedValues, result.data?.createTemplate);
     } else if (creatingTemplateType === TemplateType.Callout) {
       // update whiteboard (framing) visuals
       handlePreviewTemplates(

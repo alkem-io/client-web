@@ -8,7 +8,9 @@ import TemplateContentCommunityGuidelinesForm, {
   TemplateContentCommunityGuidelinesFormSubmittedValues,
 } from './TemplateContentCommunityGuidelinesForm';
 import PostTemplateForm, { TemplateContentPostFormSubmittedValues } from './TemplateContentPostForm';
-import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
+import TemplateContentWhiteboardForm, {
+  TemplateContentWhiteboardFormSubmittedValues,
+} from './TemplateContentWhiteboardForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -22,7 +24,7 @@ export type AnyTemplateFormSubmittedValues =
   | TemplateContentSpaceFormSubmittedValues
   | TemplateContentCommunityGuidelinesFormSubmittedValues
   | TemplateContentPostFormSubmittedValues
-  | WhiteboardTemplateFormSubmittedValues;
+  | TemplateContentWhiteboardFormSubmittedValues;
 
 const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
   switch (template.type) {
@@ -37,7 +39,7 @@ const TemplateForm = ({ template, temporaryLocation = false, ...rest }: Template
     case TemplateType.Post:
       return <PostTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Whiteboard:
-      return <WhiteboardTemplateForm template={template} {...rest} />;
+      return <TemplateContentWhiteboardForm template={template} {...rest} />;
   }
   throw new Error('Template type not supported');
 };

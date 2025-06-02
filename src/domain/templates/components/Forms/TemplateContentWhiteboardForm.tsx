@@ -12,7 +12,7 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 
-export interface WhiteboardTemplateFormSubmittedValues
+export interface TemplateContentWhiteboardFormSubmittedValues
   extends TemplateFormProfileSubmittedValues,
     TemplateFormWithPreviewImages {
   whiteboard?: {
@@ -24,10 +24,10 @@ export interface WhiteboardTemplateFormSubmittedValues
   };
 }
 
-interface WhiteboardTemplateFormProps {
+interface TemplateContentWhiteboardFormProps {
   template?: WhiteboardTemplate;
-  onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<WhiteboardTemplateFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateContentWhiteboardFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateContentWhiteboardFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
@@ -36,10 +36,10 @@ const validator = {
   }),
 };
 
-const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTemplateFormProps) => {
+const TemplateContentWhiteboardForm = ({ template, onSubmit, actions }: TemplateContentWhiteboardFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: WhiteboardTemplateFormSubmittedValues = {
+  const initialValues: TemplateContentWhiteboardFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     whiteboard: {
       content: template?.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
@@ -65,4 +65,4 @@ const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTempl
   );
 };
 
-export default WhiteboardTemplateForm;
+export default TemplateContentWhiteboardForm;
