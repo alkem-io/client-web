@@ -192,6 +192,9 @@
     "sign-in": "Inloggen | Aanmelden"
   },
   "authentication": {
+    "or": "or continue with",
+    "no-account": "No account?",
+    "have-account": "Have an account?",
     "sign-in": "Log in",
     "sign-up": "Schrijf in",
     "sign-out": "Log uit",
@@ -206,7 +209,10 @@
       "connect": "Verbinden met {{provider}}",
       "providers": {
         "linkedin": "LinkedIn",
-        "microsoft": "Microsoft"
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
     },
     "signUp": {
@@ -862,9 +868,6 @@
         "placeholder": "",
         "tooltip": "Labels"
       },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools:"
-      },
       "addTutorialCallouts": {
         "title": "Voeg tutorials toe"
       },
@@ -931,9 +934,9 @@
       "atLeastOne": "Selecteer ten minste één item.",
       "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
       "invalidUrl": "Ongeldige URL",
-      "invalidEmail": "Invalid Email address",
-      "duplicateEmail": "Duplicated email address",
-      "elementMustBeValidUrl": "{{name}} must be a valid URL"
+      "invalidEmail": "Ongeldig e-mailadres",
+      "duplicateEmail": "E-mailadres is al ingevoerd",
+      "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn"
     }
   },
   "templateDialog": {
@@ -2698,19 +2701,22 @@
     "registration": {
       "header": "Maak een account aan om Alkemio te gebruiken",
       "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
       "login": "Heb je een account?",
-      "reset-password": "Wachtwoord resetten"
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe Spaces for Collaboration"
     },
     "accept-terms": {
       "introduction": "<p>Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "greeting": "Hallo {{user}}, welkom op Alkemio!",
       "continue": "Doorgaan naar het platform",
+      "next": "Next",
       "tooltip": "Lees en accepteer de Gebruiksvoorwaarden en het Privacybeleid voordat u doorgaat"
     },
     "registrationSuccess": {
       "header": "Je bent er bijna…",
-      "message": "De laatste stap is het verifiëren van je e-mailadres. Controleer je inbox voor een e-mail met instructies.<br>Als je geen e-mail hebt ontvangen, <resend>klik dan hier om hem opnieuw te verzenden.</resend>",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
       "continue": "…of ga door naar het platform zonder in te loggen"
     },
     "verification-success": {
@@ -2950,7 +2956,6 @@
     "loading-error": "Fout bij laden",
     "messages": {
       "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
-      "request-recover-password": "<strong>An email containing a recovery code has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li/><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an account is registered with this email.</i>",
       "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "verification-flow-continue": "Volgende",
@@ -2967,7 +2972,8 @@
       "First Name": "Voornaam",
       "Last Name": "Achternaam",
       "Sign in": "Inloggen",
-      "Sign up": "Aanmelden",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
       "Submit": "Verstuur",
       "Verify code": "Code verifiëren",
       "Resend code": "Code opnieuw verzenden",
@@ -3098,6 +3104,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Pagina banner: {{altText}}"
