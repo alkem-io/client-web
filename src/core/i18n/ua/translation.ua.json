@@ -179,7 +179,10 @@
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
     "invite": "Invite",
-    "visit": "Visit"
+    "visit": "Visit",
+    "returnToDashboard": "Return to dashboard as guest",
+    "approveApplication": "Approve application",
+    "rejectApplication": "Reject application"
   },
   "tooltips": {
     "click-more-info": "Нажміть, щоб дізнатись більше",
@@ -189,6 +192,9 @@
     "sign-in": "Log In | Sign Up"
   },
   "authentication": {
+    "or": "or continue with",
+    "no-account": "No account?",
+    "have-account": "Have an account?",
     "sign-in": "Увійти",
     "sign-up": "Зареєструватись",
     "sign-out": "Вийти",
@@ -203,7 +209,10 @@
       "connect": "Connect with {{provider}}",
       "providers": {
         "linkedin": "LinkedIn",
-        "microsoft": "Microsoft"
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
     },
     "signUp": {
@@ -217,6 +226,7 @@
       "L1": "Subspace",
       "L2": "Subsubspace"
     },
+    "actions": "Actions",
     "account": "Обліковий запис",
     "all": "All",
     "knowledge-base": "База знань",
@@ -459,6 +469,19 @@
         "POST_COLLECTION": "Опублікувати колекцію",
         "WHITEBOARD": "Дошка",
         "WHITEBOARD_COLLECTION": "Колекція дошок"
+      },
+      "invitationStatus": {
+        "invited": "Invited",
+        "accepted": "Invitation Accepted",
+        "rejected": "Invitation Rejected"
+      },
+      "invitationExternalStatus": {
+        "invited": "Invited to join Alkemio & this Space"
+      },
+      "roleSetContributorType": {
+        "USER": "User",
+        "ORGANIZATION": "Organization",
+        "VIRTUAL": "Virtual Contributor"
       }
     },
     "blocks": {
@@ -520,9 +543,7 @@
     "memberUsers": "Користувачі ({{count}})",
     "leading-organizations": "Головні Організації",
     "memberOrganizations": "Member Organizations ({{count}})",
-    "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Запрошення надіслано успішно",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -537,10 +558,8 @@
         "title": "Видалити віртуального учасника",
         "confirm": "Ви впевнені?"
       },
-      "inviteExternalVC": "Запросити зовнішнього віртуального учасника",
       "externalVCsInfo": "На даний час, лише Служба підтримки Alkemio може додати Віртуального Учасника до Вашого простору. Будь ласка, зверніться до Служби підтримки <click>за посиланням</click> якщо Ви бажаєте це зробити, ми будемо раді допомогти!",
       "searchVC": "Знайти Віртуального Учасника",
-      "inviteBtn": "Invite Virtual Contributor",
       "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
@@ -571,25 +590,82 @@
       "applicationRejected": "Заявку відхилено",
       "applicationArchived": "Заявку заархівовано"
     },
-    "invitationStatus": {
-      "invited": "Invited",
-      "accepted": "Запрошення прийнято",
-      "rejected": "Запрошення відхилено"
+    "invitations": {
+      "inviteButton": {
+        "USER": "Invite people to this Space",
+        "ORGANIZATION": "Invite people to this Space",
+        "VIRTUAL": "Invite Virtual Contributor"
+      },
+      "inviteToRole": "Invite to be a: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Invite others to join '{{spaceName}}'",
+          "description": "Search for people below or directly add their email address",
+          "note": "Keep in mind that your personal email address will be visible to anyone you message.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "placeholder": "Username or email...",
+          "success": "Your invitation was successfully sent to the following recipients:",
+          "failure": "We couldn’t send the invitation to the following recipients:",
+          "back": "Send another invitation",
+          "invitationsSent": "{{count}} invitations will be sent.",
+          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this Space",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
+            "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
+            "INVITED_TO_ROLE_SET": "Invited to join the community"
+          },
+          "validationErrors": {
+            "required": "Please add at least one contributor to invite",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
+          }
+        },
+        "vcs": {
+          "title": "Virtual Contributors Store",
+          "dialogTitle": "Invite Virtual Contributor to join this Space",
+          "invitationSent": "Invitation sent successfully",
+          "inviteExternalVC": "Invite External VC",
+          "inviteBtn": "Invite Virtual Contributor",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "onAccount": {
+            "title": "Virtual Contributors linked to this Space's account"
+          },
+          "inLibrary": {
+            "title": "Other Virtual Contributors"
+          },
+          "emptyMessage": "No available Virtual Contributors",
+          "successfullyAdded": "{{contributor}} added successfully",
+          "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
+        },
+        "welcomeMessage": "Invitation Message"
+      }
     },
-    "invitationExternalStatus": {
-      "invited": "Запрошено приєднатись до Alkemio і цього Простору"
-    },
-    "confirmDeleteApplication": {
-      "title": "Видалення заявки від {{user}}",
-      "content": "Ви впевнені, що хочете заархівувати цю заявку? Заявку буде відхилено, якщо ще не було."
-    },
-    "confirmDeleteInvitation": {
-      "title": "Видалення запрошення від {{user}}",
-      "content": "Ви впевнені, що хочете заархівувати це запрошення? Запрошення буде відхилено, якщо ще не було."
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "Видалення запрошення від {{user}}",
-      "content": "Ви впевнені, що хочете заархівувати це запрошення? Запрошення буде відхилено, якщо ще не було."
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Deleting application from '{{user}}'",
+          "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+        },
+        "invitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        },
+        "platformInvitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        }
+      },
+      "approve": {
+        "title": "Approve application from {{user}}",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
+        "confirmButton": "Yes, approve"
+      },
+      "reject": {
+        "title": "Reject application from {{user}}",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
+        "confirmButton": "Yes, reject"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending Memberships",
@@ -857,7 +933,10 @@
       "nonBlank": "Значення не повинно складатися лише з пробілів",
       "atLeastOne": "At least one {{item}} must be selected.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
-      "invalidUrl": "Invalid URL"
+      "invalidUrl": "Invalid URL",
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address",
+      "elementMustBeValidUrl": "{{name}} must be a valid URL"
     }
   },
   "templateDialog": {
@@ -1045,44 +1124,6 @@
         }
       }
     },
-    "invitations": {
-      "inviteOthers": "Invite others",
-      "inviteExistingUser": "Invite Alkemio users",
-      "inviteExternalUser": "Send email invitation",
-      "inviteOrganizations": "Invite Organizations",
-      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
-      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "inviteExistingUserDialog": {
-        "title": "Invite other Alkemio users to join this Space",
-        "subtitle": "You can search for Alkemio users below and attach a personalized message.",
-        "selector": {
-          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
-          "alreadyInvited": "This user is already invited",
-          "alreadyMember": "This user is already a member"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "Invite Virtual Contributor to join this Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "Send an email invitation"
-      },
-      "inviteToRole": "Invite to be a: "
-    },
-    "inviteContributorsDialog": {
-      "title": "Virtual Contributors Store",
-      "vcs": {
-        "onAccount": {
-          "title": "Virtual Contributors linked to this Space's account"
-        },
-        "inLibrary": {
-          "title": "Other Virtual Contributors"
-        },
-        "emptyMessage": "No available Virtual Contributors"
-      },
-      "successfullyAdded": "{{contributor}} added successfully",
-      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
-    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Deleting comment",
@@ -1180,8 +1221,8 @@
     "activity-log-section": {
       "title": "Recent Contributions",
       "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceLevel}}."
     },
     "activityLogView": {
       "description": {
@@ -1495,6 +1536,11 @@
           "placeholder": "Postal code"
         },
         "noLocation": "No location specified"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
       }
     },
     "organizationSegment": {
@@ -1706,7 +1752,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
-          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
@@ -1851,6 +1897,9 @@
           },
           "communications": {
             "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+          },
+          "subspaces": {
+            "description": "Here you can edit Subspaces for this Space."
           },
           "subsubspaces": {
             "description": "Here you can edit Subspaces for this Subspace."
@@ -2364,7 +2413,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
-          "welcome-back": "Welcome back, {{username}}!",
+          "welcome-back": "Welcome, {{username}}!",
           "join": "Бажаєте приєднатись до Спільноти і побачити більше?",
           "existing-user": {
             "header": "Існуючий користувач? Стрибайте назад!",
@@ -2591,8 +2640,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
-        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",
@@ -2641,19 +2690,22 @@
     "registration": {
       "header": "Створіть акаунт, щоб почати використовувати Alkemio",
       "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "Я приймаю <terms>Умови використання</terms> та <privacy>Політику Конфіденційності</privacy>.",
       "login": "Вже є акаунт?",
-      "reset-password": "Reset password"
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe Spaces for Collaboration"
     },
     "accept-terms": {
       "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Continue to the platform",
+      "next": "Next",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registrationSuccess": {
       "header": "Nearly there…",
-      "message": "The last step is to verify your email address. Please check your inbox for an email with instructions.<br>If you have not received an email, <resend>click here to send it again.</resend>",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
       "continue": "…or continue to the platform without signing in"
     },
     "verification-success": {
@@ -2821,8 +2873,9 @@
       "added-successfully": "Credential successfully added"
     },
     "authentication-required": {
-      "header": "Для доступу на цю сторінку, необхітно аторизуватись.",
-      "subheader": "Щоб продовжити, будь ласка, авторизуйтесь, або зареєструйтесь!"
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
     "user-notifications-settings": {
       "general": {
@@ -2908,7 +2961,8 @@
       "First Name": "First Name",
       "Last Name": "Last Name",
       "Sign in": "Sign in",
-      "Sign up": "Sign up",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
       "Submit": "Submit",
       "Verify code": "Verify code",
       "Resend code": "Resend code",
@@ -3024,6 +3078,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Page banner: {{altText}}"
@@ -3048,10 +3103,12 @@
     "subspaces": "Subspaces",
     "contributors": "Contributors",
     "activity": "Activity",
+    "calendar": "Calendar",
     "events": "Events",
     "share": "Share",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Settings"
+    "settings": "Settings",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Create a Space",

@@ -29,8 +29,7 @@ export const SubspaceCreationDialog: FC<SubspaceCreationDialogProps> = ({
     displayName: '',
     tagline: '',
     tags: [],
-    // addTutorialCallouts: false,
-    addCallouts: true,
+    addTutorialCallouts: false,
     collaborationTemplateId: undefined,
     visuals: {
       avatar: { file: undefined, altText: '' },

@@ -60,7 +60,7 @@ export const OrganizationPageView = ({
         tagsets,
         references,
         location: organization?.profile.location,
-      } as OrganizationProfileViewEntity),
+      }) as OrganizationProfileViewEntity,
     [organization, tagsets, references, t]
   );
 

@@ -179,7 +179,10 @@
     "createOwnSpace": "crwdns17630:0crwdne17630:0",
     "notifications": "crwdns17632:0crwdne17632:0",
     "invite": "crwdns17634:0crwdne17634:0",
-    "visit": "crwdns17636:0crwdne17636:0"
+    "visit": "crwdns17636:0crwdne17636:0",
+    "returnToDashboard": "crwdns36920:0crwdne36920:0",
+    "approveApplication": "crwdns36940:0crwdne36940:0",
+    "rejectApplication": "crwdns36942:0crwdne36942:0"
   },
   "tooltips": {
     "click-more-info": "crwdns17638:0crwdne17638:0",
@@ -189,6 +192,9 @@
     "sign-in": "crwdns17642:0crwdne17642:0"
   },
   "authentication": {
+    "or": "crwdns37066:0crwdne37066:0",
+    "no-account": "crwdns37068:0crwdne37068:0",
+    "have-account": "crwdns37070:0crwdne37070:0",
     "sign-in": "crwdns17644:0crwdne17644:0",
     "sign-up": "crwdns17646:0crwdne17646:0",
     "sign-out": "crwdns17648:0crwdne17648:0",
@@ -203,7 +209,10 @@
       "connect": "crwdns17660:0{{provider}}crwdne17660:0",
       "providers": {
         "linkedin": "crwdns17662:0crwdne17662:0",
-        "microsoft": "crwdns17664:0crwdne17664:0"
+        "microsoft": "crwdns17664:0crwdne17664:0",
+        "github": "crwdns37072:0crwdne37072:0",
+        "apple": "crwdns37074:0crwdne37074:0",
+        "vidua": "crwdns37076:0crwdne37076:0"
       }
     },
     "signUp": {
@@ -217,6 +226,7 @@
       "L1": "crwdns28780:0crwdne28780:0",
       "L2": "crwdns28782:0crwdne28782:0"
     },
+    "actions": "crwdns36944:0crwdne36944:0",
     "account": "crwdns17670:0crwdne17670:0",
     "all": "crwdns17672:0crwdne17672:0",
     "knowledge-base": "crwdns17674:0crwdne17674:0",
@@ -459,6 +469,19 @@
         "POST_COLLECTION": "crwdns18092:0crwdne18092:0",
         "WHITEBOARD": "crwdns18094:0crwdne18094:0",
         "WHITEBOARD_COLLECTION": "crwdns18096:0crwdne18096:0"
+      },
+      "invitationStatus": {
+        "invited": "crwdns36946:0crwdne36946:0",
+        "accepted": "crwdns36948:0crwdne36948:0",
+        "rejected": "crwdns36950:0crwdne36950:0"
+      },
+      "invitationExternalStatus": {
+        "invited": "crwdns36952:0crwdne36952:0"
+      },
+      "roleSetContributorType": {
+        "USER": "crwdns36954:0crwdne36954:0",
+        "ORGANIZATION": "crwdns36956:0crwdne36956:0",
+        "VIRTUAL": "crwdns36958:0crwdne36958:0"
       }
     },
     "blocks": {
@@ -520,9 +543,7 @@
     "memberUsers": "crwdns18180:0{{count}}crwdne18180:0",
     "leading-organizations": "crwdns18182:0crwdne18182:0",
     "memberOrganizations": "crwdns18184:0{{count}}crwdne18184:0",
-    "pendingApplications": "crwdns18186:0crwdne18186:0",
     "pendingMemberships": "crwdns18188:0crwdne18188:0",
-    "invitationSent": "crwdns18190:0crwdne18190:0",
     "leads": "crwdns18192:0crwdne18192:0",
     "members": "crwdns18194:0crwdne18194:0",
     "host": "crwdns18196:0crwdne18196:0",
@@ -537,10 +558,8 @@
         "title": "crwdns18210:0crwdne18210:0",
         "confirm": "crwdns18212:0crwdne18212:0"
       },
-      "inviteExternalVC": "crwdns18214:0crwdne18214:0",
       "externalVCsInfo": "crwdns18216:0crwdne18216:0",
       "searchVC": "crwdns18218:0crwdne18218:0",
-      "inviteBtn": "crwdns18220:0crwdne18220:0",
       "permissionRequiredTooltip": "crwdns36767:0crwdne36767:0"
     },
     "application-form": {
@@ -571,25 +590,82 @@
       "applicationRejected": "crwdns18258:0crwdne18258:0",
       "applicationArchived": "crwdns18260:0crwdne18260:0"
     },
-    "invitationStatus": {
-      "invited": "crwdns18262:0crwdne18262:0",
-      "accepted": "crwdns18264:0crwdne18264:0",
-      "rejected": "crwdns18266:0crwdne18266:0"
+    "invitations": {
+      "inviteButton": {
+        "USER": "crwdns36960:0crwdne36960:0",
+        "ORGANIZATION": "crwdns36962:0crwdne36962:0",
+        "VIRTUAL": "crwdns36964:0crwdne36964:0"
+      },
+      "inviteToRole": "crwdns36966:0crwdne36966:0",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "crwdns36968:0{{spaceName}}crwdne36968:0",
+          "description": "crwdns36970:0crwdne36970:0",
+          "note": "crwdns36972:0crwdne36972:0",
+          "defaultWelcomeMessage": "crwdns36974:0{{spaceName}}crwdne36974:0",
+          "placeholder": "crwdns36976:0crwdne36976:0",
+          "success": "crwdns36978:0crwdne36978:0",
+          "failure": "crwdns36980:0crwdne36980:0",
+          "back": "crwdns36982:0crwdne36982:0",
+          "invitationsSent": "crwdns36984:0{{count}}crwdne36984:0",
+          "invitationByEmailTooltip": "crwdns36986:0{{email}}crwdne36986:0",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "crwdns36988:0crwdne36988:0",
+            "ALREADY_INVITED_TO_ROLE_SET": "crwdns36990:0crwdne36990:0",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "crwdns36992:0crwdne36992:0",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "crwdns36994:0crwdne36994:0",
+            "INVITED_TO_ROLE_SET": "crwdns36996:0crwdne36996:0"
+          },
+          "validationErrors": {
+            "required": "crwdns37048:0crwdne37048:0",
+            "invalidAddress": "crwdns37050:0crwdne37050:0"
+          }
+        },
+        "vcs": {
+          "title": "crwdns36998:0crwdne36998:0",
+          "dialogTitle": "crwdns37000:0crwdne37000:0",
+          "invitationSent": "crwdns37002:0crwdne37002:0",
+          "inviteExternalVC": "crwdns37004:0crwdne37004:0",
+          "inviteBtn": "crwdns37006:0crwdne37006:0",
+          "defaultVCInvitationMessage": "crwdns37008:0{{name}}crwdnd37008:0{{space}}crwdne37008:0",
+          "onAccount": {
+            "title": "crwdns37010:0crwdne37010:0"
+          },
+          "inLibrary": {
+            "title": "crwdns37012:0crwdne37012:0"
+          },
+          "emptyMessage": "crwdns37014:0crwdne37014:0",
+          "successfullyAdded": "crwdns37016:0{{contributor}}crwdne37016:0",
+          "vcFetchErrorMessage": "crwdns37018:0crwdne37018:0"
+        },
+        "welcomeMessage": "crwdns37020:0crwdne37020:0"
+      }
     },
-    "invitationExternalStatus": {
-      "invited": "crwdns18268:0crwdne18268:0"
-    },
-    "confirmDeleteApplication": {
-      "title": "crwdns18270:0{{user}}crwdne18270:0",
-      "content": "crwdns18272:0crwdne18272:0"
-    },
-    "confirmDeleteInvitation": {
-      "title": "crwdns18274:0{{user}}crwdne18274:0",
-      "content": "crwdns18276:0crwdne18276:0"
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "crwdns18278:0{{user}}crwdne18278:0",
-      "content": "crwdns18280:0crwdne18280:0"
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "crwdns37022:0{{user}}crwdne37022:0",
+          "content": "crwdns37024:0crwdne37024:0"
+        },
+        "invitation": {
+          "title": "crwdns37026:0{{user}}crwdne37026:0",
+          "content": "crwdns37028:0crwdne37028:0"
+        },
+        "platformInvitation": {
+          "title": "crwdns37030:0{{user}}crwdne37030:0",
+          "content": "crwdns37032:0crwdne37032:0"
+        }
+      },
+      "approve": {
+        "title": "crwdns37034:0{{user}}crwdne37034:0",
+        "content": "crwdns37036:0crwdne37036:0",
+        "confirmButton": "crwdns37038:0crwdne37038:0"
+      },
+      "reject": {
+        "title": "crwdns37040:0{{user}}crwdne37040:0",
+        "content": "crwdns37042:0crwdne37042:0",
+        "confirmButton": "crwdns37044:0crwdne37044:0"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "crwdns18282:0crwdne18282:0",
@@ -857,7 +933,10 @@
       "nonBlank": "crwdns18598:0{{field}}crwdne18598:0",
       "atLeastOne": "crwdns18600:0{{item}}crwdne18600:0",
       "reservedTopLevelRoute": "crwdns18602:0crwdne18602:0",
-      "invalidUrl": "crwdns36854:0crwdne36854:0"
+      "invalidUrl": "crwdns36854:0crwdne36854:0",
+      "invalidEmail": "crwdns37046:0crwdne37046:0",
+      "duplicateEmail": "crwdns37052:0crwdne37052:0",
+      "elementMustBeValidUrl": "crwdns37054:0{{name}}crwdne37054:0"
     }
   },
   "templateDialog": {
@@ -1047,44 +1126,6 @@
         }
       }
     },
-    "invitations": {
-      "inviteOthers": "crwdns18798:0crwdne18798:0",
-      "inviteExistingUser": "crwdns18800:0crwdne18800:0",
-      "inviteExternalUser": "crwdns18802:0crwdne18802:0",
-      "inviteOrganizations": "crwdns18804:0crwdne18804:0",
-      "defaultInvitationMessage": "crwdns18806:0{{space}}crwdne18806:0",
-      "defaultVCInvitationMessage": "crwdns18808:0{{name}}crwdnd18808:0{{space}}crwdne18808:0",
-      "inviteExistingUserDialog": {
-        "title": "crwdns18810:0crwdne18810:0",
-        "subtitle": "crwdns18812:0crwdne18812:0",
-        "selector": {
-          "alreadyApplied": "crwdns18814:0crwdne18814:0",
-          "alreadyInvited": "crwdns18816:0crwdne18816:0",
-          "alreadyMember": "crwdns18818:0crwdne18818:0"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "crwdns18820:0crwdne18820:0"
-      },
-      "inviteExternalUserDialog": {
-        "title": "crwdns18822:0crwdne18822:0"
-      },
-      "inviteToRole": "crwdns18824:0crwdne18824:0"
-    },
-    "inviteContributorsDialog": {
-      "title": "crwdns28746:0crwdne28746:0",
-      "vcs": {
-        "onAccount": {
-          "title": "crwdns28748:0crwdne28748:0"
-        },
-        "inLibrary": {
-          "title": "crwdns18828:0crwdne18828:0"
-        },
-        "emptyMessage": "crwdns18830:0crwdne18830:0"
-      },
-      "successfullyAdded": "crwdns18832:0{{contributor}}crwdne18832:0",
-      "vcFetchErrorMessage": "crwdns28954:0crwdne28954:0"
-    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "crwdns18834:0crwdne18834:0",
@@ -1182,8 +1223,8 @@
     "activity-log-section": {
       "title": "crwdns18952:0crwdne18952:0",
       "activity-sign-in-error-message": "crwdns18954:0crwdne18954:0",
-      "activity-join-error-message": "crwdns28944:0{{spaceType}}crwdne28944:0",
-      "activity-sign-in-and-join-error-message": "crwdns28946:0{{spaceType}}crwdne28946:0"
+      "activity-join-error-message": "crwdns36930:0{{spaceLevel}}crwdne36930:0",
+      "activity-sign-in-and-join-error-message": "crwdns36932:0{{spaceLevel}}crwdne36932:0"
     },
     "activityLogView": {
       "description": {
@@ -1497,6 +1538,11 @@
           "placeholder": "crwdns19324:0crwdne19324:0"
         },
         "noLocation": "crwdns19326:0crwdne19326:0"
+      },
+      "socialLinks": {
+        "github": "crwdns37056:0crwdne37056:0",
+        "linkedin": "crwdns37058:0crwdne37058:0",
+        "bsky": "crwdns37060:0crwdne37060:0"
       }
     },
     "organizationSegment": {
@@ -1708,7 +1754,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "crwdns19496:0{{spaceName}}crwdnd19496:0{{calloutType}}crwdnd19496:0{{calloutName}}crwdne19496:0",
-          "description": "crwdns19498:0{{contributorName}}crwdnd19498:0{{calloutType}}crwdnd19498:0{{spaceType}}crwdnd19498:0{{spaceName}}crwdnd19498:0{{calloutName}}crwdne19498:0"
+          "description": "crwdns36934:0{{contributorName}}crwdnd36934:0{{calloutType}}crwdnd36934:0{{spaceLevel}}crwdnd36934:0{{spaceName}}crwdnd36934:0{{calloutName}}crwdne36934:0"
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "crwdns19500:0{{commenterName}}crwdnd19500:0{{calloutName}}crwdne19500:0",
@@ -1853,6 +1899,9 @@
           },
           "communications": {
             "description": "crwdns19622:0{{entity}}crwdne19622:0"
+          },
+          "subspaces": {
+            "description": "crwdns36914:0crwdne36914:0"
           },
           "subsubspaces": {
             "description": "crwdns19624:0crwdne19624:0"
@@ -2375,7 +2424,7 @@
         "welcome": {
           "welcomeUnauthenticated": "crwdns20162:0crwdne20162:0",
           "welcomeUnauthenticatedSubtitle": "crwdns20164:0crwdne20164:0",
-          "welcome-back": "crwdns20166:0{{username}}crwdne20166:0",
+          "welcome-back": "crwdns36928:0{{username}}crwdne36928:0",
           "join": "crwdns20168:0crwdne20168:0",
           "existing-user": {
             "header": "crwdns20170:0crwdne20170:0",
@@ -2602,8 +2651,8 @@
       "readonlyReason": {
         "readonly": "crwdns20396:0crwdne20396:0",
         "contentUpdatePolicy": "crwdns20398:0{{ownerName}}crwdne20398:0",
-        "noMembership": "crwdns36908:0{{spaceType}}crwdne36908:0",
-        "unauthenticated": "crwdns28952:0{{spaceType}}crwdne28952:0"
+        "noMembership": "crwdns36936:0{{spaceLevel}}crwdne36936:0",
+        "unauthenticated": "crwdns36938:0{{spaceLevel}}crwdne36938:0"
       },
       "readonlyDialog": {
         "title": "crwdns20404:0crwdne20404:0",
@@ -2652,19 +2701,22 @@
     "registration": {
       "header": "crwdns20450:0crwdne20450:0",
       "introduction": "crwdns20452:0crwdne20452:0",
+      "introduction-short": "crwdns37078:0crwdne37078:0",
       "terms": "crwdns20454:0crwdne20454:0",
       "login": "crwdns20456:0crwdne20456:0",
-      "reset-password": "crwdns20458:0crwdne20458:0"
+      "reset-password": "crwdns37080:0crwdne37080:0",
+      "logo-subtitle": "crwdns37082:0crwdne37082:0"
     },
     "accept-terms": {
       "introduction": "crwdns20460:0crwdne20460:0",
       "greeting": "crwdns20462:0{{user}}crwdne20462:0",
       "continue": "crwdns20464:0crwdne20464:0",
+      "next": "crwdns37084:0crwdne37084:0",
       "tooltip": "crwdns20466:0crwdne20466:0"
     },
     "registrationSuccess": {
       "header": "crwdns20468:0crwdne20468:0",
-      "message": "crwdns20470:0crwdne20470:0",
+      "message": "crwdns37086:0crwdne37086:0",
       "continue": "crwdns20472:0crwdne20472:0"
     },
     "verification-success": {
@@ -2832,8 +2884,9 @@
       "added-successfully": "crwdns20598:0crwdne20598:0"
     },
     "authentication-required": {
-      "header": "crwdns20600:0crwdne20600:0",
-      "subheader": "crwdns20602:0crwdne20602:0"
+      "header": "crwdns36922:0crwdne36922:0",
+      "subheader": "crwdns36924:0crwdne36924:0",
+      "subheader2": "crwdns36926:0crwdne36926:0"
     },
     "user-notifications-settings": {
       "general": {
@@ -2919,7 +2972,8 @@
       "First Name": "crwdns20696:0crwdne20696:0",
       "Last Name": "crwdns20698:0crwdne20698:0",
       "Sign in": "crwdns20700:0crwdne20700:0",
-      "Sign up": "crwdns20702:0crwdne20702:0",
+      "Sign in with password": "crwdns37088:0crwdne37088:0",
+      "Sign up": "crwdns37090:0crwdne37090:0",
       "Submit": "crwdns20704:0crwdne20704:0",
       "Verify code": "crwdns20706:0crwdne20706:0",
       "Resend code": "crwdns20708:0crwdne20708:0",
@@ -3035,6 +3089,7 @@
     "spaceFilterTitle": "crwdns36910:0$t(common.subspaces)crwdnd36910:0$t(common.subspaces)crwdne36910:0"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "crwdns37092:0crwdne37092:0",
     "banner": {
       "page": {
         "text": "crwdns20834:0{{altText}}crwdne20834:0"
@@ -3059,10 +3114,12 @@
     "subspaces": "crwdns20848:0crwdne20848:0",
     "contributors": "crwdns20850:0crwdne20850:0",
     "activity": "crwdns20852:0crwdne20852:0",
+    "calendar": "crwdns36916:0crwdne36916:0",
     "events": "crwdns20854:0crwdne20854:0",
     "share": "crwdns20856:0crwdne20856:0",
     "manageFlow": "crwdns20858:0$t(components.innovationFlowSettings.buttonTooltip)crwdne20858:0",
-    "settings": "crwdns20860:0crwdne20860:0"
+    "settings": "crwdns20860:0crwdne20860:0",
+    "updates": "crwdns36918:0crwdne36918:0"
   },
   "createSpace": {
     "title": "crwdns20862:0crwdne20862:0",
