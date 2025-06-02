@@ -192,6 +192,9 @@
     "sign-in": "crwdns17642:0crwdne17642:0"
   },
   "authentication": {
+    "or": "crwdns37066:0crwdne37066:0",
+    "no-account": "crwdns37068:0crwdne37068:0",
+    "have-account": "crwdns37070:0crwdne37070:0",
     "sign-in": "crwdns17644:0crwdne17644:0",
     "sign-up": "crwdns17646:0crwdne17646:0",
     "sign-out": "crwdns17648:0crwdne17648:0",
@@ -206,7 +209,10 @@
       "connect": "crwdns17660:0{{provider}}crwdne17660:0",
       "providers": {
         "linkedin": "crwdns17662:0crwdne17662:0",
-        "microsoft": "crwdns17664:0crwdne17664:0"
+        "microsoft": "crwdns17664:0crwdne17664:0",
+        "github": "crwdns37072:0crwdne37072:0",
+        "apple": "crwdns37074:0crwdne37074:0",
+        "vidua": "crwdns37076:0crwdne37076:0"
       }
     },
     "signUp": {
@@ -861,9 +867,6 @@
         "description": "crwdns28874:0crwdne28874:0",
         "placeholder": "crwdns28876:0crwdne28876:0",
         "tooltip": "crwdns28878:0crwdne28878:0"
-      },
-      "addCallouts": {
-        "title": "crwdns37062:0crwdne37062:0"
       },
       "addTutorialCallouts": {
         "title": "crwdns28880:0crwdne28880:0"
@@ -2698,19 +2701,22 @@
     "registration": {
       "header": "crwdns20450:0crwdne20450:0",
       "introduction": "crwdns20452:0crwdne20452:0",
+      "introduction-short": "crwdns37078:0crwdne37078:0",
       "terms": "crwdns20454:0crwdne20454:0",
       "login": "crwdns20456:0crwdne20456:0",
-      "reset-password": "crwdns20458:0crwdne20458:0"
+      "reset-password": "crwdns37080:0crwdne37080:0",
+      "logo-subtitle": "crwdns37082:0crwdne37082:0"
     },
     "accept-terms": {
       "introduction": "crwdns20460:0crwdne20460:0",
       "greeting": "crwdns20462:0{{user}}crwdne20462:0",
       "continue": "crwdns20464:0crwdne20464:0",
+      "next": "crwdns37084:0crwdne37084:0",
       "tooltip": "crwdns20466:0crwdne20466:0"
     },
     "registrationSuccess": {
       "header": "crwdns20468:0crwdne20468:0",
-      "message": "crwdns20470:0crwdne20470:0",
+      "message": "crwdns37086:0crwdne37086:0",
       "continue": "crwdns20472:0crwdne20472:0"
     },
     "verification-success": {
@@ -2950,7 +2956,6 @@
     "loading-error": "crwdns20670:0crwdne20670:0",
     "messages": {
       "successfully-recovered-password": "crwdns20672:0crwdne20672:0",
-      "request-recover-password": "crwdns37064:0crwdne37064:0",
       "verification-flow-expired": "crwdns20674:0crwdne20674:0",
       "recovery-flow-expired": "crwdns20676:0crwdne20676:0",
       "verification-flow-continue": "crwdns20678:0crwdne20678:0",
@@ -2967,7 +2972,8 @@
       "First Name": "crwdns20696:0crwdne20696:0",
       "Last Name": "crwdns20698:0crwdne20698:0",
       "Sign in": "crwdns20700:0crwdne20700:0",
-      "Sign up": "crwdns20702:0crwdne20702:0",
+      "Sign in with password": "crwdns37088:0crwdne37088:0",
+      "Sign up": "crwdns37090:0crwdne37090:0",
       "Submit": "crwdns20704:0crwdne20704:0",
       "Verify code": "crwdns20706:0crwdne20706:0",
       "Resend code": "crwdns20708:0crwdne20708:0",
@@ -3098,6 +3104,7 @@
     "spaceFilterTitle": "crwdns36910:0$t(common.subspaces)crwdnd36910:0$t(common.subspaces)crwdne36910:0"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "crwdns37092:0crwdne37092:0",
     "banner": {
       "page": {
         "text": "crwdns20834:0{{altText}}crwdne20834:0"
