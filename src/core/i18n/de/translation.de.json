@@ -192,6 +192,9 @@
     "sign-in": "Log In | Sign Up"
   },
   "authentication": {
+    "or": "or continue with",
+    "no-account": "No account?",
+    "have-account": "Have an account?",
     "sign-in": "Anmelden",
     "sign-up": "Registrieren",
     "sign-out": "Abmelden",
@@ -206,7 +209,10 @@
       "connect": "Mit {provider} verknüpfen",
       "providers": {
         "linkedin": "LinkedIn",
-        "microsoft": "Microsoft"
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
     },
     "signUp": {
@@ -861,9 +867,6 @@
         "description": "",
         "placeholder": "",
         "tooltip": "Tags"
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools:"
       },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
@@ -2698,19 +2701,22 @@
     "registration": {
       "header": "Erstelle ein Konto und beginne Gutes zu tun",
       "introduction": "<p>Willkommen bei Alkemio! Alkemio macht es einfach, Herausforderungen zu bewältigen und Mitwirkende zu haben, von überall aus gemeinsam an Lösungen zu arbeiten. Im Mittelpunkt stehen Herausforderungen. Der Fokus liegt auf dem Ziel.</p><p>Um die Plattform sicher zu halten, öffnen und konstruktiv jeder Benutzer muss die <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy>akzeptieren. Bitte lies diese Dokumente und akzeptiere sie unten, bevor du fortfährst.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "Ich bin mit den <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzbestimmungen</privacy> von VTEX einverstanden.",
       "login": "Haben Sie ein Konto?",
-      "reset-password": "Passwort zurücksetzen"
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe Spaces for Collaboration"
     },
     "accept-terms": {
       "introduction": "<p>Willkommen bei Alkemio! Alkemio macht es einfach, Herausforderungen zu bewältigen und Mitwirkende zu haben, von überall aus gemeinsam an Lösungen zu arbeiten. Im Mittelpunkt stehen Herausforderungen. Der Fokus liegt auf dem Ziel.</p><p>Um die Plattform sicher zu halten, öffnen und konstruktiv jeder Benutzer muss die <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy>akzeptieren. Bitte lies diese Dokumente und akzeptiere sie unten, bevor du fortfährst.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Weiter zum Formular",
+      "next": "Next",
       "tooltip": "Bitte lesen und akzeptieren Sie die Nutzungsbedingungen und die Datenschutzrichtlinie, bevor Sie fortfahren"
     },
     "registrationSuccess": {
       "header": "Nearly there…",
-      "message": "The last step is to verify your email address. Please check your inbox for an email with instructions.<br>If you have not received an email, <resend>click here to send it again.</resend>",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
       "continue": "…or continue to the platform without signing in"
     },
     "verification-success": {
@@ -2950,7 +2956,6 @@
     "loading-error": "Ladefehler",
     "messages": {
       "successfully-recovered-password": "Bitte geben Sie innerhalb der nächsten 15 Minuten ein neues Passwort ein, um Ihr Passwort zurückzusetzen.",
-      "request-recover-password": "<strong>An email containing a recovery code has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li/><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an account is registered with this email.</i>",
       "verification-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
       "recovery-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
       "verification-flow-continue": "Fortfahren",
@@ -2967,7 +2972,8 @@
       "First Name": "Vorname",
       "Last Name": "Nachname",
       "Sign in": "Anmelden",
-      "Sign up": "Registrieren",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
       "Submit": "Einreichen",
       "Verify code": "Code überprüfen",
       "Resend code": "Code erneut senden",
@@ -3098,6 +3104,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Seitenbanner: {{altText}}"
