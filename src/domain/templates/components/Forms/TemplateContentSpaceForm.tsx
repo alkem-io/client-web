@@ -12,7 +12,7 @@ import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hoo
 import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
 
 export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  spaceId?: string;
+  contentSpaceId?: string;
 }
 
 interface TemplateContentSpaceFormProps {
@@ -32,12 +32,14 @@ const validator = {
  * The preview is populated with either the current contentSpace or the selected space (mapped to contentSpace)
  * The selection component should store a SpaceId, used for both create + update.
  *
- * We have one spaceIds in this component:
+ * We have two spaceIds in this component:
+ * - the one in the state [spaceId, setSpaceId] that we use to query the API and to populate show the template preview.
  * - the one in the formik values (values.spaceId) we want to change that when the user selects a space to serve as template
+ *
+ * a ContentSpace preview:
  * - the one coming with the template (template?.contentSpace?.id) that never changes (will be undefined if we are creating a new template)
  *
- * Two TemplateContentSpace:
- *  - the one in the state [spaceId, setSpaceId] that we use to query the API and to show the template preview.
+ * A preview of the contentSpace is also shown:
  *
  * We cannot unify them because:
  *  - We want to keep the original spaceId to reset the formik value when the user cancels the selection. also, never change a value coming from the server
@@ -47,12 +49,13 @@ const validator = {
 const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateContentSpaceFormProps) => {
   const { t } = useTranslation();
 
+  // The space that is selected by URL submitted by the user
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | undefined>(undefined);
 
   const initialValues: TemplateContentSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-      collaborationId: template?.contentSpace?.collaboration?.id ?? '',
+      contentSpaceId: template?.contentSpace?.id ?? '',
     }),
     [template]
   );

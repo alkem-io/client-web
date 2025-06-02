@@ -252,12 +252,12 @@ export const toCreateTemplateFromSpaceContentMutationVariables = (
   values: SpaceContentTemplateFormSubmittedValues
 ): CreateTemplateFromSpaceMutationVariables => {
   // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
-  if (!values.spaceId) {
+  if (!values.contentSpaceId) {
     throw new Error('Collaboration ID is required to create a template from a collaboration');
   }
 
   return {
-    spaceId: values.spaceId,
+    spaceId: values.contentSpaceId,
     templatesSetId: templatesSetId,
     profileData: {
       displayName: values.profile.displayName ?? '',
@@ -390,7 +390,7 @@ export const toUpdateTemplateMutationVariables = (
       // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
       // If the collaborationId remains the same, we just update the template profile.
       const oldCollaborationId = (template as SpaceContentTemplate).contentSpace?.collaboration?.id;
-      const newCollaborationId = (newValues as SpaceContentTemplateFormSubmittedValues).spaceId;
+      const newCollaborationId = (newValues as SpaceContentTemplateFormSubmittedValues).contentSpaceId;
       if (oldCollaborationId && newCollaborationId && oldCollaborationId !== newCollaborationId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
