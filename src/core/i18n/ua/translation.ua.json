@@ -192,6 +192,9 @@
     "sign-in": "Log In | Sign Up"
   },
   "authentication": {
+    "or": "or continue with",
+    "no-account": "No account?",
+    "have-account": "Have an account?",
     "sign-in": "Увійти",
     "sign-up": "Зареєструватись",
     "sign-out": "Вийти",
@@ -206,7 +209,10 @@
       "connect": "Connect with {{provider}}",
       "providers": {
         "linkedin": "LinkedIn",
-        "microsoft": "Microsoft"
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
     },
     "signUp": {
@@ -861,9 +867,6 @@
         "description": "",
         "placeholder": "",
         "tooltip": "Tags"
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools:"
       },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
@@ -2698,19 +2701,22 @@
     "registration": {
       "header": "Створіть акаунт, щоб почати використовувати Alkemio",
       "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "Я приймаю <terms>Умови використання</terms> та <privacy>Політику Конфіденційності</privacy>.",
       "login": "Вже є акаунт?",
-      "reset-password": "Reset password"
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe Spaces for Collaboration"
     },
     "accept-terms": {
       "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Continue to the platform",
+      "next": "Next",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registrationSuccess": {
       "header": "Nearly there…",
-      "message": "The last step is to verify your email address. Please check your inbox for an email with instructions.<br>If you have not received an email, <resend>click here to send it again.</resend>",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
       "continue": "…or continue to the platform without signing in"
     },
     "verification-success": {
@@ -2950,7 +2956,6 @@
     "loading-error": "Помилка завантаження",
     "messages": {
       "successfully-recovered-password": "Будь ласка, введіть новий пароль протягом наступних 15 хвилин для завершення відновлення паролю.",
-      "request-recover-password": "<strong>An email containing a recovery code has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li/><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an account is registered with this email.</i>",
       "verification-flow-expired": "Посилання на верифікацію застаріло. Будь ласка, вкажіть вашу електронну пошту, для того, щоб отримати оновлене посилання.",
       "recovery-flow-expired": "Посилання на відновлення паролю застаріло. Будь ласка, вкажіть вашу електронну пошту, для того, щоб отримати оновлене посилання.",
       "verification-flow-continue": "Continue",
@@ -2967,7 +2972,8 @@
       "First Name": "First Name",
       "Last Name": "Last Name",
       "Sign in": "Sign in",
-      "Sign up": "Sign up",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
       "Submit": "Submit",
       "Verify code": "Verify code",
       "Resend code": "Resend code",
@@ -3098,6 +3104,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Page banner: {{altText}}"
