@@ -9,7 +9,7 @@ import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdates
 export interface CommunityUpdatesDialogProps {
   open: boolean;
   onClose: () => void;
-  communityId?: string;
+  communityId: string;
   shareUrl?: string;
   loading?: boolean;
 }
@@ -17,7 +17,7 @@ export interface CommunityUpdatesDialogProps {
 const CommunityUpdatesDialog = ({
   open,
   onClose,
-  communityId = '',
+  communityId,
   shareUrl,
   loading = false,
 }: CommunityUpdatesDialogProps) => {

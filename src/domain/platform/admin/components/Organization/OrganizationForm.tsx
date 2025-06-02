@@ -235,7 +235,12 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                             countryFieldName="profile.location.country"
                           />
 
-                          <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+                          <TagsetSegment
+                            fieldName="profile.tagsets"
+                            tagsets={tagsets}
+                            readOnly={isReadOnlyMode}
+                            disabled={isSubmitting}
+                          />
 
                           <SocialSegment
                             readOnly={isReadOnlyMode}
