@@ -29,7 +29,6 @@ export const useKratosT = () => {
       const replacement = kratosMessage.context as Record<string, string | number>;
       // It's hard to convince t() that the constructed label is a valid translation key
 
-      // return t(as any, replacement);
       return (
         <Trans
           i18nKey={`kratos.messages.${label}` as unknown as TransProps<TranslationKey>['i18nKey']}
