@@ -112,9 +112,10 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
           }
         };
         const handleCancel = () => {
+          // FIXME:
           const spaceId = template?.contentSpace?.id;
           if (spaceId) {
-            setFieldValue('contentSpaceId', spaceId); // Change the value in Formik back to the template collaboration
+            setFieldValue('spaceId', spaceId); // Change the value in Formik back to the template collaboration
             setSelectedSpaceId(spaceId); // Refresh the collaboration preview
             if (spaceId) {
               refetchTemplateContent({ templateContentSpaceId: spaceId });
