@@ -51,10 +51,6 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
           {t(message)}
-          {/* <Trans */}
-          {/*   i18nKey={message.text as unknown as TransProps<TranslationKey>['i18nKey']} */}
-          {/*   components={{ strong: <strong />, li: <li />, br: <br /> }} */}
-          {/* /> */}
         </Alert>
       ))}
     </Box>
