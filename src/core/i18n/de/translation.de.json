@@ -179,7 +179,10 @@
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
     "invite": "Invite",
-    "visit": "Visit"
+    "visit": "Visit",
+    "returnToDashboard": "Return to dashboard as guest",
+    "approveApplication": "Approve application",
+    "rejectApplication": "Reject application"
   },
   "tooltips": {
     "click-more-info": "Hier tippen für weitere Informationen",
@@ -189,6 +192,9 @@
     "sign-in": "Log In | Sign Up"
   },
   "authentication": {
+    "or": "or continue with",
+    "no-account": "No account?",
+    "have-account": "Have an account?",
     "sign-in": "Anmelden",
     "sign-up": "Registrieren",
     "sign-out": "Abmelden",
@@ -203,7 +209,10 @@
       "connect": "Mit {provider} verknüpfen",
       "providers": {
         "linkedin": "LinkedIn",
-        "microsoft": "Microsoft"
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
     },
     "signUp": {
@@ -217,6 +226,7 @@
       "L1": "Subspace",
       "L2": "Subsubspace"
     },
+    "actions": "Actions",
     "account": "Account",
     "all": "All",
     "knowledge-base": "Wissensdatenbank",
@@ -459,6 +469,19 @@
         "POST_COLLECTION": "Post Collection",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_COLLECTION": "Whiteboard Collection"
+      },
+      "invitationStatus": {
+        "invited": "Invited",
+        "accepted": "Invitation Accepted",
+        "rejected": "Invitation Rejected"
+      },
+      "invitationExternalStatus": {
+        "invited": "Invited to join Alkemio & this Space"
+      },
+      "roleSetContributorType": {
+        "USER": "User",
+        "ORGANIZATION": "Organization",
+        "VIRTUAL": "Virtual Contributor"
       }
     },
     "blocks": {
@@ -520,9 +543,7 @@
     "memberUsers": "Mitglieder ({{count}})",
     "leading-organizations": "Organisation verlassen",
     "memberOrganizations": "Führende Organisationen ({{count}})",
-    "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Invitation sent succesfully",
     "leads": "Interessenten",
     "members": "Mitglieder",
     "host": "Selbst hosten",
@@ -537,10 +558,8 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
-      "inviteBtn": "Invite Virtual Contributor",
       "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
@@ -571,25 +590,82 @@
       "applicationRejected": "Antrag abgelehnt",
       "applicationArchived": "Anmeldung eingegangen"
     },
-    "invitationStatus": {
-      "invited": "Eingeladen",
-      "accepted": "Einladung angenommen",
-      "rejected": "Einladung abgelehnt"
+    "invitations": {
+      "inviteButton": {
+        "USER": "Invite people to this Space",
+        "ORGANIZATION": "Invite people to this Space",
+        "VIRTUAL": "Invite Virtual Contributor"
+      },
+      "inviteToRole": "Invite to be a: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Invite others to join '{{spaceName}}'",
+          "description": "Search for people below or directly add their email address",
+          "note": "Keep in mind that your personal email address will be visible to anyone you message.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "placeholder": "Username or email...",
+          "success": "Your invitation was successfully sent to the following recipients:",
+          "failure": "We couldn’t send the invitation to the following recipients:",
+          "back": "Send another invitation",
+          "invitationsSent": "{{count}} invitations will be sent.",
+          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this Space",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
+            "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent community was not authorized",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invited to join the platform",
+            "INVITED_TO_ROLE_SET": "Invited to join the community"
+          },
+          "validationErrors": {
+            "required": "Please add at least one contributor to invite",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
+          }
+        },
+        "vcs": {
+          "title": "Virtual Contributors Store",
+          "dialogTitle": "Invite Virtual Contributor to join this Space",
+          "invitationSent": "Invitation sent successfully",
+          "inviteExternalVC": "Invite External VC",
+          "inviteBtn": "Invite Virtual Contributor",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "onAccount": {
+            "title": "Virtual Contributors linked to this Space's account"
+          },
+          "inLibrary": {
+            "title": "Other Virtual Contributors"
+          },
+          "emptyMessage": "No available Virtual Contributors",
+          "successfullyAdded": "{{contributor}} added successfully",
+          "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
+        },
+        "welcomeMessage": "Invitation Message"
+      }
     },
-    "invitationExternalStatus": {
-      "invited": "Eingeladen zu Alkemio & diesem Raum"
-    },
-    "confirmDeleteApplication": {
-      "title": "Lösche Anwendung von {{user}}",
-      "content": "Sind Sie sicher, dass Sie diese Anwendung archivieren möchten? Die Anwendung wird abgelehnt, falls sie noch nicht vorhanden ist."
-    },
-    "confirmDeleteInvitation": {
-      "title": "Lösche Anwendung von {{user}}",
-      "content": "Bist du sicher, dass du diese Einladung archivieren möchtest? Die Einladung wird abgelehnt, falls sie noch nicht vorhanden ist."
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "Lösche Anwendung von {{user}}",
-      "content": "Bist du sicher, dass du diese Einladung archivieren möchtest? Die Einladung wird abgelehnt, falls sie noch nicht vorhanden ist."
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Deleting application from '{{user}}'",
+          "content": "Are you sure that you want to Archive this application? The application will be rejected if it's not already."
+        },
+        "invitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        },
+        "platformInvitation": {
+          "title": "Deleting invitation to '{{user}}'",
+          "content": "Are you sure that you want to Delete this invitation? The invitation will be deleted if it's not already."
+        }
+      },
+      "approve": {
+        "title": "Approve application from {{user}}",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
+        "confirmButton": "Yes, approve"
+      },
+      "reject": {
+        "title": "Reject application from {{user}}",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
+        "confirmButton": "Yes, reject"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending Memberships",
@@ -857,7 +933,10 @@
       "nonBlank": "{{field}} darf nicht nur aus Leerzeichen bestehen",
       "atLeastOne": "Mindestens ein {{item}} muss ausgewählt sein.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
-      "invalidUrl": "Invalid URL"
+      "invalidUrl": "Invalid URL",
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address",
+      "elementMustBeValidUrl": "{{name}} must be a valid URL"
     }
   },
   "templateDialog": {
@@ -1047,44 +1126,6 @@
         }
       }
     },
-    "invitations": {
-      "inviteOthers": "Invite others",
-      "inviteExistingUser": "Mehr Benutzer einladen",
-      "inviteExternalUser": "Einladungen per E-Mail senden",
-      "inviteOrganizations": "Organisation verlassen",
-      "defaultInvitationMessage": "Hallo, ich möchte Sie zu {{space}}einladen. Klicken Sie auf den Link unten, um einen Blick zu werfen oder direkt die Einladung anzunehmen.",
-      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
-      "inviteExistingUserDialog": {
-        "title": "Andere Alkemio-Benutzer einladen, diesem Raum beizutreten",
-        "subtitle": "Sie können unten nach Alkemio-Benutzern suchen und eine personalisierte Nachricht anhängen.",
-        "selector": {
-          "alreadyApplied": "This user has an application pending, approve it in the Community Settings",
-          "alreadyInvited": "This user is already invited",
-          "alreadyMember": "This user is already a member"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "Invite Virtual Contributor to join this Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "Einladung per E-Mail senden"
-      },
-      "inviteToRole": "Invite to be a: "
-    },
-    "inviteContributorsDialog": {
-      "title": "Virtual Contributors Store",
-      "vcs": {
-        "onAccount": {
-          "title": "Virtual Contributors linked to this Space's account"
-        },
-        "inLibrary": {
-          "title": "Other Virtual Contributors"
-        },
-        "emptyMessage": "No available Virtual Contributors"
-      },
-      "successfullyAdded": "{{contributor}} added successfully",
-      "vcFetchErrorMessage": "An error occurred while fetching the Virtual Contributors"
-    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Kommentar löschen",
@@ -1182,8 +1223,8 @@
     "activity-log-section": {
       "title": "Bester Beitrag",
       "activity-sign-in-error-message": "Um die letzten Beiträge zu sehen, melden Sie sich bitte an.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceLevel}}."
     },
     "activityLogView": {
       "description": {
@@ -1497,6 +1538,11 @@
           "placeholder": "Postleitzahl"
         },
         "noLocation": "No location specified"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
       }
     },
     "organizationSegment": {
@@ -1708,7 +1754,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
-          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
@@ -1853,6 +1899,9 @@
           },
           "communications": {
             "description": "Hier können Sie Updates veröffentlichen, die für alle Mitglieder dieser {{entity}} sichtbar sind."
+          },
+          "subspaces": {
+            "description": "Here you can edit Subspaces for this Space."
           },
           "subsubspaces": {
             "description": "Here you can edit Subspaces for this Subspace."
@@ -2366,7 +2415,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
-          "welcome-back": "Welcome back, {{username}}!",
+          "welcome-back": "Welcome, {{username}}!",
           "join": "Willst du der Community beitreten und mehr sehen?",
           "existing-user": {
             "header": "Vorhandener Benutzer? Springe zurück!",
@@ -2593,8 +2642,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
-        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",
@@ -2643,19 +2692,22 @@
     "registration": {
       "header": "Erstelle ein Konto und beginne Gutes zu tun",
       "introduction": "<p>Willkommen bei Alkemio! Alkemio macht es einfach, Herausforderungen zu bewältigen und Mitwirkende zu haben, von überall aus gemeinsam an Lösungen zu arbeiten. Im Mittelpunkt stehen Herausforderungen. Der Fokus liegt auf dem Ziel.</p><p>Um die Plattform sicher zu halten, öffnen und konstruktiv jeder Benutzer muss die <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy>akzeptieren. Bitte lies diese Dokumente und akzeptiere sie unten, bevor du fortfährst.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "Ich bin mit den <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzbestimmungen</privacy> von VTEX einverstanden.",
       "login": "Haben Sie ein Konto?",
-      "reset-password": "Passwort zurücksetzen"
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe Spaces for Collaboration"
     },
     "accept-terms": {
       "introduction": "<p>Willkommen bei Alkemio! Alkemio macht es einfach, Herausforderungen zu bewältigen und Mitwirkende zu haben, von überall aus gemeinsam an Lösungen zu arbeiten. Im Mittelpunkt stehen Herausforderungen. Der Fokus liegt auf dem Ziel.</p><p>Um die Plattform sicher zu halten, öffnen und konstruktiv jeder Benutzer muss die <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy>akzeptieren. Bitte lies diese Dokumente und akzeptiere sie unten, bevor du fortfährst.</p>",
       "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Weiter zum Formular",
+      "next": "Next",
       "tooltip": "Bitte lesen und akzeptieren Sie die Nutzungsbedingungen und die Datenschutzrichtlinie, bevor Sie fortfahren"
     },
     "registrationSuccess": {
       "header": "Nearly there…",
-      "message": "The last step is to verify your email address. Please check your inbox for an email with instructions.<br>If you have not received an email, <resend>click here to send it again.</resend>",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
       "continue": "…or continue to the platform without signing in"
     },
     "verification-success": {
@@ -2823,8 +2875,9 @@
       "added-successfully": "Kommentar hinzugefügt"
     },
     "authentication-required": {
-      "header": "Für die Seite, auf die Sie zugreifen wollen, müssen Sie eingeloggt sein.",
-      "subheader": "Bitte loggen Sie sich ein oder melden Sie sich an, um fortzufahren."
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
     "user-notifications-settings": {
       "general": {
@@ -2910,7 +2963,8 @@
       "First Name": "Vorname",
       "Last Name": "Nachname",
       "Sign in": "Anmelden",
-      "Sign up": "Registrieren",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
       "Submit": "Einreichen",
       "Verify code": "Code überprüfen",
       "Resend code": "Code erneut senden",
@@ -3026,6 +3080,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Seitenbanner: {{altText}}"
@@ -3050,10 +3105,12 @@
     "subspaces": "Subspaces",
     "contributors": "Contributors",
     "activity": "Activity",
+    "calendar": "Calendar",
     "events": "Events",
     "share": "Share",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Settings"
+    "settings": "Settings",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Create a Space",
