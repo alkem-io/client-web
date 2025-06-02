@@ -11,14 +11,25 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useNavigate from '@/core/routing/useNavigate';
 import { useParams } from 'react-router-dom';
+import PageContent from '@/core/ui/content/PageContent';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 const SpaceDashboardPage = () => {
-  const { urlInfo, classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
+  const { classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =
     useSpaceTabProvider({ tabPosition: 0 });
+
+  const { isSmallScreen } = useScreenSize();
 
   const params = useParams();
   const { dialog } = params;
-  const { spaceId, spaceLevel } = urlInfo;
+  const {
+    space: { id: spaceId, level: spaceLevel },
+  } = useSpace();
 
   const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
 
@@ -62,9 +73,34 @@ const SpaceDashboardPage = () => {
   };
 
   const updatesUrl = buildUpdatesUrl(spaceData?.about.profile.url ?? '');
+  const communityId = spaceData?.about.membership.communityID;
 
   return (
     <>
+      {!loading && (
+        <ApplicationButtonContainer spaceId={spaceId}>
+          {(applicationButtonProps, loading) => {
+            if (loading || applicationButtonProps.isMember) {
+              return null;
+            }
+            return (
+              <PageContent gridContainerProps={{ paddingBottom: 0 }} sx={{ flexGrow: 0 }}>
+                <PageContentColumn columns={12}>
+                  <ApplicationButton
+                    {...applicationButtonProps}
+                    loading={loading}
+                    component={FullWidthButton}
+                    extended={!isSmallScreen}
+                    spaceId={spaceId}
+                    spaceLevel={spaceLevel}
+                  />
+                </PageContentColumn>
+              </PageContent>
+            );
+          }}
+        </ApplicationButtonContainer>
+      )}
+
       <SpaceDashboardView
         space={space}
         tabDescription={tabDescription}
@@ -76,13 +112,15 @@ const SpaceDashboardPage = () => {
         flowStateForNewCallouts={flowStateForNewCallouts}
         shareUpdatesUrl={updatesUrl}
       />
-      <CommunityUpdatesDialog
-        open={dialog === 'updates'}
-        onClose={backToDashboard}
-        communityId={spaceData?.about.membership.communityID}
-        shareUrl={updatesUrl}
-        loading={loadingSpacePageQuery}
-      />
+      {communityId && (
+        <CommunityUpdatesDialog
+          open={dialog === 'updates'}
+          onClose={backToDashboard}
+          communityId={communityId}
+          shareUrl={updatesUrl}
+          loading={loadingSpacePageQuery}
+        />
+      )}
       <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} />
     </>
   );

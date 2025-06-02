@@ -1,0 +1,32 @@
+query CommunityApplication($applicationId: UUID!) {
+  lookup {
+    application(ID: $applicationId) {
+      id
+      createdDate
+      updatedDate
+      contributor {
+        id
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR){
+            ...VisualModel
+          }
+          location {
+            id
+            city
+            country
+          }
+          url
+        }
+      }
+      questions {
+        id
+        name
+        value
+      }
+      state
+      nextEvents
+    }
+  }
+}

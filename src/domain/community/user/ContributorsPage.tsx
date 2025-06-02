@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
-import { useCurrentUserContext } from './';
+import { useCurrentUserContext } from '../userCurrent/useCurrentUserContext';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -29,7 +29,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { arrayShuffle } from '@/core/utils/array.shuffle';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
-import { VirtualContributorModelBase } from '../virtualContributor/model/virtual.contributor.base.model';
+import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
 import { ApolloError } from '@apollo/client';
 
 export interface VirtualContributors {

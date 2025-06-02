@@ -173,7 +173,11 @@ const WhiteboardDialogFooter = ({
                 ) : (
                   <span />
                 ),
-                spaceLink: spaceAboutProfile ? <RouterLink to={spaceAboutProfile.url} underline="always" /> : <span />,
+                spacelink: spaceAboutProfile ? (
+                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                ) : (
+                  <span />
+                ),
                 signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
                 learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
               }}

@@ -1,4 +1,4 @@
-import { Configuration, UiContainer, V0alpha2Api } from '@ory/kratos-client';
+import { Configuration, UiContainer, FrontendApi } from '@ory/kratos-client';
 import { useMemo, useRef } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { once } from 'lodash';
@@ -22,10 +22,11 @@ const logFlowErrors = (response: AxiosResponse<{ ui: UiContainer } | {}>) => {
   }
 };
 
-const isWhoamiError401 = (error: AxiosError) =>
-  error.config.url?.endsWith('/sessions/whoami') && error.response?.data?.error?.code === 401;
+const isWhoamiError401 = (error: AxiosError<{ error?: { code?: number } }>) =>
+  error.config?.url?.endsWith('/sessions/whoami') && error.response?.data?.error?.code === 401;
 
-const isAxiosError = (error: { isAxiosError: boolean }): error is AxiosError => error.isAxiosError;
+const isAxiosError = (error: { isAxiosError: boolean }): error is AxiosError<{ error?: { code?: number } }> =>
+  error.isAxiosError;
 
 const getKratosErrorMessage = (requestError: AxiosError) => {
   const errMessage = requestError.message;
@@ -35,8 +36,9 @@ const getKratosErrorMessage = (requestError: AxiosError) => {
   }
 
   if (requestError.response?.data) {
-    const { message, reason, error } = requestError.response?.data;
-    const errorMessage = message ? [message, reason].filter(v => v).join(' ') : error.message;
+    const data = requestError.response.data as { message?: string; reason?: string; error?: { message?: string } };
+    const { message, reason, error } = data;
+    const errorMessage = message ? [message, reason].filter(v => v).join(' ') : error?.message;
     return `Kratos Error: ${errorMessage}`;
   } else {
     return `Kratos ${requestError}`;
@@ -51,7 +53,7 @@ const createAxiosClient = () => {
     value => {
       try {
         logFlowErrors(value);
-      } catch (e) {}
+      } catch (_error) {}
       return value;
     },
     error => {
@@ -65,7 +67,7 @@ const createAxiosClient = () => {
   return client;
 };
 
-export const useKratosClient = () => {
+export const useKratosClient = (): FrontendApi | undefined => {
   const { authentication } = useConfig();
 
   const axiosClient = useRef(once(createAxiosClient)).current();
@@ -76,6 +78,6 @@ export const useKratosClient = () => {
     }
     const config = authentication?.providers.map(x => x.config).find(x => isOryConfig(x));
     const apiConfig = new Configuration({ basePath: config?.kratosPublicBaseURL });
-    return new V0alpha2Api(apiConfig, undefined, axiosClient);
+    return new FrontendApi(apiConfig, undefined, axiosClient);
   }, [authentication, axiosClient]);
 };

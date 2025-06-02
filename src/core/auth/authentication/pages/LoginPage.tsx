@@ -1,21 +1,19 @@
 import { Box } from '@mui/material';
-import produce from 'immer';
+import { produce } from 'immer';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import SubHeading from '@/domain/shared/components/Text/SubHeading';
-import { Text } from '@/core/ui/typography';
-import FixedHeightLogo from '../components/FixedHeightLogo';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
 import { useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
-import { SelfServiceLoginFlow } from '@ory/kratos-client';
-import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-import { AUTH_REMINDER_PATH, AUTH_RESET_PASSWORD_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { LoginFlow } from '@ory/kratos-client';
+import { AUTH_REMINDER_PATH, AUTH_RESET_PASSWORD_PATH } from '../constants/authentication.constants';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
+import AuthenticationLayout from '../AuthenticationLayout';
+import { AuthFormHeader } from '../components/AuthFormHeader';
 
 interface LoginPageProps {
   flow?: string;
@@ -23,14 +21,14 @@ interface LoginPageProps {
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 
-const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
-  return flow.ui.messages?.some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
+const isEmailNotVerified = (flow: LoginFlow) => {
+  return (flow.ui?.messages ?? []).some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
 };
 
 // See a TODO below
 // const EMAIL_FIELD_NAME = 'password_identifier';
 //
-// const getEmailAddress = (flow: SelfServiceLoginFlow): string | undefined => {
+// const getEmailAddress = (flow: LoginFlow): string | undefined => {
 //   const node = flow.ui.nodes.find((node ) => {
 //     const attributes = node.attributes as UiNodeInputAttributes;
 //     return attributes.name === EMAIL_FIELD_NAME;
@@ -44,6 +42,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
 
+  // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
     produce(loginFlow.ui, ui => {
@@ -77,34 +76,26 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const resetPassword = (
     <Box
       display="flex"
-      justifyContent="end"
-      paddingX={2}
+      justifyContent="start"
       component={Link}
       to={AUTH_RESET_PASSWORD_PATH}
       fontSize={12}
       fontFamily={theme => theme.typography.caption.fontFamily}
-      fontWeight={600}
-      sx={{ color: theme => theme.palette.primary.main }}
+      sx={{ color: theme => theme.palette.highlight.dark, textDecoration: 'none' }}
     >
       {t('pages.registration.reset-password')}
     </Box>
   );
 
-  const tLink = translateWithElements(<Link to="" style={{ whiteSpace: 'nowrap' }} />);
-
   return (
-    <KratosForm ui={loginUi}>
-      <AuthPageContentContainer>
-        <FixedHeightLogo />
-        <SubHeading textAlign="center">{t('pages.login.title')}</SubHeading>
-        <Text textAlign="center" marginBottom={2}>
-          {tLink('pages.login.register', {
-            signup: { to: AUTH_SIGN_UP_PATH },
-          })}
-        </Text>
-        <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
-      </AuthPageContentContainer>
-    </KratosForm>
+    <AuthenticationLayout>
+      <AuthFormHeader title={t('authentication.sign-in')} />
+      <KratosForm ui={loginUi}>
+        <AuthPageContentContainer>
+          <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
+        </AuthPageContentContainer>
+      </KratosForm>
+    </AuthenticationLayout>
   );
 };
 

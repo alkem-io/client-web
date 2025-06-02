@@ -65,7 +65,7 @@ const CalendarEventForm = ({
 
   const dateNow = new Date();
 
-  const initialStartDate = useMemo(() => event?.startDate ?? dateNow, [event]);
+  const initialStartDate = useMemo(() => (event?.startDate ? new Date(event.startDate) : dateNow), [event]);
   const initialEndDate = useMemo(() => {
     if (!event?.startDate) {
       return dateNow;

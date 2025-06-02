@@ -1,0 +1,45 @@
+fragment OrganizationInfo on Organization {
+  id
+  contactEmail
+  domain
+  authorization {
+    id
+    myPrivileges
+  }
+  roleSet {
+    id
+  }
+  verification {
+    id
+    status
+  }
+  website
+  profile {
+    id
+    url
+    displayName
+    description
+    tagline
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+      alternativeText
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+    location {
+      ...fullLocation
+    }
+  }
+  metrics {
+    id
+    name
+    value
+  }
+}

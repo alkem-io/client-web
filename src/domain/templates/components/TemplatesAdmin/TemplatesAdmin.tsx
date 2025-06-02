@@ -18,8 +18,7 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
-import useBackToPath from '@/core/routing/useBackToPath';
-import useBackToParentPage from '@/_deprecated/useBackToParentPage';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -28,14 +27,15 @@ import {
   toCreateTemplateMutationVariables,
   toUpdateTemplateMutationVariables,
 } from '../Forms/common/mappings';
-import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
-import { useUploadWhiteboardVisuals } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useHandlePreviewImages from '../../utils/useHandlePreviewImages';
 import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
+import { CalloutTemplateFormSubmittedValues } from '../Forms/CalloutTemplateForm';
+import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -82,27 +82,8 @@ const TemplatesAdmin = ({
   canDeleteTemplates = defaultPermissionDenied,
 }: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
-  const backToTemplates = useBackToPath();
-
-  // Visuals management (for whiteboards)
-  const { uploadVisuals } = useUploadWhiteboardVisuals();
-  const handlePreviewTemplates = async (
-    values: AnyTemplateFormSubmittedValues,
-    mutationResult?: { profile?: { cardVisual?: { id: string }; previewVisual?: { id: string } }; nameID: string }
-  ) => {
-    const whiteboardTemplate = values as WhiteboardTemplateFormSubmittedValues;
-    const previewImages = whiteboardTemplate.whiteboardPreviewImages;
-    if (mutationResult && previewImages) {
-      await uploadVisuals(
-        previewImages,
-        {
-          cardVisualId: mutationResult.profile?.cardVisual?.id,
-          previewVisualId: mutationResult.profile?.previewVisual?.id,
-        },
-        mutationResult.nameID // To upload the screenshots with the whiteboard nameId
-      );
-    }
-  };
+  const backToTemplates = useBackWithDefaultUrl(baseUrl);
+  const { handlePreviewTemplates } = useHandlePreviewImages();
 
   // Read Template
   const { data, loading } = useAllTemplatesInTemplatesSetQuery({
@@ -148,9 +129,14 @@ const TemplatesAdmin = ({
       variables: updateTemplateVariables,
     });
     if (updateCalloutVariables) {
-      await updateCallout({
+      const result = await updateCallout({
         variables: updateCalloutVariables,
       });
+      // update whiteboard (framing) visuals
+      await handlePreviewTemplates(
+        values as CalloutTemplateFormSubmittedValues,
+        result.data?.updateCallout.framing.whiteboard
+      );
     }
     if (updateCommunityGuidelinesVariables) {
       await updateCommunityGuidelines({
@@ -162,10 +148,10 @@ const TemplatesAdmin = ({
         variables: updateCollaborationTemplateVariables,
       });
     }
-
-    if (updateTemplateVariables.includeProfileVisuals) {
+    // include preview for other template type other than callout
+    if (updateTemplateVariables.includeProfileVisuals && !updateCalloutVariables) {
       // Handle the visual in a special way with the preview images
-      await handlePreviewTemplates(values, result.data?.updateTemplate);
+      await handlePreviewTemplates(values as WhiteboardTemplateFormSubmittedValues, result.data?.updateTemplate);
     }
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
@@ -205,7 +191,13 @@ const TemplatesAdmin = ({
     });
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(values, result.data?.createTemplate);
+      handlePreviewTemplates(values as WhiteboardTemplateFormSubmittedValues, result.data?.createTemplate);
+    } else if (creatingTemplateType === TemplateType.Callout) {
+      // update whiteboard (framing) visuals
+      handlePreviewTemplates(
+        values as CalloutTemplateFormSubmittedValues,
+        result.data?.createTemplate.callout?.framing.whiteboard
+      );
     }
     setCreatingTemplateType(undefined);
   };
@@ -225,7 +217,7 @@ const TemplatesAdmin = ({
     });
 
     setDeletingTemplate(undefined);
-    backToTemplates(baseUrl);
+    backToTemplates();
   });
 
   // Import Template
@@ -293,15 +285,13 @@ const TemplatesAdmin = ({
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
   );
-
-  const [, buildLink] = useBackToParentPage(baseUrl);
   const buildTemplateLink = (template: AnyTemplate) => {
     if (template.profile.url) {
       if (alwaysEditTemplate && baseUrl && !template.profile.url.startsWith(baseUrl)) {
         const templateId = template.profile.url.split('/').pop();
-        return buildLink(`${baseUrl}/${templateId}`);
+        return { to: `${baseUrl}/${templateId}` };
       } else {
-        return buildLink(template.profile.url);
+        return { to: template.profile.url };
       }
     }
   };
@@ -380,7 +370,7 @@ const TemplatesAdmin = ({
       {selectedTemplate && editTemplateMode && (
         <EditTemplateDialog
           open
-          onClose={() => backToTemplates(baseUrl)}
+          onClose={() => backToTemplates()}
           onCancel={alwaysEditTemplate ? undefined : () => setEditTemplateMode(false)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}
@@ -391,7 +381,7 @@ const TemplatesAdmin = ({
       {selectedTemplate && !editTemplateMode && (
         <PreviewTemplateDialog
           open
-          onClose={() => backToTemplates(baseUrl)}
+          onClose={() => backToTemplates()}
           template={selectedTemplate}
           actions={
             canEditTemplates(selectedTemplate.type) ? (

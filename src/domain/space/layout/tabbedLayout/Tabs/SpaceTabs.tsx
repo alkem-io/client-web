@@ -60,9 +60,12 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
   const { pathname } = useLocation();
 
-  const { space, permissions } = useSpace();
+  const { space, permissions, loading } = useSpace();
   const { id: spaceId, about } = space;
-  const { tabs, showSettings } = useSpaceTabs({ spaceId: permissions.canRead ? spaceId : undefined });
+  const { tabs, showSettings } = useSpaceTabs({
+    skip: !permissions.canRead || loading,
+    spaceId: permissions.canRead ? spaceId : undefined,
+  });
 
   const spaceUrl = about.profile.url;
   const { share, shareDialog } = useShare({ url: spaceUrl, entityTypeName: 'space' });
@@ -87,10 +90,9 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
     if ('section' in currentTab) {
       selectedTab = currentTab.section;
     }
-  } else {
-    if (pathname.split('/').includes('settings')) {
-      selectedTab = EntityPageSection.Settings;
-    }
+  }
+  if (pathname.split('/').includes('settings')) {
+    selectedTab = EntityPageSection.Settings;
   }
 
   if (mobile) {
@@ -245,49 +247,3 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 };
 
 export default SpaceTabs;
-
-export const SpaceTabsPlaceholder = ({ mobile, loading }: SpacePageTabsProps) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const navigationBackgroundColor = getEntityColor(theme, 'space');
-  const navigationForegroundColor = theme.palette.common.white;
-  const value = loading ? 'loading' : undefined;
-  if (mobile) {
-    return (
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
-        <BottomNavigation
-          showLabels
-          value={value}
-          sx={{
-            backgroundColor: navigationBackgroundColor,
-            '.MuiBottomNavigationAction-root.Mui-selected': {
-              color: navigationForegroundColor,
-            },
-            '.MuiBottomNavigationAction-root:not(.Mui-selected)': {
-              color: alpha(navigationForegroundColor, 0.75),
-            },
-          }}
-        >
-          {loading && <BottomNavigationAction key="loading" value="loading" label="Loading..." />}
-        </BottomNavigation>
-      </Paper>
-    );
-  }
-
-  return (
-    <>
-      <HeaderNavigationTabs value="loading" defaultTab="loading" aria-label={t('pages.admin.space.aria.tabs')}>
-        {loading && (
-          <HeaderNavigationTab
-            key="loading"
-            label={t('common.loading')}
-            value={value}
-            to=""
-            disabled
-            sx={{ marginX: 'auto' }}
-          />
-        )}
-      </HeaderNavigationTabs>
-    </>
-  );
-};

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { PartialRecord } from '@/core/utils/PartialRecords';
+import { PartialRecord } from '@/core/utils/PartialRecord';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -62,7 +62,6 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
    * fetchRoleDefinitions param should be true for this to be available
    */
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
-  refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
 }
@@ -91,11 +90,7 @@ const useRoleSetManager = ({
   }
 
   // TODO: Additional Auth Check
-  const {
-    data: roleSetDetails,
-    loading: loadingRoleSet,
-    refetch: refetchRoleSet,
-  } = useRoleSetAuthorizationQuery({
+  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -118,11 +113,7 @@ const useRoleSetManager = ({
     }
   }
 
-  const {
-    data: roleSetData,
-    loading: loadingRoleSetData,
-    refetch: refetchRoleSetData,
-  } = useRoleSetRoleAssignmentQuery({
+  const { data: roleSetData, loading: loadingRoleSetData } = useRoleSetRoleAssignmentQuery({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
@@ -197,10 +188,13 @@ const useRoleSetManager = ({
     }
 
     const rolesDefinitions: Record<RoleName, RoleDefinition> | undefined =
-      roleSetData?.lookup.roleSet?.roleDefinitions?.reduce((acc, roleDefinition) => {
-        acc[roleDefinition.name] = roleDefinition;
-        return acc;
-      }, {} as Record<RoleName, RoleDefinition>);
+      roleSetData?.lookup.roleSet?.roleDefinitions?.reduce(
+        (acc, roleDefinition) => {
+          acc[roleDefinition.name] = roleDefinition;
+          return acc;
+        },
+        {} as Record<RoleName, RoleDefinition>
+      );
 
     return {
       users: Object.values(usersById),
@@ -216,14 +210,12 @@ const useRoleSetManager = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData(), onChange?.()]);
-
   // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
   const onMutationCall =
     (mutation: (...args) => Promise<unknown>) =>
     async (...args) => {
       await mutation(...args);
-      refetchAll();
+      onChange?.();
     };
 
   const {
@@ -236,7 +228,7 @@ const useRoleSetManager = ({
     assignRoleToVirtualContributor,
     removeRoleFromVirtualContributor,
     loading: updatingRoleSet,
-  } = useRoleSetManagerRolesAssignment({ roleSetId });
+  } = useRoleSetManagerRolesAssignment({ roleSetId, refetchRoleSetOnMutation: true });
 
   return {
     myPrivileges,
@@ -260,7 +252,6 @@ const useRoleSetManager = ({
     removeRoleFromOrganization: onMutationCall(removeRoleFromOrganization),
     removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
-    refetch: refetchAll,
   };
 };
 

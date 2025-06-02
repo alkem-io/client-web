@@ -1,6 +1,6 @@
 import nameof from '@/core/utils/nameOf';
 
-export default interface UrlParams extends Record<string, string | undefined> {
+interface UrlParams extends Record<string, string | undefined> {
   spaceNameId?: string;
   subspaceNameId?: string;
   subsubspaceNameId?: string;
@@ -18,4 +18,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   innovationHubNameId?: string;
 }
 
+/**
+ * Do not remove even if ts-prune says it is unused.
+ */
 export const nameOfUrl = nameof<UrlParams>();

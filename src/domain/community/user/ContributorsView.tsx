@@ -12,7 +12,7 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import { Box, Grid } from '@mui/material';
+import { Box, GridLegacy } from '@mui/material';
 import { times } from 'lodash';
 import { ComponentType, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import ContributorCardSquare, {
   ContributorCardSkeleton,
   ContributorCardSquareProps,
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
-import { VirtualContributorModelBase } from '../virtualContributor/model/virtual.contributor.base.model';
+import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
 import { PaginatedResult, VirtualContributors } from './ContributorsPage';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
@@ -149,7 +149,7 @@ const ContributorsView = ({
           />
         )}
         {!showUsers && (
-          <Grid item>
+          <GridLegacy item>
             <ImageBackdrop
               src={grayedOutUsersImgSrc}
               backdropMessage="login"
@@ -160,7 +160,7 @@ const ContributorsView = ({
                 },
               })}
             />
-          </Grid>
+          </GridLegacy>
         )}
       </PageContentBlock>
       <PageContentBlock columns={12}>

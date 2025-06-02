@@ -54,11 +54,16 @@ const globalStyles = (theme: Theme) => ({
     fontFamily: fontFamilySourceSans,
   },
   '#root': {
+    height: '100%',
     minHeight: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
   '[aria-role="heading"]': subHeading,
+  '.markdown': {
+    wordWrap: 'break-word',
+    padding: theme.spacing(0, 2, 1),
+  },
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
   },

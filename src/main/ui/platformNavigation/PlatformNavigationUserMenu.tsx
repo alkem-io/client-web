@@ -16,7 +16,7 @@ import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import LanguageSelect from '@/core/ui/language/LanguageSelect';

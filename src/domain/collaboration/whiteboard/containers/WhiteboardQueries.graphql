@@ -4,10 +4,10 @@ fragment WhiteboardProfile on Profile {
   displayName
   description
   visual(type: CARD) {
-    ...VisualFull
+    ...VisualModelFull
   }
   preview: visual(type: BANNER) {
-    ...VisualFull
+    ...VisualModelFull
   }
   tagset {
     ...TagsetDetails
@@ -41,8 +41,7 @@ fragment WhiteboardDetails on Whiteboard {
         city
       }
       avatar: visual(type: AVATAR) {
-        id
-        uri
+        ...VisualModel
       }
     }
   }
@@ -100,23 +99,6 @@ query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
           ...WhiteboardDetails
         }
       }
-    }
-  }
-}
-
-query WhiteboardWithContent($whiteboardId: UUID!) {
-  lookup {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
-      ...WhiteboardContent
-    }
-  }
-}
-
-query WhiteboardWithoutContent($whiteboardId: UUID!) {
-  lookup {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
     }
   }
 }

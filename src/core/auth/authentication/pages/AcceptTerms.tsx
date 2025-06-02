@@ -1,5 +1,4 @@
 import SubHeading from '@/domain/shared/components/Text/SubHeading';
-import { UiNodeInput } from '../components/Kratos/UiNodeTypes';
 import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
 import { useState } from 'react';
 import KratosAcceptTermsButton from '../components/KratosAcceptTermsButton';
@@ -10,6 +9,7 @@ import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosHidden from '../components/Kratos/KratosHidden';
 import { KRATOS_TRAIT_NAME_FIRST_NAME } from '../components/Kratos/constants';
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
+import { Box } from '@mui/material';
 
 interface GreetingProps {
   userName: string;
@@ -27,8 +27,11 @@ export interface KratosAcceptTermsProps {
 const getUserName = (ui: UiContainer) => {
   const userNameInput = ui.nodes.find(
     node => isInputNode(node) && node.attributes.name === KRATOS_TRAIT_NAME_FIRST_NAME
-  ) as UiNodeInput<string> | undefined;
-  return userNameInput?.attributes.value ?? undefined;
+  );
+  if (userNameInput && isInputNode(userNameInput)) {
+    return userNameInput.attributes.value;
+  }
+  return undefined;
 };
 
 const getSubmitButtonPreferNonOIDC = (ui: UiContainer) =>
@@ -38,9 +41,10 @@ const getSubmitButtonPreferNonOIDC = (ui: UiContainer) =>
     .find(isSubmitButton);
 
 const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
-  const termsCheckbox = ui.nodes.find(isAcceptTermsCheckbox) as UiNodeInput<boolean>;
-
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(termsCheckbox.attributes.value!);
+  const termsCheckbox = ui.nodes.find(isAcceptTermsCheckbox);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(
+    termsCheckbox && isInputNode(termsCheckbox) ? termsCheckbox.attributes.value : false
+  );
   const { t } = useTranslation();
 
   const userName = getUserName(ui);
@@ -50,19 +54,30 @@ const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
   const nonButtonInputs = ui.nodes.filter(node => !isSubmitButton(node));
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}>
       {nonButtonInputs.map(node => (
         <KratosHidden key={node.attributes['name']} node={node} />
       ))}
       {userName && <Greeting userName={userName} />}
-      <PlatformIntroduction label="pages.accept-terms.introduction" />
-      <KratosVisibleAcceptTermsCheckbox node={termsCheckbox} value={hasAcceptedTerms} onChange={setHasAcceptedTerms} />
+      <PlatformIntroduction label="pages.registration.introduction-short" />
+      {termsCheckbox && (
+        <KratosVisibleAcceptTermsCheckbox
+          node={termsCheckbox}
+          value={hasAcceptedTerms}
+          onChange={setHasAcceptedTerms}
+        />
+      )}
       {buttonNode && (
-        <KratosAcceptTermsButton hasAcceptedTerms={hasAcceptedTerms} node={buttonNode} marginTop={2}>
-          {t('pages.accept-terms.continue')}
+        <KratosAcceptTermsButton
+          hasAcceptedTerms={hasAcceptedTerms}
+          node={buttonNode}
+          marginTop={2}
+          sx={{ backgroundColor: theme => theme.palette.highlight.dark, padding: 1 }}
+        >
+          {t('pages.accept-terms.next')}
         </KratosAcceptTermsButton>
       )}
-    </>
+    </Box>
   );
 };
 

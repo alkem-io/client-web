@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PersonIcon from '@mui/icons-material/Person';
-import { Box, Grid, IconButton, Skeleton, SvgIcon } from '@mui/material';
+import { Box, GridLegacy, IconButton, Skeleton, SvgIcon } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
@@ -140,12 +140,12 @@ type InfoRowProps = {
 };
 
 const InfoRow = ({ icon: Icon, text, ariaLabel, loading }: InfoRowProps) => (
-  <Grid item xs={12} zeroMinWidth>
+  <GridLegacy item xs={12} zeroMinWidth>
     <Box display="flex" alignItems="center">
       <Icon fontSize="small" />
       <Caption noWrap aria-label={ariaLabel} display="flex" flexGrow={1}>
         {loading ? <Skeleton width="70%" /> : text}
       </Caption>
     </Box>
-  </Grid>
+  </GridLegacy>
 );

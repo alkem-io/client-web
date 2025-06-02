@@ -1,13 +1,14 @@
-import { Grid, Box } from '@mui/material';
+import { GridLegacy, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { AuthorizationPrivilege, PreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import PreferenceSection from '@/main/ui/settings/PreferenceSection';
 import { gutters } from '@/core/ui/grid/utils';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
+import { PreferenceModel } from '@/domain/preferences/Preference.model';
 
 export interface UserNotificationsPageViewProps {
-  preferences: Preference[];
+  preferences: PreferenceModel[];
   loading: boolean;
   updatePreference: (type: PreferenceType, checked: boolean, id: string) => void;
 }
@@ -27,22 +28,22 @@ const UserNotificationsPageView = ({ preferences, loading, updatePreference }: U
   const forumGroup = preferences.filter(x => x.definition.group === 'NotificationForum');
 
   return (
-    <Grid container spacing={GUTTER_MUI}>
-      <Grid item xs={6}>
+    <GridLegacy container spacing={GUTTER_MUI}>
+      <GridLegacy item xs={6}>
         <Box display="flex" gap={gutters()} flexDirection="column">
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.general.title')}
             subHeaderText={t('pages.user-notifications-settings.general.subtitle')}
             preferences={generalGroup}
             loading={loading}
-            onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
+            onUpdate={(id, type, value) => updatePreference(type, value, id)}
           />
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.user-communication.title')}
             subHeaderText={t('pages.user-notifications-settings.user-communication.subtitle')}
             preferences={communicationGroup}
             loading={loading}
-            onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
+            onUpdate={(id, type, value) => updatePreference(type, value, id)}
           />
           {orgCommunicationGroup && (
             <PreferenceSection
@@ -50,12 +51,12 @@ const UserNotificationsPageView = ({ preferences, loading, updatePreference }: U
               subHeaderText={t('pages.user-notifications-settings.organization-communication.subtitle')}
               preferences={orgCommunicationGroup}
               loading={loading}
-              onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
+              onUpdate={(id, type, value) => updatePreference(type, value, id)}
             />
           )}
         </Box>
-      </Grid>
-      <Grid item xs={6}>
+      </GridLegacy>
+      <GridLegacy item xs={6}>
         <Box display="flex" gap={gutters()} flexDirection="column">
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.forum.title')}
@@ -87,8 +88,8 @@ const UserNotificationsPageView = ({ preferences, loading, updatePreference }: U
             </>
           )}
         </Box>
-      </Grid>
-    </Grid>
+      </GridLegacy>
+    </GridLegacy>
   );
 };
 

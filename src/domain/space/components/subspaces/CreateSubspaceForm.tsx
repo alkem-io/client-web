@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
-import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -13,7 +13,6 @@ import {
   SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -69,14 +68,18 @@ export const CreateSubspaceForm = ({
     displayName: yup
       .string()
       .trim()
-      .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+      )
       .required(validationRequiredString),
     tagline: yup
       .string()
       .trim()
-      .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+      ),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
     collaborationTemplateId: yup.string().nullable(),
@@ -130,16 +133,17 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
             <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
-            <FormikRadiosSwitch
-              name="addTutorialCallouts"
-              label="Tutorials:"
-              options={[
-                { label: 'On', value: true },
-                { label: 'Off', value: false },
-              ]}
-              row
-              disablePadding
-            />
+            {/* TEMPORARY DISABLE AS THERE ARE NO SUBSPACE TUTORIALS */}
+            {/*<FormikRadiosSwitch*/}
+            {/*  name="addTutorialCallouts"*/}
+            {/*  label="Tutorials:"*/}
+            {/*  options={[*/}
+            {/*    { label: 'On', value: true },*/}
+            {/*    { label: 'Off', value: false },*/}
+            {/*  ]}*/}
+            {/*  row*/}
+            {/*  disablePadding*/}
+            {/*/>*/}
           </Gutters>
         </Form>
       )}

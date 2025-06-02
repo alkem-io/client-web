@@ -3,7 +3,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { UserForm } from '../../user/userForm/UserForm';
 import Loading from '@/core/ui/loading/Loading';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,
@@ -36,7 +36,7 @@ export const UserAdminProfilePage = () => {
   });
   const notify = useNotification();
   const [createTagset] = useCreateTagsetOnProfileMutation({
-    // Just log the error. Do not send it to the notification hanlder.
+    // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
     onError: error => console.error(error.message),
   });

@@ -14,7 +14,7 @@ import DashboardNavigationItemView, {
 import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { Actions } from '@/core/ui/actions/Actions';
 
-import produce from 'immer';
+import { produce } from 'immer';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
 import { findCurrentPath } from './utils';

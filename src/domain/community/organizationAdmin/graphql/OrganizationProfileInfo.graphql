@@ -1,0 +1,44 @@
+query OrganizationProfileInfo($id: UUID!) {
+  lookup {
+    organization(ID: $id) {
+      ...OrganizationProfileInfo
+    }
+  }
+}
+
+fragment OrganizationProfileInfo on Organization {
+  id
+  nameID  # Used in the Organization profile form
+  contactEmail
+  domain
+  legalEntityName
+  website
+  verification {
+    id
+    status
+  }
+  profile {
+    id
+    url
+    displayName
+    visuals {
+      ...VisualModelFull
+    }
+    description
+    tagline
+    location {
+      id
+      country
+      city
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+    tagsets {
+        ...TagsetDetails
+    }
+  }
+}

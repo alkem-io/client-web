@@ -6,10 +6,9 @@ import { Button, Checkbox, DialogContent, FormControlLabel, Link } from '@mui/ma
 import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
-import { useMemo, useState } from 'react';
-import { SpaceLevel, Tagset, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { useState } from 'react';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
-import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -18,14 +17,14 @@ import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { gutters } from '@/core/ui/grid/utils';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { Navigate } from 'react-router-dom';
 import NameIdField from '@/core/utils/nameId/NameIdField';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation, useRestrictedSpaceNamesQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -34,16 +33,15 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
 import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 
 interface FormValues {
   name: string;
   nameID: string;
   tagline: string;
-  tagsets: {
-    id: string;
-    name: string;
-    tags: string[];
-  }[];
+  tagsets: TagsetModel[];
   licensePlanId: string;
 }
 
@@ -95,29 +93,26 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     withRedirectOnClose && redirectToHome();
   };
 
-  const tagsets = useMemo(() => {
-    return [
-      {
-        id: '',
-        name: TagsetReservedName.Default,
-        tags: [],
-        allowedValues: [],
-        type: TagsetType.Freeform,
-      },
-    ] as Tagset[];
-  }, []);
-
-  const initialValues: Partial<FormValues> = {
+  const initialValues: FormValues = {
     name: '',
     nameID: '',
     tagline: '',
-    tagsets,
+    tagsets: [EmptyTagset],
     licensePlanId: '',
   };
 
+  const { data } = useRestrictedSpaceNamesQuery();
+  const restrictedSpaceNamesValues = data?.restrictedSpaceNames ?? [];
+
+  const nonReservedSpaceNameIdValidator = nameIdValidator.test({
+    name: 'nonReservedSpaceNameIdValidator',
+    message: 'forms.validations.reservedTopLevelRoute',
+    test: value => !value || !restrictedSpaceNamesValues.includes(value.toLowerCase()),
+  });
+
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name ?? yup.string(),
-    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
+    name: nameSegmentSchema.fields?.displayName ?? yup.string(),
+    nameID: nonReservedSpaceNameIdValidator ?? yup.string(),
     tagline: spaceAboutSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetsSegmentSchema,
   });
@@ -200,7 +195,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, errors }) => {
+        {({ handleSubmit, values: { tagsets }, errors }) => {
           return (
             <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
               <DialogHeader title={t('createSpace.title')} onClose={handleClose} />

@@ -10,7 +10,7 @@ import { DescriptionComponent } from '@/domain/common/description/DescriptionCom
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Caption } from '@/core/ui/typography';
-import { Loading } from '@/core/ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;

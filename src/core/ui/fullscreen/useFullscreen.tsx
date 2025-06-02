@@ -19,13 +19,13 @@ export const useFullscreen = (element: HTMLElement = document.documentElement) =
       if (element.requestFullscreen) {
         try {
           element.requestFullscreen();
-        } catch (ex) {}
+        } catch (_error) {}
       }
     } else {
       if (document.exitFullscreen && document.fullscreenElement) {
         try {
           document.exitFullscreen();
-        } catch (ex) {}
+        } catch (_error) {}
       }
     }
   };

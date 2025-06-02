@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { mapTemplateProfileToUpdateProfile } from './common/mappings';
+import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 import CollaborationTemplatePreview from '../Previews/CollaborationTemplatePreview';
@@ -43,7 +43,7 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
 
   const initialValues: CollaborationTemplateFormSubmittedValues = useMemo(
     () => ({
-      profile: mapTemplateProfileToUpdateProfile(template?.profile),
+      profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
       collaborationId: template?.collaboration?.id ?? '',
     }),
     [template]

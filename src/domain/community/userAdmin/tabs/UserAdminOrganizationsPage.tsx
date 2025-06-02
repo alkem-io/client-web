@@ -1,9 +1,9 @@
-import { Grid } from '@mui/material';
+import { GridLegacy } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import AssociatedOrganizationsLazilyFetched from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useUserOrganizationIds from '../../user/userContributions/useUserOrganizationIds';
@@ -18,8 +18,8 @@ const UserAdminOrganizationsPage = () => {
 
   return (
     <UserAdminLayout currentTab={SettingsSection.Organizations}>
-      <Grid container rowSpacing={4}>
-        <Grid item xs={12}>
+      <GridLegacy container rowSpacing={4}>
+        <GridLegacy item xs={12}>
           <AssociatedOrganizationsLazilyFetched
             enableLeave
             canCreateOrganization={
@@ -31,8 +31,8 @@ const UserAdminOrganizationsPage = () => {
             loading={loading}
             dense
           />
-        </Grid>
-      </Grid>
+        </GridLegacy>
+      </GridLegacy>
     </UserAdminLayout>
   );
 };

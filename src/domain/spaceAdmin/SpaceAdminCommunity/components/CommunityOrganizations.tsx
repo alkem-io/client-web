@@ -17,9 +17,9 @@ import { BlockTitle } from '@/core/ui/typography';
 import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { ContributorViewModel } from '../../../community/community/utils/ContributorViewModel';
 
-export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
+export interface OrganizationDetailsFragmentWithRoles extends ContributorViewModel {
   isMember: boolean;
   isLead: boolean;
 }
@@ -105,7 +105,6 @@ const CommunityOrganizations = ({
       ),
       valueGetter: (_, row: GetterParams) => row?.profile.displayName,
       flex: 1,
-      resizable: true,
       filterable: false,
     },
     {

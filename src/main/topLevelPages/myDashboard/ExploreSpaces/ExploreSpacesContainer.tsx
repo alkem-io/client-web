@@ -11,9 +11,18 @@ import { TypedSearchResult } from '@/main/search/SearchView';
 import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
 
+type FiltersConfigTranslation = {
+  key: string;
+  name: string;
+  tags: string[];
+};
+
 const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: ExploreSpacesContainerProps) => {
   const { t } = useTranslation();
-  const filtersConfig = t('spaces-filter.config', { returnObjects: true });
+  const filtersConfigRaw = t('spaces-filter.config', { returnObjects: true });
+  const filtersConfig: FiltersConfigTranslation[] = Array.isArray(filtersConfigRaw)
+    ? filtersConfigRaw
+    : Object.values(filtersConfigRaw);
   const shouldSearch = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
   // the following query will return errors if the suggestedSpace is missing on the ENV (welcome-space)
@@ -35,7 +44,10 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
   // get translated tags based on the selected filter
   const getTerms = (searchTerms: string[], selectedFilter: string) => {
     if (selectedFilter !== SpacesExplorerMembershipFilter.All) {
-      const filterData = filtersConfig.filter(data => data.key === selectedFilter);
+      const filtersArray: FiltersConfigTranslation[] = Array.isArray(filtersConfig)
+        ? filtersConfig
+        : Object.values(filtersConfig);
+      const filterData = filtersArray.filter(data => data.key === selectedFilter);
 
       if (filterData.length > 0) {
         return [...filterData[0].tags, ...searchTerms];

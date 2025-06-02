@@ -1,6 +1,6 @@
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCurrentUserContext } from '@/domain/community/user';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   VcInteractionsDetailsFragmentDoc,
   MessageDetailsFragmentDoc,

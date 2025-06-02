@@ -22,8 +22,8 @@ import {
   CircularProgress,
   Collapse,
   Divider,
-  Grid,
-  GridProps,
+  GridLegacy,
+  GridLegacyProps,
   IconButton,
   Link,
   Skeleton,
@@ -133,8 +133,8 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           {({ isValid, handleSubmit, isSubmitting }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                <GridLegacy container spacing={2}>
+                  <GridLegacy item xs={12}>
                     <FormikMarkdownField
                       name="community-update"
                       rows={30}
@@ -142,8 +142,8 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                       required
                       maxLength={MARKDOWN_TEXT_LENGTH}
                     />
-                  </Grid>
-                  <Grid container item xs={12} justifyContent="flex-end">
+                  </GridLegacy>
+                  <GridLegacy container item xs={12} justifyContent="flex-end">
                     <SaveButton
                       type="submit"
                       disabled={!isValid}
@@ -152,25 +152,25 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                     >
                       {t('components.communityUpdates.actions.add.buttonTitle')}
                     </SaveButton>
-                  </Grid>
-                </Grid>
+                  </GridLegacy>
+                </GridLegacy>
               </Form>
             );
           }}
         </Formik>
       )}
       {!hideHeaders && orderedMessages.length > 0 && (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <GridLegacy container spacing={2}>
+          <GridLegacy item xs={12}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
               {t('components.communityUpdates.updatesTitle')}
             </Typography>
-          </Grid>
-        </Grid>
+          </GridLegacy>
+        </GridLegacy>
       )}
-      <Grid container spacing={2}>
+      <GridLegacy container spacing={2}>
         {stubMessageId && (
-          <Grid key={stubMessageId} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
+          <GridLegacy key={stubMessageId} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridLegacyProps['lg']}>
             <Card elevation={2}>
               <CardHeader title={<Skeleton />} subheader={<Skeleton />} />
               <CardContent sx={{ position: 'relative' }}>
@@ -182,14 +182,14 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                 </IconButton>
               </CardActions>
             </Card>
-          </Grid>
+          </GridLegacy>
         )}
         {orderedMessages.length === 0 && !stubMessageId && !loadingMessages && (
-          <Grid item>
+          <GridLegacy item>
             <Typography align={'center'} variant={'subtitle1'}>
               {t('common.no-updates')}
             </Typography>
-          </Grid>
+          </GridLegacy>
         )}
         {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;
@@ -197,7 +197,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           const removed = removedMessageId === m.id && state.removingMessage;
           const member = m.sender?.id ? memberMap[m.sender.id] : undefined;
           return (
-            <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
+            <GridLegacy key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridLegacyProps['lg']}>
               <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>
                 <Backdrop open={removed} style={{ position: 'absolute', zIndex: 1 }} />
                 <CardHeader
@@ -308,13 +308,13 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                 )}
               </Card>
               {disableElevation && i !== lastItemIndex && <Divider />}
-            </Grid>
+            </GridLegacy>
           );
         })}
         {loadingMessages && (
-          <Grid container item xs={12} justifyContent="center">
+          <GridLegacy container item xs={12} justifyContent="center">
             <CircularProgress />
-          </Grid>
+          </GridLegacy>
         )}
         <ConfirmationDialog
           options={{ show: showConfirmationDialog }}
@@ -333,7 +333,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
             },
           }}
         />
-      </Grid>
+      </GridLegacy>
     </>
   );
 };

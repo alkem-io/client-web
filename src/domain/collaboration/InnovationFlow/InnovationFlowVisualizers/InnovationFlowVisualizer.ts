@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
-import { InnovationFlowState } from '../InnovationFlow';
+import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 
 export interface InnovationFlowVisualizerProps {
-  states: InnovationFlowState[];
+  states: InnovationFlowStateModel[];
   currentState?: string;
   selectedState: string | undefined;
-  onSelectState?: (state: InnovationFlowState) => void;
+  onSelectState?: (state: InnovationFlowStateModel) => void;
   createButton?: ReactNode;
   settingsButton?: ReactNode;
 }

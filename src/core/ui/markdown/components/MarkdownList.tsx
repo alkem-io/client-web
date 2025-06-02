@@ -1,5 +1,10 @@
-import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
+import { ReactNode } from 'react';
+
+interface ReactMarkdownProps {
+  sx?: SxProps;
+  node?: ReactNode;
+}
 
 const createMarkdownList =
   (component: 'ul' | 'ol') =>
