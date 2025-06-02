@@ -612,7 +612,7 @@
           },
           "validationErrors": {
             "required": "Voeg ten minste één bijdrager toe om uit te nodigen",
-            "invalidAddress": "Please remove invalid entries in order to proceed"
+            "invalidAddress": "Verwijder ongeldige invoer om verder te gaan"
           }
         },
         "vcs": {
@@ -656,9 +656,9 @@
         "confirmButton": "Ja, goedkeuren"
       },
       "reject": {
-        "title": "Reject application from {{user}}",
-        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
-        "confirmButton": "Yes, reject"
+        "title": "Aanmelding van {{user}} afwijzen",
+        "content": "Weet je zeker dat je deze aanmelding wilt afwijzen? De gebruiker zal geen toegang hebben tot de Space.",
+        "confirmButton": "Ja, afwijzen"
       }
     },
     "pendingMembership": {
