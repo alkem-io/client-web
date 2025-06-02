@@ -1,4 +1,4 @@
-import { ButtonProps, GridLegacy, SxProps, Theme } from '@mui/material';
+import { Box, ButtonProps, GridLegacy, SxProps, Theme, Tooltip } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import { FC, useContext } from 'react';
 import { KratosUIContext } from '../KratosUI';
@@ -20,17 +20,21 @@ export const KratosButton: FC<KratosButtonProps> = ({ disabled, node, sx, varian
 
   return (
     <GridLegacy item xs={12}>
-      <AuthActionButton
-        name={getNodeName(node)}
-        type={attributes.type as AuthActionButtonProps['type']}
-        disabled={attributes.disabled || !!disabled}
-        value={attributes.value}
-        onClick={onBeforeSubmit}
-        variant={variant}
-        sx={sx}
-      >
-        {getNodeTitle(node, t)}
-      </AuthActionButton>
+      <Tooltip title={t('pages.accept-terms.tooltip')} disableHoverListener={!disabled} arrow placement="top">
+        <Box>
+          <AuthActionButton
+            name={getNodeName(node)}
+            type={attributes.type as AuthActionButtonProps['type']}
+            disabled={attributes.disabled || !!disabled}
+            value={attributes.value}
+            onClick={onBeforeSubmit}
+            variant={variant}
+            sx={sx}
+          >
+            {getNodeTitle(node, t)}
+          </AuthActionButton>
+        </Box>
+      </Tooltip>
     </GridLegacy>
   );
 };

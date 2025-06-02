@@ -1,4 +1,4 @@
-import { GridLegacy, InputAdornment, OutlinedInputProps, TextField } from '@mui/material';
+import { GridLegacy, InputAdornment, OutlinedInputProps, TextField, Tooltip } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -55,24 +55,26 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
 
   return (
     <GridLegacy xs={12}>
-      <TextField
-        name={name}
-        label={getNodeTitle(node, t)}
-        onBlur={() => setTouched(true)}
-        onChange={e => setValue(e.target.value)}
-        value={value ? String(value) : ''}
-        variant={'outlined'}
-        type={inputType}
-        error={touched && invalid}
-        helperText={helperText}
-        required={required}
-        disabled={attributes.disabled || disabled}
-        autoComplete={autoComplete}
-        fullWidth
-        InputProps={{ ...InputProps }}
-        InputLabelProps={{ shrink: true }}
-        sx={{ marginY: inputType === 'hidden' ? 0 : 0.5 }}
-      />
+      <Tooltip title={t('pages.accept-terms.tooltip')} arrow placement="top" disableHoverListener={!disabled}>
+        <TextField
+          name={name}
+          label={getNodeTitle(node, t)}
+          onBlur={() => setTouched(true)}
+          onChange={e => setValue(e.target.value)}
+          value={value ? String(value) : ''}
+          variant={'outlined'}
+          type={inputType}
+          error={touched && invalid}
+          helperText={helperText}
+          required={required}
+          disabled={attributes.disabled || disabled}
+          autoComplete={autoComplete}
+          fullWidth
+          InputProps={{ ...InputProps }}
+          InputLabelProps={{ shrink: true }}
+          sx={{ marginY: inputType === 'hidden' ? 0 : 0.5 }}
+        />
+      </Tooltip>
     </GridLegacy>
   );
 };
