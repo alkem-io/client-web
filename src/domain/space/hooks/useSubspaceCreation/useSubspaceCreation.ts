@@ -38,8 +38,7 @@ interface SubspaceCreationInput {
     };
     why?: string;
   };
-  // addTutorialCallouts: boolean;
-  addCallouts: boolean;
+  addTutorialCallouts: boolean;
   collaborationTemplateId?: string;
 }
 
@@ -110,8 +109,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
               },
             },
             collaborationData: {
-              // addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
+              addTutorialCallouts: value.addTutorialCallouts,
+              addCallouts: true, // Always add Callouts from the template
               collaborationTemplateID: value.collaborationTemplateId,
               calloutsSetData: {},
             },
