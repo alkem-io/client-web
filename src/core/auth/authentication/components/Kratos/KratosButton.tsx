@@ -20,7 +20,13 @@ export const KratosButton: FC<KratosButtonProps> = ({ disabled, node, sx, varian
 
   return (
     <GridLegacy item xs={12}>
-      <Tooltip title={t('pages.accept-terms.tooltip')} disableHoverListener={!disabled} arrow placement="top">
+      <Tooltip
+        title={t('pages.accept-terms.tooltip')}
+        disableFocusListener={!disabled}
+        disableHoverListener={!disabled}
+        arrow
+        placement="top"
+      >
         <Box>
           <AuthActionButton
             name={getNodeName(node)}

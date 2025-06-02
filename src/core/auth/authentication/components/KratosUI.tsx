@@ -3,7 +3,7 @@ import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
-import { Trans, TransProps, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
@@ -18,7 +18,6 @@ import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './K
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import { useKratosT } from './Kratos/messages';
 import Gutters from '@/core/ui/grid/Gutters';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
@@ -44,16 +43,18 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
+  const { t } = useKratosT();
   if (!messages || !messages.length) return null;
 
   return (
     <Box marginBottom={1}>
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
-          <Trans
-            i18nKey={message.text as unknown as TransProps<TranslationKey>['i18nKey']}
-            components={{ strong: <strong />, li: <li />, br: <br /> }}
-          />
+          {t(message)}
+          {/* <Trans */}
+          {/*   i18nKey={message.text as unknown as TransProps<TranslationKey>['i18nKey']} */}
+          {/*   components={{ strong: <strong />, li: <li />, br: <br /> }} */}
+          {/* /> */}
         </Alert>
       ))}
     </Box>

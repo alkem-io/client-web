@@ -55,7 +55,13 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
 
   return (
     <GridLegacy xs={12}>
-      <Tooltip title={t('pages.accept-terms.tooltip')} arrow placement="top" disableHoverListener={!disabled}>
+      <Tooltip
+        title={t('pages.accept-terms.tooltip')}
+        arrow
+        placement="top"
+        disableFocusListener={!disabled}
+        disableHoverListener={!disabled}
+      >
         <TextField
           name={name}
           label={getNodeTitle(node, t)}
