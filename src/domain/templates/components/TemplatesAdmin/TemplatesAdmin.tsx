@@ -33,7 +33,7 @@ import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateContentSpaceFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
-import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
+import { TemplateContentSpaceModel } from '@/domain/templates/models/TemplateContentSpaceModel';
 import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
 import { TemplateContentWhiteboardFormSubmittedValues } from '../Forms/TemplateContentWhiteboardForm';
 
@@ -227,7 +227,7 @@ const TemplatesAdmin = ({
     const { id, type: templateType } = importedTemplate;
     // TODO: Special case for collaboration, just for now, until we can import collaborations entirely
     if (templateType === TemplateType.Space) {
-      return handleImportCollaborationTemplate(importedTemplate as SpaceContentTemplate);
+      return handleImportCollaborationTemplate(importedTemplate as TemplateContentSpaceModel);
     }
 
     const { data } = await getTemplateContent({
@@ -250,7 +250,7 @@ const TemplatesAdmin = ({
     }
   };
   // Special case for Collaboration templates
-  const handleImportCollaborationTemplate = async (importedTemplate: SpaceContentTemplate) => {
+  const handleImportCollaborationTemplate = async (importedTemplate: TemplateContentSpaceModel) => {
     const { id } = importedTemplate;
     const { data } = await getTemplateContent({
       variables: {

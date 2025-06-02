@@ -112,7 +112,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
             collaborationData: {
               // addTutorialCallouts: value.addTutorialCallouts,
               addCallouts: value.addCallouts,
-              collaborationTemplateID: value.collaborationTemplateId,
+              spaceTemplateID: value.collaborationTemplateId,
               calloutsSetData: {},
             },
           },

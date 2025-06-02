@@ -14,10 +14,10 @@ import CardContent from '@/core/ui/card/CardContent';
 import CardTags from '@/core/ui/card/CardTags';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
-import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
+import { TemplateContentSpaceModel } from '@/domain/templates/models/TemplateContentSpaceModel';
 
 interface CollaborationTemplateCardProps extends TemplateCardProps {
-  template: SpaceContentTemplate;
+  template: TemplateContentSpaceModel;
 }
 
 const CollaborationTemplateCard = ({ template, innovationPack, loading, ...props }: CollaborationTemplateCardProps) => {

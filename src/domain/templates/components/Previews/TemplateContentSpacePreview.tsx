@@ -2,29 +2,16 @@ import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
-import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowState';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowCalloutsPreview, {
-  InnovationFlowCalloutsPreviewProps,
-} from '../../../collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import InnovationFlowCalloutsPreview from '../../../collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import { TemplateContentSpaceModel } from '../../models/TemplateContentSpaceModel';
 
-interface SpaceContentTemplatePreviewProps {
+interface TemplateContentSpacePreviewProps {
   loading?: boolean;
-  template?: {
-    contentSpace?: {
-      collaboration?: {
-        innovationFlow?: {
-          states: InnovationFlowStateModel[];
-        };
-        calloutsSet?: {
-          callouts?: InnovationFlowCalloutsPreviewProps['callouts'];
-        };
-      };
-    };
-  };
+  template?: TemplateContentSpaceModel;
 }
 
-const SpaceContentTemplatePreview = ({ template, loading }: SpaceContentTemplatePreviewProps) => {
+const SpaceContentTemplatePreview = ({ template, loading }: TemplateContentSpacePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = template?.contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];

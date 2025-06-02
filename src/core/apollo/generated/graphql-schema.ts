@@ -1752,10 +1752,10 @@ export type CreateCollaborationOnSpaceInput = {
   addTutorialCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** The CalloutsSet to use for this Collaboration. */
   calloutsSetData: CreateCalloutsSetInput;
-  /** The Template to use for instantiating the Collaboration. */
-  collaborationTemplateID?: InputMaybe<Scalars['UUID']['input']>;
   /** The InnovationFlow Template to use for this Collaboration. */
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
+  /** The Template to use for instantiating the Collaboration. */
+  spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateCommunityGuidelinesData = {
@@ -24851,17 +24851,97 @@ export type TemplateContentQuery = {
   };
 };
 
-export type SpaceTemplateContentQueryVariables = Exact<{
+export type TemplateContentSpaceQueryVariables = Exact<{
   templateContentSpaceId: Scalars['UUID']['input'];
 }>;
 
-export type SpaceTemplateContentQuery = {
+export type TemplateContentSpaceQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
     templateContentSpace?:
       | {
           __typename?: 'TemplateContentSpace';
+          id: string;
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            innovationFlow: {
+              __typename?: 'InnovationFlow';
+              id: string;
+              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            };
+            calloutsSet: {
+              __typename?: 'CalloutsSet';
+              id: string;
+              callouts: Array<{
+                __typename?: 'Callout';
+                id: string;
+                type: CalloutType;
+                sortOrder: number;
+                classification?:
+                  | {
+                      __typename?: 'Classification';
+                      id: string;
+                      flowState?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                  whiteboard?:
+                    | {
+                        __typename?: 'Whiteboard';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | undefined;
+                };
+              }>;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceInfoForContentSpaceQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceInfoForContentSpaceQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
           id: string;
           collaboration: {
             __typename?: 'Collaboration';
@@ -25073,6 +25153,65 @@ export type CommunityGuidelinesTemplateContentFragment = {
             | undefined;
         }>
       | undefined;
+  };
+};
+
+export type SpaceContentCollaborationFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  innovationFlow: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  };
+  calloutsSet: {
+    __typename?: 'CalloutsSet';
+    id: string;
+    callouts: Array<{
+      __typename?: 'Callout';
+      id: string;
+      type: CalloutType;
+      sortOrder: number;
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            flowState?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          }
+        | undefined;
+      framing: {
+        __typename?: 'CalloutFraming';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        whiteboard?:
+          | {
+              __typename?: 'Whiteboard';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | undefined;
+      };
+    }>;
   };
 };
 

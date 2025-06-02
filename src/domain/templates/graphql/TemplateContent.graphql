@@ -36,10 +36,20 @@ query TemplateContent(
 }
 
 # Used temporarily to preview any collaboration before turning it into a template
-query SpaceTemplateContent($templateContentSpaceId: UUID!) {
+query TemplateContentSpace($templateContentSpaceId: UUID!) {
   lookup {
     templateContentSpace(ID: $templateContentSpaceId) {
       ...SpaceTemplateContent
+    }
+  }
+}
+query SpaceInfoForContentSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...SpaceContentCollaboration
+      }
     }
   }
 }
@@ -95,47 +105,51 @@ fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
   }
 }
 
-fragment SpaceTemplateContent on TemplateContentSpace {
+fragment SpaceContentCollaboration on Collaboration {
   id
-  collaboration {
+  innovationFlow {
     id
-    innovationFlow {
-      id
-      states {
-        displayName
-        description
-      }
+    states {
+      displayName
+      description
     }
-    calloutsSet {
+  }
+  calloutsSet {
+    id
+    callouts {
       id
-      callouts {
+      type
+      classification {
         id
-        type
-        classification {
-          id
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
-          }
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
         }
-        framing {
+      }
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+        }
+        whiteboard {
           id
           profile {
-            id
-            displayName
-            description
-          }
-          whiteboard {
-            id
-            profile {
-              preview: visual(type: BANNER) {
-                ...VisualModel
-              }
+            preview: visual(type: BANNER) {
+              ...VisualModel
             }
           }
         }
-        sortOrder
       }
+      sortOrder
     }
+  }
+}
+
+fragment SpaceTemplateContent on TemplateContentSpace {
+  id
+  collaboration {
+    ...SpaceContentCollaboration
   }
 }
 

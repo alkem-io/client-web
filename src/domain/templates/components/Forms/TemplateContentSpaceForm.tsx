@@ -6,9 +6,9 @@ import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './Template
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import { SpaceContentTemplate } from '@/domain/templates/models/SpaceContentTemplate';
-import SpaceContentTemplatePreview from '../Previews/SpaceContentTemplatePreview';
-import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
+import { TemplateContentSpaceModel } from '@/domain/templates/models/TemplateContentSpaceModel';
+import SpaceContentTemplatePreview from '../Previews/TemplateContentSpacePreview';
+import { useSpaceInfoForContentSpaceQuery, useTemplateContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
 
 export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
@@ -16,7 +16,7 @@ export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormPro
 }
 
 interface TemplateContentSpaceFormProps {
-  template?: SpaceContentTemplate;
+  template?: TemplateContentSpaceModel;
   onSubmit: (values: TemplateContentSpaceFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<TemplateContentSpaceFormSubmittedValues>) => ReactNode);
 }
@@ -34,7 +34,7 @@ const validator = {
  *
  * We have two spaceIds in this component:
  * - the one in the state [spaceId, setSpaceId] that we use to query the API and to populate show the template preview.
- * - the one in the formik values (values.spaceId) we want to change that when the user selects a space to serve as template
+ * - the one in the formik values (values.spaceId) we want to change that when the user selects a space to serve as template (as the )
  *
  * a ContentSpace preview:
  * - the one coming with the template (template?.contentSpace?.id) that never changes (will be undefined if we are creating a new template)
@@ -52,32 +52,50 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
   // The space that is selected by URL submitted by the user
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | undefined>(undefined);
 
+  // Form to have the information to submit to the server in mutation i.e. profile, spaceId to use to create /update the template
+  // TemplateId is handled outside of the form.
   const initialValues: TemplateContentSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-      contentSpaceId: template?.contentSpace?.id ?? '',
+      spaceId: '', // No initial value, preview comes from the contentSpace of the template
     }),
     [template]
   );
 
   // Just load the innovation flow and the callouts of the selected collaboration and show it
   const {
-    data,
-    loading,
-    refetch: refetchTemplateContent,
-  } = useSpaceTemplateContentQuery({
+    data: dataContentSpace,
+    loading: loadingContentSpace,
+    refetch: refetchTemplateContentSpace,
+  } = useTemplateContentSpaceQuery({
     variables: {
-      templateContentSpaceId: selectedSpaceId!,
+      templateContentSpaceId: template?.contentSpace?.id!,
+    },
+    skip: !template?.contentSpace?.id,
+  });
+
+  // Do we actually need this? We do not refetch for the contentSpace, it comes in with the query...
+  const {
+    data: dataSpace,
+    loading: loadingSpace,
+    // refetch: refetchSpaceInfoForSpaceContent,
+  } = useSpaceInfoForContentSpaceQuery({
+    variables: {
+      spaceId: selectedSpaceId!,
     },
     skip: !selectedSpaceId,
   });
 
-  // TODO: the spaceContentPreview needs to become state
-  const spaceContentPreview = {
-    contentSpace: {
-      collaboration: data?.lookup.templateContentSpace?.collaboration,
+  // TODO: proper mapping to create the model from the data that is available
+  const spaceContentPreview: TemplateContentSpaceModel = {
+    profile: {
+      displayName: template?.profile?.displayName || '',
     },
+    ...template,
+    type: TemplateType.Space,
+    contentSpace: dataContentSpace?.lookup.templateContentSpace || dataSpace?.lookup.space,
   };
+
   const handleSubmit = (
     values: TemplateContentSpaceFormSubmittedValues,
     { setFieldValue }: FormikHelpers<TemplateContentSpaceFormSubmittedValues>
@@ -94,6 +112,8 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
     return onSubmit(values);
   };
 
+  const loading = loadingContentSpace || loadingSpace;
+
   return (
     <TemplateFormBase
       templateType={TemplateType.Space}
@@ -108,7 +128,7 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
           setFieldValue('spaceId', spaceId); // Change the value in Formik
           setSelectedSpaceId(spaceId); // Refresh the collaboration preview
           if (spaceId) {
-            await refetchTemplateContent({ templateContentSpaceId: spaceId });
+            await refetchTemplateContentSpace({ templateContentSpaceId: spaceId });
           }
         };
         const handleCancel = () => {
@@ -118,7 +138,7 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
             setFieldValue('spaceId', spaceId); // Change the value in Formik back to the template collaboration
             setSelectedSpaceId(spaceId); // Refresh the collaboration preview
             if (spaceId) {
-              refetchTemplateContent({ templateContentSpaceId: spaceId });
+              refetchTemplateContentSpace({ templateContentSpaceId: spaceId });
             }
           }
         };
