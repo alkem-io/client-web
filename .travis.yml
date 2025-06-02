@@ -11,5 +11,5 @@ install:
   - npm install
 script:
   - npm run-script lint:prod
-  - npm run-script test:upload:coverage
+  - npm run-script test:upload
   - CI=false npm run-script build

@@ -25,6 +25,7 @@
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "test": "vitest",
     "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
+    "test:upload": "npm run test:coverage",
     "test:upload:coverage": "npm run test:coverage && cat ./coverage/lcov.info ",
     "ts:watch": "tsc --noEmit --watch"
   },
