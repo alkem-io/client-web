@@ -32,7 +32,7 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { TemplateContentSpaceFormSubmittedValues } from '../Forms/TemplateContentSpaceForm';
+import { TemplateContentSpaceFormSubmittedValues } from '../../contentSpace/TemplateContentSpaceForm';
 import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
 import { TemplateContentWhiteboardFormSubmittedValues } from '../Forms/TemplateContentWhiteboardForm';
 import { SpaceTemplateModel } from '../../models/SpaceTemplate';

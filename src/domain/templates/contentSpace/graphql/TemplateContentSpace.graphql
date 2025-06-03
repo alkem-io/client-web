@@ -1,0 +1,85 @@
+# Used temporarily to preview any collaboration before turning it into a template
+query TemplateContentSpace($templateContentSpaceId: UUID!) {
+  lookup {
+    templateContentSpace(ID: $templateContentSpaceId) {
+      ...SpaceTemplateContent
+    }
+  }
+}
+
+query SpaceInfoForContentSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...SpaceContentCollaboration
+      }
+    }
+  }
+}
+
+fragment ContentSpaceTemplate on Template {
+  ...TemplateProfileInfo
+  contentSpace {
+    id
+    collaboration {
+      id
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
+      }
+    }
+  }
+}
+
+fragment SpaceContentCollaboration on Collaboration {
+  id
+  innovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
+  }
+  calloutsSet {
+    id
+    callouts {
+      id
+      type
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+        }
+        whiteboard {
+          id
+          profile {
+            preview: visual(type: BANNER) {
+              ...VisualModel
+            }
+          }
+        }
+      }
+      sortOrder
+    }
+  }
+}
+
+fragment SpaceTemplateContent on TemplateContentSpace {
+  id
+  collaboration {
+    ...SpaceContentCollaboration
+  }
+}
+

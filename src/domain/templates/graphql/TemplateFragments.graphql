@@ -33,22 +33,7 @@ fragment PostTemplate on Template {
   postDefaultDescription
 }
 
-fragment ContentSpaceTemplate on Template {
-  ...TemplateProfileInfo
-  contentSpace {
-    id
-    collaboration {
-      id
-      innovationFlow {
-        id
-        states {
-          displayName
-          description
-        }
-      }
-    }
-  }
-}
+
 
 fragment WhiteboardTemplate on Template {
   ...TemplateProfileInfo

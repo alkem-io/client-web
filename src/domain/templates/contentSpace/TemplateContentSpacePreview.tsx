@@ -3,8 +3,8 @@ import { Box } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowCalloutsPreview from '../../../collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
-import { TemplateContentSpaceModel } from '../../contentSpace/TemplateContentSpaceModel';
+import InnovationFlowCalloutsPreview from '../../collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import { TemplateContentSpaceModel } from './TemplateContentSpaceModel';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;

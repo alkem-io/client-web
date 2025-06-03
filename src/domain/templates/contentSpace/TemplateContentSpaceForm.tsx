@@ -2,16 +2,16 @@ import React, { ReactNode, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikHelpers, FormikProps } from 'formik';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
+import TemplateFormBase, { TemplateFormProfileSubmittedValues } from '../components/Forms/TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
+import { mapTemplateProfileToUpdateProfileInput } from '../components/Forms/common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/TemplateContentSpaceModel';
-import SpaceContentTemplatePreview from '../Previews/TemplateContentSpacePreview';
+import SpaceContentTemplatePreview from './TemplateContentSpacePreview';
 import { useSpaceInfoForContentSpaceQuery, useTemplateContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
-import { SpaceTemplateModel } from '../../models/SpaceTemplate';
-import { mapInputDataToTemplateContentSpaceModel } from '../../contentSpace/contentSpaceUtils';
+import ContentSpaceFromSpaceUrlForm from '../components/Forms/SpaceFromSpaceUrlForm';
+import { SpaceTemplateModel } from '../models/SpaceTemplate';
+import { mapInputDataToTemplateContentSpaceModel } from './contentSpaceUtils';
 
 export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   contentSpaceId?: string;

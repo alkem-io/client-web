@@ -3,7 +3,9 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
 import TemplateContentCalloutForm, { TemplateContentCalloutFormSubmittedValues } from './TemplateContentCalloutForm';
-import TemplateContentSpaceForm, { TemplateContentSpaceFormSubmittedValues } from './TemplateContentSpaceForm';
+import TemplateContentSpaceForm, {
+  TemplateContentSpaceFormSubmittedValues,
+} from '../../contentSpace/TemplateContentSpaceForm';
 import TemplateContentCommunityGuidelinesForm, {
   TemplateContentCommunityGuidelinesFormSubmittedValues,
 } from './TemplateContentCommunityGuidelinesForm';
