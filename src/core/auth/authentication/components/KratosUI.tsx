@@ -18,6 +18,7 @@ import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './K
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import { useKratosT } from './Kratos/messages';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
@@ -221,11 +222,7 @@ export const KratosUI: FC<KratosUIProps> = ({
           </Box>
         )}
         {nodesByGroup.oidc.length > 0 && (
-          <Gutters
-            row
-            justifyContent="center"
-            sx={{ gap: { xs: 0, md: 0 }, justifyContent: 'space-between', padding: 0 }}
-          >
+          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {nodesByGroup.oidc.map(toUiControl)}
           </Gutters>
         )}
