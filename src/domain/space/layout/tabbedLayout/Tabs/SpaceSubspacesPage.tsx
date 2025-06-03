@@ -55,7 +55,7 @@ const SpaceSubspacesPage = () => {
           why: value.why,
         },
         addTutorialCallouts: value.addTutorialCallouts,
-        collaborationTemplateId: value.collaborationTemplateId,
+        spaceTemplateId: value.spaceTemplateId,
       });
 
       if (!result) {

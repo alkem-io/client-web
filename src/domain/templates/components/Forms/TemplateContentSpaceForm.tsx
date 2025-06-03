@@ -6,17 +6,19 @@ import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './Template
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import { TemplateContentSpaceModel } from '@/domain/templates/models/TemplateContentSpaceModel';
+import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/TemplateContentSpaceModel';
 import SpaceContentTemplatePreview from '../Previews/TemplateContentSpacePreview';
 import { useSpaceInfoForContentSpaceQuery, useTemplateContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
+import { SpaceTemplateModel } from '../../models/SpaceTemplate';
+import { mapInputDataToTemplateContentSpaceModel } from '../../contentSpace/contentSpaceUtils';
 
 export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   contentSpaceId?: string;
 }
 
 interface TemplateContentSpaceFormProps {
-  template?: TemplateContentSpaceModel;
+  template?: SpaceTemplateModel;
   onSubmit: (values: TemplateContentSpaceFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<TemplateContentSpaceFormSubmittedValues>) => ReactNode);
 }
@@ -86,15 +88,10 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
     skip: !selectedSpaceId,
   });
 
-  // TODO: proper mapping to create the model from the data that is available
-  const spaceContentPreview: TemplateContentSpaceModel = {
-    profile: {
-      displayName: template?.profile?.displayName || '',
-    },
-    ...template,
-    type: TemplateType.Space,
-    contentSpace: dataContentSpace?.lookup.templateContentSpace || dataSpace?.lookup.space,
-  };
+  // Map the data from the query to the TemplateContentSpaceModel
+  const spaceContentPreview: TemplateContentSpaceModel = mapInputDataToTemplateContentSpaceModel(
+    dataContentSpace?.lookup.templateContentSpace || dataSpace?.lookup.space
+  );
 
   const handleSubmit = (
     values: TemplateContentSpaceFormSubmittedValues,
@@ -150,7 +147,7 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
               onCollapse={handleCancel}
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <SpaceContentTemplatePreview loading={loading} template={spaceContentPreview} />
+            <SpaceContentTemplatePreview loading={loading} contentSpace={spaceContentPreview} />
           </>
         );
       }}

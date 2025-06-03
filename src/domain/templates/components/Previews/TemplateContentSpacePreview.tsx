@@ -4,16 +4,16 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowCalloutsPreview from '../../../collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
-import { TemplateContentSpaceModel } from '../../models/TemplateContentSpaceModel';
+import { TemplateContentSpaceModel } from '../../contentSpace/TemplateContentSpaceModel';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;
-  template?: TemplateContentSpaceModel;
+  contentSpace?: TemplateContentSpaceModel;
 }
 
-const SpaceContentTemplatePreview = ({ template, loading }: TemplateContentSpacePreviewProps) => {
+const SpaceContentTemplatePreview = ({ contentSpace, loading }: TemplateContentSpacePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
-  const collaboration = template?.contentSpace?.collaboration;
+  const collaboration = contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
   const callouts = collaboration?.calloutsSet?.callouts ?? [];
 

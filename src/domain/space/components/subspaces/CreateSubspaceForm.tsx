@@ -25,7 +25,7 @@ const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
   SpaceFormValues,
-  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'spaceTemplateId' | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends SpaceCreationForm {}
@@ -47,7 +47,7 @@ export const CreateSubspaceForm = ({
       description: value.description,
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
-      collaborationTemplateId: value.collaborationTemplateId,
+      spaceTemplateId: value.spaceTemplateId,
       visuals: value.visuals,
     });
 
@@ -57,7 +57,7 @@ export const CreateSubspaceForm = ({
     description: '',
     tags: [],
     addTutorialCallouts: false,
-    collaborationTemplateId: undefined,
+    spaceTemplateId: undefined,
     visuals: {
       avatar: { file: undefined, altText: '' },
       cardBanner: { file: undefined, altText: '' },
@@ -82,7 +82,7 @@ export const CreateSubspaceForm = ({
       ),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    collaborationTemplateId: yup.string().nullable(),
+    spaceTemplateId: yup.string().nullable(),
   });
   const level = SpaceLevel.L1;
 
@@ -132,7 +132,7 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
-            <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
+            <SubspaceTemplateSelector name="spaceTemplateId" disablePadding />
             {/* TEMPORARY DISABLE AS THERE ARE NO SUBSPACE TUTORIALS */}
             {/*<FormikRadiosSwitch*/}
             {/*  name="addTutorialCallouts"*/}

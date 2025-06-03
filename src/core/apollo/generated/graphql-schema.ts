@@ -1754,8 +1754,6 @@ export type CreateCollaborationOnSpaceInput = {
   calloutsSetData: CreateCalloutsSetInput;
   /** The InnovationFlow Template to use for this Collaboration. */
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
-  /** The Template to use for instantiating the Collaboration. */
-  spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateCommunityGuidelinesData = {
@@ -1976,6 +1974,8 @@ export type CreateSpaceOnAccountInput = {
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Pick up a different platform template. */
   platformTemplate?: InputMaybe<TemplateDefaultType>;
+  /** The Template to use for instantiating the Collaboration. */
+  spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateSpaceSettingsCollaborationInput = {
@@ -2018,6 +2018,8 @@ export type CreateSubspaceInput = {
   /** Pick up a different platform template. */
   platformTemplate?: InputMaybe<TemplateDefaultType>;
   spaceID: Scalars['UUID']['input'];
+  /** The Template to use for instantiating the Collaboration. */
+  spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateTagsetData = {

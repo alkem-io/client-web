@@ -129,7 +129,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           why: value.why ?? '',
         },
         addTutorialCallouts: value.addTutorialCallouts,
-        collaborationTemplateId: value.collaborationTemplateId,
+        spaceTemplateId: value.spaceTemplateId,
       });
 
       if (!result?.about.profile?.url) {
@@ -190,14 +190,14 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   };
 
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
-  const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
+  const handleSelectCollaborationTemplate = async (spaceTemplateId: string) => {
     if (!defaultSubspaceTemplate) {
       return;
     }
     await updateTemplateDefault({
       variables: {
         templateDefaultID: defaultSubspaceTemplate?.id,
-        templateID: collaborationTemplateId,
+        templateID: spaceTemplateId,
       },
       refetchQueries: [
         refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery({

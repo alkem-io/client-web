@@ -1,14 +1,14 @@
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CalloutTemplate } from './CalloutTemplate';
-import { TemplateContentSpaceModel } from './TemplateContentSpaceModel';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
+import { SpaceTemplateModel } from './SpaceTemplate';
 
 export type AnyTemplate =
   | CalloutTemplate
-  | TemplateContentSpaceModel
+  | SpaceTemplateModel
   | CommunityGuidelinesTemplate
   | PostTemplate
   | WhiteboardTemplate;

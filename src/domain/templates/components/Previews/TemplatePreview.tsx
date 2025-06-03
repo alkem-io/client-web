@@ -33,7 +33,7 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
     case TemplateType.Callout:
       return <CalloutTemplatePreview template={templateData} />;
     case TemplateType.Space:
-      return <SpaceContentTemplatePreview template={templateData} />;
+      return <SpaceContentTemplatePreview contentSpace={templateData?.contentSpace} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplatePreview template={templateData} />;
     case TemplateType.Post:

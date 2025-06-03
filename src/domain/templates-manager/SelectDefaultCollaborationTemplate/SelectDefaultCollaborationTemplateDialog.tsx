@@ -25,7 +25,7 @@ interface SelectDefaultCollaborationTemplateDialogProps {
   open: boolean;
   onClose?: () => void;
   defaultCollaborationTemplateId?: string;
-  onSelectCollaborationTemplate: (collaborationTemplateId: string) => Promise<unknown>;
+  onSelectCollaborationTemplate: (spaceTemplateId: string) => Promise<unknown>;
 }
 
 const SelectDefaultCollaborationTemplateDialog = ({
