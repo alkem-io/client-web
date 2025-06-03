@@ -29,9 +29,7 @@ import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
 import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
-import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 
@@ -111,11 +109,10 @@ export const CollaborativeMarkdownInput = memo(
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
       const [isConnected, setIsConnected] = useState(false);
-      const [activeUsers, setActiveUsers] = useState<Array<{ name: string; color: string }>>([]);
+      const [activeUsers] = useState<Array<{ name: string; color: string }>>([]);
       const isInteractingWithInput = hasFocus || isControlsDialogOpen;
 
       const { HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
-      const storageConfig = useStorageConfigContext();
       const { t } = useTranslation();
       const notify = useNotification();
 
@@ -131,105 +128,21 @@ export const CollaborativeMarkdownInput = memo(
           token: token,
           onConnect: () => {
             setIsConnected(true);
-            notify(t('collaborative-editor.connected'), 'success');
+            notify(t('components.collaborative-editor.connected'), 'success');
           },
           onDisconnect: () => {
             setIsConnected(false);
-            notify(t('collaborative-editor.disconnected'), 'warning');
-          },
-          onStatus: ({ status: _status }) => {
-            // Connection status tracking could be added here if needed
+            notify(t('components.collaborative-editor.disconnected'), 'warning');
           },
         });
 
         providerRef.current = provider;
-
-        // Track awareness (cursors and user presence)
-        provider.on('awarenessChange', ({ states }) => {
-          const users = Array.from(states.values())
-            .map((state: { user?: { name: string; color: string } }) => state.user)
-            .filter(Boolean);
-          setActiveUsers(users);
-        });
 
         return () => {
           provider.destroy();
           ydoc.destroy();
         };
       }, [documentId, serverUrl, token]);
-
-      const [uploadFile] = useUploadFileMutation({
-        onCompleted: data => {
-          notify(t('components.file-upload.file-upload-success'), 'success');
-          if (editor) {
-            editor.chain().focus().setImage({ src: data.uploadFileOnStorageBucket }).run();
-          }
-        },
-      });
-
-      const { storageBucketId, temporaryLocation: configTemporaryLocation } = storageConfig;
-
-      const isImageOrHtmlWithImage = useCallback((item: DataTransferItem, clipboardData: DataTransfer) => {
-        if (item.type.startsWith('image/')) {
-          return true;
-        }
-        if (item.type === 'text/html') {
-          const htmlData = clipboardData.getData('text/html');
-          return htmlData.includes('<img');
-        }
-        return false;
-      }, []);
-
-      const handlePaste: EditorOptions['editorProps']['handlePaste'] = useCallback(
-        (view, event, _slice) => {
-          const clipboardData = event.clipboardData;
-          if (!clipboardData) return false;
-
-          const items = clipboardData.items;
-          const itemsArray = Array.from(items);
-
-          itemsArray.forEach(item => {
-            const isImage = isImageOrHtmlWithImage(item, clipboardData);
-
-            if (hideImageOptions && isImage) {
-              event.preventDefault();
-              return true;
-            }
-
-            if (isImage) {
-              const file = item.getAsFile();
-
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  uploadFile({
-                    variables: {
-                      file,
-                      uploadData: {
-                        storageBucketId,
-                        temporaryLocation: temporaryLocation || configTemporaryLocation,
-                      },
-                    },
-                  });
-                };
-                reader.readAsDataURL(file);
-                event.preventDefault();
-                return true;
-              }
-            }
-          });
-
-          return false;
-        },
-        [
-          storageBucketId,
-          hideImageOptions,
-          temporaryLocation,
-          configTemporaryLocation,
-          uploadFile,
-          isImageOrHtmlWithImage,
-        ]
-      );
 
       const editorOptions: Partial<EditorOptions> = useMemo(
         () => ({
@@ -250,9 +163,8 @@ export const CollaborativeMarkdownInput = memo(
               user: userInfo,
             }),
           ],
-          editorProps: { handlePaste },
         }),
-        [handlePaste, userInfo]
+        [userInfo]
       );
 
       const editor = useEditor(editorOptions);
@@ -434,7 +346,9 @@ export const CollaborativeMarkdownInput = memo(
             <Box display="flex" alignItems="center" gap={1}>
               <Box width={8} height={8} borderRadius="50%" bgcolor={isConnected ? 'success.main' : 'error.main'} />
               <Box component="span" fontSize="0.75rem" color="text.secondary">
-                {isConnected ? t('collaborative-editor.connected') : t('collaborative-editor.disconnected')}
+                {isConnected
+                  ? t('components.collaborative-editor.connected')
+                  : t('components.collaborative-editor.disconnected')}
               </Box>
             </Box>
             {activeUsers.length > 0 && (
