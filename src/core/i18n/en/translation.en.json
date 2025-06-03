@@ -2225,13 +2225,13 @@
     "visualEdit": {
       "AVATAR": {
         "title": "Avatar",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)\n\n_*Shown in information pane and top right navigation menu.*_",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)\n\n_*Shown in information pane and top left navigation menu.*_",
         "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
         "title": "Page banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)\n\n_*Shown on top of the Space (also in the Subspaces) and top navigation menu.*_",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)\n\n_*Shown on top of the Space (also in the Subspaces) and top left navigation menu.*_",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
