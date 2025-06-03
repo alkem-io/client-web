@@ -1464,6 +1464,10 @@
       "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },
+    "collaborative-editor": {
+      "connected": "Підключено до колаборативного редактора",
+      "disconnected": "Відключено від колаборативного редактора"
+    },
     "editSpaceForm": {
       "host": {
         "title": "Host",

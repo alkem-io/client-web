@@ -1464,6 +1464,10 @@
       "file-size-error": "Die Dateigröße überschreitet die maximale Größe von {0} MB",
       "file-upload-success": "Datei erfolgreich hochgeladen"
     },
+    "collaborative-editor": {
+      "connected": "Mit kollaborativem Editor verbunden",
+      "disconnected": "Vom kollaborativen Editor getrennt"
+    },
     "editSpaceForm": {
       "host": {
         "title": "Selbst hosten",

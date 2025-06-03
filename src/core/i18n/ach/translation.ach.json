@@ -1464,6 +1464,10 @@
       "file-size-error": "crwdns19244:0{{limit}}crwdne19244:0",
       "file-upload-success": "crwdns19246:0crwdne19246:0"
     },
+    "collaborative-editor": {
+      "connected": "crwdns99998:0crwdne99998:0",
+      "disconnected": "crwdns99999:0crwdne99999:0"
+    },
     "editSpaceForm": {
       "host": {
         "title": "crwdns19248:0crwdne19248:0",

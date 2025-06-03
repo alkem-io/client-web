@@ -1464,6 +1464,10 @@
       "file-size-error": "El tamaño del archivo excede el límite de {0} MB",
       "file-upload-success": "El archivo se ha añadido correctamente"
     },
+    "collaborative-editor": {
+      "connected": "Conectado al editor colaborativo",
+      "disconnected": "Desconectado del editor colaborativo"
+    },
     "editSpaceForm": {
       "host": {
         "title": "Host",

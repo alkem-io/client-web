@@ -1464,6 +1464,10 @@
       "file-size-error": "La taille du fichier dépasse la limite de {{limit}}Mo",
       "file-upload-success": "Le fichier a été téléchargé avec succès"
     },
+    "collaborative-editor": {
+      "connected": "Connecté à l'éditeur collaboratif",
+      "disconnected": "Déconnecté de l'éditeur collaboratif"
+    },
     "editSpaceForm": {
       "host": {
         "title": "Hôte",

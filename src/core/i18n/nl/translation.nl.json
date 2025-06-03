@@ -1464,6 +1464,10 @@
       "file-size-error": "Bestandsgrootte overschrijdt de limiet van {{limit}}MB",
       "file-upload-success": "Bestand succesvol geüpload"
     },
+    "collaborative-editor": {
+      "connected": "Verbonden met samenwerkingseditor",
+      "disconnected": "Verbinding verbroken met samenwerkingseditor"
+    },
     "editSpaceForm": {
       "host": {
         "title": "Host",
