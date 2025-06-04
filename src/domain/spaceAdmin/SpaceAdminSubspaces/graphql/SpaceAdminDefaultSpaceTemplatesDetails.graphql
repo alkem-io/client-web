@@ -1,4 +1,4 @@
-query SpaceAdminDefaultTemplatesCollaborationDetails($spaceId: UUID!) {
+query SpaceAdminDefaultSpaceTemplatesDetails($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

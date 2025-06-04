@@ -17,7 +17,7 @@ export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSub
   selectedSpaceId?: string;
 }
 
-interface TemplateSpaceFormProps {
+export interface TemplateSpaceFormProps {
   template?: SpaceTemplateModel;
   onSubmit: (values: TemplateSpaceFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<TemplateSpaceFormSubmittedValues>) => ReactNode);

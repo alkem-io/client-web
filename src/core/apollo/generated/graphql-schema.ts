@@ -1974,6 +1974,7 @@ export type CreateSpaceOnAccountInput = {
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Pick up a different platform template. */
   platformTemplate?: InputMaybe<TemplateDefaultType>;
+  settingsData?: InputMaybe<CreateSpaceSettingsInput>;
   /** The Template to use for instantiating the Collaboration. */
   spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -2017,6 +2018,7 @@ export type CreateSubspaceInput = {
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Pick up a different platform template. */
   platformTemplate?: InputMaybe<TemplateDefaultType>;
+  settingsData?: InputMaybe<CreateSpaceSettingsInput>;
   spaceID: Scalars['UUID']['input'];
   /** The Template to use for instantiating the Collaboration. */
   spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
@@ -23578,11 +23580,11 @@ export type DeleteDocumentMutation = {
   deleteDocument: { __typename?: 'Document'; id: string };
 };
 
-export type SpaceAdminDefaultTemplatesCollaborationDetailsQueryVariables = Exact<{
+export type SpaceAdminDefaultSpaceTemplatesDetailsQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
 
-export type SpaceAdminDefaultTemplatesCollaborationDetailsQuery = {
+export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
