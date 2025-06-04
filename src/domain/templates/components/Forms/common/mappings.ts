@@ -19,11 +19,11 @@ import {
   UpdateTemplateMutationVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
-import { TemplateContentCommunityGuidelinesFormSubmittedValues } from '../TemplateContentCommunityGuidelinesForm';
-import { TemplateContentWhiteboardFormSubmittedValues } from '../TemplateContentWhiteboardForm';
-import { TemplateContentCalloutFormSubmittedValues } from '../TemplateContentCalloutForm';
+import { TemplateCommunityGuidelinesFormSubmittedValues } from '../TemplateCommunityGuidelinesForm';
+import { TemplateWhiteboardFormSubmittedValues } from '../TemplateWhiteboardForm';
+import { TemplateCalloutFormSubmittedValues } from '../TemplateCalloutForm';
 import { TemplateSpaceFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateSpaceForm';
-import { TemplateContentPostFormSubmittedValues } from '../TemplateContentPostForm';
+import { TemplatePostFormSubmittedValues } from '../TemplatePostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
@@ -138,7 +138,7 @@ const handleCreateWhiteboard = (data?: {
 const shouldRequestPreviewVisuals = (
   data: AnyTemplateFormSubmittedValues
 ): { includeProfileVisuals?: boolean } | undefined => {
-  if (data && (data as TemplateContentWhiteboardFormSubmittedValues).whiteboardPreviewImages) {
+  if (data && (data as TemplateWhiteboardFormSubmittedValues).whiteboardPreviewImages) {
     return { includeProfileVisuals: true };
   }
   return undefined;
@@ -174,7 +174,7 @@ export const toCreateTemplateMutationVariables = (
 
   switch (templateType) {
     case TemplateType.Callout: {
-      const calloutTemplateData = values as TemplateContentCalloutFormSubmittedValues;
+      const calloutTemplateData = values as TemplateCalloutFormSubmittedValues;
       if (!calloutTemplateData.callout || !calloutTemplateData.callout.type) {
         throw new Error('Callout template must have callout data');
       }
@@ -224,7 +224,7 @@ export const toCreateTemplateMutationVariables = (
       throw new Error('Call toCreateTemplateFromCollaborationMutationVariables instead');
     }
     case TemplateType.CommunityGuidelines: {
-      const communityGuidelinesTemplateData = values as TemplateContentCommunityGuidelinesFormSubmittedValues;
+      const communityGuidelinesTemplateData = values as TemplateCommunityGuidelinesFormSubmittedValues;
       const { profileData } = handleCreateProfile(communityGuidelinesTemplateData.communityGuidelines);
       result.communityGuidelinesData = {
         profile: profileData,
@@ -233,12 +233,12 @@ export const toCreateTemplateMutationVariables = (
       break;
     }
     case TemplateType.Post: {
-      const postData = values as TemplateContentPostFormSubmittedValues;
+      const postData = values as TemplatePostFormSubmittedValues;
       result.postDefaultDescription = postData.postDefaultDescription;
       break;
     }
     case TemplateType.Whiteboard: {
-      const whiteboardTemplateData = values as TemplateContentWhiteboardFormSubmittedValues;
+      const whiteboardTemplateData = values as TemplateWhiteboardFormSubmittedValues;
       result.whiteboard = handleCreateWhiteboard(whiteboardTemplateData.whiteboard);
       break;
     }
@@ -340,7 +340,7 @@ export const toUpdateTemplateMutationVariables = (
   };
   switch (template.type) {
     case TemplateType.Callout: {
-      const calloutTemplateData = newValues as TemplateContentCalloutFormSubmittedValues;
+      const calloutTemplateData = newValues as TemplateCalloutFormSubmittedValues;
       const updateCalloutVariables: UpdateCalloutMutationVariables = {
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
@@ -408,7 +408,7 @@ export const toUpdateTemplateMutationVariables = (
       }
     }
     case TemplateType.CommunityGuidelines: {
-      const communityGuidelinesTemplateData = newValues as TemplateContentCommunityGuidelinesFormSubmittedValues;
+      const communityGuidelinesTemplateData = newValues as TemplateCommunityGuidelinesFormSubmittedValues;
       const updateCommunityGuidelinesVariables: UpdateCommunityGuidelinesMutationVariables = {
         communityGuidelinesData: {
           communityGuidelinesID: (template as CommunityGuidelinesTemplate).communityGuidelines?.id!,
@@ -422,7 +422,7 @@ export const toUpdateTemplateMutationVariables = (
     }
     case TemplateType.Post: {
       updateTemplateVariables.postDefaultDescription = (
-        newValues as TemplateContentPostFormSubmittedValues
+        newValues as TemplatePostFormSubmittedValues
       ).postDefaultDescription;
       return {
         updateTemplateVariables,
@@ -430,7 +430,7 @@ export const toUpdateTemplateMutationVariables = (
     }
     case TemplateType.Whiteboard: {
       updateTemplateVariables.whiteboardContent = (
-        newValues as TemplateContentWhiteboardFormSubmittedValues
+        newValues as TemplateWhiteboardFormSubmittedValues
       ).whiteboard?.content;
       return {
         updateTemplateVariables,

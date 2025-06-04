@@ -18,25 +18,27 @@ import { gutters } from '@/core/ui/grid/utils';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 
-export interface TemplateContentCommunityGuidelinesFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  communityGuidelines?: {
-    profile: {
-      displayName: string;
+interface TemplateContentGuidelines {
+  profile: {
+    displayName: string;
+    description?: string;
+    references?: {
+      ID: string;
+      name?: string;
       description?: string;
-      references?: {
-        ID: string;
-        name?: string;
-        description?: string;
-        uri?: string;
-      }[];
-    };
+      uri?: string;
+    }[];
   };
 }
 
-interface TemplateContentCommunityGuidelinesFormProps {
+export interface TemplateCommunityGuidelinesFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+  communityGuidelines?: TemplateContentGuidelines;
+}
+
+interface TemplateCommunityGuidelinesFormProps {
   template?: CommunityGuidelinesTemplate;
-  onSubmit: (values: TemplateContentCommunityGuidelinesFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateContentCommunityGuidelinesFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateCommunityGuidelinesFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateCommunityGuidelinesFormSubmittedValues>) => ReactNode);
   temporaryLocation?: boolean;
 }
 
@@ -54,16 +56,16 @@ const validator = {
   }),
 };
 
-const TemplateContentCommunityGuidelinesForm = ({
+const TemplateCommunityGuidelinesForm = ({
   template,
   onSubmit,
   actions,
   temporaryLocation = false,
-}: TemplateContentCommunityGuidelinesFormProps) => {
+}: TemplateCommunityGuidelinesFormProps) => {
   const { t } = useTranslation();
   const profileId = template?.communityGuidelines?.profile.id;
 
-  const initialValues: TemplateContentCommunityGuidelinesFormSubmittedValues = {
+  const initialValues: TemplateCommunityGuidelinesFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     communityGuidelines: {
       profile: {
@@ -123,4 +125,4 @@ const TemplateContentCommunityGuidelinesForm = ({
   );
 };
 
-export default TemplateContentCommunityGuidelinesForm;
+export default TemplateCommunityGuidelinesForm;

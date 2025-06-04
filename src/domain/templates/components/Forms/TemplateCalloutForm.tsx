@@ -30,41 +30,43 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
-export interface TemplateContentCalloutFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  callout?: {
-    framing: {
-      profile: {
+interface TemplateContentCallout {
+  framing: {
+    profile: {
+      displayName: string;
+      description: string;
+      references?: UpdateReferenceInput[];
+      tagsets?: UpdateTagsetInput[];
+    };
+    whiteboard?: {
+      profile?: {
         displayName: string;
-        description: string;
-        references?: UpdateReferenceInput[];
-        tagsets?: UpdateTagsetInput[];
-      };
-      whiteboard?: {
-        profile?: {
-          displayName: string;
-          description?: string;
-          preview?: {
-            name: VisualType.Banner;
-            uri: string;
-          };
+        description?: string;
+        preview?: {
+          name: VisualType.Banner;
+          uri: string;
         };
-        content: string;
       };
+      content: string;
     };
-    contributionDefaults?: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
   };
+  contributionDefaults?: {
+    postDescription?: string;
+    whiteboardContent?: string;
+  };
+  type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
+}
+
+export interface TemplateCalloutFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+  callout?: TemplateContentCallout;
   // provided when a whiteboard has been updated before saving as template
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
 }
 
-interface TemplateContentCalloutFormProps {
+interface TemplateCalloutFormProps {
   template?: CalloutTemplate;
-  onSubmit: (values: TemplateContentCalloutFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateContentCalloutFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateCalloutFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateCalloutFormSubmittedValues>) => ReactNode);
   temporaryLocation?: boolean;
 }
 
@@ -95,12 +97,7 @@ const validator = {
     .required(),
 };
 
-const TemplateContentCalloutForm = ({
-  template,
-  onSubmit,
-  actions,
-  temporaryLocation = false,
-}: TemplateContentCalloutFormProps) => {
+const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = false }: TemplateCalloutFormProps) => {
   const { t } = useTranslation();
   const createMode = !template?.id;
 
@@ -119,7 +116,7 @@ const TemplateContentCalloutForm = ({
     }));
   }, [t]);
 
-  const initialValues: TemplateContentCalloutFormSubmittedValues = {
+  const initialValues: TemplateCalloutFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     callout: {
       framing: {
@@ -201,4 +198,4 @@ const TemplateContentCalloutForm = ({
   );
 };
 
-export default TemplateContentCalloutForm;
+export default TemplateCalloutForm;

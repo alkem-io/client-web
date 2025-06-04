@@ -33,8 +33,8 @@ import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
-import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
-import { TemplateContentWhiteboardFormSubmittedValues } from '../Forms/TemplateContentWhiteboardForm';
+import { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm';
+import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
 import { SpaceTemplateModel } from '../../models/SpaceTemplate';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
@@ -134,7 +134,7 @@ const TemplatesAdmin = ({
       });
       // update whiteboard (framing) visuals
       await handlePreviewTemplates(
-        values as TemplateContentCalloutFormSubmittedValues,
+        values as TemplateCalloutFormSubmittedValues,
         result.data?.updateCallout.framing.whiteboard
       );
     }
@@ -151,7 +151,7 @@ const TemplatesAdmin = ({
     // include preview for other template type other than callout
     if (updateTemplateVariables.includeProfileVisuals && !updateCalloutVariables) {
       // Handle the visual in a special way with the preview images
-      await handlePreviewTemplates(values as TemplateContentWhiteboardFormSubmittedValues, result.data?.updateTemplate);
+      await handlePreviewTemplates(values as TemplateWhiteboardFormSubmittedValues, result.data?.updateTemplate);
     }
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
@@ -191,11 +191,11 @@ const TemplatesAdmin = ({
     });
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(values as TemplateContentWhiteboardFormSubmittedValues, result.data?.createTemplate);
+      handlePreviewTemplates(values as TemplateWhiteboardFormSubmittedValues, result.data?.createTemplate);
     } else if (creatingTemplateType === TemplateType.Callout) {
       // update whiteboard (framing) visuals
       handlePreviewTemplates(
-        values as TemplateContentCalloutFormSubmittedValues,
+        values as TemplateCalloutFormSubmittedValues,
         result.data?.createTemplate.callout?.framing.whiteboard
       );
     }

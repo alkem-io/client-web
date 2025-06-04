@@ -12,22 +12,24 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 
-export interface TemplateContentWhiteboardFormSubmittedValues
-  extends TemplateFormProfileSubmittedValues,
-    TemplateFormWithPreviewImages {
-  whiteboard?: {
-    content: string;
-    preview?: {
-      name: VisualType.Banner;
-      uri: string;
-    };
+interface TemplateContentWhiteboard {
+  content: string;
+  preview?: {
+    name: VisualType.Banner;
+    uri: string;
   };
 }
 
-interface TemplateContentWhiteboardFormProps {
+export interface TemplateWhiteboardFormSubmittedValues
+  extends TemplateFormProfileSubmittedValues,
+    TemplateFormWithPreviewImages {
+  whiteboard?: TemplateContentWhiteboard;
+}
+
+interface TemplateWhiteboardFormProps {
   template?: WhiteboardTemplate;
-  onSubmit: (values: TemplateContentWhiteboardFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateContentWhiteboardFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateWhiteboardFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateWhiteboardFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
@@ -36,10 +38,10 @@ const validator = {
   }),
 };
 
-const TemplateContentWhiteboardForm = ({ template, onSubmit, actions }: TemplateContentWhiteboardFormProps) => {
+const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhiteboardFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: TemplateContentWhiteboardFormSubmittedValues = {
+  const initialValues: TemplateWhiteboardFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     whiteboard: {
       content: template?.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
@@ -65,4 +67,4 @@ const TemplateContentWhiteboardForm = ({ template, onSubmit, actions }: Template
   );
 };
 
-export default TemplateContentWhiteboardForm;
+export default TemplateWhiteboardForm;

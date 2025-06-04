@@ -47,7 +47,7 @@ import {
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
 import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
-import { TemplateContentCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateContentCalloutForm';
+import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useEnsurePresence from '@/core/utils/ensurePresence';
@@ -182,7 +182,7 @@ const CalloutSettingsContainer = ({
   };
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
-  const handleSaveAsTemplate = async (values: TemplateContentCalloutFormSubmittedValues) => {
+  const handleSaveAsTemplate = async (values: TemplateCalloutFormSubmittedValues) => {
     const requiredSpaceId = ensurePresence(levelZeroSpaceId);
 
     await handleCreateCalloutTemplate(values, requiredSpaceId);

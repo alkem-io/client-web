@@ -32,7 +32,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
-import { TemplateContentCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateContentCommunityGuidelinesForm';
+import { TemplateCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCommunityGuidelinesForm';
 import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
@@ -149,7 +149,7 @@ const SpaceAdminCommunityPage = ({
 
   const [createTemplate] = useCreateTemplateMutation();
 
-  const handleSaveAsTemplate = async (values: TemplateContentCommunityGuidelinesFormSubmittedValues) => {
+  const handleSaveAsTemplate = async (values: TemplateCommunityGuidelinesFormSubmittedValues) => {
     const { data: templatesSetData } = await fetchSpaceTemplatesManager({ variables: { spaceId } });
     const templatesSetId = templatesSetData?.lookup.space?.templatesManager?.templatesSet?.id;
     if (templatesSetId) {
