@@ -1,6 +1,6 @@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
   useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
@@ -69,8 +69,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const [selectedState, setSelectedState] = useState<string>();
   const [selectCollaborationTemplateDialogOpen, setSelectSpaceTemplateDialogOpen] = useState(false);
   const [subspaceCreationDialogOpen, setSubspaceCreationDialogOpen] = useState(false);
-  const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
-  const [selectedSpaceForTemplateId, setSelectedSpaceForTemplateId] = useState<string | undefined>(undefined);
+  const [saveAsTemplateDialogSelectedSpace, setSaveAsTemplateDialogSelectedSpace] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
@@ -163,34 +162,28 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
     await handleCreateSpaceTemplate(values, spaceId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
-    setSaveAsTemplateDialogSelectedItem(undefined);
+    setSaveAsTemplateDialogSelectedSpace(undefined);
   };
 
-  // Fetch space info for the selected template space
-  const { data: dataSpace } = useSpaceInfoForContentSpaceQuery({
-    variables: {
-      spaceId: selectedSpaceForTemplateId!,
-    },
-    skip: !selectedSpaceForTemplateId,
-  });
-
-  const getDefaultTemplateValues = async (): Promise<SpaceTemplateModel> => {
-    if (saveAsTemplateDialogSelectedItem?.id) {
-      if (dataSpace?.lookup?.space) {
-        return {
-          id: '',
-          type: TemplateType.Space,
-          contentSpace: mapInputDataToTemplateContentSpaceModel(dataSpace.lookup.space),
-          profile: {
-            displayName: saveAsTemplateDialogSelectedItem.profile.displayName,
-          },
-        };
-      }
-      return EmptySpaceTemplateModel;
-    } else {
-      throw new Error('No item selected');
+  // Fetch space info for the selected space to use as input for the template
+  const defaultTemplateValues = useMemo<SpaceTemplateModel | undefined>(() => {
+    if (saveAsTemplateDialogSelectedSpace) {
+      const { data } = useSpaceInfoForContentSpaceQuery({
+        variables: {
+          spaceId: saveAsTemplateDialogSelectedSpace.id,
+        },
+      });
+      return {
+        id: '',
+        type: TemplateType.Space,
+        contentSpace: mapInputDataToTemplateContentSpaceModel(data?.lookup.space),
+        profile: {
+          displayName: saveAsTemplateDialogSelectedSpace.profile.displayName,
+        },
+      };
     }
-  };
+    return undefined;
+  }, [saveAsTemplateDialogSelectedSpace]);
 
   const onDeleteConfirmation = () => {
     if (deleteDialogSelectedItem) {
@@ -225,8 +218,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         <MenuItemWithIcon
           iconComponent={DownloadForOfflineOutlined}
           onClick={() => {
-            setSaveAsTemplateDialogSelectedItem(item);
-            setSelectedSpaceForTemplateId(item.id);
+            setSaveAsTemplateDialogSelectedSpace(item);
           }}
         >
           {t('buttons.saveAsTemplate')}
@@ -321,16 +313,15 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           onDelete={onDeleteConfirmation}
           description={'components.deleteEntity.confirmDialog.descriptionShort'}
         />
-        {Boolean(saveAsTemplateDialogSelectedItem) && (
+        {Boolean(saveAsTemplateDialogSelectedSpace) && (
           <CreateTemplateDialog
             open
             onClose={() => {
-              setSaveAsTemplateDialogSelectedItem(undefined);
-              setSelectedSpaceForTemplateId(undefined);
+              setSaveAsTemplateDialogSelectedSpace(undefined);
             }}
             templateType={TemplateType.Space}
             onSubmit={handleSaveAsTemplate}
-            getDefaultValues={getDefaultTemplateValues}
+            getDefaultValues={async () => defaultTemplateValues ?? EmptySpaceTemplateModel}
           />
         )}
       </>
