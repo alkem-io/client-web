@@ -37,7 +37,7 @@ import { useTranslation } from 'react-i18next';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { SubspaceCreationDialog } from '../../space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
-import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import InnovationFlowCalloutsPreview from '@/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';

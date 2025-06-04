@@ -1,24 +1,46 @@
+import { SpaceSettingsModel } from '@/domain/space/settings/SpaceSettingsModel';
 import { EmptyTemplateContentSpaceModel, TemplateContentSpaceModel } from './TemplateContentSpaceModel';
+import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowState';
+import { CalloutModelLight } from '@/domain/collaboration/callout/model/CalloutModelLight';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mapInputDataToTemplateContentSpaceModel = (inputData: any | undefined): TemplateContentSpaceModel => {
+// Type definition for the input data structure
+export interface TemplateContentSpaceInputData {
+  id?: string;
+  about?: SpaceAboutLightModel;
+  collaboration?: {
+    id?: string;
+    innovationFlow?: {
+      id?: string;
+      states?: InnovationFlowStateModel[];
+    };
+    calloutsSet?: {
+      callouts?: CalloutModelLight[];
+    };
+  };
+  settings?: SpaceSettingsModel;
+}
+
+export const mapInputDataToTemplateContentSpaceModel = (
+  inputData: TemplateContentSpaceInputData | undefined
+): TemplateContentSpaceModel => {
   if (!inputData) {
     return EmptyTemplateContentSpaceModel;
   }
   const result: TemplateContentSpaceModel = {
-    id: inputData.contentSpace?.id || '',
-    about: inputData.contentSpace?.about,
+    id: inputData?.id || '',
+    about: inputData?.about,
     collaboration: {
-      id: inputData.contentSpace?.collaboration?.id || '',
+      id: inputData?.collaboration?.id || '',
       innovationFlow: {
-        id: inputData.contentSpace?.collaboration?.innovationFlow?.id || '',
-        states: inputData.contentSpace?.collaboration?.innovationFlow?.states || [],
+        id: inputData?.collaboration?.innovationFlow?.id || '',
+        states: inputData?.collaboration?.innovationFlow?.states || [],
       },
       calloutsSet: {
-        callouts: inputData.contentSpace?.collaboration?.calloutsSet?.callouts || [],
+        callouts: inputData?.collaboration?.calloutsSet?.callouts || [],
       },
     },
-    settings: inputData.contentSpace?.settings || undefined,
+    settings: inputData?.settings || undefined,
   };
   return result;
 };

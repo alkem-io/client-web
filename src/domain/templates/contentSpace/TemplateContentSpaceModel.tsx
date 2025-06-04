@@ -1,4 +1,4 @@
-import { InnovationFlowCalloutsPreviewProps } from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import { InnovationFlowCalloutsPreviewProps } from '@/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { InnovationFlowState } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceSettingsModel } from '@/domain/space/settings/SpaceSettingsModel';

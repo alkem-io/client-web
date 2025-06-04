@@ -76,10 +76,16 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
     skip: !selectedSpaceId,
   });
 
-  // Map the data from the query to the TemplateContentSpaceModel
-  const spaceContentPreview: TemplateContentSpaceModel = mapInputDataToTemplateContentSpaceModel(
-    dataSpace?.lookup.space || template?.contentSpace
-  );
+  // Prefer the looked-up space if available, otherwise use the template's contentSpace
+  const spaceContentPreview: TemplateContentSpaceModel = useMemo(() => {
+    let templateContentSpace = template?.contentSpace;
+    if (dataSpace?.lookup?.space) {
+      // If we have a space from the query, use it instead of the template's contentSpace
+      templateContentSpace = dataSpace.lookup.space;
+    }
+
+    return mapInputDataToTemplateContentSpaceModel(templateContentSpace);
+  }, [dataSpace, template]);
 
   // TODO: Fix the logic here
   const handleSubmit = (
@@ -133,7 +139,7 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
           <>
             <ContentSpaceFromSpaceUrlForm
               onUseSpace={handleSpaceIdChange}
-              collapsible={Boolean(template?.contentSpace?.collaboration?.id)}
+              collapsible={Boolean(template?.contentSpace?.collaboration?.id)} // TODO: this should be either from the template or the selected space?
               onCollapse={handleCancel}
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
