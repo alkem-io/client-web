@@ -262,7 +262,7 @@ const TemplatesAdmin = ({
     if (template) {
       const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, {
         ...template,
-        contentSpaceId: template.contentSpace?.id,
+        selectedSpaceId: template.contentSpace?.id,
       });
       await createSpaceContentTemplate({
         variables,

@@ -11,7 +11,7 @@ interface TemplateContentSpacePreviewProps {
   contentSpace?: TemplateContentSpaceModel;
 }
 
-const SpaceContentTemplatePreview = ({ contentSpace, loading }: TemplateContentSpacePreviewProps) => {
+const TemplateContentSpacePreview = ({ contentSpace, loading }: TemplateContentSpacePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
@@ -53,4 +53,4 @@ const SpaceContentTemplatePreview = ({ contentSpace, loading }: TemplateContentS
   );
 };
 
-export default SpaceContentTemplatePreview;
+export default TemplateContentSpacePreview;

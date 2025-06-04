@@ -7,14 +7,14 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from '../components/Forms/common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/TemplateContentSpaceModel';
-import SpaceContentTemplatePreview from './TemplateContentSpacePreview';
 import { useSpaceInfoForContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContentSpaceFromSpaceUrlForm from '../components/Forms/SpaceFromSpaceUrlForm';
 import { SpaceTemplateModel } from '../models/SpaceTemplate';
 import { mapInputDataToTemplateContentSpaceModel } from './contentSpaceUtils';
+import TemplateContentSpacePreview from './TemplateContentSpacePreview';
 
 export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  contentSpaceId?: string;
+  selectedSpaceId?: string;
 }
 
 interface TemplateContentSpaceFormProps {
@@ -24,7 +24,7 @@ interface TemplateContentSpaceFormProps {
 }
 
 const validator = {
-  collaborationId: yup.string().required(),
+  selectedSpaceId: yup.string().required(),
 };
 
 /**
@@ -117,33 +117,25 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
       validator={validator}
     >
       {({ setFieldValue }) => {
-        const handleSpaceIdChange = async (spaceId: string) => {
-          setFieldValue('spaceId', spaceId); // Change the value in Formik
-          setSelectedSpaceId(spaceId); // Refresh the collaboration preview
-          if (spaceId) {
-            await refetchSpaceInfoForSpaceContent({ spaceId });
+        const handleSpaceIdChange = async (selectedSpaceId: string) => {
+          setFieldValue('selectedSpaceId', selectedSpaceId); // Change the value in Formik
+          setSelectedSpaceId(selectedSpaceId); // Refresh the collaboration preview
+          if (selectedSpaceId) {
+            await refetchSpaceInfoForSpaceContent({ spaceId: selectedSpaceId });
           }
         };
         const handleCancel = () => {
-          // FIXME:
-          const spaceId = template?.contentSpace?.id;
-          if (spaceId) {
-            setFieldValue('spaceId', spaceId); // Change the value in Formik back to the template content space
-            setSelectedSpaceId(spaceId); // Refresh the space preview
-            if (spaceId) {
-              refetchSpaceInfoForSpaceContent({ spaceId });
-            }
-          }
+          // do nothing?
         };
         return (
           <>
             <ContentSpaceFromSpaceUrlForm
               onUseSpace={handleSpaceIdChange}
-              collapsible={Boolean(template?.contentSpace?.collaboration?.id)} // TODO: this should be either from the template or the selected space?
+              collapsible={Boolean(spaceContentPreview.collaboration?.id)}
               onCollapse={handleCancel}
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <SpaceContentTemplatePreview loading={loading} contentSpace={spaceContentPreview} />
+            <TemplateContentSpacePreview loading={loading} contentSpace={spaceContentPreview} />
           </>
         );
       }}
