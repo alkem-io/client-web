@@ -8,7 +8,7 @@ import { mapTemplateProfileToUpdateProfileInput } from '../components/Forms/comm
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/TemplateContentSpaceModel';
 import SpaceContentTemplatePreview from './TemplateContentSpacePreview';
-import { useSpaceInfoForContentSpaceQuery, useTemplateContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceInfoForContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContentSpaceFromSpaceUrlForm from '../components/Forms/SpaceFromSpaceUrlForm';
 import { SpaceTemplateModel } from '../models/SpaceTemplate';
 import { mapInputDataToTemplateContentSpaceModel } from './contentSpaceUtils';
@@ -64,23 +64,11 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
     [template]
   );
 
-  // Just load the innovation flow and the callouts of the selected collaboration and show it
-  const {
-    data: dataContentSpace,
-    loading: loadingContentSpace,
-    refetch: refetchTemplateContentSpace,
-  } = useTemplateContentSpaceQuery({
-    variables: {
-      templateContentSpaceId: template?.contentSpace?.id!,
-    },
-    skip: !template?.contentSpace?.id,
-  });
-
   // Do we actually need this? We do not refetch for the contentSpace, it comes in with the query...
   const {
     data: dataSpace,
     loading: loadingSpace,
-    // refetch: refetchSpaceInfoForSpaceContent,
+    refetch: refetchSpaceInfoForSpaceContent,
   } = useSpaceInfoForContentSpaceQuery({
     variables: {
       spaceId: selectedSpaceId!,
@@ -90,13 +78,15 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
 
   // Map the data from the query to the TemplateContentSpaceModel
   const spaceContentPreview: TemplateContentSpaceModel = mapInputDataToTemplateContentSpaceModel(
-    dataContentSpace?.lookup.templateContentSpace || dataSpace?.lookup.space
+    dataSpace?.lookup.space || template?.contentSpace
   );
 
+  // TODO: Fix the logic here
   const handleSubmit = (
     values: TemplateContentSpaceFormSubmittedValues,
     { setFieldValue }: FormikHelpers<TemplateContentSpaceFormSubmittedValues>
   ) => {
+    // TODO: what is the correct logic below?
     // Special case: For CollaborationTemplates we change collaborationId in the formik values,
     // to mark that this template should reload its content from another collaboration.
     // That's not real, collaborationId of a template never changes in the server.
@@ -109,7 +99,7 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
     return onSubmit(values);
   };
 
-  const loading = loadingContentSpace || loadingSpace;
+  const loading = loadingSpace;
 
   return (
     <TemplateFormBase
@@ -125,17 +115,17 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
           setFieldValue('spaceId', spaceId); // Change the value in Formik
           setSelectedSpaceId(spaceId); // Refresh the collaboration preview
           if (spaceId) {
-            await refetchTemplateContentSpace({ templateContentSpaceId: spaceId });
+            await refetchSpaceInfoForSpaceContent({ spaceId });
           }
         };
         const handleCancel = () => {
           // FIXME:
           const spaceId = template?.contentSpace?.id;
           if (spaceId) {
-            setFieldValue('spaceId', spaceId); // Change the value in Formik back to the template collaboration
-            setSelectedSpaceId(spaceId); // Refresh the collaboration preview
+            setFieldValue('spaceId', spaceId); // Change the value in Formik back to the template content space
+            setSelectedSpaceId(spaceId); // Refresh the space preview
             if (spaceId) {
-              refetchTemplateContentSpace({ templateContentSpaceId: spaceId });
+              refetchSpaceInfoForSpaceContent({ spaceId });
             }
           }
         };
