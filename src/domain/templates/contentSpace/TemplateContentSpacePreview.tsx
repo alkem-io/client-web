@@ -4,7 +4,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowCalloutsPreview from '../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
-import { TemplateContentSpaceModel } from './TemplateContentSpaceModel';
+import { TemplateContentSpaceModel } from './model/TemplateContentSpaceModel';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;

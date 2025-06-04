@@ -3,9 +3,7 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
 import TemplateContentCalloutForm, { TemplateContentCalloutFormSubmittedValues } from './TemplateContentCalloutForm';
-import TemplateContentSpaceForm, {
-  TemplateContentSpaceFormSubmittedValues,
-} from '../../contentSpace/TemplateContentSpaceForm';
+import TemplateSpaceForm, { TemplateSpaceFormSubmittedValues } from './TemplateSpaceForm';
 import TemplateContentCommunityGuidelinesForm, {
   TemplateContentCommunityGuidelinesFormSubmittedValues,
 } from './TemplateContentCommunityGuidelinesForm';
@@ -23,7 +21,7 @@ interface TemplateFormProps {
 
 export type AnyTemplateFormSubmittedValues =
   | TemplateContentCalloutFormSubmittedValues
-  | TemplateContentSpaceFormSubmittedValues
+  | TemplateSpaceFormSubmittedValues
   | TemplateContentCommunityGuidelinesFormSubmittedValues
   | TemplateContentPostFormSubmittedValues
   | TemplateContentWhiteboardFormSubmittedValues;
@@ -33,7 +31,7 @@ const TemplateForm = ({ template, temporaryLocation = false, ...rest }: Template
     case TemplateType.Callout:
       return <TemplateContentCalloutForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Space:
-      return <TemplateContentSpaceForm template={template} {...rest} />;
+      return <TemplateSpaceForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
       return (
         <TemplateContentCommunityGuidelinesForm template={template} temporaryLocation={temporaryLocation} {...rest} />

@@ -30,8 +30,8 @@ import CommunityApplicationForm from '@/domain/community/community/CommunityAppl
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateContentSpaceFormSubmittedValues } from '@/domain/templates/contentSpace/TemplateContentSpaceForm';
-import { useCreateSpaceContentTemplate } from '@/domain/templates/contentSpace/useCreateSpaceContentTemplate';
+import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
+import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
@@ -117,8 +117,8 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  const { handleCreateSpaceContentTemplate: handleCreateCollaborationTemplate } = useCreateSpaceContentTemplate();
-  const handleSaveAsTemplate = async (values: TemplateContentSpaceFormSubmittedValues) => {
+  const { handleCreateSpaceTemplate: handleCreateCollaborationTemplate } = useCreateSpaceContentTemplate();
+  const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
     await handleCreateCollaborationTemplate(values, spaceId);
     setSaveAsTemplateDialogOpen(false);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');

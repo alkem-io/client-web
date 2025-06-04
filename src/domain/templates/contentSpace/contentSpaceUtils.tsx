@@ -1,11 +1,10 @@
 import { SpaceSettingsModel } from '@/domain/space/settings/SpaceSettingsModel';
-import { EmptyTemplateContentSpaceModel, TemplateContentSpaceModel } from './TemplateContentSpaceModel';
+import { EmptyTemplateContentSpaceModel, TemplateContentSpaceModel } from './model/TemplateContentSpaceModel';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowState';
 import { CalloutModelLight } from '@/domain/collaboration/callout/model/CalloutModelLight';
 
-// Type definition for the input data structure
-export interface TemplateContentSpaceInputData {
+interface TemplateContentSpaceInputData {
   id?: string;
   about?: SpaceAboutLightModel;
   collaboration?: {

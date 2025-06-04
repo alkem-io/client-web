@@ -32,7 +32,7 @@ import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTempl
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { TemplateContentSpaceFormSubmittedValues } from '../../contentSpace/TemplateContentSpaceForm';
+import { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
 import { TemplateContentCalloutFormSubmittedValues } from '../Forms/TemplateContentCalloutForm';
 import { TemplateContentWhiteboardFormSubmittedValues } from '../Forms/TemplateContentWhiteboardForm';
 import { SpaceTemplateModel } from '../../models/SpaceTemplate';
@@ -171,7 +171,7 @@ const TemplatesAdmin = ({
   const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     const variables = toCreateTemplateFromSpaceContentMutationVariables(
       templatesSetId,
-      values as TemplateContentSpaceFormSubmittedValues
+      values as TemplateSpaceFormSubmittedValues
     );
     await createSpaceContentTemplate({
       variables,

@@ -22,7 +22,7 @@ import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { TemplateContentCommunityGuidelinesFormSubmittedValues } from '../TemplateContentCommunityGuidelinesForm';
 import { TemplateContentWhiteboardFormSubmittedValues } from '../TemplateContentWhiteboardForm';
 import { TemplateContentCalloutFormSubmittedValues } from '../TemplateContentCalloutForm';
-import { TemplateContentSpaceFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../../../contentSpace/TemplateContentSpaceForm';
+import { TemplateSpaceFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateSpaceForm';
 import { TemplateContentPostFormSubmittedValues } from '../TemplateContentPostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';

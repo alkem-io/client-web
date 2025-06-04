@@ -6,7 +6,6 @@ import {
   refetchSubspacesInSpaceQuery,
   useSpaceAdminDefaultTemplatesCollaborationDetailsQuery,
   useDeleteSpaceMutation,
-  useSpaceCollaborationIdLazyQuery,
   useSubspacesInSpaceQuery,
   useUpdateTemplateDefaultMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -27,8 +26,8 @@ import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/us
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateContentSpaceFormSubmittedValues } from '@/domain/templates/contentSpace/TemplateContentSpaceForm';
-import { useCreateSpaceContentTemplate } from '@/domain/templates/contentSpace/useCreateSpaceContentTemplate';
+import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
+import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -156,26 +155,18 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
   );
 
-  const { handleCreateSpaceContentTemplate: handleCreateCollaborationTemplate } = useCreateSpaceContentTemplate();
-  const handleSaveAsTemplate = async (values: TemplateContentSpaceFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceId);
+  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceContentTemplate();
+  const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
+    await handleCreateSpaceTemplate(values, spaceId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedItem(undefined);
   };
 
-  const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
   const getDefaultTemplateValues = async () => {
     if (saveAsTemplateDialogSelectedItem?.id) {
-      const { data } = await fetchCollaborationId({
-        variables: {
-          spaceId: saveAsTemplateDialogSelectedItem?.id,
-        },
-      });
       return {
         type: TemplateType.Space,
-        collaboration: {
-          id: data?.lookup.space?.collaboration.id,
-        },
+        selectedSpaceId: saveAsTemplateDialogSelectedItem?.id,
       };
     } else {
       throw new Error('No item selected');

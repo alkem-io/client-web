@@ -2,25 +2,25 @@ import React, { ReactNode, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikHelpers, FormikProps } from 'formik';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues } from '../components/Forms/TemplateFormBase';
+import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { mapTemplateProfileToUpdateProfileInput } from '../components/Forms/common/mappings';
+import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/TemplateContentSpaceModel';
+import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/model/TemplateContentSpaceModel';
 import { useSpaceInfoForContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import ContentSpaceFromSpaceUrlForm from '../components/Forms/SpaceFromSpaceUrlForm';
-import { SpaceTemplateModel } from '../models/SpaceTemplate';
-import { mapInputDataToTemplateContentSpaceModel } from './contentSpaceUtils';
-import TemplateContentSpacePreview from './TemplateContentSpacePreview';
+import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
+import { SpaceTemplateModel } from '../../models/SpaceTemplate';
+import { mapInputDataToTemplateContentSpaceModel } from '../../contentSpace/contentSpaceUtils';
+import TemplateContentSpacePreview from '../../contentSpace/TemplateContentSpacePreview';
 
-export interface TemplateContentSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   selectedSpaceId?: string;
 }
 
-interface TemplateContentSpaceFormProps {
+interface TemplateSpaceFormProps {
   template?: SpaceTemplateModel;
-  onSubmit: (values: TemplateContentSpaceFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateContentSpaceFormSubmittedValues>) => ReactNode);
+  onSubmit: (values: TemplateSpaceFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<TemplateSpaceFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
@@ -28,7 +28,7 @@ const validator = {
 };
 
 /**
- * This form is used for both create and update of Content Space.
+ * This form is used for both create and update of Space Template, which is meta data plus TemplateContentSpace.
  *
  * The preview component needs to show Content Space.
  * The preview is populated with either the current contentSpace or the selected space (mapped to contentSpace)
@@ -48,7 +48,7 @@ const validator = {
  *  - The GraphQL query useTemplateContentSpaceQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
  *  - We may be able to do this with lazy queries and an Effect but for now this works pretty well.
  */
-const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateContentSpaceFormProps) => {
+const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
   const { t } = useTranslation();
 
   // The space that is selected by URL submitted by the user
@@ -56,7 +56,7 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
 
   // Form to have the information to submit to the server in mutation i.e. profile, spaceId to use to create /update the template
   // TemplateId is handled outside of the form.
-  const initialValues: TemplateContentSpaceFormSubmittedValues = useMemo(
+  const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
       spaceId: '', // No initial value, preview comes from the contentSpace of the template
@@ -89,8 +89,8 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
 
   // TODO: Fix the logic here
   const handleSubmit = (
-    values: TemplateContentSpaceFormSubmittedValues,
-    { setFieldValue }: FormikHelpers<TemplateContentSpaceFormSubmittedValues>
+    values: TemplateSpaceFormSubmittedValues,
+    { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
   ) => {
     // TODO: what is the correct logic below?
     // Special case: For CollaborationTemplates we change collaborationId in the formik values,
@@ -143,4 +143,4 @@ const TemplateContentSpaceForm = ({ template, onSubmit, actions }: TemplateConte
   );
 };
 
-export default TemplateContentSpaceForm;
+export default TemplateSpaceForm;
