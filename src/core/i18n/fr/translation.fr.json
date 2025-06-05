@@ -2388,7 +2388,16 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -2947,6 +2956,7 @@
     "loading-error": "Erreur lors du chargement",
     "messages": {
       "successfully-recovered-password": "Veuillez saisir un nouveau mot de passe dans les 15 prochaines minutes pour terminer la réinitialisation de votre mot de passe.",
+      "request-recover-password": "<strong>An email containing a recovery code has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li/><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an account is registered with this email.</i>",
       "verification-flow-expired": "Le lien de vérification a expiré. Veuillez en demander un nouveau en soumettant à nouveau votre e-mail.",
       "recovery-flow-expired": "Ce lien de réinitialisation de mot de passe a expiré. Veuillez en demander un nouveau en envoyant à nouveau votre e-mail.",
       "verification-flow-continue": "Continuer",
@@ -3052,27 +3062,42 @@
       {
         "key": "transition-énergie",
         "name": "Transition énergétique",
-        "tags": ["Transition énergétique", "Énergie transitoire"]
+        "tags": [
+          "Transition énergétique",
+          "Énergie transitoire"
+        ]
       },
       {
         "key": "société inclusive",
         "name": "Société inclusive",
-        "tags": ["Société inclusive", "Samenleving inclusive"]
+        "tags": [
+          "Société inclusive",
+          "Samenleving inclusive"
+        ]
       },
       {
         "key": "services publics",
         "name": "Services publics",
-        "tags": ["Services publics", "Publieke Diensten"]
+        "tags": [
+          "Services publics",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovations"]
+        "tags": [
+          "Innovation",
+          "Innovations"
+        ]
       },
       {
         "key": "digitalisation de la société",
         "name": "Digitalisation de la société",
-        "tags": ["Digitalisation de la société", "Numérisation"]
+        "tags": [
+          "Digitalisation de la société",
+          "Numérisation"
+        ]
       }
     ]
   },
@@ -3142,7 +3167,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "features": [
+          "Up to 10 members",
+          "Various tools, including standard Whiteboards"
+        ],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -3150,7 +3178,11 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "features": [
+          "Up to 100 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },
