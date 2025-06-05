@@ -46,6 +46,7 @@ import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager
 import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 import { EmptySpaceTemplateModel } from '@/domain/templates/models/SpaceTemplate';
+import { error as logError } from '@/core/logging/sentry/log';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -150,7 +151,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   });
   const templatesManager = data?.lookup.space?.templatesManager;
   const templateDefaults = templatesManager?.templateDefaults;
-  const templateSetPrivileges = templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSet = templatesManager?.templatesSet;
+  const templateSetPrivileges = templateSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
   const defaultSubspaceTemplate = templateDefaults?.find(
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
@@ -160,9 +162,16 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   // Saving as template
   const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceTemplate();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
+    const templatesSetId = templateSet?.id;
+
+    if (!templatesSetId) {
+      logError(`No TM templateSet found for spaceId: ${spaceId}`, { label: 'TMPL_ERROR' });
+      return;
+    }
+
     await handleCreateSpaceTemplate(values, templatesSetId);
-    notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedSpace(undefined);
+    notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
   };
 
   // Fetch space info for the selected space to use as input for the template

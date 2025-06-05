@@ -40,6 +40,7 @@ import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDele
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { error as logError } from '@/core/logging/sentry/log';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -112,13 +113,18 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     skip: !spaceId,
   });
 
-  const templateSetPrivileges =
-    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSet = templateData?.lookup.space?.templatesManager?.templatesSet;
+  const templateSetPrivileges = templateSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceTemplate();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
-    await handleCreateSpaceTemplate(values, templatesSetId);
+    if (!templateSet?.id) {
+      logError(`No TM templateSet found for spaceId: ${spaceId}`, { label: 'TMPL_ERROR' });
+      return;
+    }
+
+    await handleCreateSpaceTemplate(values, templateSet?.id);
     setSaveAsTemplateDialogOpen(false);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
   };
