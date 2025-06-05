@@ -55,6 +55,7 @@ const PostForm = ({
   post,
   postNames,
   descriptionTemplate,
+  tags,
   edit = false,
   loading,
   onChange,
@@ -66,7 +67,7 @@ const PostForm = ({
 }: PostFormProps) => {
   const { t } = useTranslation();
 
-  const tagsets: TagsetModel[] = [EmptyTagset];
+  const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: tags ?? [] }];
 
   const getDescriptionValue = () => {
     if (!post) {

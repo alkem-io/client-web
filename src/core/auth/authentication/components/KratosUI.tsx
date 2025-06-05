@@ -3,7 +3,7 @@ import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
-import { Trans, TransProps, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
@@ -18,7 +18,7 @@ import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './K
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import { useKratosT } from './Kratos/messages';
 import Gutters from '@/core/ui/grid/Gutters';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
@@ -44,16 +44,14 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
+  const { t } = useKratosT();
   if (!messages || !messages.length) return null;
 
   return (
     <Box marginBottom={1}>
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
-          <Trans
-            i18nKey={message.text as unknown as TransProps<TranslationKey>['i18nKey']}
-            components={{ strong: <strong />, li: <li />, br: <br /> }}
-          />
+          {t(message)}
         </Alert>
       ))}
     </Box>
@@ -224,11 +222,7 @@ export const KratosUI: FC<KratosUIProps> = ({
           </Box>
         )}
         {nodesByGroup.oidc.length > 0 && (
-          <Gutters
-            row
-            justifyContent="center"
-            sx={{ gap: { xs: 0, md: 0 }, justifyContent: 'space-between', padding: 0 }}
-          >
+          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {nodesByGroup.oidc.map(toUiControl)}
           </Gutters>
         )}
