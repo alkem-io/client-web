@@ -389,19 +389,19 @@ export const toUpdateTemplateMutationVariables = (
       // mark that this template should load its content from another collaboration.
       // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
       // If the collaborationId remains the same, we just update the template profile.
-      const oldCollaborationId = (template as SpaceTemplateModel).contentSpace?.collaboration?.id;
-      const newCollaborationId = (newValues as SpaceContentTemplateFormSubmittedValues).selectedSpaceId;
-      if (oldCollaborationId && newCollaborationId && oldCollaborationId !== newCollaborationId) {
+      const oldSelectedSpaceId = (template as SpaceTemplateModel).contentSpace?.id;
+      const newModelSpaceId = (newValues as SpaceContentTemplateFormSubmittedValues).selectedSpaceId;
+      if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
-          spaceId: newCollaborationId, // TODO: FIX THIS!
+          spaceId: newModelSpaceId, // TODO: FIX THIS!
         };
         return {
           updateTemplateVariables,
           updateSpaceTemplateVariables: updateSpaceContentTemplateVariables,
         };
       } else {
-        // Collaboration selected didn't change, just update the template values
+        // Space selected didn't change, just update the template values
         return {
           updateTemplateVariables,
         };
@@ -437,5 +437,4 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
   }
-  throw new Error('Coulndt identify callout type');
 };
