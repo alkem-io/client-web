@@ -2956,6 +2956,7 @@
     "loading-error": "crwdns20670:0crwdne20670:0",
     "messages": {
       "successfully-recovered-password": "crwdns20672:0crwdne20672:0",
+      "request-recover-password": "crwdns37094:0crwdne37094:0",
       "verification-flow-expired": "crwdns20674:0crwdne20674:0",
       "recovery-flow-expired": "crwdns20676:0crwdne20676:0",
       "verification-flow-continue": "crwdns20678:0crwdne20678:0",
