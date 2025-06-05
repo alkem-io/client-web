@@ -1,22 +1,30 @@
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { InnovationFlowState, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { TemplateBase } from './TemplateBase';
-import {
-  EmptyTemplateContentSpaceModel,
-  TemplateContentSpaceModel,
-} from '../contentSpace/model/TemplateContentSpaceModel';
+import { EmptyTemplateContentSpaceModel } from '../contentSpace/model/TemplateContentSpaceModel';
 
-export interface SpaceTemplateModel extends TemplateBase {
-  type: TemplateType;
-  contentSpace?: TemplateContentSpaceModel;
-  modelSpaceId?: string; // Optional, used for creating a new template
+export interface SpaceTemplate extends TemplateBase {
+  type: TemplateType; // TemplateType.Space;
+  spaceId?: string; // Only used for creation, it's the spaceId that will be copied to a template
+  contentSpace?: {
+    // This is the content of the template, used for preview and updating the template
+    // Doesn't need to define the entire contentSpace, just the innovationFlow to be used in //!! (we were not defining callouts before, so should be fine)
+    id: string;
+    collaboration?: {
+      id: string;
+      innovationFlow?: {
+        id: string;
+        states: InnovationFlowState[];
+      };
+    };
+  };
 }
 
-export const EmptySpaceTemplateModel: SpaceTemplateModel = {
+//!! needed?
+export const EmptySpaceTemplateModel: SpaceTemplate = {
   id: '',
   type: TemplateType.Space,
   contentSpace: EmptyTemplateContentSpaceModel,
   profile: {
     displayName: '',
   },
-  modelSpaceId: undefined,
 };

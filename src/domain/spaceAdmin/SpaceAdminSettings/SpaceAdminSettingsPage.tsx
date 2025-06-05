@@ -1,4 +1,5 @@
 import {
+  useCreateTemplateFromSpaceMutation,
   useDeleteSpaceMutation,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
@@ -31,7 +32,6 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
-import { useCreateSpaceTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
@@ -40,7 +40,8 @@ import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDele
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { error as logError } from '@/core/logging/sentry/log';
+import { toCreateTemplateFromSpaceContentMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -65,6 +66,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const notify = useNotification();
+  const ensurePresence = useEnsurePresence();
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -117,14 +119,12 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const templateSetPrivileges = templateSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceTemplate();
+  // Save this space as a template
+  const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
-    if (!templateSet?.id) {
-      logError(`No TM templateSet found for spaceId: ${spaceId}`, { label: 'TMPL_ERROR' });
-      return;
-    }
-
-    await handleCreateSpaceTemplate(values, templateSet?.id);
+    const templatesSetId = ensurePresence(templateSet?.id, `No templatesSet found for spaceId: ${spaceId}`);
+    const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, values);
+    await createSpaceTemplate({ variables });
     setSaveAsTemplateDialogOpen(false);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
   };
@@ -457,7 +457,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     getDefaultValues={async () => {
                       return {
                         type: TemplateType.Space,
-                        modelSpaceId: spaceId,
+                        modelSpaceId: spaceId, //!! not sure if this is gonna work
                       };
                     }}
                   />

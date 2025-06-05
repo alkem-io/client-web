@@ -4,11 +4,11 @@ import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
-import { SpaceTemplateModel } from './SpaceTemplate';
+import { SpaceTemplate } from './SpaceTemplate';
 
 export type AnyTemplate =
   | CalloutTemplate
-  | SpaceTemplateModel
+  | SpaceTemplate
   | CommunityGuidelinesTemplate
   | PostTemplate
   | WhiteboardTemplate;

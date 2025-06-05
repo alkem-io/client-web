@@ -35,7 +35,7 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
 import { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm';
 import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
-import { SpaceTemplateModel } from '../../models/SpaceTemplate';
+import { SpaceTemplate } from '../../models/SpaceTemplate';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -163,7 +163,7 @@ const TemplatesAdmin = ({
   const [createTemplate] = useCreateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
-  const [createSpaceContentTemplate] = useCreateTemplateFromSpaceMutation({
+  const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
 
@@ -173,7 +173,7 @@ const TemplatesAdmin = ({
       templatesSetId,
       values as TemplateSpaceFormSubmittedValues
     );
-    await createSpaceContentTemplate({
+    await createSpaceTemplate({
       variables,
     });
     setCreatingTemplateType(undefined);
@@ -227,7 +227,7 @@ const TemplatesAdmin = ({
     const { id, type: templateType } = importedTemplate;
     // TODO: Special case for collaboration, just for now, until we can import collaborations entirely
     if (templateType === TemplateType.Space) {
-      return handleImportSpaceTemplate(importedTemplate as SpaceTemplateModel);
+      return handleImportSpaceTemplate(importedTemplate as SpaceTemplate);
     }
 
     const { data } = await getTemplateContent({
@@ -250,7 +250,7 @@ const TemplatesAdmin = ({
     }
   };
   // Special case for Collaboration templates
-  const handleImportSpaceTemplate = async (importedTemplate: SpaceTemplateModel) => {
+  const handleImportSpaceTemplate = async (importedTemplate: SpaceTemplate) => {
     const { id } = importedTemplate;
     const { data } = await getTemplateContent({
       variables: {
@@ -264,7 +264,7 @@ const TemplatesAdmin = ({
         ...template,
         selectedSpaceId: template.contentSpace?.id,
       });
-      await createSpaceContentTemplate({
+      await createSpaceTemplate({
         variables,
       });
       setImportTemplateType(undefined);

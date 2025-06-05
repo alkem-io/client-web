@@ -14,10 +14,10 @@ import CardContent from '@/core/ui/card/CardContent';
 import CardTags from '@/core/ui/card/CardTags';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
-import { SpaceTemplateModel } from '../../models/SpaceTemplate';
+import { SpaceTemplate } from '../../models/SpaceTemplate';
 
 interface SpaceTemplateCardProps extends TemplateCardProps {
-  template: SpaceTemplateModel;
+  template: SpaceTemplate;
 }
 
 const SpaceTemplateCard = ({ template, innovationPack, loading, ...props }: SpaceTemplateCardProps) => {

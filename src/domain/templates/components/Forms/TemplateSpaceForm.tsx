@@ -9,7 +9,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import { TemplateContentSpaceModel } from '@/domain/templates/contentSpace/model/TemplateContentSpaceModel';
 import { useSpaceInfoForContentSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
-import { SpaceTemplateModel } from '../../models/SpaceTemplate';
+import { SpaceTemplate } from '../../models/SpaceTemplate';
 import { mapInputDataToTemplateContentSpaceModel } from '../../contentSpace/contentSpaceUtils';
 import TemplateContentSpacePreview from '../../contentSpace/TemplateContentSpacePreview';
 
@@ -18,7 +18,7 @@ export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSub
 }
 
 export interface TemplateSpaceFormProps {
-  template?: SpaceTemplateModel;
+  template?: SpaceTemplate;
   onSubmit: (values: TemplateSpaceFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<TemplateSpaceFormSubmittedValues>) => ReactNode);
 }
@@ -52,7 +52,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   const { t } = useTranslation();
 
   // The space that is selected by URL submitted by the user
-  const [selectedSpaceId, setSelectedSpaceId] = useState<string | undefined>(template?.modelSpaceId);
+  const [selectedSpaceId, setSelectedSpaceId] = useState<string | undefined>(template?.spaceId);
 
   // Form to have the information to submit to the server in mutation i.e. profile, spaceId to use to create /update the template
   // TemplateId is handled outside of the form.

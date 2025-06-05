@@ -5,8 +5,8 @@ import { AnyTemplate, TemplateBase } from './TemplateBase';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { SpaceTemplate } from './SpaceTemplate';
 import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
-import { SpaceTemplateModel } from './SpaceTemplate';
 
 export const getNewTemplate = (
   templateType: TemplateType,
@@ -53,11 +53,12 @@ export const getNewTemplate = (
       return template;
     }
     case TemplateType.Space: {
-      const data = defaultValues as Partial<SpaceTemplateModel>;
-      const template: SpaceTemplateModel = {
+      const data = defaultValues as Partial<SpaceTemplate>;
+      const template: SpaceTemplate = {
         ...common,
         type: TemplateType.Space,
-        contentSpace: data?.contentSpace,
+        spaceId: data?.spaceId,
+        // contentSpace: data?.contentSpace,
       };
       return template;
     }

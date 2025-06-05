@@ -27,7 +27,7 @@ import { TemplatePostFormSubmittedValues } from '../TemplatePostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { SpaceTemplateModel } from '@/domain/templates/models/SpaceTemplate';
+import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 
 interface EntityWithProfile {
   profile: {
@@ -389,7 +389,7 @@ export const toUpdateTemplateMutationVariables = (
       // mark that this template should load its content from another collaboration.
       // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
       // If the collaborationId remains the same, we just update the template profile.
-      const oldSelectedSpaceId = (template as SpaceTemplateModel).contentSpace?.id;
+      const oldSelectedSpaceId = (template as SpaceTemplate).contentSpace?.id;
       const newModelSpaceId = (newValues as SpaceContentTemplateFormSubmittedValues).selectedSpaceId;
       if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {

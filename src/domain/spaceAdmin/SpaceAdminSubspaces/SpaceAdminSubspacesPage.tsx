@@ -8,6 +8,7 @@ import {
   useSubspacesInSpaceQuery,
   useUpdateTemplateDefaultMutation,
   refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery,
+  useCreateTemplateFromSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -27,7 +28,6 @@ import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSu
 import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
-import { useCreateSpaceTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -46,7 +46,8 @@ import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager
 import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 import { EmptySpaceTemplateModel } from '@/domain/templates/models/SpaceTemplate';
-import { error as logError } from '@/core/logging/sentry/log';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import { toCreateTemplateFromSpaceContentMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -64,6 +65,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 }) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const ensurePresence = useEnsurePresence();
   const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState<string>();
   const [selectCollaborationTemplateDialogOpen, setSelectSpaceTemplateDialogOpen] = useState(false);
@@ -160,16 +162,11 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
   //////////
   // Saving as template
-  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceTemplate();
+  const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
-    const templatesSetId = templateSet?.id;
-
-    if (!templatesSetId) {
-      logError(`No TM templateSet found for spaceId: ${spaceId}`, { label: 'TMPL_ERROR' });
-      return;
-    }
-
-    await handleCreateSpaceTemplate(values, templatesSetId);
+    const templatesSetId = ensurePresence(templateSet?.id, `No templatesSet found for spaceId: ${spaceId}`);
+    const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, values);
+    await createSpaceTemplate({ variables });
     setSaveAsTemplateDialogSelectedSpace(undefined);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
   };
