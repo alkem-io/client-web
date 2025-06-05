@@ -31,6 +31,7 @@ type MarkdownInputControlsProps = {
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
   temporaryLocation?: boolean;
+  isCollaborative?: boolean; // Hide undo/redo for collaborative editors
 };
 
 interface ControlsButtonProps extends MarkdownInputToolbarButtonProps {
@@ -110,7 +111,7 @@ const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-
 const MarkdownInputControls = memo(
   forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
     (
-      { editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose, temporaryLocation = false },
+      { editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose, temporaryLocation = false, isCollaborative = false },
       ref
     ) => {
       const [isVisible, setIsVisible] = useState(visible);
@@ -128,20 +129,24 @@ const MarkdownInputControls = memo(
       return (
         <Collapse in={isVisible} ref={ref}>
           <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
-            <ControlsButton
-              editor={editor}
-              command={e => e.undo()}
-              tooltip={t('components.wysiwyg-editor.toolbar.history.undo')}
-            >
-              <Undo />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.redo()}
-              tooltip={t('components.wysiwyg-editor.toolbar.history.redo')}
-            >
-              <Redo />
-            </ControlsButton>
+            {!isCollaborative && (
+              <>
+                <ControlsButton
+                  editor={editor}
+                  command={e => e.undo()}
+                  tooltip={t('components.wysiwyg-editor.toolbar.history.undo')}
+                >
+                  <Undo />
+                </ControlsButton>
+                <ControlsButton
+                  editor={editor}
+                  command={e => e.redo()}
+                  tooltip={t('components.wysiwyg-editor.toolbar.history.redo')}
+                >
+                  <Redo />
+                </ControlsButton>
+              </>
+            )}
             <ControlsButton
               editor={editor}
               command={e => e.toggleBold()}

@@ -40,6 +40,7 @@ const CalloutEditDialog = ({
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
+    id: callout.id,
     displayName: callout.framing.profile.displayName,
     type: callout.type,
     description: callout.framing.profile.description,

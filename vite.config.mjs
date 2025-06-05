@@ -68,13 +68,6 @@ export default defineConfig({
             };
 
             function setNoCacheHeaders(response) {
-              // Remove caching headers
-              response.removeHeader('Last-Modified');
-              response.removeHeader('ETag');
-              response.removeHeader('etag');
-              response.removeHeader('If-Modified-Since');
-              response.removeHeader('If-None-Match');
-
               // Set comprehensive no-cache headers - most aggressive approach
               response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private');
               response.setHeader('Pragma', 'no-cache');

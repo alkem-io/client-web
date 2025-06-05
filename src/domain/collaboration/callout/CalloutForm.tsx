@@ -9,7 +9,9 @@ import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikCollaborativeMarkdownField from '@/core/ui/forms/MarkdownInput/FormikCollaborativeMarkdownField';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { generateUserColor } from '@/core/ui/forms/MarkdownInput/utils/userColorGenerator';
 import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { ProfileReferenceSegment } from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
@@ -78,7 +80,8 @@ export interface CalloutFormProps {
   disablePostResponses?: boolean;
 }
 
-const CalloutForm = ({
+const
+CalloutForm = ({
   calloutType,
   callout,
   editMode = false,
@@ -90,6 +93,30 @@ const CalloutForm = ({
   disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
+  const { userModel } = useCurrentUserContext();
+
+  // Configure collaborative editing user info
+  const collaborativeUserInfo = useMemo(() => {
+    if (!userModel) {
+      return {
+        name: 'Anonymous',
+        userId: 'anonymous',
+        color: '#999999',
+      };
+    }
+
+    return {
+      name: userModel.profile.displayName || `${userModel.firstName} ${userModel.lastName}`.trim() || 'User',
+      userId: userModel.id,
+      color: generateUserColor(userModel.id),
+    };
+  }, [userModel]);
+
+  // Generate document ID for collaborative editing based on callout
+  const documentId = useMemo(() => {
+    // Use callout ID if editing existing callout, otherwise create a temporary ID
+    return callout?.id ? `callout-${callout.id}` : `callout-draft-${Date.now()}`;
+  }, [callout?.id]);
 
   const tagsets: TagsetModel[] = useMemo(
     () => [
@@ -184,13 +211,16 @@ const CalloutForm = ({
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
             {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
-            <FormikMarkdownField
+            <FormikCollaborativeMarkdownField
               name="description"
               title={t('components.callout-creation.info-step.description')}
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}
               temporaryLocation={temporaryLocation}
               hideImageOptions={disableRichMedia}
+              documentId={documentId}
+              serverUrl="http://localhost:4001"
+              userInfo={collaborativeUserInfo}
             />
             {editMode && formConfiguration.references && (
               <ProfileReferenceSegment
