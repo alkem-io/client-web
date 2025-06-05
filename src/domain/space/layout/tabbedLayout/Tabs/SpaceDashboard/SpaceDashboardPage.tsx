@@ -73,6 +73,7 @@ const SpaceDashboardPage = () => {
   };
 
   const updatesUrl = buildUpdatesUrl(spaceData?.about.profile.url ?? '');
+  const communityId = spaceData?.about.membership.communityID;
 
   return (
     <>
@@ -111,13 +112,15 @@ const SpaceDashboardPage = () => {
         flowStateForNewCallouts={flowStateForNewCallouts}
         shareUpdatesUrl={updatesUrl}
       />
-      <CommunityUpdatesDialog
-        open={dialog === 'updates'}
-        onClose={backToDashboard}
-        communityId={spaceData?.about.membership.communityID}
-        shareUrl={updatesUrl}
-        loading={loadingSpacePageQuery}
-      />
+      {communityId && (
+        <CommunityUpdatesDialog
+          open={dialog === 'updates'}
+          onClose={backToDashboard}
+          communityId={communityId}
+          shareUrl={updatesUrl}
+          loading={loadingSpacePageQuery}
+        />
+      )}
       <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} />
     </>
   );

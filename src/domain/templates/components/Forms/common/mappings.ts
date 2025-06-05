@@ -256,7 +256,7 @@ export const toCreateTemplateFromCollaborationMutationVariables = (
     throw new Error('Collaboration ID is required to create a template from a collaboration');
   }
 
-  const result: CreateTemplateFromCollaborationMutationVariables = {
+  return {
     collaborationId: values.collaborationId,
     templatesSetId: templatesSetId,
     profileData: {
@@ -270,7 +270,6 @@ export const toCreateTemplateFromCollaborationMutationVariables = (
     },
     tags: handleCreateTags(values),
   };
-  return result;
 };
 
 interface TemplateTagset {

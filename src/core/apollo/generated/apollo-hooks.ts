@@ -891,12 +891,12 @@ export const PostSettingsFragmentDoc = gql`
         description
       }
       visuals {
-        ...VisualModel
+        ...VisualModelFull
       }
     }
   }
   ${TagsetDetailsFragmentDoc}
-  ${VisualModelFragmentDoc}
+  ${VisualModelFullFragmentDoc}
 `;
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {

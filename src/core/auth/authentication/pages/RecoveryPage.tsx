@@ -6,10 +6,11 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import FixedHeightLogo from '../components/FixedHeightLogo';
-import { PageTitle, BlockTitle } from '@/core/ui/typography';
 import { isInputNode } from '../components/Kratos/helpers';
 import { UiContainer } from '@ory/kratos-client/dist/api';
+import AuthenticationLayout from '../AuthenticationLayout';
+import { AuthFormHeader } from '../components/AuthFormHeader';
+import { Box } from '@mui/material';
 
 interface RegisterPageProps {
   flow: string;
@@ -38,14 +39,19 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
   const flowStage = recoveryFlow && (hasCodeInput(recoveryFlow.ui) ? RecoveryFlowStage.Code : RecoveryFlowStage.Email);
 
   return (
-    <KratosForm ui={recoveryFlow?.ui}>
-      <AuthPageContentContainer>
-        <FixedHeightLogo />
-        <PageTitle>{t('pages.recovery.header')}</PageTitle>
-        {flowStage === RecoveryFlowStage.Email && <BlockTitle>{t('pages.recovery.message.initial')}</BlockTitle>}
-        <KratosUI ui={recoveryFlow?.ui} />
-      </AuthPageContentContainer>
-    </KratosForm>
+    <AuthenticationLayout>
+      <AuthFormHeader title={t('pages.recovery.header')} />
+      <KratosForm ui={recoveryFlow?.ui}>
+        <AuthPageContentContainer>
+          {flowStage === RecoveryFlowStage.Email && (
+            <Box fontSize="14" color="neutral.light">
+              {t('pages.recovery.message.initial')}
+            </Box>
+          )}
+          <KratosUI ui={recoveryFlow?.ui} />
+        </AuthPageContentContainer>
+      </KratosForm>
+    </AuthenticationLayout>
   );
 };
 

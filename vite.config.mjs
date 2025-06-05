@@ -27,18 +27,28 @@ export default defineConfig({
     // Plugin to prevent index.html caching in dev server
     {
       /**
-       * Vite plugin server configuration hook to disable caching for specific routes.
+       * Vite plugin server configuration hook to disable caching for all SPA routes.
        *
-       * Adds middleware to the dev server that intercepts requests to '/', '/home', and any URL ending with '/home'.
-       * For these routes, it overrides the response methods to set aggressive no-cache headers, ensuring that
-       * browsers and proxies do not cache the responses.
+       * Adds middleware to the dev server that intercepts requests to all routes that serve index.html.
+       * This includes '/', '/index.html', and any URL that doesn't contain a file extension and doesn't
+       * start with '/api/' or '/@' (Vite internal routes). For these routes, it overrides the response
+       * methods to set aggressive no-cache headers, ensuring that browsers and proxies do not cache
+       * the index.html responses.
        *
        * @param {import('vite').ViteDevServer} server - The Vite development server instance.
        */
       name: 'no-cache-index',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
-          if (req.url === '/' || req.url === '/home' || req.url?.endsWith('/home')) {
+          // Check if this is an HTML request (SPA route) that will serve index.html
+          const isHtmlRoute = req.url && (
+            req.url === '/' ||
+            req.url === '/index.html' ||
+            req.url?.endsWith('/index.html') ||
+            (!req.url.includes('.') && !req.url.startsWith('/api/') && !req.url.startsWith('/@'))
+          );
+
+          if (isHtmlRoute) {
             // Intercept the response to remove caching headers
             const originalSend = res.send;
             const originalEnd = res.end;
@@ -61,11 +71,25 @@ export default defineConfig({
             };
 
             function setNoCacheHeaders(response) {
+              // Remove caching headers
+              response.removeHeader('Last-Modified');
+              response.removeHeader('ETag');
+              response.removeHeader('etag');
+              response.removeHeader('If-Modified-Since');
+              response.removeHeader('If-None-Match');
 
               // Set comprehensive no-cache headers - most aggressive approach
-              response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+              response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private');
               response.setHeader('Pragma', 'no-cache');
-              response.setHeader('Expires', '0');
+              response.setHeader('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
+              response.setHeader('Surrogate-Control', 'no-store');
+              response.setHeader('X-Accel-Expires', '0');
+              response.setHeader('Vary', '*');
+              response.setHeader('Content-Type', 'text/html; charset=utf-8');
+
+              // Additional anti-cache headers
+              response.setHeader('X-Cache-Control', 'no-cache');
+              response.setHeader('X-Powered-By', 'Vite-NoCache-' + Date.now());
             }
           }
           next();

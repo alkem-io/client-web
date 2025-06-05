@@ -9,11 +9,7 @@ import {
   useUpdateInnovationFlowSingleStateMutation,
   useUpdateCollaborationFromTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CalloutType,
-  UpdateProfileInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutType, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
