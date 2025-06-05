@@ -1,13 +1,12 @@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
   useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
   useDeleteSpaceMutation,
   useSubspacesInSpaceQuery,
   useUpdateTemplateDefaultMutation,
-  useSpaceInfoForContentSpaceQuery,
   refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -46,8 +45,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
 import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
-import { EmptySpaceTemplateModel, SpaceTemplateModel } from '@/domain/templates/models/SpaceTemplate';
-import { mapInputDataToTemplateContentSpaceModel } from '@/domain/templates/contentSpace/contentSpaceUtils';
+import { EmptySpaceTemplateModel } from '@/domain/templates/models/SpaceTemplate';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -69,8 +67,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const [selectedState, setSelectedState] = useState<string>();
   const [selectCollaborationTemplateDialogOpen, setSelectSpaceTemplateDialogOpen] = useState(false);
   const [subspaceCreationDialogOpen, setSubspaceCreationDialogOpen] = useState(false);
-  const [saveAsTemplateDialogSelectedSpace, setSaveAsTemplateDialogSelectedSpace] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
+  const [saveAsTemplateDialogSelectedSpace, setSaveAsTemplateDialogSelectedSpace] = useState<SearchableListItem>();
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId },
@@ -158,32 +156,26 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
   );
 
+  //////////
+  // Saving as template
   const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceContentTemplate();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
-    await handleCreateSpaceTemplate(values, spaceId);
+    await handleCreateSpaceTemplate(values, templatesSetId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedSpace(undefined);
   };
 
   // Fetch space info for the selected space to use as input for the template
-  const defaultTemplateValues = useMemo<SpaceTemplateModel | undefined>(() => {
-    if (saveAsTemplateDialogSelectedSpace) {
-      const { data } = useSpaceInfoForContentSpaceQuery({
-        variables: {
-          spaceId: saveAsTemplateDialogSelectedSpace.id,
-        },
-      });
-      return {
+  const defaultTemplateValues = saveAsTemplateDialogSelectedSpace
+    ? {
         id: '',
         type: TemplateType.Space,
-        contentSpace: mapInputDataToTemplateContentSpaceModel(data?.lookup.space),
         profile: {
           displayName: saveAsTemplateDialogSelectedSpace.profile.displayName,
         },
-      };
-    }
-    return undefined;
-  }, [saveAsTemplateDialogSelectedSpace]);
+        modelSpaceId: saveAsTemplateDialogSelectedSpace.id,
+      }
+    : EmptySpaceTemplateModel;
 
   const onDeleteConfirmation = () => {
     if (deleteDialogSelectedItem) {
@@ -321,7 +313,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
             }}
             templateType={TemplateType.Space}
             onSubmit={handleSaveAsTemplate}
-            getDefaultValues={async () => defaultTemplateValues ?? EmptySpaceTemplateModel}
+            getDefaultValues={() => Promise.resolve(defaultTemplateValues)}
           />
         )}
       </>

@@ -52,14 +52,14 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   const { t } = useTranslation();
 
   // The space that is selected by URL submitted by the user
-  const [selectedSpaceId, setSelectedSpaceId] = useState<string | undefined>(undefined);
+  const [selectedSpaceId, setSelectedSpaceId] = useState<string | undefined>(template?.modelSpaceId);
 
   // Form to have the information to submit to the server in mutation i.e. profile, spaceId to use to create /update the template
   // TemplateId is handled outside of the form.
   const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-      spaceId: '', // No initial value, preview comes from the contentSpace of the template
+      selectedSpaceId: '', // No initial value, preview comes from the contentSpace of the template
     }),
     [template]
   );

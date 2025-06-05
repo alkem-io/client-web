@@ -103,7 +103,6 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     skip: !spaceId,
   });
   const roleSetId = settingsData?.lookup.space?.about.membership.roleSetID;
-  const collaborationId = settingsData?.lookup.space?.collaboration.id;
   const provider = settingsData?.lookup.space?.about.provider;
   const hostId = provider?.id;
 
@@ -117,9 +116,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  const { handleCreateSpaceTemplate: handleCreateCollaborationTemplate } = useCreateSpaceContentTemplate();
+  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceContentTemplate();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceId);
+    await handleCreateSpaceTemplate(values, templatesSetId);
     setSaveAsTemplateDialogOpen(false);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
   };
@@ -452,9 +451,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     getDefaultValues={async () => {
                       return {
                         type: TemplateType.Space,
-                        collaboration: {
-                          id: collaborationId,
-                        },
+                        modelSpaceId: spaceId,
                       };
                     }}
                   />

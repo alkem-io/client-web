@@ -6,8 +6,9 @@ import {
 } from '../contentSpace/model/TemplateContentSpaceModel';
 
 export interface SpaceTemplateModel extends TemplateBase {
-  type: TemplateType; // TemplateType.Post;
+  type: TemplateType;
   contentSpace?: TemplateContentSpaceModel;
+  modelSpaceId?: string; // Optional, used for creating a new template
 }
 
 export const EmptySpaceTemplateModel: SpaceTemplateModel = {
@@ -17,4 +18,5 @@ export const EmptySpaceTemplateModel: SpaceTemplateModel = {
   profile: {
     displayName: '',
   },
+  modelSpaceId: undefined,
 };
