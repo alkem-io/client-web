@@ -106,6 +106,7 @@ mutation UpdateTemplate(
 }
 
 # Special case for updating a collaboration template from an existing collaboration
+# //!! maybe call it updateSpaceTemplateFromSpace
 mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!) {
   updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId }) {
     id

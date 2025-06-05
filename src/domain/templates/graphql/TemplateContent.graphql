@@ -164,6 +164,7 @@ fragment SpaceTemplateContent_About on SpaceAbout {
     id
     displayName
     description
+    url
     # ... more //!!
   }
 }
@@ -172,6 +173,17 @@ fragment SpaceTemplateContent_Settings on SpaceSettings {
   privacy {
     mode
     allowPlatformSupportAsAdmin
+  }
+  membership {
+    policy
+    allowSubspaceAdminsToInviteMembers
+    trustedOrganizations
+  }
+  collaboration {
+    allowMembersToCreateCallouts
+    allowMembersToCreateSubspaces
+    inheritMembershipRights
+    allowEventsFromSubspaces
   }
   # ... more //!!
 }

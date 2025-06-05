@@ -22,7 +22,7 @@ import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { TemplateCommunityGuidelinesFormSubmittedValues } from '../TemplateCommunityGuidelinesForm';
 import { TemplateWhiteboardFormSubmittedValues } from '../TemplateWhiteboardForm';
 import { TemplateCalloutFormSubmittedValues } from '../TemplateCalloutForm';
-import { TemplateSpaceFormSubmittedValues as SpaceContentTemplateFormSubmittedValues } from '../TemplateSpaceForm';
+import { TemplateSpaceFormSubmittedValues } from '../TemplateSpaceForm';
 import { TemplatePostFormSubmittedValues } from '../TemplatePostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
@@ -249,15 +249,15 @@ export const toCreateTemplateMutationVariables = (
 
 export const toCreateTemplateFromSpaceContentMutationVariables = (
   templatesSetId: string,
-  values: SpaceContentTemplateFormSubmittedValues
+  values: TemplateSpaceFormSubmittedValues
 ): CreateTemplateFromSpaceMutationVariables => {
   // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
-  if (!values.selectedSpaceId) {
+  if (!values.spaceId) {
     throw new Error('Space ID is required to create a template from a collaboration');
   }
 
   return {
-    spaceId: values.selectedSpaceId,
+    spaceId: values.spaceId,
     templatesSetId: templatesSetId,
     profileData: {
       displayName: values.profile.displayName ?? '',
@@ -390,7 +390,7 @@ export const toUpdateTemplateMutationVariables = (
       // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
       // If the collaborationId remains the same, we just update the template profile.
       const oldSelectedSpaceId = (template as SpaceTemplate).contentSpace?.id;
-      const newModelSpaceId = (newValues as SpaceContentTemplateFormSubmittedValues).selectedSpaceId;
+      const newModelSpaceId = (newValues as TemplateSpaceFormSubmittedValues).spaceId;
       if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,

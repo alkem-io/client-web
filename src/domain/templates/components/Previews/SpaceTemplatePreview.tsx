@@ -8,12 +8,14 @@ import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateCont
 
 interface SpaceTemplatePreviewProps {
   loading?: boolean;
-  contentSpace?: TemplateContentSpaceModel;
+  template?: {
+    contentSpace?: TemplateContentSpaceModel;
+  };
 }
 
-const SpaceTemplatePreview = ({ contentSpace, loading }: SpaceTemplatePreviewProps) => {
+const SpaceTemplatePreview = ({ template, loading }: SpaceTemplatePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
-  const collaboration = contentSpace?.collaboration;
+  const collaboration = template?.contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
   const callouts = collaboration?.calloutsSet?.callouts ?? [];
 

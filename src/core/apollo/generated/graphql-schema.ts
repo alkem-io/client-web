@@ -24549,18 +24549,6 @@ export type AllTemplatesInTemplatesSetQuery = {
   };
 };
 
-export type CreateTemplateFromSpaceMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID']['input'];
-  profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-  spaceId: Scalars['UUID']['input'];
-}>;
-
-export type CreateTemplateFromSpaceMutation = {
-  __typename?: 'Mutation';
-  createTemplateFromSpace: { __typename?: 'Template'; id: string };
-};
-
 export type TemplateCardProfileInfoFragment = {
   __typename?: 'Profile';
   id: string;
@@ -24868,6 +24856,7 @@ export type TemplateContentQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    url: string;
                   };
                 };
                 settings: {
@@ -24876,6 +24865,19 @@ export type TemplateContentQuery = {
                     __typename?: 'SpaceSettingsPrivacy';
                     mode: SpacePrivacyMode;
                     allowPlatformSupportAsAdmin: boolean;
+                  };
+                  membership: {
+                    __typename?: 'SpaceSettingsMembership';
+                    policy: CommunityMembershipPolicy;
+                    allowSubspaceAdminsToInviteMembers: boolean;
+                    trustedOrganizations: Array<string>;
+                  };
+                  collaboration: {
+                    __typename?: 'SpaceSettingsCollaboration';
+                    allowMembersToCreateCallouts: boolean;
+                    allowMembersToCreateSubspaces: boolean;
+                    inheritMembershipRights: boolean;
+                    allowEventsFromSubspaces: boolean;
                   };
                 };
               }
@@ -24963,7 +24965,13 @@ export type SpaceTemplateContentQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+            };
           };
           settings: {
             __typename?: 'SpaceSettings';
@@ -24971,6 +24979,19 @@ export type SpaceTemplateContentQuery = {
               __typename?: 'SpaceSettingsPrivacy';
               mode: SpacePrivacyMode;
               allowPlatformSupportAsAdmin: boolean;
+            };
+            membership: {
+              __typename?: 'SpaceSettingsMembership';
+              policy: CommunityMembershipPolicy;
+              allowSubspaceAdminsToInviteMembers: boolean;
+              trustedOrganizations: Array<string>;
+            };
+            collaboration: {
+              __typename?: 'SpaceSettingsCollaboration';
+              allowMembersToCreateCallouts: boolean;
+              allowMembersToCreateSubspaces: boolean;
+              inheritMembershipRights: boolean;
+              allowEventsFromSubspaces: boolean;
             };
           };
         }
@@ -25187,11 +25208,24 @@ export type SpaceTemplateContentFragment = {
   about: {
     __typename?: 'SpaceAbout';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined; url: string };
   };
   settings: {
     __typename?: 'SpaceSettings';
     privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
+    membership: {
+      __typename?: 'SpaceSettingsMembership';
+      policy: CommunityMembershipPolicy;
+      allowSubspaceAdminsToInviteMembers: boolean;
+      trustedOrganizations: Array<string>;
+    };
+    collaboration: {
+      __typename?: 'SpaceSettingsCollaboration';
+      allowMembersToCreateCallouts: boolean;
+      allowMembersToCreateSubspaces: boolean;
+      inheritMembershipRights: boolean;
+      allowEventsFromSubspaces: boolean;
+    };
   };
 };
 
@@ -25257,12 +25291,25 @@ export type SpaceTemplateContent_CollaborationFragment = {
 export type SpaceTemplateContent_AboutFragment = {
   __typename?: 'SpaceAbout';
   id: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined; url: string };
 };
 
 export type SpaceTemplateContent_SettingsFragment = {
   __typename?: 'SpaceSettings';
   privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
+  membership: {
+    __typename?: 'SpaceSettingsMembership';
+    policy: CommunityMembershipPolicy;
+    allowSubspaceAdminsToInviteMembers: boolean;
+    trustedOrganizations: Array<string>;
+  };
+  collaboration: {
+    __typename?: 'SpaceSettingsCollaboration';
+    allowMembersToCreateCallouts: boolean;
+    allowMembersToCreateSubspaces: boolean;
+    inheritMembershipRights: boolean;
+    allowEventsFromSubspaces: boolean;
+  };
 };
 
 export type WhiteboardTemplateContentFragment = {
@@ -25532,6 +25579,18 @@ export type CreateTemplateMutation = {
         }
       | undefined;
   };
+};
+
+export type CreateTemplateFromSpaceMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID']['input'];
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type CreateTemplateFromSpaceMutation = {
+  __typename?: 'Mutation';
+  createTemplateFromSpace: { __typename?: 'Template'; id: string };
 };
 
 export type UpdateTemplateMutationVariables = Exact<{

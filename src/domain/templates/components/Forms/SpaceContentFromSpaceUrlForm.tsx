@@ -8,13 +8,13 @@ import { useUrlResolverLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
 import { UrlType } from '@/core/apollo/generated/graphql-schema';
 
-interface ContentSpaceFromSpaceUrlFormProps {
-  onUseSpace: (url: string) => Promise<unknown>;
+interface SpaceContentFromSpaceUrlFormProps {
+  onUseSpace: (spaceId: string) => Promise<unknown>; // Callback function to handle click on "Use this space" button
   collapsible?: boolean;
   onCollapse?: () => void;
 }
 
-const ContentSpaceFromSpaceUrlForm: React.FC<ContentSpaceFromSpaceUrlFormProps> = ({
+const SpaceContentFromSpaceUrlForm: React.FC<SpaceContentFromSpaceUrlFormProps> = ({
   onUseSpace,
   collapsible,
   onCollapse,
@@ -99,4 +99,4 @@ const ContentSpaceFromSpaceUrlForm: React.FC<ContentSpaceFromSpaceUrlFormProps> 
   );
 };
 
-export default ContentSpaceFromSpaceUrlForm;
+export default SpaceContentFromSpaceUrlForm;

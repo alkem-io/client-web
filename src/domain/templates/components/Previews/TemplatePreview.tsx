@@ -2,7 +2,7 @@ import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import CalloutTemplatePreview from './CalloutTemplatePreview';
-import SpaceContentTemplatePreview from './SpaceTemplatePreview';
+import SpaceTemplatePreview from './SpaceTemplatePreview';
 import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';
 import PostTemplatePreview from './PostTemplatePreview';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
@@ -33,7 +33,7 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
     case TemplateType.Callout:
       return <CalloutTemplatePreview template={templateData} />;
     case TemplateType.Space:
-      return <SpaceContentTemplatePreview contentSpace={templateData?.contentSpace} />;
+      return <SpaceTemplatePreview template={templateData} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplatePreview template={templateData} />;
     case TemplateType.Post:
