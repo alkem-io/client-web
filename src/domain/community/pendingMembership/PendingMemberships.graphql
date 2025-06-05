@@ -6,7 +6,7 @@ query PendingMembershipsSpace($spaceId: UUID!, $includeCommunityGuidelines: Bool
         ...SpaceAboutCardBanner
         profile {
           avatar: visual(type: AVATAR) {
-            ...VisualUri
+            ...VisualModel
           }
         }
         guidelines @include(if: $includeCommunityGuidelines) {

@@ -1,5 +1,5 @@
-import { Reference } from '@/domain/common/profile/Profile';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { AiPersonaModelCardModel } from './AiPersonaModelCardModel';
 
 export type VirtualContributorModelFull = {
@@ -15,7 +15,7 @@ export type VirtualContributorModelFull = {
       country?: string;
     };
     url: string;
-    references?: Reference[];
+    references?: ReferenceModel[];
   };
   settings?: {
     privacy?: {

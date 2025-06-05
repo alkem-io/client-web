@@ -5,9 +5,9 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import FixedHeightLogo from '../components/FixedHeightLogo';
-import { PageTitle } from '@/core/ui/typography';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from '../components/Kratos/constants';
+import AuthenticationLayout from '../AuthenticationLayout';
+import { AuthFormHeader } from '../components/AuthFormHeader';
 
 const REMOVED_FIELDS: readonly KratosRemovedFieldAttributes[] = [
   ...KRATOS_REMOVED_FIELDS_DEFAULT,
@@ -31,13 +31,14 @@ export const SettingsPage = ({ flow }: { flow: string }) => {
   }
 
   return (
-    <KratosForm ui={settingsFlow?.ui}>
-      <AuthPageContentContainer>
-        <FixedHeightLogo />
-        <PageTitle>{t('pages.settings.header')}</PageTitle>
-        <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} />
-      </AuthPageContentContainer>
-    </KratosForm>
+    <AuthenticationLayout>
+      <AuthFormHeader title={t('pages.settings.header')} hideMessage />
+      <KratosForm ui={settingsFlow?.ui}>
+        <AuthPageContentContainer>
+          <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} />
+        </AuthPageContentContainer>
+      </KratosForm>
+    </AuthenticationLayout>
   );
 };
 

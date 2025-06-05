@@ -1,12 +1,6 @@
 import { useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import {
-  CalloutState,
-  CalloutType,
-  Tagset,
-  TagsetReservedName,
-  TagsetType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -18,7 +12,6 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import { Reference } from '@/domain/common/profile/Profile';
 import { ProfileReferenceSegment } from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
@@ -30,13 +23,15 @@ import CalloutWhiteboardField, {
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 type FormValueType = {
   displayName: string;
   description: string;
   type: CalloutType;
-  tagsets: Tagset[];
-  references: Reference[];
+  tagsets: TagsetModel[];
+  references: ReferenceModel[];
   opened: boolean;
   postDescription?: string;
   whiteboardContent?: string;
@@ -50,7 +45,7 @@ export type CalloutFormInput = {
   displayName?: string;
   description?: string;
   tags?: string[];
-  references?: Reference[];
+  references?: ReferenceModel[];
   type?: CalloutType;
   state?: CalloutState;
   postDescription?: string;
@@ -63,7 +58,7 @@ export type CalloutFormOutput = {
   displayName: string;
   description: string;
   tags: string[];
-  references: Reference[];
+  references: ReferenceModel[];
   type: CalloutType;
   state: CalloutState;
   postDescription?: string;
@@ -96,7 +91,7 @@ const CalloutForm = ({
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
-  const tagsets: Tagset[] = useMemo(
+  const tagsets: TagsetModel[] = useMemo(
     () => [
       {
         id: '-1',

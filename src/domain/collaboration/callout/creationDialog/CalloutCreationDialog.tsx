@@ -14,7 +14,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { Reference } from '@/domain/common/profile/Profile';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -26,12 +25,13 @@ import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export type CalloutCreationDialogFields = {
   description?: string;
   displayName?: string;
   tags?: string[];
-  references?: Reference[];
+  references?: ReferenceModel[];
   type?: CalloutType;
   state?: CalloutState;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -68,7 +68,7 @@ const CalloutCreationDialog = ({
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
-  const [sendNotification, setSendNotification] = useState(true);
+  const [sendNotification, setSendNotification] = useState(false);
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
 
   useLayoutEffect(() => {
@@ -151,7 +151,6 @@ const CalloutCreationDialog = ({
         setCallout({});
         scrollToTop();
       } catch (ex) {
-        // eslint-disable-next-line no-console
         console.error(ex);
       } finally {
         closePublishDialog();

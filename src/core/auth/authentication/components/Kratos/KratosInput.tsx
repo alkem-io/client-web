@@ -1,4 +1,4 @@
-import { GridLegacy, InputAdornment, OutlinedInputProps, TextField } from '@mui/material';
+import { GridLegacy, InputAdornment, OutlinedInputProps, TextField, Tooltip } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -8,9 +8,11 @@ import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } fr
 import { KratosInputExtraProps, KratosProps } from './KratosProps';
 import IconButton from '@mui/material/IconButton';
 
-interface KratosInputProps extends KratosProps, KratosInputExtraProps {}
+interface KratosInputProps extends KratosProps, KratosInputExtraProps {
+  disabled?: boolean;
+}
 
-export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete }) => {
+export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete, disabled }) => {
   const { t } = useTranslation();
   const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
   const [value, setValue] = useState(getNodeValue(node));
@@ -53,23 +55,32 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
 
   return (
     <GridLegacy xs={12}>
-      <TextField
-        name={name}
-        label={getNodeTitle(node, t)}
-        onBlur={() => setTouched(true)}
-        onChange={e => setValue(e.target.value)}
-        value={value ? String(value) : ''}
-        variant={'outlined'}
-        type={inputType}
-        error={touched && invalid}
-        helperText={helperText}
-        required={required}
-        disabled={attributes.disabled}
-        autoComplete={autoComplete}
-        fullWidth
-        InputProps={{ ...InputProps }}
-        InputLabelProps={{ shrink: true }}
-      />
+      <Tooltip
+        title={t('pages.accept-terms.tooltip')}
+        arrow
+        placement="top"
+        disableFocusListener={!disabled}
+        disableHoverListener={!disabled}
+      >
+        <TextField
+          name={name}
+          label={getNodeTitle(node, t)}
+          onBlur={() => setTouched(true)}
+          onChange={e => setValue(e.target.value)}
+          value={value ? String(value) : ''}
+          variant={'outlined'}
+          type={inputType}
+          error={touched && invalid}
+          helperText={helperText}
+          required={required}
+          disabled={attributes.disabled || disabled}
+          autoComplete={autoComplete}
+          fullWidth
+          InputProps={{ ...InputProps }}
+          InputLabelProps={{ shrink: true }}
+          sx={{ marginY: inputType === 'hidden' ? 0 : 0.5 }}
+        />
+      </Tooltip>
     </GridLegacy>
   );
 };

@@ -126,7 +126,7 @@ fragment CollaborationTemplateContent on Collaboration {
           id
           profile {
             preview: visual(type: BANNER) {
-              ...VisualFull
+              ...VisualModel
             }
           }
         }

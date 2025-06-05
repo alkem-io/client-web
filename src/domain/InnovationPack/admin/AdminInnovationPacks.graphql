@@ -75,7 +75,7 @@ fragment InnovationPackProviderProfileWithAvatar on Contributor {
     id
     displayName
     avatar: visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualModel
     }
     url
   }

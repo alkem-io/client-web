@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel, FormControlLabelProps } from '@mui/material';
+import { Box, BoxProps, Checkbox, FormControlLabel, FormControlLabelProps } from '@mui/material';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 
@@ -7,11 +7,13 @@ export interface AcceptTermsCheckboxProps
   value: boolean;
   onChange?: (value: boolean) => void;
 }
+const Link = (props: BoxProps<'a'>) => {
+  return <Box component="a" target="_blank" whiteSpace="nowrap" {...props} />;
+};
 
 const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxProps) => {
   const { locations } = useConfig();
-  // eslint-disable-next-line jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
-  const tTerms = translateWithElements(<a target="_blank" />);
+  const tTerms = translateWithElements(<Link sx={{ color: theme => theme.palette.highlight.dark }} />);
   const label = tTerms('pages.registration.terms', {
     terms: {
       href: locations?.terms,
@@ -25,11 +27,11 @@ const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxP
     <FormControlLabel
       value={value}
       checked={value}
-      onChange={(event, nextValue) => onChange?.(nextValue)}
+      onChange={(_event, nextValue) => onChange?.(nextValue)}
       control={<Checkbox />}
-      label={<Box>{label}</Box>}
+      label={<Box sx={{ fontSize: 15, color: theme => theme.palette.neutral.light }}>{label}</Box>}
       disableTypography
-      sx={{ fontSize: 15 }}
+      sx={{ fontSize: 15, color: theme => theme.palette.neutral.light, marginBottom: 0 }}
       {...props}
     />
   );

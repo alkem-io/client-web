@@ -8,11 +8,11 @@ import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import CardFooter from '@/core/ui/card/CardFooter';
 import CardFooterDate from '@/core/ui/card/CardFooterDate';
 import MessageCounter from '@/core/ui/card/MessageCounter';
-import { Room, VisualUriFragment } from '@/core/apollo/generated/graphql-schema';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { isNumber } from 'lodash';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 export interface PostCardPost extends Identifiable {
   profile: {
@@ -21,9 +21,9 @@ export interface PostCardPost extends Identifiable {
     description?: string;
     tagset?: { tags: string[] };
   };
-  bannerNarrow?: VisualUriFragment;
+  bannerNarrow?: VisualModel;
   createdBy?: { profile: { displayName: string } };
-  comments?: Pick<Room, 'messagesCount'>;
+  comments?: { messagesCount: number };
   createdDate: string | Date; // Apollo says Date while actually it's a string
   contributionId: string;
 }

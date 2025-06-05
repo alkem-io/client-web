@@ -6,7 +6,7 @@ import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValid
 import nonReservedNameIdValidator from '@/main/routing/nonReservedNameIdValidator';
 
 export const nameSegmentSchema = yup.object().shape({
-  name: displayNameValidator,
+  displayName: displayNameValidator,
   nameID: nonReservedNameIdValidator,
 });
 

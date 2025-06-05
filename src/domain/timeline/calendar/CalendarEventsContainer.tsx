@@ -9,12 +9,18 @@ import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventInfoFragment,
-  Profile,
 } from '@/core/apollo/generated/graphql-schema';
 import { isSameDay } from '@/core/utils/time/utils';
+import {
+  mapProfileModelToCreateProfileInput,
+  mapProfileModelToUpdateProfileInput,
+} from '@/domain/common/profile/ProfileModelUtils';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 import React, { useCallback } from 'react';
+import { LocationModel } from '@/domain/common/location/LocationModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -22,10 +28,10 @@ export interface CalendarEventFormData
     'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay' | 'visibleOnParentCalendar'
   > {
   endDate: number | Date;
-  displayName: Profile['displayName'];
-  description: Profile['description'];
-  location: Profile['location'];
-  references: Profile['references'];
+  displayName: string;
+  description: string;
+  location: LocationModel;
+  references: ReferenceModel[];
   tags: string[];
 }
 
@@ -43,11 +49,7 @@ export interface CalendarEventsContainerProps {
 export interface CalendarEventsActions {
   // loadMore: () => void; // TODO: pagination?
   createEvent: (event: CalendarEventFormData) => Promise<string | undefined>;
-  updateEvent: (
-    eventId: string,
-    tagsetid: string | undefined,
-    event: CalendarEventFormData
-  ) => Promise<string | undefined>;
+  updateEvent: (eventId: string, event: CalendarEventFormData, tagset: TagsetModel) => Promise<string | undefined>;
   deleteEvent: (eventId: string) => Promise<void>;
 }
 
@@ -126,13 +128,15 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
             durationDays,
             multipleDays,
             wholeDay,
-            profileData: {
-              description: description,
-              displayName: displayName,
+            profileData: mapProfileModelToCreateProfileInput({
+              id: '',
+              description,
+              displayName,
               location: {
+                id: '',
                 city: location?.city,
               },
-            },
+            }),
           },
         },
         refetchQueries: refetchQueriesList,
@@ -143,7 +147,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
   );
 
   const updateEvent = useCallback(
-    (eventId: string, tagsetId: string | undefined, event: CalendarEventFormData) => {
+    (eventId: string, event: CalendarEventFormData, tagset: TagsetModel) => {
       const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
@@ -159,6 +163,9 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
         multipleDays = durationDays > 0;
       }
 
+      const updatedTagset = { ...tagset };
+      updatedTagset.tags = [...tags];
+
       return updateCalendarEvent({
         variables: {
           eventData: {
@@ -169,20 +176,15 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
             durationDays,
             multipleDays,
             wholeDay,
-            profileData: {
+            profileData: mapProfileModelToUpdateProfileInput({
               displayName: displayName,
               description: description,
-              // references: ...references  // TODO...
-              tagsets: [
-                {
-                  ID: tagsetId ?? '',
-                  tags: tags,
-                },
-              ],
+              tagsets: [updatedTagset],
               location: {
+                id: location?.id ?? '',
                 city: location?.city,
               },
-            },
+            }),
           },
         },
         refetchQueries: refetchQueriesList,
