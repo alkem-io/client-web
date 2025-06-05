@@ -11,7 +11,7 @@ import { useSpaceInfoForContentSpaceQuery } from '@/core/apollo/generated/apollo
 import ContentSpaceFromSpaceUrlForm from './SpaceFromSpaceUrlForm';
 import { SpaceTemplate } from '../../models/SpaceTemplate';
 import { mapInputDataToTemplateContentSpaceModel } from '../../contentSpace/contentSpaceUtils';
-import TemplateContentSpacePreview from '../../contentSpace/TemplateContentSpacePreview';
+import TemplateContentSpacePreview from '../Previews/SpaceTemplatePreview';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   selectedSpaceId?: string;

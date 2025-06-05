@@ -57,8 +57,8 @@ export const getNewTemplate = (
       const template: SpaceTemplate = {
         ...common,
         type: TemplateType.Space,
-        spaceId: data?.spaceId,
-        // contentSpace: data?.contentSpace,
+        spaceId: data?.spaceId, // used for creation, it's the spaceId that will be copied to a template
+        contentSpace: data?.contentSpace, // This is the content of the template, used for preview and updating the template
       };
       return template;
     }

@@ -35,6 +35,24 @@ query TemplateContent(
   }
 }
 
+# Used temporarily to preview any Space before turning it into a template
+query SpaceTemplateContent($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...SpaceTemplateContent_Collaboration
+      }
+      about {
+        ...SpaceTemplateContent_About
+      }
+      settings {
+        ...SpaceTemplateContent_Settings
+      }
+    }
+  }
+}
+
 fragment CalloutTemplateContent on Callout {
   id
   type
@@ -84,6 +102,78 @@ fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
       }
     }
   }
+}
+
+fragment SpaceTemplateContent on TemplateContentSpace {
+  id
+  collaboration {
+    ...SpaceTemplateContent_Collaboration
+  }
+  about {
+    ...SpaceTemplateContent_About
+  }
+  settings {
+    ...SpaceTemplateContent_Settings
+  }
+}
+
+fragment SpaceTemplateContent_Collaboration on Collaboration {
+  id
+  innovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
+  }
+  calloutsSet {
+    id
+    callouts {
+      id
+      type
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+        }
+        whiteboard {
+          id
+          profile {
+            preview: visual(type: BANNER) {
+              ...VisualModel
+            }
+          }
+        }
+      }
+      sortOrder
+    }
+  }
+}
+
+fragment SpaceTemplateContent_About on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    description
+    # ... more //!!
+  }
+}
+
+fragment SpaceTemplateContent_Settings on SpaceSettings {
+  privacy {
+    mode
+    allowPlatformSupportAsAdmin
+  }
+  # ... more //!!
 }
 
 fragment WhiteboardTemplateContent on Whiteboard {

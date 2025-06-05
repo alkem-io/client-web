@@ -14,7 +14,7 @@ import CardContent from '@/core/ui/card/CardContent';
 import CardTags from '@/core/ui/card/CardTags';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
-import { SpaceTemplate } from '../../models/SpaceTemplate';
+import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 
 interface SpaceTemplateCardProps extends TemplateCardProps {
   template: SpaceTemplate;

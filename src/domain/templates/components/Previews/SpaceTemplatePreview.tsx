@@ -3,15 +3,15 @@ import { Box } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowCalloutsPreview from '../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
-import { TemplateContentSpaceModel } from './model/TemplateContentSpaceModel';
+import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
+import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
 
-interface TemplateContentSpacePreviewProps {
+interface SpaceTemplatePreviewProps {
   loading?: boolean;
   contentSpace?: TemplateContentSpaceModel;
 }
 
-const TemplateContentSpacePreview = ({ contentSpace, loading }: TemplateContentSpacePreviewProps) => {
+const SpaceTemplatePreview = ({ contentSpace, loading }: SpaceTemplatePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
@@ -53,4 +53,4 @@ const TemplateContentSpacePreview = ({ contentSpace, loading }: TemplateContentS
   );
 };
 
-export default TemplateContentSpacePreview;
+export default SpaceTemplatePreview;

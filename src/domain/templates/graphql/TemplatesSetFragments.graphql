@@ -12,7 +12,7 @@ fragment TemplatesSetTemplates on TemplatesSet {
     ...CommunityGuidelinesTemplate
   }
   spaceTemplates {
-    ...ContentSpaceTemplate
+    ...SpaceTemplate
   }
 }
 

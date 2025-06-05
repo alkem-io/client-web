@@ -4,10 +4,15 @@ import { EmptyTemplateContentSpaceModel } from '../contentSpace/model/TemplateCo
 
 export interface SpaceTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Space;
-  spaceId?: string; // Only used for creation, it's the spaceId that will be copied to a template
+  /**
+   * SpaceID Only used for creation, it's the spaceId that will be copied to a template
+   */
+  spaceId?: string;
+  /**
+   * This is the content of the template, used for preview and updating the template
+   * Doesn't need to define the entire contentSpace, just the innovationFlow to be used in //!! (we were not defining callouts before, is that fine? maybe we can remove it entirely)
+   */
   contentSpace?: {
-    // This is the content of the template, used for preview and updating the template
-    // Doesn't need to define the entire contentSpace, just the innovationFlow to be used in //!! (we were not defining callouts before, so should be fine)
     id: string;
     collaboration?: {
       id: string;

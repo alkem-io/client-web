@@ -53,6 +53,25 @@ mutation CreateTemplate(
   }
 }
 
+# Special case for creating a template from an existing Space //!! not used??
+mutation CreateTemplateFromSpace(
+  $templatesSetId: UUID!
+  $profileData: CreateProfileInput!
+  $tags: [String!]
+  $spaceId: UUID!
+) {
+  createTemplateFromSpace(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profileData: $profileData
+      tags: $tags
+      spaceID: $spaceId
+    }
+  ) {
+    id
+  }
+}
+
 mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
