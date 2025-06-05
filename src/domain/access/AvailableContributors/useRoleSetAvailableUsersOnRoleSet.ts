@@ -3,6 +3,7 @@ import { AVAILABLE_USERS_PAGE_SIZE, AvailableUsersResponse } from './common';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { useMemo } from 'react';
 
 type useRoleSetAvailableUsersParams = {
   roleSetId: string | undefined;
@@ -39,7 +40,11 @@ const useRoleSetAvailableUsersOnRoleSet = ({
     getPageInfo: data => data?.lookup.roleSet?.availableUsersForElevatedRole.pageInfo,
   });
 
-  const users = data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [];
+  const users = useMemo(
+    () => data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [],
+    [data?.lookup.roleSet?.availableUsersForElevatedRole.users]
+  );
+
   /*
   In theory this is done on the server
   const firstPage = data?.lookup.roleSet?.availableUsersForElevatedRole;

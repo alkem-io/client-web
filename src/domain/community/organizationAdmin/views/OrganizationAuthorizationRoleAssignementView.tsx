@@ -16,6 +16,7 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
 
   const refetch = () => {
     availableUsersForRole.refetch();
+    refetchRoleSetAssignment();
   };
 
   const {
@@ -24,12 +25,14 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
     removeRoleFromUser,
     loading: loadingRoleSet,
     updating,
+    refetchRoleSetAssignment,
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: [role],
     contributorTypes: [RoleSetContributorType.User],
     fetchContributors: true,
     onChange: refetch,
+    skip: !roleSetId || !role,
   });
 
   const availableUsersForRole = useRoleSetAvailableUsers({
@@ -38,6 +41,7 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
     role: role,
     filter: searchTerm,
     usersAlreadyInRole: usersByRole?.[role],
+    skip: !roleSetId || !role || loadingRoleSet,
   });
 
   const { users: availableAssociates, fetchMore, hasMore, loading: searchingUsers } = availableUsersForRole!;
