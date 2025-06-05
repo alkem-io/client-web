@@ -27,7 +27,7 @@ import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSu
 import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
-import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
+import { useCreateSpaceTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -158,7 +158,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
   //////////
   // Saving as template
-  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceContentTemplate();
+  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceTemplate();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
     await handleCreateSpaceTemplate(values, templatesSetId);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');

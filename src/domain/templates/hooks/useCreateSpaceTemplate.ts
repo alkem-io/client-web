@@ -3,19 +3,19 @@ import { TemplateSpaceFormSubmittedValues } from '../components/Forms/TemplateSp
 import { useCreateTemplateFromSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
 import { toCreateTemplateFromSpaceContentMutationVariables } from '../components/Forms/common/mappings';
 
-export interface SpaceContentCreationUtils {
+export interface SpaceCreationProps {
   handleCreateSpaceTemplate: (values: TemplateSpaceFormSubmittedValues, templatesSetId: string) => Promise<unknown>;
 }
 
-export const useCreateSpaceContentTemplate = (): SpaceContentCreationUtils => {
-  const [createSpaceContentTemplate] = useCreateTemplateFromSpaceMutation();
+export const useCreateSpaceTemplate = (): SpaceCreationProps => {
+  const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation();
 
   const handleCreateSpaceTemplate = useCallback(
     async (values: TemplateSpaceFormSubmittedValues, templatesSetId: string) => {
       const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, values);
-      return createSpaceContentTemplate({ variables });
+      return createSpaceTemplate({ variables });
     },
-    [createSpaceContentTemplate]
+    [createSpaceTemplate]
   );
 
   return {

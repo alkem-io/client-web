@@ -253,7 +253,7 @@ export const toCreateTemplateFromSpaceContentMutationVariables = (
 ): CreateTemplateFromSpaceMutationVariables => {
   // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
   if (!values.selectedSpaceId) {
-    throw new Error('Collaboration ID is required to create a template from a collaboration');
+    throw new Error('Space ID is required to create a template from a collaboration');
   }
 
   return {

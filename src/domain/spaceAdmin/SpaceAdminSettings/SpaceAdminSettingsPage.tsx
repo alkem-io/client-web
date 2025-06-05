@@ -31,7 +31,7 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
-import { useCreateSpaceContentTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
+import { useCreateSpaceTemplate } from '@/domain/templates/hooks/useCreateSpaceTemplate';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
@@ -116,7 +116,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceContentTemplate();
+  const { handleCreateSpaceTemplate: handleCreateSpaceTemplate } = useCreateSpaceTemplate();
   const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
     await handleCreateSpaceTemplate(values, templatesSetId);
     setSaveAsTemplateDialogOpen(false);
