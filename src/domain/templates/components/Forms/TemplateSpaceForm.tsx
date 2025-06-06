@@ -22,21 +22,28 @@ interface TemplateSpaceFormProps {
 }
 
 const validator = {
-  collaborationId: yup.string().required(),
+  spaceId: yup.string().required(),
 };
 
-/**
- * We have 3 collaborationIds in this component:
- *  - the one coming with the template (template?.collaboration?.id) that never changes (will be undefined if we are creating a new template)
- *  - the one in the formik values (values.collaborationId) we want to change that when the user selects a subspace to serve as template
- *  - the one in the state [collaborationId, setCollaborationId] that we use to query the API and to show the template preview.
+/* This form is used for both create and update of Space Template, which is meta data plus TemplateContentSpace.
+ *
+ * The preview component needs to show Template Content Space.
+ * The preview is populated with either the current contentSpace or the selected space (mapped to contentSpace)
+ * The selection component should store a SpaceId, used for both create + update.
+ *
+ * We have two spaceIds in this component:
+ * - the one in the state [spaceId, setSpaceId] that we use to query the API and to populate show the template preview.
+ * - the one in the formik values (values.spaceId) we want to change that when the user selects a space to serve as template (as the )
+ *
+ * a ContentSpace preview:
+ * - the one coming with the template (template?.contentSpace?.id) that never changes (will be undefined if we are creating a new template)
  *
  * We cannot unify them because:
- *  - We want to keep the original collaborationId to reset the formik value when the user cancels the selection. also, never change a value coming from the server
- *  - The GraphQL query useCollaborationTemplateContentQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
+ *  - We want to keep the original spaceId to reset the formik value when the user cancels the selection. also, never change a value coming from the server
+ *  - The GraphQL query useTemplateContentSpaceQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
  *  - We may be able to do this with lazy queries and an Effect but for now this works pretty well.
  */
-const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
+const SpaceTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
   const { t } = useTranslation();
 
   const [spaceId, setSpaceId] = useState<string | undefined>(template?.spaceId);
@@ -92,7 +99,7 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpac
       {({ setFieldValue }) => {
         const handleSpaceIdChange = async (spaceId: string) => {
           setFieldValue('spaceId', spaceId); // Change the value in Formik
-          setSpaceId(spaceId); // Refresh the collaboration preview
+          setSpaceId(spaceId); // Refresh the space content preview
           if (spaceId) {
             await refetchTemplateContent({ spaceId });
           }
@@ -100,8 +107,8 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpac
         const handleCancel = () => {
           const spaceId = template?.spaceId;
           if (spaceId) {
-            setFieldValue('spaceId', spaceId); // Change the value in Formik back to the template collaboration
-            setSpaceId(spaceId); // Refresh the collaboration preview
+            setFieldValue('spaceId', spaceId);
+            setSpaceId(spaceId); // Refresh the space content preview
             if (spaceId) {
               refetchTemplateContent({ spaceId });
             }
@@ -123,4 +130,4 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: TemplateSpac
   );
 };
 
-export default CollaborationTemplateForm;
+export default SpaceTemplateForm;
