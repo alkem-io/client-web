@@ -21,7 +21,11 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Overlay sx={{ zIndex: 0 }}>
-        <Image src="/alkemio-banner/global-banner.svg" height="464px" alt={t('visuals-alt-text.alkemio-banner-alt')} />
+        <Image
+          src="/alkemio-banner/global-banner.svg"
+          alt={t('visuals-alt-text.alkemio-banner-alt')}
+          sx={{ objectFit: 'cover', width: '100%', height: '464px' }}
+        />
       </Overlay>
       <Gutters
         row
