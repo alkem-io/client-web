@@ -110,8 +110,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
               },
             },
             collaborationData: {
-              // addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addTutorialCallouts,
+              // addTutorialCallouts: value.addTutorialCallouts, // temporarily disabled
+              addCallouts: true, // we always want to add the default callouts
               calloutsSetData: {},
             },
           },
