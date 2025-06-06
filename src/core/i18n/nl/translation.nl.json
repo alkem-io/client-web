@@ -969,7 +969,7 @@
       "editDialogTitle": "Whiteboard template bewerken",
       "errorImporting": "Fout bij het importeren van Whiteboard Template"
     },
-    "spaceTemplates": {
+    "collaborationTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
