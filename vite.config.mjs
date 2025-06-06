@@ -101,6 +101,7 @@ export default defineConfig({
       name: 'generate-meta-json',
       apply: 'build',
       buildStart() {
+        fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
         fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
       }
     }

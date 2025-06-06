@@ -32,18 +32,12 @@ export const VersionHandling = () => {
   return (
     <NotificationView
       open={open}
-      onClose={() => setOpenToast(false)}
+      onClose={(_, reason) => {
+        if (reason === 'clickaway') return;
+        setOpenToast(false);
+      }}
       autoHideDuration={null}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      slotProps={{
-        clickAwayListener: {
-          onClickAway: event => {
-            // Prevent's default 'onClickAway' behavior.
-            // @ts-ignore
-            event.defaultMuiPrevented = true;
-          },
-        },
-      }}
     >
       <SnackbarContent
         message={t('snackbars.appVersion.message')}
