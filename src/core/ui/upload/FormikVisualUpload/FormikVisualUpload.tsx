@@ -1,6 +1,6 @@
 import { Box, BoxProps, Skeleton } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '@/core/ui/button/UploadButton';
 import Image from '@/core/ui/image/Image';
@@ -120,7 +120,15 @@ const FormikAvatarUpload = ({
           <Box>
             <Caption>{t(`pages.visualEdit.${visualType}.title`)}</Caption>
             <Caption>
-              {t(`pages.visualEdit.${visualType}.description1`, { width: maxWidth, height: maxHeight })}
+              <Trans
+                i18nKey={`pages.visualEdit.${visualType}.description1` as const}
+                values={{ width: maxWidth, height: maxHeight }}
+                components={{
+                  br: <br />,
+                  em: <em />,
+                  b: <strong />,
+                }}
+              />
             </Caption>
           </Box>
         </Box>
