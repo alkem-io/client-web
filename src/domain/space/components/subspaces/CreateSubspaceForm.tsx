@@ -20,12 +20,21 @@ import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisual
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
+import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
+import { Caption } from '@/core/ui/typography';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
   SpaceFormValues,
-  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'spaceTemplateId' | 'visuals'
+  | 'displayName'
+  | 'tagline'
+  | 'description'
+  | 'tags'
+  | 'addTutorialCallouts'
+  | 'addCallouts'
+  | 'spaceTemplateId'
+  | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends SpaceCreationForm {}
@@ -46,7 +55,8 @@ export const CreateSubspaceForm = ({
       tagline: value.tagline,
       description: value.description,
       tags: value.tags,
-      addTutorialCallouts: value.addTutorialCallouts,
+      addTutorialCallouts: false,
+      addCallouts: Boolean(value.spaceTemplateId) ? value.addCallouts : true,
       spaceTemplateId: value.spaceTemplateId,
       visuals: value.visuals,
     });
@@ -57,6 +67,7 @@ export const CreateSubspaceForm = ({
     description: '',
     tags: [],
     addTutorialCallouts: false,
+    addCallouts: true,
     spaceTemplateId: undefined,
     visuals: {
       avatar: { file: undefined, altText: '' },
@@ -94,7 +105,7 @@ export const CreateSubspaceForm = ({
       validateOnMount
       onSubmit={() => {}}
     >
-      {() => (
+      {({ values: { spaceTemplateId } }) => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
           <FormikInputField
@@ -133,17 +144,22 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
             <SubspaceTemplateSelector name="spaceTemplateId" disablePadding />
-            {/* TEMPORARY DISABLE AS THERE ARE NO SUBSPACE TUTORIALS */}
-            {/*<FormikRadiosSwitch*/}
-            {/*  name="addTutorialCallouts"*/}
-            {/*  label="Tutorials:"*/}
-            {/*  options={[*/}
-            {/*    { label: 'On', value: true },*/}
-            {/*    { label: 'Off', value: false },*/}
-            {/*  ]}*/}
-            {/*  row*/}
-            {/*  disablePadding*/}
-            {/*/>*/}
+            {/* Show options only if a template is selected */}
+            {Boolean(spaceTemplateId) && (
+              <Gutters disablePadding disableGap>
+                <Caption>{t('common.options')}</Caption>
+                <FormikRadiosSwitch
+                  name="addCallouts"
+                  label={t('context.common.addCallouts.title')}
+                  options={[
+                    { label: t('buttons.yes'), value: true },
+                    { label: t('buttons.no'), value: false },
+                  ]}
+                  row
+                  disablePadding
+                />
+              </Gutters>
+            )}
           </Gutters>
         </Form>
       )}

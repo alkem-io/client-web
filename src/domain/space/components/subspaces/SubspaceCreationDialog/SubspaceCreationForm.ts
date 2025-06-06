@@ -10,6 +10,7 @@ export interface SpaceFormValues {
   tags: string[];
   description?: string;
   addTutorialCallouts: boolean;
+  addCallouts?: boolean;
   spaceTemplateId?: string;
   visuals: {
     avatar: VisualUpload;

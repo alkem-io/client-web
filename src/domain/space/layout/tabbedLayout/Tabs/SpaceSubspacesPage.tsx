@@ -55,6 +55,7 @@ const SpaceSubspacesPage = () => {
           why: value.why,
         },
         addTutorialCallouts: value.addTutorialCallouts,
+        addCallouts: value.addCallouts,
         spaceTemplateId: value.spaceTemplateId,
       });
 

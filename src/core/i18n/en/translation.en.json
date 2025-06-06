@@ -119,6 +119,7 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes": "Yes",
+    "no": "No",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
@@ -537,7 +538,8 @@
         "year_plural": "{{count}} years"
       }
     },
-    "supportEmail": "support@alkem.io"
+    "supportEmail": "support@alkem.io",
+    "options": "Options"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -804,6 +806,14 @@
     }
   },
   "context": {
+    "common": {
+      "addCallouts": {
+        "title": "Add template's default collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
+      }
+    },
     "L0": {
       "tagline": {
         "title": "Tagline",
@@ -868,9 +878,6 @@
         "placeholder": "",
         "tooltip": "Tags"
       },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
-      },
       "template": {
         "title": "Template:",
         "defaultTemplate": "Default Alkemio template for subspaces"
@@ -911,12 +918,6 @@
         "title": "Tags",
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools"
-      },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
