@@ -102,6 +102,7 @@
     "@tiptap/core": "^2.0.0-beta.220",
     "@tiptap/extension-collaboration": "^2.12.0",
     "@tiptap/extension-collaboration-cursor": "^2.12.0",
+    "@tiptap/extension-document": "^2.13.0",
     "@tiptap/extension-highlight": "^2.0.0-beta.220",
     "@tiptap/extension-image": "^2.0.0-beta.220",
     "@tiptap/extension-link": "^2.0.0-beta.220",
