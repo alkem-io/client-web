@@ -179,7 +179,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         profile: {
           displayName: saveAsTemplateDialogSelectedSpace.profile.displayName,
         },
-        modelSpaceId: saveAsTemplateDialogSelectedSpace.id,
+        spaceId: saveAsTemplateDialogSelectedSpace.id,
       }
     : EmptySpaceTemplateModel;
 

@@ -457,7 +457,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     getDefaultValues={async () => {
                       return {
                         type: TemplateType.Space,
-                        modelSpaceId: spaceId, //!! not sure if this is gonna work
+                        spaceId,
                       };
                     }}
                   />
