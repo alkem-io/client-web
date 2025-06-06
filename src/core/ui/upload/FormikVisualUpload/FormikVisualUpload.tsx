@@ -118,15 +118,20 @@ const FormikAvatarUpload = ({
             alt={altText}
           />
           <Box>
-            <Caption>{t(`pages.visualEdit.${visualType}.title`)}</Caption>
+            <Caption>
+              <Trans
+                i18nKey={`pages.visualEdit.${visualType}.title` as const}
+                components={{
+                  b: <strong />,
+                }}
+              />
+            </Caption>
             <Caption>
               <Trans
                 i18nKey={`pages.visualEdit.${visualType}.description1` as const}
                 values={{ width: maxWidth, height: maxHeight }}
                 components={{
                   br: <br />,
-                  em: <em />,
-                  b: <strong />,
                 }}
               />
             </Caption>

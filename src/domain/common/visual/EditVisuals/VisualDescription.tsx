@@ -19,15 +19,20 @@ const VisualDescription = ({ visualTypeName, visual }: VisualDescriptionProps) =
 
   return (
     <Box paddingLeft={2}>
-      <BlockSectionTitle>{t(`pages.visualEdit.${visualTypeName}.title` as const)}</BlockSectionTitle>
+      <BlockSectionTitle>
+        <Trans
+          i18nKey={`pages.visualEdit.${visualTypeName}.title` as const}
+          components={{
+            b: <strong />,
+          }}
+        />
+      </BlockSectionTitle>
       <BlockSectionTitle>
         <Trans
           i18nKey={`pages.visualEdit.${visualTypeName}.description1` as const}
           values={{ width: visual?.maxWidth, height: visual?.maxHeight }}
           components={{
             br: <br />,
-            em: <em />,
-            b: <strong />,
           }}
         />
       </BlockSectionTitle>
