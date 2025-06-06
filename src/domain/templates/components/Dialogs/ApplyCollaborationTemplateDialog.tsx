@@ -36,7 +36,7 @@ const ApplyCollaborationTemplateDialog: React.FC<ApplyCollaborationTemplateDialo
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const [addCallouts, setAddCallouts] = useState(true);
+  const [addCallouts, setAddCallouts] = useState(true); // we always want to add the default callouts
 
   const [handleConfirm, loading] = useLoadingState(async () => {
     await onConfirm(addCallouts);

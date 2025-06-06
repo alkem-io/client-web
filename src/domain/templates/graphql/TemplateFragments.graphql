@@ -1,4 +1,3 @@
-
 fragment TemplateProfileInfo on Template {
   id
   profile {
@@ -34,15 +33,18 @@ fragment PostTemplate on Template {
   postDefaultDescription
 }
 
-fragment CollaborationTemplate on Template {
+fragment SpaceTemplate on Template {
   ...TemplateProfileInfo
-  collaboration {
+  contentSpace {
     id
-    innovationFlow {
+    collaboration {
       id
-      states {
-        displayName
-        description
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
       }
     }
   }
@@ -69,5 +71,3 @@ fragment CommunityGuidelinesTemplate on Template {
     }
   }
 }
-
-

@@ -7,7 +7,7 @@ import {
   useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStatesMutation,
   useUpdateInnovationFlowSingleStateMutation,
-  useUpdateCollaborationFromTemplateMutation,
+  useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CalloutType, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowState';
@@ -274,14 +274,14 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
-  const [applyCollaborationTemplate] = useUpdateCollaborationFromTemplateMutation();
-  const handleImportCollaborationTemplate = (collaborationTemplateId: string, addCallouts?: boolean) => {
+  const [applySpaceContentTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
+  const handleImportCollaborationTemplate = (spaceTemplateId: string, addCallouts?: boolean) => {
     const collaborationId = ensurePresence(collaboration?.id, 'Collaboration');
 
-    return applyCollaborationTemplate({
+    return applySpaceContentTemplate({
       variables: {
         collaborationId,
-        collaborationTemplateId,
+        spaceTemplateId,
         addCallouts,
       },
       refetchQueries: [

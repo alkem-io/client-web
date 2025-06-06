@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceContentTemplatesOnSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -25,7 +25,7 @@ interface SelectDefaultCollaborationTemplateDialogProps {
   open: boolean;
   onClose?: () => void;
   defaultCollaborationTemplateId?: string;
-  onSelectCollaborationTemplate: (collaborationTemplateId: string) => Promise<unknown>;
+  onSelectCollaborationTemplate: (spaceTemplateId: string) => Promise<unknown>;
 }
 
 const SelectDefaultCollaborationTemplateDialog = ({
@@ -46,7 +46,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
   const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
     useLoadingState(onSelectInnovationFlow);
 
-  const { data, loading: loadingInnovationFlows } = useSpaceCollaborationTemplatesQuery({
+  const { data, loading: loadingInnovationFlows } = useSpaceContentTemplatesOnSpaceQuery({
     variables: {
       spaceId: spaceId!,
     },
@@ -55,22 +55,20 @@ const SelectDefaultCollaborationTemplateDialog = ({
 
   const initialValues: FormValues = {
     collaborationTemplateSelectedId:
-      defaultCollaborationTemplateId ??
-      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates[0]?.id ??
-      '',
+      defaultCollaborationTemplateId ?? data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates[0]?.id ?? '',
   };
 
   const validationSchema = yup.object().shape({
     collaborationTemplateSelectedId: yup.string().required(),
   });
 
-  const collaborationTemplates = useMemo(
+  const spaceTemplates = useMemo(
     () =>
-      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates.map(template => ({
+      data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(template => ({
         id: template.id,
         name: template.profile.displayName,
       })),
-    [data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates]
+    [data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates]
   );
 
   return (
@@ -98,11 +96,11 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 />
               </Caption>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
-              {collaborationTemplates && (
+              {spaceTemplates && (
                 <FormikSelect
                   title={t('common.category')}
                   name="collaborationTemplateSelectedId"
-                  values={collaborationTemplates}
+                  values={spaceTemplates}
                 />
               )}
               <Actions justifyContent="end">

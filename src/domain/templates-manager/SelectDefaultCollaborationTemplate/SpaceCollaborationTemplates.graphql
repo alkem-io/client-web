@@ -1,11 +1,11 @@
-query SpaceCollaborationTemplates($spaceId: UUID!) {
+query SpaceContentTemplatesOnSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       templatesManager {
         id
         templatesSet {
           id
-          collaborationTemplates {
+          spaceTemplates {
             id
             profile {
               id

@@ -61,7 +61,7 @@ query AccountInformation($accountId: UUID!) {
         templatesSet {
           id
           calloutTemplatesCount
-          collaborationTemplatesCount
+          spaceTemplatesCount
           communityGuidelinesTemplatesCount
           postTemplatesCount
           whiteboardTemplatesCount

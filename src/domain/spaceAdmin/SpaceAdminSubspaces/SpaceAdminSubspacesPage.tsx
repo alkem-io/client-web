@@ -2,13 +2,13 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { FC, useCallback, useState } from 'react';
 import {
-  refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery,
   refetchSubspacesInSpaceQuery,
-  useSpaceAdminDefaultTemplatesCollaborationDetailsQuery,
+  useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
   useDeleteSpaceMutation,
-  useSpaceCollaborationIdLazyQuery,
   useSubspacesInSpaceQuery,
   useUpdateTemplateDefaultMutation,
+  refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery,
+  useCreateTemplateFromSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -27,8 +27,7 @@ import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/us
 import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
-import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
+import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -37,7 +36,7 @@ import { useTranslation } from 'react-i18next';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { SubspaceCreationDialog } from '../../space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
-import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
+import InnovationFlowCalloutsPreview from '@/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
@@ -46,6 +45,9 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
 import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
+import { EmptySpaceTemplateModel } from '@/domain/templates/models/SpaceTemplate';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import { toCreateTemplateFromSpaceContentMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -63,12 +65,13 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 }) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const ensurePresence = useEnsurePresence();
   const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState<string>();
-  const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
+  const [selectCollaborationTemplateDialogOpen, setSelectSpaceTemplateDialogOpen] = useState(false);
   const [subspaceCreationDialogOpen, setSubspaceCreationDialogOpen] = useState(false);
-  const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
+  const [saveAsTemplateDialogSelectedSpace, setSaveAsTemplateDialogSelectedSpace] = useState<SearchableListItem>();
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId },
@@ -129,7 +132,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           why: value.why ?? '',
         },
         addTutorialCallouts: value.addTutorialCallouts,
-        collaborationTemplateId: value.collaborationTemplateId,
+        addCallouts: value.addCallouts,
+        spaceTemplateId: value.spaceTemplateId,
       });
 
       if (!result?.about.profile?.url) {
@@ -142,7 +146,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   );
 
   // Templates usage
-  const { data, loading: adminTemplatesLoading } = useSpaceAdminDefaultTemplatesCollaborationDetailsQuery({
+  const { data, loading: adminTemplatesLoading } = useSpaceAdminDefaultSpaceTemplatesDetailsQuery({
     variables: {
       spaceId: spaceId,
     },
@@ -150,37 +154,35 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   });
   const templatesManager = data?.lookup.space?.templatesManager;
   const templateDefaults = templatesManager?.templateDefaults;
-  const templateSetPrivileges = templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSet = templatesManager?.templatesSet;
+  const templateSetPrivileges = templateSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
   const defaultSubspaceTemplate = templateDefaults?.find(
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
   );
 
-  const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
-  const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceId);
+  //////////
+  // Saving as template
+  const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation();
+  const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
+    const templatesSetId = ensurePresence(templateSet?.id, `No templatesSet found for spaceId: ${spaceId}`);
+    const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, values);
+    await createSpaceTemplate({ variables });
+    setSaveAsTemplateDialogSelectedSpace(undefined);
     notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
-    setSaveAsTemplateDialogSelectedItem(undefined);
   };
 
-  const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
-  const getDefaultTemplateValues = async () => {
-    if (saveAsTemplateDialogSelectedItem?.id) {
-      const { data } = await fetchCollaborationId({
-        variables: {
-          spaceId: saveAsTemplateDialogSelectedItem?.id,
+  // Fetch space info for the selected space to use as input for the template
+  const defaultTemplateValues = saveAsTemplateDialogSelectedSpace
+    ? {
+        id: '',
+        type: TemplateType.Space,
+        profile: {
+          displayName: saveAsTemplateDialogSelectedSpace.profile.displayName,
         },
-      });
-      return {
-        type: TemplateType.Collaboration,
-        collaboration: {
-          id: data?.lookup.space?.collaboration.id,
-        },
-      };
-    } else {
-      throw new Error('No item selected');
-    }
-  };
+        spaceId: saveAsTemplateDialogSelectedSpace.id,
+      }
+    : EmptySpaceTemplateModel;
 
   const onDeleteConfirmation = () => {
     if (deleteDialogSelectedItem) {
@@ -190,23 +192,23 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   };
 
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
-  const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
+  const handleSelectSpaceTemplate = async (spaceTemplateId: string) => {
     if (!defaultSubspaceTemplate) {
       return;
     }
     await updateTemplateDefault({
       variables: {
         templateDefaultID: defaultSubspaceTemplate?.id,
-        templateID: collaborationTemplateId,
+        templateID: spaceTemplateId,
       },
       refetchQueries: [
-        refetchSpaceAdminDefaultTemplatesCollaborationDetailsQuery({
+        refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery({
           spaceId,
         }),
       ],
       awaitRefetchQueries: true,
     });
-    setSelectCollaborationTemplateDialogOpen(false);
+    setSelectSpaceTemplateDialogOpen(false);
   };
 
   const getSubSpaceActions = (item: SearchableListItem) => (
@@ -214,7 +216,9 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
       {canCreateTemplate && (
         <MenuItemWithIcon
           iconComponent={DownloadForOfflineOutlined}
-          onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
+          onClick={() => {
+            setSaveAsTemplateDialogSelectedSpace(item);
+          }}
         >
           {t('buttons.saveAsTemplate')}
         </MenuItemWithIcon>
@@ -240,10 +244,10 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
               <>
                 <BlockSectionTitle>{defaultSubspaceTemplate.template.profile.displayName}</BlockSectionTitle>
                 <InnovationFlowProfileView
-                  innovationFlow={defaultSubspaceTemplate.template.collaboration?.innovationFlow}
+                  innovationFlow={defaultSubspaceTemplate.template.contentSpace?.collaboration?.innovationFlow}
                 />
                 <InnovationFlowStates
-                  states={defaultSubspaceTemplate.template.collaboration?.innovationFlow.states}
+                  states={defaultSubspaceTemplate.template.contentSpace?.collaboration?.innovationFlow.states}
                   selectedState={selectedState}
                   onSelectState={state =>
                     setSelectedState(currentState =>
@@ -252,7 +256,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
                   }
                 />
                 <InnovationFlowCalloutsPreview
-                  callouts={defaultSubspaceTemplate.template.collaboration?.calloutsSet.callouts}
+                  callouts={defaultSubspaceTemplate.template.contentSpace?.collaboration?.calloutsSet.callouts}
                   selectedState={selectedState}
                   loading={loading}
                 />
@@ -262,11 +266,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
             )}
 
             <Actions justifyContent="end">
-              <Button
-                variant="outlined"
-                startIcon={<Cached />}
-                onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
-              >
+              <Button variant="outlined" startIcon={<Cached />} onClick={() => setSelectSpaceTemplateDialogOpen(true)}>
                 {t(
                   'pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.selectDifferentTemplate'
                 )}
@@ -294,8 +294,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           spaceId={spaceId}
           open={selectCollaborationTemplateDialogOpen}
           defaultCollaborationTemplateId={defaultSubspaceTemplate?.template?.id}
-          onClose={() => setSelectCollaborationTemplateDialogOpen(false)}
-          onSelectCollaborationTemplate={handleSelectCollaborationTemplate}
+          onClose={() => setSelectSpaceTemplateDialogOpen(false)}
+          onSelectCollaborationTemplate={handleSelectSpaceTemplate}
         />
         <SubspaceCreationDialog
           open={subspaceCreationDialogOpen}
@@ -312,13 +312,15 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           onDelete={onDeleteConfirmation}
           description={'components.deleteEntity.confirmDialog.descriptionShort'}
         />
-        {Boolean(saveAsTemplateDialogSelectedItem) && (
+        {Boolean(saveAsTemplateDialogSelectedSpace) && (
           <CreateTemplateDialog
             open
-            onClose={() => setSaveAsTemplateDialogSelectedItem(undefined)}
-            templateType={TemplateType.Collaboration}
+            onClose={() => {
+              setSaveAsTemplateDialogSelectedSpace(undefined);
+            }}
+            templateType={TemplateType.Space}
             onSubmit={handleSaveAsTemplate}
-            getDefaultValues={getDefaultTemplateValues}
+            getDefaultValues={() => Promise.resolve(defaultTemplateValues)}
           />
         )}
       </>

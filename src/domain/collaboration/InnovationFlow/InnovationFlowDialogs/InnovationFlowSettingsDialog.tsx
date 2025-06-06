@@ -115,7 +115,7 @@ const InnovationFlowSettingsDialog = ({
       />
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
-        templateType={TemplateType.Collaboration}
+        templateType={TemplateType.Space}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates
