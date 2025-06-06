@@ -20,8 +20,6 @@ import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisual
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
-import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
-import { Caption } from '@/core/ui/typography';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
@@ -105,7 +103,7 @@ export const CreateSubspaceForm = ({
       validateOnMount
       onSubmit={() => {}}
     >
-      {({ values: { spaceTemplateId } }) => (
+      {() => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
           <FormikInputField
@@ -144,22 +142,23 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
             <SubspaceTemplateSelector name="spaceTemplateId" disablePadding />
+            {/* Temporarily hidden until we have more options to choose from */}
             {/* Show options only if a template is selected */}
-            {Boolean(spaceTemplateId) && (
-              <Gutters disablePadding disableGap>
-                <Caption>{t('common.options')}</Caption>
-                <FormikRadiosSwitch
-                  name="addCallouts"
-                  label={t('context.common.addCallouts.title')}
-                  options={[
-                    { label: t('buttons.yes'), value: true },
-                    { label: t('buttons.no'), value: false },
-                  ]}
-                  row
-                  disablePadding
-                />
-              </Gutters>
-            )}
+            {/*{Boolean(spaceTemplateId) && (*/}
+            {/*  <Gutters disablePadding disableGap>*/}
+            {/*    <Caption>{t('common.options')}</Caption>*/}
+            {/*    <FormikRadiosSwitch*/}
+            {/*      name="addCallouts"*/}
+            {/*      label={t('context.common.addCallouts.title')}*/}
+            {/*      options={[*/}
+            {/*        { label: t('buttons.yes'), value: true },*/}
+            {/*        { label: t('buttons.no'), value: false },*/}
+            {/*      ]}*/}
+            {/*      row*/}
+            {/*      disablePadding*/}
+            {/*    />*/}
+            {/*  </Gutters>*/}
+            {/*)}*/}
           </Gutters>
         </Form>
       )}
