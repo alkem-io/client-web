@@ -11,7 +11,11 @@ const AcceptTermsButton = ({ hasAcceptedTerms, marginTop, ...buttonProps }: Acce
   const { t } = useTranslation();
 
   return (
-    <Tooltip title={t('pages.accept-terms.tooltip')} disableHoverListener={hasAcceptedTerms} placement="top">
+    <Tooltip
+      title={t('pages.accept-terms.tooltip')}
+      disableHoverListener={hasAcceptedTerms || !buttonProps.disabled}
+      placement="top"
+    >
       <Box marginTop={marginTop}>
         <AuthActionButton disabled={!hasAcceptedTerms} {...buttonProps} />
       </Box>

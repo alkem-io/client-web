@@ -179,7 +179,10 @@
     "createOwnSpace": "...of klik hier om je eigen Space te maken",
     "notifications": "Notificatie Knop",
     "invite": "Nodig uit",
-    "visit": "Bezoek"
+    "visit": "Bezoek",
+    "returnToDashboard": "Terug naar het dashboard als gast",
+    "approveApplication": "Aanmelding goedkeuren",
+    "rejectApplication": "Aanmelding afwijzen"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -189,6 +192,9 @@
     "sign-in": "Inloggen | Aanmelden"
   },
   "authentication": {
+    "or": "or continue with",
+    "no-account": "No account?",
+    "have-account": "Have an account?",
     "sign-in": "Log in",
     "sign-up": "Schrijf in",
     "sign-out": "Log uit",
@@ -203,7 +209,10 @@
       "connect": "Verbinden met {{provider}}",
       "providers": {
         "linkedin": "LinkedIn",
-        "microsoft": "Microsoft"
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
     },
     "signUp": {
@@ -217,6 +226,7 @@
       "L1": "Subspace",
       "L2": "Subspace"
     },
+    "actions": "Acties",
     "account": "Account",
     "all": "Alles",
     "knowledge-base": "Kennisbank",
@@ -459,6 +469,19 @@
         "POST_COLLECTION": "Oproepen voor Posts",
         "WHITEBOARD": "Whiteboards",
         "WHITEBOARD_COLLECTION": "Oproepen voor Whiteboards"
+      },
+      "invitationStatus": {
+        "invited": "Uitgenodigd",
+        "accepted": "Uitnodiging geaccepteerd",
+        "rejected": "Uitnodiging afgewezen"
+      },
+      "invitationExternalStatus": {
+        "invited": "Uitgenodigd om lid te worden van Alkemio & deze Space"
+      },
+      "roleSetContributorType": {
+        "USER": "Gebruiker",
+        "ORGANIZATION": "Organisatie",
+        "VIRTUAL": "Virtual Contributor"
       }
     },
     "blocks": {
@@ -520,9 +543,7 @@
     "memberUsers": "Leden ({{count}})",
     "leading-organizations": "Leidende Organisaties",
     "memberOrganizations": "Organisaties ({{count}})",
-    "pendingApplications": "Openstaande aanmeldingen",
     "pendingMemberships": "Openstaande aanmeldingen & uitnodigingen",
-    "invitationSent": "Uitnodiging succesvol verzonden",
     "leads": "Leads",
     "members": "Leden",
     "host": "Host",
@@ -537,10 +558,8 @@
         "title": "Verwijder Virtual Contributor",
         "confirm": "Weet je het zeker?"
       },
-      "inviteExternalVC": "Externe VC uitnodigen",
       "externalVCsInfo": "Op dit moment kan alleen Alkemio Support een externe Virtual Contributor toevoegen aan je Space. Neem <click>hier</click> contact op met Support, we helpen je graag!",
       "searchVC": "Vind Virtual Contributor",
-      "inviteBtn": "Virtual Contributor Uitnodigen",
       "permissionRequiredTooltip": "Om Virtual Contributors te gebruiken, upgrade je licentie of neem contact op met het Alkemio-team voor ondersteuning."
     },
     "application-form": {
@@ -571,25 +590,82 @@
       "applicationRejected": "Aanmelding geweigerd",
       "applicationArchived": "Aanmelding gearchiveerd"
     },
-    "invitationStatus": {
-      "invited": "Uitgenodigd",
-      "accepted": "Uitnodiging geaccepteerd",
-      "rejected": "Uitnodiging afgewezen"
+    "invitations": {
+      "inviteButton": {
+        "USER": "Mensen uitnodigen voor deze Space",
+        "ORGANIZATION": "Mensen uitnodigen voor deze Space",
+        "VIRTUAL": "Virtual Contributor Uitnodigen"
+      },
+      "inviteToRole": "Uitgenodigen als: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Nodig anderen uit voor '{{spaceName}}'",
+          "description": "Zoek naar gebruikers hieronder of voeg hun e-mailadres direct toe",
+          "note": "Houd er rekening mee dat je persoonlijke e-mailadres zichtbaar is voor iedereen die je een bericht stuurt.",
+          "defaultWelcomeMessage": "Hallo, ik wil je graag uitnodigen voor {{spaceName}}. Klik op de link hieronder om een kijkje te nemen of de uitnodiging direct te accepteren.",
+          "placeholder": "Gebruikersnaam of e-mail...",
+          "success": "Je uitnodiging is succesvol verzonden naar de volgende ontvangers:",
+          "failure": "We konden de uitnodiging niet naar de volgende ontvangers sturen:",
+          "back": "Stuur een andere uitnodiging",
+          "invitationsSent": "{{count}} uitnodigingen worden verstuurd.",
+          "invitationByEmailTooltip": "{{email}} wordt uitgenodigd om aan te melden voor Alkemio en voor deze Space",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Er is al een open uitnodiging/aanmelding",
+            "ALREADY_INVITED_TO_ROLE_SET": "Heeft al een open uitnodiging/aanmelding",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Uitnodiging tot de bovenliggende community was niet toegestaan",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Uitgenodigd voor het platform",
+            "INVITED_TO_ROLE_SET": "Uitgenodigd voor de community"
+          },
+          "validationErrors": {
+            "required": "Voeg ten minste één bijdrager toe om uit te nodigen",
+            "invalidAddress": "Verwijder ongeldige invoer om verder te gaan"
+          }
+        },
+        "vcs": {
+          "title": "Virtual Contributors Bibliotheek",
+          "dialogTitle": "Virtual Contributor uitnodigen om deel te nemen aan deze Space",
+          "invitationSent": "Uitnodiging succesvol verzonden",
+          "inviteExternalVC": "Externe VC uitnodigen",
+          "inviteBtn": "Virtual Contributor uitnodigen",
+          "defaultVCInvitationMessage": "Hallo, ik wil je Virtual Contributor {{name}} uitnodigen voor {{space}}. Neem een kijkje in de Space of klik op de knop hieronder om de uitnodiging rechtstreeks te accepteren of weigeren.",
+          "onAccount": {
+            "title": "Virtual Contributors gekoppeld aan het account van deze Space"
+          },
+          "inLibrary": {
+            "title": "Andere Virtual Contributors"
+          },
+          "emptyMessage": "Geen beschikbare Virtual Contributors",
+          "successfullyAdded": "{{contributor}} succesvol toegevoegd",
+          "vcFetchErrorMessage": "Er is een fout opgetreden bij het ophalen van de Virtual Contributors"
+        },
+        "welcomeMessage": "Uitnodigingsbericht"
+      }
     },
-    "invitationExternalStatus": {
-      "invited": "Uitgenodigd om lid te worden van Alkemio & deze Space"
-    },
-    "confirmDeleteApplication": {
-      "title": "Aanmelding van {{user}} verwijderen",
-      "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als deze nog open staat."
-    },
-    "confirmDeleteInvitation": {
-      "title": "Aanmelding van {{user}} verwijderen",
-      "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als deze nog open staat."
-    },
-    "confirmDeletePlatformInvitation": {
-      "title": "Aanmelding van {{user}} verwijderen",
-      "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmelding zal worden afgewezen als deze nog open staat."
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Aanmelding van '{{user}}' verwijderen",
+          "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als dat nog niet gebeurd was."
+        },
+        "invitation": {
+          "title": "Uitnodiging voor '{{user}}' verwijderen",
+          "content": "Weet je zeker dat je deze uitnodiging wilt verwijderen? De uitnodiging wordt verwijderd als dat nog niet gebeurd was."
+        },
+        "platformInvitation": {
+          "title": "Uitnodiging voor '{{user}}' verwijderen",
+          "content": "Weet je zeker dat je deze uitnodiging wilt verwijderen? De uitnodiging wordt verwijderd als dat nog niet gebeurd was."
+        }
+      },
+      "approve": {
+        "title": "Aanmelding van {{user}} goedkeuren",
+        "content": "Weet je zeker dat je deze aanmelding wilt goedkeuren? De gebruiker zal worden toegevoegd aan de Space en zal er toegang toe hebben.",
+        "confirmButton": "Ja, goedkeuren"
+      },
+      "reject": {
+        "title": "Aanmelding van {{user}} afwijzen",
+        "content": "Weet je zeker dat je deze aanmelding wilt afwijzen? De gebruiker zal geen toegang hebben tot de Space.",
+        "confirmButton": "Ja, afwijzen"
+      }
     },
     "pendingMembership": {
       "pendingMemberships": "Mijn Openstaande Lidmaatschappen",
@@ -857,7 +933,10 @@
       "nonBlank": "{{field}} kan niet slechts uit spaties bestaan",
       "atLeastOne": "Selecteer ten minste één item.",
       "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
-      "invalidUrl": "Ongeldige URL"
+      "invalidUrl": "Ongeldige URL",
+      "invalidEmail": "Ongeldig e-mailadres",
+      "duplicateEmail": "E-mailadres is al ingevoerd",
+      "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn"
     }
   },
   "templateDialog": {
@@ -1047,44 +1126,6 @@
         }
       }
     },
-    "invitations": {
-      "inviteOthers": "Anderen uitnodigen",
-      "inviteExistingUser": "Alkemio gebruikers uitnodigen",
-      "inviteExternalUser": "E-mail uitnodiging sturen",
-      "inviteOrganizations": "Organisaties uitnodigen",
-      "defaultInvitationMessage": "Hallo, ik wil je graag uitnodigen voor {{space}}. Klik op de link hieronder om een kijkje te nemen of de uitnodiging direct te accepteren.",
-      "defaultVCInvitationMessage": "Hallo, ik wil je Virtual Contributor {{name}} uitnodigen voor {{space}}. Neem een kijkje in de Space of klink op de knop hieronder om de uitnodiging rechtstreeks te accepteren of weigeren.",
-      "inviteExistingUserDialog": {
-        "title": "Nodig andere Alkemio gebruikers uit voor deze Space",
-        "subtitle": "Je kunt hieronder zoeken naar Alkemio gebruikers en een gepersonaliseerd bericht toevoegen.",
-        "selector": {
-          "alreadyApplied": "Deze gebruiker heeft al een aanvraag ingediend om lid te worden. Keur deze aanvraag goed in de Community instellingen",
-          "alreadyInvited": "Deze gebruiker is al uitgenodigd",
-          "alreadyMember": "Deze gebruiker is al lid"
-        }
-      },
-      "inviteExistingVCDialog": {
-        "title": "Virtual Contributor uitnodigen om deel te nemen aan deze Space"
-      },
-      "inviteExternalUserDialog": {
-        "title": "E-mail uitnodiging sturen"
-      },
-      "inviteToRole": "Uitgenodigd als: "
-    },
-    "inviteContributorsDialog": {
-      "title": "Virtual Contributors Bibliotheek",
-      "vcs": {
-        "onAccount": {
-          "title": "Virtual Contributors gekoppeld aan het account van deze Space"
-        },
-        "inLibrary": {
-          "title": "Andere Virtual Contributors"
-        },
-        "emptyMessage": "Geen beschikbare Virtual Contributors"
-      },
-      "successfullyAdded": "{{contributor}} succesvol toegevoegd",
-      "vcFetchErrorMessage": "Er is een fout opgetreden bij het ophalen van de Virtual Contributors"
-    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Verwijder reactie",
@@ -1182,8 +1223,8 @@
     "activity-log-section": {
       "title": "Recente bijdragen",
       "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
-      "activity-join-error-message": "Om recente bijdragen te zien, wordt lid van deze {{spaceType}} als je nog geen lid bent.",
-      "activity-sign-in-and-join-error-message": "Om recente bijdragen te zien, log in en wordt lid van deze {{spaceType}} als je nog geen lid bent."
+      "activity-join-error-message": "Om recente bijdragen te zien, wordt lid van deze {{spaceLevel}} als je nog geen lid bent.",
+      "activity-sign-in-and-join-error-message": "Om recente bijdragen te zien, log in en wordt lid van deze {{spaceLevel}} als je nog geen lid bent."
     },
     "activityLogView": {
       "description": {
@@ -1497,6 +1538,11 @@
           "placeholder": "Postcode"
         },
         "noLocation": "Geen locatie opgegeven"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
       }
     },
     "organizationSegment": {
@@ -1708,7 +1754,7 @@
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - Nieuw {{calloutType}} is gepubliceerd \"{{calloutName}}\", neem een kijkje!",
-          "description": "{{contributorName}} heeft een nieuwe {{calloutType}} gepubliceerd in {{spaceType}}: {{spaceName}}, met naam: {{calloutName}}."
+          "description": "{{contributorName}} heeft een nieuwe {{calloutType}} gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} heeft je genoemd in een reactie op {{calloutName}}:",
@@ -1853,6 +1899,9 @@
           },
           "communications": {
             "description": "Hier kan je updates plaatsen die zichtbaar zullen zijn voor alle leden van deze {{entity}}."
+          },
+          "subspaces": {
+            "description": "Hier kan je de Subspaces van deze Space aanpassen."
           },
           "subsubspaces": {
             "description": "Hier kan je de Subspaces van deze Subspace aanpassen."
@@ -2366,7 +2415,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welkom op Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Veilige Spaces voor Samenwerking",
-          "welcome-back": "Welkom terug {{username}}!",
+          "welcome-back": "Welkom, {{username}}!",
           "join": "Deelnemen aan de Community en meer zien?",
           "existing-user": {
             "header": "Bestaande gebruiker?",
@@ -2593,8 +2642,8 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "Je moet lid zijn van {{spaceType}} om dit whiteboard te kunnen bewerken. <spacelink>Klik hier om je aan te melden</spacelink>",
-        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{spaceType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
+        "noMembership": "Je moet lid zijn van {{spaceLevel}} om dit whiteboard te kunnen bewerken. <spacelink>Klik hier om in te loggen</spacelink>",
+        "unauthenticated": "Je moet ingelogd en lid zijn van {{spaceLevel}} om dit whiteboard te kunnen bewerken. <signinlink>Klik hier om in te loggen</signinlink>"
       },
       "readonlyDialog": {
         "title": "Alleen bekijken modus",
@@ -2643,19 +2692,22 @@
     "registration": {
       "header": "Maak een account aan om Alkemio te gebruiken",
       "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
       "login": "Heb je een account?",
-      "reset-password": "Wachtwoord resetten"
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe Spaces for Collaboration"
     },
     "accept-terms": {
       "introduction": "<p>Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "greeting": "Hallo {{user}}, welkom op Alkemio!",
       "continue": "Doorgaan naar het platform",
+      "next": "Next",
       "tooltip": "Lees en accepteer de Gebruiksvoorwaarden en het Privacybeleid voordat u doorgaat"
     },
     "registrationSuccess": {
       "header": "Je bent er bijna…",
-      "message": "De laatste stap is het verifiëren van je e-mailadres. Controleer je inbox voor een e-mail met instructies.<br>Als je geen e-mail hebt ontvangen, <resend>klik dan hier om hem opnieuw te verzenden.</resend>",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
       "continue": "…of ga door naar het platform zonder in te loggen"
     },
     "verification-success": {
@@ -2823,8 +2875,9 @@
       "added-successfully": "Identiteitsverificatie succesvol toegevoegd"
     },
     "authentication-required": {
-      "header": "Je moet ingelogd zijn voor de pagina die je probeert te bereiken.",
-      "subheader": "Log in of registreer om door te gaan!"
+      "header": "Beperkte toegang",
+      "subheader": "De pagina die je probeert te openen, is alleen beschikbaar voor geregistreerde gebruikers.",
+      "subheader2": "Log in om verder te gaan. Heb je nog geen account? Meld je gratis aan."
     },
     "user-notifications-settings": {
       "general": {
@@ -2910,7 +2963,8 @@
       "First Name": "Voornaam",
       "Last Name": "Achternaam",
       "Sign in": "Inloggen",
-      "Sign up": "Aanmelden",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
       "Submit": "Verstuur",
       "Verify code": "Code verifiëren",
       "Resend code": "Code opnieuw verzenden",
@@ -3026,6 +3080,7 @@
     "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
     "banner": {
       "page": {
         "text": "Pagina banner: {{altText}}"
@@ -3050,10 +3105,12 @@
     "subspaces": "Subspaces",
     "contributors": "Bijdragers",
     "activity": "Activiteit",
+    "calendar": "Kalender",
     "events": "Evenementen",
     "share": "Delen",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "updates": "Updates"
   },
   "createSpace": {
     "title": "Creëer een Space",
