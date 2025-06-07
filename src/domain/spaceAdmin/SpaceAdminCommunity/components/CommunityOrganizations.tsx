@@ -50,7 +50,7 @@ const initialState: GridInitialState = {
 interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
   onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
-  canAddMembers: boolean;
+  canAddOrganizations: boolean;
   onAddMember: (organizationId) => Promise<unknown> | undefined;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   onRemoveMember: (organizationId) => Promise<unknown> | void;
@@ -68,7 +68,7 @@ interface CommunityOrganizationsProps {
 const CommunityOrganizations = ({
   organizations = [],
   onOrganizationLeadChange,
-  canAddMembers,
+  canAddOrganizations,
   onAddMember,
   fetchAvailableOrganizations,
   onRemoveMember,
@@ -143,7 +143,7 @@ const CommunityOrganizations = ({
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.memberOrganizations', { count: organizations.length })}</BlockTitle>
-        {canAddMembers && (
+        {canAddOrganizations && (
           <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewOrganization(true)}>
             {t('common.add')}
           </Button>

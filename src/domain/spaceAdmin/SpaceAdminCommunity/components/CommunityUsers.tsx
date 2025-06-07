@@ -47,7 +47,7 @@ interface CommunityUsersProps {
   onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
   onUserAuthorizationChange?: (userId: string, newValue: boolean) => Promise<unknown> | void;
   onRemoveMember: (userId: string) => Promise<unknown> | void;
-  canAddMembers: boolean;
+  canAddUsers: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;
   fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   memberRoleDefinition?: {
@@ -66,7 +66,7 @@ const CommunityUsers = ({
   onUserLeadChange,
   onUserAuthorizationChange,
   onRemoveMember,
-  canAddMembers,
+  canAddUsers,
   onAddMember,
   fetchAvailableUsers,
   memberRoleDefinition,
@@ -141,7 +141,7 @@ const CommunityUsers = ({
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.memberUsers', { count: users.length })}</BlockTitle>
-        {canAddMembers && (
+        {canAddUsers && (
           <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewUser(true)}>
             {t('common.add')}
           </Button>
