@@ -72,7 +72,9 @@ export interface useCommunityAdminProvided {
     onDeletePlatformInvitation: (invitationId: string) => Promise<unknown>;
   };
   permissions: {
-    canAddMembers: boolean;
+    canAddUsers: boolean;
+    canAddOrganizations: boolean;
+    canAddVirtualContributors: boolean;
     canAddVirtualContributorsFromAccount: boolean;
   };
   loading: boolean;
@@ -198,7 +200,13 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
 
   const permissions = {
-    canAddMembers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
+    canAddUsers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
+    canAddOrganizations:
+      authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssignOrganization) &&
+      authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.Grant),
+    canAddVirtualContributors: authorizationPrivileges.some(
+      priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign
+    ),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
     // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
     canAddVirtualContributorsFromAccount: authorizationPrivileges.some(
