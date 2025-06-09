@@ -40,7 +40,6 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
     mode: 'roleSet',
     role: role,
     filter: searchTerm,
-    usersAlreadyInRole: usersByRole?.[role],
     skip: !roleSetId || !role || loadingRoleSet,
   });
 
