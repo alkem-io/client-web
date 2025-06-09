@@ -3367,5 +3367,10 @@
   },
   "aboutDialog": {
     "applyNotSignedInHelperText": "Je wordt eerst doorgestuurd naar de inlogpagina van Alkemio"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "A new version of the app is available. Please refresh the page to update."
+    }
   }
 }
