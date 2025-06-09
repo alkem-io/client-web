@@ -1,12 +1,5 @@
 /**
  * @deprecated
- * Before getting to _AUTH_REGISTER_PATH the user must accept the Platform Terms which is done on AUTH_SIGN_UP_PATH,
- * so please use AUTH_SIGN_UP_PATH for buttons/links that take a user to the registration flow.
- */
-export const _AUTH_REGISTER_PATH = '/registration';
-
-/**
- * @deprecated
  * Use buildLoginUrl() helper
  */
 export const _AUTH_LOGIN_PATH = '/login';
