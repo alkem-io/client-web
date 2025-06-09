@@ -119,6 +119,7 @@
     "take-me-home": "crwdns17510:0crwdne17510:0",
     "close": "crwdns17512:0crwdne17512:0",
     "yes": "crwdns17514:0crwdne17514:0",
+    "no": "crwdns37112:0crwdne37112:0",
     "yes-close": "crwdns17516:0crwdne17516:0",
     "yesReplace": "crwdns17518:0crwdne17518:0",
     "yesStop": "crwdns17520:0crwdne17520:0",
@@ -452,8 +453,8 @@
       "templateType": {
         "CALLOUT": "crwdns18064:0crwdne18064:0",
         "CALLOUT_plural": "crwdns18066:0crwdne18066:0",
-        "COLLABORATION": "crwdns18068:0crwdne18068:0",
-        "COLLABORATION_plural": "crwdns18070:0crwdne18070:0",
+        "SPACE": "crwdns37114:0crwdne37114:0",
+        "SPACE_plural": "crwdns37116:0crwdne37116:0",
         "COMMUNITY_GUIDELINES": "crwdns18072:0crwdne18072:0",
         "COMMUNITY_GUIDELINES_plural": "crwdns18074:0crwdne18074:0",
         "INNOVATION_FLOW": "crwdns18076:0crwdne18076:0",
@@ -537,7 +538,8 @@
         "year_plural": "crwdns18178:0{{count}}crwdne18178:0"
       }
     },
-    "supportEmail": "crwdns28750:0crwdne28750:0"
+    "supportEmail": "crwdns28750:0crwdne28750:0",
+    "options": "crwdns37118:0crwdne37118:0"
   },
   "community": {
     "memberUsers": "crwdns18180:0{{count}}crwdne18180:0",
@@ -804,6 +806,14 @@
     }
   },
   "context": {
+    "common": {
+      "addCallouts": {
+        "title": "crwdns37120:0crwdne37120:0"
+      },
+      "addTutorialCallouts": {
+        "title": "crwdns37122:0crwdne37122:0"
+      }
+    },
     "L0": {
       "tagline": {
         "title": "crwdns28800:0crwdne28800:0",
@@ -868,9 +878,6 @@
         "placeholder": "crwdns28876:0crwdne28876:0",
         "tooltip": "crwdns28878:0crwdne28878:0"
       },
-      "addTutorialCallouts": {
-        "title": "crwdns28880:0crwdne28880:0"
-      },
       "template": {
         "title": "crwdns28882:0crwdne28882:0",
         "defaultTemplate": "crwdns28884:0crwdne28884:0"
@@ -911,12 +918,6 @@
         "title": "crwdns28922:0crwdne28922:0",
         "description": "crwdns28924:0crwdne28924:0",
         "placeholder": "crwdns28926:0crwdne28926:0"
-      },
-      "addCallouts": {
-        "title": "crwdns28928:0crwdne28928:0"
-      },
-      "addTutorialCallouts": {
-        "title": "crwdns28930:0crwdne28930:0"
       },
       "innovationFlow": {
         "title": "crwdns28932:0crwdne28932:0"
@@ -969,18 +970,17 @@
       "editDialogTitle": "crwdns18634:0crwdne18634:0",
       "errorImporting": "crwdns18636:0crwdne18636:0"
     },
-    "collaborationTemplates": {
-      "name": "crwdns18638:0$t(common.enums.templateType.COLLABORATION)crwdne18638:0",
-      "title": "crwdns18640:0$t(common.templateLibrary)crwdnd18640:0$t(common.enums.templateType.COLLABORATION_plural)crwdne18640:0",
+    "spaceTemplates": {
+      "name": "crwdns37124:0$t(common.enums.templateType.COLLABORATION)crwdne37124:0",
+      "title": "crwdns37126:0$t(common.templateLibrary)crwdnd37126:0$t(common.enums.templateType.COLLABORATION_plural)crwdne37126:0",
       "findByUrl": {
-        "title": "crwdns18642:0crwdne18642:0",
-        "description": "crwdns18644:0crwdne18644:0",
-        "use": "crwdns24940:0crwdne24940:0",
-        "urlRequired": "crwdns28934:0crwdne28934:0",
-        "invalidUrl": "crwdns28936:0crwdne28936:0",
-        "spaceNotFoundError": "crwdns18648:0crwdne18648:0",
-        "collaborationNotFoundError": "crwdns18650:0crwdne18650:0",
-        "selectAnother": "crwdns18652:0crwdne18652:0"
+        "title": "crwdns37128:0crwdne37128:0",
+        "description": "crwdns37130:0crwdne37130:0",
+        "use": "crwdns37132:0crwdne37132:0",
+        "urlRequired": "crwdns37134:0crwdne37134:0",
+        "invalidUrl": "crwdns37136:0crwdne37136:0",
+        "spaceNotFoundError": "crwdns37138:0crwdne37138:0",
+        "selectAnother": "crwdns37140:0crwdne37140:0"
       }
     },
     "communityGuidelinesTemplates": {
@@ -990,7 +990,6 @@
       "guidelinesTitle": "crwdns18660:0crwdne18660:0",
       "guidelinesDescription": "crwdns18662:0crwdne18662:0"
     },
-    "spaceTemplates": "crwdns18664:0crwdne18664:0",
     "platformTemplates": "crwdns18666:0crwdne18666:0",
     "loadPlatformTemplates": "crwdns18668:0crwdne18668:0",
     "platformUseDisabled": "crwdns18670:0crwdne18670:0",
@@ -2093,10 +2092,10 @@
             "defaultSettings": {
               "title": "crwdns19806:0crwdne19806:0",
               "description": "crwdns19808:0crwdne19808:0",
-              "defaultCollaborationTemplate": {
-                "selectDifferentTemplate": "crwdns19810:0crwdne19810:0",
-                "title": "crwdns19812:0crwdne19812:0",
-                "description": "crwdns19814:0crwdne19814:0"
+              "defaultSpaceTemplate": {
+                "selectDifferentTemplate": "crwdns37142:0crwdne37142:0",
+                "title": "crwdns37144:0crwdne37144:0",
+                "description": "crwdns37146:0crwdne37146:0"
               }
             }
           }
