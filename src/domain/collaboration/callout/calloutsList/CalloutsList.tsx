@@ -7,15 +7,15 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
 import CalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
-import { CalloutInfo } from '../model/CalloutInfo.model';
+import { CalloutModelLight } from '../model/CalloutModelLight';
 
-export interface CalloutsListProps<Callout extends CalloutInfo> {
+export interface CalloutsListProps<Callout extends CalloutModelLight> {
   callouts: Callout[] | undefined;
   emptyListCaption?: ReactNode;
   loading?: boolean;
 }
 
-const CalloutsList = <Callout extends CalloutInfo>({
+const CalloutsList = <Callout extends CalloutModelLight>({
   callouts,
   emptyListCaption,
   loading,
@@ -53,7 +53,7 @@ const CalloutsList = <Callout extends CalloutInfo>({
         {filteredCallouts?.map(callout => {
           const CalloutIcon = calloutIcons[callout.type];
           return (
-            <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url}>
+            <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url ?? ''}>
               <ListItemIcon>
                 <CalloutIcon sx={{ color: theme.palette.primary.dark }} />
               </ListItemIcon>

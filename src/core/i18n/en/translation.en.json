@@ -119,6 +119,7 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes": "Yes",
+    "no": "No",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
@@ -452,8 +453,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "COLLABORATION": "Subspace Template",
-        "COLLABORATION_plural": "Subspace Templates",
+        "SPACE": "Subspace Template",
+        "SPACE_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -537,7 +538,8 @@
         "year_plural": "{{count}} years"
       }
     },
-    "supportEmail": "support@alkem.io"
+    "supportEmail": "support@alkem.io",
+    "options": "Options"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -804,6 +806,14 @@
     }
   },
   "context": {
+    "common": {
+      "addCallouts": {
+        "title": "Add template's default collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
+      }
+    },
     "L0": {
       "tagline": {
         "title": "Tagline",
@@ -868,9 +878,6 @@
         "placeholder": "",
         "tooltip": "Tags"
       },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
-      },
       "template": {
         "title": "Template:",
         "defaultTemplate": "Default Alkemio template for subspaces"
@@ -911,12 +918,6 @@
         "title": "Tags",
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools"
-      },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -969,7 +970,7 @@
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
-    "collaborationTemplates": {
+    "spaceTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
@@ -979,7 +980,6 @@
         "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
-        "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
       }
     },
@@ -990,7 +990,6 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
-    "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
@@ -2093,7 +2092,7 @@
             "defaultSettings": {
               "title": "Default Subspace Template",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
-              "defaultCollaborationTemplate": {
+              "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default Template",
                 "title": "Change Default Subspace Template",
                 "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."

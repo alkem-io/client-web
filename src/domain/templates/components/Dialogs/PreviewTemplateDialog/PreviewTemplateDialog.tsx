@@ -5,7 +5,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
 import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
-import TemplatePreview from '@/domain/templates/components/Previews/TemplatePreview';
+import TemplateContentPreview from '@/domain/templates/components/Previews/TemplateContentPreview';
 import { Avatar, Button, DialogContent, styled } from '@mui/material';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
@@ -100,7 +100,7 @@ const PreviewTemplateDialog = ({
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">
             <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
-            <TemplatePreview template={template} />
+            <TemplateContentPreview template={template} />
           </PageContentColumn>
         </PageContentBlockGrid>
       </DialogContent>
