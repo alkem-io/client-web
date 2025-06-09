@@ -2227,20 +2227,20 @@
     },
     "visualEdit": {
       "AVATAR": {
-        "title": "Profielfoto",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+        "title": "<b>Avatar</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in information pane and top left navigation menu.",
         "description2": "Gebruik: Space kaart op pagina banner",
         "description": "Omschrijving: {{alternativeText}}"
       },
       "BANNER": {
-        "title": "Pagina banner",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+        "title": "<b>Page banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the Space (also in the Subspaces) and top left navigation menu.",
         "description2": "Gebruik: Banner op de dashboard tab",
         "description": "Omschrijving: {{alternativeText}}"
       },
       "CARD": {
-        "title": "Kaart banner",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+        "title": "<b>Card banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and Space overviews.",
         "description2": "Gebruik: Banner op kaarten",
         "description": "Omschrijving: {{alternativeText}}"
       },
