@@ -6,14 +6,14 @@ import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/Innovatio
 import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
 
-interface SpaceTemplatePreviewProps {
+interface TemplateContentSpacePreviewProps {
   loading?: boolean;
   template?: {
     contentSpace?: TemplateContentSpaceModel;
   };
 }
 
-const SpaceTemplatePreview = ({ template, loading }: SpaceTemplatePreviewProps) => {
+const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpacePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = template?.contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
@@ -55,4 +55,4 @@ const SpaceTemplatePreview = ({ template, loading }: SpaceTemplatePreviewProps) 
   );
 };
 
-export default SpaceTemplatePreview;
+export default TemplateContentSpacePreview;

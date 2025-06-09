@@ -7,7 +7,7 @@ import References from '@/domain/shared/components/References/References';
 import { Skeleton } from '@mui/material';
 import { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
 
-type CommunityGuidelinesTemplatePreviewProps = {
+interface TemplateContentCommunityGuidelinesPreviewProps {
   loading?: boolean;
   template?: {
     communityGuidelines?: {
@@ -18,12 +18,12 @@ type CommunityGuidelinesTemplatePreviewProps = {
       };
     };
   };
-};
+}
 
-const CommunityGuidelinesTemplatePreview = ({
+const TemplateContentCommunityGuidelinesPreview = ({
   template,
   loading,
-}: PropsWithChildren<CommunityGuidelinesTemplatePreviewProps>) => {
+}: PropsWithChildren<TemplateContentCommunityGuidelinesPreviewProps>) => {
   const { t } = useTranslation();
   const communityGuidelines = template?.communityGuidelines;
 
@@ -44,4 +44,4 @@ const CommunityGuidelinesTemplatePreview = ({
   );
 };
 
-export default CommunityGuidelinesTemplatePreview;
+export default TemplateContentCommunityGuidelinesPreview;

@@ -1,20 +1,20 @@
 import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
-import CalloutTemplatePreview from './CalloutTemplatePreview';
-import SpaceTemplatePreview from './SpaceTemplatePreview';
-import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';
-import PostTemplatePreview from './PostTemplatePreview';
-import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
+import TemplateContentCalloutPreview from './TemplateContentCalloutPreview';
+import TemplateContentSpacePreview from './TemplateContentSpacePreview';
+import TemplateContentCommunityGuidelinesPreview from './TemplateContentCommunityGuidelinesPreview';
+import TemplateContentPostPreview from './TemplateContentPostPreview';
+import TemplateContentWhiteboardPreview from './TemplateContentWhiteboardPreview';
 
-interface TemplatePreviewProps {
+interface TemplateContentPreviewProps {
   // All the data coming in `template` is ignored,
   // even if the template was already loaded, the preview will reload all the data that it needs
   // If you want to use custom data, use directly the specific preview component
   template?: Identifiable & { type: TemplateType };
 }
 
-const TemplatePreview = ({ template }: TemplatePreviewProps) => {
+const TemplateContentPreview = ({ template }: TemplateContentPreviewProps) => {
   const { data } = useTemplateContentQuery({
     variables: {
       templateId: template?.id!,
@@ -31,17 +31,17 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
 
   switch (template?.type) {
     case TemplateType.Callout:
-      return <CalloutTemplatePreview template={templateData} />;
+      return <TemplateContentCalloutPreview template={templateData} />;
     case TemplateType.Space:
-      return <SpaceTemplatePreview template={templateData} />;
+      return <TemplateContentSpacePreview template={templateData} />;
     case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplatePreview template={templateData} />;
+      return <TemplateContentCommunityGuidelinesPreview template={templateData} />;
     case TemplateType.Post:
-      return <PostTemplatePreview template={templateData} />;
+      return <TemplateContentPostPreview template={templateData} />;
     case TemplateType.Whiteboard:
-      return <WhiteboardTemplatePreview template={templateData} />;
+      return <TemplateContentWhiteboardPreview template={templateData} />;
   }
   throw new Error('Template type not supported');
 };
 
-export default TemplatePreview;
+export default TemplateContentPreview;

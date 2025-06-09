@@ -7,7 +7,7 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
-import SpaceTemplatePreview from '../Previews/SpaceTemplatePreview';
+import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
 import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import SpaceContentFromSpaceUrlForm from './SpaceContentFromSpaceUrlForm';
 
@@ -122,7 +122,7 @@ const SpaceTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
               onCollapse={handleCancel}
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <SpaceTemplatePreview loading={loading} template={spacePreview} />
+            <TemplateContentSpacePreview loading={loading} template={spacePreview} />
           </>
         );
       }}
