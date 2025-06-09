@@ -2961,7 +2961,8 @@
       "recovery-flow-expired": "Este link de redefinição de senha expirou. Por favor, solicite um novo enviando seu e-mail novamente.",
       "verification-flow-continue": "Continuar",
       "login-flow-account-exists": "Você está tentando entrar com uma conta LinkedIn/Microsoft, mas o endereço de e-mail associado já foi usado antes. Por favor, entre com este e-mail e senha ou tente redefinir a senha. Se isso não funcionar, por favor, envie um e-mail para support@alkem.io.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "pick-password": "Pick a password for your account"
     },
     "fields": {
       "ID": "ID",
