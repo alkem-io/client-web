@@ -1,5 +1,5 @@
 const VERSION_CHECK_INTERVAL = 30 * 1000; // 30 sec
-const VERSION_URL = '/meta.json';
+const VERSION_URL = '/meta-test.json';
 
 // in sync with serviceWorker.ts
 const EventTypes = {
