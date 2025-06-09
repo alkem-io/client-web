@@ -7,7 +7,7 @@ import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Radio, 
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-interface ApplyCollaborationTemplateDialogProps {
+interface ApplySpaceTemplateDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: (addCallouts: boolean) => Promise<unknown> | void;
@@ -30,11 +30,7 @@ const OPTIONS = [
   },
 ] as const;
 
-const ApplyCollaborationTemplateDialog: React.FC<ApplyCollaborationTemplateDialogProps> = ({
-  open,
-  onClose,
-  onConfirm,
-}) => {
+const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({ open, onClose, onConfirm }) => {
   const { t } = useTranslation();
   const [addCallouts, setAddCallouts] = useState(true); // we always want to add the default callouts
 
@@ -97,4 +93,4 @@ const ApplyCollaborationTemplateDialog: React.FC<ApplyCollaborationTemplateDialo
   );
 };
 
-export default ApplyCollaborationTemplateDialog;
+export default ApplySpaceTemplateDialog;

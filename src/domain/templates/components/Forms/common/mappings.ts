@@ -220,8 +220,8 @@ export const toCreateTemplateMutationVariables = (
       break;
     }
     case TemplateType.Space: {
-      // TODO: Nothing to do here, for now we cannot create CollaborationTemplates with data inside, we can only copy another collaboration
-      throw new Error('Call toCreateTemplateFromCollaborationMutationVariables instead');
+      // TODO: Nothing to do here, for now we cannot create SpaceTemplates with data inside, we can only copy another Space
+      throw new Error('Call toCreateTemplateFromSpaceMutationVariables instead');
     }
     case TemplateType.CommunityGuidelines: {
       const communityGuidelinesTemplateData = values as TemplateCommunityGuidelinesFormSubmittedValues;
@@ -385,16 +385,16 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
     case TemplateType.Space: {
-      // Special case: In CollaborationTemplates we update the collaborationId in the formik values to
-      // mark that this template should load its content from another collaboration.
-      // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
-      // If the collaborationId remains the same, we just update the template profile.
+      // Special case: In SpaceTemplates we update the spaceId in the formik values to
+      // mark that this template should load its content from another space.
+      // Then updateSpaceContentTemplateVariables will be returned and the mutation will be called.
+      // If the spaceId remains the same, we just update the template profile.
       const oldSelectedSpaceId = (template as SpaceTemplate).contentSpace?.id;
       const newModelSpaceId = (newValues as TemplateSpaceFormSubmittedValues).spaceId;
       if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
-          spaceId: newModelSpaceId, // TODO: FIX THIS!
+          spaceId: newModelSpaceId, //!! TODO: FIX THIS!
         };
         return {
           updateTemplateVariables,

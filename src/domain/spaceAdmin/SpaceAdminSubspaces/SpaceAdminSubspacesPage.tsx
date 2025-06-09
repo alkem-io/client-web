@@ -34,7 +34,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
+import SelectDefaultSpaceTemplateDialog from '@/domain/templates-manager/SelectDefaultSpaceTemplate/SelectDefaultSpaceTemplateDialog';
 import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
 import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
@@ -233,9 +233,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
 
             <Actions justifyContent="end">
               <Button variant="outlined" startIcon={<Cached />} onClick={() => setSelectSpaceTemplateDialogOpen(true)}>
-                {t(
-                  'pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.selectDifferentTemplate'
-                )}
+                {t('pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.selectDifferentTemplate')}
               </Button>
             </Actions>
           </PageContentBlock>
@@ -256,12 +254,12 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
             </Gutters>
           </Box>
         </PageContentBlock>
-        <SelectDefaultCollaborationTemplateDialog
+        <SelectDefaultSpaceTemplateDialog
           spaceId={spaceId}
           open={selectSpaceTemplateDialogOpen}
-          defaultCollaborationTemplateId={defaultSubspaceTemplate?.template?.id}
+          defaultSpaceTemplateId={defaultSubspaceTemplate?.template?.id}
           onClose={() => setSelectSpaceTemplateDialogOpen(false)}
-          onSelectCollaborationTemplate={handleSelectSpaceTemplate}
+          onSelectSpaceTemplate={handleSelectSpaceTemplate}
         />
         <SubspaceCreationDialog
           open={subspaceCreationDialogOpen}

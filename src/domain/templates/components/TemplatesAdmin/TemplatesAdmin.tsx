@@ -122,7 +122,7 @@ const TemplatesAdmin = ({
       updateTemplateVariables,
       updateCalloutVariables,
       updateCommunityGuidelinesVariables,
-      updateSpaceTemplateVariables: updateCollaborationTemplateVariables,
+      updateSpaceTemplateVariables,
     } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
@@ -143,9 +143,9 @@ const TemplatesAdmin = ({
         variables: updateCommunityGuidelinesVariables,
       });
     }
-    if (updateCollaborationTemplateVariables) {
+    if (updateSpaceTemplateVariables) {
       await updateTemplateFromCollaboration({
-        variables: updateCollaborationTemplateVariables,
+        variables: updateSpaceTemplateVariables,
       });
     }
     // include preview for other template type other than callout
@@ -168,7 +168,7 @@ const TemplatesAdmin = ({
   });
 
   // Create a Collaboration template
-  const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+  const handleSpaceTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     const variables = toCreateTemplateFromSpaceContentMutationVariables(
       templatesSetId,
       values as TemplateSpaceFormSubmittedValues
@@ -182,7 +182,7 @@ const TemplatesAdmin = ({
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration
     if (creatingTemplateType === TemplateType.Space) {
-      return handleCollaborationTemplateCreate(values);
+      return handleSpaceTemplateCreate(values);
     }
 
     const variables = toCreateTemplateMutationVariables(templatesSetId, creatingTemplateType!, values);

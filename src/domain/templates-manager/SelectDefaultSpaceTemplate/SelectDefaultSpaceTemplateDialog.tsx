@@ -17,24 +17,24 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface FormValues {
-  collaborationTemplateSelectedId: string;
+  spaceTemplateSelectedId: string;
 }
 
-interface SelectDefaultCollaborationTemplateDialogProps {
+interface SelectDefaultSpaceTemplateDialogProps {
   spaceId: string | undefined;
   open: boolean;
   onClose?: () => void;
-  defaultCollaborationTemplateId?: string;
-  onSelectCollaborationTemplate: (spaceTemplateId: string) => Promise<unknown>;
+  defaultSpaceTemplateId?: string;
+  onSelectSpaceTemplate: (spaceTemplateId: string) => Promise<unknown>;
 }
 
-const SelectDefaultCollaborationTemplateDialog = ({
+const SelectDefaultSpaceTemplateDialog = ({
   spaceId,
   open,
   onClose,
-  defaultCollaborationTemplateId,
-  onSelectCollaborationTemplate: onSelectInnovationFlow,
-}: SelectDefaultCollaborationTemplateDialogProps) => {
+  defaultSpaceTemplateId,
+  onSelectSpaceTemplate: onSelectInnovationFlow,
+}: SelectDefaultSpaceTemplateDialogProps) => {
   const { t } = useTranslation();
   const {
     space: {
@@ -43,8 +43,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
       },
     },
   } = useSpace();
-  const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
-    useLoadingState(onSelectInnovationFlow);
+  const [handleSelectSpaceTemplate, loadingSelectSpaceTemplate] = useLoadingState(onSelectInnovationFlow);
 
   const { data, loading: loadingInnovationFlows } = useSpaceContentTemplatesOnSpaceQuery({
     variables: {
@@ -54,12 +53,12 @@ const SelectDefaultCollaborationTemplateDialog = ({
   });
 
   const initialValues: FormValues = {
-    collaborationTemplateSelectedId:
-      defaultCollaborationTemplateId ?? data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates[0]?.id ?? '',
+    spaceTemplateSelectedId:
+      defaultSpaceTemplateId ?? data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates[0]?.id ?? '',
   };
 
   const validationSchema = yup.object().shape({
-    collaborationTemplateSelectedId: yup.string().required(),
+    spaceTemplateSelectedId: yup.string().required(),
   });
 
   const spaceTemplates = useMemo(
@@ -74,7 +73,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
   return (
     <DialogWithGrid open={open} onClose={onClose}>
       <DialogHeader
-        title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.title')}
+        title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.title')}
         onClose={onClose}
       />
       <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={() => {}}>
@@ -83,7 +82,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
             <Gutters>
               <Caption>
                 <Trans
-                  i18nKey="pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.description"
+                  i18nKey="pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.description"
                   components={{
                     library: (
                       <RouterLink
@@ -97,11 +96,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
               </Caption>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
               {spaceTemplates && (
-                <FormikSelect
-                  title={t('common.category')}
-                  name="collaborationTemplateSelectedId"
-                  values={spaceTemplates}
-                />
+                <FormikSelect title={t('common.category')} name="spaceTemplateSelectedId" values={spaceTemplates} />
               )}
               <Actions justifyContent="end">
                 <Button variant="text" onClick={onClose}>
@@ -109,9 +104,9 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 </Button>
                 <Button
                   variant="contained"
-                  loading={loadingSelectCollaborationTemplate}
+                  loading={loadingSelectSpaceTemplate}
                   disabled={!isValid}
-                  onClick={() => handleSelectCollaborationTemplate(values.collaborationTemplateSelectedId)}
+                  onClick={() => handleSelectSpaceTemplate(values.spaceTemplateSelectedId)}
                 >
                   {t('buttons.save')}
                 </Button>
@@ -124,4 +119,4 @@ const SelectDefaultCollaborationTemplateDialog = ({
   );
 };
 
-export default SelectDefaultCollaborationTemplateDialog;
+export default SelectDefaultSpaceTemplateDialog;

@@ -35,7 +35,7 @@ query TemplateContent(
   }
 }
 
-# Used temporarily to preview any Space before turning it into a template
+# Used to preview any Space before turning it into a template, retrieves the pieces of the Space that make a Space template
 query SpaceTemplateContent($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
@@ -165,7 +165,6 @@ fragment SpaceTemplateContent_About on SpaceAbout {
     displayName
     description
     url
-    # ... more //!!
   }
 }
 
@@ -185,7 +184,6 @@ fragment SpaceTemplateContent_Settings on SpaceSettings {
     inheritMembershipRights
     allowEventsFromSubspaces
   }
-  # ... more //!!
 }
 
 fragment WhiteboardTemplateContent on Whiteboard {

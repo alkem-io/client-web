@@ -274,11 +274,11 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
-  const [applySpaceContentTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
-  const handleImportCollaborationTemplate = (spaceTemplateId: string, addCallouts?: boolean) => {
+  const [updateCollaborationFromSpaceTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
+  const handleImportInnovationFlowFromSpaceTemplate = (spaceTemplateId: string, addCallouts?: boolean) => {
     const collaborationId = ensurePresence(collaboration?.id, 'Collaboration');
 
-    return applySpaceContentTemplate({
+    return updateCollaborationFromSpaceTemplate({
       variables: {
         collaborationId,
         spaceTemplateId,
@@ -307,7 +307,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateInnovationFlowStateOrder: handleInnovationFlowStateOrder,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
-      importCollaborationTemplate: handleImportCollaborationTemplate,
+      importInnovationFlowFromSpaceTemplate: handleImportInnovationFlowFromSpaceTemplate,
       createState: handleCreateState,
       editState: handleEditState,
       deleteState: handleDeleteState,

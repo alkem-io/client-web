@@ -2092,7 +2092,7 @@
             "defaultSettings": {
               "title": "Default Subspace Template",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
-              "defaultCollaborationTemplate": {
+              "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default Template",
                 "title": "Change Default Subspace Template",
                 "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
