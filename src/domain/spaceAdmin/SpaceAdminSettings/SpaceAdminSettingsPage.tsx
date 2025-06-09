@@ -1,5 +1,4 @@
 import {
-  useCreateTemplateFromSpaceMutation,
   useDeleteSpaceMutation,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
@@ -12,7 +11,6 @@ import {
   SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
-  TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import PageContent from '@/core/ui/content/PageContent';
@@ -30,8 +28,6 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateSpaceFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateSpaceForm';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
@@ -40,8 +36,7 @@ import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDele
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { toCreateTemplateFromSpaceContentMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
-import useEnsurePresence from '@/core/utils/ensurePresence';
+import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -66,7 +61,6 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const notify = useNotification();
-  const ensurePresence = useEnsurePresence();
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -115,19 +109,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     skip: !spaceId,
   });
 
-  const templateSet = templateData?.lookup.space?.templatesManager?.templatesSet;
-  const templateSetPrivileges = templateSet?.authorization?.myPrivileges ?? [];
+  const templatesSet = templateData?.lookup.space?.templatesManager?.templatesSet;
+  const templateSetPrivileges = templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
-
-  // Save this space as a template
-  const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation();
-  const handleSaveAsTemplate = async (values: TemplateSpaceFormSubmittedValues) => {
-    const templatesSetId = ensurePresence(templateSet?.id, `No templatesSet found for spaceId: ${spaceId}`);
-    const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, values);
-    await createSpaceTemplate({ variables });
-    setSaveAsTemplateDialogOpen(false);
-    notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
-  };
 
   const currentSettings = useMemo(() => {
     const settings = settingsData?.lookup.space?.settings;
@@ -448,18 +432,12 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     {t('pages.admin.space.settings.copySpace.duplicate')}
                   </Button>
                 </Gutters>
-                {saveAsTemplateDialogOpen && (
-                  <CreateTemplateDialog
+                {saveAsTemplateDialogOpen && templatesSet && (
+                  <CreateSpaceTemplateDialog
                     open
                     onClose={() => setSaveAsTemplateDialogOpen(false)}
-                    templateType={TemplateType.Space}
-                    onSubmit={handleSaveAsTemplate}
-                    getDefaultValues={async () => {
-                      return {
-                        type: TemplateType.Space,
-                        spaceId,
-                      };
-                    }}
+                    spaceId={spaceId}
+                    templatesSetId={templatesSet.id}
                   />
                 )}
               </PageContentBlock>
