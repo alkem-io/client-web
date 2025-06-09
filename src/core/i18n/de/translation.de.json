@@ -2961,7 +2961,8 @@
       "recovery-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
       "verification-flow-continue": "Fortfahren",
       "login-flow-account-exists": "Sie versuchen sich mit einem LinkedIn/Microsoft-Konto anzumelden, aber die zugehörige E-Mail-Adresse wurde bereits zuvor verwendet. Bitte melden Sie sich mit dieser E-Mail-Adresse und Ihrem Passwort an oder versuchen Sie das Passwort zurückzusetzen. Wenn das nicht funktioniert, senden Sie bitte eine E-Mail an support@alkem.io.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "pick-password": "Pick a password for your account"
     },
     "fields": {
       "ID": "ID",
