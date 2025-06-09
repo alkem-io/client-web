@@ -3367,5 +3367,10 @@
   },
   "aboutDialog": {
     "applyNotSignedInHelperText": "crwdns36841:0crwdne36841:0"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "crwdns37110:0crwdne37110:0"
+    }
   }
 }
