@@ -15,6 +15,11 @@ export function register(config?: Config): void {
   if (import.meta.env.VITE_APP_ALKEMIO_DOMAIN && 'serviceWorker' in navigator) {
     const publicUrl = new URL(import.meta.env.VITE_APP_ALKEMIO_DOMAIN, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
+      console.warn(
+        '[SW] Service worker not registered: Public URL does not match origin.',
+        publicUrl.origin,
+        window.location.origin
+      );
       return;
     }
     window.addEventListener('load', () => {
@@ -41,6 +46,12 @@ export function register(config?: Config): void {
           console.info('[SW] App is running in offline mode.');
         });
     });
+  } else {
+    console.warn(
+      '[SW] Service workers are not supported: ',
+      import.meta.env.VITE_APP_ALKEMIO_DOMAIN,
+      'serviceWorker' in navigator
+    );
   }
 }
 
