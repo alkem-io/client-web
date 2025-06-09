@@ -2226,20 +2226,20 @@
     },
     "visualEdit": {
       "AVATAR": {
-        "title": "Avatar",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Avatar</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in information pane and top left navigation menu.",
         "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
-        "title": "Page banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Page banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the Space (also in the Subspaces) and top left navigation menu.",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
       "CARD": {
-        "title": "Card banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Card banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and Space overviews.",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
       },
@@ -2951,7 +2951,8 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "pick-password": "Pick a password for your account"
     },
     "fields": {
       "ID": "ID",
@@ -3334,5 +3335,10 @@
   },
   "aboutDialog": {
     "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "A new version of the app is available. Please refresh the page to update."
+    }
   }
 }

@@ -138,7 +138,7 @@ const SpaceAdminCommunityPage = ({
   );
   const addVirtualContributorsEnabled =
     spaceVirtualContributorEntitlementEnabled &&
-    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
+    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddVirtualContributors);
 
   const currentCommunityGuidelines = useRef<CommunityGuidelines>();
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
@@ -290,7 +290,7 @@ const SpaceAdminCommunityPage = ({
               users={users}
               onUserLeadChange={onUserLeadChange}
               onUserAuthorizationChange={onUserAuthorizationChange}
-              canAddMembers={permissions.canAddMembers}
+              canAddUsers={permissions.canAddUsers}
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
@@ -305,7 +305,7 @@ const SpaceAdminCommunityPage = ({
             <CommunityOrganizations
               organizations={organizations}
               onOrganizationLeadChange={onOrganizationLeadChange}
-              canAddMembers={permissions.canAddMembers}
+              canAddOrganizations={permissions.canAddOrganizations}
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
