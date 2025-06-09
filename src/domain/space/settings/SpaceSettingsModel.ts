@@ -1,15 +1,17 @@
-export interface SpaceSettingsPrivacy {
-  mode: string;
+import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+
+interface SpaceSettingsPrivacy {
+  mode: SpacePrivacyMode;
   allowPlatformSupportAsAdmin: boolean;
 }
 
-export interface SpaceSettingsMembership {
-  policy: string;
-  trustedOrganizations: string[];
+interface SpaceSettingsMembership {
+  policy: CommunityMembershipPolicy;
+  trustedOrganizations: string[]; // UUID[]
   allowSubspaceAdminsToInviteMembers: boolean;
 }
 
-export interface SpaceSettingsCollaboration {
+interface SpaceSettingsCollaboration {
   allowMembersToCreateCallouts: boolean;
   allowMembersToCreateSubspaces: boolean;
   inheritMembershipRights: boolean;

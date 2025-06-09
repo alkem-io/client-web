@@ -1974,7 +1974,7 @@ export type CreateSpaceOnAccountInput = {
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Pick up a different platform template. */
   platformTemplate?: InputMaybe<TemplateDefaultType>;
-  settingsData?: InputMaybe<CreateSpaceSettingsInput>;
+  settings?: InputMaybe<CreateSpaceSettingsInput>;
   /** The Template to use for instantiating the Collaboration. */
   spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -2018,7 +2018,7 @@ export type CreateSubspaceInput = {
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Pick up a different platform template. */
   platformTemplate?: InputMaybe<TemplateDefaultType>;
-  settingsData?: InputMaybe<CreateSpaceSettingsInput>;
+  settings?: InputMaybe<CreateSpaceSettingsInput>;
   spaceID: Scalars['UUID']['input'];
   /** The Template to use for instantiating the Collaboration. */
   spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
@@ -24217,7 +24217,7 @@ export type ImportTemplateDialogQuery = {
               | {
                   __typename?: 'TemplateContentSpace';
                   id: string;
-                  collaboration?: {
+                  collaboration: {
                     __typename?: 'Collaboration';
                     id: string;
                     innovationFlow: {
@@ -24277,7 +24277,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
             | {
                 __typename?: 'TemplateContentSpace';
                 id: string;
-                collaboration?: {
+                collaboration: {
                   __typename?: 'Collaboration';
                   id: string;
                   innovationFlow: {

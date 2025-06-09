@@ -53,7 +53,7 @@ const CalloutsList = <Callout extends CalloutModelLight>({
         {filteredCallouts?.map(callout => {
           const CalloutIcon = calloutIcons[callout.type];
           return (
-            <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url || ''}>
+            <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url ?? ''}>
               <ListItemIcon>
                 <CalloutIcon sx={{ color: theme.palette.primary.dark }} />
               </ListItemIcon>

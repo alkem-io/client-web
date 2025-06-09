@@ -53,7 +53,7 @@ mutation CreateTemplate(
   }
 }
 
-# Special case for creating a template from an existing Space //!! not used??
+# Special case for creating a template from an existing Space
 mutation CreateTemplateFromSpace(
   $templatesSetId: UUID!
   $profileData: CreateProfileInput!
@@ -106,7 +106,6 @@ mutation UpdateTemplate(
 }
 
 # Special case for updating a collaboration template from an existing collaboration
-# //!! maybe call it updateSpaceTemplateFromSpace
 mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!) {
   updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId }) {
     id

@@ -19929,9 +19929,9 @@ export const ImportTemplateDialogDocument = gql`
             id
             type
           }
-          contentSpace {
+          contentSpace @include(if: $includeSpace) {
             id
-            collaboration @include(if: $includeSpace) {
+            collaboration {
               id
               innovationFlow {
                 id
@@ -20030,9 +20030,9 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
               id
               type
             }
-            contentSpace {
+            contentSpace @include(if: $includeSpace) {
               id
-              collaboration @include(if: $includeSpace) {
+              collaboration {
                 id
                 innovationFlow {
                   id
