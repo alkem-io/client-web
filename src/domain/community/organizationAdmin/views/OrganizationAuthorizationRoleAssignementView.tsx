@@ -14,9 +14,9 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
   const { roleSetId } = useOrganizationContext();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
-  const refetch = () => {
+  const refetch = async () => {
+    await refetchRoleSetAssignment();
     availableUsersForRole.refetch();
-    refetchRoleSetAssignment();
   };
 
   const {

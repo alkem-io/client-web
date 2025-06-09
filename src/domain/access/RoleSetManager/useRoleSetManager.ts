@@ -64,7 +64,7 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
   loading: boolean;
   updating: boolean;
-  refetchRoleSetAssignment: () => void;
+  refetchRoleSetAssignment: () => Promise<unknown>;
 }
 
 type useRoleSetManagerParams = {
