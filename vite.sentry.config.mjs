@@ -4,6 +4,8 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { version } from './package';
+import fs from 'fs';
+import path from 'path';
 
 export default defineConfig({
   server: {
@@ -38,5 +40,14 @@ export default defineConfig({
       },
       authToken: process.env.VITE_APP_SENTRY_AUTH_TOKEN,
     }),
+    // Plugin to generate meta.json with version info
+    {
+      name: 'generate-meta-json',
+      apply: 'build',
+      buildStart() {
+        fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
+        fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
+      }
+    }
   ],
 });

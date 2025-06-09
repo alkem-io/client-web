@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
+// TODO: we should not allow space names starting with these values
 const IdentityLocations = [
   '/login',
   '/logout',
@@ -11,6 +12,7 @@ const IdentityLocations = [
   '/required',
   '/settings',
   '/error',
+  '/ory',
 ];
 
 const useRedirectToIdentityDomain = () => {
