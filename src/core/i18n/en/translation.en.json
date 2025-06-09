@@ -3336,5 +3336,10 @@
   },
   "aboutDialog": {
     "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "A new version of the app is available. Please refresh the page to update."
+    }
   }
 }
