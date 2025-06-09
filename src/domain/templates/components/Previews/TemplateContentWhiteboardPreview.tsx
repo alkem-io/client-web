@@ -6,7 +6,7 @@ import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawW
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { Box } from '@mui/material';
 
-interface WhiteboardTemplatePreviewProps {
+interface TemplateContentWhiteboardPreviewProps {
   loading?: boolean;
   template?: {
     whiteboard?: {
@@ -15,7 +15,7 @@ interface WhiteboardTemplatePreviewProps {
   };
 }
 
-const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ template, loading }) => {
+const TemplateContentWhiteboardPreview: FC<TemplateContentWhiteboardPreviewProps> = ({ template, loading }) => {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
@@ -51,4 +51,4 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
   );
 };
 
-export default WhiteboardTemplatePreview;
+export default TemplateContentWhiteboardPreview;

@@ -2,13 +2,13 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
-import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
-import CollaborationTemplateForm, { CollaborationTemplateFormSubmittedValues } from './CollaborationTemplateForm';
-import CommunityGuidelinesTemplateForm, {
-  CommunityGuidelinesTemplateFormSubmittedValues,
-} from './CommunityGuidelinesTemplateForm';
-import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
-import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
+import TemplateCalloutForm, { TemplateCalloutFormSubmittedValues } from './TemplateCalloutForm';
+import TemplateSpaceForm, { TemplateSpaceFormSubmittedValues } from './TemplateSpaceForm';
+import TemplateCommunityGuidelinesForm, {
+  TemplateCommunityGuidelinesFormSubmittedValues,
+} from './TemplateCommunityGuidelinesForm';
+import TemplatePostForm, { TemplatePostFormSubmittedValues } from './TemplatePostForm';
+import TemplateWhiteboardForm, { TemplateWhiteboardFormSubmittedValues } from './TemplateWhiteboardForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -18,24 +18,24 @@ interface TemplateFormProps {
 }
 
 export type AnyTemplateFormSubmittedValues =
-  | CalloutTemplateFormSubmittedValues
-  | CollaborationTemplateFormSubmittedValues
-  | CommunityGuidelinesTemplateFormSubmittedValues
-  | PostTemplateFormSubmittedValues
-  | WhiteboardTemplateFormSubmittedValues;
+  | TemplateCalloutFormSubmittedValues
+  | TemplateSpaceFormSubmittedValues
+  | TemplateCommunityGuidelinesFormSubmittedValues
+  | TemplatePostFormSubmittedValues
+  | TemplateWhiteboardFormSubmittedValues;
 
 const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
   switch (template.type) {
     case TemplateType.Callout:
-      return <CalloutTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
-    case TemplateType.Collaboration:
-      return <CollaborationTemplateForm template={template} {...rest} />;
+      return <TemplateCalloutForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+    case TemplateType.Space:
+      return <TemplateSpaceForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+      return <TemplateCommunityGuidelinesForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Post:
-      return <PostTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+      return <TemplatePostForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Whiteboard:
-      return <WhiteboardTemplateForm template={template} {...rest} />;
+      return <TemplateWhiteboardForm template={template} {...rest} />;
   }
   throw new Error('Template type not supported');
 };

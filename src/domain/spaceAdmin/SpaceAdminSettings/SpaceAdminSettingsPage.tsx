@@ -11,7 +11,6 @@ import {
   SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
-  TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import PageContent from '@/core/ui/content/PageContent';
@@ -29,9 +28,6 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
-import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
@@ -40,6 +36,7 @@ import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDele
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -103,7 +100,6 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     skip: !spaceId,
   });
   const roleSetId = settingsData?.lookup.space?.about.membership.roleSetID;
-  const collaborationId = settingsData?.lookup.space?.collaboration.id;
   const provider = settingsData?.lookup.space?.about.provider;
   const hostId = provider?.id;
 
@@ -113,16 +109,9 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     skip: !spaceId,
   });
 
-  const templateSetPrivileges =
-    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templatesSet = templateData?.lookup.space?.templatesManager?.templatesSet;
+  const templateSetPrivileges = templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
-
-  const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
-  const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
-    await handleCreateCollaborationTemplate(values, spaceId);
-    setSaveAsTemplateDialogOpen(false);
-    notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
-  };
 
   const currentSettings = useMemo(() => {
     const settings = settingsData?.lookup.space?.settings;
@@ -443,20 +432,12 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     {t('pages.admin.space.settings.copySpace.duplicate')}
                   </Button>
                 </Gutters>
-                {saveAsTemplateDialogOpen && (
-                  <CreateTemplateDialog
+                {saveAsTemplateDialogOpen && templatesSet && (
+                  <CreateSpaceTemplateDialog
                     open
                     onClose={() => setSaveAsTemplateDialogOpen(false)}
-                    templateType={TemplateType.Collaboration}
-                    onSubmit={handleSaveAsTemplate}
-                    getDefaultValues={async () => {
-                      return {
-                        type: TemplateType.Collaboration,
-                        collaboration: {
-                          id: collaborationId,
-                        },
-                      };
-                    }}
+                    spaceId={spaceId}
+                    templatesSetId={templatesSet.id}
                   />
                 )}
               </PageContentBlock>

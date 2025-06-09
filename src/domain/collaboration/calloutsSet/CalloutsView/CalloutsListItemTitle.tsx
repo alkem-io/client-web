@@ -1,21 +1,10 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 import { useTranslation } from 'react-i18next';
+import { CalloutModelLight } from '../../callout/model/CalloutModelLight';
 
 type CalloutsListItemTitleProps = {
-  callout: {
-    activity: number;
-    framing: {
-      profile: {
-        displayName: string;
-      };
-    };
-    classification?: {
-      flowState?: {
-        tags: string[];
-      };
-    };
-  };
+  callout: CalloutModelLight;
 };
 
 const SEPARATOR = ' — ';

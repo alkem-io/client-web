@@ -9,34 +9,11 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
 import { getCalloutTypeIcon } from '@/domain/collaboration/callout/calloutCard/calloutIcons';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-
-type CalloutPreview = {
-  id: string;
-  type: CalloutType;
-  framing: {
-    profile: {
-      displayName: string;
-      description?: string;
-    };
-    whiteboard?: {
-      profile: {
-        preview?: {
-          uri: string;
-        };
-      };
-    };
-  };
-  classification?: {
-    flowState?: {
-      tags: string[];
-    };
-  };
-  sortOrder: number;
-};
+import { CalloutModelLight } from '../callout/model/CalloutModelLight';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;
-  callouts: CalloutPreview[] | undefined;
+  callouts: CalloutModelLight[] | undefined;
   loading?: boolean;
 }
 
@@ -47,7 +24,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
 }));
 
-const CalloutDescription = memo(({ callout }: { callout: CalloutPreview }) => {
+const CalloutDescription = memo(({ callout }: { callout: CalloutModelLight }) => {
   const { t } = useTranslation();
 
   switch (callout.type) {

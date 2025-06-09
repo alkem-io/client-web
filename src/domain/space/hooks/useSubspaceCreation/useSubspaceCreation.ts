@@ -39,7 +39,8 @@ interface SubspaceCreationInput {
     why?: string;
   };
   addTutorialCallouts: boolean;
-  collaborationTemplateId?: string;
+  addCallouts?: boolean;
+  spaceTemplateId?: string;
 }
 
 export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptions = {}) => {
@@ -99,6 +100,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         variables: {
           input: {
             spaceID: value.spaceID,
+            spaceTemplateID: value.spaceTemplateId,
             about: {
               why: value.about.why,
               profileData: {
@@ -109,9 +111,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
               },
             },
             collaborationData: {
-              addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: true, // Always add Callouts from the template
-              collaborationTemplateID: value.collaborationTemplateId,
+              // addTutorialCallouts: value.addTutorialCallouts, // temporarily disabled
+              addCallouts: value.addCallouts, // we always want to add the default callouts
               calloutsSetData: {},
             },
           },

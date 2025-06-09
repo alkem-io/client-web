@@ -31,7 +31,7 @@ const EditTemplateDialog = ({
       templateId: template?.id!,
       includeCallout: templateType === TemplateType.Callout,
       includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
-      includeCollaboration: templateType === TemplateType.Collaboration,
+      includeSpace: templateType === TemplateType.Space,
       includePost: templateType === TemplateType.Post,
       includeWhiteboard: templateType === TemplateType.Whiteboard,
     },

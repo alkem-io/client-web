@@ -64,7 +64,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
           {t('buttons.change-template')}
         </Button>
         <ImportTemplatesDialog
-          templateType={TemplateType.Collaboration}
+          templateType={TemplateType.Space}
           actionButton={
             <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
               {t('buttons.use')}

@@ -6,7 +6,7 @@ import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPrevi
 import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
-interface CalloutTemplatePreviewProps {
+interface TemplateContentCalloutPreviewProps {
   template?: {
     callout?: {
       framing: {
@@ -27,7 +27,7 @@ interface CalloutTemplatePreviewProps {
   };
 }
 
-const CalloutTemplatePreview = ({ template }: CalloutTemplatePreviewProps) => {
+const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPreviewProps) => {
   const framing = template?.callout?.framing;
   const whiteboard = template?.callout?.framing.whiteboard;
 
@@ -41,4 +41,4 @@ const CalloutTemplatePreview = ({ template }: CalloutTemplatePreviewProps) => {
   );
 };
 
-export default CalloutTemplatePreview;
+export default TemplateContentCalloutPreview;

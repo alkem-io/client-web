@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceContentTemplatesOnSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -17,24 +17,24 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface FormValues {
-  collaborationTemplateSelectedId: string;
+  spaceTemplateSelectedId: string;
 }
 
-interface SelectDefaultCollaborationTemplateDialogProps {
+interface SelectDefaultSpaceTemplateDialogProps {
   spaceId: string | undefined;
   open: boolean;
   onClose?: () => void;
-  defaultCollaborationTemplateId?: string;
-  onSelectCollaborationTemplate: (collaborationTemplateId: string) => Promise<unknown>;
+  defaultSpaceTemplateId?: string;
+  onSelectSpaceTemplate: (spaceTemplateId: string) => Promise<unknown>;
 }
 
-const SelectDefaultCollaborationTemplateDialog = ({
+const SelectDefaultSpaceTemplateDialog = ({
   spaceId,
   open,
   onClose,
-  defaultCollaborationTemplateId,
-  onSelectCollaborationTemplate: onSelectInnovationFlow,
-}: SelectDefaultCollaborationTemplateDialogProps) => {
+  defaultSpaceTemplateId,
+  onSelectSpaceTemplate: onSelectInnovationFlow,
+}: SelectDefaultSpaceTemplateDialogProps) => {
   const { t } = useTranslation();
   const {
     space: {
@@ -43,10 +43,9 @@ const SelectDefaultCollaborationTemplateDialog = ({
       },
     },
   } = useSpace();
-  const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
-    useLoadingState(onSelectInnovationFlow);
+  const [handleSelectSpaceTemplate, loadingSelectSpaceTemplate] = useLoadingState(onSelectInnovationFlow);
 
-  const { data, loading: loadingInnovationFlows } = useSpaceCollaborationTemplatesQuery({
+  const { data, loading: loadingInnovationFlows } = useSpaceContentTemplatesOnSpaceQuery({
     variables: {
       spaceId: spaceId!,
     },
@@ -54,29 +53,27 @@ const SelectDefaultCollaborationTemplateDialog = ({
   });
 
   const initialValues: FormValues = {
-    collaborationTemplateSelectedId:
-      defaultCollaborationTemplateId ??
-      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates[0]?.id ??
-      '',
+    spaceTemplateSelectedId:
+      defaultSpaceTemplateId ?? data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates[0]?.id ?? '',
   };
 
   const validationSchema = yup.object().shape({
-    collaborationTemplateSelectedId: yup.string().required(),
+    spaceTemplateSelectedId: yup.string().required(),
   });
 
-  const collaborationTemplates = useMemo(
+  const spaceTemplates = useMemo(
     () =>
-      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates.map(template => ({
+      data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(template => ({
         id: template.id,
         name: template.profile.displayName,
       })),
-    [data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates]
+    [data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates]
   );
 
   return (
     <DialogWithGrid open={open} onClose={onClose}>
       <DialogHeader
-        title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.title')}
+        title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.title')}
         onClose={onClose}
       />
       <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={() => {}}>
@@ -85,7 +82,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
             <Gutters>
               <Caption>
                 <Trans
-                  i18nKey="pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.description"
+                  i18nKey="pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.description"
                   components={{
                     library: (
                       <RouterLink
@@ -98,12 +95,8 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 />
               </Caption>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
-              {collaborationTemplates && (
-                <FormikSelect
-                  title={t('common.category')}
-                  name="collaborationTemplateSelectedId"
-                  values={collaborationTemplates}
-                />
+              {spaceTemplates && (
+                <FormikSelect title={t('common.category')} name="spaceTemplateSelectedId" values={spaceTemplates} />
               )}
               <Actions justifyContent="end">
                 <Button variant="text" onClick={onClose}>
@@ -111,9 +104,9 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 </Button>
                 <Button
                   variant="contained"
-                  loading={loadingSelectCollaborationTemplate}
+                  loading={loadingSelectSpaceTemplate}
                   disabled={!isValid}
-                  onClick={() => handleSelectCollaborationTemplate(values.collaborationTemplateSelectedId)}
+                  onClick={() => handleSelectSpaceTemplate(values.spaceTemplateSelectedId)}
                 >
                   {t('buttons.save')}
                 </Button>
@@ -126,4 +119,4 @@ const SelectDefaultCollaborationTemplateDialog = ({
   );
 };
 
-export default SelectDefaultCollaborationTemplateDialog;
+export default SelectDefaultSpaceTemplateDialog;
