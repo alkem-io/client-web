@@ -12,18 +12,9 @@ type Config =
   | undefined;
 
 export function register(config?: Config): void {
-  if (import.meta.env.VITE_APP_ALKEMIO_DOMAIN && 'serviceWorker' in navigator) {
-    const publicUrl = new URL(import.meta.env.VITE_APP_ALKEMIO_DOMAIN, window.location.href);
-    if (publicUrl.origin !== window.location.origin) {
-      console.warn(
-        '[SW] Service worker not registered: Public URL does not match origin.',
-        publicUrl.origin,
-        window.location.origin
-      );
-      return;
-    }
+  if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      const swUrl = new URL('service-worker.js', publicUrl).toString();
+      const swUrl = 'service-worker.js';
 
       navigator.serviceWorker
         .register(swUrl)
@@ -47,11 +38,7 @@ export function register(config?: Config): void {
         });
     });
   } else {
-    console.warn(
-      '[SW] Service workers are not supported: ',
-      import.meta.env.VITE_APP_ALKEMIO_DOMAIN,
-      'serviceWorker' in navigator
-    );
+    console.warn('[SW] Service workers are not supported. ', 'serviceWorker' in navigator);
   }
 }
 
