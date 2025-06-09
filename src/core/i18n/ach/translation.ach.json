@@ -2961,7 +2961,8 @@
       "recovery-flow-expired": "crwdns20676:0crwdne20676:0",
       "verification-flow-continue": "crwdns20678:0crwdne20678:0",
       "login-flow-account-exists": "crwdns20680:0crwdne20680:0",
-      "invalid-credentials": "crwdns20682:0crwdne20682:0"
+      "invalid-credentials": "crwdns20682:0crwdne20682:0",
+      "pick-password": "crwdns37096:0crwdne37096:0"
     },
     "fields": {
       "ID": "crwdns20684:0crwdne20684:0",
