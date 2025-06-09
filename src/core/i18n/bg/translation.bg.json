@@ -2227,20 +2227,20 @@
     },
     "visualEdit": {
       "AVATAR": {
-        "title": "Avatar",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Avatar</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in information pane and top left navigation menu.",
         "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
-        "title": "Page banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Page banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the Space (also in the Subspaces) and top left navigation menu.",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
       "CARD": {
-        "title": "Card banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Card banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and Space overviews.",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
       },
