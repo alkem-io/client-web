@@ -1,7 +1,7 @@
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { Box } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 type VisualDescriptionProps = {
   visualTypeName: VisualType.Avatar | VisualType.Banner | VisualType.Card;
@@ -19,12 +19,22 @@ const VisualDescription = ({ visualTypeName, visual }: VisualDescriptionProps) =
 
   return (
     <Box paddingLeft={2}>
-      <BlockSectionTitle>{t(`pages.visualEdit.${visualTypeName}.title` as const)}</BlockSectionTitle>
       <BlockSectionTitle>
-        {t(`pages.visualEdit.${visualTypeName}.description1` as const, {
-          width: visual?.maxWidth,
-          height: visual?.maxHeight,
-        })}
+        <Trans
+          i18nKey={`pages.visualEdit.${visualTypeName}.title` as const}
+          components={{
+            b: <strong />,
+          }}
+        />
+      </BlockSectionTitle>
+      <BlockSectionTitle>
+        <Trans
+          i18nKey={`pages.visualEdit.${visualTypeName}.description1` as const}
+          values={{ width: visual?.maxWidth, height: visual?.maxHeight }}
+          components={{
+            br: <br />,
+          }}
+        />
       </BlockSectionTitle>
       {visual?.alternativeText && (
         <BlockSectionTitle>

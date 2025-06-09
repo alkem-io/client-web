@@ -18,28 +18,28 @@ interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
 const TemplateTypePermissions = {
   create: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
   edit: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
   delete: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
   import: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,

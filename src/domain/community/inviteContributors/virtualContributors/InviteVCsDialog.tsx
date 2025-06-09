@@ -131,7 +131,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
 
   const showOnAccount = (filteredOnAccount ?? onAccount).length > 0 && !loading;
   const availableActions =
-    (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
+    (permissions?.canAddVirtualContributors || permissions?.canAddVirtualContributorsFromAccount) &&
+    !actionButtonDisabled;
 
   const renderActions = () => (
     <>

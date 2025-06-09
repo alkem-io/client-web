@@ -1,9 +1,9 @@
-import { Snackbar } from '@mui/material';
 import { Alert } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import { useGlobalState } from '@/core/state/useGlobalState';
 import { NOTIFICATION_AUTO_HIDE_DURATION } from './constants';
 import { CLEAR_NOTIFICATION } from '@/core/state/global/notifications/notificationMachine';
+import NotificationView from './NotificationView';
 
 export const NotificationHandler = () => {
   const { notificationsService } = useGlobalState();
@@ -18,7 +18,7 @@ export const NotificationHandler = () => {
     <>
       {notifications.map((x, i) => {
         return (
-          <Snackbar
+          <NotificationView
             key={i}
             open
             autoHideDuration={NOTIFICATION_AUTO_HIDE_DURATION}
@@ -28,7 +28,7 @@ export const NotificationHandler = () => {
             <Alert onClose={() => closeMessage(x.id)} severity={x.severity}>
               {x.message}
             </Alert>
-          </Snackbar>
+          </NotificationView>
         );
       })}
     </>

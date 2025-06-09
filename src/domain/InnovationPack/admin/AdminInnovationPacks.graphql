@@ -96,7 +96,7 @@ fragment InnovationPackCard on InnovationPack {
     id
     calloutTemplatesCount
     communityGuidelinesTemplatesCount
-    collaborationTemplatesCount
+    spaceTemplatesCount
     postTemplatesCount
     whiteboardTemplatesCount
   }

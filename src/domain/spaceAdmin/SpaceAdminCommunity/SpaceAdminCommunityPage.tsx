@@ -32,7 +32,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
+import { TemplateCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCommunityGuidelinesForm';
 import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
 import useCommunityAdmin from './hooks/useCommunityAdmin';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
@@ -138,7 +138,7 @@ const SpaceAdminCommunityPage = ({
   );
   const addVirtualContributorsEnabled =
     spaceVirtualContributorEntitlementEnabled &&
-    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers);
+    (permissions.canAddVirtualContributorsFromAccount || permissions.canAddVirtualContributors);
 
   const currentCommunityGuidelines = useRef<CommunityGuidelines>();
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
@@ -149,7 +149,7 @@ const SpaceAdminCommunityPage = ({
 
   const [createTemplate] = useCreateTemplateMutation();
 
-  const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
+  const handleSaveAsTemplate = async (values: TemplateCommunityGuidelinesFormSubmittedValues) => {
     const { data: templatesSetData } = await fetchSpaceTemplatesManager({ variables: { spaceId } });
     const templatesSetId = templatesSetData?.lookup.space?.templatesManager?.templatesSet?.id;
     if (templatesSetId) {
@@ -290,7 +290,7 @@ const SpaceAdminCommunityPage = ({
               users={users}
               onUserLeadChange={onUserLeadChange}
               onUserAuthorizationChange={onUserAuthorizationChange}
-              canAddMembers={permissions.canAddMembers}
+              canAddUsers={permissions.canAddUsers}
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
@@ -305,7 +305,7 @@ const SpaceAdminCommunityPage = ({
             <CommunityOrganizations
               organizations={organizations}
               onOrganizationLeadChange={onOrganizationLeadChange}
-              canAddMembers={permissions.canAddMembers}
+              canAddOrganizations={permissions.canAddOrganizations}
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
