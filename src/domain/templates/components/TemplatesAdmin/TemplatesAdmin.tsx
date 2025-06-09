@@ -112,7 +112,7 @@ const TemplatesAdmin = ({
   const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries });
   const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
-  const [updateTemplateFromCollaboration] = useUpdateTemplateFromSpaceMutation({ refetchQueries });
+  const [updateSpaceTemplateFromExistingSpace] = useUpdateTemplateFromSpaceMutation({ refetchQueries });
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
@@ -122,7 +122,7 @@ const TemplatesAdmin = ({
       updateTemplateVariables,
       updateCalloutVariables,
       updateCommunityGuidelinesVariables,
-      updateSpaceTemplateVariables,
+      updateSpaceContentTemplateVariables,
     } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
@@ -143,9 +143,9 @@ const TemplatesAdmin = ({
         variables: updateCommunityGuidelinesVariables,
       });
     }
-    if (updateSpaceTemplateVariables) {
-      await updateTemplateFromCollaboration({
-        variables: updateSpaceTemplateVariables,
+    if (updateSpaceContentTemplateVariables) {
+      await updateSpaceTemplateFromExistingSpace({
+        variables: updateSpaceContentTemplateVariables,
       });
     }
     // include preview for other template type other than callout

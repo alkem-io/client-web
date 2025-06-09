@@ -18,13 +18,3 @@ export interface TemplateContentSpaceModel {
   about?: SpaceAboutLightModel;
   settings?: SpaceSettingsModel;
 }
-
-export const EmptyTemplateContentSpaceModel: TemplateContentSpaceModel = {
-  id: '',
-  collaboration: {
-    id: '',
-    innovationFlow: { id: '', states: [] },
-    calloutsSet: { callouts: [] },
-  },
-  about: undefined,
-};

@@ -1,6 +1,5 @@
 import { InnovationFlowState, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { TemplateBase } from './TemplateBase';
-import { EmptyTemplateContentSpaceModel } from '../contentSpace/model/TemplateContentSpaceModel';
 
 export interface SpaceTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Space;
@@ -9,27 +8,16 @@ export interface SpaceTemplate extends TemplateBase {
    */
   spaceId?: string;
   /**
-   * This is the content of the template, used for preview and updating the template
-   * Doesn't need to define the entire contentSpace, just the innovationFlow to be used in //!! (we were not defining callouts before, is that fine? maybe we can remove it entirely)
+   * contentSpace is the content of the template, used for preview and updating the template
+   * Doesn't need to define the entire contentSpace, just the flow states to be shown in the template Card,
+   * the rest of the data will be fetched by the preview using the contentSpace.id
    */
   contentSpace?: {
     id: string;
-    collaboration?: {
-      id: string;
-      innovationFlow?: {
-        id: string;
+    collaboration: {
+      innovationFlow: {
         states: InnovationFlowState[];
       };
     };
   };
 }
-
-//!! needed?
-export const EmptySpaceTemplateModel: SpaceTemplate = {
-  id: '',
-  type: TemplateType.Space,
-  contentSpace: EmptyTemplateContentSpaceModel,
-  profile: {
-    displayName: '',
-  },
-};

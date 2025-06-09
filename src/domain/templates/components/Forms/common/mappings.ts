@@ -331,7 +331,7 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateCalloutVariables?: UpdateCalloutMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
-  updateSpaceTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
+  updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
@@ -394,11 +394,11 @@ export const toUpdateTemplateMutationVariables = (
       if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
-          spaceId: newModelSpaceId, //!! TODO: FIX THIS!
+          spaceId: newModelSpaceId,
         };
         return {
           updateTemplateVariables,
-          updateSpaceTemplateVariables: updateSpaceContentTemplateVariables,
+          updateSpaceContentTemplateVariables,
         };
       } else {
         // Space selected didn't change, just update the template values
