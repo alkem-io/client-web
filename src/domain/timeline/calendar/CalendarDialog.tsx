@@ -20,10 +20,12 @@ import EditButton from '@/core/ui/actions/EditButton';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { useLocation } from 'react-router-dom';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
 export const INIT_CREATING_EVENT_PARAM = 'new';
+export const CALENDAR_PATH = '/calendar';
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -34,8 +36,9 @@ export interface CalendarDialogProps {
 const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocation = false }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, parentSpaceId, spaceHierarchyPath: parentPath, calendarEventId } = useUrlResolver();
+  const { spaceId, parentSpaceId, calendarEventId } = useUrlResolver();
 
+  const { pathname } = useLocation();
   const params = useQueryParams();
   const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
   const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
@@ -60,7 +63,14 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
   };
 
   const navigateBack = () => {
-    return navigate(`${parentPath}/calendar`);
+    const calendarIndex = pathname.lastIndexOf(CALENDAR_PATH);
+    if (calendarIndex !== -1) {
+      const basePath = pathname.substring(0, calendarIndex + CALENDAR_PATH.length);
+
+      return navigate(basePath);
+    }
+
+    return navigate('/');
   };
 
   const emptyCalendarEvent: Partial<CalendarEventDetailData> = useMemo(
