@@ -119,6 +119,7 @@
     "take-me-home": "Terug naar startpagina",
     "close": "Sluit",
     "yes": "Ja",
+    "no": "No",
     "yes-close": "Ja, sluiten",
     "yesReplace": "Ja, vervang",
     "yesStop": "Ja, stop",
@@ -452,8 +453,8 @@
       "templateType": {
         "CALLOUT": "Samenwerkingstool Template",
         "CALLOUT_plural": "Samenwerkingstool Templates",
-        "COLLABORATION": "Subspace Template",
-        "COLLABORATION_plural": "Subspace Templates",
+        "SPACE": "Subspace Template",
+        "SPACE_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Richtlijnen Template",
         "COMMUNITY_GUIDELINES_plural": "Community Richtlijnen Templates",
         "INNOVATION_FLOW": "Innovatie Flow",
@@ -537,7 +538,8 @@
         "year_plural": "{{count}} jaar"
       }
     },
-    "supportEmail": "support@alkem.io"
+    "supportEmail": "support@alkem.io",
+    "options": "Options"
   },
   "community": {
     "memberUsers": "Leden ({{count}})",
@@ -804,6 +806,14 @@
     }
   },
   "context": {
+    "common": {
+      "addCallouts": {
+        "title": "Add template's default collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
+      }
+    },
     "L0": {
       "tagline": {
         "title": "Tagline",
@@ -868,9 +878,6 @@
         "placeholder": "",
         "tooltip": "Labels"
       },
-      "addTutorialCallouts": {
-        "title": "Voeg tutorials toe"
-      },
       "template": {
         "title": "Template:",
         "defaultTemplate": "Standaard Alkemio template voor Subspaces"
@@ -911,12 +918,6 @@
         "title": "Labels",
         "description": "Vul de meest belangrijke woorden voor deze Subspace in die ervoor zorgen dat de Subspace opvalt en makkelijk te vinden is.",
         "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Voeg de standaard samenwerkingstools van de template toe"
-      },
-      "addTutorialCallouts": {
-        "title": "Voeg tutorials toe"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -969,18 +970,17 @@
       "editDialogTitle": "Whiteboard template bewerken",
       "errorImporting": "Fout bij het importeren van Whiteboard Template"
     },
-    "collaborationTemplates": {
+    "spaceTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "Subspace URL",
-        "description": "Voer de URL in van de Subspace die u wilt kopiëren als template.",
-        "use": "Gebruik deze Space",
-        "urlRequired": "Plak hier de URL van de Subspace die je wil kopiëren als Template.",
-        "invalidUrl": "De url wordt niet herkend als een Space-URL.",
-        "spaceNotFoundError": "Space niet gevonden",
-        "collaborationNotFoundError": "Samenwerking niet gevonden",
-        "selectAnother": "Update Samenwerking vanuit een andere Space"
+        "description": "Enter the URL of the Subspace you want to copy as a template.",
+        "use": "Use this Subspace",
+        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a Space URL.",
+        "spaceNotFoundError": "Space not found",
+        "selectAnother": "Update Collaboration from another Space"
       }
     },
     "communityGuidelinesTemplates": {
@@ -990,7 +990,6 @@
       "guidelinesTitle": "Titel",
       "guidelinesDescription": "Richtlijnen"
     },
-    "spaceTemplates": "Templates geselecteerd door de host van deze community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Of klik hier om door alle platform templates te bladeren",
     "platformUseDisabled": "Houd er rekening mee dat je alleen de templates kunt gebruiken die zijn geselecteerd voor deze community (zie hierboven). Neem contact op met de adminstrator of lead van deze Space om de templates hieronder te selecteren voor de community in the Space instellingen.",
@@ -2093,10 +2092,10 @@
             "defaultSettings": {
               "title": "Standaardinstellingen",
               "description": "Kies de standaardinstellingen die van toepassing zijn bij het aanmaken van een nieuwe Subspace binnen deze Space. Deze instellingen kunnen worden gewijzigd tijdens het creëren of op een later tijdstip.",
-              "defaultCollaborationTemplate": {
-                "selectDifferentTemplate": "Selecteer Samenwerkings Template",
-                "title": "Selecteren van de Standaard Samenwerkings Template",
-                "description": "Pas de standaard Innovatieflow aan voor nieuwe Subspaces. Beheerders van de Subspace kunnen dit later wijzigen in de instellingen. \n\nHieronder kan je kiezen uit de templates die zijn verzameld in de Space Templates bibliotheek."
+              "defaultSpaceTemplate": {
+                "selectDifferentTemplate": "Change Default Template",
+                "title": "Change Default Subspace Template",
+                "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
               }
             }
           }
