@@ -8,7 +8,7 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
-import { useSpaceTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import SpaceContentFromSpaceUrlForm from './SpaceContentFromSpaceUrlForm';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
@@ -46,8 +46,7 @@ const validator = {
 const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
   const { t } = useTranslation();
 
-  const [spaceId, setSpaceId] = useState<string | undefined>(template?.spaceId);
-
+  const [spaceId, setSpaceId] = useState<string>(template?.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
   const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
@@ -56,10 +55,10 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     [template]
   );
 
-  // Just load the innovation flow and the callouts of the selected collaboration and show it
+  // Load the innovationFlow and callouts from the selected space to update/create the template
   const {
-    data,
-    loading,
+    data: spaceData,
+    loading: spaceContentLoading,
     refetch: refetchTemplateContent,
   } = useSpaceTemplateContentQuery({
     variables: {
@@ -67,9 +66,21 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     },
     skip: !spaceId,
   });
+
+  // Or, load the template content if the template already exists and no spaceId is selected (users select another space to use its content)
+  const { data: templateData, loading: templateLoading } = useTemplateContentQuery({
+    variables: {
+      templateId: template?.id!,
+      includeSpace: true,
+    },
+    skip: !template?.id || Boolean(spaceId),
+  });
+
   const spacePreview = {
-    contentSpace: data?.lookup.space,
+    contentSpace: spaceData?.lookup.space ?? templateData?.lookup.template?.contentSpace,
   };
+
+  const loading = spaceContentLoading || templateLoading;
 
   const handleSubmit = (
     values: TemplateSpaceFormSubmittedValues,
@@ -105,14 +116,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
           }
         };
         const handleCancel = () => {
-          const spaceId = template?.spaceId;
-          if (spaceId) {
-            setFieldValue('spaceId', spaceId);
-            setSpaceId(spaceId); // Refresh the space content preview
-            if (spaceId) {
-              refetchTemplateContent({ spaceId });
-            }
-          }
+          setFieldValue('spaceId', undefined);
         };
         return (
           <>
