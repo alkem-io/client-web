@@ -43,7 +43,7 @@ const validator = {
  *  - The GraphQL query useTemplateContentSpaceQuery is outside Formik, so we need to keep the state to trigger the query with the correct value.
  *  - We may be able to do this with lazy queries and an Effect but for now this works pretty well.
  */
-const SpaceTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
+const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
   const { t } = useTranslation();
 
   const [spaceId, setSpaceId] = useState<string | undefined>(template?.spaceId);
@@ -130,4 +130,4 @@ const SpaceTemplateForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   );
 };
 
-export default SpaceTemplateForm;
+export default TemplateSpaceForm;
