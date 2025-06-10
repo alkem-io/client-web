@@ -101,7 +101,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
           <PageContentColumn columns={4}>
             Available users:
             <AvailableMembers
-              onAdd={onAdd!}
+              onAdd={onAdd}
               fetchMore={fetchMore}
               hasMore={hasMore}
               onSearchTermChange={onSearchTermChange}
