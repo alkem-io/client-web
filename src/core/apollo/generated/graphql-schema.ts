@@ -22885,11 +22885,11 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
   };
 };
 
-export type AvailableVirtualContributorsInSpaceL0QueryVariables = Exact<{
+export type AvailableVirtualContributorsInSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
 
-export type AvailableVirtualContributorsInSpaceL0Query = {
+export type AvailableVirtualContributorsInSpaceQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';

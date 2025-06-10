@@ -18082,8 +18082,8 @@ export function refetchAvailableVirtualContributorsInSpaceAccountQuery(
 ) {
   return { query: AvailableVirtualContributorsInSpaceAccountDocument, variables: variables };
 }
-export const AvailableVirtualContributorsInSpaceL0Document = gql`
-  query AvailableVirtualContributorsInSpaceL0($spaceId: UUID!) {
+export const AvailableVirtualContributorsInSpaceDocument = gql`
+  query AvailableVirtualContributorsInSpace($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -18103,77 +18103,77 @@ export const AvailableVirtualContributorsInSpaceL0Document = gql`
 `;
 
 /**
- * __useAvailableVirtualContributorsInSpaceL0Query__
+ * __useAvailableVirtualContributorsInSpaceQuery__
  *
- * To run a query within a React component, call `useAvailableVirtualContributorsInSpaceL0Query` and pass it any options that fit your needs.
- * When your component renders, `useAvailableVirtualContributorsInSpaceL0Query` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAvailableVirtualContributorsInSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableVirtualContributorsInSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAvailableVirtualContributorsInSpaceL0Query({
+ * const { data, loading, error } = useAvailableVirtualContributorsInSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useAvailableVirtualContributorsInSpaceL0Query(
+export function useAvailableVirtualContributorsInSpaceQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
+    SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+    SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
   > &
-    ({ variables: SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables; skip?: boolean } | { skip: boolean })
+    ({ variables: SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
-  >(AvailableVirtualContributorsInSpaceL0Document, options);
+    SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+    SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
+  >(AvailableVirtualContributorsInSpaceDocument, options);
 }
-export function useAvailableVirtualContributorsInSpaceL0LazyQuery(
+export function useAvailableVirtualContributorsInSpaceLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
+    SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+    SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
-  >(AvailableVirtualContributorsInSpaceL0Document, options);
+    SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+    SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
+  >(AvailableVirtualContributorsInSpaceDocument, options);
 }
-export function useAvailableVirtualContributorsInSpaceL0SuspenseQuery(
+export function useAvailableVirtualContributorsInSpaceSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
     | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-        SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
+        SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+        SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
       >
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-    SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
-  >(AvailableVirtualContributorsInSpaceL0Document, options);
+    SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+    SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
+  >(AvailableVirtualContributorsInSpaceDocument, options);
 }
-export type AvailableVirtualContributorsInSpaceL0QueryHookResult = ReturnType<
-  typeof useAvailableVirtualContributorsInSpaceL0Query
+export type AvailableVirtualContributorsInSpaceQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInSpaceQuery
 >;
-export type AvailableVirtualContributorsInSpaceL0LazyQueryHookResult = ReturnType<
-  typeof useAvailableVirtualContributorsInSpaceL0LazyQuery
+export type AvailableVirtualContributorsInSpaceLazyQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInSpaceLazyQuery
 >;
-export type AvailableVirtualContributorsInSpaceL0SuspenseQueryHookResult = ReturnType<
-  typeof useAvailableVirtualContributorsInSpaceL0SuspenseQuery
+export type AvailableVirtualContributorsInSpaceSuspenseQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInSpaceSuspenseQuery
 >;
-export type AvailableVirtualContributorsInSpaceL0QueryResult = Apollo.QueryResult<
-  SchemaTypes.AvailableVirtualContributorsInSpaceL0Query,
-  SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
+export type AvailableVirtualContributorsInSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableVirtualContributorsInSpaceQuery,
+  SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
 >;
-export function refetchAvailableVirtualContributorsInSpaceL0Query(
-  variables: SchemaTypes.AvailableVirtualContributorsInSpaceL0QueryVariables
+export function refetchAvailableVirtualContributorsInSpaceQuery(
+  variables: SchemaTypes.AvailableVirtualContributorsInSpaceQueryVariables
 ) {
-  return { query: AvailableVirtualContributorsInSpaceL0Document, variables: variables };
+  return { query: AvailableVirtualContributorsInSpaceDocument, variables: variables };
 }
 export const SpaceCollaborationIdDocument = gql`
   query SpaceCollaborationId($spaceId: UUID!) {

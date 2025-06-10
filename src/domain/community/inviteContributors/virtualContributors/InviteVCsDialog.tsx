@@ -46,7 +46,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
       getAvailable: getAvailableVirtualContributors,
       getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
     },
-  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceL0Id: space.id });
+  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceId: space.id });
 
   const [filter, setFilter] = useState('');
   const [inputValue, setInputValue] = useState('');
