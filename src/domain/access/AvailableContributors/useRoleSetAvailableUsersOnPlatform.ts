@@ -13,6 +13,7 @@ type useRoleSetAvailableUsersOnPlatformParams = {
 interface useRoleSetAvailableUsersOnPlatformProvided extends AvailableUsersResponse {}
 
 /**
+ * @internal
  * Do not use this hook directly, normally you should use useRoleSetAvailableUsers instead
  */
 const useRoleSetAvailableUsersOnPlatform = ({
