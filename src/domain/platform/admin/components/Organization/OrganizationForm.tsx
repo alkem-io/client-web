@@ -53,12 +53,14 @@ interface OrganizationFormProps {
   organization?: OrganizationModel;
   editMode?: EditMode;
   onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => Promise<unknown>;
+  onBack?: () => void;
 }
 
 export const OrganizationForm: FC<OrganizationFormProps> = ({
   organization: currentOrganization = EmptyOrganizationModel,
   editMode = EditMode.readOnly,
   onSave,
+  onBack,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -169,7 +171,13 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
     [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets, linkedinRef, blueSkyRef, githubRef]
   );
 
-  const handleBack = () => navigate(-1);
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   const backButton = (
     <Button variant="outlined" onClick={handleBack}>

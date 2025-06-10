@@ -52,7 +52,7 @@ export const CreateOrganizationDialog = ({ open, onClose }: CreateOrganizationDi
 
       <DialogContent>
         <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
-          <OrganizationForm editMode={EditMode.new} onSave={handleSubmit} />
+          <OrganizationForm editMode={EditMode.new} onSave={handleSubmit} onBack={onClose} />
         </Gutters>
       </DialogContent>
     </DialogWithGrid>
