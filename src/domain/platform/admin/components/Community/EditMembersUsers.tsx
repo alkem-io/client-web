@@ -1,8 +1,11 @@
 import { Member } from '@/domain/community/user/models/UserModel';
-import { Box, GridLegacy, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import TableCell from '@mui/material/TableCell';
 import { FC } from 'react';
 import { AvailableMembers, EditMembers } from './EditMembers';
+import { TabPanel } from '@/domain/common/layout/TabPanel';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 
 export interface EditMemberUsersProps {
   members: Member[];
@@ -43,77 +46,79 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
           {title}
         </Box>
       )}
-      <GridLegacy container spacing={2}>
-        <GridLegacy item xs={8}>
-          Group members:
-          <EditMembers
-            members={members}
-            loading={loadingMembers}
-            onRemove={onRemove}
-            header={
-              <>
-                <TableCell>Full Name</TableCell>
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell>Email</TableCell>
-              </>
-            }
-            renderRow={(m, Cell) => (
-              <>
-                <TableCell>
-                  <Cell>{m.profile.displayName}</Cell>
-                </TableCell>
-                <TableCell>
-                  <Cell>{m.firstName}</Cell>
-                </TableCell>
-                <TableCell>
-                  <Cell>{m.lastName}</Cell>
-                </TableCell>
-                <TableCell>
-                  <Cell>{m.email}</Cell>
-                </TableCell>
-              </>
-            )}
-            renderEmptyRow={Cell => (
-              <>
-                <TableCell>
-                  <Cell />
-                </TableCell>
-                <TableCell>
-                  <Cell />
-                </TableCell>
-                <TableCell>
-                  <Cell />
-                </TableCell>
-                <TableCell>
-                  <Cell />
-                </TableCell>
-              </>
-            )}
-            isRemoveDisabled={isRemoveDisabled}
-          />
-        </GridLegacy>
+      <TabPanel value={0} index={0}>
+        <PageContent>
+          <PageContentColumn columns={8}>
+            Group members:
+            <EditMembers
+              members={members}
+              loading={loadingMembers}
+              onRemove={onRemove}
+              header={
+                <>
+                  <TableCell>Full Name</TableCell>
+                  <TableCell>First Name</TableCell>
+                  <TableCell>Last Name</TableCell>
+                  <TableCell>Email</TableCell>
+                </>
+              }
+              renderRow={(m, Cell) => (
+                <>
+                  <TableCell>
+                    <Cell>{m.profile.displayName}</Cell>
+                  </TableCell>
+                  <TableCell>
+                    <Cell>{m.firstName}</Cell>
+                  </TableCell>
+                  <TableCell>
+                    <Cell>{m.lastName}</Cell>
+                  </TableCell>
+                  <TableCell>
+                    <Cell>{m.email}</Cell>
+                  </TableCell>
+                </>
+              )}
+              renderEmptyRow={Cell => (
+                <>
+                  <TableCell>
+                    <Cell />
+                  </TableCell>
+                  <TableCell>
+                    <Cell />
+                  </TableCell>
+                  <TableCell>
+                    <Cell />
+                  </TableCell>
+                  <TableCell>
+                    <Cell />
+                  </TableCell>
+                </>
+              )}
+              isRemoveDisabled={isRemoveDisabled}
+            />
+          </PageContentColumn>
 
-        <GridLegacy item sm={4}>
-          Available users:
-          <AvailableMembers
-            onAdd={onAdd!}
-            fetchMore={fetchMore}
-            hasMore={hasMore}
-            onSearchTermChange={onSearchTermChange}
-            filteredMembers={availableMembers}
-            loading={loadingAvailableMembers}
-            updating={updating}
-            header={<TableCell>Full Name</TableCell>}
-            renderRow={m => <TableCell>{m.profile.displayName}</TableCell>}
-            renderEmptyRow={Cell => (
-              <TableCell>
-                <Cell />
-              </TableCell>
-            )}
-          />
-        </GridLegacy>
-      </GridLegacy>
+          <PageContentColumn columns={4}>
+            Available users:
+            <AvailableMembers
+              onAdd={onAdd!}
+              fetchMore={fetchMore}
+              hasMore={hasMore}
+              onSearchTermChange={onSearchTermChange}
+              filteredMembers={availableMembers}
+              loading={loadingAvailableMembers}
+              updating={updating}
+              header={<TableCell>Full Name</TableCell>}
+              renderRow={m => <TableCell>{m.profile.displayName}</TableCell>}
+              renderEmptyRow={Cell => (
+                <TableCell>
+                  <Cell />
+                </TableCell>
+              )}
+            />
+          </PageContentColumn>
+        </PageContent>
+      </TabPanel>
     </>
   );
 };

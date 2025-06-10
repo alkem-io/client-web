@@ -6,7 +6,7 @@ import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLa
 import OrganizationAuthorizationRoleAssignementView from '../views/OrganizationAuthorizationRoleAssignementView';
 import Gutters from '@/core/ui/grid/Gutters';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { TabPanel } from './TabPanel';
+import { TabPanel } from '@/domain/common/layout/TabPanel';
 
 const OrganizationAdminAuthorizationPage = () => {
   const { t } = useTranslation();
