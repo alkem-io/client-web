@@ -4,7 +4,7 @@ import useRoleSetAvailableUsersOnRoleSet from './useRoleSetAvailableUsersOnRoleS
 import { Identifiable } from '@/core/utils/Identifiable';
 import { AvailableUsersResponse } from './common';
 
-export type AvailableUsersForRoleSearchParams = {
+type AvailableUsersForRoleSearchParams = {
   skip?: boolean;
   filter?: string;
 } & (
@@ -20,7 +20,7 @@ export type AvailableUsersForRoleSearchParams = {
 
 type useRoleSetAvailableUsersParams = AvailableUsersForRoleSearchParams & {
   roleSetId: string | undefined;
-  usersAlreadyInRole?: Identifiable[];
+  usersAlreadyInRole?: Identifiable[]; // Only used for platform mode
 };
 
 const useRoleSetAvailableUsers = ({
@@ -36,7 +36,6 @@ const useRoleSetAvailableUsers = ({
     role: role,
     filter: filter,
     skip: skip || mode !== 'roleSet' || !role,
-    usersAlreadyInRole,
   });
 
   const availableUsersForPlatformRoleSetRole = useRoleSetAvailableUsersOnPlatform({
