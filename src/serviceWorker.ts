@@ -17,7 +17,7 @@ export function register(config?: Config): void {
       const swUrl = 'service-worker.js';
 
       navigator.serviceWorker
-        .register(swUrl)
+        .register(swUrl, { scope: '/' })
         .then(registration => {
           if (navigator.serviceWorker.controller) {
             console.info('[SW] Updated ');
