@@ -119,7 +119,7 @@
     "take-me-home": "Terug naar startpagina",
     "close": "Sluit",
     "yes": "Ja",
-    "no": "No",
+    "no": "Nee",
     "yes-close": "Ja, sluiten",
     "yesReplace": "Ja, vervang",
     "yesStop": "Ja, stop",
@@ -193,9 +193,9 @@
     "sign-in": "Inloggen | Aanmelden"
   },
   "authentication": {
-    "or": "or continue with",
-    "no-account": "No account?",
-    "have-account": "Have an account?",
+    "or": "of ga door met",
+    "no-account": "Nog geen account?",
+    "have-account": "Heb je al een account?",
     "sign-in": "Log in",
     "sign-up": "Schrijf in",
     "sign-out": "Log uit",
@@ -213,7 +213,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
+        "vidua": "Vidua. Vidua is een door eIDAS-gecertificeerde provider, die garant staat voor een veilige en wettelijk erkende authenticatie volgens EU-normen."
       }
     },
     "signUp": {
@@ -539,7 +539,7 @@
       }
     },
     "supportEmail": "support@alkem.io",
-    "options": "Options"
+    "options": "Opties"
   },
   "community": {
     "memberUsers": "Leden ({{count}})",
@@ -808,10 +808,10 @@
   "context": {
     "common": {
       "addCallouts": {
-        "title": "Add template's default collaboration tools"
+        "title": "Voeg de standaard samenwerkingstools van template toe"
       },
       "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
+        "title": "Voeg tutorials toe"
       }
     },
     "L0": {
@@ -975,12 +975,12 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "Subspace URL",
-        "description": "Enter the URL of the Subspace you want to copy as a template.",
-        "use": "Use this Subspace",
-        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
-        "invalidUrl": "The url is not recognized as a Space URL.",
-        "spaceNotFoundError": "Space not found",
-        "selectAnother": "Update Collaboration from another Space"
+        "description": "Plak hier de URL van de Subspace die je wil kopiëren als Template.",
+        "use": "Gebruik deze Subspace",
+        "urlRequired": "Plak hier de URL van de Subspace die je wil kopiëren als template.",
+        "invalidUrl": "De URL wordt niet herkend als een Space-URL.",
+        "spaceNotFoundError": "Space niet gevonden",
+        "selectAnother": "Update Samenwerking vanuit een andere Space"
       }
     },
     "communityGuidelinesTemplates": {
@@ -2093,9 +2093,9 @@
               "title": "Standaardinstellingen",
               "description": "Kies de standaardinstellingen die van toepassing zijn bij het aanmaken van een nieuwe Subspace binnen deze Space. Deze instellingen kunnen worden gewijzigd tijdens het creëren of op een later tijdstip.",
               "defaultSpaceTemplate": {
-                "selectDifferentTemplate": "Change Default Template",
-                "title": "Change Default Subspace Template",
-                "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
+                "selectDifferentTemplate": "Wijzig standaard template",
+                "title": "Wijzig standaard Subspace template",
+                "description": "Pas de standaard template aan voor nieuw aangemaakte subruimten.<br/><br/>Hieronder kun je kiezen tussen de templates die zijn verzameld in de Space Templates bibliotheek. Als je nieuwe templates wilt maken of extra templates wilt verkennen, klik dan <library>hier</library> om deze bibliotheek te openen."
               }
             }
           }
