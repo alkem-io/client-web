@@ -5,6 +5,8 @@ import Loading from '@/core/ui/loading/Loading';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
+import { Caption } from '@/core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;
@@ -14,6 +16,7 @@ interface TemplateContentSpacePreviewProps {
 }
 
 const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpacePreviewProps) => {
+  const { t } = useTranslation();
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = template?.contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
@@ -37,21 +40,24 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
   }, [selectedState, templateStates]);
 
   return (
-    <PageContentBlock>
-      {loading && (
-        <Box textAlign="center">
-          <Loading />
-        </Box>
-      )}
-      {!loading && (
-        <InnovationFlowChips
-          states={templateStates}
-          selectedState={selectedState}
-          onSelectState={state => setSelectedState(state.displayName)}
-        />
-      )}
-      <InnovationFlowCalloutsPreview callouts={callouts} selectedState={selectedState} loading={loading} />
-    </PageContentBlock>
+    <>
+      <PageContentBlock>
+        {loading && (
+          <Box textAlign="center">
+            <Loading />
+          </Box>
+        )}
+        {!loading && (
+          <InnovationFlowChips
+            states={templateStates}
+            selectedState={selectedState}
+            onSelectState={state => setSelectedState(state.displayName)}
+          />
+        )}
+        <InnovationFlowCalloutsPreview callouts={callouts} selectedState={selectedState} loading={loading} />
+      </PageContentBlock>
+      <Caption>{t('templateLibrary.spaceTemplates.preview.info')}</Caption>
+    </>
   );
 };
 
