@@ -992,7 +992,9 @@ export type CalendarEvent = {
 };
 
 export enum CalendarEventType {
+  Deadline = 'DEADLINE',
   Event = 'EVENT',
+  Meeting = 'MEETING',
   Milestone = 'MILESTONE',
   Other = 'OTHER',
   Training = 'TRAINING',
