@@ -116,9 +116,7 @@ const useVirtualContributorsAdmin = ({
     // VCs from the list that are already a member.
     const virtualContributors =
       data?.lookup?.space?.community.roleSet.availableVirtualContributorsForEntryRole?.virtualContributors ?? [];
-    const filteredVCs = virtualContributors.filter(
-      vc => virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter) && filterExistingVcs(vc)
-    );
+    const filteredVCs = virtualContributors.filter(vc => filterByName(vc, filter) && filterExistingVcs(vc));
     return mockPaginatedResponse(filteredVCs, refetch);
   };
 
