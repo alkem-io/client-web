@@ -44,7 +44,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
 
   const templateName = useMemo(() => {
     return templateData?.lookup.template?.profile.displayName ?? defaultTemplateName;
-  }, [templateData, defaultSpaceTemplatesData, t]);
+  }, [templateData, defaultTemplateName, t]);
 
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
     helpers.setValue(templateId);
