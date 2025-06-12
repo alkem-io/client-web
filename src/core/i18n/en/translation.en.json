@@ -2953,7 +2953,7 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io.",
+      "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "pick-password": "Pick a password for your account"
     },
