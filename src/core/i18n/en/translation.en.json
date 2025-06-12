@@ -2227,7 +2227,7 @@
     "visualEdit": {
       "AVATAR": {
         "title": "<b>Avatar</b>",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in information pane and top left navigation menu.",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
