@@ -25,7 +25,7 @@ query AvailableVirtualContributorsInSpaceAccount($spaceId: UUID!) {
   }
 }
 
-query AvailableVirtualContributorsInSpaceL0($spaceId: UUID!) {
+query AvailableVirtualContributorsInSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
