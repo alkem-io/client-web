@@ -46,7 +46,7 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
         templatesSet {
           id
           calloutTemplatesCount
-          collaborationTemplatesCount
+          spaceTemplatesCount
           communityGuidelinesTemplatesCount
           postTemplatesCount
           whiteboardTemplatesCount
@@ -144,8 +144,8 @@ fragment LibraryTemplates on TemplatesSet {
       }
     }
   }
-  collaborationTemplatesCount
-  collaborationTemplates {
+  spaceTemplatesCount
+  spaceTemplates {
     id
     profile {
       id
@@ -155,24 +155,27 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    collaboration {
+    contentSpace {
       id
-      innovationFlow {
+      collaboration {
         id
-        states {
-          displayName
-          description
-        }
-      }
-      calloutsSet {
-        id
-        callouts {
+        innovationFlow {
           id
-          framing {
+          states {
+            displayName
+            description
+          }
+        }
+        calloutsSet {
+          id
+          callouts {
             id
-            profile {
+            framing {
               id
-              displayName
+              profile {
+                id
+                displayName
+              }
             }
           }
         }

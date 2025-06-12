@@ -13,7 +13,7 @@ import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportT
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
-import ApplyCollaborationTemplateDialog from '@/domain/templates/components/Dialogs/ApplyCollaborationTemplateDialog';
+import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 export type InnovationFlowSettingsDialogProps = {
@@ -40,8 +40,11 @@ const InnovationFlowSettingsDialog = ({
   const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
   const [selectedTemplateToImport, setSelectedTemplateToImport] = useState<Identifiable>();
 
-  const handleImportTemplate = async ({ id: templateId }: Identifiable, importCallouts: boolean) => {
-    await actions.importCollaborationTemplate(templateId, importCallouts);
+  const handleImportInnovationFlowFromSpaceTemplate = async (
+    { id: templateId }: Identifiable,
+    importCallouts: boolean
+  ) => {
+    await actions.importInnovationFlowFromSpaceTemplate(templateId, importCallouts);
     setSelectedTemplateToImport(undefined);
     setImportInnovationFlowDialogOpen(false);
   };
@@ -108,14 +111,14 @@ const InnovationFlowSettingsDialog = ({
           confirmButtonTextId: 'buttons.continue',
         }}
       />
-      <ApplyCollaborationTemplateDialog
+      <ApplySpaceTemplateDialog
         open={Boolean(selectedTemplateToImport)}
-        onConfirm={addCallouts => handleImportTemplate(selectedTemplateToImport!, addCallouts)}
+        onConfirm={addCallouts => handleImportInnovationFlowFromSpaceTemplate(selectedTemplateToImport!, addCallouts)}
         onClose={() => setSelectedTemplateToImport(undefined)}
       />
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
-        templateType={TemplateType.Collaboration}
+        templateType={TemplateType.Space}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates

@@ -16,21 +16,21 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 const TemplateTypePermissions = {
   create: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
   edit: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
   delete: [
     TemplateType.Callout,
-    TemplateType.Collaboration,
+    TemplateType.Space,
     TemplateType.CommunityGuidelines,
     TemplateType.Post,
     TemplateType.Whiteboard,

@@ -21,7 +21,6 @@ export const SpaceAdminL2Route = () => {
     about: subspace?.about,
     roleSetId: subspace?.about.membership.roleSetID!,
     spaceId: subspace?.id,
-    spaceL0Id: space?.id,
     pendingMembershipsEnabled: false,
     communityGuidelinesEnabled: false,
     communityGuidelinesTemplatesEnabled: false,

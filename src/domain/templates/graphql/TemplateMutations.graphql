@@ -5,7 +5,7 @@ mutation CreateTemplate(
   $tags: [String!]
   $calloutData: CreateCalloutInput
   $communityGuidelinesData: CreateCommunityGuidelinesInput
-  $collaborationData: CreateCollaborationInput
+  $contentSpaceData: CreateTemplateContentSpaceInput
   $postDefaultDescription: Markdown
   $whiteboard: CreateWhiteboardInput
   $includeProfileVisuals: Boolean = false
@@ -19,7 +19,7 @@ mutation CreateTemplate(
       calloutData: $calloutData
       communityGuidelinesData: $communityGuidelinesData
       postDefaultDescription: $postDefaultDescription
-      collaborationData: $collaborationData
+      contentSpaceData: $contentSpaceData
       whiteboard: $whiteboard
     }
   ) {
@@ -53,19 +53,19 @@ mutation CreateTemplate(
   }
 }
 
-# Special case for creating a template from an existing collaboration
-mutation CreateTemplateFromCollaboration(
+# Special case for creating a template from an existing Space
+mutation CreateTemplateFromSpace(
   $templatesSetId: UUID!
   $profileData: CreateProfileInput!
   $tags: [String!]
-  $collaborationId: UUID!
+  $spaceId: UUID!
 ) {
-  createTemplateFromCollaboration(
+  createTemplateFromSpace(
     templateData: {
       templatesSetID: $templatesSetId
       profileData: $profileData
       tags: $tags
-      collaborationID: $collaborationId
+      spaceID: $spaceId
     }
   ) {
     id
@@ -106,8 +106,8 @@ mutation UpdateTemplate(
 }
 
 # Special case for updating a collaboration template from an existing collaboration
-mutation UpdateTemplateFromCollaboration($templateId: UUID!, $collaborationId: UUID!) {
-  updateTemplateFromCollaboration(updateData: { templateID: $templateId, collaborationID: $collaborationId }) {
+mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!) {
+  updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId }) {
     id
   }
 }
