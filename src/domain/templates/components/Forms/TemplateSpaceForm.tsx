@@ -1,6 +1,7 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
@@ -22,7 +23,7 @@ interface TemplateSpaceFormProps {
 }
 
 const validator = {
-  spaceId: yup.string().required(),
+  spaceId: yup.string(),
 };
 
 /* This form is used for both create and update of Space Template, which is meta data plus TemplateContentSpace.
@@ -45,6 +46,7 @@ const validator = {
  */
 const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormProps) => {
   const { t } = useTranslation();
+  const notify = useNotification();
 
   const [spaceId, setSpaceId] = useState<string>(template?.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
   const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
@@ -86,13 +88,17 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     values: TemplateSpaceFormSubmittedValues,
     { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
   ) => {
+    if (!template?.spaceId && !values.spaceId) {
+      notify(t('pages.admin.generic.sections.templates.validation.spaceRequired'), 'error');
+      return Promise.reject();
+    }
     // Special case: For SpaceTemplates we change spaceId in the formik values,
     // to mark that this template should reload its content from another space.
     // That's not real, spaceId of a template never changes in the server.
     // When we submit the form we call the updateTemplateFromSpace mutation with the new spaceId so the template gets updated.
     // We reset it here to the correct value to avoid Formik detecting the form as dirty on the next render.
     // (dirty means that it will enable the button `Update` as if there were pending changes to save)
-    setFieldValue('spaceId', template?.spaceId); // Set the value back to the original spaceId
+    template?.spaceId && setFieldValue('spaceId', template?.spaceId); // Set the value back to the original spaceId
 
     // With other template types we just pass onSubmit directly to onSubmit
     return onSubmit(values);
