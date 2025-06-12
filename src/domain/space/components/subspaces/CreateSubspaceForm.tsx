@@ -55,7 +55,7 @@ export const CreateSubspaceForm = ({
       tags: value.tags,
       addTutorialCallouts: false,
       addCallouts: Boolean(value.spaceTemplateId) ? value.addCallouts : true,
-      spaceTemplateId: value.spaceTemplateId,
+      spaceTemplateId: value.spaceTemplateId || undefined, // in case of empty string
       visuals: value.visuals,
     });
 
@@ -106,6 +106,7 @@ export const CreateSubspaceForm = ({
       {() => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <SubspaceTemplateSelector name="spaceTemplateId" disablePadding sx={{ paddingBottom: gutters() }} />
           <FormikInputField
             name="displayName"
             title={t(`context.${level}.displayName.title`)}
@@ -141,7 +142,6 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
-            <SubspaceTemplateSelector name="spaceTemplateId" disablePadding />
             {/* Temporarily hidden until we have more options to choose from */}
             {/* Show options only if a template is selected */}
             {/*{Boolean(spaceTemplateId) && (*/}

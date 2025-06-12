@@ -981,6 +981,9 @@
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "selectAnother": "Update Collaboration from another Space"
+      },
+      "preview": {
+        "info": "Also included: About information & Settings"
       }
     },
     "communityGuidelinesTemplates": {
