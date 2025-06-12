@@ -53,12 +53,14 @@ interface OrganizationFormProps {
   organization?: OrganizationModel;
   editMode?: EditMode;
   onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => Promise<unknown>;
+  onBack?: () => void;
 }
 
 export const OrganizationForm: FC<OrganizationFormProps> = ({
   organization: currentOrganization = EmptyOrganizationModel,
   editMode = EditMode.readOnly,
   onSave,
+  onBack,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -169,7 +171,13 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
     [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets, linkedinRef, blueSkyRef, githubRef]
   );
 
-  const handleBack = () => navigate(-1);
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   const backButton = (
     <Button variant="outlined" onClick={handleBack}>
@@ -207,7 +215,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
-                  <PageContentColumn columns={4} justifyContent="end">
+                  <PageContentColumn columns={isCreateMode ? 12 : 4} justifyContent="end">
                     <VisualUpload
                       visual={visual}
                       altText={t('visuals-alt-text.avatar.contributor.text', {
@@ -216,8 +224,8 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                       })}
                     />
                   </PageContentColumn>
-                  <PageContentColumn columns={6}>
-                    <Gutters disablePadding>
+                  <PageContentColumn columns={isCreateMode ? 12 : 6} justifyContent={isCreateMode ? 'center' : 'start'}>
+                    <Gutters disablePadding sx={{ width: '100%' }}>
                       <PageContentBlockHeader title={t('common.organization')} />
                       <NameSegment
                         disabled={isEditMode}

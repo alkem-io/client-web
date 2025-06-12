@@ -4,13 +4,13 @@ import {
   CreateCalloutInput,
   CreateProfileInput,
   CreateReferenceInput,
-  CreateTemplateFromCollaborationMutationVariables,
+  CreateTemplateFromSpaceMutationVariables,
   CreateWhiteboardInput,
   UpdateCalloutMutationVariables,
   UpdateCommunityGuidelinesMutationVariables,
   UpdateProfileInput,
   UpdateTagsetInput,
-  UpdateTemplateFromCollaborationMutationVariables,
+  UpdateTemplateFromSpaceMutationVariables,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
@@ -19,15 +19,15 @@ import {
   UpdateTemplateMutationVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
-import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
-import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
-import { CollaborationTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
-import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
+import { TemplateCommunityGuidelinesFormSubmittedValues } from '../TemplateCommunityGuidelinesForm';
+import { TemplateWhiteboardFormSubmittedValues } from '../TemplateWhiteboardForm';
+import { TemplateCalloutFormSubmittedValues } from '../TemplateCalloutForm';
+import { TemplateSpaceFormSubmittedValues } from '../TemplateSpaceForm';
+import { TemplatePostFormSubmittedValues } from '../TemplatePostForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
+import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 
 interface EntityWithProfile {
   profile: {
@@ -138,7 +138,7 @@ const handleCreateWhiteboard = (data?: {
 const shouldRequestPreviewVisuals = (
   data: AnyTemplateFormSubmittedValues
 ): { includeProfileVisuals?: boolean } | undefined => {
-  if (data && (data as WhiteboardTemplateFormSubmittedValues).whiteboardPreviewImages) {
+  if (data && (data as TemplateWhiteboardFormSubmittedValues).whiteboardPreviewImages) {
     return { includeProfileVisuals: true };
   }
   return undefined;
@@ -174,7 +174,7 @@ export const toCreateTemplateMutationVariables = (
 
   switch (templateType) {
     case TemplateType.Callout: {
-      const calloutTemplateData = values as CalloutTemplateFormSubmittedValues;
+      const calloutTemplateData = values as TemplateCalloutFormSubmittedValues;
       if (!calloutTemplateData.callout || !calloutTemplateData.callout.type) {
         throw new Error('Callout template must have callout data');
       }
@@ -219,12 +219,12 @@ export const toCreateTemplateMutationVariables = (
       result.calloutData = callout;
       break;
     }
-    case TemplateType.Collaboration: {
-      // TODO: Nothing to do here, for now we cannot create CollaborationTemplates with data inside, we can only copy another collaboration
-      throw new Error('Call toCreateTemplateFromCollaborationMutationVariables instead');
+    case TemplateType.Space: {
+      // TODO: Nothing to do here, for now we cannot create SpaceTemplates with data inside, we can only copy another Space
+      throw new Error('Call toCreateTemplateFromSpaceMutationVariables instead');
     }
     case TemplateType.CommunityGuidelines: {
-      const communityGuidelinesTemplateData = values as CommunityGuidelinesTemplateFormSubmittedValues;
+      const communityGuidelinesTemplateData = values as TemplateCommunityGuidelinesFormSubmittedValues;
       const { profileData } = handleCreateProfile(communityGuidelinesTemplateData.communityGuidelines);
       result.communityGuidelinesData = {
         profile: profileData,
@@ -233,12 +233,12 @@ export const toCreateTemplateMutationVariables = (
       break;
     }
     case TemplateType.Post: {
-      const postData = values as PostTemplateFormSubmittedValues;
+      const postData = values as TemplatePostFormSubmittedValues;
       result.postDefaultDescription = postData.postDefaultDescription;
       break;
     }
     case TemplateType.Whiteboard: {
-      const whiteboardTemplateData = values as WhiteboardTemplateFormSubmittedValues;
+      const whiteboardTemplateData = values as TemplateWhiteboardFormSubmittedValues;
       result.whiteboard = handleCreateWhiteboard(whiteboardTemplateData.whiteboard);
       break;
     }
@@ -247,17 +247,17 @@ export const toCreateTemplateMutationVariables = (
   return result;
 };
 
-export const toCreateTemplateFromCollaborationMutationVariables = (
+export const toCreateTemplateFromSpaceContentMutationVariables = (
   templatesSetId: string,
-  values: CollaborationTemplateFormSubmittedValues
-): CreateTemplateFromCollaborationMutationVariables => {
+  values: TemplateSpaceFormSubmittedValues
+): CreateTemplateFromSpaceMutationVariables => {
   // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
-  if (!values.collaborationId) {
-    throw new Error('Collaboration ID is required to create a template from a collaboration');
+  if (!values.spaceId) {
+    throw new Error('Space ID is required to create a template from a collaboration');
   }
 
   return {
-    collaborationId: values.collaborationId,
+    spaceId: values.spaceId,
     templatesSetId: templatesSetId,
     profileData: {
       displayName: values.profile.displayName ?? '',
@@ -331,7 +331,7 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateCalloutVariables?: UpdateCalloutMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
-  updateCollaborationTemplateVariables?: UpdateTemplateFromCollaborationMutationVariables;
+  updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
@@ -340,7 +340,7 @@ export const toUpdateTemplateMutationVariables = (
   };
   switch (template.type) {
     case TemplateType.Callout: {
-      const calloutTemplateData = newValues as CalloutTemplateFormSubmittedValues;
+      const calloutTemplateData = newValues as TemplateCalloutFormSubmittedValues;
       const updateCalloutVariables: UpdateCalloutMutationVariables = {
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
@@ -384,31 +384,31 @@ export const toUpdateTemplateMutationVariables = (
         updateCalloutVariables,
       };
     }
-    case TemplateType.Collaboration: {
-      // Special case: In CollaborationTemplates we update the collaborationId in the formik values to
-      // mark that this template should load its content from another collaboration.
-      // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
-      // If the collaborationId remains the same, we just update the template profile.
-      const oldCollaborationId = (template as CollaborationTemplate).collaboration?.id;
-      const newCollaborationId = (newValues as CollaborationTemplateFormSubmittedValues).collaborationId;
-      if (oldCollaborationId && newCollaborationId && oldCollaborationId !== newCollaborationId) {
-        const updateCollaborationTemplateVariables: UpdateTemplateFromCollaborationMutationVariables = {
+    case TemplateType.Space: {
+      // Special case: In SpaceTemplates we update the spaceId in the formik values to
+      // mark that this template should load its content from another space.
+      // Then updateSpaceContentTemplateVariables will be returned and the mutation will be called.
+      // If the spaceId remains the same, we just update the template profile.
+      const oldSelectedSpaceId = (template as SpaceTemplate).contentSpace?.id;
+      const newModelSpaceId = (newValues as TemplateSpaceFormSubmittedValues).spaceId;
+      if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
+        const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
-          collaborationId: newCollaborationId,
+          spaceId: newModelSpaceId,
         };
         return {
           updateTemplateVariables,
-          updateCollaborationTemplateVariables,
+          updateSpaceContentTemplateVariables,
         };
       } else {
-        // Collaboration selected didn't change, just update the template values
+        // Space selected didn't change, just update the template values
         return {
           updateTemplateVariables,
         };
       }
     }
     case TemplateType.CommunityGuidelines: {
-      const communityGuidelinesTemplateData = newValues as CommunityGuidelinesTemplateFormSubmittedValues;
+      const communityGuidelinesTemplateData = newValues as TemplateCommunityGuidelinesFormSubmittedValues;
       const updateCommunityGuidelinesVariables: UpdateCommunityGuidelinesMutationVariables = {
         communityGuidelinesData: {
           communityGuidelinesID: (template as CommunityGuidelinesTemplate).communityGuidelines?.id!,
@@ -422,7 +422,7 @@ export const toUpdateTemplateMutationVariables = (
     }
     case TemplateType.Post: {
       updateTemplateVariables.postDefaultDescription = (
-        newValues as PostTemplateFormSubmittedValues
+        newValues as TemplatePostFormSubmittedValues
       ).postDefaultDescription;
       return {
         updateTemplateVariables,
@@ -430,12 +430,11 @@ export const toUpdateTemplateMutationVariables = (
     }
     case TemplateType.Whiteboard: {
       updateTemplateVariables.whiteboardContent = (
-        newValues as WhiteboardTemplateFormSubmittedValues
+        newValues as TemplateWhiteboardFormSubmittedValues
       ).whiteboard?.content;
       return {
         updateTemplateVariables,
       };
     }
   }
-  throw new Error('Coulndt identify callout type');
 };

@@ -19,7 +19,7 @@ const useInnovationPackCardProps = (
           whiteboardTemplatesCount: innovationPack.templatesSet?.whiteboardTemplatesCount,
           postTemplatesCount: innovationPack.templatesSet?.postTemplatesCount,
           calloutTemplatesCount: innovationPack.templatesSet?.calloutTemplatesCount,
-          collaborationTemplatesCount: innovationPack.templatesSet?.collaborationTemplatesCount,
+          spaceTemplatesCount: innovationPack.templatesSet?.spaceTemplatesCount,
           communityGuidelinesTemplatesCount: innovationPack.templatesSet?.communityGuidelinesTemplatesCount,
           innovationPackUri: innovationPack.profile.url,
         };

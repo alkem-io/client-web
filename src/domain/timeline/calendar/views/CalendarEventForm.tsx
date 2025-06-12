@@ -28,24 +28,10 @@ export interface CalendarEventFormProps {
   isSubspace?: boolean;
 }
 
-const typeOptions: FormikSelectValue[] = [
-  {
-    id: CalendarEventType.Event,
-    name: CalendarEventType.Event,
-  },
-  {
-    id: CalendarEventType.Training,
-    name: CalendarEventType.Training,
-  },
-  {
-    id: CalendarEventType.Milestone,
-    name: CalendarEventType.Milestone,
-  },
-  {
-    id: CalendarEventType.Other,
-    name: CalendarEventType.Other,
-  },
-];
+const typeOptions: FormikSelectValue[] = Object.values(CalendarEventType).map(type => ({
+  id: type,
+  name: type,
+}));
 
 const CalendarEventForm = ({
   event,

@@ -119,6 +119,7 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes": "Yes",
+    "no": "No",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
@@ -452,8 +453,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "COLLABORATION": "Subspace Template",
-        "COLLABORATION_plural": "Subspace Templates",
+        "SPACE": "Subspace Template",
+        "SPACE_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -537,7 +538,8 @@
         "year_plural": "{{count}} years"
       }
     },
-    "supportEmail": "support@alkem.io"
+    "supportEmail": "support@alkem.io",
+    "options": "Options"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -804,6 +806,14 @@
     }
   },
   "context": {
+    "common": {
+      "addCallouts": {
+        "title": "Add template's default collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
+      }
+    },
     "L0": {
       "tagline": {
         "title": "Tagline",
@@ -868,9 +878,6 @@
         "placeholder": "",
         "tooltip": "Tags"
       },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
-      },
       "template": {
         "title": "Template:",
         "defaultTemplate": "Default Alkemio template for subspaces"
@@ -911,12 +918,6 @@
         "title": "Tags",
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools"
-      },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -969,7 +970,7 @@
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
-    "collaborationTemplates": {
+    "spaceTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
@@ -979,8 +980,10 @@
         "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
-        "collaborationNotFoundError": "Collaboration not found",
         "selectAnother": "Update Collaboration from another Space"
+      },
+      "preview": {
+        "info": "Also included: About information & Settings"
       }
     },
     "communityGuidelinesTemplates": {
@@ -990,7 +993,6 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
-    "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
@@ -2093,7 +2095,7 @@
             "defaultSettings": {
               "title": "Default Subspace Template",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
-              "defaultCollaborationTemplate": {
+              "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default Template",
                 "title": "Change Default Subspace Template",
                 "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
@@ -2227,20 +2229,20 @@
     },
     "visualEdit": {
       "AVATAR": {
-        "title": "Avatar",
+        "title": "<b>Avatar</b>",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
-        "title": "Page banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Page banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the Space (also in the Subspaces) and top left navigation menu.",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
       "CARD": {
-        "title": "Card banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "title": "<b>Card banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and Space overviews.",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
       },
@@ -2951,8 +2953,9 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
+      "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "pick-password": "Pick a password for your account"
     },
     "fields": {
       "ID": "ID",
@@ -3335,5 +3338,10 @@
   },
   "aboutDialog": {
     "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "A new version of the app is available. Please refresh the page to update."
+    }
   }
 }

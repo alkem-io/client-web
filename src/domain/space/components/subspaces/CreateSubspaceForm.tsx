@@ -25,7 +25,14 @@ const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
 type CreateSubspaceFormValues = Pick<
   SpaceFormValues,
-  'displayName' | 'tagline' | 'description' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+  | 'displayName'
+  | 'tagline'
+  | 'description'
+  | 'tags'
+  | 'addTutorialCallouts'
+  | 'addCallouts'
+  | 'spaceTemplateId'
+  | 'visuals'
 >;
 
 interface CreateSubspaceFormProps extends SpaceCreationForm {}
@@ -46,8 +53,9 @@ export const CreateSubspaceForm = ({
       tagline: value.tagline,
       description: value.description,
       tags: value.tags,
-      addTutorialCallouts: value.addTutorialCallouts,
-      collaborationTemplateId: value.collaborationTemplateId,
+      addTutorialCallouts: false,
+      addCallouts: Boolean(value.spaceTemplateId) ? value.addCallouts : true,
+      spaceTemplateId: value.spaceTemplateId || undefined, // in case of empty string
       visuals: value.visuals,
     });
 
@@ -57,7 +65,8 @@ export const CreateSubspaceForm = ({
     description: '',
     tags: [],
     addTutorialCallouts: false,
-    collaborationTemplateId: undefined,
+    addCallouts: true,
+    spaceTemplateId: undefined,
     visuals: {
       avatar: { file: undefined, altText: '' },
       cardBanner: { file: undefined, altText: '' },
@@ -82,7 +91,7 @@ export const CreateSubspaceForm = ({
       ),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    collaborationTemplateId: yup.string().nullable(),
+    spaceTemplateId: yup.string().nullable(),
   });
   const level = SpaceLevel.L1;
 
@@ -97,6 +106,7 @@ export const CreateSubspaceForm = ({
       {() => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <SubspaceTemplateSelector name="spaceTemplateId" disablePadding sx={{ paddingBottom: gutters() }} />
           <FormikInputField
             name="displayName"
             title={t(`context.${level}.displayName.title`)}
@@ -132,18 +142,23 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
-            <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
-            {/* TEMPORARY DISABLE AS THERE ARE NO SUBSPACE TUTORIALS */}
-            {/*<FormikRadiosSwitch*/}
-            {/*  name="addTutorialCallouts"*/}
-            {/*  label="Tutorials:"*/}
-            {/*  options={[*/}
-            {/*    { label: 'On', value: true },*/}
-            {/*    { label: 'Off', value: false },*/}
-            {/*  ]}*/}
-            {/*  row*/}
-            {/*  disablePadding*/}
-            {/*/>*/}
+            {/* Temporarily hidden until we have more options to choose from */}
+            {/* Show options only if a template is selected */}
+            {/*{Boolean(spaceTemplateId) && (*/}
+            {/*  <Gutters disablePadding disableGap>*/}
+            {/*    <Caption>{t('common.options')}</Caption>*/}
+            {/*    <FormikRadiosSwitch*/}
+            {/*      name="addCallouts"*/}
+            {/*      label={t('context.common.addCallouts.title')}*/}
+            {/*      options={[*/}
+            {/*        { label: t('buttons.yes'), value: true },*/}
+            {/*        { label: t('buttons.no'), value: false },*/}
+            {/*      ]}*/}
+            {/*      row*/}
+            {/*      disablePadding*/}
+            {/*    />*/}
+            {/*  </Gutters>*/}
+            {/*)}*/}
           </Gutters>
         </Form>
       )}
