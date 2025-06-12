@@ -119,6 +119,7 @@
     "take-me-home": "Terug naar startpagina",
     "close": "Sluit",
     "yes": "Ja",
+    "no": "Nee",
     "yes-close": "Ja, sluiten",
     "yesReplace": "Ja, vervang",
     "yesStop": "Ja, stop",
@@ -192,9 +193,9 @@
     "sign-in": "Inloggen | Aanmelden"
   },
   "authentication": {
-    "or": "or continue with",
-    "no-account": "No account?",
-    "have-account": "Have an account?",
+    "or": "of ga door met",
+    "no-account": "Nog geen account?",
+    "have-account": "Heb je al een account?",
     "sign-in": "Log in",
     "sign-up": "Schrijf in",
     "sign-out": "Log uit",
@@ -212,7 +213,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
+        "vidua": "Vidua. Vidua is een door eIDAS-gecertificeerde provider, die garant staat voor een veilige en wettelijk erkende authenticatie volgens EU-normen."
       }
     },
     "signUp": {
@@ -452,8 +453,8 @@
       "templateType": {
         "CALLOUT": "Samenwerkingstool Template",
         "CALLOUT_plural": "Samenwerkingstool Templates",
-        "COLLABORATION": "Subspace Template",
-        "COLLABORATION_plural": "Subspace Templates",
+        "SPACE": "Subspace Template",
+        "SPACE_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Richtlijnen Template",
         "COMMUNITY_GUIDELINES_plural": "Community Richtlijnen Templates",
         "INNOVATION_FLOW": "Innovatie Flow",
@@ -537,7 +538,8 @@
         "year_plural": "{{count}} jaar"
       }
     },
-    "supportEmail": "support@alkem.io"
+    "supportEmail": "support@alkem.io",
+    "options": "Opties"
   },
   "community": {
     "memberUsers": "Leden ({{count}})",
@@ -804,6 +806,14 @@
     }
   },
   "context": {
+    "common": {
+      "addCallouts": {
+        "title": "Voeg de standaard samenwerkingstools van template toe"
+      },
+      "addTutorialCallouts": {
+        "title": "Voeg tutorials toe"
+      }
+    },
     "L0": {
       "tagline": {
         "title": "Tagline",
@@ -868,9 +878,6 @@
         "placeholder": "",
         "tooltip": "Labels"
       },
-      "addTutorialCallouts": {
-        "title": "Voeg tutorials toe"
-      },
       "template": {
         "title": "Template:",
         "defaultTemplate": "Standaard Alkemio template voor Subspaces"
@@ -911,12 +918,6 @@
         "title": "Labels",
         "description": "Vul de meest belangrijke woorden voor deze Subspace in die ervoor zorgen dat de Subspace opvalt en makkelijk te vinden is.",
         "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Voeg de standaard samenwerkingstools van de template toe"
-      },
-      "addTutorialCallouts": {
-        "title": "Voeg tutorials toe"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -969,17 +970,16 @@
       "editDialogTitle": "Whiteboard template bewerken",
       "errorImporting": "Fout bij het importeren van Whiteboard Template"
     },
-    "collaborationTemplates": {
+    "spaceTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "Subspace URL",
-        "description": "Voer de URL in van de Subspace die u wilt kopiëren als template.",
-        "use": "Gebruik deze Space",
-        "urlRequired": "Plak hier de URL van de Subspace die je wil kopiëren als Template.",
-        "invalidUrl": "De url wordt niet herkend als een Space-URL.",
+        "description": "Plak hier de URL van de Subspace die je wil kopiëren als Template.",
+        "use": "Gebruik deze Subspace",
+        "urlRequired": "Plak hier de URL van de Subspace die je wil kopiëren als template.",
+        "invalidUrl": "De URL wordt niet herkend als een Space-URL.",
         "spaceNotFoundError": "Space niet gevonden",
-        "collaborationNotFoundError": "Samenwerking niet gevonden",
         "selectAnother": "Update Samenwerking vanuit een andere Space"
       }
     },
@@ -990,7 +990,6 @@
       "guidelinesTitle": "Titel",
       "guidelinesDescription": "Richtlijnen"
     },
-    "spaceTemplates": "Templates geselecteerd door de host van deze community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Of klik hier om door alle platform templates te bladeren",
     "platformUseDisabled": "Houd er rekening mee dat je alleen de templates kunt gebruiken die zijn geselecteerd voor deze community (zie hierboven). Neem contact op met de adminstrator of lead van deze Space om de templates hieronder te selecteren voor de community in the Space instellingen.",
@@ -2093,10 +2092,10 @@
             "defaultSettings": {
               "title": "Standaardinstellingen",
               "description": "Kies de standaardinstellingen die van toepassing zijn bij het aanmaken van een nieuwe Subspace binnen deze Space. Deze instellingen kunnen worden gewijzigd tijdens het creëren of op een later tijdstip.",
-              "defaultCollaborationTemplate": {
-                "selectDifferentTemplate": "Selecteer Samenwerkings Template",
-                "title": "Selecteren van de Standaard Samenwerkings Template",
-                "description": "Pas de standaard Innovatieflow aan voor nieuwe Subspaces. Beheerders van de Subspace kunnen dit later wijzigen in de instellingen. \n\nHieronder kan je kiezen uit de templates die zijn verzameld in de Space Templates bibliotheek."
+              "defaultSpaceTemplate": {
+                "selectDifferentTemplate": "Wijzig standaard template",
+                "title": "Wijzig standaard Subspace template",
+                "description": "Pas de standaard template aan voor nieuw aangemaakte subruimten.<br/><br/>Hieronder kun je kiezen tussen de templates die zijn verzameld in de Space Templates bibliotheek. Als je nieuwe templates wilt maken of extra templates wilt verkennen, klik dan <library>hier</library> om deze bibliotheek te openen."
               }
             }
           }
@@ -2227,20 +2226,20 @@
     },
     "visualEdit": {
       "AVATAR": {
-        "title": "Profielfoto",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+        "title": "<b>Avatar</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in information pane and top left navigation menu.",
         "description2": "Gebruik: Space kaart op pagina banner",
         "description": "Omschrijving: {{alternativeText}}"
       },
       "BANNER": {
-        "title": "Pagina banner",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+        "title": "<b>Page banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the Space (also in the Subspaces) and top left navigation menu.",
         "description2": "Gebruik: Banner op de dashboard tab",
         "description": "Omschrijving: {{alternativeText}}"
       },
       "CARD": {
-        "title": "Kaart banner",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+        "title": "<b>Card banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and Space overviews.",
         "description2": "Gebruik: Banner op kaarten",
         "description": "Omschrijving: {{alternativeText}}"
       },
@@ -2947,11 +2946,13 @@
     "loading-error": "Fout bij laden",
     "messages": {
       "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
+      "request-recover-password": "<strong>Een e-mail met een herstelcode is verstuurd naar het opgegeven e-mailadres.</strong><br/> <br/>Als je geen e-mail hebt ontvangen, Controleer het volgende:<br/> <br/><li> <strong>Controleer de spelling</strong> van het e-mailadres.</li/><li> <strong>zorg ervoor dat je het e-mailadres gebruikt </strong> waarmee je je hebt geregistreerd.</li><li> <strong>Controleer je spam of ongewenste map</strong> </li><li> <strong>Als je je hebt geregistreerd met LinkedIn, Microsoft of een andere sociale login,</strong> dan werkt wachtwoord herstel via e-mail niet. Gebruik in plaats daarvan de respectievelijke optie voor social login.</li><br/><br/><i>Opmerking: Dit bevestigt niet dat een account geregistreerd is met deze e-mail.</i>",
       "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "verification-flow-continue": "Volgende",
       "login-flow-account-exists": "Je probeert je aan te melden met een LinkedIn/Microsoft-account, maar het bijbehorende e-mailadres is al eerder gebruikt. Log in met dit e-mailadres en wachtwoord of probeer het wachtwoord te resetten. Als dat niet lukt, stuur dan een e-mail naar support@alkem.io.",
-      "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken."
+      "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
+      "pick-password": "Pick a password for your account"
     },
     "fields": {
       "ID": "ID",
@@ -3338,5 +3339,10 @@
   },
   "aboutDialog": {
     "applyNotSignedInHelperText": "Je wordt eerst doorgestuurd naar de inlogpagina van Alkemio"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "A new version of the app is available. Please refresh the page to update."
+    }
   }
 }
