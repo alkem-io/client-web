@@ -47,7 +47,6 @@ export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   roleSetId: string;
   level: SpaceLevel;
   spaceId: string;
-  spaceL0Id: string;
   communityGuidelinesId: string;
   pendingMembershipsEnabled: boolean;
   communityGuidelinesEnabled: boolean;
@@ -62,7 +61,6 @@ const SpaceAdminCommunityPage = ({
   roleSetId,
   level,
   spaceId,
-  spaceL0Id,
   pendingMembershipsEnabled,
   communityGuidelinesId,
   communityGuidelinesEnabled,
@@ -131,7 +129,7 @@ const SpaceAdminCommunityPage = ({
       getAvailable: getAvailableVirtualContributors,
       getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
     },
-  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceL0Id });
+  } = useVirtualContributorsAdmin({ level, currentMembers: virtualContributors, spaceId });
 
   const spaceVirtualContributorEntitlementEnabled = spaceEntitlements.includes(
     LicenseEntitlementType.SpaceFlagVirtualContributorAccess

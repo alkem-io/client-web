@@ -2,13 +2,13 @@ import { AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/gen
 import {
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useAvailableVirtualContributorsInSpaceAccountLazyQuery,
-  useAvailableVirtualContributorsInSpaceL0LazyQuery,
+  useAvailableVirtualContributorsInSpaceLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 interface useVirtualContributorsAdminParams {
   level: SpaceLevel;
-  spaceL0Id: string;
+  spaceId: string;
   currentMembers: Identifiable[];
 }
 
@@ -50,7 +50,7 @@ export interface useVirtualContributorsAdminProvided {
 const useVirtualContributorsAdmin = ({
   level,
   currentMembers,
-  spaceL0Id,
+  spaceId,
 }: useVirtualContributorsAdminParams): useVirtualContributorsAdminProvided => {
   // Filter functions for contributors already in the role
   const filterByName = (vc: ContributorNameProps, filter?: string) =>
@@ -90,13 +90,13 @@ const useVirtualContributorsAdmin = ({
   //////
   // Space
   const [fetchAvailableVirtualContributorsInSpaceAccount] = useAvailableVirtualContributorsInSpaceAccountLazyQuery();
-  const [fetchAvailableVirtualContributorsInSpaceL0] = useAvailableVirtualContributorsInSpaceL0LazyQuery();
+  const [fetchAvailableVirtualContributorsInSpace] = useAvailableVirtualContributorsInSpaceLazyQuery();
   const findAvailableVirtualContributors = async (filter: string | undefined) => {
-    // Get from Account on SpaceL0
+    // Get from Account on Space
     if (level === SpaceLevel.L0) {
       const { data, refetch } = await fetchAvailableVirtualContributorsInSpaceAccount({
         variables: {
-          spaceId: spaceL0Id!,
+          spaceId: spaceId!,
         },
       });
       // data?.lookup?.space?.account.virtualContributors is always an array
@@ -106,18 +106,18 @@ const useVirtualContributorsAdmin = ({
     }
 
     // Get from L0 space for subspaces
-    const { data, refetch } = await fetchAvailableVirtualContributorsInSpaceL0({
+    const { data, refetch } = await fetchAvailableVirtualContributorsInSpace({
       variables: {
-        spaceId: spaceL0Id!,
+        spaceId: spaceId!,
       },
     });
     // TODO: when move over to paginated handling of VCs fully then this can be removed
     // For now convert to the mockPaginatedResponse. Note: the filtering is done on the server to remove
     // VCs from the list that are already a member.
-    const virtualContributorsPaginated =
-      data?.lookup?.space?.community.roleSet.availableVirtualContributorsForEntryRole;
-    const virtualContributors = virtualContributorsPaginated?.virtualContributors ?? [];
-    return mockPaginatedResponse(virtualContributors, refetch);
+    const virtualContributors =
+      data?.lookup?.space?.community.roleSet.availableVirtualContributorsForEntryRole?.virtualContributors ?? [];
+    const filteredVCs = virtualContributors.filter(vc => filterByName(vc, filter) && filterExistingVcs(vc));
+    return mockPaginatedResponse(filteredVCs, refetch);
   };
 
   const getAvailableVirtualContributors = async (filter: string | undefined) => {
