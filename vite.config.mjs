@@ -40,15 +40,16 @@ export default defineConfig({
       name: 'no-cache-index',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
-          // Check if this is an HTML request (SPA route) that will serve index.html
-          const isHtmlRoute = req.url && (
+          // Check if this is an HTML request (SPA route) that will serve index.html or meta.json
+          const isNoCacheRoute = req.url && ( // Renamed variable here
             req.url === '/' ||
             req.url === '/index.html' ||
             req.url?.endsWith('/index.html') ||
+            req.url === '/meta.json' ||
             (!req.url.includes('.') && !req.url.startsWith('/api/') && !req.url.startsWith('/@'))
           );
 
-          if (isHtmlRoute) {
+          if (isNoCacheRoute) { // Renamed variable here
             // Intercept the response to remove caching headers
             const originalSend = res.send;
             const originalEnd = res.end;
