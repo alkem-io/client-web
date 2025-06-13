@@ -2,7 +2,12 @@
 const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
+  CHECK_VERSION: 'CHECK_VERSION',
 };
+const VERSION_CHECK_INTERVAL = 30 * 1000; // 30 sec
+
+// intervalId holds the ID returned by setInterval (number in browser)
+let intervalId: ReturnType<typeof setInterval> | null = null;
 
 type Config =
   | {
@@ -81,19 +86,45 @@ export function cleanupVersionUpdateListeners() {
 
 // sends the current client version to the service worker
 export function syncClientVersion(version: string) {
-  if ('serviceWorker' in navigator && version) {
-    navigator.serviceWorker.ready.then(reg => {
-      reg.active?.postMessage({
-        type: EventTypes.CLIENT_VERSION,
+  if (!('serviceWorker' in navigator)) {
+    console.warn('[SW] Service workers are not supported.');
+    return;
+  }
+
+  if (!version) return;
+
+  function startVersionCheckInterval(worker: ServiceWorker | null) {
+    if (intervalId || !worker) return;
+
+    intervalId = setInterval(() => {
+      worker.postMessage({
+        type: EventTypes.CHECK_VERSION,
         version,
       });
+    }, VERSION_CHECK_INTERVAL);
+  }
+
+  function sendClientVersion(worker: ServiceWorker | null, context: string) {
+    if (!worker) {
+      console.warn(`[SW] No worker available during ${context}`);
+      return;
+    }
+
+    worker.postMessage({
+      type: EventTypes.CLIENT_VERSION,
+      version,
     });
 
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      navigator.serviceWorker.controller?.postMessage({
-        type: EventTypes.CLIENT_VERSION,
-        version,
-      });
-    });
+    startVersionCheckInterval(worker);
   }
+
+  navigator.serviceWorker.ready.then(reg => {
+    sendClientVersion(reg.active, 'ready');
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    setTimeout(() => {
+      sendClientVersion(navigator.serviceWorker.controller, 'controllerchange');
+    }, 0);
+  });
 }
