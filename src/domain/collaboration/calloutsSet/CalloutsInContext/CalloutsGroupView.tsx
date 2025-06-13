@@ -5,6 +5,7 @@ import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
@@ -24,24 +25,15 @@ const CalloutsGroupView = ({
   disablePostResponses,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
-  const {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
-    handleCreateCallout,
-    loading,
-  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
-
-  const handleCreate = () => {
-    handleCreateCalloutOpened();
-  };
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
+  const { handleCreateCallout, loading } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const columns = useColumns();
 
   const { t } = useTranslation();
 
   const createButton = (
-    <AddContentButton onClick={handleCreate}>
+    <AddContentButton onClick={() => setIsCalloutCreationDialogOpen(true)}>
       {columns > 4 ? t('callout.createFull') : t('common.add')}
     </AddContentButton>
   );
@@ -57,7 +49,7 @@ const CalloutsGroupView = ({
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
+        onClose={() => setIsCalloutCreationDialogOpen(false)}
         onCreateCallout={handleCreateCallout}
         loading={loading}
         flowState={createInFlowState}
