@@ -9,6 +9,7 @@ const EventTypes = {
 
 // holding the current client version
 let currentVersion = null;
+let versionCheckTimer = null;
 
 function isMajorOrMinorChanged(oldV, newV) {
   if (!oldV || !newV) return false;
@@ -52,9 +53,6 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   console.log('[SW] Activated');
   self.clients.claim();
-
-  // Start version check only after activation
-  setInterval(checkVersion, VERSION_CHECK_INTERVAL);
 });
 
 self.addEventListener('message', event => {
@@ -62,6 +60,10 @@ self.addEventListener('message', event => {
     currentVersion = event.data.version;
     console.log('[SW] Received client version:', currentVersion);
     checkVersion();
+
+    if (!versionCheckTimer) {
+      versionCheckTimer = setInterval(checkVersion, VERSION_CHECK_INTERVAL);
+    }
   }
 });
 
