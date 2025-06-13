@@ -1,14 +1,15 @@
-const VERSION_CHECK_INTERVAL = 30 * 1000; // 30 sec
 const VERSION_URL = '/meta.json';
 
 // in sync with serviceWorker.ts
 const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
+  CHECK_VERSION: 'CHECK_VERSION',
 };
 
 // holding the current client version
 let currentVersion = null;
+let versionCheckTimer = null;
 
 function isMajorOrMinorChanged(oldV, newV) {
   if (!oldV || !newV) return false;
@@ -31,7 +32,7 @@ async function checkVersion() {
   }
 
   try {
-    const response = await fetch(VERSION_URL, { cache: 'no-store' });
+    const response = await fetch(`${VERSION_URL}?${Date.now()}`, { cache: 'no-store' });
     const data = await response.json();
     const newVersion = data.version;
 
@@ -52,15 +53,18 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   console.log('[SW] Activated');
   self.clients.claim();
-
-  // Start version check only after activation
-  setInterval(checkVersion, VERSION_CHECK_INTERVAL);
 });
 
 self.addEventListener('message', event => {
   if (event.data?.type === EventTypes.CLIENT_VERSION) {
     currentVersion = event.data.version;
-    console.log('[SW] Received client version:', currentVersion);
+    console.log('[SW] CLIENT_VERSION: ', currentVersion);
+    checkVersion();
+  }
+
+  if (event.data?.type === EventTypes.CHECK_VERSION) {
+    currentVersion = event.data.version;
+    console.log('[SW] CHECK_VERSION: ', currentVersion);
     checkVersion();
   }
 });
