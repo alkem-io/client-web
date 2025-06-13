@@ -64,6 +64,7 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
   loading: boolean;
   updating: boolean;
+  refetchRoleSetAssignment: () => Promise<unknown>;
 }
 
 type useRoleSetManagerParams = {
@@ -113,7 +114,11 @@ const useRoleSetManager = ({
     }
   }
 
-  const { data: roleSetData, loading: loadingRoleSetData } = useRoleSetRoleAssignmentQuery({
+  const {
+    data: roleSetData,
+    loading: loadingRoleSetData,
+    refetch: refetchRoleSetAssignment,
+  } = useRoleSetRoleAssignmentQuery({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
@@ -208,7 +213,7 @@ const useRoleSetManager = ({
       virtualContributorsByRole,
       rolesDefinitions: fetchRoleDefinitions ? rolesDefinitions : undefined,
     };
-  }, [roleSetData?.lookup]);
+  }, [roleSetData?.lookup.roleSet]);
 
   // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
   const onMutationCall =
@@ -252,6 +257,7 @@ const useRoleSetManager = ({
     removeRoleFromOrganization: onMutationCall(removeRoleFromOrganization),
     removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
+    refetchRoleSetAssignment,
   };
 };
 

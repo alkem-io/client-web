@@ -6,7 +6,7 @@ import PostTemplateCard from './PostTemplateCard';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
-import CollaborationTemplateCard from './CollaborationTemplateCard';
+import SpaceTemplateCard from './SpaceTemplateCard';
 
 export interface TemplateCardProps extends AnyTemplateWithInnovationPack, ContributeCardProps {
   loading?: boolean;
@@ -14,8 +14,8 @@ export interface TemplateCardProps extends AnyTemplateWithInnovationPack, Contri
 
 const TemplateCard: FC<TemplateCardProps> = ({ template, ...rest }) => {
   switch (template.type) {
-    case TemplateType.Collaboration:
-      return <CollaborationTemplateCard template={template} {...rest} />;
+    case TemplateType.Space:
+      return <SpaceTemplateCard template={template} {...rest} />;
     case TemplateType.Callout:
       return <CalloutTemplateCard template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:

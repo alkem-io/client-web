@@ -2,7 +2,7 @@ query TemplateContent(
   $templateId: UUID!
   $includeCallout: Boolean = false
   $includeCommunityGuidelines: Boolean = false
-  $includeCollaboration: Boolean = false
+  $includeSpace: Boolean = false
   $includePost: Boolean = false
   $includeWhiteboard: Boolean = false
 ) {
@@ -28,18 +28,27 @@ query TemplateContent(
       whiteboard @include(if: $includeWhiteboard) {
         ...WhiteboardTemplateContent
       }
-      collaboration @include(if: $includeCollaboration) {
-        ...CollaborationTemplateContent
+      contentSpace @include(if: $includeSpace) {
+        ...SpaceTemplateContent
       }
     }
   }
 }
 
-# Used temporarily to preview any collaboration before turning it into a template
-query CollaborationTemplateContent($collaborationId: UUID!) {
+# Used to preview any Space before turning it into a template, retrieves the pieces of the Space that make a Space template
+query SpaceTemplateContent($spaceId: UUID!) {
   lookup {
-    collaboration(ID: $collaborationId) {
-      ...CollaborationTemplateContent
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...SpaceTemplateContent_Collaboration
+      }
+      about {
+        ...SpaceTemplateContent_About
+      }
+      settings {
+        ...SpaceTemplateContent_Settings
+      }
     }
   }
 }
@@ -95,7 +104,20 @@ fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
   }
 }
 
-fragment CollaborationTemplateContent on Collaboration {
+fragment SpaceTemplateContent on TemplateContentSpace {
+  id
+  collaboration {
+    ...SpaceTemplateContent_Collaboration
+  }
+  about {
+    ...SpaceTemplateContent_About
+  }
+  settings {
+    ...SpaceTemplateContent_Settings
+  }
+}
+
+fragment SpaceTemplateContent_Collaboration on Collaboration {
   id
   innovationFlow {
     id
@@ -133,6 +155,34 @@ fragment CollaborationTemplateContent on Collaboration {
       }
       sortOrder
     }
+  }
+}
+
+fragment SpaceTemplateContent_About on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    description
+    url
+  }
+}
+
+fragment SpaceTemplateContent_Settings on SpaceSettings {
+  privacy {
+    mode
+    allowPlatformSupportAsAdmin
+  }
+  membership {
+    policy
+    allowSubspaceAdminsToInviteMembers
+    trustedOrganizations
+  }
+  collaboration {
+    allowMembersToCreateCallouts
+    allowMembersToCreateSubspaces
+    inheritMembershipRights
+    allowEventsFromSubspaces
   }
 }
 

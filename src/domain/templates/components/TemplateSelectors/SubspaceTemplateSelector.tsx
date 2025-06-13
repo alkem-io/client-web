@@ -1,8 +1,8 @@
-import { Box, Button, Skeleton } from '@mui/material';
+import { Box, Button, Chip, Skeleton } from '@mui/material';
 import { useField } from 'formik';
-import { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BlockSectionTitle, Text } from '@/core/ui/typography';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
@@ -34,26 +34,43 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     skip: !spaceId,
   });
 
-  const templateName = useMemo(() => {
-    const selectedTemplate = templateData?.lookup.template?.profile.displayName;
+  const defaultTemplateName = useMemo(() => {
     const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
       templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
     )?.template?.profile.displayName;
-    const defaultPlatformTemplate = t(`context.${SpaceLevel.L1}.template.defaultTemplate`);
-    return selectedTemplate ?? defaultSpaceTemplate ?? defaultPlatformTemplate;
-  }, [templateId, templateData, defaultSpaceTemplatesData, t]);
+
+    return defaultSpaceTemplate ?? t(`context.${SpaceLevel.L1}.template.defaultTemplate`);
+  }, [defaultSpaceTemplatesData, t]);
+
+  const templateName = useMemo(() => {
+    return templateData?.lookup.template?.profile.displayName ?? defaultTemplateName;
+  }, [templateData, defaultTemplateName, t]);
 
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
     helpers.setValue(templateId);
     setDialogOpen(false);
   };
 
+  const handleRemoveTemplate = (): void => {
+    helpers.setValue('');
+  };
+
   const loading = loadingSpace || loadingTemplate || loadingSpaceTemplate;
 
   return (
     <Gutters row alignItems="center" {...rest}>
-      <BlockSectionTitle>{t(`context.${SpaceLevel.L1}.template.title`)}</BlockSectionTitle>
-      {loading ? <Skeleton width="100%" /> : <Text>{templateName}</Text>}
+      {loading && <Skeleton width="100%" />}
+      {!loading && templateName !== defaultTemplateName && (
+        <>
+          <BlockSectionTitle>{t(`context.${SpaceLevel.L1}.template.title`)}</BlockSectionTitle>
+          <Chip
+            variant="filled"
+            color="primary"
+            label={<Caption variant="button">{templateName}</Caption>}
+            onDelete={handleRemoveTemplate}
+          />
+        </>
+      )}
       <Box sx={{ marginLeft: 'auto' }}>
         <Button
           onClick={() => setDialogOpen(true)}
@@ -64,7 +81,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
           {t('buttons.change-template')}
         </Button>
         <ImportTemplatesDialog
-          templateType={TemplateType.Collaboration}
+          templateType={TemplateType.Space}
           actionButton={
             <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
               {t('buttons.use')}

@@ -5,14 +5,14 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Skeleton } from '@mui/material';
 
-interface PostTemplatePreviewProps {
+interface TemplateContentPostPreviewProps {
   loading?: boolean;
   template?: {
     postDefaultDescription?: string;
   };
 }
 
-const PostTemplatePreview: FC<PostTemplatePreviewProps> = ({ template, loading }) => {
+const TemplateContentPostPreview: FC<TemplateContentPostPreviewProps> = ({ template, loading }) => {
   const { t } = useTranslation();
 
   return (
@@ -26,4 +26,4 @@ const PostTemplatePreview: FC<PostTemplatePreviewProps> = ({ template, loading }
   );
 };
 
-export default PostTemplatePreview;
+export default TemplateContentPostPreview;
