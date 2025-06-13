@@ -31,7 +31,7 @@ async function checkVersion() {
   }
 
   try {
-    const response = await fetch(VERSION_URL, { cache: 'no-store' });
+    const response = await fetch(`${VERSION_URL}?${Date.now()}`, { cache: 'no-store' });
     const data = await response.json();
     const newVersion = data.version;
 
