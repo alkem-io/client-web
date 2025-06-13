@@ -1,10 +1,10 @@
-const VERSION_CHECK_INTERVAL = 30 * 1000; // 30 sec
 const VERSION_URL = '/meta.json';
 
 // in sync with serviceWorker.ts
 const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
+  CHECK_VERSION: 'CHECK_VERSION',
 };
 
 // holding the current client version
@@ -58,12 +58,14 @@ self.addEventListener('activate', event => {
 self.addEventListener('message', event => {
   if (event.data?.type === EventTypes.CLIENT_VERSION) {
     currentVersion = event.data.version;
-    console.log('[SW] Received client version:', currentVersion);
+    console.log('[SW] CLIENT_VERSION: ', currentVersion);
     checkVersion();
+  }
 
-    if (!versionCheckTimer) {
-      versionCheckTimer = setInterval(checkVersion, VERSION_CHECK_INTERVAL);
-    }
+  if (event.data?.type === EventTypes.CHECK_VERSION) {
+    currentVersion = event.data.version;
+    console.log('[SW] CHECK_VERSION: ', currentVersion);
+    checkVersion();
   }
 });
 
