@@ -244,7 +244,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                           />
 
                           <TagsetSegment
-                            fieldName="profile.tagsets"
+                            name="profile.tagsets"
                             tagsets={tagsets}
                             readOnly={isReadOnlyMode}
                             disabled={isSubmitting}

@@ -26,6 +26,7 @@ import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/Tags
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 type VirtualContributorProps = {
   id: string;
@@ -189,7 +190,7 @@ export const VirtualContributorForm = ({
                       <ProfileSegment />
                       {keywordsTagsetWrapped ? (
                         <TagsetSegment
-                          fieldName="profile.tagsets"
+                          name={nameOf<VirtualContributorFormValues>('profile.tagsets')}
                           tagsets={keywordsTagsetWrapped}
                           title={t('common.tags')}
                         />

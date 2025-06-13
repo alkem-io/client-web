@@ -6,7 +6,7 @@ import TagsInput from '@/core/ui/forms/tagsInput/TagsInput';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface TagsSegmentProps {
-  fieldName?: string;
+  name?: string;
   tagsets: TagsetModel[];
   readOnly?: boolean;
   disabled?: boolean;
@@ -22,7 +22,7 @@ export const tagsetSegmentValidationObject = yup.object().shape({
 export const tagsetsSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
 export const TagsetSegment: FC<TagsSegmentProps> = ({
-  fieldName = 'tagsets',
+  name = 'tagsets',
   tagsets,
   readOnly = false,
   disabled,
@@ -31,12 +31,12 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
   loading,
 }) => {
   return (
-    <FieldArray name={fieldName}>
+    <FieldArray name={name}>
       {() =>
         tagsets.map((tagSet, index) => (
           <TagsetField
             key={index}
-            name={`${fieldName}[${index}].tags`}
+            name={`${name}[${index}].tags`}
             title={toTagsetTitle(tagSet, title)}
             readOnly={readOnly}
             disabled={disabled}
