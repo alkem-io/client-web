@@ -71,7 +71,7 @@ export const SubspacePageLayout = () => {
       }}
       onClick={handleCreateCalloutOpened}
     >
-      {t('common.collaborationTool')}
+      {t('common.post')}
     </Button>
   );
 
