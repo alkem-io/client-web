@@ -88,7 +88,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     values: TemplateSpaceFormSubmittedValues,
     { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
   ) => {
-    if (!template?.spaceId && !values.spaceId) {
+    if (!template?.spaceId && !values.spaceId && !template?.contentSpace?.id) {
       notify(t('pages.admin.generic.sections.templates.validation.spaceRequired'), 'error');
       return Promise.reject();
     }
