@@ -715,7 +715,8 @@
   "callout": {
     "create": {
       "createButton": "$t(common.post)",
-      "createButtonTooltip": "Add $t(common.post)"
+      "createButtonTooltip": "Add $t(common.post)",
+      "dialogTitle": "Add $t(common.post)"
     },
     "accessForbidden": {
       "title": "Content not available",

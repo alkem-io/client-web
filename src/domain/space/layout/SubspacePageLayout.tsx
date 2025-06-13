@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Outlet } from 'react-router-dom';
@@ -17,7 +17,7 @@ import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/call
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '../hooks/useSubSpace';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
@@ -31,6 +31,8 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import CreateCalloutDialog from '@/domain/collaboration/new-callout/CreateCallout/CreateCalloutDialog';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
@@ -51,9 +53,9 @@ export const SubspacePageLayout = () => {
   const collaborationId = collaboration?.id;
 
   const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
-  const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
 
@@ -69,7 +71,7 @@ export const SubspacePageLayout = () => {
         borderColor: 'divider',
         textWrap: 'nowrap',
       }}
-      onClick={handleCreateCalloutOpened}
+      onClick={() => setIsCalloutCreationDialogOpen(true)}
     >
       {t('common.post')}
     </Button>
@@ -167,10 +169,16 @@ export const SubspacePageLayout = () => {
 
           <CalloutCreationDialog
             open={isCalloutCreationDialogOpen}
-            onClose={handleCreateCalloutClosed}
+            onClose={() => setIsCalloutCreationDialogOpen(false)}
             onCreateCallout={handleCreateCallout}
             loading={loading}
             flowState={selectedInnovationFlowState}
+          />
+          <CreateCalloutDialog
+            open={isCalloutCreationDialogOpen}
+            onClose={() => setIsCalloutCreationDialogOpen(false)}
+            calloutsSetId={calloutsSetId}
+            classificationTagsets={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
           />
         </PageContentColumnBase>
       </PageContent>

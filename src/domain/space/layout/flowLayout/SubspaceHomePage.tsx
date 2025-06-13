@@ -10,7 +10,7 @@ import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInCont
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import CreateSubspace from '../../components/subspaces/SubspaceCreationDialog/CreateSubspace';
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
