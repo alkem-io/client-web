@@ -16,7 +16,7 @@ import {
 import { useCallback, useMemo } from 'react';
 import { cloneDeep } from 'lodash';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
-import { ClassificationTagsetModel } from '../ClassificationTagset.model';
+import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 

@@ -1,11 +1,10 @@
+import { useState } from 'react';
 import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
-import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
@@ -25,16 +24,16 @@ const CalloutsGroupView = ({
   disablePostResponses,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
+  const { t } = useTranslation();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
   const { handleCreateCallout, loading } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
-  const columns = useColumns();
-
-  const { t } = useTranslation();
-
   const createButton = (
-    <AddContentButton onClick={() => setIsCalloutCreationDialogOpen(true)}>
-      {columns > 4 ? t('callout.createFull') : t('common.add')}
+    <AddContentButton
+      onClick={() => setIsCalloutCreationDialogOpen(true)}
+      title={t('callout.create.createButtonTooltip')}
+    >
+      {t('callout.create.createButton')}
     </AddContentButton>
   );
 
