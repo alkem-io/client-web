@@ -9,7 +9,7 @@ import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentCont
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import { UiNode } from '@ory/kratos-client';
+import { UiNode, UiText, UiNodeInputAttributes } from '@ory/kratos-client'; // Added UiNodeInputAttributes
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
 import { isInputNode } from '../components/Kratos/helpers';
@@ -55,12 +55,36 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
     }
   };
 
-  if (
-    registrationFlow?.ui.messages?.some(
-      message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID || message.id === MESSAGE_CODE_EMAIL_CLAIM_MISSING
-    )
-  ) {
-    const state: LocationStateWithKratosErrors = { kratosErrors: registrationFlow?.ui.messages };
+  // Collect all messages from all nodes in the UI
+  const allMessagesFromNodes =
+    registrationFlow?.ui?.nodes?.reduce((messages, node) => {
+      if (node.messages) {
+        messages.push(...node.messages);
+      }
+      return messages;
+    }, [] as UiText[]) || [];
+
+  const hasAccountExistError = allMessagesFromNodes.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID);
+
+  const hasEmailClaimMissingError = allMessagesFromNodes.some(
+    message => message.id === MESSAGE_CODE_EMAIL_CLAIM_MISSING
+  );
+
+  const isViduaOidcFlow =
+    registrationFlow?.active === 'oidc' &&
+    registrationFlow?.ui?.nodes?.some(
+      node =>
+        node.group === 'oidc' &&
+        node.type === 'input' && // Ensure it's an input node for provider
+        (node.attributes as UiNodeInputAttributes).name === 'provider' &&
+        (node.attributes as UiNodeInputAttributes).value === 'vidua'
+    );
+
+  // If an account with this identifier already exists (4000007), or
+  // if the Vidua email is not verified (4000002) during a Vidua OIDC flow,
+  // navigate to the login page.
+  if (hasAccountExistError || (hasEmailClaimMissingError && isViduaOidcFlow)) {
+    const state: LocationStateWithKratosErrors = { kratosErrors: allMessagesFromNodes };
     return <Navigate to={_AUTH_LOGIN_PATH} state={state} replace />;
   }
 
