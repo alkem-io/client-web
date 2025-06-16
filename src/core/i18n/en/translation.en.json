@@ -1452,6 +1452,7 @@
     },
     "referenceSegment": {
       "title": "References",
+      "addReference": "Add Reference",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
       "missing-references": "No references yet",
       "tooltips": {

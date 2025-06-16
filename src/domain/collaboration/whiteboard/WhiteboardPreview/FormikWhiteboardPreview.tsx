@@ -1,6 +1,6 @@
 import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
-import { MouseEventHandler, useMemo, useState } from 'react';
+import { MouseEventHandler, useMemo, useState, forwardRef, useImperativeHandle } from 'react';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,12 @@ import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPre
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+
+export interface FormikWhiteboardPreviewRef {
+  openEditDialog: () => void;
+  closeEditDialog: () => void;
+  setEditDialogOpen: (open: boolean) => void;
+}
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
@@ -28,7 +34,7 @@ const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
   zIndex: 10,
 }));
 
-const FormikWhiteboardPreview = ({
+const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhiteboardPreviewProps>(({
   name = 'content',
   previewImagesName,
   canEdit,
@@ -36,7 +42,7 @@ const FormikWhiteboardPreview = ({
   loading,
   dialogProps,
   ...containerProps
-}: FormikWhiteboardPreviewProps) => {
+}: FormikWhiteboardPreviewProps, ref) => {
   const { t } = useTranslation();
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
@@ -47,6 +53,12 @@ const FormikWhiteboardPreview = ({
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { fullscreen, setFullscreen } = useFullscreen();
+
+  useImperativeHandle(ref, () => ({
+    openEditDialog: () => setEditDialogOpen(true),
+    closeEditDialog: () => setEditDialogOpen(false),
+    setEditDialogOpen, // expose the setter if needed
+  }), []);
 
   const handleClickEditButton = () => {
     setEditDialogOpen(true);
@@ -144,6 +156,6 @@ const FormikWhiteboardPreview = ({
       )}
     </Box>
   );
-};
+});
 
 export default FormikWhiteboardPreview;

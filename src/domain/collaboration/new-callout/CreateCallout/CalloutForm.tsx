@@ -30,18 +30,22 @@ import { Box } from '@mui/material';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { nameOf } from '@/core/utils/nameOf';
+import CalloutFormAdditionalContent from './CalloutFormAdditionalContent';
+import { WhiteboardPreviewImage } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
-interface CalloutFormSubmittedValues {
-  profile: {
-    displayName: string;
-    description: string;
-    tagsets: TagsetModel[];
-    references: ReferenceModel[];
+export interface CalloutFormSubmittedValues {
+  framing: {
+    profile: {
+      displayName: string;
+      description: string;
+      tagsets: TagsetModel[];
+      references: ReferenceModel[];
+    };
+    whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
   /*opened: boolean;
   postDescription?: string;
   whiteboardContent?: string;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   */
 };
 
@@ -72,11 +76,14 @@ const CalloutForm = ({
 
   const initialValues: CalloutFormSubmittedValues = useMemo(
     () => ({
-      profile: {
-        displayName: callout?.profile.displayName ?? '',
-        description: callout?.profile.description ?? '',
-        tagsets: callout?.profile.tagsets ?? [EmptyTagset],
-        references: callout?.profile.references ?? [],
+      framing: {
+        profile: {
+          displayName: callout?.framing.profile.displayName ?? '',
+          description: callout?.framing.profile.description ?? '',
+          tagsets: callout?.framing.profile.tagsets ?? [EmptyTagset],
+          references: callout?.framing.profile.references ?? [],
+        },
+        whiteboard: callout?.framing.whiteboard,
       },
       /*
       opened: !disablePostResponses && (callout?.state ?? CalloutState.Open) === CalloutState.Open,
@@ -130,32 +137,31 @@ const CalloutForm = ({
             <FormikEffect onStatusChange={onStatusChanged} />
             <Box display="flex" gap={gutters()} flexDirection={isSmallScreen ? 'column' : 'row'}>
               <FormikInputField
-                name={nameOf<CalloutFormSubmittedValues>('profile.displayName')}
+                name={nameOf<CalloutFormSubmittedValues>('framing.profile.displayName')}
                 title={t('common.title')}
                 containerProps={{ sx: { flex: 1 } }}
               />
               <Box sx={isSmallScreen ? undefined : { width: '30%', minWidth: gutters(10) }}>
                 <TagsetSegment
-                  name={nameOf<CalloutFormSubmittedValues>('profile.displayName')}
-                  tagsets={formikState.values.profile.tagsets}
+                  name={nameOf<CalloutFormSubmittedValues>('framing.profile.tagsets')}
                   title={t('common.tags')}
                   helpText={t('components.post-creation.info-step.tags-help-text')}
                 />
               </Box>
-              <FormikMarkdownField
+            </Box>
+            <FormikMarkdownField
                 name="description"
                 title={t('components.callout-creation.info-step.description')}
                 rows={7}
                 maxLength={MARKDOWN_TEXT_LENGTH}
                 temporaryLocation={!Boolean(callout?.id)}
                 hideImageOptions={disableRichMedia}
-              />
-            </Box>
-            <CalloutWhiteboardField name="whiteboard" />
+            />
+            <CalloutFormAdditionalContent />
             <ReferenceSegment
+              fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
               compactMode
-              references={formikState.values.profile.references}
-              marginTop={gutters(-1)}
+              references={formikState.values.framing.profile.references}
               temporaryLocation={temporaryLocation}
             />
             <PostTemplateSelector name="postDescription" />

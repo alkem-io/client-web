@@ -109,19 +109,17 @@ export const ReferenceSegment = ({
       {({ push, remove }) => (
         <Gutters disablePadding {...props}>
           <Box display="flex" alignItems="center">
-            <BlockSectionTitle>{t('components.referenceSegment.title')}</BlockSectionTitle>
-            <Tooltip title={t('components.referenceSegment.tooltips.add-reference')} placement={'bottom'}>
-              <IconButton
-                aria-label={t('callout.link-collection.add-another')}
-                onClick={() => {
-                  handleAdd(push);
-                }}
-                color="primary"
-                disabled={disabled || adding}
-              >
-                <AddIcon />
-              </IconButton>
-            </Tooltip>
+            <IconButton
+              aria-label={t('components.referenceSegment.addReference')}
+              onClick={() => {
+                handleAdd(push);
+              }}
+              color="primary"
+              disabled={disabled || adding}
+            >
+              <AddIcon />
+            </IconButton>
+            <BlockSectionTitle>{t('components.referenceSegment.addReference')}</BlockSectionTitle>
           </Box>
           {!compactMode && references?.length === 0 ? (
             <Caption>{t('components.referenceSegment.missing-references')}</Caption>
