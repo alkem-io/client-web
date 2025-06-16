@@ -18,7 +18,7 @@ import { AuthFormHeader } from '../components/AuthFormHeader';
 
 // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
 
-const MESSAGE_CODE_EMAIL_CLAIM_MISSING = 4000002;
+const MESSAGE_CODE_CLAIM_MISSING = 4000002;
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
   return typeof flowId === 'string' && sessionStorage.getItem(`kratosFlow:${flowId}:hasAcceptedTerms`) === 'true';
@@ -55,20 +55,17 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
     }
   };
 
-  // Collect all messages from all nodes in the UI
-  const allMessagesFromNodes =
-    registrationFlow?.ui?.nodes?.reduce((messages, node) => {
+  // Find the specific "email claim missing" message from all nodes
+  const emailClaimMissingMessageDetails = registrationFlow?.ui?.nodes
+    ?.reduce((acc, node) => {
       if (node.messages) {
-        messages.push(...node.messages);
+        acc.push(...node.messages);
       }
-      return messages;
-    }, [] as UiText[]) || [];
+      return acc;
+    }, [] as UiText[])
+    .find(message => message.id === MESSAGE_CODE_CLAIM_MISSING && message.text === 'Property email is missing.');
 
-  const hasAccountExistError = allMessagesFromNodes.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID);
-
-  const hasEmailClaimMissingError = allMessagesFromNodes.some(
-    message => message.id === MESSAGE_CODE_EMAIL_CLAIM_MISSING
-  );
+  const hasEmailClaimMissingError = !!emailClaimMissingMessageDetails;
 
   const isViduaOidcFlow =
     registrationFlow?.active === 'oidc' &&
@@ -80,11 +77,19 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
         (node.attributes as UiNodeInputAttributes).value === 'vidua'
     );
 
-  // If an account with this identifier already exists (4000007), or
+  // If an account with this identifier already exists (4000007)
+  // navigate to the login page.
+  if (registrationFlow?.ui.messages?.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID)) {
+    const state: LocationStateWithKratosErrors = { kratosErrors: registrationFlow?.ui.messages };
+    return <Navigate to={_AUTH_LOGIN_PATH} state={state} replace />;
+  }
   // if the Vidua email is not verified (4000002) during a Vidua OIDC flow,
   // navigate to the login page.
-  if (hasAccountExistError || (hasEmailClaimMissingError && isViduaOidcFlow)) {
-    const state: LocationStateWithKratosErrors = { kratosErrors: allMessagesFromNodes };
+  if (hasEmailClaimMissingError && isViduaOidcFlow) {
+    // Pass only the specific email claim missing message
+    const state: LocationStateWithKratosErrors = {
+      kratosErrors: emailClaimMissingMessageDetails ? [emailClaimMissingMessageDetails] : [],
+    };
     return <Navigate to={_AUTH_LOGIN_PATH} state={state} replace />;
   }
 
