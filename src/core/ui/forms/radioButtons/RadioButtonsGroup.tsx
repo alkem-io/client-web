@@ -1,6 +1,6 @@
 import Gutters from '@/core/ui/grid/Gutters';
 import { ComponentType, ReactNode } from 'react';
-import { Box, Button, SvgIconProps, Tooltip, TooltipProps } from '@mui/material';
+import { Box, BoxProps, Button, SvgIconProps, Tooltip, TooltipProps } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import SwapColors from '@/core/ui/palette/SwapColors';
 import { gutters } from '@/core/ui/grid/utils';
@@ -13,7 +13,7 @@ export interface RadioButtonOption<Value> {
   disabled?: boolean;
 }
 
-export interface RadioButtonsGroupProps<Value> {
+export interface RadioButtonsGroupProps<Value> extends Omit<BoxProps, 'onChange'> {
   value: Value | undefined;
   options: RadioButtonOption<Value>[];
   onChange?: (value: Value) => void;
@@ -39,6 +39,7 @@ const RadioButtonsGroup = <Value,>({
               onClick={() => onChange?.(optionValue)}
               sx={{
                 flexShrink: 1,
+                flexWrap: 'wrap',
                 textTransform: 'none',
                 '&.Mui-disabled': value === optionValue ? { color: 'primary.main' } : {},
               }}
@@ -51,6 +52,7 @@ const RadioButtonsGroup = <Value,>({
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: value === optionValue ? 'background.paper' : undefined,
+                        border: theme => (value !== optionValue ? `1px solid ${theme.palette.divider}` : undefined),
                         borderRadius: gutters(),
                         width: gutters(2),
                         height: gutters(2),

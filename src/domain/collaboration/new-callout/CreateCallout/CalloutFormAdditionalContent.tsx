@@ -13,13 +13,13 @@ import { CalloutFormSubmittedValues } from './CalloutForm';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 
-interface CalloutFormAdditionalContentProps {
+interface CalloutFormAdditionalContentProps {}
 
-}
-
-const CalloutFormAdditionalContent = ({ }: CalloutFormAdditionalContentProps) => {
+const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => {
   const { t } = useTranslation();
-  const [additionalContent, setAdditionalContent] = useState<CalloutAdditionalContentType>(CalloutAdditionalContentType.None);
+  const [additionalContent, setAdditionalContent] = useState<CalloutAdditionalContentType>(
+    CalloutAdditionalContentType.None
+  );
 
   const [framing, , helpers] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const whiteboardPreviewRef = useRef<FormikWhiteboardPreviewRef>(null);
@@ -31,27 +31,29 @@ const CalloutFormAdditionalContent = ({ }: CalloutFormAdditionalContentProps) =>
     if (newValue === CalloutAdditionalContentType.Whiteboard) {
       const { whiteboard, ...rest } = framing.value;
       helpers.setValue({
-        ...rest, whiteboard: {
+        ...rest,
+        whiteboard: {
           content: EmptyWhiteboardString,
           profile: {
             displayName: t('common.whiteboard'),
           },
           previewImages: undefined,
-        }
+        },
       });
     } else {
       const { whiteboard, ...rest } = framing.value;
-      helpers.setValue({ ...rest, whiteboard: undefined })
+      helpers.setValue({ ...rest, whiteboard: undefined });
     }
-  }
+  };
 
   // Open the dialog when the whiteboard is set and the option is selected
   useEffect(() => {
     if (
+      whiteboardPreviewRef.current &&
       additionalContent === CalloutAdditionalContentType.Whiteboard &&
       framing.value.whiteboard &&
-      framing.value.whiteboard.content === EmptyWhiteboardString &&
-      whiteboardPreviewRef.current
+      // Only open the dialog if the whiteboard content is empty, to avoid opening it when editing a template
+      framing.value.whiteboard.content === EmptyWhiteboardString
     ) {
       whiteboardPreviewRef.current.openEditDialog();
     }
@@ -59,39 +61,44 @@ const CalloutFormAdditionalContent = ({ }: CalloutFormAdditionalContentProps) =>
 
   return (
     <>
-      <PageContentBlock sx={{marginTop: gutters(-1)}}>
+      <PageContentBlock sx={{ marginTop: gutters(-1) }}>
         <PageContentBlockHeader
-          title="Additional Content"
+          title={t('callout.create.additionalContent.title')}
           actions={
-            <RadioButtonsGroup options={[
-              {
-                icon: BlockIcon,
-                value: CalloutAdditionalContentType.None,
-                label: 'None',
-                tooltip: 'No additional content',
-              },
-              {
-                icon: WhiteboardIcon,
-                value: CalloutAdditionalContentType.Whiteboard,
-                label: 'Whiteboard',
-                tooltip: 'Add a whiteboard to the callout',
-              },
-            ]} value={additionalContent}
+            <RadioButtonsGroup
+              options={[
+                {
+                  icon: BlockIcon,
+                  value: CalloutAdditionalContentType.None,
+                  label: t('callout.create.additionalContent.none.title'),
+                  tooltip: t('callout.create.additionalContent.none.tooltip'),
+                },
+                {
+                  icon: WhiteboardIcon,
+                  value: CalloutAdditionalContentType.Whiteboard,
+                  label: t('callout.create.additionalContent.whiteboard.title'),
+                  tooltip: t('callout.create.additionalContent.whiteboard.tooltip'),
+                },
+              ]}
+              value={additionalContent}
               onChange={handleAdditionalContentChange}
             />
           }
         />
       </PageContentBlock>
       {framing.value.whiteboard && additionalContent === CalloutAdditionalContentType.Whiteboard && (
-        <FormikWhiteboardPreview
-          ref={whiteboardPreviewRef}
-          name="framing.whiteboard.content"
-          previewImagesName="framing.whiteboard.previewImages"
-          canEdit
-          onChangeContent={() => whiteboardPreviewRef.current?.closeEditDialog()}
-          maxHeight={gutters(12)}
-          dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
-        />
+        <PageContentBlock disablePadding>
+          <FormikWhiteboardPreview
+            ref={whiteboardPreviewRef}
+            name="framing.whiteboard.content"
+            previewImagesName="framing.whiteboard.previewImages"
+            canEdit
+            onChangeContent={() => whiteboardPreviewRef.current?.closeEditDialog()}
+            onDeleteContent={() => handleAdditionalContentChange(CalloutAdditionalContentType.None)}
+            maxHeight={gutters(12)}
+            dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+          />
+        </PageContentBlock>
       )}
     </>
   );

@@ -1,37 +1,26 @@
-import { useMemo } from 'react';
-import { Formik, FormikConfig } from 'formik';
-import { CalloutState, CalloutType, TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import { ProfileReferenceSegment } from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { Caption } from '@/core/ui/typography';
-import CalloutWhiteboardField, {
-  WhiteboardFieldSubmittedValues,
-  WhiteboardFieldSubmittedValuesWithPreviewImages,
-} from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
-import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { Box } from '@mui/material';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import { nameOf } from '@/core/utils/nameOf';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { Box } from '@mui/material';
+import { Formik, FormikConfig } from 'formik';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import CalloutFormAdditionalContent from './CalloutFormAdditionalContent';
-import { WhiteboardPreviewImage } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import CalloutFormResponseOptions from './CalloutFormResponseOptions';
 
 export interface CalloutFormSubmittedValues {
   framing: {
@@ -47,7 +36,7 @@ export interface CalloutFormSubmittedValues {
   postDescription?: string;
   whiteboardContent?: string;
   */
-};
+}
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
 
@@ -65,7 +54,7 @@ const CalloutForm = ({
   callout,
   onStatusChanged,
   children,
-  disableRichMedia
+  disableRichMedia,
   /*temporaryLocation = false,
   disablePostResponses = false,
   */
@@ -106,7 +95,7 @@ const CalloutForm = ({
     [callout?.id]
   );
 
-  const temporaryLocation = !Boolean(callout?.id);  // Callout doesn't exist yet => enable temporary location
+  const temporaryLocation = !Boolean(callout?.id); // Callout doesn't exist yet => enable temporary location
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
@@ -122,14 +111,13 @@ const CalloutForm = ({
         */
   });
 
-
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       enableReinitialize
       validateOnMount
-      onSubmit={() => { }}
+      onSubmit={() => {}}
     >
       {formikState => (
         <>
@@ -150,12 +138,12 @@ const CalloutForm = ({
               </Box>
             </Box>
             <FormikMarkdownField
-                name="description"
-                title={t('components.callout-creation.info-step.description')}
-                rows={7}
-                maxLength={MARKDOWN_TEXT_LENGTH}
-                temporaryLocation={!Boolean(callout?.id)}
-                hideImageOptions={disableRichMedia}
+              name="description"
+              title={t('components.callout-creation.info-step.description')}
+              rows={7}
+              maxLength={MARKDOWN_TEXT_LENGTH}
+              temporaryLocation={!Boolean(callout?.id)}
+              hideImageOptions={disableRichMedia}
             />
             <CalloutFormAdditionalContent />
             <ReferenceSegment
@@ -164,9 +152,12 @@ const CalloutForm = ({
               references={formikState.values.framing.profile.references}
               temporaryLocation={temporaryLocation}
             />
+            <CalloutFormResponseOptions />
+            {/*
             <PostTemplateSelector name="postDescription" />
             <WhiteboardTemplateSelector name="whiteboardContent" />
             <FormikSwitch name="opened" title={t('callout.state-permission')} />
+             */}
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>

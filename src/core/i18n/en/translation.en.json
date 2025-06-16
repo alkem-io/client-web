@@ -716,7 +716,45 @@
     "create": {
       "createButton": "$t(common.post)",
       "createButtonTooltip": "Add $t(common.post)",
-      "dialogTitle": "Add $t(common.post)"
+      "dialogTitle": "Add $t(common.post)",
+      "additionalContent": {
+        "title": "Additional Content",
+        "none": {
+          "title": "None",
+          "tooltip": "No additional content"
+        },
+        "whiteboard": {
+          "title": "Whiteboard",
+          "tooltip": "Add a whiteboard to this post"
+        }
+      },
+      "responseOptions": {
+        "title": "Response Options",
+        "comments": {
+          "title": "Comments",
+          "enabled": "Comments",
+          "disabled": "No Comments"
+        },
+        "structuredResponses": {
+          "title": "Structured Responses",
+          "none": {
+            "title": "None",
+            "tooltip": "No structured responses"
+          },
+          "links": {
+            "title": "Links & Files",
+            "tooltip": "Add attachments to this post"
+          },
+          "posts": {
+            "title": "Posts",
+            "tooltip": "Enable responding with posts"
+          },
+          "whiteboards": {
+            "title": "Whiteboards",
+            "tooltip": "Enable responding with whiteboards"
+          }
+        }
+      }
     },
     "accessForbidden": {
       "title": "Content not available",
