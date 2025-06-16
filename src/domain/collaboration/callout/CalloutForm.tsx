@@ -210,7 +210,7 @@ const CalloutForm = ({
             )}
             {formConfiguration.tags && (
               <TagsetSegment
-                tagsets={tagsets}
+                name="tagsets"
                 title={t('common.tags')}
                 helpText={t('components.post-creation.info-step.tags-help-text')}
               />

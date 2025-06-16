@@ -1,13 +1,12 @@
 // Helper type: recursively builds all valid property paths as strings
-type PathImpl<T, Key extends keyof T> = Key extends string
-  ? T[Key] extends Record<string, unknown>
-    ? `${Key}` | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof unknown[]>>}`
-    : `${Key}`
+// https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959
+type Paths<T> = T extends object
+  ? { [K in keyof T]: `${Exclude<K, symbol>}${'' | `.${Paths<T[K]>}`}` }[keyof T]
   : never;
 
-type Path<T> = PathImpl<T, keyof T>;
-
-// Usage: nameOf<YourType>('property.subProperty')
-export function nameOf<T>(path: Path<T>): Path<T> {
+// Usage:
+// type YourType = { property: { subProperty: { subSubProperty } } };
+// nameOf<YourType>('property.subProperty.subSubProperty')
+export function nameOf<T extends object>(path: Paths<T>): string {
   return path;
 }

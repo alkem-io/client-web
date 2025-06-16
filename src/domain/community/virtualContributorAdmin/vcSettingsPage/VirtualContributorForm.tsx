@@ -115,12 +115,6 @@ export const VirtualContributorForm = ({
     return result;
   };
 
-  // use keywords tagset (existing after creation of VC) as tags
-  const keywordsTagsetWrapped = useMemo(() => {
-    const tagset = tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase());
-    return tagset && [tagset];
-  }, [tagsets]);
-
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
     const { profile, ...otherData } = values;
     const { displayName, description, tagline, tagsets, references } = profile;
@@ -164,7 +158,7 @@ export const VirtualContributorForm = ({
       >
         {({
           values: {
-            profile: { references },
+            profile: { tagsets, references },
             hostDisplayName,
           },
           handleSubmit,
@@ -188,10 +182,12 @@ export const VirtualContributorForm = ({
                     <Gutters>
                       <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
-                      {keywordsTagsetWrapped ? (
+                      {
+                        // use keywords tagset (existing after creation of VC) as tags
+                      }
+                      {tagsets?.find(tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords) ? (
                         <TagsetSegment
                           name={nameOf<VirtualContributorFormValues>('profile.tagsets')}
-                          tagsets={keywordsTagsetWrapped}
                           title={t('common.tags')}
                         />
                       ) : null}

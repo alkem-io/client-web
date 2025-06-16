@@ -7,7 +7,6 @@ import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 interface TagsSegmentProps {
   name?: string;
-  tagsets: TagsetModel[];
   readOnly?: boolean;
   disabled?: boolean;
   title?: string;
@@ -23,13 +22,15 @@ export const tagsetsSegmentSchema = yup.array().of(tagsetSegmentValidationObject
 
 export const TagsetSegment: FC<TagsSegmentProps> = ({
   name = 'tagsets',
-  tagsets,
   readOnly = false,
   disabled,
   title,
   helpText,
   loading,
 }) => {
+  const [field] = useField(name);
+  const tagsets: TagsetModel[] = field.value;
+
   return (
     <FieldArray name={name}>
       {() =>

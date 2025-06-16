@@ -134,7 +134,6 @@ const PostForm = ({
               hideImageOptions={disableRichMedia}
             />
             <TagsetSegment
-              tagsets={tagsets}
               title={t('common.tags')}
               helpText={t('components.post-creation.info-step.tags-help-text')}
               loading={loading}

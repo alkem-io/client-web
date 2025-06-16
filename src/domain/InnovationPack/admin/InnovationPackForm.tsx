@@ -123,7 +123,7 @@ const InnovationPackForm = ({
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                <TagsetSegment name={nameOf<InnovationPackFormValues>('profile.tagsets')} tagsets={profile.tagsets} />
+                <TagsetSegment name={nameOf<InnovationPackFormValues>('profile.tagsets')} />
                 <ContextReferenceSegment
                   fieldName="profile.references"
                   references={profile.references || []}

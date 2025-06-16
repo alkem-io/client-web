@@ -35,6 +35,7 @@ import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
 import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -208,7 +209,6 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
           }}
         >
           {({ values: { profile }, handleSubmit, isSubmitting }) => {
-            const tagsets = profile.tagsets || [];
             const displayName = profile.displayName || '';
             const visual = getVisualByType(VisualType.Avatar, profile.visuals);
 
@@ -244,8 +244,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                           />
 
                           <TagsetSegment
-                            name="profile.tagsets"
-                            tagsets={tagsets}
+                            name={nameOf<OrganizationFormValues>('profile.tagsets')}
                             readOnly={isReadOnlyMode}
                             disabled={isSubmitting}
                           />

@@ -10,6 +10,7 @@ export interface RadioButtonOption<Value> {
   value: Value;
   label: ReactNode;
   tooltip?: ReactNode;
+  disabled?: boolean;
 }
 
 export interface RadioButtonsGroupProps<Value> {
@@ -29,12 +30,12 @@ const RadioButtonsGroup = <Value,>({
 }: RadioButtonsGroupProps<Value>) => {
   return (
     <Gutters row disablePadding>
-      {options.map(({ value: optionValue, icon: Icon, label, tooltip }) => (
+      {options.map(({ value: optionValue, icon: Icon, label, tooltip, disabled }) => (
         <Tooltip title={tooltip} key={String(optionValue)} {...tooltipProps}>
           <Box>
             <Button
               key={String(optionValue)}
-              disabled={readOnly}
+              disabled={readOnly || disabled}
               onClick={() => onChange?.(optionValue)}
               sx={{
                 flexShrink: 1,

@@ -183,7 +183,7 @@ export const UserForm = ({
         handleSubmit(values).finally(() => setSubmitting(false));
       }}
     >
-      {({ values: { references, tagsets }, handleSubmit, isSubmitting }) => {
+      {({ values: { references }, handleSubmit, isSubmitting }) => {
         return (
           <GridContainer>
             <GridProvider columns={12}>
@@ -253,7 +253,7 @@ export const UserForm = ({
                     disabled={isSubmitting}
                     maxLength={MARKDOWN_TEXT_LENGTH}
                   />
-                  <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+                  <TagsetSegment readOnly={isReadOnlyMode} disabled={isSubmitting} />
 
                   <SocialSegment isNew={editMode === EditMode.new} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 

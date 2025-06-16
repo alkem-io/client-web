@@ -72,7 +72,7 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values: { profile }, errors, handleSubmit }) => {
+      {({ errors, handleSubmit }) => {
         return (
           <Gutters disablePadding>
             <FormikInputField
@@ -98,7 +98,7 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                <TagsetSegment name={nameOf<InnovationHubFormValues>('profile.tagsets')} tagsets={profile.tagsets} />
+                <TagsetSegment name={nameOf<InnovationHubFormValues>('profile.tagsets')} />
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload
                   visual={banner}
