@@ -18,6 +18,7 @@ import { AuthFormHeader } from '../components/AuthFormHeader';
 
 // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
 
+const MESSAGE_CODE_EMAIL_CLAIM_MISSING = 4000002;
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
   return typeof flowId === 'string' && sessionStorage.getItem(`kratosFlow:${flowId}:hasAcceptedTerms`) === 'true';
@@ -54,7 +55,11 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
     }
   };
 
-  if (registrationFlow?.ui.messages?.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID)) {
+  if (
+    registrationFlow?.ui.messages?.some(
+      message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID || message.id === MESSAGE_CODE_EMAIL_CLAIM_MISSING
+    )
+  ) {
     const state: LocationStateWithKratosErrors = { kratosErrors: registrationFlow?.ui.messages };
     return <Navigate to={_AUTH_LOGIN_PATH} state={state} replace />;
   }
