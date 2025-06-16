@@ -1928,6 +1928,9 @@
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Template imported successfully"
+            },
+            "validation": {
+              "spaceRequired": "Select an existing Subspace to proceed."
             }
           },
           "my-profile": {
