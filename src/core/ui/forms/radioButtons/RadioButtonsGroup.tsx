@@ -20,6 +20,7 @@ export interface RadioButtonsGroupProps<Value> extends Omit<BoxProps, 'onChange'
   onChange?: (value: Value) => void;
   readOnly?: boolean;
   tooltipProps?: Partial<TooltipProps>;
+  children?: ReactNode;
 }
 
 const RadioButtonsGroup = <Value,>({
@@ -29,6 +30,7 @@ const RadioButtonsGroup = <Value,>({
   onChange,
   readOnly,
   tooltipProps,
+  children,
 }: RadioButtonsGroupProps<Value>) => {
   const handleClick = (optionValue: Value) => {
     if (!readOnly && onChange && value !== optionValue) {
@@ -75,6 +77,7 @@ const RadioButtonsGroup = <Value,>({
           </span>
         </Tooltip>
       ))}
+      {children}
     </Gutters>
   );
 };

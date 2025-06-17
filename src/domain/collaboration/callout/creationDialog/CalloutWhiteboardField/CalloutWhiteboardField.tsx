@@ -4,12 +4,15 @@ import { Caption } from '@/core/ui/typography/components';
 import { Box } from '@mui/material';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { gutters } from '@/core/ui/grid/utils';
-import { CreateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;
-  profile: CreateProfileInput;
+  profile: {
+    displayName: string;
+    visuals?: { name: VisualType; uri: string }[];
+  };
 }
 
 export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {

@@ -21,6 +21,8 @@ import * as yup from 'yup';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import CalloutFormAdditionalContent from './CalloutFormAdditionalContent';
 import CalloutFormResponseOptions from './CalloutFormResponseOptions';
+import { CalloutAllowedContributors, CalloutFramingType, CalloutStructuredResponseType } from './constants';
+import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 
 export interface CalloutFormSubmittedValues {
   framing: {
@@ -32,10 +34,23 @@ export interface CalloutFormSubmittedValues {
     };
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
-  /*opened: boolean;
-  postDescription?: string;
-  whiteboardContent?: string;
-  */
+  contributionDefaults: {
+    postDescription: string | undefined;
+    whiteboardContent: string | undefined;
+  };
+  settings: {
+    contribution: {
+      enabled: boolean;
+      allowedTypes: CalloutStructuredResponseType;
+      canAddContributions: CalloutAllowedContributors;
+      commentsEnabled: boolean;
+    };
+    framing: {
+      type: CalloutFramingType;
+      commentsEnabled: boolean;
+    };
+    visibility: CalloutVisibility;
+  };
 }
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
@@ -64,51 +79,54 @@ const CalloutForm = ({
   const { isSmallScreen } = useScreenSize();
 
   const initialValues: CalloutFormSubmittedValues = useMemo(
-    () => ({
-      framing: {
-        profile: {
-          displayName: callout?.framing.profile.displayName ?? '',
-          description: callout?.framing.profile.description ?? '',
-          tagsets: callout?.framing.profile.tagsets ?? [EmptyTagset],
-          references: callout?.framing.profile.references ?? [],
-        },
-        whiteboard: callout?.framing.whiteboard,
-      },
-      /*
-      opened: !disablePostResponses && (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      postDescription: callout.postDescription ?? '',
-      whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
-      whiteboard: callout?.whiteboard
-        ? {
-            ...callout.whiteboard,
-            previewImages: undefined,
-          }
+    () =>
+      callout
+        ? callout
         : {
-            profile: {
-              displayName: t('common.whiteboard'),
+            framing: {
+              profile: {
+                displayName: '',
+                description: '',
+                tagsets: [EmptyTagset],
+                references: [],
+              },
+              whiteboard: undefined,
             },
-            content: EmptyWhiteboardString,
-            previewImages: undefined,
+            contributionDefaults: {
+              postDescription: undefined,
+              whiteboardContent: undefined,
+            },
+            settings: {
+              contribution: {
+                enabled: true,
+                allowedTypes: 'none',
+                canAddContributions: CalloutAllowedContributors.Members,
+                commentsEnabled: true,
+              },
+              framing: {
+                type: CalloutFramingType.None,
+                commentsEnabled: true,
+              },
+              visibility: CalloutVisibility.Published,
+            },
           },
-          */
-    }),
     [callout?.id]
   );
 
   const temporaryLocation = !Boolean(callout?.id); // Callout doesn't exist yet => enable temporary location
 
   const validationSchema = yup.object().shape({
-    profile: yup.object().shape({
-      displayName: displayNameValidator,
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-      tagsets: tagsetsSegmentSchema,
-      references: referenceSegmentSchema,
+    framing: yup.object().shape({
+      profile: yup.object().shape({
+        displayName: displayNameValidator,
+        description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+        tagsets: tagsetsSegmentSchema,
+        references: referenceSegmentSchema,
+      }),
+      whiteboard: yup.object().when(['settings.framing.type'], ([type], schema) => {
+        return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
+      }),
     }),
-    /*    opened: yup.boolean().required(),
-        whiteboardContent: yup.string().when(['type'], ([type], schema) => {
-          return type === CalloutType.Whiteboard ? schema.required() : schema;
-        }),
-        */
   });
 
   return (

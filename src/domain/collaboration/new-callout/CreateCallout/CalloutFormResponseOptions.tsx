@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -9,21 +9,37 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import RadioButtonsGroup from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
 import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-import { CalloutStructuredResponseType } from './constants';
+import type { CalloutStructuredResponseType } from './constants';
 import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/utils/calloutIcons';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import CalloutFormResponseSettingsDialog from './ResponseSettingsDialog/CalloutFormResponseSettingsDialog';
+import ResponseSettingsLink from './ResponseSettingsDialog/ResponseSettingsLink';
+import ResponseSettingsPosts from './ResponseSettingsDialog/ResponseSettingsPost';
+import ResponseSettingsWhiteboards from './ResponseSettingsDialog/ResponseSettingsWhiteboard';
 
 interface CalloutFormResponseOptionsProps {}
 
 const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
   const { t } = useTranslation();
-  const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
+  const { isMediumSmallScreen } = useScreenSize();
   const [commentsEnabled, setCommentsEnabled] = useState<boolean>(true);
-  const [structuredResponseType, setStructuredResponseType] = useState<CalloutStructuredResponseType>(
-    CalloutStructuredResponseType.None
-  );
+  const [structuredResponseType, setStructuredResponseType] = useState<CalloutStructuredResponseType>('none');
+  const [responseSettingsDialogOpen, setResponseSettingsDialogOpen] = useState<boolean>(false);
+
+  const SettingsComponent = useMemo(() => {
+    switch (structuredResponseType) {
+      case CalloutContributionType.Link:
+        return ResponseSettingsLink;
+      case CalloutContributionType.Post:
+        return ResponseSettingsPosts;
+      case CalloutContributionType.Whiteboard:
+        return ResponseSettingsWhiteboards;
+      default:
+        return undefined;
+    }
+  }, [structuredResponseType]);
 
   return (
     <PageContentBlockCollapsible
@@ -47,7 +63,7 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
               },
             ]}
             value={commentsEnabled}
-            labelPlacement={isSmallScreen ? 'right' : 'bottom'}
+            labelPlacement="bottom"
             onChange={value => setCommentsEnabled(value)}
           />
         </PageContentBlock>
@@ -57,36 +73,50 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
             options={[
               {
                 icon: BlockIcon,
-                value: CalloutStructuredResponseType.None,
+                value: 'none' as CalloutStructuredResponseType,
                 label: t('callout.create.responseOptions.structuredResponses.none.title'),
                 tooltip: t('callout.create.responseOptions.structuredResponses.none.tooltip'),
               },
               {
                 icon: AttachFileOutlinedIcon,
-                value: CalloutStructuredResponseType.Links,
+                value: CalloutContributionType.Link,
                 label: t('callout.create.responseOptions.structuredResponses.links.title'),
                 tooltip: t('callout.create.responseOptions.structuredResponses.links.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.PostCollection],
-                value: CalloutStructuredResponseType.Posts,
+                value: CalloutContributionType.Post,
                 label: t('callout.create.responseOptions.structuredResponses.posts.title'),
                 tooltip: t('callout.create.responseOptions.structuredResponses.posts.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.Whiteboard],
-                value: CalloutStructuredResponseType.Whiteboards,
+                value: CalloutContributionType.Whiteboard,
                 label: t('callout.create.responseOptions.structuredResponses.whiteboards.title'),
                 tooltip: t('callout.create.responseOptions.structuredResponses.whiteboards.tooltip'),
               },
             ]}
             value={structuredResponseType}
-            labelPlacement={isSmallScreen ? 'right' : 'bottom'}
+            labelPlacement="bottom"
             onChange={value => setStructuredResponseType(value)}
-          />
-          <Button variant="outlined">Response Settings</Button>
+          >
+            <Box display="flex" alignItems="end" marginLeft="auto">
+              <Button
+                variant="outlined"
+                onClick={() => setResponseSettingsDialogOpen(true)}
+                disabled={structuredResponseType === 'none'}
+              >
+                {t('callout.create.responseOptions.responseSettings.title')}
+              </Button>
+            </Box>
+          </RadioButtonsGroup>
         </PageContentBlock>
       </Box>
+      <CalloutFormResponseSettingsDialog
+        open={responseSettingsDialogOpen}
+        onClose={() => setResponseSettingsDialogOpen(false)}
+        settingsComponent={SettingsComponent}
+      />
     </PageContentBlockCollapsible>
   );
 };

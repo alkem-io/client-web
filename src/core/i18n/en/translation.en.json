@@ -753,6 +753,21 @@
             "title": "Whiteboards",
             "tooltip": "Enable responding with whiteboards"
           }
+        },
+        "responseSettings": {
+          "title": "Response Settings",
+          "membersCanRespond": "Members can respond",
+          "adminCanRespond": "Admins can respond",
+          "commentsOnEachResponse": "Enable comments on each response",
+          "post": {
+            "defaultDescriptionLabel": "Default text:",
+            "defaultDescriptionExplanation": "Add default text to the posts, for example questions that you like people to answer.",
+            "defaultDescriptionText": "Default description"
+          },
+          "whiteboard": {
+            "title": "Whiteboard",
+            "tooltip": "Enable responding with whiteboards"
+          }
         }
       }
     },
