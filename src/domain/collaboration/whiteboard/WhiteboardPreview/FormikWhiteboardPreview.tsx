@@ -113,7 +113,6 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
               }}
               options={{
                 viewModeEnabled: true,
-                gridModeEnabled: true,
                 UIOptions: {
                   canvasActions: {
                     export: false,

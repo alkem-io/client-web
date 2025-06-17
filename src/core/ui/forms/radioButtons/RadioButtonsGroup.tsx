@@ -28,6 +28,12 @@ const RadioButtonsGroup = <Value,>({
   readOnly,
   tooltipProps,
 }: RadioButtonsGroupProps<Value>) => {
+  const handleClick = (optionValue: Value) => {
+    if (!readOnly && onChange && value !== optionValue) {
+      onChange(optionValue);
+    }
+  };
+
   return (
     <Gutters row disablePadding>
       {options.map(({ value: optionValue, icon: Icon, label, tooltip, disabled }) => (
@@ -36,7 +42,7 @@ const RadioButtonsGroup = <Value,>({
             <Button
               key={String(optionValue)}
               disabled={readOnly || disabled}
-              onClick={() => onChange?.(optionValue)}
+              onClick={() => handleClick(optionValue)}
               sx={{
                 flexShrink: 1,
                 flexWrap: 'wrap',
