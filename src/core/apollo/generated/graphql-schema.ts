@@ -2498,6 +2498,14 @@ export type Geo = {
   endpoint: Scalars['String']['output'];
 };
 
+export type GeoLocation = {
+  __typename?: 'GeoLocation';
+  /** The Latitude for this Location, derived from (City, Country) if those are set. */
+  latitude?: Maybe<Scalars['Float']['output']>;
+  /** The Longitude for this Location, derived from (City, Country) if those are set. */
+  longitude?: Maybe<Scalars['Float']['output']>;
+};
+
 export type GrantAuthorizationCredentialInput = {
   /** The resource to which this credential is tied. */
   resourceID?: InputMaybe<Scalars['UUID']['input']>;
@@ -3090,6 +3098,8 @@ export type Location = {
   country?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The GeoLocation for this Location, derived from (City, Country) if those are set. */
+  geoLocation: GeoLocation;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   postalCode?: Maybe<Scalars['String']['output']>;
@@ -3698,6 +3708,8 @@ export type Mutation = {
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
+  /** Updates the GeoLocation data where required on the platform. */
+  adminUpdateGeoLocationData: Scalars['Boolean']['output'];
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
   /** Create a test customer on wingback. */
@@ -24628,6 +24640,16 @@ export type TemplateContentQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    defaultTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
                     references?:
                       | Array<{
                           __typename?: 'Reference';
@@ -25015,6 +25037,16 @@ export type CalloutTemplateContentFragment = {
       displayName: string;
       description?: string | undefined;
       tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      defaultTagset?:
         | {
             __typename?: 'Tagset';
             id: string;
