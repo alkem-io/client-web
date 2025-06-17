@@ -133,8 +133,9 @@ export const ReferenceSegment = ({
                     readOnly={readOnly}
                     disabled={disabled || isRemoving(index)}
                     fullWidth={isSmallScreen}
+                    sx={{ flexGrow: 1 }}
                   />
-                  <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
+                  <Box display="flex" flexDirection="row" flexGrow={1} sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput
                       fullWidth={fullWidth}
                       name={`${fieldName}.${index}.uri`}

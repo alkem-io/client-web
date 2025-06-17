@@ -19,7 +19,7 @@ interface CalloutFormResponseOptionsProps {}
 
 const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
   const { t } = useTranslation();
-  const { isMediumSmallScreen } = useScreenSize();
+  const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
   const [commentsEnabled, setCommentsEnabled] = useState<boolean>(true);
   const [structuredResponseType, setStructuredResponseType] = useState<CalloutStructuredResponseType>(
     CalloutStructuredResponseType.None
@@ -47,6 +47,7 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
               },
             ]}
             value={commentsEnabled}
+            labelPlacement={isSmallScreen ? 'right' : 'bottom'}
             onChange={value => setCommentsEnabled(value)}
           />
         </PageContentBlock>
@@ -80,6 +81,7 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
               },
             ]}
             value={structuredResponseType}
+            labelPlacement={isSmallScreen ? 'right' : 'bottom'}
             onChange={value => setStructuredResponseType(value)}
           />
           <Button variant="outlined">Response Settings</Button>

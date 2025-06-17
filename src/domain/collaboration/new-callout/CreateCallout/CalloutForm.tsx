@@ -151,6 +151,7 @@ const CalloutForm = ({
               compactMode
               references={formikState.values.framing.profile.references}
               temporaryLocation={temporaryLocation}
+              fullWidth
             />
             <CalloutFormResponseOptions />
             {/*

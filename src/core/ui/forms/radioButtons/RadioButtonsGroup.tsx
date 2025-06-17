@@ -16,6 +16,7 @@ export interface RadioButtonOption<Value> {
 export interface RadioButtonsGroupProps<Value> extends Omit<BoxProps, 'onChange'> {
   value: Value | undefined;
   options: RadioButtonOption<Value>[];
+  labelPlacement?: 'bottom' | 'right';
   onChange?: (value: Value) => void;
   readOnly?: boolean;
   tooltipProps?: Partial<TooltipProps>;
@@ -24,6 +25,7 @@ export interface RadioButtonsGroupProps<Value> extends Omit<BoxProps, 'onChange'
 const RadioButtonsGroup = <Value,>({
   value,
   options,
+  labelPlacement = 'right',
   onChange,
   readOnly,
   tooltipProps,
@@ -35,44 +37,42 @@ const RadioButtonsGroup = <Value,>({
   };
 
   return (
-    <Gutters row disablePadding>
+    <Gutters row disablePadding flexWrap="wrap">
       {options.map(({ value: optionValue, icon: Icon, label, tooltip, disabled }) => (
         <Tooltip title={tooltip} key={String(optionValue)} {...tooltipProps}>
-          <Box>
+          <span>
             <Button
               key={String(optionValue)}
               disabled={readOnly || disabled}
               onClick={() => handleClick(optionValue)}
               sx={{
+                gap: gutters(0.5),
+                flexDirection: labelPlacement === 'right' ? 'row' : 'column',
                 flexShrink: 1,
-                flexWrap: 'wrap',
+                /* flexWrap: 'wrap',*/
                 textTransform: 'none',
                 '&.Mui-disabled': value === optionValue ? { color: 'primary.main' } : {},
               }}
-              startIcon={
-                Icon && (
-                  <SwapColors swap={value === optionValue}>
-                    <Gutters
-                      disablePadding
-                      sx={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: value === optionValue ? 'background.paper' : undefined,
-                        border: theme => (value !== optionValue ? `1px solid ${theme.palette.divider}` : undefined),
-                        borderRadius: gutters(),
-                        width: gutters(2),
-                        height: gutters(2),
-                      }}
-                    >
-                      <Icon color="primary" />
-                    </Gutters>
-                  </SwapColors>
-                )
-              }
             >
-              <Caption whiteSpace="wrap">{label}</Caption>
+              {Icon && (
+                <SwapColors swap={value === optionValue}>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    border={theme => (value !== optionValue ? `1px solid ${theme.palette.divider}` : undefined)}
+                    borderRadius={gutters()}
+                    width={gutters(2)}
+                    height={gutters(2)}
+                    bgcolor={value === optionValue ? 'background.paper' : undefined}
+                  >
+                    <Icon color="primary" />
+                  </Box>
+                </SwapColors>
+              )}
+              <Caption whiteSpace="normal">{label}</Caption>
             </Button>
-          </Box>
+          </span>
         </Tooltip>
       ))}
     </Gutters>
