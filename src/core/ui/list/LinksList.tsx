@@ -1,7 +1,11 @@
+import { MouseEvent } from 'react';
 import Avatar from '@/core/ui/avatar/Avatar';
-import { Box, Collapse, List, ListItem, Skeleton } from '@mui/material';
+import { Box, Collapse, List, ListItem, Skeleton, Tooltip, IconButton, TooltipProps } from '@mui/material';
 import { times } from 'lodash';
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { LockOutlined } from '@mui/icons-material';
+import { Caption } from '../typography';
 import CardExpandButton from '../card/CardExpandButton';
 import { gutters } from '../grid/utils';
 import RouterLink from '../link/RouterLink';
@@ -13,6 +17,7 @@ interface Item {
   icon: ReactNode;
   uri: string;
   cardBanner?: string;
+  isPrivate?: boolean;
 }
 
 export interface LinksListProps {
@@ -29,7 +34,24 @@ const listItemStyles = {
   alignItems: 'center',
 } as const;
 
+// TODO: optimize the component render logic. There's a duplicated code for the ListItem.
+/**
+ * LinksList
+ *
+ * Renders a vertical list of link items with optional loading state and empty caption.
+ * Displays up to a fixed number of items and allows expansion for more.
+ * Adds a lock icon tooltip for items marked as private to indicate restricted access.
+ *
+ * Props:
+ * @param {Item[]} props.items - Array of link items. Each item defines id, title, uri, optional icon, banner, and isPrivate flag.
+ * @param {string} [props.emptyListCaption] - Caption to display when there are no items.
+ * @param {boolean} [props.loading=false] - If true, shows skeleton loaders instead of list items.
+ */
 const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
+  const { t } = useTranslation();
+  const preventDefault = (e: MouseEvent<HTMLButtonElement>) => e.preventDefault();
+  const tooltipPlacement: TooltipProps['placement'] = 'right';
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => setIsExpanded(!isExpanded);
@@ -45,13 +67,25 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
             key={item.id}
             component={RouterLink}
             to={item.uri}
-            sx={{ ...listItemStyles, marginTop: gutters(0.5) }}
+            sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
           >
             <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
             <BlockSectionTitle minWidth={0} noWrap>
               {item.title}
             </BlockSectionTitle>
+            {item.isPrivate && (
+              <Tooltip
+                title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+                placement={tooltipPlacement}
+                arrow
+                sx={{ ml: 'auto' }}
+              >
+                <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
+                  <LockOutlined />
+                </IconButton>
+              </Tooltip>
+            )}
           </ListItem>
         ))}
       {!loading && items.length > COLLAPSED_LIST_ITEM_LIMIT && (
@@ -61,13 +95,25 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
               key={item.id}
               component={RouterLink}
               to={item.uri}
-              sx={{ ...listItemStyles, marginTop: gutters(0.5) }}
+              sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
             >
               <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
               <BlockSectionTitle minWidth={0} noWrap>
                 {item.title}
               </BlockSectionTitle>
+              {item.isPrivate && (
+                <Tooltip
+                  title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+                  placement={tooltipPlacement}
+                  arrow
+                  sx={{ ml: 'auto' }}
+                >
+                  <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
+                    <LockOutlined />
+                  </IconButton>
+                </Tooltip>
+              )}
             </ListItem>
           ))}
         </Collapse>
