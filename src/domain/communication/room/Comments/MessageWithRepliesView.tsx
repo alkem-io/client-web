@@ -31,13 +31,12 @@ export const MessageWithRepliesView = ({
   return (
     <MessageView
       actions={
-        <>
-          {!isReplyFormVisible && canReply && (
-            <ButtonBase component="li" onClick={() => setHasPressedReply(true)}>
-              <CardText>{t('buttons.reply')}</CardText>
-            </ButtonBase>
-          )}
-        </>
+        !isReplyFormVisible &&
+        canReply && (
+          <ButtonBase component="li" onClick={() => setHasPressedReply(true)}>
+            <CardText>{t('buttons.reply')}</CardText>
+          </ButtonBase>
+        )
       }
       {...props}
     >
