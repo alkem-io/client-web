@@ -358,7 +358,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
                 />
               )}
-              {level === SpaceLevel.L1 && (
+              {level !== SpaceLevel.L0 && (
                 <SwitchSettingsGroup
                   options={{
                     inheritMembershipRights: {
