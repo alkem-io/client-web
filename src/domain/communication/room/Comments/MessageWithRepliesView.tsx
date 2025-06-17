@@ -13,10 +13,12 @@ const ChildMessageContainer = styled(Box)(({ theme }) => ({
 
 interface MessageWithRepliesViewProps extends MessageViewProps {
   reply?: ReactNode;
+  canReply?: boolean;
 }
 
 export const MessageWithRepliesView = ({
   reply,
+  canReply = true,
   children,
   ...props
 }: PropsWithChildren<MessageWithRepliesViewProps>) => {
@@ -29,11 +31,13 @@ export const MessageWithRepliesView = ({
   return (
     <MessageView
       actions={
-        !isReplyFormVisible && (
-          <ButtonBase component="li" onClick={() => setHasPressedReply(true)}>
-            <CardText>{t('buttons.reply')}</CardText>
-          </ButtonBase>
-        )
+        <>
+          {!isReplyFormVisible && canReply && (
+            <ButtonBase component="li" onClick={() => setHasPressedReply(true)}>
+              <CardText>{t('buttons.reply')}</CardText>
+            </ButtonBase>
+          )}
+        </>
       }
       {...props}
     >

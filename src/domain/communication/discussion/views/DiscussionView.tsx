@@ -38,7 +38,7 @@ export const DiscussionView = ({
 
   const { id, description, author, createdAt, comments, myPrivileges } = discussion;
 
-  const canPost = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessage) ?? false;
+  const canPostMessages = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false;
   const canUpdateDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const canDeleteComment = (authorId?: string) =>
@@ -92,7 +92,7 @@ export const DiscussionView = ({
                   return (
                     <Gutters>
                       <MessagesThread
-                        canPostMessages
+                        canPostMessages={canPostMessages}
                         messages={filteredComments}
                         canDeleteMessage={canDeleteComment}
                         onDeleteMessage={onDeleteComment}
@@ -110,14 +110,14 @@ export const DiscussionView = ({
         <GridLegacy item container spacing={2}>
           <GridLegacy item xs={12}>
             <Box paddingY={2}>
-              {canPost && (
+              {canPostMessages && (
                 <PostMessageToCommentsForm
                   onPostComment={comment => postMessage?.(comment)}
                   title={t('components.post-comment.fields.description.title')}
                   placeholder={t('components.post-comment.fields.description.placeholder')}
                 />
               )}
-              {!canPost && (
+              {!canPostMessages && (
                 <Box paddingY={4} display="flex" justifyContent="center">
                   <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
                 </Box>
