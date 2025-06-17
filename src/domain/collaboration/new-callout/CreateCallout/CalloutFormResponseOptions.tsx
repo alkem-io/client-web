@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import ExpandableBlock from '@/core/ui/content/ExpandableBlock/ExpandableBlock';
+import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import RadioButtonsGroup from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
 import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
@@ -26,7 +26,10 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
   );
 
   return (
-    <ExpandableBlock title={t('callout.create.responseOptions.title')}>
+    <PageContentBlockCollapsible
+      header={<PageContentBlockHeader title={t('callout.create.responseOptions.title')} />}
+      seamless
+    >
       <Box display="flex" gap={gutters()} flexDirection={isMediumSmallScreen ? 'column' : 'row'}>
         <PageContentBlock sx={{ flex: 1 }}>
           <PageContentBlockHeader title={t('callout.create.responseOptions.comments.title')} />
@@ -82,7 +85,7 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
           <Button variant="outlined">Response Settings</Button>
         </PageContentBlock>
       </Box>
-    </ExpandableBlock>
+    </PageContentBlockCollapsible>
   );
 };
 
