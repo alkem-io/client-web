@@ -1,6 +1,5 @@
-import { MouseEvent } from 'react';
 import Avatar from '@/core/ui/avatar/Avatar';
-import { Box, Collapse, List, ListItem, Skeleton, Tooltip, IconButton, TooltipProps } from '@mui/material';
+import { Box, Collapse, List, ListItem, Skeleton, Tooltip, TooltipProps } from '@mui/material';
 import { times } from 'lodash';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +33,6 @@ const listItemStyles = {
   alignItems: 'center',
 } as const;
 
-// TODO: optimize the component render logic. There's a duplicated code for the ListItem.
 /**
  * LinksList
  *
@@ -49,74 +47,44 @@ const listItemStyles = {
  */
 const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const { t } = useTranslation();
-  const preventDefault = (e: MouseEvent<HTMLButtonElement>) => e.preventDefault();
   const tooltipPlacement: TooltipProps['placement'] = 'right';
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => setIsExpanded(!isExpanded);
 
+  // Helper to render a single link item
+  const renderListItem = (item: Item) => (
+    <ListItem
+      key={item.id}
+      component={RouterLink}
+      to={item.uri}
+      sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
+    >
+      <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
+
+      <BlockSectionTitle minWidth={0} noWrap>
+        {item.title}
+      </BlockSectionTitle>
+      {item.isPrivate && (
+        <Tooltip
+          title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+          placement={tooltipPlacement}
+          arrow
+        >
+          <LockOutlined sx={{ ml: 'auto', color: theme => theme.palette.neutral.light }} />
+        </Tooltip>
+      )}
+    </ListItem>
+  );
+
   return (
     <List sx={{ p: 0 }}>
       {loading && times(3, i => <ListItem key={i} component={Skeleton} sx={listItemStyles} />)}
       {!loading && items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
-      {!loading &&
-        items.length > 0 &&
-        items.slice(0, COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-          <ListItem
-            key={item.id}
-            component={RouterLink}
-            to={item.uri}
-            sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
-          >
-            <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
-
-            <BlockSectionTitle minWidth={0} noWrap>
-              {item.title}
-            </BlockSectionTitle>
-            {item.isPrivate && (
-              <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
-                placement={tooltipPlacement}
-                arrow
-                sx={{ ml: 'auto' }}
-              >
-                <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
-                  <LockOutlined />
-                </IconButton>
-              </Tooltip>
-            )}
-          </ListItem>
-        ))}
+      {!loading && items.length > 0 && items.slice(0, COLLAPSED_LIST_ITEM_LIMIT).map(renderListItem)}
       {!loading && items.length > COLLAPSED_LIST_ITEM_LIMIT && (
-        <Collapse in={isExpanded}>
-          {items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-            <ListItem
-              key={item.id}
-              component={RouterLink}
-              to={item.uri}
-              sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
-            >
-              <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
-
-              <BlockSectionTitle minWidth={0} noWrap>
-                {item.title}
-              </BlockSectionTitle>
-              {item.isPrivate && (
-                <Tooltip
-                  title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
-                  placement={tooltipPlacement}
-                  arrow
-                  sx={{ ml: 'auto' }}
-                >
-                  <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
-                    <LockOutlined />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </ListItem>
-          ))}
-        </Collapse>
+        <Collapse in={isExpanded}>{items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(renderListItem)}</Collapse>
       )}
       <Box
         flexGrow={1}
