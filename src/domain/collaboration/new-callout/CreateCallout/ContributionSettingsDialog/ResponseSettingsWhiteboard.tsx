@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { ResponseSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
+import { ContributionTypeSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
 
-const ResponseSettingsWhiteboard = forwardRef<ResponseSettingsComponentRef>((props, ref) => {
+const ResponseSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
   useImperativeHandle(ref, () => ({
     onSave: () => {
       // Custom save logic here
@@ -11,7 +11,7 @@ const ResponseSettingsWhiteboard = forwardRef<ResponseSettingsComponentRef>((pro
 
   return (
     <div>
-      <p>Whiteboard.</p>
+      <p>Whiteboard....</p>
     </div>
   );
 });

@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { ResponseSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
+import { ContributionTypeSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
 
-const ResponseSettingsLink = forwardRef<ResponseSettingsComponentRef>((props, ref) => {
+const ResponseSettingsLink = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
   useImperativeHandle(ref, () => ({
     onSave: () => {
       // Custom save logic here
@@ -11,7 +11,7 @@ const ResponseSettingsLink = forwardRef<ResponseSettingsComponentRef>((props, re
 
   return (
     <div>
-      <p>Links.</p>
+      <p>Links...</p>
     </div>
   );
 });

@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutForm';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { CalloutAllowedContributors } from '../constants';
-import { ResponseSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
+import { ContributionTypeSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
 import { useTranslation } from 'react-i18next';
 
 interface FieldsState {
@@ -12,7 +12,7 @@ interface FieldsState {
   commentsOnEachResponse: boolean;
 }
 
-const ResponseSettingsContribution = forwardRef<ResponseSettingsComponentRef>((props, ref) => {
+const ResponseSettingsContribution = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
   const { t } = useTranslation();
   const [field, , meta] = useField<CalloutFormSubmittedValues['settings']>('settings');
 
@@ -22,11 +22,15 @@ const ResponseSettingsContribution = forwardRef<ResponseSettingsComponentRef>((p
     commentsOnEachResponse: field.value.contribution.commentsEnabled,
   });
 
-  const handleChange = (fieldName: keyof FieldsState) => {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newState = { ...formState, [fieldName]: event.target.checked };
-      setFormState(newState);
-    };
+  const handleChange = (fieldName: keyof FieldsState, checked: boolean) => {
+    const newState = { ...formState, [fieldName]: checked };
+    if (fieldName === 'adminCanRespond' && !checked) {
+      newState.membersCanRespond = false;
+    }
+    if (fieldName === 'membersCanRespond' && checked) {
+      newState.adminCanRespond = true;
+    }
+    setFormState(newState);
   };
 
   useImperativeHandle(ref, () => ({
@@ -50,16 +54,31 @@ const ResponseSettingsContribution = forwardRef<ResponseSettingsComponentRef>((p
   return (
     <FormGroup>
       <FormControlLabel
-        control={<Switch checked={formState.membersCanRespond} onChange={() => handleChange('membersCanRespond')} />}
-        label={t('callout.create.responseOptions.responseSettings.membersCanRespond')}
+        control={
+          <Switch
+            checked={formState.membersCanRespond}
+            onChange={(_, checked) => handleChange('membersCanRespond', checked)}
+          />
+        }
+        label={t('callout.create.contributionSettings.contributionTypes.settings.membersCanRespond')}
       />
       <FormControlLabel
-        control={<Switch checked={formState.adminCanRespond} />}
-        label={t('callout.create.responseOptions.responseSettings.adminCanRespond')}
+        control={
+          <Switch
+            checked={formState.adminCanRespond}
+            onChange={(_, checked) => handleChange('adminCanRespond', checked)}
+          />
+        }
+        label={t('callout.create.contributionSettings.contributionTypes.settings.adminCanRespond')}
       />
       <FormControlLabel
-        control={<Switch checked={formState.commentsOnEachResponse} />}
-        label={t('callout.create.responseOptions.responseSettings.commentsOnEachResponse')}
+        control={
+          <Switch
+            checked={formState.commentsOnEachResponse}
+            onChange={(_, checked) => handleChange('commentsOnEachResponse', checked)}
+          />
+        }
+        label={t('callout.create.contributionSettings.contributionTypes.settings.commentsOnEachResponse')}
       />
     </FormGroup>
   );

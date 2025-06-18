@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import BlockIcon from '@mui/icons-material/Block';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -14,20 +14,20 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
-interface CalloutFormAdditionalContentProps {}
+interface CalloutFormFramingSettingsProps {}
 
-const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => {
+const CalloutFormFramingSettings = ({}: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
-  const [additionalContent, setAdditionalContent] = useState<CalloutFramingType>(CalloutFramingType.None);
+  const [framingTypeSelected, setFramingTypeSelected] = useState<CalloutFramingType>(CalloutFramingType.None);
 
   const [framing, , helpers] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const whiteboardPreviewRef = useRef<FormikWhiteboardPreviewRef>(null);
 
-  const handleAdditionalContentChange = (newValue: CalloutFramingType) => {
-    setAdditionalContent(newValue);
+  const handleFramingTypeChange = (newValue: CalloutFramingType) => {
+    setFramingTypeSelected(newValue);
 
-    // Add / remove whiteboard content from the formik state based on the selected AdditionalContent radio buttons
+    // Add / remove whiteboard content from the formik state based on the selected framing type radio buttons
     if (newValue === CalloutFramingType.Whiteboard) {
       const { whiteboard, ...rest } = framing.value;
       helpers.setValue({
@@ -46,19 +46,6 @@ const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => 
     }
   };
 
-  // Open the dialog when the whiteboard is set and the option is selected
-  useEffect(() => {
-    if (
-      whiteboardPreviewRef.current &&
-      additionalContent === CalloutFramingType.Whiteboard &&
-      framing.value.whiteboard &&
-      // Only open the dialog if the whiteboard content is empty, to avoid opening it when editing a template
-      framing.value.whiteboard.content === EmptyWhiteboardString
-    ) {
-      whiteboardPreviewRef.current.openEditDialog();
-    }
-  }, [additionalContent, framing.value.whiteboard, whiteboardPreviewRef.current]);
-
   // Instantiating them here to be able to move them when the screen is small
   const radioButtons = (
     <RadioButtonsGroup
@@ -66,18 +53,18 @@ const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => 
         {
           icon: BlockIcon,
           value: CalloutFramingType.None,
-          label: t('callout.create.additionalContent.none.title'),
-          tooltip: t('callout.create.additionalContent.none.tooltip'),
+          label: t('callout.create.framingSettings.none.title'),
+          tooltip: t('callout.create.framingSettings.none.tooltip'),
         },
         {
           icon: WhiteboardIcon,
           value: CalloutFramingType.Whiteboard,
-          label: t('callout.create.additionalContent.whiteboard.title'),
-          tooltip: t('callout.create.additionalContent.whiteboard.tooltip'),
+          label: t('callout.create.framingSettings.whiteboard.title'),
+          tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
         },
       ]}
-      value={additionalContent}
-      onChange={handleAdditionalContentChange}
+      value={framingTypeSelected}
+      onChange={handleFramingTypeChange}
     />
   );
 
@@ -85,13 +72,13 @@ const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => 
     <>
       <PageContentBlock sx={{ marginTop: gutters(-1) }}>
         <PageContentBlockHeader
-          title={t('callout.create.additionalContent.title')}
+          title={t('callout.create.framingSettings.title')}
           actions={!isMediumSmallScreen && radioButtons}
         />
         {isMediumSmallScreen && radioButtons}
       </PageContentBlock>
 
-      {framing.value.whiteboard && additionalContent === CalloutFramingType.Whiteboard && (
+      {framing.value.whiteboard && framingTypeSelected === CalloutFramingType.Whiteboard && (
         <PageContentBlock disablePadding>
           <FormikWhiteboardPreview
             ref={whiteboardPreviewRef}
@@ -99,7 +86,7 @@ const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => 
             previewImagesName="framing.whiteboard.previewImages"
             canEdit
             onChangeContent={() => whiteboardPreviewRef.current?.closeEditDialog()}
-            onDeleteContent={() => handleAdditionalContentChange(CalloutFramingType.None)}
+            onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
           />
@@ -109,4 +96,4 @@ const CalloutFormAdditionalContent = ({}: CalloutFormAdditionalContentProps) => 
   );
 };
 
-export default CalloutFormAdditionalContent;
+export default CalloutFormFramingSettings;

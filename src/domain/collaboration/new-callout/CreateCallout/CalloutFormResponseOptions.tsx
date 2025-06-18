@@ -14,10 +14,10 @@ import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
-import CalloutFormResponseSettingsDialog from './ResponseSettingsDialog/CalloutFormResponseSettingsDialog';
-import ResponseSettingsLink from './ResponseSettingsDialog/ResponseSettingsLink';
-import ResponseSettingsPosts from './ResponseSettingsDialog/ResponseSettingsPost';
-import ResponseSettingsWhiteboards from './ResponseSettingsDialog/ResponseSettingsWhiteboard';
+import CalloutFormResponseSettingsDialog from './ContributionSettingsDialog/CalloutFormResponseSettingsDialog';
+import ResponseSettingsLink from './ContributionSettingsDialog/ResponseSettingsLink';
+import ResponseSettingsPosts from './ContributionSettingsDialog/ResponseSettingsPost';
+import ResponseSettingsWhiteboards from './ContributionSettingsDialog/ResponseSettingsWhiteboard';
 
 interface CalloutFormResponseOptionsProps {}
 
@@ -43,23 +43,23 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
 
   return (
     <PageContentBlockCollapsible
-      header={<PageContentBlockHeader title={t('callout.create.responseOptions.title')} />}
+      header={<PageContentBlockHeader title={t('callout.create.contributionSettings.title')} />}
       seamless
     >
       <Box display="flex" gap={gutters()} flexDirection={isMediumSmallScreen ? 'column' : 'row'}>
         <PageContentBlock sx={{ flex: 1 }}>
-          <PageContentBlockHeader title={t('callout.create.responseOptions.comments.title')} />
+          <PageContentBlockHeader title={t('callout.create.contributionSettings.comments.title')} />
           <RadioButtonsGroup
             options={[
               {
                 icon: CommentsDisabledOutlinedIcon,
                 value: false,
-                label: t('callout.create.responseOptions.comments.disabled'),
+                label: t('callout.create.contributionSettings.comments.disabled'),
               },
               {
                 icon: CommentOutlinedIcon,
                 value: true,
-                label: t('callout.create.responseOptions.comments.enabled'),
+                label: t('callout.create.contributionSettings.comments.enabled'),
               },
             ]}
             value={commentsEnabled}
@@ -68,32 +68,32 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
           />
         </PageContentBlock>
         <PageContentBlock sx={{ flex: 3 }}>
-          <PageContentBlockHeader title={t('callout.create.responseOptions.structuredResponses.title')} />
+          <PageContentBlockHeader title={t('callout.create.contributionSettings.contributionTypes.title')} />
           <RadioButtonsGroup
             options={[
               {
                 icon: BlockIcon,
                 value: 'none' as CalloutStructuredResponseType,
-                label: t('callout.create.responseOptions.structuredResponses.none.title'),
-                tooltip: t('callout.create.responseOptions.structuredResponses.none.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.none.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.none.tooltip'),
               },
               {
                 icon: AttachFileOutlinedIcon,
                 value: CalloutContributionType.Link,
-                label: t('callout.create.responseOptions.structuredResponses.links.title'),
-                tooltip: t('callout.create.responseOptions.structuredResponses.links.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.links.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.links.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.PostCollection],
                 value: CalloutContributionType.Post,
-                label: t('callout.create.responseOptions.structuredResponses.posts.title'),
-                tooltip: t('callout.create.responseOptions.structuredResponses.posts.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.posts.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.posts.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.Whiteboard],
                 value: CalloutContributionType.Whiteboard,
-                label: t('callout.create.responseOptions.structuredResponses.whiteboards.title'),
-                tooltip: t('callout.create.responseOptions.structuredResponses.whiteboards.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.whiteboards.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.whiteboards.tooltip'),
               },
             ]}
             value={structuredResponseType}
@@ -106,7 +106,7 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
                 onClick={() => setResponseSettingsDialogOpen(true)}
                 disabled={structuredResponseType === 'none'}
               >
-                {t('callout.create.responseOptions.responseSettings.title')}
+                {t('callout.create.contributionSettings.contributionTypes.title')}
               </Button>
             </Box>
           </RadioButtonsGroup>

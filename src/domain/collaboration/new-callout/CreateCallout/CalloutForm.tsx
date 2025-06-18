@@ -19,7 +19,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import CalloutFormAdditionalContent from './CalloutFormAdditionalContent';
+import CalloutFormAdditionalContent from './CalloutFormFramingSettings';
 import CalloutFormResponseOptions from './CalloutFormResponseOptions';
 import { CalloutAllowedContributors, CalloutFramingType, CalloutStructuredResponseType } from './constants';
 import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
