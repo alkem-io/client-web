@@ -176,9 +176,9 @@ export const UserForm = ({
 
   return (
     <Formik
+      key={currentUser.id}
       initialValues={initialValues}
       validationSchema={isReadOnlyMode ? undefined : validationSchema}
-      enableReinitialize
       onSubmit={(values, { setSubmitting }) => {
         handleSubmit(values).finally(() => setSubmitting(false));
       }}
