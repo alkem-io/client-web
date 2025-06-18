@@ -11,10 +11,10 @@ import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { gutters } from '@/core/ui/grid/utils';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { INVITE_USERS_TO_ROLES } from './InviteUsersDialog';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface InviteUsersFormDialogContentProps {
   filterUsers?: FormikContributorsSelectorFieldProps['filterUsers'];
-  /** Enable external email invites */
   allowExternalInvites: boolean;
 }
 
@@ -23,11 +23,13 @@ const InviteUsersFormDialogContent: React.FC<InviteUsersFormDialogContentProps> 
   allowExternalInvites = true,
 }) => {
   const { t } = useTranslation();
+  const titleKey =
+    `community.invitations.inviteContributorsDialog.users.description${allowExternalInvites ? '' : '2'}` as TranslationKey;
 
   return (
     <DialogContent>
       <Gutters disablePadding>
-        <Caption>{t('community.invitations.inviteContributorsDialog.users.description')}</Caption>
+        <Caption>{t(titleKey)}</Caption>
         <FormikContributorsSelectorField
           name="selectedContributors"
           filterUsers={filterUsers}
