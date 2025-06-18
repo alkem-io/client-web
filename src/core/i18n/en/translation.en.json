@@ -755,20 +755,29 @@
           },
           "link": {
             "title": "Links & Files",
-            "tooltip": "Add attachments to this post"
+            "tooltip": "Add attachments to this post",
+            "settings": {
+              "label": "Directly Start",
+              "description": "Add your first links below, after publishing new links can be directly added to the post.",
+              "addButton": "Add another link"
+            }
           },
           "post": {
             "title": "Posts",
             "tooltip": "Enable responding with posts",
             "settings": {
-              "defaultDescriptionLabel": "Default text:",
-              "defaultDescriptionExplanation": "Add default text to the posts, for example questions that you like people to answer.",
-              "defaultDescriptionText": "Default description"
+              "label": "Default text:",
+              "explanation": "Add default text to the posts, for example, questions that you like people to answer.",
+              "text": "Default description"
             }
           },
           "whiteboard": {
             "title": "Whiteboards",
-            "tooltip": "Enable responding with whiteboards"
+            "tooltip": "Enable responding with whiteboards",
+            "settings": {
+              "label": "Default Whiteboard:",
+              "explanation": "Edit the default whiteboard response."
+            }
           }
         }
       }

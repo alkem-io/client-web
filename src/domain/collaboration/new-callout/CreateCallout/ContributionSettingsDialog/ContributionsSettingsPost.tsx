@@ -8,7 +8,7 @@ import { Caption, CardText } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
 
-const ResponseSettingsPost = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
+const ContributionsSettingsPost = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
   const { t } = useTranslation();
 
   const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']['postDescription']>(
@@ -33,14 +33,14 @@ const ResponseSettingsPost = forwardRef<ContributionTypeSettingsComponentRef>((p
       <Gutters disablePadding>
         <Box>
           <Caption>
-            {t('callout.create.contributionSettings.contributionTypes.post.settings.defaultDescriptionLabel')}
+            {t('callout.create.contributionSettings.contributionTypes.post.settings.label')}
           </Caption>
           <CardText>
-            {t('callout.create.contributionSettings.contributionTypes.post.settings.defaultDescriptionExplanation')}
+            {t('callout.create.contributionSettings.contributionTypes.post.settings.explanation')}
           </CardText>
         </Box>
         <FormikMarkdownField
-          title={t('callout.create.contributionSettings.contributionTypes.post.settings.defaultDescriptionText')}
+          title={t('callout.create.contributionSettings.contributionTypes.post.settings.text')}
           name="postDescription"
         />
       </Gutters>
@@ -48,4 +48,4 @@ const ResponseSettingsPost = forwardRef<ContributionTypeSettingsComponentRef>((p
   );
 });
 
-export default ResponseSettingsPost;
+export default ContributionsSettingsPost;

@@ -15,9 +15,9 @@ import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import ContributionSettingsDialog from './ContributionSettingsDialog/ContributionSettingsDialog';
-import ResponseSettingsLink from './ContributionSettingsDialog/ResponseSettingsLink';
-import ResponseSettingsPosts from './ContributionSettingsDialog/ResponseSettingsPost';
-import ResponseSettingsWhiteboards from './ContributionSettingsDialog/ResponseSettingsWhiteboard';
+import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
+import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
+import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/ContributionsSettingsWhiteboard';
 
 interface CalloutFormContributionSettingsProps {}
 
@@ -25,21 +25,21 @@ const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProp
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
   const [commentsEnabled, setCommentsEnabled] = useState<boolean>(true);
-  const [structuredResponseType, setStructuredResponseType] = useState<CalloutStructuredResponseType>('none');
-  const [responseSettingsDialogOpen, setResponseSettingsDialogOpen] = useState<boolean>(false);
+  const [responseContributionType, setResponseContributionType] = useState<CalloutStructuredResponseType>('none');
+  const [contributionSettingsDialogOpen, setContributionSettingsDialogOpen] = useState<boolean>(false);
 
   const SettingsComponent = useMemo(() => {
-    switch (structuredResponseType) {
+    switch (responseContributionType) {
       case CalloutContributionType.Link:
-        return ResponseSettingsLink;
+        return ContributionsSettingsLink;
       case CalloutContributionType.Post:
-        return ResponseSettingsPosts;
+        return ContributionsSettingsPost;
       case CalloutContributionType.Whiteboard:
-        return ResponseSettingsWhiteboards;
+        return ContributionsSettingsWhiteboard;
       default:
         return undefined;
     }
-  }, [structuredResponseType]);
+  }, [responseContributionType]);
 
   return (
     <PageContentBlockCollapsible
@@ -96,15 +96,15 @@ const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProp
                 tooltip: t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
               },
             ]}
-            value={structuredResponseType}
+            value={responseContributionType}
             labelPlacement="bottom"
-            onChange={value => setStructuredResponseType(value)}
+            onChange={value => setResponseContributionType(value)}
           >
             <Box display="flex" alignItems="end" marginLeft="auto">
               <Button
                 variant="outlined"
-                onClick={() => setResponseSettingsDialogOpen(true)}
-                disabled={structuredResponseType === 'none'}
+                onClick={() => setContributionSettingsDialogOpen(true)}
+                disabled={responseContributionType === 'none'}
               >
                 {t('callout.create.contributionSettings.contributionTypes.settings.title')}
               </Button>
@@ -113,8 +113,8 @@ const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProp
         </PageContentBlock>
       </Box>
       <ContributionSettingsDialog
-        open={responseSettingsDialogOpen}
-        onClose={() => setResponseSettingsDialogOpen(false)}
+        open={contributionSettingsDialogOpen}
+        onClose={() => setContributionSettingsDialogOpen(false)}
         contributionTypeSettingsComponent={SettingsComponent}
       />
     </PageContentBlockCollapsible>

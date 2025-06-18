@@ -61,9 +61,6 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<CalloutFormSubmittedValues>['children'];
   disableRichMedia?: boolean; // images, videos, iframe, etc.
-  /*temporaryLocation?: boolean;
-  disablePostResponses?: boolean;
-  */
 }
 
 const CalloutForm = ({
@@ -72,7 +69,6 @@ const CalloutForm = ({
   children,
   disableRichMedia,
   /*temporaryLocation = false,
-  disablePostResponses = false,
   */
 }: CalloutFormProps) => {
   const { t } = useTranslation();

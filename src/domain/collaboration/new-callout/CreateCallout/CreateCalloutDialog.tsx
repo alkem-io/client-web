@@ -58,7 +58,6 @@ export interface CreateCalloutDialogProps {
   /*
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
-  disablePostResponses?: boolean;
   */
 }
 
@@ -71,7 +70,6 @@ const CreateCalloutDialog = ({
   /*
   onCreateCallout,
   loading,
-  disablePostResponses,
   */
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
@@ -267,7 +265,6 @@ const CreateCalloutDialog = ({
               onStatusChanged={handleStatusChange}
               temporaryLocation // Always true for callout creation
               disableRichMedia={disableRichMedia}
-              disablePostResponses={disablePostResponses && selectedCalloutType === CalloutType.Post}
             />
           </DialogContent>
 

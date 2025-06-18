@@ -7,8 +7,11 @@ import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/Whiteboar
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { Box } from '@mui/material';
+import { Caption, CardText } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 
-const ResponseSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
+const ContributionsSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
   const { t } = useTranslation();
 
   const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']['whiteboardContent']>(
@@ -29,18 +32,28 @@ const ResponseSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentR
 
   const internalFormRef = useRef<FormikProps<{ whiteboardContent: string | undefined }>>(null);
   return (
-    <Formik initialValues={initialValues} onSubmit={() => {}} innerRef={internalFormRef}>
-      <PageContentBlock disablePadding>
-        <FormikWhiteboardPreview
-          name="whiteboardContent"
-          canEdit
-          onDeleteContent={() => internalFormRef.current?.setFieldValue('whiteboardContent', EmptyWhiteboardString)}
-          maxHeight={gutters(12)}
-          dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
-        />
-      </PageContentBlock>
+    <Formik initialValues={initialValues} onSubmit={() => { }} innerRef={internalFormRef}>
+      <Gutters disablePadding>
+        <Box>
+          <Caption>
+            {t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.label')}
+          </Caption>
+          <CardText>
+            {t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.explanation')}
+          </CardText>
+        </Box>
+        <PageContentBlock disablePadding>
+          <FormikWhiteboardPreview
+            name="whiteboardContent"
+            canEdit
+            onDeleteContent={() => internalFormRef.current?.setFieldValue('whiteboardContent', EmptyWhiteboardString)}
+            maxHeight={gutters(12)}
+            dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+          />
+        </PageContentBlock>
+      </Gutters>
     </Formik>
   );
 });
 
-export default ResponseSettingsWhiteboard;
+export default ContributionsSettingsWhiteboard;
