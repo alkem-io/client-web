@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import CalloutFormAdditionalContent from './CalloutFormFramingSettings';
-import CalloutFormResponseOptions from './CalloutFormResponseOptions';
+import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import { CalloutAllowedContributors, CalloutFramingType, CalloutStructuredResponseType } from './constants';
 import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 
@@ -37,6 +37,7 @@ export interface CalloutFormSubmittedValues {
   contributionDefaults: {
     postDescription: string | undefined;
     whiteboardContent: string | undefined;
+    links: ReferenceModel[] | undefined;
   };
   settings: {
     contribution: {
@@ -95,6 +96,7 @@ const CalloutForm = ({
             contributionDefaults: {
               postDescription: undefined,
               whiteboardContent: undefined,
+              links: undefined,
             },
             settings: {
               contribution: {
@@ -171,7 +173,7 @@ const CalloutForm = ({
               temporaryLocation={temporaryLocation}
               fullWidth
             />
-            <CalloutFormResponseOptions />
+            <CalloutFormContributionSettings />
             {/*
             <PostTemplateSelector name="postDescription" />
             <WhiteboardTemplateSelector name="whiteboardContent" />

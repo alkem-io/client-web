@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutForm';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { CalloutAllowedContributors } from '../constants';
-import { ContributionTypeSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
+import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import { useTranslation } from 'react-i18next';
 
 interface FieldsState {
@@ -12,7 +12,7 @@ interface FieldsState {
   commentsOnEachResponse: boolean;
 }
 
-const ResponseSettingsContribution = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
+const ContributionsSettings = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
   const { t } = useTranslation();
   const [field, , meta] = useField<CalloutFormSubmittedValues['settings']>('settings');
 
@@ -49,6 +49,12 @@ const ResponseSettingsContribution = forwardRef<ContributionTypeSettingsComponen
       };
       meta.setValue(newValue);
     },
+    isContentChanged: () =>
+      formState.membersCanRespond !==
+        (field.value.contribution.canAddContributions === CalloutAllowedContributors.Members) ||
+      formState.adminCanRespond !==
+        (field.value.contribution.canAddContributions !== CalloutAllowedContributors.None) ||
+      formState.commentsOnEachResponse !== field.value.contribution.commentsEnabled,
   }));
 
   return (
@@ -84,4 +90,4 @@ const ResponseSettingsContribution = forwardRef<ContributionTypeSettingsComponen
   );
 });
 
-export default ResponseSettingsContribution;
+export default ContributionsSettings;

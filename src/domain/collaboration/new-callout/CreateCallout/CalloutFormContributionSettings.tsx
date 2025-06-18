@@ -14,14 +14,14 @@ import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
-import CalloutFormResponseSettingsDialog from './ContributionSettingsDialog/CalloutFormResponseSettingsDialog';
+import ContributionSettingsDialog from './ContributionSettingsDialog/ContributionSettingsDialog';
 import ResponseSettingsLink from './ContributionSettingsDialog/ResponseSettingsLink';
 import ResponseSettingsPosts from './ContributionSettingsDialog/ResponseSettingsPost';
 import ResponseSettingsWhiteboards from './ContributionSettingsDialog/ResponseSettingsWhiteboard';
 
-interface CalloutFormResponseOptionsProps {}
+interface CalloutFormContributionSettingsProps {}
 
-const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
+const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
   const [commentsEnabled, setCommentsEnabled] = useState<boolean>(true);
@@ -80,20 +80,20 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
               {
                 icon: AttachFileOutlinedIcon,
                 value: CalloutContributionType.Link,
-                label: t('callout.create.contributionSettings.contributionTypes.links.title'),
-                tooltip: t('callout.create.contributionSettings.contributionTypes.links.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.link.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.link.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.PostCollection],
                 value: CalloutContributionType.Post,
-                label: t('callout.create.contributionSettings.contributionTypes.posts.title'),
-                tooltip: t('callout.create.contributionSettings.contributionTypes.posts.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.post.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.post.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.Whiteboard],
                 value: CalloutContributionType.Whiteboard,
-                label: t('callout.create.contributionSettings.contributionTypes.whiteboards.title'),
-                tooltip: t('callout.create.contributionSettings.contributionTypes.whiteboards.tooltip'),
+                label: t('callout.create.contributionSettings.contributionTypes.whiteboard.title'),
+                tooltip: t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
               },
             ]}
             value={structuredResponseType}
@@ -106,19 +106,19 @@ const CalloutFormResponseOptions = ({}: CalloutFormResponseOptionsProps) => {
                 onClick={() => setResponseSettingsDialogOpen(true)}
                 disabled={structuredResponseType === 'none'}
               >
-                {t('callout.create.contributionSettings.contributionTypes.title')}
+                {t('callout.create.contributionSettings.contributionTypes.settings.title')}
               </Button>
             </Box>
           </RadioButtonsGroup>
         </PageContentBlock>
       </Box>
-      <CalloutFormResponseSettingsDialog
+      <ContributionSettingsDialog
         open={responseSettingsDialogOpen}
         onClose={() => setResponseSettingsDialogOpen(false)}
-        settingsComponent={SettingsComponent}
+        contributionTypeSettingsComponent={SettingsComponent}
       />
     </PageContentBlockCollapsible>
   );
 };
 
-export default CalloutFormResponseOptions;
+export default CalloutFormContributionSettings;

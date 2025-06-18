@@ -11,6 +11,7 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditButton from '@/core/ui/actions/EditButton';
 import { gutters } from '@/core/ui/grid/utils';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -74,12 +75,15 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
       setEditDialogOpen(true);
       helpers.setTouched(true);
     };
+
     const handleClose = () => {
       setEditDialogOpen(false);
       if (fullscreen) {
         setFullscreen(false);
       }
     };
+
+    const [deleteContentConfirmDialogOpen, setDeleteContentConfirmDialogOpen] = useState(false);
 
     const whiteboardFromTemplate = useMemo(() => {
       return {
@@ -122,7 +126,7 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
             />
             {onDeleteContent && canEdit && (
               <StyledBoxOverWhiteboard top={0} right={gutters(0.5)}>
-                <IconButton onClick={onDeleteContent} sx={{ background: 'white' }}>
+                <IconButton onClick={() => setDeleteContentConfirmDialogOpen(true)} sx={{ background: 'white' }}>
                   <DeleteOutlinedIcon />
                 </IconButton>
               </StyledBoxOverWhiteboard>
@@ -164,6 +168,27 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
                 />
               </>
             ) : undefined}
+            <ConfirmationDialog
+              entities={{
+                titleId: 'pages.whiteboard.deleteContent.confirmationTitle',
+                contentId: 'pages.whiteboard.deleteContent.confirmationText',
+                confirmButtonTextId: 'buttons.yesDelete',
+              }}
+              options={{
+                show: Boolean(onDeleteContent) && deleteContentConfirmDialogOpen,
+              }}
+              actions={{
+                onConfirm: () => {
+                  setDeleteContentConfirmDialogOpen(false);
+                  onDeleteContent?.();
+                  helpers.setValue('');
+                  if (previewImagesName) {
+                    previewImagesField.setValue([]);
+                  }
+                },
+                onCancel: () => setDeleteContentConfirmDialogOpen(false),
+              }}
+            />
           </>
         ) : (
           <Skeleton height="100%" />

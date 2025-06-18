@@ -1,24 +1,26 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { ContributionTypeSettingsComponentRef } from './CalloutFormResponseSettingsDialog';
+import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { Formik, FormikProps, useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutForm';
+import { Box } from '@mui/material';
+import { Caption, CardText } from '@/core/ui/typography';
+import { useTranslation } from 'react-i18next';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const ResponseSettingsPost = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
+  const { t } = useTranslation();
+
   const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']['postDescription']>(
     'contributionDefaults.postDescription'
   );
 
   useImperativeHandle(ref, () => ({
     onSave: () => {
+      // Apply the changes to the local form to the formik state of the CalloutForm
       meta.setValue(internalFormRef.current?.values.postDescription);
     },
-    onReset: () => {
-      internalFormRef.current?.setFieldValue('postDescription', field.value);
-    },
-    clear: () => {
-      meta.setValue(undefined);
-    },
+    isContentChanged: () => field.value !== internalFormRef.current?.values.postDescription,
   }));
 
   const initialValues = {
@@ -28,7 +30,20 @@ const ResponseSettingsPost = forwardRef<ContributionTypeSettingsComponentRef>((p
   const internalFormRef = useRef<FormikProps<{ postDescription: string | undefined }>>(null);
   return (
     <Formik initialValues={initialValues} onSubmit={() => {}} innerRef={internalFormRef}>
-      <FormikMarkdownField title="Default Description" name="postDescription" onChange={() => {}} />
+      <Gutters disablePadding>
+        <Box>
+          <Caption>
+            {t('callout.create.contributionSettings.contributionTypes.post.settings.defaultDescriptionLabel')}
+          </Caption>
+          <CardText>
+            {t('callout.create.contributionSettings.contributionTypes.post.settings.defaultDescriptionExplanation')}
+          </CardText>
+        </Box>
+        <FormikMarkdownField
+          title={t('callout.create.contributionSettings.contributionTypes.post.settings.defaultDescriptionText')}
+          name="postDescription"
+        />
+      </Gutters>
     </Formik>
   );
 });
