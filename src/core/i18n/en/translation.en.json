@@ -2149,7 +2149,8 @@
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
             "hostOrganizationJoin": "<b>Host organization:</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
-            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
+            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation.",
+            "allowSubspaceAdminsToInviteMembersSubspace": "<b>Space invitations</b>: Allow admins of Subspaces within this Subspace to invite users directly to their own Subspace. If a user is not yet a member of this Subspace, they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already members of the Space can be invited this way."
           },
           "memberActions": {
             "title": "Allowed Actions",
