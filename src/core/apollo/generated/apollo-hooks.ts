@@ -2196,6 +2196,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
         tagset {
           ...TagsetDetails
         }
+        defaultTagset: tagset {
+          ...TagsetDetails
+        }
         references {
           ...ReferenceDetails
         }

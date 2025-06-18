@@ -24644,6 +24644,16 @@ export type TemplateContentQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    defaultTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
                     references?:
                       | Array<{
                           __typename?: 'Reference';
@@ -25031,6 +25041,16 @@ export type CalloutTemplateContentFragment = {
       displayName: string;
       description?: string | undefined;
       tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      defaultTagset?:
         | {
             __typename?: 'Tagset';
             id: string;

@@ -32,5 +32,6 @@ const PageContentColumnBase = forwardRef<HTMLDivElement, PageContentColumnBasePr
     );
   }
 );
+PageContentColumnBase.displayName = 'PageContentColumnBase';
 
 export default PageContentColumnBase;
