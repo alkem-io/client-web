@@ -171,6 +171,7 @@ const SpaceAdminCommunityPage = ({
               <InviteContributorsWizard
                 contributorType={RoleSetContributorType.User}
                 filterContributors={filterInviteeContributors}
+                allowExternalInvites={level !== SpaceLevel.L2}
               >
                 {t('buttons.invite')}
               </InviteContributorsWizard>

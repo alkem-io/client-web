@@ -42,6 +42,7 @@ export interface FormikContributorsSelectorFieldProps {
   filterUsers?: <U extends Identifiable>(users: U) => boolean;
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
+  allowExternalInvites?: boolean;
 }
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
@@ -53,6 +54,7 @@ const FormikContributorsSelectorField = ({
   filterUsers = alwaysTrue,
   hydrateUsers = identityFn as HydratorFn,
   sx,
+  allowExternalInvites = true,
 }: FormikContributorsSelectorFieldProps) => {
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
@@ -203,7 +205,9 @@ const FormikContributorsSelectorField = ({
     helpers.setTouched(true);
     if (event.key === 'Enter') {
       event.preventDefault();
-      onAddContributorEmail();
+      if (allowExternalInvites) {
+        onAddContributorEmail();
+      }
     }
   };
 
@@ -236,10 +240,10 @@ const FormikContributorsSelectorField = ({
   return (
     <Box>
       <Autocomplete
+        freeSolo={allowExternalInvites}
         options={listedUsers}
         getOptionDisabled={option => option.disabled ?? false}
         value={autocompleteValue}
-        freeSolo
         inputValue={inputValue}
         onInputChange={(event, value) => setInputValue(value)}
         autoHighlight
@@ -300,14 +304,15 @@ const FormikContributorsSelectorField = ({
               input: {
                 ...params.InputProps,
                 // Adds the button Add and the autocomplete X icon to empty the input
-                endAdornment: params.inputProps.value ? ( // Only if there's some text in the input
-                  <>
-                    <Button onClick={onAddContributorEmail} variant="contained">
-                      {t('common.add')}
-                    </Button>
-                    {params.InputProps.endAdornment}
-                  </>
-                ) : null,
+                endAdornment:
+                  params.inputProps.value && allowExternalInvites ? (
+                    <>
+                      <Button onClick={onAddContributorEmail} variant="contained">
+                        {t('common.add')}
+                      </Button>
+                      {params.InputProps.endAdornment}
+                    </>
+                  ) : null,
               },
             }}
             multiline
