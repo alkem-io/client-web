@@ -209,7 +209,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
           </PageContentColumn>
           <PageContentColumn columns={isCreateMode ? 12 : 6} justifyContent={isCreateMode ? 'center' : 'start'}>
             <Formik
-              key={currentOrganization.id}
+              key={currentOrganization.id ?? 'new'}
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
