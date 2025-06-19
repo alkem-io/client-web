@@ -52,7 +52,8 @@ export const VersionHandling = () => {
               color: 'white',
             }}
             onClick={() => {
-              window.location.reload();
+              // using window to avoid redundant re-rendering
+              window.location.replace(window.location.pathname + window.location.search);
             }}
           >
             {t('pages.error.buttons.reload')}

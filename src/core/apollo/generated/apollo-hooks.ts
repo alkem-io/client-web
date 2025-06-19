@@ -2196,6 +2196,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
         tagset {
           ...TagsetDetails
         }
+        defaultTagset: tagset {
+          ...TagsetDetails
+        }
         references {
           ...ReferenceDetails
         }
@@ -16297,11 +16300,13 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
         }
         about {
           ...SpaceAboutCardBanner
+          isContentPublic
         }
         subspaces {
           id
           about {
             ...SpaceAboutCardAvatar
+            isContentPublic
             membership {
               myMembershipStatus
             }
