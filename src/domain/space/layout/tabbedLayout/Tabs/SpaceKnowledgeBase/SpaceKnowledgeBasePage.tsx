@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
@@ -24,17 +25,10 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
 
   const { t } = useTranslation();
 
-  const {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
-    handleCreateCallout,
-    loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
-
-  const handleCreate = () => {
-    handleCreateCalloutOpened();
-  };
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
+  const { handleCreateCallout, loading: loadingCalloutCreation } = useCalloutCreationWithPreviewImages({
+    calloutsSetId,
+  });
 
   const { callouts, canCreateCallout, loading, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
@@ -47,7 +41,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
         <InfoColumn>
           <ContributeCreationBlock
             canCreate={canCreateCallout}
-            handleCreate={handleCreate}
+            handleCreate={() => setIsCalloutCreationDialogOpen(true)}
             tabDescription={tabDescription}
           />
           <PageContentBlock>
@@ -76,7 +70,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
       </PageContent>
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
+        onClose={() => setIsCalloutCreationDialogOpen(false)}
         onCreateCallout={handleCreateCallout}
         flowState={flowStateForNewCallouts?.displayName}
         loading={loadingCalloutCreation}

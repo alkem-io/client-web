@@ -16,6 +16,7 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 export interface InnovationHubFormValues {
   subdomain: string;
@@ -71,7 +72,7 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values: { profile }, errors, handleSubmit }) => {
+      {({ errors, handleSubmit }) => {
         return (
           <Gutters disablePadding>
             <FormikInputField
@@ -97,7 +98,7 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                <TagsetSegment fieldName="profile.tagsets" tagsets={profile.tagsets} />
+                <TagsetSegment name={nameOf<InnovationHubFormValues>('profile.tagsets')} />
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload
                   visual={banner}

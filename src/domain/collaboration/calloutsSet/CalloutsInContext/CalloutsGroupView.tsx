@@ -1,9 +1,9 @@
+import { useState } from 'react';
 import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
-import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
@@ -24,25 +24,16 @@ const CalloutsGroupView = ({
   disablePostResponses,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
-  const {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
-    handleCreateCallout,
-    loading,
-  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
-
-  const handleCreate = () => {
-    handleCreateCalloutOpened();
-  };
-
-  const columns = useColumns();
-
   const { t } = useTranslation();
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
+  const { handleCreateCallout, loading } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const createButton = (
-    <AddContentButton onClick={handleCreate}>
-      {columns > 4 ? t('callout.createFull') : t('common.add')}
+    <AddContentButton
+      onClick={() => setIsCalloutCreationDialogOpen(true)}
+      title={t('callout.create.createButtonTooltip')}
+    >
+      {t('callout.create.createButton')}
     </AddContentButton>
   );
 
@@ -57,7 +48,7 @@ const CalloutsGroupView = ({
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
+        onClose={() => setIsCalloutCreationDialogOpen(false)}
         onCreateCallout={handleCreateCallout}
         loading={loading}
         flowState={createInFlowState}

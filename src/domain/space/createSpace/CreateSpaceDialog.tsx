@@ -195,7 +195,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, values: { tagsets }, errors }) => {
+        {({ handleSubmit, errors }) => {
           return (
             <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
               <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
@@ -218,7 +218,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
                   <TagsetSegment
                     disabled={creatingLoading}
                     title={`${t('common.tags')} (${t('common.optional')})`}
-                    tagsets={tagsets}
+                    name="tagsets"
                   />
 
                   <Gutters disableGap disablePadding>

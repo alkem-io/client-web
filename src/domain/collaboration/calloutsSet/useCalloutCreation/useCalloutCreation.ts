@@ -44,9 +44,6 @@ export interface CalloutCreationParams {
 }
 
 export interface CalloutCreationUtils {
-  isCalloutCreationDialogOpen: boolean;
-  handleCreateCalloutOpened: () => void;
-  handleCreateCalloutClosed: () => void;
   handleCreateCallout: (
     callout: CalloutCreationType
   ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
@@ -57,11 +54,7 @@ export interface CalloutCreationUtils {
 // Only Posts have comments for now.
 const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
-export const useCalloutCreation = ({
-  calloutsSetId,
-  initialOpened = false,
-}: CalloutCreationParams): CalloutCreationUtils => {
-  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
+export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCreating, setIsCreating] = useState(false);
 
   const { canCreateCallout, loading } = useCalloutsSetAuthorization({ calloutsSetId });
@@ -98,11 +91,6 @@ export const useCalloutCreation = ({
     },
   });
 
-  const handleCreateCalloutOpened = useCallback(() => {
-    setIsCalloutCreationDialogOpen(true);
-  }, []);
-  const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
-
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
       if (!calloutsSetId) {
@@ -124,8 +112,6 @@ export const useCalloutCreation = ({
           },
         });
 
-        setIsCalloutCreationDialogOpen(false);
-
         return result.data?.createCalloutOnCalloutsSet;
       } finally {
         setIsCreating(false);
@@ -135,9 +121,6 @@ export const useCalloutCreation = ({
   );
 
   return {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loading || isCreating,
     canCreateCallout: canCreateCallout && !loading,

@@ -1,7 +1,7 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import HelpButton from '@/core/ui/button/HelpButton';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { Box, CircularProgress, FormHelperText, TextField, TextFieldProps } from '@mui/material';
+import { Box, BoxProps, CircularProgress, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
 import { ReactNode, useMemo } from 'react';
@@ -21,6 +21,7 @@ export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> 
   counterDisabled?: boolean;
   maxLength?: number;
   endAdornment?: ReactNode;
+  containerProps?: BoxProps;
 };
 
 export const FormikInputField = ({
@@ -41,6 +42,7 @@ export const FormikInputField = ({
   maxLength,
   fullWidth,
   endAdornment,
+  containerProps,
   ...rest
 }: FormikInputFieldProps) => {
   const tErr = useValidationMessageTranslation();
@@ -56,7 +58,7 @@ export const FormikInputField = ({
   }, [isError, meta.error, _helperText, tErr, title]);
 
   return (
-    <Box width={fullWidth ? '100%' : undefined}>
+    <Box width={fullWidth ? '100%' : undefined} {...containerProps}>
       <TextField
         name={name}
         placeholder={placeholder}

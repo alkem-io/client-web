@@ -122,6 +122,7 @@
     "no": "No",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
+    "yesDelete": "Yes, delete",
     "yesStop": "Yes, stop",
     "yesDiscard": "Yes, Discard",
     "delete": "Delete",
@@ -713,11 +714,78 @@
     }
   },
   "callout": {
+    "create": {
+      "createButton": "$t(common.post)",
+      "createButtonTooltip": "Add $t(common.post)",
+      "dialogTitle": "Add $t(common.post)",
+      "framingSettings": {
+        "title": "Additional Content",
+        "none": {
+          "title": "None",
+          "tooltip": "No additional content"
+        },
+        "whiteboard": {
+          "title": "Whiteboard",
+          "tooltip": "Add a whiteboard to this post"
+        }
+      },
+      "contributionSettings": {
+        "title": "Response Options",
+        "comments": {
+          "title": "Comments",
+          "enabled": "Comments",
+          "disabled": "No Comments"
+        },
+        "contributionTypes": {
+          "title": "Structured Responses",
+          "settings": {
+            "title": "Response Settings",
+            "membersCanRespond": "Members can respond",
+            "adminCanRespond": "Admins can respond",
+            "commentsOnEachResponse": "Enable comments on each response",
+            "confirmBackDialog": {
+              "title": "Are you sure that you want to go back?",
+              "text": "There are unsaved changes in this form, is you close this dialog changes will be lost.",
+              "confirm": "Yes, go back"
+            }
+          },
+          "none": {
+            "title": "None",
+            "tooltip": "No structured responses"
+          },
+          "link": {
+            "title": "Links & Files",
+            "tooltip": "Add attachments to this post",
+            "settings": {
+              "label": "Directly Start",
+              "description": "Add your first links below, after publishing new links can be directly added to the post.",
+              "addButton": "Add another link"
+            }
+          },
+          "post": {
+            "title": "Posts",
+            "tooltip": "Enable responding with posts",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the posts, for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
+          "whiteboard": {
+            "title": "Whiteboards",
+            "tooltip": "Enable responding with whiteboards",
+            "settings": {
+              "label": "Default Whiteboard:",
+              "explanation": "Edit the default whiteboard response."
+            }
+          }
+        }
+      }
+    },
     "accessForbidden": {
       "title": "Content not available",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
-    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - Only visible for admins",
@@ -1448,6 +1516,7 @@
     },
     "referenceSegment": {
       "title": "References",
+      "addReference": "Add Reference",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
       "missing-references": "No references yet",
       "tooltips": {
@@ -2625,6 +2694,10 @@
       "delete": {
         "confirmationTitle": "Deleting Whiteboard",
         "confirmationText": "Are you sure you want to delete this whiteboard? The action is irreversible."
+      },
+      "deleteContent": {
+        "confirmationTitle": "Deleting Whiteboard Content",
+        "confirmationText": "Are you sure you want to delete the content of this whiteboard?"
       },
       "template": {
         "header": "Templates defined in Alkemio",
