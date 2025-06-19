@@ -18,6 +18,7 @@ const messages: Record<string, string> = {
   '1070009': 'verification-flow-continue',
   '4000007': 'login-flow-account-exists',
   '4000006': 'invalid-credentials',
+  '4000002': 'claim-missing',
   '1040009': 'pick-password',
 };
 

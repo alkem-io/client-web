@@ -86,5 +86,6 @@ const BasePageContentBlock = forwardRef(
     );
   }
 );
+BasePageContentBlock.displayName = 'BasePageContentBlock';
 
 export default BasePageContentBlock;

@@ -47,6 +47,7 @@ const MessagesThread = ({
           message={message}
           canDelete={!message.deleted && canDeleteMessage(message.author?.id)}
           onDelete={onDeleteMessage}
+          canReply={canPostMessages}
           canAddReaction={canAddReaction && !message.deleted}
           addReaction={addReaction}
           removeReaction={removeReaction}

@@ -1,11 +1,15 @@
 import { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
 import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography';
+import { BlockSectionTitle, CardText, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import LinkButton from '@/core/ui/button/LinkButton';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+import Gutters from '@/core/ui/grid/Gutters';
 
 type InvitationCardHorizontalProps = {
   invitation: InvitationWithMeta | undefined;
@@ -17,6 +21,9 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
     return null;
   }
 
+  const { t } = useTranslation();
+  const time = formatTimeElapsed(invitation.invitation.createdDate, t);
+
   return (
     <BadgeCardView
       component={LinkButton}
@@ -24,31 +31,37 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
       onClick={onClick}
       outlined
     >
-      <BlockSectionTitle noWrap>
-        <DetailedActivityDescription
-          i18nKey="community.pendingMembership.invitationTitle"
-          spaceDisplayName={invitation.space.about.profile.displayName}
-          spaceUrl={invitation.space.about.profile.url}
-          spaceLevel={invitation.space.level}
-          createdDate={invitation.invitation.createdDate}
-          author={{ displayName: invitation.userDisplayName }}
-          type={invitation.invitation.contributorType}
-        />
-      </BlockSectionTitle>
-      <CardText
-        sx={{
-          img: {
-            maxHeight: gutters(1),
-          },
-        }}
-        noWrap
-      >
-        {invitation.invitation.welcomeMessage && (
-          <WrapperMarkdown card plain>
-            {invitation.invitation.welcomeMessage}
-          </WrapperMarkdown>
-        )}
-      </CardText>
+      <Gutters disablePadding row fullWidth>
+        <Box flex={1}>
+          <BlockSectionTitle>
+            <DetailedActivityDescription
+              i18nKey="community.pendingMembership.invitationCardTitle"
+              spaceDisplayName={invitation.space.about.profile.displayName}
+              spaceUrl={invitation.space.about.profile.url}
+              spaceLevel={invitation.space.level}
+              createdDate={invitation.invitation.createdDate}
+              author={{ displayName: invitation.userDisplayName }}
+              type={invitation.invitation.contributorType}
+            />
+          </BlockSectionTitle>
+          <CardText
+            sx={{
+              img: {
+                maxHeight: gutters(1),
+              },
+            }}
+          >
+            {invitation.invitation.welcomeMessage && (
+              <WrapperMarkdown card plain multiline>
+                {invitation.invitation.welcomeMessage}
+              </WrapperMarkdown>
+            )}
+          </CardText>
+        </Box>
+        <Box display="flex" alignItems="center">
+          <Caption>{time}</Caption>
+        </Box>
+      </Gutters>
     </BadgeCardView>
   );
 };

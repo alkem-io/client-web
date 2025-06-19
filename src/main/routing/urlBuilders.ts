@@ -30,7 +30,7 @@ export const buildLoginUrl = (returnUrl?: string) => {
 };
 
 export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
-  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params}`;
+  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params ? params : ''}`;
 };
 
 export const buildNewOrganizationUrl = () => {

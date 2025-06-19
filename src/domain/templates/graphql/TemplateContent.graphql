@@ -65,6 +65,9 @@ fragment CalloutTemplateContent on Callout {
       tagset {
         ...TagsetDetails
       }
+      defaultTagset: tagset {
+        ...TagsetDetails
+      }
       references {
         ...ReferenceDetails
       }

@@ -1410,7 +1410,7 @@ export type CommunityGuidelines = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** The details of the guidelilnes */
+  /** The details of the guidelines */
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -1960,6 +1960,8 @@ export type CreateReferenceOnProfileInput = {
 };
 
 export type CreateSpaceAboutInput = {
+  /** The CommunityGuidelines for the Space */
+  guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
   when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
@@ -2496,6 +2498,14 @@ export type Geo = {
   __typename?: 'Geo';
   /** Endpoint where geo information is consumed from. */
   endpoint: Scalars['String']['output'];
+};
+
+export type GeoLocation = {
+  __typename?: 'GeoLocation';
+  /** The Latitude for this Location, derived from (City, Country) if those are set. */
+  latitude?: Maybe<Scalars['Float']['output']>;
+  /** The Longitude for this Location, derived from (City, Country) if those are set. */
+  longitude?: Maybe<Scalars['Float']['output']>;
 };
 
 export type GrantAuthorizationCredentialInput = {
@@ -3090,6 +3100,8 @@ export type Location = {
   country?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The GeoLocation for this Location, derived from (City, Country) if those are set. */
+  geoLocation: GeoLocation;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   postalCode?: Maybe<Scalars['String']['output']>;
@@ -3698,6 +3710,8 @@ export type Mutation = {
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
+  /** Updates the GeoLocation data where required on the platform. */
+  adminUpdateGeoLocationData: Scalars['Boolean']['output'];
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
   /** Create a test customer on wingback. */
@@ -20737,6 +20751,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             | undefined;
           about: {
             __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -20755,6 +20770,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             id: string;
             about: {
               __typename?: 'SpaceAbout';
+              isContentPublic: boolean;
               id: string;
               membership: {
                 __typename?: 'SpaceAboutMembership';
@@ -24628,6 +24644,16 @@ export type TemplateContentQuery = {
                           type: TagsetType;
                         }
                       | undefined;
+                    defaultTagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
                     references?:
                       | Array<{
                           __typename?: 'Reference';
@@ -25015,6 +25041,16 @@ export type CalloutTemplateContentFragment = {
       displayName: string;
       description?: string | undefined;
       tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      defaultTagset?:
         | {
             __typename?: 'Tagset';
             id: string;

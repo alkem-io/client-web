@@ -14,6 +14,7 @@ interface TemplateContentCalloutPreviewProps {
           displayName: string;
           description?: string;
           tagsets?: TagsetModel[];
+          tagset?: TagsetModel;
         };
         whiteboard?: {
           profile: {
@@ -35,7 +36,7 @@ const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPrevi
     <PageContentBlock>
       <BlockSectionTitle>{framing?.profile.displayName}</BlockSectionTitle>
       <WrapperMarkdown>{framing?.profile.description ?? ''}</WrapperMarkdown>
-      <TagsComponent tags={findDefaultTagset(framing?.profile.tagsets)?.tags ?? []} />
+      <TagsComponent tags={findDefaultTagset(framing?.profile.tagsets)?.tags ?? framing?.profile.tagset?.tags ?? []} />
       {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing?.profile.displayName} />}
     </PageContentBlock>
   );

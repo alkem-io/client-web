@@ -8,11 +8,13 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
       }
       about {
         ...SpaceAboutCardBanner
+        isContentPublic
       }
       subspaces {
         id
         about {
           ...SpaceAboutCardAvatar
+          isContentPublic
           membership {
             myMembershipStatus
           }
