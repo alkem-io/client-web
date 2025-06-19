@@ -79,6 +79,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
           icon: childEntitiesIcon,
           uri: entity.about.profile.url,
           cardBanner: entity.about.profile?.cardBanner?.uri || defaultVisualUrls.AVATAR,
+          isPrivate: !entity.about.isContentPublic,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]

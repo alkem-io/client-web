@@ -1410,7 +1410,7 @@ export type CommunityGuidelines = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** The details of the guidelilnes */
+  /** The details of the guidelines */
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -1960,6 +1960,8 @@ export type CreateReferenceOnProfileInput = {
 };
 
 export type CreateSpaceAboutInput = {
+  /** The CommunityGuidelines for the Space */
+  guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
   when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
@@ -20749,6 +20751,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             | undefined;
           about: {
             __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -20767,6 +20770,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             id: string;
             about: {
               __typename?: 'SpaceAbout';
+              isContentPublic: boolean;
               id: string;
               membership: {
                 __typename?: 'SpaceAboutMembership';
