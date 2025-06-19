@@ -10,6 +10,7 @@ import {
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
+  useImportSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
@@ -166,6 +167,9 @@ const TemplatesAdmin = ({
   const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
+  const [importSpaceTemplate] = useImportSpaceTemplateMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet'],
+  });
 
   // Create a Collaboration template
   const handleSpaceTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
@@ -264,7 +268,7 @@ const TemplatesAdmin = ({
         ...template,
         spaceId: template.contentSpace?.id,
       });
-      await createSpaceTemplate({
+      await importSpaceTemplate({
         variables,
       });
       setImportTemplateType(undefined);
