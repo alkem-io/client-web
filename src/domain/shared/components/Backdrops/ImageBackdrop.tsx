@@ -1,9 +1,10 @@
-import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import useNavigate from '@/core/routing/useNavigate';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
+import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 const Root = styled(Box)(() => ({
   position: 'relative',
@@ -73,6 +74,9 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const loginUrl = buildLoginUrl(pathname);
+  const signUpUrl = buildSignUpUrl(pathname);
 
   return (
     <>
@@ -88,11 +92,11 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
             </Typography>
 
             <ButtonsWrapper>
-              <Button variant={'contained'} onClick={() => navigate(_AUTH_LOGIN_PATH, { replace: true })}>
+              <Button variant={'contained'} onClick={() => navigate(loginUrl, { replace: true })}>
                 {t('authentication.sign-in')}
               </Button>
 
-              <Button variant={'contained'} onClick={() => navigate(AUTH_SIGN_UP_PATH, { replace: true })}>
+              <Button variant={'contained'} onClick={() => navigate(signUpUrl, { replace: true })}>
                 {t('authentication.sign-up')}
               </Button>
             </ButtonsWrapper>
