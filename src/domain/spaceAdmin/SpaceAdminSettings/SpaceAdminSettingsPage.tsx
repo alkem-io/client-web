@@ -67,6 +67,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
   const isSubspace = level !== SpaceLevel.L0;
+  const notLastLevel = level !== SpaceLevel.L2;
 
   const [deleteSpace] = useDeleteSpaceMutation({
     onCompleted: () => {
@@ -255,8 +256,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                         />
                       ),
                     },
-                    ...(!isSubspace && {
-                      // Only show this option for top level spaces
+                    ...(notLastLevel && {
                       [CommunityMembershipPolicy.Invitations]: {
                         label: (
                           <Trans
@@ -311,14 +311,18 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
 
             <PageContentBlock disableGap>
               <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
-              {!isSubspace && membershipsEnabled && (
+              {notLastLevel && membershipsEnabled && (
                 <SwitchSettingsGroup
                   options={{
                     allowSubspaceAdminsToInviteMembers: {
                       checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
                       label: (
                         <Trans
-                          i18nKey="pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers"
+                          i18nKey={
+                            isSubspace
+                              ? 'pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembersSubspace'
+                              : 'pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'
+                          }
                           components={{ b: <strong /> }}
                         />
                       ),
@@ -358,7 +362,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
                 />
               )}
-              {level === SpaceLevel.L1 && (
+              {level !== SpaceLevel.L0 && (
                 <SwitchSettingsGroup
                   options={{
                     inheritMembershipRights: {

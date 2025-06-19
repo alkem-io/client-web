@@ -9,6 +9,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 interface InviteContributorsWizardProps extends ButtonProps {
   contributorType: RoleSetContributorType;
   filterContributors?: (contributor: Identifiable) => boolean;
+  allowExternalInvites?: boolean;
 }
 
 const InviteContributorsWizard = ({
@@ -16,6 +17,7 @@ const InviteContributorsWizard = ({
   startIcon = <GroupAddIcon />,
   children,
   filterContributors,
+  allowExternalInvites = true,
   ...buttonProps
 }: InviteContributorsWizardProps) => {
   const { t } = useTranslation();
@@ -30,6 +32,7 @@ const InviteContributorsWizard = ({
         type={contributorType}
         filterContributors={filterContributors}
         open={isOpen}
+        allowExternalInvites={allowExternalInvites}
         onClose={() => setIsOpen(false)}
       />
     </>

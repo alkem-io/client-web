@@ -1,3 +1,4 @@
+import React from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption } from '@/core/ui/typography';
 import { Box, DialogContent } from '@mui/material';
@@ -10,19 +11,30 @@ import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { gutters } from '@/core/ui/grid/utils';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { INVITE_USERS_TO_ROLES } from './InviteUsersDialog';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface InviteUsersFormDialogContentProps {
   filterUsers?: FormikContributorsSelectorFieldProps['filterUsers'];
+  allowExternalInvites: boolean;
 }
 
-const InviteUsersFormDialogContent = ({ filterUsers }: InviteUsersFormDialogContentProps) => {
+const InviteUsersFormDialogContent: React.FC<InviteUsersFormDialogContentProps> = ({
+  filterUsers,
+  allowExternalInvites = true,
+}) => {
   const { t } = useTranslation();
+  const titleKey =
+    `community.invitations.inviteContributorsDialog.users.description${allowExternalInvites ? '' : '2'}` as TranslationKey;
 
   return (
     <DialogContent>
       <Gutters disablePadding>
-        <Caption>{t('community.invitations.inviteContributorsDialog.users.description')}</Caption>
-        <FormikContributorsSelectorField name="selectedContributors" filterUsers={filterUsers} />
+        <Caption>{t(titleKey)}</Caption>
+        <FormikContributorsSelectorField
+          name="selectedContributors"
+          filterUsers={filterUsers}
+          allowExternalInvites={allowExternalInvites}
+        />
         <FormikInputField
           name="welcomeMessage"
           title={t('community.invitations.inviteContributorsDialog.welcomeMessage')}
