@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutState,
@@ -360,6 +360,24 @@ const CreateCalloutDialog = ({
             disableRichMedia={disableRichMedia}
           />
         </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} variant="text">
+            {t('buttons.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              /*const callout = await handleCreateCallout();
+              if (callout) {
+                onClose();
+                scrollToTop();
+              }*/
+            }}
+            disabled={!isValid}
+          >
+            {t('buttons.post')}
+          </Button>
+        </DialogActions>
       </DialogWithGrid>
       <ImportTemplatesDialog
         templateType={TemplateType.Callout}

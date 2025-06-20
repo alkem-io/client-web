@@ -101,6 +101,7 @@
     "ok": "Ok",
     "create": "Create",
     "publish": "Publish",
+    "post": "Post",
     "unpublish": "Unpublish",
     "save-draft": "Save as draft",
     "archive": "Archive",
