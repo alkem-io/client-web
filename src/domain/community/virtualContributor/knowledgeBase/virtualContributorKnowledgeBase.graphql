@@ -1,3 +1,11 @@
+query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaServiceID: UUID!) {
+  aiServer {
+    aiPersonaService(ID: $aiPersonaServiceID) {
+      bodyOfKnowledgeLastUpdated
+    }
+  }
+}
+
 query VirtualContributorKnowledgeBase($id: UUID!) {
   virtualContributor(ID: $id) {
     id

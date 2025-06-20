@@ -13,6 +13,7 @@ export function createVirtualContributorModelFull(virtualContributor: any): Virt
       bodyOfKnowledgeID: virtualContributor?.aiPersona?.bodyOfKnowledgeID ?? '',
       engine: virtualContributor?.aiPersona?.engine ?? undefined,
       modelCard: createAiPersonaModelCardModelFromFragment(virtualContributor?.aiPersona),
+      aiPersonaServiceID: virtualContributor?.aiPersona?.aiPersonaServiceID ?? undefined,
     },
     profile: virtualContributor?.profile ?? { displayName: '', url: '' },
     provider: virtualContributor?.provider ?? undefined,
