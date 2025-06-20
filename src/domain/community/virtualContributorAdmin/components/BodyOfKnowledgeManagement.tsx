@@ -1,11 +1,12 @@
 import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorSettingsMutation,
+  useVirtualContributorKnowledgeBaseLastUpdatedQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContent from '@/core/ui/content/PageContent';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
@@ -13,6 +14,7 @@ import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Box, Button, Tooltip } from '@mui/material';
+import { formatDateTime } from '@/core/utils/time/utils';
 
 interface BodyOfKnowledgeManagementProps {
   vc: {
@@ -26,6 +28,7 @@ interface BodyOfKnowledgeManagementProps {
       displayName: string;
     };
     aiPersona?: {
+      aiPersonaServiceID?: string;
       bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
       engine: AiPersonaEngine;
     };
@@ -37,6 +40,11 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   const notify = useNotification();
 
   const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
+  const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
+    variables: { aiPersonaServiceID: vc.aiPersona?.aiPersonaServiceID ?? '' },
+  });
+  const lastUpdated = data?.aiServer.aiPersonaService.bodyOfKnowledgeLastUpdated;
+
   const refreshIngestion = () => {
     updateBodyOfKnowledge({
       variables: {
@@ -114,8 +122,19 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
               />
             </Gutters>
           </Tooltip>
-          <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
-          <Actions>
+          <Caption>
+            <Trans
+              i18nKey={'pages.virtualContributorProfile.settings.ingestion.infoText'}
+              components={{ bold: <b /> }}
+            />
+          </Caption>
+          <Actions sx={{ marginTop: 2, display: 'flex', alignItems: 'baseline', gap: 1, justifyContent: 'flex-end' }}>
+            <Box sx={{ color: 'muted.main', display: 'flex', fontSize: 14 }}>
+              {t('pages.virtualContributorProfile.settings.ingestion.lastUpdatedLabel')}
+              {lastUpdated
+                ? formatDateTime(lastUpdated)
+                : t('pages.virtualContributorProfile.settings.ingestion.never')}
+            </Box>
             <Button variant="contained" loading={updateLoading} onClick={refreshIngestion}>
               {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
             </Button>
