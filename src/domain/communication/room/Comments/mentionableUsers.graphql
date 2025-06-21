@@ -1,4 +1,4 @@
-query MentionableUsers(
+query MentionableContributors(
   $filter: UserFilterInput
   $first: Int
   $roleSetId: UUID! = "00000000-0000-0000-0000-000000000000"
@@ -24,7 +24,7 @@ query MentionableUsers(
   }
   lookup @include(if: $includeVirtualContributors) {
     roleSet(ID: $roleSetId) {
-      virtualContributorsInRole(role: MEMBER) {
+      virtualContributorsInRoleFromTopLevelRoleSet(role: MEMBER) {
         id
         profile {
           id
