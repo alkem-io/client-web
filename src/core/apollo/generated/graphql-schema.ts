@@ -5707,8 +5707,8 @@ export type RoleSet = {
   usersInRoles: Array<UsersInRolesResponse>;
   /** All Virtual Contributors that have the specified Role in this Community. */
   virtualContributorsInRole: Array<VirtualContributor>;
-  /** All Virtual Contributors that are available from the ultimate parent RoleSet. */
-  virtualContributorsInRoleFromTopLevelRoleSet: Array<VirtualContributor>;
+  /** All Virtual Contributors that are available from the current or parent RoleSets. */
+  virtualContributorsInRoleInHierarchy: Array<VirtualContributor>;
   /** All VirtualContributors that have a role in this RoleSet in the specified Roles. */
   virtualContributorsInRoles: Array<VirtualContributorsInRolesResponse>;
 };
@@ -5767,7 +5767,7 @@ export type RoleSetVirtualContributorsInRoleArgs = {
   role: RoleName;
 };
 
-export type RoleSetVirtualContributorsInRoleFromTopLevelRoleSetArgs = {
+export type RoleSetVirtualContributorsInRoleInHierarchyArgs = {
   role: RoleName;
 };
 
@@ -15714,7 +15714,7 @@ export type MentionableContributorsQuery = {
     roleSet?:
       | {
           __typename?: 'RoleSet';
-          virtualContributorsInRoleFromTopLevelRoleSet: Array<{
+          virtualContributorsInRoleInHierarchy: Array<{
             __typename?: 'VirtualContributor';
             id: string;
             profile: {

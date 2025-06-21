@@ -192,7 +192,7 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
 
     if (!hasVcInteraction && vcEnabled) {
-      data?.lookup?.roleSet?.virtualContributorsInRoleFromTopLevelRoleSet?.forEach(vc => {
+      data?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.forEach(vc => {
         if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
           mentionableContributors.push({
             id: vc.profile.url,
@@ -231,7 +231,7 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
     callback(users);
   };
 
-  // Open a tooltip (which is the same Popper that contains the maching users) but with a helper message
+  // Open a tooltip (which is the same Popper that contains the matching users) but with a helper message
   // that says something like "Start typing to mention someone"
   useEffect(() => {
     const input = containerRef.current?.querySelector('textarea');

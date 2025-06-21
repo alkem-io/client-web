@@ -9453,7 +9453,7 @@ export const MentionableContributorsDocument = gql`
     }
     lookup @include(if: $includeVirtualContributors) {
       roleSet(ID: $roleSetId) {
-        virtualContributorsInRoleFromTopLevelRoleSet(role: MEMBER) {
+        virtualContributorsInRoleInHierarchy(role: MEMBER) {
           id
           profile {
             id
